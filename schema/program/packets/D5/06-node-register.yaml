@@ -1,0 +1,128 @@
+version: 1
+module: D5
+# Model stage (Wave 2) by A5, 2026-10-08. Six node types (budget 8). Every type implements Entity & Subjectable
+# (kernel pattern, packets/K/09-reasoning.md). Mutations: none through GraphQL (@mutation(operations: [])); the
+# executor writes through intents; nothing is deleted (supersession / episode close). `mutations` below states what the
+# executor may do.
+nodes:
+  - name: Target
+    uidToken: target
+    identityKeys: [key]
+    identifierSchemes: [MESH, WIKIDATA]   # MESH needs domain D5 added to the kernel register (11-open-questions OQ-D5-11)
+    whyNode: >-
+      Every target question starts or ends at a goal node: "what helps / hurts T" (Q-D5-01, Q-D5-02), "what is this for"
+      (Q-D5-15), "what to avoid for T" (Q-D5-03), comparisons for T (Q-D5-18), co-occurring stacks for T (Q-D5-19),
+      kinds serving T (Q-D5-28). It is the object of target-effect Assertions and of Assessments (ASSESSES) and the
+      origin of OPERATIONALIZED_BY to D4 measures and D2 outcomes (Q-D5-01 study branch, Q-D5-14). Shared vocabulary node per directive
+      3.1 (vocab-targets.yaml, 15 targets).
+    filterProperties: [key, parentKey, status, synonyms (fulltext TargetSearch)]
+    otherProperties: 5
+    archetype: Entity (curated vocabulary)
+    mutations: {create: true, update: true, delete: false}
+
+  - name: Intervention
+    uidToken: intervention
+    identityKeys: [normalizedName, kind, regimenQualifier]
+    identifierSchemes: [MESH, SNOMEDCT, WIKIDATA]
+    whyNode: >-
+      Non-substance means need an identity that assertions, steps, study arms and offerings share: Q-D5-25 (is this step
+      or offering the same intervention as the one trial T studied; D3 arm -> Intervention), Q-D5-17 (clinics offering
+      I; D6/D7), Q-D5-28 (filter by kind), Q-D5-02/Q-D5-04 (an intervention as co-exposure: antioxidants blunting
+      exercise adaptation). STEP_USES target for practices (sunlight viewing, sauna, training). Diets are not
+      Interventions (kind DIETARY_PATTERN retired in the adversarial review): one diet, one node, D12 DietaryPattern.
+    filterProperties: [kind, name, synonyms]
+    otherProperties: 2
+    archetype: Entity (concept)
+    mutations: {create: true, update: true, delete: false}
+
+  - name: Protocol
+    uidToken: protocol
+    identityKeys: [publisher, canonicalUri]   # (publisher, title) when there is no URL
+    identifierSchemes: [ISBN, DOI]            # book or published-paper protocols only
+    whyNode: >-
+      Enduring identity across in-place editions: CQ-PR-01 (what changed between editions), Q-D5-10 (edition as of
+      date), Q-D5-13 (author's financial interest over edition intervals), Q-D5-12 / Q-D5-19 (protocols that include X;
+      stacks). Traversed through HAS_EDITION. Not merged into kernel Source (09 D-18): a protocol's identity survives
+      URL moves (hubermanlab.com/toolkit-for-sleep -> /newsletter/toolkit-for-sleep) and print-only protocols.
+    filterProperties: [canonicalUri, name]
+    otherProperties: 1
+    archetype: Entity
+    mutations: {create: true, update: true, delete: false}
+
+  - name: ProtocolEdition
+    uidToken: protocol-edition
+    identityKeys: [protocolUid, payloadHash]
+    identifierSchemes: []
+    whyNode: >-
+      Immutable unit of protocol content that questions diff and date: CQ-PR-01 (compare two editions by payloadHash and
+      stepKey), Q-D5-10 (what edition N prescribes), Q-D5-13 (interest changes against edition intervals), CQ-EV-04
+      (applicability assessment ASSESSES an edition). Joined through HAS_EDITION (episode) and HAS_STEP.
+    filterProperties: [payloadHash, changeProvenance, firstObservedAt, lastObservedAt]
+    otherProperties: 6
+    archetype: VersionedState (Subjectable, because assessments and INTENDED_FOR_TARGET assertions are about it)
+    mutations: {create: true, update: false, delete: false}
+
+  - name: ProtocolStep
+    uidToken: protocol-step
+    identityKeys: [editionUid, stepKey]
+    identifierSchemes: []
+    whyNode: >-
+      The join point of protocol content: Q-D5-10 and CQ-PR-02 list steps; Q-D5-12 and Q-D5-19 traverse step -> means;
+      Q-D5-06 compares the step's dose range with a DOSE_LIMIT UseConstraint; Q-D5-11 anti-joins the step's stated
+      constraints against the constraints on its means; Q-D5-01 protocol branch filters steps by targetKeys; CQ-PR-04
+      reads REVIEW / MEASURE steps; CQ-PR-06 step-level evidence assessments ASSESS a step.
+    filterProperties: [stepKey, payloadHash, stepKind, requirementLevel, targetKeys, appliesToPopulations, doseMax, doseUnit, dosePeriod, intakeScope, timeAnchor, statedLevel, alternativeGroup]
+    otherProperties: 27
+    archetype: Entity (component of a VersionedState)
+    mutations: {create: true, update: false, delete: false}
+
+  - name: UseConstraint
+    uidToken: use-constraint
+    identityKeys: [identityKeyHash, identityKeyVersion]
+    identifierSchemes: []
+    whyNode: >-
+      The shared blocking identity that many asserters' statements resolve to: Q-D5-23 / CQ-RC-06 (block or qualify a
+      recommendation; cite the constraint uid), Q-D5-05 (where sources disagree about the same concern: group by this
+      node), Q-D5-03 / Q-D5-21 (filter by scopePopulations), Q-D5-04 (interaction pairs), Q-D5-06 / Q-D5-09 (dose band
+      of DOSE_LIMIT constraints), Q-D5-11 (stated vs omitted cautions, STATES_CONSTRAINT), Q-D5-24 / Q-D5-26 (which
+      resolving assertions changed or were superseded). Not a kernel Claim (09 D-17): its identity groups statements
+      across USE_CONSTRAINED_IN, INTERACTS_WITH and HAS_UPPER_LIMIT and across levels, and its dose band, scope and
+      timing window are typed filters; a Claim's identity binds one predicate and its stated value.
+    filterProperties: [constraintKind, scopePopulations, doseComparator, doseValue, doseUnit, dosePeriod, intakeScope, route, timingWindow, jurisdiction, identityKeyHash]   # adversarial review: exposureChange dropped (per asserter), timingWindow added (identity v2)
+    otherProperties: 3
+    archetype: Entity (shared identity; immutable identity key)
+    mutations: {create: true, update: false, delete: false}
+
+deferred:
+  - {name: AdverseEffect, reason: "effect terms (nausea, GI upset, hypermagnesemia, lymphoma) are D2 Conditions (conditionKind PHENOTYPE / ADVERSE_EFFECT_TERM requested); object of CAUSES_ADVERSE_EFFECT. Fallback if D2 refuses: re-mint in D5 as node 7 (OQ-D5-03)"}
+  - {name: SafetySignal, reason: "kernel Assessment assessmentKind SAFETY_SIGNAL, subkind D5.safety-signal; inputs via kernel DERIVED_FROM; signal status = conclusionCode, severity = gradeScheme + grade (kernel M9; vocabulary registered in 09, OQ-D5-04 closed)"}
+  - {name: Population, reason: "non-study populations are the PopulationGroup enum (scopePopulations, appliesToPopulations, population qualifier); study populations are D3 StudyPopulation referenced by uid in the qualifier"}
+  - {name: Observation, reason: "public before/after numbers are kernel Assertions (assertionKind METRIC) about the protocol or person, with a D4 Metric object; promote if a question traverses observations"}
+  - {name: ProtocolResult, reason: "same as Observation"}
+  - {name: MeasurementPlan, reason: "ProtocolStep stepKind MEASURE + STEP_USES -> D4 Metric + occurrence range"}
+  - {name: ProtocolAdjustmentRule, reason: "ProtocolStep stepKind REVIEW + threshold* + reviewAction (CQ-PR-04, value 3)"}
+  - {name: Constraint, reason: "protocol-stated conditions: UseConstraint via STATES_CONSTRAINT (derived) for cautions; conditionText + appliesToPopulations + requirementLevel CONDITIONAL for eligibility conditions"}
+  - {name: ContraindicationAssertion, reason: "kernel Assertion predicate USE_CONSTRAINED_IN (level CONTRAINDICATED in valueString); specializations re-declared kernel subject/object (PLAN section 1 item 3)"}
+  - {name: InteractionAssertion, reason: "kernel Assertion predicate INTERACTS_WITH"}
+  - {name: Exposure (characterized exposure / contaminant side), reason: "contaminant exposures are D8 measurements and D12 composition; the practice side merged into Intervention"}
+
+mergedInto:
+  - {pinned: Treatment, into: Intervention, note: "kind DRUG_REGIMEN | SUPPLEMENT_REGIMEN | BIOLOGIC_CELL_OR_GENE; TreatmentModality, TreatmentComponentRole, TreatmentIntentKind/Basis enums dropped (no question filters them)"}
+  - {pinned: Procedure, into: Intervention, note: "kind PROCEDURE"}
+  - {pinned: Lifestyle, into: Intervention, note: "kind LIFESTYLE_PRACTICE (fragment W05)"}
+  - {pinned: Exposure, into: Intervention, note: "practice side only (kind LIFESTYLE_PRACTICE / DEVICE_BASED); characterized contaminant exposure deferred (W05)"}
+  - {pinned: FunctionalGoal, into: Target, note: "uid hu:functional-goal:* -> hu:target:*; goalType free string -> key"}
+  - {pinned: Target, into: ProtocolStep, note: "the pinned W16 Target (source-stated numeric threshold for one metric) becomes thresholdComparator/Low/High/Unit on a MEASURE or REVIEW step; the name Target now means the goal vocabulary node"}
+  - {pinned: MeasurementPlan, into: ProtocolStep, note: "stepKind MEASURE"}
+  - {pinned: ProtocolAdjustmentRule, into: ProtocolStep, note: "stepKind REVIEW; ReviewTriggerKind -> reviewAction + threshold; ReviewRuleBasis -> requirementBasis"}
+  - {pinned: Constraint, into: UseConstraint, note: "via STATES_CONSTRAINT; eligibility-type constraints become step properties"}
+  - {pinned: ContraindicationAssertion, into: Assertion, note: "kernel Assertion, predicate USE_CONSTRAINED_IN"}
+  - {pinned: InteractionAssertion, into: Assertion, note: "kernel Assertion, predicate INTERACTS_WITH"}
+  - {pinned: SafetySignal, into: Assessment, note: "kernel Assessment SAFETY_SIGNAL"}
+  - {pinned: AdverseEffect, into: D2.Condition, note: "contested (OQ-D5-03)"}
+  - {pinned: Observation, into: Assertion, note: "assertionKind METRIC"}
+  - {pinned: ProtocolResult, into: Assertion, note: "assertionKind METRIC; applicability as Assessment"}
+  - {pinned: Protocol, into: Protocol, note: "kept; ProtocolType enum dropped (no question filters it)"}
+  - {pinned: ProtocolEdition, into: ProtocolEdition, note: "kept, slimmed: 20+ cadence fields moved to steps; effectiveFrom/To moved to the HAS_EDITION episode"}
+  - {pinned: ProtocolStep, into: ProtocolStep, note: "kept; dose moved from StepDoseProperties edge to step properties (one primary means per step)"}
+  - {pinned: UseConstraint, into: UseConstraint, note: "kept; CONSTRAINS_USE_OF / CONSTRAINT_SCOPE cut (resolving Assertions carry subject/scope)"}

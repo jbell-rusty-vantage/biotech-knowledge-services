@@ -1,0 +1,635 @@
+# Identifier-bridge table for the kernel (packet D11, agent A8, research stage 2026-10-08)
+#
+# Purpose: decide which Identifier schemes the kernel supports (Identifier.scheme values), how each
+# value is normalized (Identifier.normalizationRule), which authority issues it (Identifier.issuer),
+# and which bridges between schemes exist, who asserts them, and where they do not exist.
+#
+# Rules this table follows (kernel facts, START_HERE + node card Identifier):
+#  - Identity of an Identifier is (scheme, issuer, value); the same (scheme, value) from two issuers
+#    never establishes identity.
+#  - A bridge is never a stored "same-as" edge between identifiers. A bridge observed in an authority
+#    record is an Assertion (HAS_IDENTIFIER on the entity, cited to a locator in the authority's
+#    SourceSnapshot); a bridge inferred by BellLabs (name match, structure match) is a kernel
+#    Assessment of kind RESOLUTION or EQUIVALENCE until adjudicated (the pinned ResolutionHypothesis
+#    was merged into Assessment by the kernel, A1 2026-10-08).
+#
+# Model-stage update (A8, 2026-10-08): `kernelCode` aligns every row to the published kernel register
+#  packets/K/identifier-schemes.yaml (A1). Where the research-stage spelling differs, the kernel code
+#  wins (EU_CT → EUCT, DSLD_LABEL_ID → DSLD, MESH_UI → MESH, CIK → SEC_CIK). Rows the kernel register
+#  does not have are requests (11-open-questions.md, owner kernel). Bridge rows keep the research
+#  spellings in `from`/`to` for traceability to _notes/tool-log.md; read them through kernelCode.
+# Cross-packet pass (A8, 2026-10-08): the GENERATED block at the end of this file (`reconciliation`, written by
+#  _notes/action-space/build-action-space.mjs) reconciles every code of the K register v2 and every scheme listed in
+#  the fourteen packets' 06-node-register.yaml identifierSchemes with this table and with the merged action space
+#  (which registry entries emit each scheme, at what readiness). Codes missing from K are requests in
+#  11-open-questions.md item 46. `authorityRoute` values below are merged-registry ids (tooling/action-space.yaml).
+#  - `observed` rows cite captures made on 2026-10-08 (scratch raw/ file names; see _notes/tool-log.md).
+#  - Normalization rules marked `proposed` are BellLabs conventions to adopt, not external facts.
+
+version: 1
+scoredAt: "2026-10-08"
+
+schemes:
+  # ---------------------------------------------------------------- literature
+  - scheme: PMID
+    kernelCode: PMID
+    issuer: NLM (PubMed)
+    pattern: '^[1-9][0-9]{0,8}$'
+    normalizationRule: pmid-digits-v1 (proposed; strip 'PMID:' prefix and leading zeros)
+    checkDigit: none
+    authorityRoute: ncbi-eutils-pubmed
+    observed: "29599478, 12003802, 22833916 (eutils-efetch-*.xml)"
+    notes: "Versioned in XML (<PMID Version=\"1\">); retraction notices get their own PMID linked by CommentsCorrections RetractionOf/RetractionIn."
+  - scheme: PMCID
+    kernelCode: PMCID
+    issuer: NLM (PubMed Central)
+    pattern: '^PMC[0-9]+$'
+    normalizationRule: pmcid-upper-v1 (proposed; uppercase 'PMC', strip version suffix '.1' into a separate field)
+    checkDigit: none
+    authorityRoute: pmc-idconv
+    observed: "PMC5876407; JATS also carries pmcid-ver PMC5876407.1 (epmc-fulltext-PMC5876407.xml)"
+    notes: "Europe PMC annotation API uses 'PMC:5876407' (prefix + colon, digits only) — a third spelling to normalize."
+  - scheme: DOI
+    kernelCode: DOI
+    issuer: DOI registration agency (Crossref, DataCite, …)
+    pattern: '^10\.[0-9]{4,9}/\S+$'
+    normalizationRule: doi-lowercase-v1 (kernel example; strip https://doi.org/ and 'doi:' prefixes)
+    checkDigit: none
+    authorityRoute: crossref-rest
+    observed: "10.1038/s41467-018-03421-7; 10.1152/ajpheart.01012.2001; retraction notice 10.1152/ajpheart.zh4-0450-retr.2012; preprint 10.1101/680462"
+    notes: "OpenAlex returns DOIs as URLs ('https://doi.org/…'); Crossref JSON escapes '/' as '\\/'. A preprint DOI and its journal DOI are different works (bridge below)."
+  - scheme: RW_RECORD
+    kernelCode: RW_RECORD   # K register v2, status requested (by K); D11 asked for it as RETRACTION_WATCH_ID (aligned in the check stage)
+    issuer: Retraction Watch (via Crossref)
+    pattern: '^[0-9]+$'
+    normalizationRule: digits-v1 (proposed)
+    checkDigit: none
+    authorityRoute: crossref-rest
+    observed: "record-id 54 on the updated-by relation of 10.1152/ajpheart.01012.2001"
+    notes: "Identifies the retraction record, not the paper."
+  # ---------------------------------------------------------------- trials
+  - scheme: NCT
+    kernelCode: NCT
+    issuer: NLM ClinicalTrials.gov
+    pattern: '^NCT[0-9]{8}$'
+    normalizationRule: nct-upper-v1 (proposed; uppercase, no spaces)
+    checkDigit: none
+    authorityRoute: ctgov-v2-api
+    observed: "NCT02921659 (ctgov-NCT02921659.json); glossary: 'The format is \"NCT\" followed by an 8-digit number' (fc-ctgov-history-NCT02921659.md)"
+    notes: "identifiers.org form 'clinicaltrials:NCT02921659' appears in Europe PMC annotations."
+  - scheme: EU_CT
+    kernelCode: EUCT
+    issuer: EMA CTIS
+    pattern: '^[0-9]{4}-[0-9]{6}-[0-9]{2}-[0-9]{2}$'
+    normalizationRule: euct-v1 (proposed)
+    checkDigit: unknown
+    authorityRoute: eu-ctis-public
+    observed: "2026-525463-40-00 (ctis-search.json)"
+    notes: "Distinct from legacy EudraCT numbers (pre-CTIS); both may appear as CT.gov secondary ids."
+  - scheme: EUDRACT
+    kernelCode: EUDRACT
+    issuer: EMA (EudraCT, pre-CTIS EU trials)
+    pattern: '^[0-9]{4}-[0-9]{6}-[0-9]{2}$'
+    normalizationRule: eudract-v1 (proposed)
+    checkDigit: "last two digits (algorithm not verified in this stage)"
+    authorityRoute: EU CTR (not exercised); CT.gov secondary ids
+    observed: "not observed in this stage (pattern from the scheme's public format, to be confirmed by D3)"
+  - scheme: ISRCTN
+    kernelCode: ISRCTN
+    issuer: ISRCTN registry
+    pattern: '^ISRCTN[0-9]{8}$'
+    normalizationRule: isrctn-upper-v1 (proposed)
+    checkDigit: none
+    authorityRoute: isrctn (tier 2, D3)
+    observed: "ISRCTN83772183 (D3 tool-log, A4)"
+  - scheme: ORG_STUDY_ID
+    kernelCode: "(requested: ORG_STUDY_ID, issuer = sponsor uid)"
+    issuer: the sponsor (scoped)
+    pattern: free text
+    normalizationRule: none (store verbatim with issuer = sponsor organization)
+    checkDigit: none
+    authorityRoute: ctgov-v2-api
+    observed: "14-0475 for NCT02921659 (ctgov orgStudyIdInfo; ICTRP 'Secondary ID(s) 14-0475')"
+    notes: "Never an identity key across sponsors; issuer scoping is mandatory."
+  # ---------------------------------------------------------------- substances
+  - scheme: UNII
+    kernelCode: UNII
+    issuer: FDA (GSRS)
+    pattern: '^[A-Z0-9]{10}$'
+    normalizationRule: unii-upper-v1 (proposed; strip 'UNII-' prefix seen in PubChem synonyms)
+    checkDigit: "yes (last character); algorithm not verified in this stage"
+    authorityRoute: fda-gsrs
+    observed: "8XM2XT8VWI (NR chloride), 0I8H2M0L7N (NR, active moiety), W36ZG6FT64 (sirolimus)"
+    notes: "Form-specific: salt and moiety have different UNIIs, linked by GSRS relationships (ACTIVE MOIETY, PARENT->SALT/SOLVATE)."
+  - scheme: CAS_RN
+    kernelCode: CAS_RN
+    issuer: CAS (American Chemical Society)
+    pattern: '^[0-9]{2,7}-[0-9]{2}-[0-9]$'
+    normalizationRule: casrn-v1 (proposed; strip leading zeros, keep hyphens, verify check digit)
+    checkDigit: "yes (weighted sum mod 10)"
+    authorityRoute: fda-gsrs (codes[]); cas-common-chemistry is key-gated (401)
+    observed: "23111-00-4 (NR chloride; GSRS code + PubChem synonym), 1341-23-7 (NR; PubChem synonym only)"
+    notes: "Licensed registry; store the identifier, never CAS content."
+  - scheme: INCHIKEY
+    kernelCode: INCHIKEY
+    issuer: IUPAC/InChI Trust algorithm (computed, not issued)
+    pattern: '^[A-Z]{14}-[A-Z]{10}-[A-Z]$'
+    normalizationRule: inchikey-upper-v1 (proposed)
+    checkDigit: "embedded flag characters; computed from structure"
+    authorityRoute: pubchem-pug-rest; fda-gsrs structure._inchiKey
+    observed: "JLEBZPBDRKPWTD-TURQNECASA-O (CID 439924), YABIFCKURFRPPO-IVOJBTPCSA-N (CID 90480033)"
+    notes: "Computed identifier: issuer = the computing authority + InChI version. Two forms (cation vs chloride salt) have different keys; the first block (connectivity) also differs here because the counter-ion is part of the structure."
+  - scheme: PUBCHEM_CID
+    kernelCode: PUBCHEM_CID
+    issuer: NCBI PubChem
+    pattern: '^[1-9][0-9]*$'
+    normalizationRule: digits-v1 (proposed)
+    checkDigit: none
+    authorityRoute: pubchem-pug-rest
+    observed: "439924 (NR), 90480033 (NR chloride)"
+  - scheme: CHEBI
+    kernelCode: CHEBI
+    issuer: EMBL-EBI ChEBI
+    pattern: '^CHEBI:[0-9]+$'
+    normalizationRule: chebi-curie-v1 (proposed)
+    checkDigit: none
+    authorityRoute: ebi-ols4-chebi
+    observed: "CHEBI:15927 N-ribosylnicotinamide; CHEBI:229274 Nicotinamide riboside chloride"
+  - scheme: RXCUI
+    kernelCode: RXCUI
+    issuer: NLM RxNorm
+    pattern: '^[0-9]+$'
+    normalizationRule: digits-v1 (proposed)
+    checkDigit: none
+    authorityRoute: nlm-rxnav
+    observed: "35302 (sirolimus)"
+  - scheme: FDA_GRN
+    kernelCode: FDA_GRN   # K register v2, status requested (by D8); D11 asked for it as GRAS_NOTICE (aligned in the check stage)
+    issuer: FDA (GRAS Notice inventory)
+    pattern: '^[0-9]+$'
+    normalizationRule: grn-digits-v1 (proposed; 'GRN 635' → 635)
+    checkDigit: none
+    authorityRoute: fda-gsrs codes[] ('GRAS Notification (GRN No.)')
+    observed: "635 on UNII 8XM2XT8VWI"
+  - scheme: FDA_NDI
+    kernelCode: FDA_NDI   # K register v2, status requested (by D8); D11 asked for it as NDI_NOTIFICATION (aligned in the check stage)
+    issuer: FDA (new dietary ingredient notifications)
+    pattern: '^[0-9]+$'
+    normalizationRule: ndin-digits-v1 (proposed)
+    checkDigit: none
+    authorityRoute: regulations-gov-api (docket FDA-2022-S-0023 documents)
+    observed: "NDIN 1259 (NMN) in fc-regsgov-FDA-2022-S-0023-0069.md and regsgov-api-doc.json title"
+  # ---------------------------------------------------------------- labels, products, devices
+  - scheme: SPL_SET_ID
+    kernelCode: "(requested: SPL_SET_ID)"
+    issuer: FDA SPL (labeler)
+    pattern: UUID
+    normalizationRule: uuid-lower-v1 (proposed)
+    checkDigit: none
+    authorityRoute: dailymed-spl
+    observed: "19880f51-badb-4846-a02a-592a210690ab (10 published versions: 1–7, 9–11; no v8)"
+    notes: "Set id = the label lineage; version number + effectiveTime identify one label version."
+  - scheme: DSLD_LABEL_ID
+    kernelCode: DSLD
+    issuer: NIH ODS DSLD
+    pattern: '^[0-9]+$'
+    normalizationRule: digits-v1 (proposed)
+    checkDigit: none
+    authorityRoute: nih-dsld
+    observed: "323170, 295562, 323171 — same product 'Tru Niagen 300 mg', linked by labelRelationships"
+    notes: "Identifies a captured label image set, not a product; one product has several."
+  - scheme: GTIN
+    kernelCode: GTIN
+    issuer: GS1 (company prefix licensee)
+    pattern: '^[0-9]{14}$ after normalization'
+    normalizationRule: gtin14-v1 (proposed; strip spaces/hyphens, left-pad UPC-A/EAN-13/EAN-8 to 14 digits, verify mod-10 check digit, reject non-numeric)
+    checkDigit: "yes (GS1 mod 10); verified: '8 50015 31111 6' → 00850015311116 valid; '7 38654 00033 5' → 00738654000335 valid"
+    authorityRoute: none open (GS1 registry is member/licensed); values arrive via nih-dsld upcSku, usda-fdc gtinUpc, Shopify barcode, openFDA free text
+    observed: "DSLD upcSku '8 50015 31111 6' on labels 323170 and 295562; openFDA recall text 'UPC: PHF-C023' (not a GTIN)"
+    notes: "Label versions share a GTIN; a reformulation may or may not get a new GTIN — GTIN alone never identifies a formulation version."
+  - scheme: UDI_DI
+    kernelCode: UDI_DI   # K register v2, status requested (by D4); GS1 DIs are also GTIN
+    issuer: FDA-accredited issuing agency (GS1, HIBCC, ICCBBA)
+    pattern: issuer-specific (GS1 DI = GTIN-14)
+    normalizationRule: udidi-v1 (proposed; GS1 DIs share gtin14-v1)
+    checkDigit: issuer-specific
+    authorityRoute: fda-gudid
+    observed: "08717648200274 (gudid-search.json)"
+  - scheme: FDC_ID
+    kernelCode: FDC_ID
+    issuer: USDA FoodData Central
+    pattern: '^[0-9]+$'
+    normalizationRule: digits-v1 (proposed)
+    checkDigit: none
+    authorityRoute: usda-fdc (blocked today without key)
+    observed: "170721 etc. (D12 tool-log, A2)"
+  - scheme: NDC
+    kernelCode: NDC
+    issuer: FDA (labeler/product/package)
+    pattern: '10-digit with hyphen layouts 4-4-2 / 5-3-2 / 5-4-1'
+    normalizationRule: ndc11-v1 (proposed; pad to 5-4-2 = 11 digits)
+    checkDigit: none
+    authorityRoute: dailymed-spl, openfda-drug-label
+    observed: "present in openFDA openfda block (not extracted in this stage)"
+  # ---------------------------------------------------------------- measurement and codes
+  - scheme: LOINC
+    kernelCode: LOINC
+    issuer: Regenstrief Institute
+    pattern: '^[0-9]{1,7}-[0-9]$'
+    normalizationRule: loinc-v1 (proposed; verify mod-10 check digit)
+    checkDigit: "yes"
+    authorityRoute: loinc (account) or NLM Clinical Tables mirror
+    observed: "ferritin codes 14724-9, 110280-5, 20567-4, 48141-6, 14723-1; SPL section codes 34066-1 BOXED WARNING SECTION, 34068-7 DOSAGE & ADMINISTRATION SECTION"
+    notes: "LOINC also codes document sections in SPL — a free locator vocabulary for label sections."
+  - scheme: UCUM
+    kernelCode: "(none: UCUM is a unit vocabulary, Assertion.unitCode, not an Identifier scheme)"
+    issuer: Regenstrief UCUM
+    pattern: UCUM grammar
+    normalizationRule: ucum-case-sensitive-v1 (proposed; case-sensitive code, never the display string)
+    checkDigit: none
+    authorityRoute: ucum
+    observed: "ng/mL (display string in NLM table misspelled 'millliiter')"
+    notes: "Units are a vocabulary on quantities, not Identifier nodes."
+  - scheme: ICD10CM
+    kernelCode: ICD10CM
+    issuer: CMS / CDC (US)
+    pattern: '^[A-Z][0-9][0-9A-Z](\.[0-9A-Z]{1,4})?$'
+    normalizationRule: icd10cm-dot-v1 (proposed; keep dot, uppercase)
+    checkDigit: none
+    authorityRoute: icd10cm-pcs (MCP)
+    observed: "R54, R41.81"
+    notes: "Fiscal-year versioned; validity is per FY (MCP history from FY2020)."
+  - scheme: MESH_UI
+    kernelCode: MESH
+    issuer: NLM MeSH
+    pattern: '^[DCQ][0-9]{6,9}$'
+    normalizationRule: mesh-ui-v1 (proposed)
+    checkDigit: none
+    authorityRoute: ncbi-eutils-pubmed
+    observed: "PublicationType UI D016441 'Retracted Publication'"
+  # ---------------------------------------------------------------- organizations and people
+  - scheme: CIK
+    kernelCode: SEC_CIK
+    issuer: U.S. SEC
+    pattern: '^[0-9]{1,10}$'
+    normalizationRule: cik10-v1 (proposed; left-pad to 10 digits as data.sec.gov does)
+    checkDigit: none
+    authorityRoute: sec-edgar
+    observed: "1386570 → CIK0001386570; formerNames ChromaDex Corp. to 2025-03-10"
+    notes: "Stable across renames; ticker is not an identifier (time-varying), store as a dated property or assertion."
+  - scheme: LEI
+    kernelCode: LEI
+    issuer: GLEIF (via Local Operating Units)
+    pattern: '^[A-Z0-9]{18}[0-9]{2}$'
+    normalizationRule: lei-upper-v1 (proposed; verify ISO 7064 mod 97-10)
+    checkDigit: "yes"
+    authorityRoute: gleif-lei
+    observed: "529900OPI7B8JPXCVS70 — legal name 'Chromadex Corporation', registration status LAPSED, nextRenewalDate 2019-12-18"
+    notes: "Registration status must travel with the identifier assertion (a lapsed LEI is stale reference data)."
+  - scheme: NPI
+    kernelCode: NPI
+    issuer: CMS NPPES
+    pattern: '^[0-9]{10}$'
+    normalizationRule: npi-v1 (proposed; Luhn check with 80840 prefix as the NPI MCP validates)
+    checkDigit: "yes (Luhn)"
+    authorityRoute: nppes-npi (MCP)
+    observed: "name search returned 3 homonym individual records (not stored)"
+    notes: "Self-reported registry; identity by name is forbidden."
+  - scheme: EIN
+    kernelCode: "(requested: EIN)"
+    issuer: U.S. IRS
+    pattern: '^[0-9]{9}$'
+    normalizationRule: digits-v1 (proposed)
+    checkDigit: none
+    authorityRoute: sec-edgar (submissions.ein)
+    observed: "present in EDGAR submissions for CIK 1386570"
+  - scheme: ORCID
+    kernelCode: ORCID
+    issuer: ORCID
+    pattern: '^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$'
+    normalizationRule: orcid-v1 (proposed; strip https://orcid.org/)
+    checkDigit: "yes (ISO 7064 11-2)"
+    authorityRoute: europepmc-rest authorIdList; JATS contrib-id
+    observed: "http://orcid.org/0000-0003-0578-2948 in the JATS front matter of PMC5876407"
+  - scheme: NIH_PROJECT
+    kernelCode: NIH_PROJECT   # K register v2, status requested (by D7; AWARD_NUMBER for other funders); D11 asked for it as NIH_GRANT (aligned in the check stage)
+    issuer: NIH
+    pattern: activity code + IC + serial (e.g. 'UL1 TR001082')
+    normalizationRule: nih-grant-v1 (proposed; strip spaces, keep activity code)
+    checkDigit: none
+    authorityRoute: europepmc-rest grantsList
+    observed: "T32 AG000279, P30 DK048520, UL1 TR001082 (Europe PMC); the paper's acknowledgement names AG000279 and TR001082 only"
+
+bridges:
+  - id: B01
+    from: PMID
+    to: [PMCID, DOI]
+    via: pmc-idconv (authority); europepmc-rest; openalex (aggregator)
+    kind: authority-asserted
+    observed: "29599478 → PMC5876407, 10.1038/s41467-018-03421-7 (pmc-idconv.json); 12003802 → DOI only, no PMCID"
+    failureModes: "No PMCID for non-OA papers; OpenAlex returns PMID as a URL."
+    readiness: 3
+  - id: B02
+    from: DOI
+    to: [PMID]
+    via: ncbi-eutils-pubmed (ELocationID doi), crossref-rest (no PMID), openalex ids
+    kind: authority-asserted (NLM)
+    observed: "ELocationID EIdType=doi in efetch XML"
+    failureModes: "Crossref does not carry PMIDs; DOI case variants."
+    readiness: 3
+  - id: B03
+    from: NCT
+    to: [PMID, DOI]
+    via: "publication full text (JATS ext-link-type pmc:clinical-trial); PubMed DataBank/[si] when deposited; CT.gov referencesModule when the sponsor enters it"
+    kind: "source-asserted in the paper; registry/index links are optional deposits"
+    observed: "NCT02921659: PubMed [si] search → 0 hits; CT.gov referencesModule → no PMID; Crossref → no clinical-trial-number; JATS → 3 tagged mentions; Europe PMC annotations → 3 'Accession Numbers' with subType NCT"
+    failureModes: "The bridge exists only inside the paper's text for this trial. Any registry-first or index-first agent concludes 'no publication'."
+    readiness: 2
+    gap: G4 (JATS ext-link extractor) — action-space
+  - id: B04
+    from: NCT
+    to: [EU_CT, EudraCT, ISRCTN, ORG_STUDY_ID]
+    via: ctgov-v2-api secondaryIdInfos; who-ictrp secondary ids; eu-ctis-public
+    kind: registry-asserted (sponsor-entered)
+    observed: "NCT02921659 secondary id 14-0475 (org study id) only"
+    failureModes: "Sponsor-entered, often missing; ICTRP copy can be years stale (Last refreshed 12 December 2016)."
+    readiness: 2
+  - id: B05
+    from: DOI (preprint)
+    to: DOI (journal article)
+    via: biorxiv-api published_doi; crossref-rest relation is-preprint-of / has-preprint
+    kind: authority-asserted (server), incomplete
+    observed: "10.1101/680462 → 10.1016/j.celrep.2019.07.043; PEARL preprint 'published: NA' though journal version exists (D3 tool-log, A4)"
+    failureModes: "Missing links; never infer by title alone without a hypothesis."
+    readiness: 2
+  - id: B06
+    from: DOI (article)
+    to: DOI (retraction / correction notice)
+    via: crossref-rest updated-by (source retraction-watch or publisher); ncbi-eutils-pubmed CommentsCorrections
+    kind: authority-asserted
+    observed: "10.1152/ajpheart.01012.2001 updated-by retraction 10.1152/ajpheart.zh4-0450-retr.2012 (2012-06-01, record-id 54); PubMed 12003802 RetractionIn 22833916"
+    failureModes: "Discovery tools (Firecrawl research index, PubMed MCP) do not surface it."
+    readiness: 3
+  - id: B07
+    from: UNII
+    to: [CAS_RN, PUBCHEM_CID, FDA_GRN, NCIt, INCHIKEY]
+    via: fda-gsrs codes[] and structure
+    kind: authority-asserted (FDA GSRS, record version 18)
+    observed: "8XM2XT8VWI → CAS 23111-00-4, PubChem 90480033, GRN 635, NCIt C219230"
+    failureModes: "GSRS codes are curated per form; the moiety UNII has its own set."
+    readiness: 3
+  - id: B08
+    from: UNII (salt / form)
+    to: UNII (active moiety)
+    via: fda-gsrs relationships (ACTIVE MOIETY, PARENT->SALT/SOLVATE)
+    kind: authority-asserted
+    observed: "8XM2XT8VWI (NR chloride) → 0I8H2M0L7N (NR)"
+    failureModes: "A study administered NR chloride (JATS Par30: 'nicotinamide riboside chloride (NIAGEN®; 500 mg, twice per day …)') and the DSLD row is the branded ingredient 'Niagen' (row uniiCode null) with nested form 'Nicotinamide Riboside Chloride' (uniiCode 8XM2XT8VWI), 300 mg → the form is known but the mass basis of 300 mg (salt vs moiety) is not stated; this is a quantity-basis risk (CQ-PV-04)."
+    readiness: 3
+  - id: B09
+    from: PUBCHEM_CID
+    to: [UNII, CAS_RN]
+    via: pubchem-pug-rest synonyms (untyped strings) and xrefs RegistryID
+    kind: aggregator (depositor-supplied)
+    observed: "CID 90480033 synonyms include '23111-00-4', '8XM2XT8VWI', 'UNII-8XM2XT8VWI'"
+    failureModes: "Untyped synonym strings; pattern matching required; depositor errors propagate."
+    readiness: 2
+  - id: B10
+    from: name (free text)
+    to: [PUBCHEM_CID, CHEBI, RXCUI]
+    via: pubchem-pug-rest name endpoint; ebi-ols4-chebi; nlm-rxnav; europepmc-annotations
+    kind: hypothesis only (CQ-AX-14)
+    observed: "'nicotinamide riboside' → CID 439924 (cation) while trial material is the chloride; Europe PMC tagged it as ChEBI dihydrozeatin riboside"
+    failureModes: "Form loss and outright mislinks."
+    readiness: 1
+  - id: B11
+    from: RXCUI
+    to: UNII
+    via: nlm-rxnav property UNII_CODE
+    kind: authority-asserted (NLM)
+    observed: "35302 → W36ZG6FT64"
+    readiness: 3
+  - id: B12
+    from: SPL_SET_ID
+    to: [UNII, NDC, RXCUI]
+    via: dailymed-spl XML; openfda-drug-label openfda block
+    kind: authority-asserted (labeler SPL) / harmonized (openFDA)
+    observed: "openFDA sirolimus labels: openfda.unii W36ZG6FT64"
+    readiness: 3
+  - id: B13
+    from: DSLD_LABEL_ID
+    to: [GTIN, UNII, "DSLD_LABEL_ID (other versions)"]
+    via: nih-dsld upcSku, ingredientRows[].uniiCode and ingredientRows[].forms[].uniiCode, labelRelationships
+    kind: authority-asserted (NIH ODS transcription of the label)
+    observed: "323170 and 295562 share upcSku '8 50015 31111 6'; relationships 'Image difference, same product' and 'Package size difference, same product'; NR row-level uniiCode null, nested form uniiCode 8XM2XT8VWI"
+    failureModes: "UNII sits on the nested form, not on the branded ingredient row; GTIN printed with spaces; label versions share GTIN."
+    readiness: 2
+  - id: B14
+    from: GTIN
+    to: [FDC_ID, DSLD_LABEL_ID, "merchant listing"]
+    via: usda-fdc gtinUpc (blocked today), nih-dsld upcSku, Shopify <handle>.js barcode (D6), Open Food Facts by barcode (D6)
+    kind: aggregator joins on a normalized key
+    observed: "no FDC call succeeded today (429)"
+    failureModes: "Requires gtin14-v1 normalization on both sides; GS1 registry itself not open."
+    readiness: 1
+  - id: B15
+    from: GTIN
+    to: UDI_DI
+    via: fda-gudid (GS1-issued DIs are GTINs)
+    kind: identity by issuer rule (same GS1 number)
+    observed: "08717648200274 resolved in GUDID"
+    readiness: 3
+  - id: B16
+    from: product brand string (free text)
+    to: [GTIN, DSLD_LABEL_ID]
+    via: openfda-caers products.name_brand; openfda-food-enforcement product_description
+    kind: hypothesis only
+    observed: "CAERS name_brand 'CHROMADEX TRU NIAGEN', 'TRU NIAGEN' (two spellings for one brand); recall text 'UPC: PHF-C023'"
+    failureModes: "Adverse-event and recall records cannot be joined to a product version by identifier."
+    readiness: 1
+  - id: B17
+    from: LOINC
+    to: UCUM
+    via: LOINC table EXAMPLE_UCUM_UNITS (licensed download); NLM Clinical Tables (partial)
+    kind: authority-asserted (Regenstrief)
+    observed: "not retrieved (fhir.loinc.org requires account)"
+    failureModes: "Lab vendor test codes ↔ LOINC mappings live on vendor test menus (scrape)."
+    readiness: 1
+  - id: B18
+    from: CIK
+    to: LEI
+    via: none authoritative (EDGAR submissions.lei null; GLEIF has no CIK)
+    kind: hypothesis (legal name + jurisdiction + registration number match)
+    observed: "CIK 1386570 'Niagen Bioscience, Inc.' (former 'ChromaDex Corp.') ↔ LEI 529900OPI7B8JPXCVS70 'Chromadex Corporation', US-DE, LAPSED"
+    failureModes: "Renames not propagated to GLEIF; lapsed registrations."
+    readiness: 1
+  - id: B19
+    from: CIK
+    to: ticker
+    via: sec-edgar company_tickers.json
+    kind: authority-asserted, time-varying
+    observed: "1386570 → NAGE"
+    readiness: 3
+  - id: B20
+    from: person name
+    to: [NPI, ORCID]
+    via: nppes-npi search; europepmc authorIdList; JATS contrib-id
+    kind: hypothesis only
+    observed: "3 NPI homonyms for one public figure's name"
+    failureModes: "Wrong-person attribution (credentials, conflicts of interest)."
+    readiness: 1
+  - id: B21
+    from: CT.gov condition string
+    to: [ICD10CM, "MONDO/EFO"]
+    via: icd10cm-pcs; ebi-ols4
+    kind: hypothesis (mapping)
+    observed: "'Aging' has no ICD-10-CM concept; nearest R54 'Age-related physical debility'"
+    readiness: 1
+  - id: B22
+    from: organization (sponsor/collaborator)
+    to: funding / competing-interest disclosure
+    via: ctgov collaborators; JATS <ack>; JATS competing interests; Europe PMC grantsList; Crossref funder
+    kind: source-asserted, inconsistent across sources
+    observed: "NCT02921659 collaborator 'ChromaDex, Inc.'; JATS ack 'Study pills, NR standards for metabolite analyses and partial funding support were provided by ChromaDex, Inc.'; JATS 'The authors declare no competing interests.'; Crossref funder []"
+    failureModes: "An index-only agent reports no industry involvement."
+    readiness: 2
+
+noBridge:
+  - "NCT ↔ PMID from PubMed or the registry for NCT02921659 (only the paper's full text carries it)."
+  - "CIK ↔ LEI (no authority carries both)."
+  - "GTIN ↔ formulation version (GTIN persists across label changes; DSLD 295562 → 323170 share it)."
+  - "CAERS / recall product strings ↔ GTIN or UNII."
+  - "Person name ↔ NPI/ORCID without a second key."
+  - "Label amount ↔ mass basis: DSLD gives the NR form (UNII 8XM2XT8VWI) but not whether 300 mg is salt or moiety basis."
+  - "Registry version history (no public API; see action-space ctgov-record-history)."
+
+kernelRecommendations:
+  - "ACCEPTED (model stage): Identifier.scheme stays a String code validated against packets/K/identifier-schemes.yaml (kernel decision) rather than a GraphQL enum; the register grows without a schema change. Research-stage proposal of a ~30-value enum withdrawn."
+  - "Identifier.normalizationRule values are the rule ids in this table (doi-lowercase-v1, pmid-digits-v1, pmcid-upper-v1, nct-upper-v1, unii-upper-v1, casrn-v1, inchikey-upper-v1, gtin14-v1, lei-upper-v1, npi-v1, cik10-v1, loinc-v1, …); the executor applies them before the (scheme, issuer, value) uniqueness check. The K register's free-text `normalization` column should cite these ids."
+  - "Registration status of the identifier string itself (LEI LAPSED, ICD-10-CM fiscal-year validity, deprecated UNII) uses Identifier.validFrom/validTo (kernel) plus a requested `registrationStatus` (ACTIVE, LAPSED, RETIRED, MERGED, UNKNOWN); the status of the ASSIGNMENT stays on the HAS_IDENTIFIER episode."
+  - "Computed identifiers (InChIKey) carry issuer = algorithm + version (InChI Trust, InChI 1.07)."
+  - "Bridges are never stored as Identifier→Identifier edges; they are HAS_IDENTIFIER assertions from the authority snapshot, or RESOLUTION / EQUIVALENCE Assessments when inferred."
+  - "Requested scheme codes, as of the K register v2 (check stage 2026-10-08). Already in K v2 with status requested (D11 spellings aligned): FDA_NDI (Q-D11-14; was NDI_NOTIFICATION), FDA_GRN (CQ-ID-04; was GRAS_NOTICE), RW_RECORD (was RETRACTION_WATCH_ID), UDI_DI, NIH_PROJECT (was NIH_GRANT). Still missing from K, firm: SPL_SET_ID (Q-D11-11, CQ-PV-05), EIN (Q-D11-15), ORG_STUDY_ID with issuer = sponsor (B04). Optional: NCIT (D1/D2; observed on GSRS 8XM2XT8VWI)."
+
+# >>> GENERATED: kernel-register reconciliation (build-action-space.mjs; do not edit inside the markers)
+reconciliation:
+  generatedBy: schema/program/packets/D11/_notes/action-space/build-action-space.mjs
+  kernelRegister: packets/K/identifier-schemes.yaml v2 (103 codes)
+  legend: "kernel: seed | requested | missing (not in K). usedByNodeTypes: every packet's 06-node-register identifierSchemes. d11BridgeRow: D11 scheme rows whose kernelCode is this code. routes: action-space entries whose identifiersEmitted mention the scheme (heuristic; readiness in brackets)."
+  missingFromKernel: [ "EIN", "FNDDS_FOOD_CODE", "FOODEX2", "FOODON", "LANGUAL", "NCIT", "NDB_NUMBER", "ORG_STUDY_ID", "PHENOL_EXPLORER_FOOD", "SPL_SET_ID", "WWEIA_CATEGORY" ]
+  schemes:
+    - { code: "APPLE_PODCAST", kernel: "requested", usedByNodeTypes: [ "D9.Channel" ], d11BridgeRow: [], routes: [ "itunes-search-api (3)" ], bestRouteReadiness: 3 }
+    - { code: "ASIN", kernel: "seed", usedByNodeTypes: [ "D6.MerchantListing" ], d11BridgeRow: [], routes: [ "firecrawl-cli (2)", "amazon-pages (1)", "camelcamelcamel (1)", "amazon-pa-api (0)", "keepa-api (0)" ], bestRouteReadiness: 2 }
+    - { code: "AWARD_NUMBER", kernel: "requested", usedByNodeTypes: [ "D7.Award" ], d11BridgeRow: [], routes: [ "ctgov-v2-api (3)", "europepmc-fulltext-jats (3)", "europepmc-rest (3)", "funder-award-pages (1)" ], bestRouteReadiness: 3 }
+    - { code: "CAS_RN", kernel: "seed", usedByNodeTypes: [ "D1.ChemicalSubstance" ], d11BridgeRow: [ "CAS_RN" ], routes: [ "fda-gsrs (3)", "pubchem-pug-rest (3)", "wikidata (2)", "cas-common-chemistry (0)" ], bestRouteReadiness: 3 }
+    - { code: "CELEX", kernel: "requested", usedByNodeTypes: [ "D8.RegulatoryRecord" ], d11BridgeRow: [], routes: [ "eurlex (2)" ], bestRouteReadiness: 2 }
+    - { code: "CERT_LISTING", kernel: "requested", usedByNodeTypes: [ "D8.CertificationListing" ], d11BridgeRow: [], routes: [ "ngsp (2)", "certification-databases (1)" ], bestRouteReadiness: 2 }
+    - { code: "CHEBI", kernel: "seed", usedByNodeTypes: [ "D1.ChemicalSubstance", "D1.Constituent" ], d11BridgeRow: [ "CHEBI" ], routes: [ "ebi-ols4-chebi (3)", "fda-gsrs (3)", "reactome-content-service (3)", "europepmc-annotations (2)", "wikidata (2)" ], bestRouteReadiness: 3 }
+    - { code: "CHEMBL", kernel: "requested", usedByNodeTypes: [ "D2.MolecularEntity" ], d11BridgeRow: [], routes: [ "chembl-rest (3)", "open-targets (2)", "wikidata (2)" ], bestRouteReadiness: 3 }
+    - { code: "CHEMSPIDER", kernel: "requested", usedByNodeTypes: [], d11BridgeRow: [], routes: [], bestRouteReadiness: null }
+    - { code: "COMPANY_NUMBER", kernel: "requested", usedByNodeTypes: [ "D7.Organization" ], d11BridgeRow: [], routes: [ "gleif-lei (3)", "companies-house (1)", "opencorporates (0)" ], bestRouteReadiness: 3 }
+    - { code: "COURT_DOCKET", kernel: "requested", usedByNodeTypes: [ "D8.RegulatoryRecord" ], d11BridgeRow: [], routes: [ "cafc-opinions (2)" ], bestRouteReadiness: 2 }
+    - { code: "CPT", kernel: "requested", usedByNodeTypes: [ "D4.LabTest" ], d11BridgeRow: [], routes: [ "lab-test-menus (1)" ], bestRouteReadiness: 1 }
+    - { code: "CROSSREF_FUNDER", kernel: "requested", usedByNodeTypes: [ "D7.Organization" ], d11BridgeRow: [], routes: [ "crossref-rest (3)", "orcid (3)" ], bestRouteReadiness: 3 }
+    - { code: "CULTURE_COLLECTION", kernel: "requested", usedByNodeTypes: [ "D1.Taxon" ], d11BridgeRow: [], routes: [ "atcc-catalog (1)" ], bestRouteReadiness: 1 }
+    - { code: "DOI", kernel: "seed", usedByNodeTypes: [ "K.Source", "D3.Publication", "D5.Protocol", "D7.Award", "D9.MediaWork" ], d11BridgeRow: [ "DOI" ], routes: [ "crossref-rest (3)", "europepmc-fulltext-jats (3)", "europepmc-rest (3)", "ncbi-bioc-pmcoa (3)", "ncbi-eutils-pubmed (3)", "pmc-idconv (3)" ], bestRouteReadiness: 3 }
+    - { code: "DRUGBANK", kernel: "seed", usedByNodeTypes: [ "D1.ChemicalSubstance" ], d11BridgeRow: [], routes: [ "fda-gsrs (3)", "wikidata (2)" ], bestRouteReadiness: 3 }
+    - { code: "DSLD", kernel: "seed", usedByNodeTypes: [ "D6.Package", "D6.LabelVersion" ], d11BridgeRow: [ "DSLD_LABEL_ID" ], routes: [ "nih-dsld (2)" ], bestRouteReadiness: 2 }
+    - { code: "DSLD_INGREDIENT", kernel: "requested", usedByNodeTypes: [ "D1.IngredientMaterial" ], d11BridgeRow: [], routes: [ "nih-dsld (2)" ], bestRouteReadiness: 2 }
+    - { code: "EFO", kernel: "requested", usedByNodeTypes: [ "D2.Condition" ], d11BridgeRow: [], routes: [ "ebi-ols4-chebi (3)", "europepmc-annotations (2)", "open-targets (2)" ], bestRouteReadiness: 3 }
+    - { code: "EIN", kernel: "missing", usedByNodeTypes: [], d11BridgeRow: [ "EIN" ], routes: [ "sec-edgar (2)" ], bestRouteReadiness: 2 }
+    - { code: "ENSEMBL_GENE", kernel: "seed", usedByNodeTypes: [ "D2.MolecularEntity" ], d11BridgeRow: [], routes: [ "open-targets (2)" ], bestRouteReadiness: 2 }
+    - { code: "EUCT", kernel: "seed", usedByNodeTypes: [ "D3.Study" ], d11BridgeRow: [ "EU_CT" ], routes: [ "ctgov-v2-api (3)", "eu-ctis-public (2)", "who-ictrp (1)" ], bestRouteReadiness: 3 }
+    - { code: "EUDRACT", kernel: "seed", usedByNodeTypes: [ "D3.Study" ], d11BridgeRow: [ "EUDRACT" ], routes: [ "ctgov-v2-api (3)" ], bestRouteReadiness: 3 }
+    - { code: "FDA_510K", kernel: "requested", usedByNodeTypes: [ "D4.Device" ], d11BridgeRow: [], routes: [ "openfda-device (2)" ], bestRouteReadiness: 2 }
+    - { code: "FDA_APPLICATION", kernel: "seed", usedByNodeTypes: [ "D8.RegulatoryRecord" ], d11BridgeRow: [], routes: [ "dailymed-spl (3)", "openfda-drugsfda (3)" ], bestRouteReadiness: 3 }
+    - { code: "FDA_DOCKET", kernel: "requested", usedByNodeTypes: [ "D8.RegulatoryRecord" ], d11BridgeRow: [], routes: [ "regulations-gov-api (2)", "fda-web-pages (1)" ], bestRouteReadiness: 2 }
+    - { code: "FDA_FEI", kernel: "requested", usedByNodeTypes: [], d11BridgeRow: [], routes: [ "fda-data-dashboard (0)" ], bestRouteReadiness: 0 }
+    - { code: "FDA_GRN", kernel: "requested", usedByNodeTypes: [ "D8.RegulatoryRecord" ], d11BridgeRow: [ "FDA_GRN" ], routes: [ "fda-gsrs (3)", "fda-gras-inventory (1)" ], bestRouteReadiness: 3 }
+    - { code: "FDA_NDI", kernel: "requested", usedByNodeTypes: [ "D8.RegulatoryRecord" ], d11BridgeRow: [ "FDA_NDI" ], routes: [ "regulations-gov-api (2)" ], bestRouteReadiness: 2 }
+    - { code: "FDA_PRODUCT_CODE", kernel: "requested", usedByNodeTypes: [ "D4.Device" ], d11BridgeRow: [], routes: [ "openfda-device (2)" ], bestRouteReadiness: 2 }
+    - { code: "FDA_RECALL", kernel: "requested", usedByNodeTypes: [ "D8.RegulatoryRecord" ], d11BridgeRow: [], routes: [ "openfda-food-enforcement (2)", "fsis-recall-api (0)" ], bestRouteReadiness: 2 }
+    - { code: "FDA_RECALL_EVENT", kernel: "requested", usedByNodeTypes: [ "D8.RegulatoryRecord" ], d11BridgeRow: [], routes: [ "openfda-device (2)", "openfda-food-enforcement (2)" ], bestRouteReadiness: 2 }
+    - { code: "FDA_WARNING_LETTER", kernel: "requested", usedByNodeTypes: [ "D8.RegulatoryRecord" ], d11BridgeRow: [], routes: [ "fda-web-pages (1)" ], bestRouteReadiness: 1 }
+    - { code: "FDC_ID", kernel: "seed", usedByNodeTypes: [ "D6.Package", "D12.FoodItem" ], d11BridgeRow: [ "FDC_ID" ], routes: [ "usda-fdc (0)" ], bestRouteReadiness: 0 }
+    - { code: "FDC_NUTRIENT", kernel: "requested", usedByNodeTypes: [ "D1.Constituent" ], d11BridgeRow: [], routes: [ "usda-fdc-portal (2)", "usda-fdc (0)" ], bestRouteReadiness: 2 }
+    - { code: "FNDDS_FOOD_CODE", kernel: "missing", usedByNodeTypes: [ "D12.FoodItem" ], d11BridgeRow: [], routes: [ "usda-fdc (0)" ], bestRouteReadiness: 0 }
+    - { code: "FOODEX2", kernel: "missing", usedByNodeTypes: [ "D12.FoodCategory" ], d11BridgeRow: [], routes: [ "efsa-food-composition (?)" ], bestRouteReadiness: null }
+    - { code: "FOODON", kernel: "missing", usedByNodeTypes: [ "D12.FoodItem" ], d11BridgeRow: [], routes: [ "foodon (?)" ], bestRouteReadiness: null }
+    - { code: "GO", kernel: "seed", usedByNodeTypes: [ "D2.Mechanism" ], d11BridgeRow: [], routes: [ "ebi-ols4-chebi (3)", "quickgo (3)", "reactome-content-service (3)", "uniprot-rest (3)", "europepmc-annotations (2)" ], bestRouteReadiness: 3 }
+    - { code: "GTIN", kernel: "seed", usedByNodeTypes: [ "D6.Package" ], d11BridgeRow: [ "GTIN" ], routes: [ "fda-gudid (3)", "shopify-storefront-json (3)", "firecrawl-cli (2)", "nih-dsld (2)", "open-food-facts (2)", "openfda-food-enforcement (2)" ], bestRouteReadiness: 3 }
+    - { code: "HGNC", kernel: "seed", usedByNodeTypes: [ "D2.MolecularEntity" ], d11BridgeRow: [], routes: [ "uniprot-rest (3)" ], bestRouteReadiness: 3 }
+    - { code: "HPO", kernel: "seed", usedByNodeTypes: [ "D2.Condition" ], d11BridgeRow: [], routes: [ "ebi-ols4-chebi (3)" ], bestRouteReadiness: 3 }
+    - { code: "ICD10CM", kernel: "seed", usedByNodeTypes: [ "D2.Condition" ], d11BridgeRow: [ "ICD10CM" ], routes: [ "icd10cm-pcs (3)" ], bestRouteReadiness: 3 }
+    - { code: "INCHIKEY", kernel: "seed", usedByNodeTypes: [ "D1.ChemicalSubstance" ], d11BridgeRow: [ "INCHIKEY" ], routes: [ "fda-gsrs (3)", "pubchem-pug-rest (3)", "wikidata (2)", "repo-mcp-servers (0)" ], bestRouteReadiness: 3 }
+    - { code: "ISBN", kernel: "seed", usedByNodeTypes: [ "D5.Protocol", "D9.MediaWork" ], d11BridgeRow: [], routes: [], bestRouteReadiness: null }
+    - { code: "ISRCTN", kernel: "seed", usedByNodeTypes: [ "D3.Study" ], d11BridgeRow: [ "ISRCTN" ], routes: [ "ctgov-v2-api (3)", "isrctn (2)", "who-ictrp (1)" ], bestRouteReadiness: 3 }
+    - { code: "ISSN", kernel: "seed", usedByNodeTypes: [ "D9.Channel" ], d11BridgeRow: [], routes: [ "crossref-rest (3)", "ncbi-eutils-pubmed (3)" ], bestRouteReadiness: 3 }
+    - { code: "KEGG_PATHWAY", kernel: "requested", usedByNodeTypes: [ "D2.Mechanism" ], d11BridgeRow: [], routes: [ "kegg-rest (1)" ], bestRouteReadiness: 1 }
+    - { code: "LAB_REPORT", kernel: "requested", usedByNodeTypes: [ "D8.QualityResult" ], d11BridgeRow: [], routes: [ "coa-pdf (1)" ], bestRouteReadiness: 1 }
+    - { code: "LAB_TEST_CODE", kernel: "requested", usedByNodeTypes: [ "D4.LabTest" ], d11BridgeRow: [], routes: [ "lab-test-menus (1)" ], bestRouteReadiness: 1 }
+    - { code: "LANGUAL", kernel: "missing", usedByNodeTypes: [ "D12.FoodCategory" ], d11BridgeRow: [], routes: [ "nih-dsld (2)" ], bestRouteReadiness: 2 }
+    - { code: "LEI", kernel: "seed", usedByNodeTypes: [ "D7.Organization" ], d11BridgeRow: [ "LEI" ], routes: [ "gleif-lei (3)" ], bestRouteReadiness: 3 }
+    - { code: "LNHPD_ID", kernel: "requested", usedByNodeTypes: [ "D8.RegulatoryRecord" ], d11BridgeRow: [], routes: [ "health-canada-lnhpd (2)" ], bestRouteReadiness: 2 }
+    - { code: "LNHPD_INGREDIENT", kernel: "requested", usedByNodeTypes: [ "D1.IngredientMaterial" ], d11BridgeRow: [], routes: [], bestRouteReadiness: null }
+    - { code: "LOINC", kernel: "seed", usedByNodeTypes: [ "D2.Outcome", "D4.Metric" ], d11BridgeRow: [ "LOINC" ], routes: [ "dailymed-spl (3)", "loinc (2)", "lab-test-menus (1)" ], bestRouteReadiness: 3 }
+    - { code: "LOT_CODE", kernel: "requested", usedByNodeTypes: [ "D8.Lot" ], d11BridgeRow: [], routes: [ "openfda-food-enforcement (2)", "certification-databases (1)", "coa-pdf (1)", "fda-web-pages (1)" ], bestRouteReadiness: 2 }
+    - { code: "MARKETPLACE_SELLER_ID", kernel: "requested", usedByNodeTypes: [ "D6.Offer" ], d11BridgeRow: [], routes: [ "firecrawl-cli (2)" ], bestRouteReadiness: 2 }
+    - { code: "MESH", kernel: "seed", usedByNodeTypes: [ "D1.ChemicalSubstance", "D1.Constituent", "D2.Mechanism", "D2.Condition", "D5.Target", "D5.Intervention" ], d11BridgeRow: [ "MESH_UI" ], routes: [ "ncbi-eutils-pubmed (3)", "nlm-mesh-rdf (3)", "mcp-pubmed (2)", "wikidata (2)" ], bestRouteReadiness: 3, patternDiff: [ "D11 '^[DCQ][0-9]{6,9}$' vs K '^[DC][0-9]{6,9}$'" ] }
+    - { code: "MONDO", kernel: "seed", usedByNodeTypes: [ "D2.Condition" ], d11BridgeRow: [], routes: [ "ebi-ols4-chebi (3)", "open-targets (2)" ], bestRouteReadiness: 3 }
+    - { code: "NANOPUB", kernel: "requested", usedByNodeTypes: [], d11BridgeRow: [], routes: [ "nanopub-registry (3)" ], bestRouteReadiness: 3 }
+    - { code: "NCBI_GENE", kernel: "seed", usedByNodeTypes: [ "D2.MolecularEntity" ], d11BridgeRow: [], routes: [ "kegg-rest (1)" ], bestRouteReadiness: 1 }
+    - { code: "NCBI_TAXON", kernel: "requested", usedByNodeTypes: [ "D1.Taxon" ], d11BridgeRow: [], routes: [ "ncbi-eutils-pubmed (3)" ], bestRouteReadiness: 3 }
+    - { code: "NCIT", kernel: "missing", usedByNodeTypes: [], d11BridgeRow: [], routes: [ "fda-gsrs (3)" ], bestRouteReadiness: 3 }
+    - { code: "NCT", kernel: "seed", usedByNodeTypes: [ "K.Source", "D3.Study" ], d11BridgeRow: [ "NCT" ], routes: [ "ctgov-v2-api (3)", "europepmc-fulltext-jats (3)", "ncbi-eutils-pubmed (3)", "europepmc-annotations (2)", "isrctn (2)", "mcp-clinicaltrials (2)" ], bestRouteReadiness: 3 }
+    - { code: "NDB_NUMBER", kernel: "missing", usedByNodeTypes: [ "D12.FoodItem" ], d11BridgeRow: [], routes: [ "usda-fdc-portal (2)", "usda-fdc (0)" ], bestRouteReadiness: 2 }
+    - { code: "NDC", kernel: "seed", usedByNodeTypes: [ "D6.ProductVariant" ], d11BridgeRow: [ "NDC" ], routes: [ "dailymed-spl (3)", "nlm-rxnav (3)", "openfda-drug-label (2)" ], bestRouteReadiness: 3 }
+    - { code: "NIHMS", kernel: "requested", usedByNodeTypes: [], d11BridgeRow: [], routes: [ "ncbi-eutils-pubmed (3)" ], bestRouteReadiness: 3 }
+    - { code: "NIH_PROFILE_ID", kernel: "requested", usedByNodeTypes: [ "D7.Person" ], d11BridgeRow: [], routes: [ "nih-reporter (3)" ], bestRouteReadiness: 3 }
+    - { code: "NIH_PROJECT", kernel: "requested", usedByNodeTypes: [ "D7.Award" ], d11BridgeRow: [ "NIH_PROJECT" ], routes: [ "ctgov-v2-api (3)", "europepmc-fulltext-jats (3)", "europepmc-rest (3)", "nih-reporter (3)" ], bestRouteReadiness: 3 }
+    - { code: "NPI", kernel: "seed", usedByNodeTypes: [ "D7.Organization", "D7.Person" ], d11BridgeRow: [ "NPI" ], routes: [ "cms-open-payments (3)", "nppes-npi (3)" ], bestRouteReadiness: 3 }
+    - { code: "NPN", kernel: "seed", usedByNodeTypes: [ "D6.ProductVariant", "D8.RegulatoryRecord" ], d11BridgeRow: [], routes: [ "health-canada-lnhpd (2)" ], bestRouteReadiness: 2 }
+    - { code: "OMIM", kernel: "requested", usedByNodeTypes: [ "D2.Condition" ], d11BridgeRow: [], routes: [], bestRouteReadiness: null }
+    - { code: "OPENALEX", kernel: "seed", usedByNodeTypes: [ "D3.Publication", "D7.Organization", "D7.Person" ], d11BridgeRow: [], routes: [ "openalex (2)" ], bestRouteReadiness: 2 }
+    - { code: "ORCID", kernel: "seed", usedByNodeTypes: [ "D7.Person" ], d11BridgeRow: [ "ORCID" ], routes: [ "crossref-rest (3)", "europepmc-rest (3)", "ncbi-eutils-pubmed (3)", "orcid (3)", "openalex (2)" ], bestRouteReadiness: 3 }
+    - { code: "ORG_STUDY_ID", kernel: "missing", usedByNodeTypes: [], d11BridgeRow: [ "ORG_STUDY_ID" ], routes: [ "ctgov-v2-api (3)" ], bestRouteReadiness: 3 }
+    - { code: "ORPHANET", kernel: "requested", usedByNodeTypes: [ "D2.Condition" ], d11BridgeRow: [], routes: [], bestRouteReadiness: null }
+    - { code: "PATENT_APPLICATION", kernel: "requested", usedByNodeTypes: [ "D8.Patent" ], d11BridgeRow: [], routes: [ "google-patents (1)" ], bestRouteReadiness: 1 }
+    - { code: "PATENT_PUB", kernel: "seed", usedByNodeTypes: [ "D8.Patent" ], d11BridgeRow: [], routes: [ "google-patents (1)", "patentsview (0)" ], bestRouteReadiness: 1 }
+    - { code: "PHENOL_EXPLORER_FOOD", kernel: "missing", usedByNodeTypes: [ "D12.FoodItem" ], d11BridgeRow: [], routes: [], bestRouteReadiness: null }
+    - { code: "PMCID", kernel: "seed", usedByNodeTypes: [ "K.Source", "D3.Publication" ], d11BridgeRow: [ "PMCID" ], routes: [ "europepmc-fulltext-jats (3)", "europepmc-rest (3)", "ncbi-bioc-pmcoa (3)", "ncbi-eutils-pubmed (3)", "pmc-idconv (3)", "firecrawl-research-index (2)" ], bestRouteReadiness: 3 }
+    - { code: "PMID", kernel: "seed", usedByNodeTypes: [ "K.Source", "D3.Publication" ], d11BridgeRow: [ "PMID" ], routes: [ "chembl-rest (3)", "ctgov-v2-api (3)", "europepmc-fulltext-jats (3)", "europepmc-rest (3)", "ncbi-bioc-pmcoa (3)", "ncbi-eutils-pubmed (3)" ], bestRouteReadiness: 3 }
+    - { code: "PODCAST_GUID", kernel: "seed", usedByNodeTypes: [ "K.Source", "D9.MediaWork" ], d11BridgeRow: [], routes: [ "itunes-search-api (3)", "podcast-rss (3)" ], bestRouteReadiness: 3 }
+    - { code: "PODCAST_INDEX_FEED", kernel: "seed", usedByNodeTypes: [ "D9.Channel" ], d11BridgeRow: [], routes: [], bestRouteReadiness: null }
+    - { code: "PTAB_TRIAL", kernel: "requested", usedByNodeTypes: [ "D8.RegulatoryRecord" ], d11BridgeRow: [], routes: [], bestRouteReadiness: null }
+    - { code: "PUBCHEM_CID", kernel: "seed", usedByNodeTypes: [ "D1.ChemicalSubstance" ], d11BridgeRow: [ "PUBCHEM_CID" ], routes: [ "fda-gsrs (3)", "pubchem-pug-rest (3)", "wikidata (2)", "repo-mcp-servers (0)" ], bestRouteReadiness: 3 }
+    - { code: "REACTOME", kernel: "seed", usedByNodeTypes: [ "D2.Mechanism" ], d11BridgeRow: [], routes: [ "reactome-content-service (3)", "open-targets (2)" ], bestRouteReadiness: 3 }
+    - { code: "RETAILER_ITEM_ID", kernel: "requested", usedByNodeTypes: [ "D6.MerchantListing" ], d11BridgeRow: [], routes: [ "iherb-pages (1)", "retailer-partner-apis (0)" ], bestRouteReadiness: 1 }
+    - { code: "ROR", kernel: "seed", usedByNodeTypes: [ "D7.Organization" ], d11BridgeRow: [], routes: [ "orcid (3)", "openalex (2)", "crossref-labs (1)" ], bestRouteReadiness: 3 }
+    - { code: "RW_RECORD", kernel: "requested", usedByNodeTypes: [], d11BridgeRow: [ "RW_RECORD" ], routes: [ "crossref-rest (3)", "crossref-labs (1)" ], bestRouteReadiness: 3 }
+    - { code: "RXCUI", kernel: "seed", usedByNodeTypes: [ "D1.ChemicalSubstance" ], d11BridgeRow: [ "RXCUI" ], routes: [ "fda-gsrs (3)", "nlm-rxnav (3)", "openfda-drug-label (2)" ], bestRouteReadiness: 3 }
+    - { code: "SEC_ACCESSION", kernel: "requested", usedByNodeTypes: [ "K.Source" ], d11BridgeRow: [], routes: [ "sec-edgar (2)" ], bestRouteReadiness: 2 }
+    - { code: "SEC_CIK", kernel: "seed", usedByNodeTypes: [ "D7.Organization", "D7.Person" ], d11BridgeRow: [ "CIK" ], routes: [ "sec-edgar (2)", "repo-mcp-servers (0)" ], bestRouteReadiness: 2, patternDiff: [ "D11 '^[0-9]{1,10}$' vs K '^[0-9]{10}$'" ] }
+    - { code: "SKU", kernel: "seed", usedByNodeTypes: [ "D6.ProductVariant", "D6.Package" ], d11BridgeRow: [], routes: [ "shopify-storefront-json (3)", "nih-dsld (2)" ], bestRouteReadiness: 3 }
+    - { code: "SNOMEDCT", kernel: "seed", usedByNodeTypes: [ "D2.Condition", "D5.Intervention" ], d11BridgeRow: [], routes: [], bestRouteReadiness: null }
+    - { code: "SPL_SET_ID", kernel: "missing", usedByNodeTypes: [], d11BridgeRow: [ "SPL_SET_ID" ], routes: [ "dailymed-spl (3)", "openfda-drug-label (2)" ], bestRouteReadiness: 3 }
+    - { code: "SPOTIFY", kernel: "requested", usedByNodeTypes: [ "D9.Channel", "D9.MediaWork" ], d11BridgeRow: [], routes: [], bestRouteReadiness: null }
+    - { code: "STOREFRONT_PRODUCT_ID", kernel: "requested", usedByNodeTypes: [ "D6.Product", "D6.MerchantListing" ], d11BridgeRow: [], routes: [ "shopify-storefront-json (3)" ], bestRouteReadiness: 3 }
+    - { code: "STOREFRONT_VARIANT_ID", kernel: "requested", usedByNodeTypes: [ "D6.ProductVariant" ], d11BridgeRow: [], routes: [ "shopify-storefront-json (3)" ], bestRouteReadiness: 3 }
+    - { code: "SUBSTACK_POST", kernel: "requested", usedByNodeTypes: [ "D9.MediaWork" ], d11BridgeRow: [], routes: [ "substack-api (2)" ], bestRouteReadiness: 2 }
+    - { code: "SUPPLIER_CODE", kernel: "requested", usedByNodeTypes: [ "D1.IngredientMaterial" ], d11BridgeRow: [], routes: [], bestRouteReadiness: null }
+    - { code: "TICKER", kernel: "requested", usedByNodeTypes: [], d11BridgeRow: [], routes: [ "sec-edgar (2)" ], bestRouteReadiness: 2 }
+    - { code: "UDI_DI", kernel: "requested", usedByNodeTypes: [ "D4.Device" ], d11BridgeRow: [ "UDI_DI" ], routes: [ "fda-gudid (3)", "openfda-device (2)" ], bestRouteReadiness: 3 }
+    - { code: "UEI", kernel: "requested", usedByNodeTypes: [ "D7.Organization" ], d11BridgeRow: [], routes: [ "nih-reporter (3)" ], bestRouteReadiness: 3 }
+    - { code: "UMLS_CUI", kernel: "requested", usedByNodeTypes: [], d11BridgeRow: [], routes: [], bestRouteReadiness: null }
+    - { code: "UNII", kernel: "seed", usedByNodeTypes: [ "D1.ChemicalSubstance" ], d11BridgeRow: [ "UNII" ], routes: [ "dailymed-spl (3)", "fda-gsrs (3)", "ncbi-eutils-pubmed (3)", "nlm-rxnav (3)", "pubchem-pug-rest (3)", "nih-dsld (2)" ], bestRouteReadiness: 3 }
+    - { code: "UNIPROT", kernel: "seed", usedByNodeTypes: [ "D2.MolecularEntity" ], d11BridgeRow: [], routes: [ "reactome-content-service (3)", "uniprot-rest (3)", "europepmc-annotations (2)" ], bestRouteReadiness: 3 }
+    - { code: "WEB_DOMAIN", kernel: "requested", usedByNodeTypes: [ "D7.Organization", "D7.Brand" ], d11BridgeRow: [], routes: [], bestRouteReadiness: null }
+    - { code: "WIKIDATA", kernel: "seed", usedByNodeTypes: [ "K.Source", "D1.ChemicalSubstance", "D1.Taxon", "D2.Mechanism", "D2.MolecularEntity", "D2.Condition", "D2.Outcome", "D5.Target", "D5.Intervention", "D6.Product", "D7.Organization", "D7.Person", "D7.Brand", "D9.Channel", "D9.MediaWork", "D12.FoodItem", "D12.DietaryPattern" ], d11BridgeRow: [], routes: [ "bioregistry (3)", "wikidata (2)" ], bestRouteReadiness: 3 }
+    - { code: "WIKIPATHWAYS", kernel: "requested", usedByNodeTypes: [ "D2.Mechanism" ], d11BridgeRow: [], routes: [], bestRouteReadiness: null }
+    - { code: "WWEIA_CATEGORY", kernel: "missing", usedByNodeTypes: [ "D12.FoodCategory" ], d11BridgeRow: [], routes: [], bestRouteReadiness: null }
+    - { code: "X_ACCOUNT", kernel: "requested", usedByNodeTypes: [ "D9.Channel" ], d11BridgeRow: [], routes: [], bestRouteReadiness: null }
+    - { code: "X_POST", kernel: "requested", usedByNodeTypes: [ "D9.MediaWork" ], d11BridgeRow: [], routes: [], bestRouteReadiness: null }
+    - { code: "YOUTUBE_CHANNEL", kernel: "requested", usedByNodeTypes: [ "D9.Channel" ], d11BridgeRow: [], routes: [], bestRouteReadiness: null }
+    - { code: "YOUTUBE_VIDEO", kernel: "seed", usedByNodeTypes: [ "K.Source", "D9.MediaWork" ], d11BridgeRow: [], routes: [ "youtube-pages (1)" ], bestRouteReadiness: 1 }
+# <<< GENERATED: kernel-register reconciliation

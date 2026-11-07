@@ -1,0 +1,323 @@
+# assertions.yaml — fixture niagen-ownership-brand-history (D7, fixtures stage, A6, 2026-10-08)
+#
+# Investor lens: an ownership chain through holding companies to one natural person ("may be deemed"), directors and a
+# nominating holder, a former 5 % holder whose control parent comes from GLEIF, brand-holder history across an acquired
+# and dissolved entity, and the registrant's name history. Kernel shape as in the sinclair fixture; locators in
+# ./locators.yaml (SEC HTML offsets index the h2t.py text projection named there). producedBy ids are FIXTURE-SCOPED.
+# Numbers are copied as printed; no percentage is computed (a computed share would be a CALCULATED Assertion).
+# Privacy: ages in director bios and the addresses in ownership footnote (5) are not stored.
+#
+# Close-out FU-03 (S fixture editor, 2026-10-09): R-30 the printed role title / stake class moves from the HOLDS_ROLE /
+# HOLDS_STAKE edge properties to the authorizing Assertion qualifiers roleText: / stakeClass: (value unchanged, first qualifier).
+fixture: niagen-ownership-brand-history
+producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-niagen-ownership-brand-history" }
+
+entities:
+  - { uid: "hu:org:niagen-bioscience-inc", type: Organization, name: "Niagen Bioscience, Inc.", entityKind: LEGAL_ENTITY, organizationKind: SUPPLEMENT_OR_CONSUMER_HEALTH, legalName: "Niagen Bioscience, Inc.", jurisdiction: "US-DE", identifiers: [{ scheme: SEC_CIK, issuer: "US SEC", value: "0001386570" }], note: "the registrant; called 'ChromaDex Corporation' in the 10-K's 2017 history (former name ChromaDex Corp. per EDGAR, n-17); stateOfIncorporation DE from the EDGAR submissions record" }
+  - { uid: "hu:person:solina-chau", type: Person, name: "Chau Hoi Shuen Solina Holly", publicActorBasis: [FOUNDER_OR_INVESTOR], privacyClass: PUBLIC, note: "named in the proxy as a >5 % beneficial owner; defined term 'Solina Chau'; no address stored" }
+  - { uid: "hu:org:champion-river-ventures-limited", type: Organization, name: "Champion River Ventures Limited", entityKind: LEGAL_ENTITY, organizationKind: INVESTOR_OR_FUND }
+  - { uid: "hu:org:brilliant-dynasty-limited", type: Organization, name: "Brilliant Dynasty Limited", entityKind: LEGAL_ENTITY, organizationKind: INVESTOR_OR_FUND }
+  - { uid: "hu:org:elgar-international-limited", type: Organization, name: "Elgar International Limited", entityKind: LEGAL_ENTITY, organizationKind: INVESTOR_OR_FUND, note: "alias as printed in the defined term: 'Eldgar International' (a spelling variant in the same footnote, not a second entity)" }
+  - { uid: "hu:person:steven-d-rubin", type: Person, name: "Steven D. Rubin", publicActorBasis: [OFFICER_OR_DIRECTOR], privacyClass: PUBLIC }
+  - { uid: "hu:person:gary-ng", type: Person, name: "Gary Ng", publicActorBasis: [OFFICER_OR_DIRECTOR], privacyClass: PUBLIC }
+  - { uid: "hu:org:societe-des-produits-nestle-sa", type: Organization, name: "Société des Produits Nestlé S.A.", entityKind: LEGAL_ENTITY, organizationKind: FOOD_OR_BEVERAGE, jurisdiction: "CH", identifiers: [{ scheme: LEI, issuer: GLEIF, value: "549300CJIDHZBCKJ7T95" }], note: "the proxy prints 'Société des Produits Nestlé SA ... (NHSc)'; LEI attached from GLEIF (legal name 'SOCIÉTÉ DES PRODUITS NESTLÉ S.A.'); proxy name -> LEI record is a RESOLUTION by name + jurisdiction (Switzerland) recorded as as-res-nhsc" }
+  - { uid: "hu:org:nestle-sa", type: Organization, name: "Nestlé S.A.", entityKind: LEGAL_ENTITY, organizationKind: FOOD_OR_BEVERAGE, jurisdiction: "CH", identifiers: [{ scheme: LEI, issuer: GLEIF, value: "KY37LUS27QQX7BB93L28" }] }
+  - { uid: "hu:org:healthspan-research-llc", type: Organization, name: "Healthspan Research LLC", entityKind: LEGAL_ENTITY, organizationKind: SUPPLEMENT_OR_CONSUMER_HEALTH, status: DISSOLVED }
+  - { uid: "hu:org:chromadex-inc", type: Organization, name: "ChromaDex, Inc.", entityKind: LEGAL_ENTITY, organizationKind: SUPPLEMENT_OR_CONSUMER_HEALTH, note: "'a wholly owned subsidiary of ChromaDex Corporation' (10-K)" }
+  - { uid: "hu:org:us-sec", type: Organization, name: "U.S. Securities and Exchange Commission", entityKind: PUBLIC_BODY, organizationKind: GOVERNMENT_OR_REGULATOR, jurisdiction: "US", note: "asserter of the EDGAR company record (n-17, n-18)" }
+  - { uid: "hu:org:w-r-grace", type: Organization, name: "W.R. Grace & Co.-Conn.", entityKind: LEGAL_ENTITY, organizationKind: OTHER, note: "named in the 10-K risk factors as 'our single source for the supply of food-grade NRC'; same uid as D6 fixture filing-channels-niagen-10k (D7 owns Organization identity)" }
+  - { uid: "hu:material:niagen-nicotinamide-riboside-chloride", type: IngredientMaterial, module: D1, seam: true, name: "food-grade NRC (nicotinamide riboside chloride)", note: "D1-owned material; uid as used by the D6 fixture; object of SUPPLIES_MATERIAL" }
+  - { uid: "hu:brand:tru-niagen", type: Brand, name: "Tru Niagen", brandKind: CONSUMER_PRODUCT, note: "printed 'Tru Niagen®'; the trademark registration is a D8 record" }
+
+assertions:
+  # ---- ownership chain (proxy table + footnote 6, which relies on a Schedule 13D/A filed 2024-08-20)
+  - id: n-01
+    predicate: HOLDS_STAKE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:niagen-bioscience-inc", type: Organization, note: "registrant's proxy statement" }
+    subject: { uid: "hu:person:solina-chau", type: Person }
+    object: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    edge: { type: HOLDS_STAKE, properties: { stakeKind: EQUITY, stakePercent: 24.23, stakeBand: AT_LEAST_5, ownershipBasis: MAY_BE_DEEMED, votingPower: SOLE, dispositivePower: SOLE } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2026-04-27T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["stakeClass:'19,294,356 shares of common stock (table row)'", "table as of April 27, 2026; footnote (6) bases the row on a Schedule 13D/A filed August 20, 2024", "'may be deemed to beneficially own' by virtue of being sole shareholder of the holding companies (n-05)"]
+    evidence: [{ locator: loc-px-chau-row, role: SUPPORTS, origin: DECLARED }, { locator: loc-px-fn6-chau, role: SUPPORTS, origin: DECLARED }, { locator: loc-px-table-asof, role: QUALIFIES, origin: DECLARED }, { locator: loc-px-fn6-basis, role: QUALIFIES, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-niagen-ownership-brand-history" }
+  - id: n-02
+    predicate: HOLDS_STAKE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    subject: { uid: "hu:org:champion-river-ventures-limited", type: Organization }
+    object: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    edge: { type: HOLDS_STAKE, properties: { stakeKind: EQUITY, ownershipBasis: BENEFICIAL, votingPower: SOLE, dispositivePower: SOLE } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2024-08-20T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["stakeClass:'7,940,937 shares'", "validObservedAt = filing date of the Schedule 13D/A the footnote relies on; no per-vehicle percentage printed (stakePercent null)"]
+    evidence: [{ locator: loc-px-fn6-champion, role: SUPPORTS, origin: DECLARED }, { locator: loc-px-fn6-basis, role: QUALIFIES, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-niagen-ownership-brand-history" }
+  - id: n-03
+    predicate: HOLDS_STAKE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    subject: { uid: "hu:org:brilliant-dynasty-limited", type: Organization }
+    object: { uid: "hu:org:champion-river-ventures-limited", type: Organization }
+    edge: { type: HOLDS_STAKE, properties: { stakeKind: EQUITY, ownershipBasis: OF_RECORD } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2024-08-20T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["stakeClass:'sole shareholder'", "'sole shareholder' printed as words; 100 % is not written as stakePercent (no number printed)", "also sole shareholder of Winsave and Radiant (not modelled here)"]
+    evidence: [{ locator: loc-px-fn6-brilliant, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-niagen-ownership-brand-history" }
+  - id: n-04
+    predicate: HOLDS_STAKE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    subject: { uid: "hu:org:brilliant-dynasty-limited", type: Organization }
+    object: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    edge: { type: HOLDS_STAKE, properties: { stakeKind: EQUITY, ownershipBasis: MAY_BE_DEEMED, votingPower: SOLE, dispositivePower: SOLE } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2024-08-20T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["stakeClass:'11,408,715 shares (the Brilliant Dynasty Shares)'"]
+    evidence: [{ locator: loc-px-fn6-brilliant-total, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-niagen-ownership-brand-history" }
+  - id: n-05
+    predicate: HOLDS_STAKE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    subject: { uid: "hu:org:elgar-international-limited", type: Organization }
+    object: { uid: "hu:org:brilliant-dynasty-limited", type: Organization }
+    edge: { type: HOLDS_STAKE, properties: { stakeKind: EQUITY, ownershipBasis: OF_RECORD } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2024-08-20T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["stakeClass:'sole shareholder'"]
+    evidence: [{ locator: loc-px-fn6-elgar, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-niagen-ownership-brand-history" }
+  - id: n-06
+    predicate: HOLDS_STAKE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    subject: { uid: "hu:person:solina-chau", type: Person }
+    object: { uid: "hu:org:elgar-international-limited", type: Organization }
+    edge: { type: HOLDS_STAKE, properties: { stakeKind: EQUITY, ownershipBasis: OF_RECORD } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2024-08-20T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["stakeClass:'sole shareholder'", "also sole shareholder of Pioneer Step, Dvorak International and Skyinvest (same span; not modelled here)"]
+    evidence: [{ locator: loc-px-fn6-chau, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-niagen-ownership-brand-history" }
+
+  # ---- board: tenure and the nominating holder
+  - id: n-07
+    predicate: HOLDS_ROLE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    subject: { uid: "hu:person:steven-d-rubin", type: Person }
+    object: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    edge: { type: HOLDS_ROLE, properties: { roleKind: DIRECTOR } }
+    validTime: { validFrom: "2017-03-01T00:00:00Z", validFromPrecision: MONTH, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2026-04-29T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["roleText:'director'"]
+    evidence: [{ locator: loc-px-rubin, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-niagen-ownership-brand-history" }
+  - id: n-08
+    predicate: HOLDS_ROLE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    subject: { uid: "hu:person:gary-ng", type: Person }
+    object: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    edge: { type: HOLDS_ROLE, properties: { roleKind: DIRECTOR } }
+    validTime: { validFrom: "2021-12-01T00:00:00Z", validFromPrecision: MONTH, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2026-04-29T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["roleText:'director'"]
+    evidence: [{ locator: loc-px-ng-since, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-niagen-ownership-brand-history" }
+  - id: n-09
+    predicate: NOMINATES_DIRECTOR
+    predicateClass: predicateOnly   # 05 predicateOnly (promote when Q-D7-02 becomes value 1)
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    subject: { uid: "hu:org:champion-river-ventures-limited", type: Organization }
+    object: { uid: "hu:person:gary-ng", type: Person }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["right granted under 'the April 2017 Purchase Agreement'"]
+    evidence: [{ locator: loc-px-ng-nominated, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-niagen-ownership-brand-history" }
+
+  # ---- former 5 % holder (equity) and its consolidating parent (control from GLEIF): equity ≠ control
+  - id: n-10
+    predicate: HOLDS_STAKE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    subject: { uid: "hu:org:societe-des-produits-nestle-sa", type: Organization }
+    object: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    edge: { type: HOLDS_STAKE, properties: { stakeKind: EQUITY, stakeBand: AT_LEAST_5, ownershipBasis: UNSTATED } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN, validObservedAt: "2022-10-10T00:00:00Z", validObservedAtPrecision: DAY }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["met the 5 % threshold 'at inception of the Securities Purchase Agreement entered into on October 10, 2022': an observation at that date (validObservedAt), not a stated start of the holding (adversarial-review correction; was validFrom 2022-10-10 STATED_BY_SOURCE)", "the same sentence says the ownership 'has since declined and no longer meets that threshold': the episode ended before 2026-04-29 on an unstated date (validTo null, basis UNKNOWN; see n-11)"]
+    evidence: [{ locator: loc-px-nhsc-threshold, role: SUPPORTS, origin: DECLARED }, { locator: loc-px-nhsc-defined, role: CONTEXT, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-niagen-ownership-brand-history" }
+  - id: n-11
+    predicate: HOLDS_STAKE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    subject: { uid: "hu:org:societe-des-produits-nestle-sa", type: Organization }
+    object: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    edge: { type: HOLDS_STAKE, properties: { stakeKind: EQUITY, stakeBand: BELOW_DISCLOSURE_THRESHOLD, ownershipBasis: UNSTATED } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2026-04-29T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["'no longer meets that threshold' as of the proxy date; footnote (5) still lists an address for the company among 'the beneficial owners listed' although the table shows no row for it (internal inconsistency kept, not resolved)"]
+    evidence: [{ locator: loc-px-nhsc-threshold, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-niagen-ownership-brand-history" }
+  - id: n-12
+    predicate: PARENT_OF
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:societe-des-produits-nestle-sa", type: Organization, note: "GLEIF level-2 data is reported by the child entity through its LOU (managingLou 213800WAVVOPS85N2205) and published by GLEIF" }
+    subject: { uid: "hu:org:nestle-sa", type: Organization }
+    object: { uid: "hu:org:societe-des-produits-nestle-sa", type: Organization }
+    edge: { type: PARENT_OF, properties: { controlKind: DIRECT_CONSOLIDATION } }
+    validTime: { validFrom: "2020-12-18T00:00:00Z", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2026-10-08T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["GLEIF relationship type IS_DIRECTLY_CONSOLIDATED_BY (child -> parent), stored parent -> child", "RELATIONSHIP_PERIOD start 2020-12-18; status ACTIVE", "corroborationLevel FULLY_CORROBORATED (ACCOUNTS_FILING)", "validObservedAt = GLEIF golden-copy publish date 2026-10-08"]
+    evidence: [{ locator: loc-gleif-type, role: SUPPORTS, origin: DECLARED }, { locator: loc-gleif-nodes, role: SUPPORTS, origin: DECLARED }, { locator: loc-gleif-period, role: SUPPORTS, origin: DECLARED }, { locator: loc-gleif-corroboration, role: QUALIFIES, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-niagen-ownership-brand-history" }
+
+  # ---- acquired and dissolved brand entity; brand holder history
+  - id: n-13
+    predicate: PARENT_OF
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:niagen-bioscience-inc", type: Organization, note: "10-K FY2025" }
+    subject: { uid: "hu:org:niagen-bioscience-inc", type: Organization, printedAs: "ChromaDex Corporation" }
+    object: { uid: "hu:org:healthspan-research-llc", type: Organization }
+    edge: { type: PARENT_OF, properties: { controlKind: OTHER } }
+    validTime: { validFrom: "2017-03-12T00:00:00Z", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: "2021-01-15T00:00:00Z", validToPrecision: DAY, validToBasis: INFERRED }
+    derivationRule: "control ends at the child's stated dissolution date (On January 15, 2021, Healthspan Research LLC was dissolved.)"
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["stated as 'acquired'; the ownership share is not stated, so controlKind OTHER rather than WHOLLY_OWNED"]
+    evidence: [{ locator: loc-10k-acquired, role: SUPPORTS, origin: DECLARED }, { locator: loc-10k-dissolved, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-niagen-ownership-brand-history" }
+  - id: n-14
+    predicate: PARENT_OF
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    subject: { uid: "hu:org:niagen-bioscience-inc", type: Organization, printedAs: "ChromaDex Corporation" }
+    object: { uid: "hu:org:chromadex-inc", type: Organization }
+    edge: { type: PARENT_OF, properties: { controlKind: WHOLLY_OWNED } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["stated in the past-tense dissolution sentence (before 2021-01-15); current status not stated in the span"]
+    evidence: [{ locator: loc-10k-contributed, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-niagen-ownership-brand-history" }
+  - id: n-15
+    predicate: OWNS_BRAND
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    subject: { uid: "hu:org:healthspan-research-llc", type: Organization }
+    object: { uid: "hu:brand:tru-niagen", type: Brand }
+    edge: { type: OWNS_BRAND, properties: {} }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: "2021-01-15T00:00:00Z", validToPrecision: DAY, validToBasis: INFERRED }
+    derivationRule: "a dissolved entity holds no brand after its dissolution date"
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["the 10-K says 'a consumer product company offering Tru Niagen® branded products' — 'offering' is read as brand holder; a weaker reading (seller only) is possible and the Assertion keeps the printed wording", "observed at the acquisition date 2017-03-12"]
+    evidence: [{ locator: loc-10k-acquired, role: SUPPORTS, origin: DECLARED }, { locator: loc-10k-dissolved, role: QUALIFIES, origin: DECLARED }, { locator: loc-10k-contributed, role: CONTEXT, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-niagen-ownership-brand-history" }
+  - id: n-16
+    predicate: OWNS_BRAND
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    subject: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    object: { uid: "hu:brand:tru-niagen", type: Brand }
+    edge: { type: OWNS_BRAND, properties: {} }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["'our Tru Niagen® product' in the 10-K for the fiscal year ended 2025-12-31 (filed 2026-03-04); 'our' = the registrant and its subsidiaries, which subsidiary holds the mark is not stated"]
+    evidence: [{ locator: loc-10k-our-tru-niagen, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-niagen-ownership-brand-history" }
+
+  # ---- identity history (EDGAR submissions JSON)
+  - id: n-17
+    predicate: FORMER_NAME
+    predicateClass: predicateOnly
+    assertionKind: FIELD
+    asserter: { uid: "hu:org:us-sec", type: Organization, note: "EDGAR company record (registry); entity 'U.S. Securities and Exchange Commission', PUBLIC_BODY" }
+    subject: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    object: { literal: { valueString: "ChromaDex Corp." } }
+    validTime: { validFrom: "2008-06-25T00:00:00Z", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: "2025-03-10T00:00:00Z", validToPrecision: DAY, validToBasis: STATED_BY_SOURCE }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["the 10-K's own history text says 'ChromaDex Corporation' for the same registrant (printed form differs from the EDGAR conformed name)"]
+    evidence: [{ locator: loc-sub-former-chromadex, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-niagen-ownership-brand-history" }
+  - id: n-18
+    predicate: LEGAL_NAME
+    predicateClass: predicateOnly
+    assertionKind: FIELD
+    asserter: { uid: "hu:org:us-sec", type: Organization }
+    subject: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    object: { literal: { valueString: "Niagen Bioscience, Inc." } }
+    validTime: { validFrom: "2025-03-10T00:00:00Z", validFromPrecision: DAY, validFromBasis: INFERRED, validTo: null, validToBasis: OBSERVATION_ONLY }
+    derivationRule: "current conformed name starts where the latest former name ends (formerNames[0].to)"
+    polarity: POSITIVE
+    speechAct: STATES
+    evidence: [{ locator: loc-sub-name, role: SUPPORTS, origin: DECLARED }, { locator: loc-sub-former-chromadex, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-niagen-ownership-brand-history" }
+
+  # ---- Q-D7-21: supplier concentration and unnamed contract manufacturers (predicate-only literals; supplier edges are D1/D8)
+  - id: n-19
+    predicate: SUPPLIES_MATERIAL
+    predicateClass: predicateOnly   # 05 predicateOnly (D7-published manufacturer/supplier set; adversarial-review stage) — was SOLE_SOURCE_SUPPLIER_DEPENDENCE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    subject: { uid: "hu:org:w-r-grace", type: Organization }
+    object: { uid: "hu:material:niagen-nicotinamide-riboside-chloride", type: IngredientMaterial, module: D1 }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2026-03-04T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["exclusivity=SOLE ('our single source for the supply of food-grade NRC')", "buyer=hu:org:niagen-bioscience-inc", "the Item 1 sentence 'We rely on a single manufacturer for the supply of food-grade NRC.' states the same dependence without the name (CONTEXT)", "validObservedAt = 10-K filing date (FY2025 report)"]
+    evidence: [{ locator: loc-10k-grace-single-source, role: SUPPORTS, origin: DECLARED }, { locator: loc-10k-single-manufacturer, role: CONTEXT, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-niagen-ownership-brand-history" }
+  - id: n-20
+    predicate: MANUFACTURER_UNNAMED
+    predicateClass: predicateOnly   # 05 predicateOnly (D7-published set) — was CONTRACT_MANUFACTURING_UNNAMED
+    assertionKind: FIELD
+    asserter: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    subject: { uid: "hu:org:niagen-bioscience-inc", type: Organization }
+    object: { literal: { valueString: "third-party, FDA-registered contract manufacturers located in the United States (unnamed)" } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["manufacturingKind=CONTRACT (finished consumer products); an unnamed party is never a node"]
+    evidence: [{ locator: loc-10k-cmos, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-niagen-ownership-brand-history" }
+
+assessments:
+  - id: as-res-nhsc
+    assessmentKind: RESOLUTION
+    assessmentSubkind: "D7.organization-resolution"
+    status: PROPOSED
+    methodVersion: "fixture-expected/1"
+    about: [{ uid: "hu:org:societe-des-produits-nestle-sa", type: Organization }]
+    hypothesis: "The proxy's 'Société des Produits Nestlé SA, a société anonyme organized under the laws of Switzerland (NHSc)' is the GLEIF legal entity 549300CJIDHZBCKJ7T95 'SOCIÉTÉ DES PRODUITS NESTLÉ S.A.' (jurisdiction CH)."
+    basis: ["legal name equal modulo 'SA'/'S.A.' and case", "jurisdiction Switzerland in both"]
+    score: null
+    evidence: [{ locator: loc-px-nhsc-defined, role: SUPPORTS }, { locator: loc-gleif-nodes, role: SUPPORTS }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-niagen-ownership-brand-history" }
+
+expectedOwnershipChain:   # Q-D7-01 answer shape (as of the proxy table date 2026-04-27, current belief)
+  - "hu:person:solina-chau -HOLDS_STAKE{OF_RECORD, 'sole shareholder'} (n-06)-> Elgar International Limited -HOLDS_STAKE{'sole shareholder'} (n-05)-> Brilliant Dynasty Limited -HOLDS_STAKE{'sole shareholder'} (n-03)-> Champion River Ventures Limited -HOLDS_STAKE{BENEFICIAL, 7,940,937 shares} (n-02)-> Niagen Bioscience, Inc."
+  - "summary row: Chau Hoi Shuen Solina Holly 24.23 % MAY_BE_DEEMED, SOLE/SOLE (n-01); Brilliant Dynasty MAY_BE_DEEMED 11,408,715 shares (n-04)"
+  - "Société des Produits Nestlé S.A.: AT_LEAST_5 from 2022-10-10 (n-10), BELOW_DISCLOSURE_THRESHOLD as of 2026-04-29 (n-11); its parent Nestlé S.A. by DIRECT_CONSOLIDATION since 2020-12-18 (n-12) — equity in Niagen does not make Nestlé S.A. a controller of Niagen"

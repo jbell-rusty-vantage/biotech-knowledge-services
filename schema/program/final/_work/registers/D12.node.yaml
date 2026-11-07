@@ -1,0 +1,100 @@
+version: 1
+module: D12
+# Source: packets/D12/06-node-register.yaml (sha256 034af8df…), edited by the S module editor 2026-10-08 per
+# final/decision-report.md and final/_work/rulings.yaml (global + modules.D12). Every entry keeps the 01-PACKET-CONTRACT
+# fields and adds `module: D12`. Synthesis edits:
+#   R-03  `mutations` read as { graphql: none, executor: ... } (the packet's create/update/delete flags are the executor's).
+#   R-42  the seven requested D12 schemes (NDB_NUMBER, FNDDS_FOOD_CODE, FOODON, PHENOL_EXPLORER_FOOD, WWEIA_CATEGORY,
+#         FOODEX2, LANGUAL) are added by K to final/vocabularies/identifier-schemes.yaml; "(requested)" markers dropped;
+#         one (scheme, issuer, normalized value) identifies at most one Subjectable.
+#   R-63  DietaryPattern is the only node for any eating pattern (incl. time-restricted eating, fasting-mimicking diets);
+#         admissible D5 STEP_USES target; OQ-D12-03 closed.
+#   R-46  DietaryPattern.definedBySourceUid is a frozen identity key; the defined-by trace is the attach Assertion's HAS_EVIDENCE.
+#   R-62  anything sold (PREPARED_FOOD, CONVENTIONAL_FOOD, BEVERAGE, FDC Branded Foods) is a D6 Product (deferred row).
+#   R-04  fulltext / vector indexes below are deployment DDL (migration notes and handoff), never SDL directives.
+# Node types unchanged (3).
+# Model stage (A2, 2026-10-08). Every node implements Entity & Subjectable (kernel pattern, packets/K/09-reasoning.md);
+# identifiers attach through the kernel (Identifier.identifies / HAS_IDENTIFIER). Scheme codes from
+# packets/K/identifier-schemes.yaml; codes marked (requested) are asked for in 11-open-questions.md OQ-D12-08.
+# Mutations: the executor is the only writer (ADR 0003); GraphQL exposes none (@mutation(operations: [])).
+nodes:
+  - name: FoodItem
+    module: D12
+    uidToken: food
+    identityKeys: [definingSystem, sourceRecordId]
+    identityNote: "(definingSystem, sourceRecordId) whenever the system issues a record id; only CURATED / OTHER records without one use (definingSystem, normalized descriptionVerbatim: NFC, case-folded, whitespace-collapsed) (adversarial review 2026-10-08: FDC descriptions change case and suffix across releases)"
+    identifierSchemes: [FDC_ID, NDB_NUMBER, FNDDS_FOOD_CODE, FOODON, PHENOL_EXPLORER_FOOD, WIKIDATA]
+    whyNode: >-
+      Composition (Q-D12-01, 21, 24), preparation (Q-D12-02, 03), product-to-reference mapping (Q-D12-04, 05, 30),
+      entity linking (Q-D12-34) and food claims (Q-D12-09) all join or traverse through one reference-food record
+      at a named preparation; it is the subject of FOOD_CONTAINS, IN_FOOD_CATEGORY, the predicate-only VARIANT_OF and the object of
+      HAS_REFERENCE_FOOD and PATTERN_COMPONENT, and the subject/object of food assertions (target effects,
+      interactions with drugs via D5, preparation effects).
+    filterProperties: [definingSystem, sourceRecordId, descriptionVerbatim, preparationMethod, variantKind, isHistoricalReference, sourcePublishedAt, brandNameVerbatim, name, synonyms]
+    otherProperties: 2
+    archetype: Entity & Subjectable (reference concept)
+    mutations: { graphql: none, executor: "create; update; never delete" }
+    indexes:
+      - "uniqueness: (FoodItem.uid); composite range (definingSystem, sourceRecordId)"
+      - "fulltext food_item_search ON [name, descriptionVerbatim, synonyms, brandNameVerbatim] (Q-D12-34)"
+      - "vector food_item_embedding ON FoodItem.descriptionEmbedding (executor-written, not in GraphQL) — optional, Q-D12-34 fallback"
+  - name: FoodCategory
+    module: D12
+    uidToken: food-category
+    identityKeys: [system, systemVersion, code]
+    identifierSchemes: [WWEIA_CATEGORY, FOODEX2, LANGUAL]
+    whyNode: >-
+      Group-level harm and benefit is stated about categories, not foods (NOVA 4 and cardiometabolic outcomes,
+      Q-D12-26; IARC processed meat Group 1, Q-D12-15), so the category must be an Assertion subject (Subjectable)
+      and a traversal hop from a food or menu item to that evidence (Q-D12-08, 14, 31); patterns limit or exclude
+      categories (Q-D12-11).
+    filterProperties: [system, code, systemVersion, parentCode, label]
+    otherProperties: 1
+    archetype: Entity & Subjectable (classification concept)
+    mutations: { graphql: none, executor: "create; update; never delete" }
+    indexes:
+      - "uniqueness: (FoodCategory.uid); composite range (system, code)"
+      - "fulltext food_category_search ON [label, definitionVerbatim] (entity linking of 'ultra-processed food', 'processed meat')"
+  - name: DietaryPattern
+    module: D12
+    uidToken: dietary-pattern
+    identityKeys: [definedBySourceUid, patternKey, version]
+    identityNote: "definedBySourceUid = kernel Source uid of the defining document (DOI / PMID / normalized URL); patternKey non-null; version '' when the source names none; definedBy (free-text citation) is presentation only (adversarial review 2026-10-08); definedBySourceUid is a frozen identity key, never the provenance path: the defined-by trace is the attach Assertion's HAS_EVIDENCE (R-46)"
+    identifierSchemes: [WIKIDATA]
+    whyNode: >-
+      Trial arms administer patterns (Q-D12-12, D3 seam), guidelines define them (Q-D12-11), and pattern-level claims
+      are retracted or disconfirmed (Q-D12-09, 13, 23); the question must filter patterns by kind and scope and
+      traverse to their components (PATTERN_COMPONENT) and to the arms that tested them. Synthesis R-63: the only node for
+      any eating pattern defined by what, when or how much is eaten (time-restricted eating and fasting-mimicking diets
+      included); D3 AdministeredMaterial administers it and D5 STEP_USES reaches it through Subjectable.
+    filterProperties: [name, definedBySourceUid, patternKey, version, patternKind, definitionScope, synonyms]
+    otherProperties: 2
+    archetype: Entity & Subjectable (definition concept)
+    mutations: { graphql: none, executor: "create; update; never delete" }
+    indexes:
+      - "uniqueness: (DietaryPattern.uid); composite range (definedBySourceUid, patternKey, version)"
+      - "fulltext dietary_pattern_search ON [name, synonyms, definitionVerbatim]"
+deferred:
+  - name: Preparation / PreparationEffect (node per cooking method or per preparation effect)
+    reason: "Preparation is an enum on FoodItem plus the predicate-only VARIANT_OF between records and the predicates PREPARATION_CHANGES_CONTENT / FORMS_DURING_PREPARATION; no question filters through a preparation as an entity."
+  - name: Exposure (pinned W05)
+    reason: "No D12 question filters or traverses a characterized exposure; contaminant levels are D8 QualityResult, intake limits and route-specific risk are D5 safety knowledge. Offered to D5/D8."
+  - name: Lifestyle (pinned W05)
+    reason: "Practice concepts move to D5 Intervention (A5 research notes); dietary patterns split out into DietaryPattern here."
+  - name: ExposureAgentTarget (pinned union), ExposureRoute, ExposureDurationCategory, ExposureSetting (pinned enums)
+    reason: "Belong to Exposure; deferred with it."
+  - name: Recipe / Meal / IntakeRecord
+    reason: "Recipes are FNDDS FoodItems with HAS_RECIPE_INGREDIENT (predicate-only); a person's meals or intake are private (PCS) and out of scope."
+  - name: FoodCompositionRecord (intermediate node per food × component × source)
+    reason: "The authorizing Assertion already is that intermediate record (value, unit, basis, derivation, asserter, locator, valid time); a node would duplicate it."
+  - name: LongevityFood / Superfood / HarmfulFood (flag, label or node)
+    reason: "Forbidden by 00-DIRECTIVE 3.2: 'alleged longevity food' is a food that is the subject of IMPROVES_TARGET claims on target:longevity; 'harmful' is WORSENS_TARGET assertions and HARM assessments."
+  - name: MenuItem / FoodProduct / PreparedFood
+    reason: "Anything sold is a D6 Product (productKind PREPARED_FOOD / CONVENTIONAL_FOOD / BEVERAGE; an FDC Branded Foods record is a Product with FDC_ID as an Identifier); live FoodProduct stays retired into Product. Ruled R-62: linked to a FoodItem only by HAS_REFERENCE_FOOD, never merged."
+mergedInto:
+  - { pinned: FoodItem, into: D12.FoodItem, note: "kept; drops the IngredientMaterial label inheritance (D1 MaterialKind drops FOOD); foodGroup/foodGroupSystem strings → FoodCategory + IN_FOOD_CATEGORY; HAS_IDENTIFIER → kernel pattern; DERIVED_FROM_TAXON → predicate-only FOOD_FROM_TAXON; HAS_SAFETY_SIGNAL → kernel Assessment" }
+  - { pinned: FoodVariantProperties, into: D12.FoodItem, note: "variantKind and preparationMethod become properties of the variant FoodItem (one base per variant); the base link is the predicate-only VARIANT_OF Assertion (adversarial review)" }
+  - { pinned: FoodVariantKind, into: D12.FoodVariantKind, note: "kept; value BASE added" }
+  - { pinned: QuantitativeContentProperties (food fields portionBasis, valueDerivation, sourceDerivationCode, dataPoints, minValue, maxValue), into: D12.FoodContentProperties + the FOOD_CONTAINS Assertion, note: "quantity, unitCode, amountBasis (D6 AmountBasis), statementKind (D1 ContentStatementKind) typed on the edge (kernel M11; OQ-D12-01 closed); derivation code, dataPoints, min, max stay Assertion qualifiers" }
+  - { pinned: QUANTITATIVELY_CONTAINS (FoodItem side), into: D12.FOOD_CONTAINS, note: "relationship, listed for completeness" }
+  - { pinned: Lifestyle (dietary-pattern instances such as time-restricted eating, Mediterranean diet), into: D12.DietaryPattern, note: "non-dietary practices go to D5 Intervention; R-63: D5 removes time-restricted eating from LIFESTYLE_PRACTICE" }

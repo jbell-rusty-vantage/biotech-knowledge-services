@@ -1,0 +1,109 @@
+{
+  "format": "belllabs.lane-workspace-mount.v1",
+  "application": "biotech",
+  "repository": "biotech/biotech-knowledge-services",
+  "mode": "read-only",
+  "digestAlgorithm": "tree: bks-canonical-json.v2 digest of the sorted [{path, sha256}] list; file: sha256 of bytes",
+  "release": {
+    "releaseId": "biotech-schema-v2.2.0",
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74"
+  },
+  "mounts": [
+    {
+      "path": "workspace",
+      "kind": "schema-workspace",
+      "access": "read-only",
+      "digest": "sha256:429bdf664cfb6a6282a9d3a2cd5a484527b0e9dd9d9096b90fb357772ce1f13f",
+      "files": 1345,
+      "workspaceFingerprint": "sha256:b0772b5de8ac83f03f98950124ea27d1c5cc39002b5225d6b8e189d86bb520d2"
+    },
+    {
+      "path": "schema/pinned",
+      "kind": "schema-release-pin",
+      "access": "read-only",
+      "digest": "sha256:1687baa0efaf45fa2ff8f7457a38b51ed8b73a10ebe984b686567a34f9617bd4",
+      "files": 88,
+      "releaseId": "biotech-schema-v2.2.0",
+      "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74"
+    },
+    {
+      "path": "packages/contracts/json-schema",
+      "kind": "contract-schemas",
+      "access": "read-only",
+      "digest": "sha256:3741f5956e0757b838c74b37acdb096a6b152de15f769e3136476f01afa3535b",
+      "files": 37
+    },
+    {
+      "path": "packages/contracts/golden",
+      "kind": "contract-golden-vectors",
+      "access": "read-only",
+      "digest": "sha256:7728af0b3475321083b7e443e13abe77d53b2441f69bd972207a53e031b7bff1",
+      "files": 3
+    },
+    {
+      "path": ".agents/skills/biotech-schema-explore",
+      "kind": "skill-bundle",
+      "access": "read-only",
+      "digest": "sha256:907df57017983d5ec3f35dff43768c001cd3470bded0e4935f2149d4f3143937",
+      "files": 17
+    },
+    {
+      "path": ".agents/skills/biotech-kg-query",
+      "kind": "skill-bundle",
+      "access": "read-only",
+      "digest": "sha256:c48e69b1bbfe48626d2479888f252fa581d152dea6642e2449f9088a57c3e7ff",
+      "files": 10
+    },
+    {
+      "path": ".agents/skills/biotech-kg-ingest",
+      "kind": "skill-bundle",
+      "access": "read-only",
+      "digest": "sha256:28603750e996b642cea2d90c630e7c9f3e0b11c879d8dc0b99e524b4fae36bd5",
+      "files": 22
+    },
+    {
+      "path": ".agents/skills/biotech-graph-ops",
+      "kind": "skill-bundle",
+      "access": "read-only",
+      "digest": "sha256:4500d6c9608ef848f593580f4b65a550f13a590d73d8e4b2016584a706b0e520",
+      "files": 1
+    },
+    {
+      "path": ".agents/skills/biotech-graph-analyze",
+      "kind": "skill-bundle",
+      "access": "read-only",
+      "digest": "sha256:e00fa23d01c974fa2c77255ddddd8cbd83f512baff07caa1abebfb6b1d5c0c0c",
+      "files": 2
+    },
+    {
+      "path": ".agents/skills/skill-routing.json",
+      "kind": "skill-routing",
+      "access": "read-only",
+      "digest": "sha256:22c4bc112118123bd503e0dc91b23bbdcc274deea64ced7d37bd443289ba793c",
+      "files": 1
+    }
+  ],
+  "excluded": [
+    ".env",
+    ".env.*",
+    "runs/**",
+    "schema/program/**",
+    "**/node_modules/**",
+    "**/dist/**",
+    "python/**/.venv/**"
+  ],
+  "serviceAccess": {
+    "endpointEnv": "BIOTECH_EXECUTOR_URL",
+    "tokenEnv": "BIOTECH_EXECUTOR_TOKEN",
+    "token": "short-lived, scoped service token minted host-side per lane activation (reader for schema/read lanes, writer only for an admitted ingestion operation); it maps to one BKS_EXECUTOR_TOKENS principal by sha256 and is revoked with the activation",
+    "forbidden": [
+      "database passwords (NEO4J_*)",
+      "Supabase secret or signed URLs",
+      "witness signing keys",
+      "admission ledger",
+      "custody roots"
+    ],
+    "writes": "never direct: plan/apply only through the executor with a witness from the domain admission service"
+  },
+  "fingerprint": "sha256:3b82e4e46931126f36c3a5405d2ba0d6a9ce1f65019a6302cd0adbcfe1de366f"
+}

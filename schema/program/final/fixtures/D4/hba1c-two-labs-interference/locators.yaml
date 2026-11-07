@@ -1,0 +1,941 @@
+# Fixture hba1c-two-labs-interference - locators (fixtures stage, A3, 2026-10-08).
+# selectorKind values are the kernel SelectorKind enum (verification.v1 kinds + WHOLE_SNAPSHOT); W3C selector JSON in `selector`.
+# Every exact quote was re-verified as an exact substring of a fresh capture made today (scratch ft/D4/refetch);
+# offsets are 0-based [start, end) in the basis named by the snapshot (offsetBasis / derivedText.rule).
+snapshots:
+- ref: snap-labcorp
+  uid: hu:snapshot:0073f5495274f0e6
+  url: https://www.labcorp.com/tests/001453/hemoglobin-hb-a1c
+  title: Labcorp test menu - Hemoglobin (Hb) A1c, test 001453
+  sourceKind: WEB_PAGE
+  genre: LAB_TEST_CATALOG
+  retrievedAt: '2026-10-08T17:40:00-04:00'
+  contentHash: sha256:0073f5495274f0e65cea44fb39a65206b064925dc17412b4cda3743a4d50e958
+  contentHashBasis: RAW_BYTES
+  bytes: 11823
+  mimeType: text/markdown
+  captureMethod: Firecrawl CLI 1.23.1 scrape --only-main-content --max-age 0
+  captureCompleteness: COMPLETE
+  researchStageDigest: identical (re-fetch returned the same bytes)
+- ref: snap-labcorp-sample
+  uid: hu:snapshot:a2d50898e8ab6170
+  url: https://files.labcorp.com/testmenu-d8/sample_reports/001453.pdf
+  title: Labcorp SAMPLE REPORT, 001453 (PDF, synthetic sample patient)
+  sourceKind: PDF
+  genre: SAMPLE_REPORT
+  retrievedAt: '2026-10-08T17:39:00-04:00'
+  contentHash: sha256:a2d50898e8ab617000a7b93216304b4daba18381ff0c6e8400e12fee4241a1c9
+  contentHashBasis: RAW_BYTES
+  bytes: 58417
+  mimeType: application/pdf
+  captureMethod: curl + pdftotext -layout
+  captureCompleteness: COMPLETE
+  derivedText:
+    contentHash: sha256:6158f955ba337abeac56c398724cdce1aebe390d19b83dd8e65d0c3a5d5f9703
+    rule: pdftotext -layout (poppler); pages separated by form feed
+    chars: 5710
+    decodedAs: utf-8
+  researchStageDigest: identical (re-fetch returned the same bytes)
+- ref: snap-quest
+  uid: hu:snapshot:1816564448ca5e91
+  url: https://testdirectory.questdiagnostics.com/test/test-detail/496/hemoglobin-a1c?cc=MASTER
+  title: Quest Diagnostics Test Directory - Hemoglobin A1c, test 496
+  sourceKind: WEB_PAGE
+  genre: LAB_TEST_CATALOG
+  retrievedAt: '2026-10-08T17:40:00-04:00'
+  contentHash: sha256:1816564448ca5e9165c524b1443ca05ed51ba5b25f158e07e7cf031f2b662aa6
+  contentHashBasis: RAW_BYTES
+  bytes: 7623
+  mimeType: text/markdown
+  captureMethod: Firecrawl CLI 1.23.1 scrape --only-main-content --wait-for 3000 --max-age 0
+  captureCompleteness: PARTIAL_EXCERPT
+  researchStageDigest: identical (re-fetch returned the same bytes)
+  note: LOINC codes and performing lab are behind a service-area selector (not rendered without a selection); capture is PARTIAL for those sections
+- ref: snap-loinc
+  uid: hu:snapshot:d15f1f233a744677
+  url: https://loinc.org/4548-4
+  title: LOINC 4548-4 Hemoglobin A1c/Hemoglobin.total in Blood (LOINC 2.73 page)
+  sourceKind: WEB_PAGE
+  genre: TERMINOLOGY_RECORD
+  retrievedAt: '2026-10-08T17:40:00-04:00'
+  contentHash: sha256:d15f1f233a744677aedea5c6570d279ebf5ae4e990080260ba258bad14d393b9
+  contentHashBasis: RAW_BYTES
+  bytes: 14531
+  mimeType: text/markdown
+  captureMethod: Firecrawl CLI 1.23.1 scrape --only-main-content --max-age 0
+  captureCompleteness: COMPLETE
+  researchStageDigest: identical (re-fetch returned the same bytes)
+- ref: snap-ngsp-interf
+  uid: hu:snapshot:d7498836c93ec989
+  url: https://ngsp.org/interf.asp
+  title: NGSP - HbA1c Assay Interferences (Updated June 2026)
+  sourceKind: WEB_PAGE
+  genre: REFERENCE_PROGRAM_PAGE
+  retrievedAt: '2026-10-08T17:40:00-04:00'
+  contentHash: sha256:d7498836c93ec989942fa4265d1ff675cbb10c70a5580da639caf08e41a76215
+  contentHashBasis: RAW_BYTES
+  bytes: 5487
+  mimeType: text/markdown
+  captureMethod: Firecrawl CLI 1.23.1 scrape --only-main-content --max-age 0
+  captureCompleteness: COMPLETE
+  researchStageDigest: identical (re-fetch returned the same bytes)
+- ref: snap-ngsp-methods
+  uid: hu:snapshot:21a24ece3b4dcd8f
+  url: https://ngsp.org/docs/methods.pdf
+  title: NGSP - List of NGSP Certified Methods (updated 10/26), PDF parsed to markdown by Firecrawl
+  sourceKind: PDF
+  genre: REFERENCE_PROGRAM_LIST
+  retrievedAt: '2026-10-08T17:40:00-04:00'
+  contentHash: sha256:21a24ece3b4dcd8f8294e57a2167d51a9ecf9fa15e78e4a3105234b8cc1dd05c
+  contentHashBasis: RAW_BYTES
+  bytes: 91374
+  mimeType: text/markdown
+  captureMethod: Firecrawl CLI 1.23.1 scrape --only-main-content --max-age 0
+  captureCompleteness: COMPLETE
+  researchStageDigest: identical (re-fetch returned the same bytes)
+  note: snapshot digest is of the Firecrawl markdown rendition of the PDF (the PDF bytes were not stored)
+locators:
+- ref: lc-method
+  uid: hu:locator:ft-d4-a1c-lc-method
+  snapshot: snap-labcorp
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 3750
+    end: 3766
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: Roche Tina Quant
+    prefix: ' Test Details
+
+
+      ### Methodology
+
+
+      '
+    suffix: '
+
+
+      ### Result Turnaround Time
+
+
+      Wi'
+  exact: Roche Tina Quant
+  startOffset: 3750
+  endOffset: 3766
+  occurrences: 1
+  quoteHash: sha256:f6107c9cd244f140e70f3567ecae0c0d81b3d0e974a3bfb4d4bb0f3cabb2431a
+  quoteNormalization: none (exact code points)
+  section: Test Details / Methodology
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: lc-loinc-row
+  uid: hu:locator:ft-d4-a1c-lc-loinc-row
+  snapshot: snap-labcorp
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 11541
+    end: 11616
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: '| 001453 | Hemoglobin A1c | 4548-4 | 001481 | Hemoglobin A1c | % | 4548-4 |'
+    prefix: '| --- | --- | --- | --- | --- |
+
+      '
+    suffix: '
+
+      | Order Code | 001453 |
+
+      | Order'
+  exact: '| 001453 | Hemoglobin A1c | 4548-4 | 001481 | Hemoglobin A1c | % | 4548-4 |'
+  startOffset: 11541
+  endOffset: 11616
+  occurrences: 1
+  quoteHash: sha256:0fc9141263cf8fe292c233734fdb16c29cc4dc8e90aec5d5f00bad9c9feff6fa
+  quoteNormalization: none (exact code points)
+  section: LOINC® Map
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: lc-ri
+  uid: hu:locator:ft-d4-a1c-lc-ri
+  snapshot: snap-labcorp
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 9327
+    end: 9362
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: '• Hemoglobin (Hb) A1c: 4.8% to 5.6%'
+    prefix: 'able x3 |
+
+
+      ### Reference Range
+
+
+      '
+    suffix: '
+
+
+      • Prediabetes: 5.7% to 6.4%
+
+
+      •'
+  exact: '• Hemoglobin (Hb) A1c: 4.8% to 5.6%'
+  startOffset: 9327
+  endOffset: 9362
+  occurrences: 1
+  quoteHash: sha256:9db17724b44ef37c05d43fbfad7d1ef629bdb577b08233f91a373e5b7a037828
+  quoteNormalization: none (exact code points)
+  section: Reference Range
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: lc-prediabetes
+  uid: hu:locator:ft-d4-a1c-lc-prediabetes
+  snapshot: snap-labcorp
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 9364
+    end: 9391
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: '• Prediabetes: 5.7% to 6.4%'
+    prefix: 'oglobin (Hb) A1c: 4.8% to 5.6%
+
+
+      '
+    suffix: '
+
+
+      • Diabetes: ≥6.5%
+
+
+      • Glycemic '
+  exact: '• Prediabetes: 5.7% to 6.4%'
+  startOffset: 9364
+  endOffset: 9391
+  occurrences: 1
+  quoteHash: sha256:32f14e34430380e691c3c83b9bd5c08a538d1921f3423d6a2d4eaa983e2d21c7
+  quoteNormalization: none (exact code points)
+  section: Reference Range
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: lc-diabetes
+  uid: hu:locator:ft-d4-a1c-lc-diabetes
+  snapshot: snap-labcorp
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 9393
+    end: 9410
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: '• Diabetes: ≥6.5%'
+    prefix: '%
+
+
+      • Prediabetes: 5.7% to 6.4%
+
+
+      '
+    suffix: '
+
+
+      • Glycemic control for adults '
+  exact: '• Diabetes: ≥6.5%'
+  startOffset: 9393
+  endOffset: 9410
+  occurrences: 1
+  quoteHash: sha256:1296e003a9bde76dbfd05d4a8d9c4b4e3dab7ec6948b661b8dba59b4fb918ee1
+  quoteNormalization: none (exact code points)
+  section: Reference Range
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: lc-target
+  uid: hu:locator:ft-d4-a1c-lc-target
+  snapshot: snap-labcorp
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 9412
+    end: 9462
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: '• Glycemic control for adults with diabetes: <7.0%'
+    prefix: '.7% to 6.4%
+
+
+      • Diabetes: ≥6.5%
+
+
+      '
+    suffix: '
+
+
+      ### Storage Instructions
+
+
+      Main'
+  exact: '• Glycemic control for adults with diabetes: <7.0%'
+  startOffset: 9412
+  endOffset: 9462
+  occurrences: 1
+  quoteHash: sha256:73af9f963c79cc24037fd6635f6cc00724fe479ce7dfd5c4e947ae4da405e0ed
+  quoteNormalization: none (exact code points)
+  section: Reference Range
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: lc-hbf
+  uid: hu:locator:ft-d4-a1c-lc-hbf
+  snapshot: snap-labcorp
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 6119
+    end: 6215
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: Specimens containing high amounts of HbF (>10 %) may result in lower than expected HbA1c values.
+    prefix: 'hain that characterizes HbA1c.1 '
+    suffix: '1
+
+
+      ### Custom Additional Informa'
+  exact: Specimens containing high amounts of HbF (>10 %) may result in lower than expected HbA1c values.
+  startOffset: 6119
+  endOffset: 6215
+  occurrences: 1
+  quoteHash: sha256:c4ef1a5b4dcf03835e958231b4b2a62ac7ead9c490e5c05a403e2a50469dbed9
+  quoteNormalization: none (exact code points)
+  section: Limitations
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: lc-tubes
+  uid: hu:locator:ft-d4-a1c-lc-tubes
+  snapshot: snap-labcorp
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 8771
+    end: 8865
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: Lavender-top (EDTA) tube, green-top (lithium heparin) tube, or gray-top (sodium fluoride) tube
+    prefix: 'the laboratory.
+
+
+      ### Container
+
+
+      '
+    suffix: '
+
+
+      ### Collection Instructions
+
+
+      T'
+  exact: Lavender-top (EDTA) tube, green-top (lithium heparin) tube, or gray-top (sodium fluoride) tube
+  startOffset: 8771
+  endOffset: 8865
+  occurrences: 1
+  quoteHash: sha256:3dd31ebe3973ce6edf82e31af826f9fa45a767b46d46f8d055d49154ce67e4b1
+  quoteNormalization: none (exact code points)
+  section: Specimen Requirements / Container
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: lc-testno
+  uid: hu:locator:ft-d4-a1c-lc-testno
+  snapshot: snap-labcorp
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 3171
+    end: 3188
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: Test Number001453
+    prefix: '\"#\"")
+
+
+      # Hemoglobin (Hb) A1c
+
+
+      '
+    suffix: '
+
+      Test number copied
+
+
+      CPT
+
+      83036
+
+
+      '
+  exact: Test Number001453
+  startOffset: 3171
+  endOffset: 3188
+  occurrences: 1
+  quoteHash: sha256:6ee7037117b32ea9554e6a28c050d76cbb9e1224ecf928d5cb198a1e7ce07eb9
+  quoteNormalization: none (exact code points)
+  section: Labcorp test menu header (the test is on Labcorp's own menu)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: lc-kit
+  uid: hu:locator:ft-d4-a1c-lc-kit
+  snapshot: snap-labcorp
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 9593
+    end: 9728
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: 'Tina Quant Hemoglobin A1c Gen.3 - Hemolysate application \[package insert\]. Roche Diagnostics, Mannheim Germany. Version 1.0: 2017-06.'
+    prefix: 'ed specimen
+
+
+      ### Footnotes
+
+
+      1\. '
+    suffix: '
+
+
+      2\. American Diabetes Associat'
+  exact: 'Tina Quant Hemoglobin A1c Gen.3 - Hemolysate application \[package insert\]. Roche Diagnostics, Mannheim Germany. Version 1.0: 2017-06.'
+  startOffset: 9593
+  endOffset: 9728
+  occurrences: 1
+  quoteHash: sha256:28b0b36b171dd17d6937ed0ec1d3aba730712bd6ec7f1a2df356f79019bac16c
+  quoteNormalization: none (exact code points)
+  section: References, footnote 1 (the markdown capture escapes the brackets)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: sr-lab
+  uid: hu:locator:ft-d4-a1c-sr-lab
+  snapshot: snap-labcorp-sample
+  page: 1
+  selectorKind: PDF_TEXT
+  selector:
+    type: PdfTextSelector
+    page: 1
+    refinedBy:
+      type: TextPositionSelector
+      start: 2224
+      end: 2266
+      offsetBasis: code points of the decoded pdftotext -layout output of the whole PDF
+  textQuote:
+    type: TextQuoteSelector
+    exact: 3060 S Church Street, Burlington, NC 27215
+    prefix: "esting, PhD\r\n\r\n                 "
+    suffix: "\r\n\r\nFor inquiries, the physician"
+  exact: 3060 S Church Street, Burlington, NC 27215
+  startOffset: 2224
+  endOffset: 2266
+  occurrences: 2
+  occurrenceIndex: 0
+  quoteHash: sha256:a15d543a64de7b1a9e243649125730140ebc218e6b56c2e4f538888240869c78
+  quoteNormalization: none (exact code points)
+  section: LAB 01 block of a synthetic sample report (placeholder, not a performing-lab statement)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: sr-placeholder
+  uid: hu:locator:ft-d4-a1c-sr-placeholder
+  snapshot: snap-labcorp-sample
+  page: 1
+  selectorKind: PDF_TEXT
+  selector:
+    type: PdfTextSelector
+    page: 1
+    refinedBy:
+      type: TextPositionSelector
+      start: 2092
+      end: 2110
+      offsetBasis: code points of the decoded pdftotext -layout output of the whole PDF
+  textQuote:
+    type: TextQuoteSelector
+    exact: Testmaster Testing
+    prefix: "betes: <7.0\r\n\r\n01 $$            "
+    suffix: '                                '
+  exact: Testmaster Testing
+  startOffset: 2092
+  endOffset: 2110
+  occurrences: 2
+  occurrenceIndex: 0
+  quoteHash: sha256:4158493d116bf0c08c8613fd3934390b65bcd48b5fcb73aa756cf20fba10806d
+  quoteNormalization: none (exact code points)
+  section: LAB 01 block (placeholder lab name, page 1)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: sr-director
+  uid: hu:locator:ft-d4-a1c-sr-director
+  snapshot: snap-labcorp-sample
+  page: 1
+  selectorKind: PDF_TEXT
+  selector:
+    type: PdfTextSelector
+    page: 1
+    refinedBy:
+      type: TextPositionSelector
+      start: 2179
+      end: 2203
+      offsetBasis: code points of the decoded pdftotext -layout output of the whole PDF
+  textQuote:
+    type: TextQuoteSelector
+    exact: 'Dir: Report Testing, PhD'
+    prefix: '                                '
+    suffix: "\r\n\r\n                 3060 S Chur"
+  exact: 'Dir: Report Testing, PhD'
+  startOffset: 2179
+  endOffset: 2203
+  occurrences: 2
+  occurrenceIndex: 0
+  quoteHash: sha256:c5878a1a498c942f0f0bf0d1ed40ca8a5d724e0bc42d417a025c4fd0fbab89ae
+  quoteNormalization: none (exact code points)
+  section: LAB 01 block (placeholder director, page 1)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: sr-date
+  uid: hu:locator:ft-d4-a1c-sr-date
+  snapshot: snap-labcorp-sample
+  page: 1
+  selectorKind: PDF_TEXT
+  selector:
+    type: PdfTextSelector
+    page: 1
+    refinedBy:
+      type: TextPositionSelector
+      start: 1153
+      end: 1178
+      offsetBasis: code points of the decoded pdftotext -layout output of the whole PDF
+  textQuote:
+    type: TextQuoteSelector
+    exact: 'Date reported: 08/13/2018'
+    prefix: '/m/d): 032/07/26                '
+    suffix: ' 0000 ET                        '
+  exact: 'Date reported: 08/13/2018'
+  startOffset: 1153
+  endOffset: 1178
+  occurrences: 2
+  occurrenceIndex: 0
+  quoteHash: sha256:869dacba6ba4d94b45e286d6be8a8dde810c0d3c669092b02dd869197fe3534e
+  quoteNormalization: none (exact code points)
+  section: sample header (page 1)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: sr-holder
+  uid: hu:locator:ft-d4-a1c-sr-holder
+  snapshot: snap-labcorp-sample
+  page: 1
+  selectorKind: PDF_TEXT
+  selector:
+    type: PdfTextSelector
+    page: 1
+    refinedBy:
+      type: TextPositionSelector
+      start: 2642
+      end: 2684
+      offsetBasis: code points of the decoded pdftotext -layout output of the whole PDF
+  textQuote:
+    type: TextQuoteSelector
+    exact: Laboratory Corporation of America Holdings
+    prefix: 'te and federal law.   1995-2018 '
+    suffix: "\r\nIf you have received this docu"
+  exact: Laboratory Corporation of America Holdings
+  startOffset: 2642
+  endOffset: 2684
+  occurrences: 2
+  occurrenceIndex: 0
+  quoteHash: sha256:e76a1ec4dc5a9ad9332e9d30d4fa254a39faea7e84adf884c6924d6dc0f7f09c
+  quoteNormalization: none (exact code points)
+  section: footer (copyright notice "1995-2018 ..."; names no performing lab)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: q-method
+  uid: hu:locator:ft-d4-a1c-q-method
+  snapshot: snap-quest
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 1934
+    end: 1970
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: Turbidimetric Inhibition Immunoassay
+    prefix: '
+
+      Test details
+
+
+      ### Methodology
+
+
+      '
+    suffix: '
+
+
+      ### Alternative name(s)
+
+
+      A1c,H'
+  exact: Turbidimetric Inhibition Immunoassay
+  startOffset: 1934
+  endOffset: 1970
+  occurrences: 1
+  quoteHash: sha256:28f2ea7ff88af93f0afbfe7c9a249cdae869592df1d58918a942d40858b3e1ed
+  quoteNormalization: none (exact code points)
+  section: Methodology
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: q-ri
+  uid: hu:locator:ft-d4-a1c-q-ri
+  snapshot: snap-quest
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 2510
+    end: 2516
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: <5.7 %
+    prefix: 'd plasma |
+
+
+      Reference range(s)
+
+
+      '
+    suffix: '
+
+
+      LOINC® codes
+
+
+      Select a service'
+  exact: <5.7 %
+  startOffset: 2510
+  endOffset: 2516
+  occurrences: 1
+  quoteHash: sha256:25c33e279748e46be601b77598490d1d6ca6fff3700a787d77aebc8e6d32f871
+  quoteNormalization: none (exact code points)
+  section: Reference range(s)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: q-disclaimer
+  uid: hu:locator:ft-d4-a1c-q-disclaimer
+  snapshot: snap-quest
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 2703
+    end: 2834
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: Reference ranges are provided as general guidance only. To interpret test results use the reference range in the laboratory report.
+    prefix: 'tion
+
+
+      Service Area Information
+
+
+      '
+    suffix: '
+
+
+      \*The CPT codes provided are b'
+  exact: Reference ranges are provided as general guidance only. To interpret test results use the reference range in the laboratory report.
+  startOffset: 2703
+  endOffset: 2834
+  occurrences: 1
+  quoteHash: sha256:18c6dc1222b6e87065fdbbad8e66312d1b45975a4e620d21bcc52f4d7df808a3
+  quoteNormalization: none (exact code points)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: q-reject
+  uid: hu:locator:ft-d4-a1c-q-reject
+  snapshot: snap-quest
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 2426
+    end: 2486
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: Sodium fluoride/oxalate (gray-top) tube • Heparinized plasma
+    prefix: ' 6 months |
+
+      | Reject criteria | '
+    suffix: ' |
+
+
+      Reference range(s)
+
+
+      <5.7 %
+
+
+      '
+  exact: Sodium fluoride/oxalate (gray-top) tube • Heparinized plasma
+  startOffset: 2426
+  endOffset: 2486
+  occurrences: 1
+  quoteHash: sha256:58ff8621fe3c869cb4e6a17c786a2a1eaa75c3e0d07e2aa12d037ab3c1b67159
+  quoteNormalization: none (exact code points)
+  section: Reject criteria
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: q-hidden
+  uid: hu:locator:ft-d4-a1c-q-hidden
+  snapshot: snap-quest
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 2601
+    end: 2632
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: Performing lab & setup schedule
+    prefix: 'tion
+
+
+      Service Area Information
+
+
+      '
+    suffix: '
+
+
+      Select a service areato view t'
+  exact: Performing lab & setup schedule
+  startOffset: 2601
+  endOffset: 2632
+  occurrences: 1
+  quoteHash: sha256:3f8727c3b06054a604ff466168e07ce4dd2760838de9ac6dd311b260bd56b98b
+  quoteNormalization: none (exact code points)
+  section: Performing lab (service-area gated)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: ln-name
+  uid: hu:locator:ft-d4-a1c-ln-name
+  snapshot: snap-loinc
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 4369
+    end: 4414
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: Hemoglobin A1c/Hemoglobin.total:MFr:Pt:Bld:Qn
+    prefix: 'ribution/)
+
+
+      Fully-Specified Name'
+    suffix: :Long Common NameHemoglobin A1c/
+  exact: Hemoglobin A1c/Hemoglobin.total:MFr:Pt:Bld:Qn
+  startOffset: 4369
+  endOffset: 4414
+  occurrences: 1
+  quoteHash: sha256:ca8a7905e2bc24fd582ab3445b282744e7ee3ec57c94e71c527170acdeb4e4ea
+  quoteNormalization: none (exact code points)
+  section: Fully-Specified Name
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: ln-protocols
+  uid: hu:locator:ft-d4-a1c-ln-protocols
+  snapshot: snap-loinc
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 4051
+    end: 4104
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: All three protocols produce different numeric values.
+    prefix: 'ed using the Japanese protocol. '
+    suffix: '<br>[Mapper’s Guide for the Top '
+  exact: All three protocols produce different numeric values.
+  startOffset: 4051
+  endOffset: 4104
+  occurrences: 1
+  quoteHash: sha256:9ba232c03b7e30a004732be7516f3244ae8f4c07a222d97b0ed5b6b61628d0bd
+  quoteNormalization: none (exact code points)
+  section: Reference Information
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: ng-updated
+  uid: hu:locator:ft-d4-a1c-ng-updated
+  snapshot: snap-ngsp-interf
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 152
+    end: 169
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: Updated June 2026
+    prefix: 'ted Fetal Hemoglobin (HbF)**
+
+
+      **'
+    suffix: '**
+
+
+      [More comprehensive informat'
+  exact: Updated June 2026
+  startOffset: 152
+  endOffset: 169
+  occurrences: 1
+  quoteHash: sha256:aefd5a29ebf27721be8d53a844615508712f6a2df8f6a2c581377671d8edc29d
+  quoteNormalization: none (exact code points)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: ng-variants
+  uid: hu:locator:ft-d4-a1c-ng-variants
+  snapshot: snap-ngsp-interf
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 565
+    end: 753
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: In people who have hemoglobin variants such as HbS (sickle cell trait), some A1C tests give falsely high or low readings that can lead to the over-treatment
+      or under-treatment of diabetes.
+    prefix: 'e been diagnosed with diabetes. '
+    suffix: '
+
+
+      Laboratories use many differen'
+  exact: In people who have hemoglobin variants such as HbS (sickle cell trait), some A1C tests give falsely high or low readings that can lead to the over-treatment
+    or under-treatment of diabetes.
+  startOffset: 565
+  endOffset: 753
+  occurrences: 1
+  quoteHash: sha256:4192f9db4a95bc43d00f55f11239b96a9c97a91723878fda98a1a96959447803
+  quoteNormalization: none (exact code points)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: ng-c513
+  uid: hu:locator:ft-d4-a1c-ng-c513
+  snapshot: snap-ngsp-interf
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 3057
+    end: 3101
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: '| Roche Cobas c513 | No | No | No | No | $ |'
+    prefix: '| No | No | No | No <9.2% HbF |
+
+      '
+    suffix: '
+
+      | Sebia Capillarys 2 Flex Pierc'
+  exact: '| Roche Cobas c513 | No | No | No | No | $ |'
+  startOffset: 3057
+  endOffset: 3101
+  occurrences: 1
+  quoteHash: sha256:594f9bd5835359e3e7b0abd416d72e60c0cab2374c961fb271fcf7d95698d8f6
+  quoteNormalization: none (exact code points)
+  section: 'interference table (columns: HbC, HbS, HbE, HbD, elevated HbF)'
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: ng-dollar
+  uid: hu:locator:ft-d4-a1c-ng-dollar
+  snapshot: snap-ngsp-interf
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 3850
+    end: 4027
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: $ In the absence of specific method data, it can generally be assumed that immunoassay, boronate affinity and enzymatic methods show interference from
+      elevated HbF levels (2,3).
+    prefix: 'the hemoglobin beta chain (1).
+
+
+      '
+    suffix: '
+
+
+      \# When HbE trait is detected '
+  exact: $ In the absence of specific method data, it can generally be assumed that immunoassay, boronate affinity and enzymatic methods show interference from elevated
+    HbF levels (2,3).
+  startOffset: 3850
+  endOffset: 4027
+  occurrences: 1
+  quoteHash: sha256:3191f7505fcf493b82c921b88c6daae54ce38116d2844b5d7a1fec757ae5068b
+  quoteNormalization: none (exact code points)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: nm-expiry
+  uid: hu:locator:ft-d4-a1c-nm-expiry
+  snapshot: snap-ngsp-methods
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 761
+    end: 815
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: "the certificate of \ntraceability expires after 1 year."
+    prefix: 'ertify their methods each year; '
+    suffix: '  During the year, it is the res'
+  exact: "the certificate of \ntraceability expires after 1 year."
+  startOffset: 761
+  endOffset: 815
+  occurrences: 1
+  quoteHash: sha256:e61176c6ee94151f592872089756b74a2983b08640873e6e3d89b4004943056a
+  quoteNormalization: none (exact code points)
+  section: header
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: nm-gen3-c513
+  uid: hu:locator:ft-d4-a1c-nm-gen3-c513
+  snapshot: snap-ngsp-methods
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 84390
+    end: 84430
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: TQ HbA1c Gen. 3 hemolysate on cobas c513
+    prefix: 'SRL #13 |
+
+      | Roche Diagnostics | '
+    suffix: ' (HbA1c/Hb*91.5+2.15) | Immuno-a'
+  exact: TQ HbA1c Gen. 3 hemolysate on cobas c513
+  startOffset: 84390
+  endOffset: 84430
+  occurrences: 1
+  quoteHash: sha256:a5fe8d2d39e8242326d9b79036a8902a9ac27e4b7ca6162b508b5723385f9064
+  quoteNormalization: none (exact code points)
+  section: Roche Diagnostics rows
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: nm-gen4-c513
+  uid: hu:locator:ft-d4-a1c-nm-gen4-c513
+  snapshot: snap-ngsp-methods
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 78651
+    end: 78692
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: TQ HbA1c Gen. IV hemolysate on cobas c513
+    prefix: '- | --- |
+
+      | Roche Diagnostics | '
+    suffix: ' (HbA1c/Hb*91.5+2.15) | Immuno-a'
+  exact: TQ HbA1c Gen. IV hemolysate on cobas c513
+  startOffset: 78651
+  endOffset: 78692
+  occurrences: 1
+  quoteHash: sha256:c7d7092ee3a897e0d934db9f4e8d5cf182eb0684073c6371e859c13acdb7af50
+  quoteNormalization: none (exact code points)
+  section: Roche Diagnostics rows
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)

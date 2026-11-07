@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v2",
+  "intentId": "skill-ambiguous-1",
+  "pins": {
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+    "policyVersion": "bks-admission-policy/v1"
+  },
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "biotech-kg-ingest-examples",
+      "model": "example"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run-skill-ambiguous-1",
+      "missionId": "mission-skill-ambiguous",
+      "operationId": "op-skill-ambiguous-1"
+    },
+    "activityKind": "INGESTION"
+  },
+  "basis": {
+    "creationOnly": {
+      "reason": "biotech-kg-ingest example ambiguous: first capture of synthetic example entities"
+    }
+  },
+  "sources": [
+    {
+      "ref": "dir",
+      "source": {
+        "canonicalUri": "https://examples.bks.test/ambiguous/directory",
+        "sourceKind": "WEB_PAGE"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-07T08:00:00Z",
+        "observedAt": "2026-10-07T08:00:00Z",
+        "contentHash": "sha256:fd525a2b5e9a03c964284e7794eec945f309188e0fe8699c4fdb12ac765afd1c",
+        "contentHashBasis": "SYNTHETIC_FIXTURE",
+        "captureMethod": "bks-example/1",
+        "captureCompleteness": "COMPLETE"
+      },
+      "locators": [
+        {
+          "ref": "l1",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "raw-capture/v1",
+            "type": "TextQuoteSelector",
+            "exact": "Example Nutrition Ltd (UK)",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 5,
+              "end": 31
+            }
+          },
+          "exact": "Example Nutrition Ltd (UK)",
+          "startOffset": 5,
+          "endOffset": 31
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "org",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "Example Nutrition",
+      "uidSegment": "skill-ambiguous-uk",
+      "properties": {
+        "entityKind": "LEGAL_ENTITY"
+      },
+      "onMatch": "use_existing"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "legal",
+      "kind": "assertion.literal",
+      "subjectRef": "org",
+      "asserterRef": "org",
+      "evidence": [
+        "l1"
+      ],
+      "assertion": {
+        "predicate": "LEGAL_NAME",
+        "validity": {}
+      },
+      "value": {
+        "valueString": "Example Nutrition Ltd"
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+"""
+Purpose: an intervention CONCEPT that is not simply a substance or a product: a practice (morning sunlight viewing,
+sauna bathing, resistance training), a procedure, a device-based practice, or a named
+regimen that clinics, trials and protocols treat as one thing (intermittent low-dose rapamycin). It is the subject of
+target, constraint and adverse-effect assertions for non-substance means, the thing D3 study arms administer
+(Q-D5-25, D3 seam) and D6 offerings sell (Q-D5-17, D6 seam). Plain intake of a compound or product is NOT an
+Intervention: the protocol step points straight at the D1 or D6 record. Collapses pinned Treatment, Procedure,
+Lifestyle and the practice side of Exposure (kind enum). An eating pattern (including time-restricted eating and
+fasting-mimicking diets) is never an Intervention: it is D12 DietaryPattern (R-63).
+Identity rule: (normalized name, kind, regimenQualifier when the regimen is the identity); MeSH / SNOMED CT / Wikidata
+ids attach through the kernel. uid token: `intervention` (hu:intervention:<slug>).
+Questions: Q-D5-02, Q-D5-04, Q-D5-17, Q-D5-25, Q-D5-28.
+"""
+type Intervention implements Entity & Subjectable
+  @node(labels: ["Intervention", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  kind: InterventionKind!
+  definition: String
+  "Distinguishes regimens that share a name ('intermittent low-dose' vs 'transplant prophylaxis'); part of identity."
+  regimenQualifier: String
+  synonyms: [String!]
+}

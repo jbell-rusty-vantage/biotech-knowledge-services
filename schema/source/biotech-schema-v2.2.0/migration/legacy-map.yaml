@@ -1,0 +1,739 @@
+# Legacy (live biotech-kg "v0") -> Biotech schema v2 migration map.
+# Authored by S8 (migration / qualification), 2026-10-11. The schema authority (S1) copies this file into the release
+# bundle as migration/legacy-map.yaml and digests it into schemaReleaseDigest.
+#
+# Scope: the LIVE Aura graph (19 labels, 25 relationship types / 29 (from)-[type]->(to) triples, 128 property keys in use,
+# 210 nodes, 288 relationships), not the v1 proposal assumed by schema/program/final/migration-notes.md. The seven
+# unmapped v1 relationship classes (ABOUT_CONDITION, ASSESSES_CLAIM_EVIDENCE, CLAIM_EVIDENCE_BASED_ON, DEPENDS_ON,
+# HOSTS_CHANNEL, PART_OF_PLAN, USES_COMPONENT) do not occur in live data (no such relationship type token exists);
+# their DECISIONS.md dispositions remain policy for any future v1-shaped import (v1Policy below).
+#
+# Machine contract: packages/kg-ops/src/migration/plan-migration.mjs reads this file plus a bks-graph-export.v1 export,
+# REFUSES to plan when any live label, triple or property key is not covered here, and emits bks-migration-manifest.v1
+# plus the accounting report. Nothing in this file contains production record values; enum maps list controlled values.
+#
+# Dispositions:
+#   migrate        create the v2 element(s) named under target; the legacy element is preserved and linked
+#   retain-legacy  no v2 element; the legacy element stays physically (relabeled) and is reported unchanged-retained
+#   quarantine     held resolution work: the source data is preserved and counted; it never appears as a v2 fact
+#   exclude        property only: deliberately not carried into v2 (regenerable or superseded); still retained physically
+# Accounting categories (bks-migration-accounting.v1): migrated | unchanged-retained | held | excluded.
+# Property rule: every live property of a MIGRATED label/triple must be listed (per element or in common*Properties);
+# properties of a retain-legacy or quarantine element follow the element (retained-with / held-with) and need no row.
+
+format: bks-legacy-map.v1
+mapVersion: 1.0.0
+status: candidate
+source:
+  kind: live-legacy-graph
+  exportFormat: bks-graph-export.v1
+  referenceExport:
+    exportId: 20261011T224403Z-aura-neo4j
+    exportDigest: sha256:7f76eefcf7b50977d78efc7d761e00a4622f7e45d4afa97d11c8d0a84a385ba1
+    server: Neo4j/5.27-aura enterprise, database neo4j
+    nodes: 210
+    relationships: 288
+    labels: 19
+    relationshipTypes: 25
+    relationshipTriples: 29
+    propertyKeysInUse: 128
+  binding: the planner binds the export it is given by exportDigest; counts above are the reference inventory, not a constant. A changed export yields a new plan and manifest.
+target:
+  releaseId: biotech-schema-v2.0.0
+  parentBaseline: sha256:c7cf1235dba876b26460c54a6510028d2dcfc65989787eacd5b446f9034b4793
+  schemaReleaseDigest: "${SCHEMA_RELEASE_DIGEST}"   # bound by S1 release.json; plan refuses apply while unbound
+
+policy:
+  legacyPreservation:
+    rule: legacy nodes, relationships and properties are never deleted or rewritten. Legacy properties are never SET by the migrator.
+    relabel:
+      applies: every legacy node whose label is in relabelLabels
+      relabelLabels: [Biomarker, Compound, CompoundForm, Event, LabTest, Listing, ListingSnapshot, Organization, OrganizationSnapshot, PanelDefinition, Person, PhysicalLocation, Product, ProductSnapshot, RegulatoryStatus, Study, TechnologyPlatform]
+      effect: "REMOVE n:<Label> SET n:LegacyV0_<Label>:LegacyV0, n.legacyLabels = <original labels>, n.legacyExportDigest = <exportDigest>"
+      reason: seven legacy labels (Biomarker, Event, LabTest, Organization, Person, Product, Study) collide with v2 stored labels; relabeling all domain labels keeps legacy rows out of v2 reads by construction and uniformly reversible.
+      tagOnly: [Document, BellLabsSchemaDeploymentEvidence]
+      tagOnlyEffect: "SET n:LegacyV0, n.legacyLabels = <original labels>, n.legacyExportDigest = <exportDigest>; original label kept"
+      tagOnlyReason: Document is the shared Knowledge Services document-lane label bound by the live document_* constraints; BellLabsSchemaDeploymentEvidence is operational evidence read by deployment tooling. Neither is a v2 label, so keeping the label cannot leak into v2 reads.
+      note: "the two legacyLabels/legacyExportDigest keys are operational tags written on the legacy node; they are the only legacy-node writes besides labels and are reversed by the rollback recipe"
+      reverse: "MATCH (n:LegacyV0 {legacyExportDigest: $d}) REMOVE n:LegacyV0_<Label>, n:LegacyV0 SET n:<Label> REMOVE n.legacyLabels, n.legacyExportDigest (per label, from the manifest)"
+    migratedFrom:
+      relationship: MIGRATED_FROM
+      class: operational (not in the v2 SDL; excluded from consumer projections and typed reads; S1 must list it in the operational DDL/rules)
+      shape: "(v2)-[:MIGRATED_FROM {migrationRunId, legacyElementId, legacyId, legacyLabel, legacyExportDigest, mapVersion}]->(legacy)"
+      note: legacy relationships cannot be endpoints; their lineage is the evidence SourceLocator (selector names the export record) plus the uid map in the manifest.
+  provenance:
+    agent:
+      type: Agent
+      uid: "hu:agent:legacy-import-${shortHash(agentKind|toolVersion)}"
+      fields: {name: legacy-import, agentKind: DATA_ANALYSIS_PIPELINE, toolVersion: "bks-migration/${plannerVersion}", model: null, promptVersion: null, skillVersion: null}
+    migrationActivity:
+      type: Activity
+      uid: "hu:activity:bks-migration-${migrationRunId}"
+      fields: {activityKind: INGESTION, externalRunSystem: bks-migration, runId: "${migrationRunId}", operationKind: legacy-v0-migration, methodVersion: "legacy-map ${mapVersion} / planner ${plannerVersion}", startedAt: apply start (service clock), endedAt: apply end}
+      edges: ["WAS_ASSOCIATED_WITH -> legacy-import Agent", "WAS_INFORMED_BY -> each legacy research Activity"]
+    legacyResearchActivities:
+      from: distinct legacy mongoResearchRunId values (3 in the reference export)
+      type: Activity
+      uid: "hu:activity:biotech-kg-mongo-${slug(mongoResearchRunId)}"
+      fields: {activityKind: RESEARCH, externalRunSystem: biotech-kg-mongo, runId: "<mongoResearchRunId>", startedAt: null, endedAt: null}
+      note: run identity is source-stated; no run times are invented
+    source:
+      type: Source
+      uid: "hu:source:bks-legacy-export-${shortHash(exportDigest)}"
+      fields: {name: "BellLabs legacy biotech-kg graph export <exportId>", canonicalUri: "bks-custody://release-v2/backups/<exportId>", sourceKind: DATASET, genre: LEGACY_GRAPH_EXPORT, logicalIdentity: "<exportDigest>"}
+    snapshot:
+      type: SourceSnapshot
+      uid: "hu:snapshot:${shortHash(exportDigest)}"
+      fields: {retrievedAt: export manifest startedAt (when BellLabs read the bytes), contentHash: "<exportDigest>", contentHashBasis: "CANONICAL_PROJECTION:bks-graph-export.v1", captureMethod: "bks-export-graph/<scriptVersion>", captureCompleteness: COMPLETE, storageUri: "bks-custody://release-v2/backups/<exportId>/", mimeType: application/x-ndjson, publishedAt: null, observedAt: null}
+      edge: "Source -[:HAS_SNAPSHOT]-> SourceSnapshot (structural)"
+    locator:
+      type: SourceLocator
+      uid: "hu:locator:${shortHash(snapshotUid|selectorDigest)}"
+      oneFor: every legacy record cited as evidence by an Assertion (each migrated legacy relationship; each node record that backs a HAS_IDENTIFIER Assertion). Node lineage is MIGRATED_FROM, not HAS_EVIDENCE
+      fields: {selectorKind: DATASET, selectorJson: "canonical {basis: bks-graph-export.v1, file: nodes.jsonl|relationships.jsonl, elementId: <legacy elementId>}", selectorDigest: "sha256(selectorJson)", quoteHash: "sha256(canonical export record line)", exact: null}
+      edge: "SourceSnapshot -[:HAS_LOCATOR]-> SourceLocator (structural)"
+      note: exact is never copied; the record bytes stay in custody and are re-verified by quoteHash
+    assertion:
+      appliesTo: every asserted-class v2 relationship and every predicate-only relationship produced here
+      fields:
+        assertionKind: RELATIONSHIP
+        predicate: the v2 relationship type (authorizing) or the registered predicate
+        status: EXTRACTED            # captured, unadjudicated
+        basisKind: UNSTATED          # the legacy graph recorded no basis
+        speechAct: null
+        polarity: null
+        recordedAt: apply commit time (service clock; never before snapshot.retrievedAt)
+        extractionConfidence: legacy edge `confidence` when present (source-stated extraction hint; never a support verdict)
+        validFrom: legacy edge `validFrom` verbatim when present (validFromBasis UNKNOWN, precision null); else null with validFromBasis UNKNOWN
+        validTo: null (validToBasis UNKNOWN)
+        qualifiers: ["legacy:recordedFrom=<legacy recordedFrom ISO>", "legacy:runId=<mongoResearchRunId>"]   # only when present; requires S1 to register the legacy: qualifier family
+        contentHash: sha256 over the canonical assertion content
+      edges:
+        - "HAS_SUBJECT -> subject, HAS_OBJECT -> object (structural)"
+        - "ASSERTED_BY -> legacy-import Agent (structural)"
+        - "HAS_EVIDENCE {role: CONTEXT, origin: DECLARED, expectedSelectedContentDigest: quoteHash} -> SourceLocator of the legacy record"
+        - "WAS_GENERATED_BY -> migration Activity"
+      asserterNote: the asserter is the legacy-import Agent, not the legacy publisher; no evidence, dates or verdicts are fabricated
+    nodes:
+      edges: ["WAS_GENERATED_BY -> migration Activity", "MIGRATED_FROM -> legacy node"]
+      note: v2 node fields are executor-written records of what the legacy row stated; createdAt/updatedAt are v2 write times
+  edgeProperties:
+    relationshipUid: "hu:rel:${shortHash(v2Type|fromUid|toUid|legacyElementId)}"
+    assertionUid: the authorizing Assertion uid
+    recordedFrom: "apply commit time; recordedTo null"
+    validFromValidToPrecisionBasis: copied from the authorizing Assertion
+    lastWriterRunId: "${migrationRunId}"
+  temporal:
+    rule: keep source semantics; never invent dates
+    validFrom: legacy validFrom -> Assertion.validFrom / episode validFrom with basis UNKNOWN (legacy semantics unverified)
+    recordedFrom: legacy recordedFrom is the legacy system's record time; kept as qualifier legacy:recordedFrom and on the legacy element; v2 recordedFrom is the migration commit time
+    currentAsOf: retained on the legacy node (as-of statement of the legacy record); not mapped to observation fields
+    happenedAt: Event.startedAt with startedAtBasis UNKNOWN, precision null
+    strings: legacy temporal values stored as String (HAS_LOCATION, HAS_REGULATORY_STATUS, OFFERS, Organization.currentAsOf) are parsed only when they are complete ISO-8601 instants; otherwise the value is retained legacy and the v2 field stays null
+  identity:
+    uidRule: "hu:<token>:<slug(name basis, 48)>-<shortHash('bks-legacy-v0|' + legacyLabel + '|' + legacyKey, 10)>"
+    legacyKey: "id for every label; documentId for Document; evidence_id for BellLabsSchemaDeploymentEvidence"
+    determinism: same export + same map + same plannerVersion -> same uids
+    v2IdentityTuple: recorded per element in the uid map (fields named by the node register identityKeys); tier exact | provisional | unresolved
+    collisionPolicy:
+      - "uid collision between two different legacy records (hash collision or duplicate legacy key): both held (identity-conflict); plan fails closed"
+      - "two legacy records with the same v2 identity tuple (same target type): never merged automatically; both migrated with distinct uids and an IDENTITY_CANDIDATE pair recorded as held resolution work; reported in accounting"
+      - "a legacy record whose identity tuple needs a value the legacy data lacks: tier provisional (exact tuple recorded with the missing component as null)"
+    identifiers: Identifier nodes are minted only for registered schemes with a legacy value (DOI); legacy UUIDs are not identifiers (MIGRATED_FROM carries them)
+  embeddings:
+    rule: searchEmbedding / embeddingModel / embeddingDimensions stay on legacy nodes only. The OD-44 native chunk-vector profile is recorded, not served, in this release; no v2 vector property or index is written.
+  confidence: legacy confidence -> Assertion.extractionConfidence only.
+  enums: every enum map below is explicit per legacy value; an unlisted value holds the element (enum-unmapped) instead of guessing.
+
+transforms:   # implemented in packages/kg-ops/src/migration/transforms.mjs
+  copy: value unchanged
+  enumMap: explicit table lookup; miss -> hold element (enum-unmapped)
+  isoInstant: DateTime value kept; String parsed only when a full ISO-8601 instant with offset; else null and the legacy value is retained
+  urlHost: lower-cased hostname without leading www.
+  urlPath: URL pathname without trailing slash (identity component hostItemId)
+  slug: kg-ops slugify
+  integerYear: Integer or integral Float -> Integer; else null
+  firstNonNull: first present source key
+derivations:  # graph-derived inputs, implemented in plan-migration.mjs; ambiguity -> hold, never guess
+  publicActorBasis: union of bases implied by the person's migrated role edges (ADVISES -> OTHER_PUBLIC_ROLE; FOUNDED_BY -> FOUNDER_OR_INVESTOR; HAS_CEO and executive EMPLOYS -> OFFICER_OR_DIRECTOR; other EMPLOYS -> OTHER_PUBLIC_ROLE; INVESTIGATED_BY -> AUTHOR_OR_INVESTIGATOR). Empty -> hold the Person (no public basis).
+  developerOrganization: the single Organization with DEVELOPS_PLATFORM to the platform; zero or several -> identity tier provisional (issuer null)
+  metricIssuer: the single Organization reached by Organization-OFFERS->Product-(DELIVERS_LABTEST|IMPLEMENTS_PANEL)->(LabTest|PanelDefinition)-(MEASURES|INCLUDES_BIOMARKER)->Biomarker; zero or several -> definitionIssuerName null, tier provisional
+  hostMatchesLister: urlHost(listing.url) equals urlHost(organization.websiteUrl) for the LISTS edge's organization
+  eventPrimarySubject: the single Organization reached by ABOUT from the Event; zero or several -> tier provisional
+
+commonProperties:   # applied to every label unless the label overrides the key
+  id: {disposition: migrate, to: "MIGRATED_FROM.legacyId (identity input)", note: "legacy UUID/slug; not a v2 identifier"}
+  mongoResearchRunId: {disposition: migrate, to: "legacy research Activity (WAS_INFORMED_BY) and qualifier legacy:runId", note: also retained on the legacy node}
+  createdAt: {disposition: retain-legacy, note: legacy record time; v2 createdAt is the v2 write time}
+  updatedAt: {disposition: retain-legacy, note: legacy record time}
+  name: {disposition: migrate, to: name}
+  description: {disposition: migrate, to: description, note: "types without a description field keep it legacy (per-label override)"}
+  searchText: {disposition: exclude, note: regenerable search text; v2 types with searchText regenerate it}
+  searchFields: {disposition: exclude, note: regenerable legacy search-build metadata}
+  searchEmbedding: {disposition: retain-legacy, note: OD-44 profile not served; legacy vector indexes untouched}
+  embeddingModel: {disposition: retain-legacy, note: OD-44}
+  embeddingDimensions: {disposition: retain-legacy, note: OD-44}
+
+nodes:
+  Biomarker:
+    count: 41
+    disposition: migrate
+    target: {type: Metric, token: metric, labels: [Metric, Entity], module: D4}
+    reason: every legacy Biomarker is a vendor-reported, DNA-methylation-derived estimate (measurementDirectness is a methylation-derived proxy for all rows); D4 models such a number as a Metric (ALGORITHM_OUTPUT) that QUANTIFIES a curated Biomarker. The curated Biomarker concept (hu:biomarker:<slug>) is curation, so QUANTIFIES is held resolution work rather than guessed.
+    fields: {metricKind: ALGORITHM_OUTPUT, defaultResultKind: INFERRED, definitionSource: VENDOR, definitionIssuerName: "derivation metricIssuer", scale: null, canonicalUnitCode: null}
+    identity: {keys: [definitionSource, definitionIssuerName, name, canonicalUnitCode], tier: provisional, nameBasis: name}
+    heldWork: ["QUANTIFIES -> curated Biomarker (curation)"]
+    properties:
+      description: {disposition: migrate, to: definitionText}
+      searchText: {disposition: migrate, to: searchText}
+      specimenMatrix: {disposition: migrate, to: systemText}
+      measurementDirectness: {disposition: migrate, to: methodText}
+      biomarkerType: {disposition: retain-legacy, note: free-text grouping; no v2 field (curation input)}
+      moleculeClass: {disposition: retain-legacy, note: free text; analyte typing belongs to the curated Biomarker}
+      clinicalSignificance: {disposition: retain-legacy, note: narrative; any clinical statement needs an evidenced Assertion}
+  LabTest:
+    count: 4
+    disposition: migrate
+    target: {type: LabTest, token: lab-test, labels: [LabTest, Entity], module: D4}
+    reason: legacy lab tests are vendor algorithm reports over a methylation assay
+    fields: {testKind: "enumMap testType"}
+    enumMaps:
+      testType:
+        DNA methylation biological age assessment: ALGORITHM_REPORT
+        DNA methylation biomarker proxy assessment: ALGORITHM_REPORT
+        immune cell deconvolution: ALGORITHM_REPORT
+        biological age / epigenetics test: ALGORITHM_REPORT
+    identity: {keys: [issuer, name], tier: provisional, nameBasis: name}
+    properties:
+      description: {disposition: retain-legacy, note: LabTest has no description field}
+      testType: {disposition: migrate, to: testKind, transform: enumMap}
+  PanelDefinition:
+    count: 4
+    disposition: migrate
+    target: {type: LabTest, token: lab-test, labels: [LabTest, Entity], module: D4}
+    reason: migration-notes one-to-one PanelDefinition -> LabTest; a panel is a LabTest with testKind PANEL
+    fields: {testKind: PANEL}
+    identity: {keys: [issuer, name], tier: provisional, nameBasis: name}
+    properties:
+      description: {disposition: retain-legacy, note: LabTest has no description field}
+      panelType: {disposition: retain-legacy, note: free-text grouping}
+      versionLabel: {disposition: retain-legacy, note: legacy extraction batch label, not a test version}
+  TechnologyPlatform:
+    count: 7
+    disposition: migrate
+    condition: "platformClass in enumMaps.platformClass"
+    elseDisposition: quarantine
+    elseReason: an assay platform (DNA methylation array) is an AssayVersion, whose identity needs exactly one performing lab and payload fields the legacy row lacks
+    target: {type: AlgorithmVersion, token: algorithm-version, labels: [AlgorithmVersion, Entity], module: D4}
+    reason: algorithm platforms are vendor realizations of named algorithm families; the version is unstated, which v2 records as versionBasis UNKNOWN (no invented version or pin date)
+    fields: {algorithmFamily: name, familyKey: "slug(name)", algorithmKind: "enumMap platformClass", realization: VENDOR_IMPLEMENTATION, versionLabel: null, versionBasis: UNKNOWN, versionPinnedAt: null}
+    enumMaps:
+      platformClass:
+        cross-array harmonization: OTHER
+        epigenetic clock algorithm: EPIGENETIC_CLOCK
+        organ-system epigenetic clock algorithm: EPIGENETIC_CLOCK
+        published epigenetic pace-of-aging algorithm: EPIGENETIC_CLOCK
+        methylation-derived biomarker proxy models: OTHER
+        immune cell deconvolution model: OTHER
+    identity: {keys: [familyKey, realization, issuer, versionPinnedAt], tier: provisional, issuer: "derivation developerOrganization", nameBasis: name}
+    properties:
+      description: {disposition: retain-legacy, note: AlgorithmVersion has no description field}
+      platformClass: {disposition: migrate, to: algorithmKind, transform: enumMap}
+  Product:
+    count: 23
+    disposition: migrate
+    target: {type: Product, token: product, labels: [Product, Entity], module: D6}
+    reason: enduring product identity; variants, packages, label versions and brand are not evidenced in the legacy rows and are held resolution work
+    fields: {productKind: "enumMap productType", marketedName: name, jurisdiction: null}
+    enumMaps:
+      productType:
+        Diagnostic test: DIAGNOSTIC_TEST_SERVICE
+        Epigenetic Aging Test: DIAGNOSTIC_TEST_SERVICE
+        Nutritional / Systems Health Test: DIAGNOSTIC_TEST_SERVICE
+        Combined Epigenetic Testing Panel: DIAGNOSTIC_TEST_SERVICE
+        Lab Test / Diagnostic Product: DIAGNOSTIC_TEST_SERVICE
+        Supplement: DIETARY_SUPPLEMENT
+        Bundle: OTHER
+    identity: {keys: [firstCapturedBrandUid, marketedName, jurisdiction], tier: provisional, nameBasis: name, note: no Brand exists in legacy data; BRANDED_AS is held}
+    heldWork: ["BRANDED_AS -> Brand", "HAS_VARIANT/HAS_PACKAGE/HAS_LABEL_VERSION (needs label capture)"]
+    properties:
+      description: {disposition: retain-legacy, note: Product has no description field}
+      productType: {disposition: migrate, to: productKind, transform: enumMap}
+      applicationContext: {disposition: retain-legacy}
+      approvedYear: {disposition: retain-legacy, note: a regulatory fact needs a LegalStatus with evidence}
+      categories: {disposition: retain-legacy}
+      currentAsOf: {disposition: retain-legacy, note: as-of statement; DateTime|String in legacy}
+      deliveryModel: {disposition: retain-legacy, note: free text; not mapped to an Offer purchase mode}
+      formulationSummary: {disposition: retain-legacy, note: not a label panel}
+      indicationSummary: {disposition: retain-legacy, note: indication claims need evidenced Assertions}
+      launchYear: {disposition: retain-legacy, note: Float|Integer in legacy; a LAUNCH Event needs evidence}
+      modalitySummary: {disposition: retain-legacy}
+      productClass: {disposition: retain-legacy}
+      status: {disposition: retain-legacy, note: RESEARCH|APPROVED are not market statuses with a jurisdiction}
+      targetCustomer: {disposition: retain-legacy}
+  ProductSnapshot:
+    count: 10
+    disposition: retain-legacy
+    reason: "OD-43 folds ProductSnapshot into LabelVersion history when the snapshot carries label content. These snapshots are byte-identical state caches of their Product (every non-temporal field equals the parent in the reference export) and carry no panel, serving or component declaration; minting a LabelVersion would fabricate label content, a Package chain and a contentDigest. Their validFrom/recordedFrom/stateHash stay on the legacy node; LabelVersion history is built from a future label capture."
+    properties:
+      applicationContext: {disposition: retain-legacy}
+      categories: {disposition: retain-legacy}
+      deliveryModel: {disposition: retain-legacy}
+      formulationSummary: {disposition: retain-legacy}
+      indicationSummary: {disposition: retain-legacy}
+      productType: {disposition: retain-legacy}
+      recordedFrom: {disposition: retain-legacy}
+      stateHash: {disposition: retain-legacy}
+      targetCustomer: {disposition: retain-legacy}
+      validFrom: {disposition: retain-legacy}
+      name: {disposition: retain-legacy}
+      description: {disposition: retain-legacy}
+      id: {disposition: retain-legacy}
+      mongoResearchRunId: {disposition: retain-legacy}
+  Listing:
+    count: 10
+    disposition: migrate
+    target: {type: MerchantListing, token: listing, labels: [MerchantListing, Entity], module: D6}
+    reason: host catalog entries with a stable URL; identity (hostDomain, hostItemId) is derivable exactly from the URL
+    fields: {listingKind: "DTC_PRODUCT_PAGE when derivation hostMatchesLister else OTHER", hostDomain: "urlHost(url)", hostItemId: "urlPath(url)", canonicalUrl: url, titleAsDisplayed: name, firstObservedAt: null, lastObservedAt: null}
+    identity: {keys: [hostDomain, hostItemId], tier: exact, nameBasis: name}
+    heldWork: ["Offer + OFFER_PRICE_* Assertions (purchase mode and price kind not stated; priceAmount/currency retained)", "LISTING_FOR -> Package (OD-43)"]
+    properties:
+      name: {disposition: migrate, to: [name, titleAsDisplayed]}
+      url: {disposition: migrate, to: [canonicalUrl, hostDomain, hostItemId], transform: [copy, urlHost, urlPath]}
+      description: {disposition: retain-legacy, note: MerchantListing has no description field}
+      listingType: {disposition: migrate, to: listingKind, note: "Product Page and Bundle both resolve through hostMatchesLister"}
+      commercialTermsSummary: {disposition: quarantine, note: input to held Offer/price work}
+      currency: {disposition: quarantine, note: input to held price Assertion}
+      priceAmount: {disposition: quarantine, note: input to held price Assertion (predicate needs purchase mode)}
+      currentAsOf: {disposition: retain-legacy, note: as-of statement; not an observation time}
+  ListingSnapshot:
+    count: 10
+    disposition: retain-legacy
+    reason: byte-identical state caches of their Listing (OD-43 rationale as ProductSnapshot); price history needs Offer price Assertions from evidenced captures, held with the Listing price work
+    properties:
+      commercialTermsSummary: {disposition: retain-legacy}
+      currency: {disposition: retain-legacy}
+      listingType: {disposition: retain-legacy}
+      priceAmount: {disposition: retain-legacy}
+      recordedFrom: {disposition: retain-legacy}
+      stateHash: {disposition: retain-legacy}
+      url: {disposition: retain-legacy}
+      validFrom: {disposition: retain-legacy}
+      name: {disposition: retain-legacy}
+      description: {disposition: retain-legacy}
+      id: {disposition: retain-legacy}
+      mongoResearchRunId: {disposition: retain-legacy}
+  Organization:
+    count: 3
+    disposition: migrate
+    target: {type: Organization, token: org, labels: [Organization, Entity], module: D7}
+    reason: organizations named by the legacy research runs; no registry identifiers exist, so identity is the provisional (normalized legal name, jurisdiction) tier
+    fields: {entityKind: "LEGAL_ENTITY when legalName present else UNSPECIFIED", organizationKind: "enumMap organizationType (unlisted -> null, verbatim retained)", legalName: legalName, jurisdiction: null, status: null}
+    enumMaps:
+      organizationType:
+        DIAGNOSTICS_COMPANY: DIAGNOSTICS_OR_DEVICE
+    enumMapMiss: "null (organizationKind is optional; Company and PRIVATE_COMPANY state no industry)"
+    identity: {keys: [legalName, jurisdiction], tier: provisional, nameBasis: "firstNonNull(displayName, name)"}
+    properties:
+      organizationType: {disposition: migrate, to: organizationKind, transform: enumMap}
+      legalName: {disposition: migrate, to: legalName}
+      active: {disposition: retain-legacy, note: status needs ORGANIZATION_STATUS evidence}
+      canonicalTicker: {disposition: retain-legacy, note: no registered ticker scheme}
+      competitivePositionSummary: {disposition: retain-legacy}
+      currentAsOf: {disposition: retain-legacy, note: DateTime|String in legacy}
+      displayName: {disposition: retain-legacy, note: used as name basis only}
+      employeeCountBand: {disposition: retain-legacy}
+      employeeCountMin: {disposition: retain-legacy}
+      employeeCountRaw: {disposition: retain-legacy}
+      foundedYear: {disposition: retain-legacy, note: a founding Event needs evidence}
+      fundingStage: {disposition: retain-legacy}
+      headquartersSummary: {disposition: retain-legacy}
+      incorporatedOn: {disposition: retain-legacy}
+      isManufacturer: {disposition: retain-legacy, note: MANUFACTURES needs a product object and evidence}
+      isProviderOrganization: {disposition: retain-legacy}
+      isPublicCompany: {disposition: retain-legacy}
+      isResearchOrganization: {disposition: retain-legacy}
+      operatingSummary: {disposition: retain-legacy}
+      pipelineSummary: {disposition: retain-legacy}
+      revenueModel: {disposition: retain-legacy}
+      sector: {disposition: retain-legacy, note: free text}
+      valueChainStages: {disposition: retain-legacy}
+      websiteUrl: {disposition: retain-legacy, note: input to hostMatchesLister; WEB_DOMAIN is a requested Brand scheme only}
+  OrganizationSnapshot:
+    count: 1
+    disposition: retain-legacy
+    reason: byte-identical state cache of its Organization; organization history in v2 is FIELD/role Assertions with episodes from evidenced captures (OD-43 rationale)
+    properties:
+      competitivePositionSummary: {disposition: retain-legacy}
+      foundedYear: {disposition: retain-legacy}
+      headquartersSummary: {disposition: retain-legacy}
+      operatingSummary: {disposition: retain-legacy}
+      organizationType: {disposition: retain-legacy}
+      pipelineSummary: {disposition: retain-legacy}
+      recordedFrom: {disposition: retain-legacy}
+      sector: {disposition: retain-legacy}
+      stateHash: {disposition: retain-legacy}
+      validFrom: {disposition: retain-legacy}
+      websiteUrl: {disposition: retain-legacy}
+      name: {disposition: retain-legacy}
+      description: {disposition: retain-legacy}
+      id: {disposition: retain-legacy}
+      mongoResearchRunId: {disposition: retain-legacy}
+  Person:
+    count: 36
+    disposition: migrate
+    condition: "derivation publicActorBasis is non-empty"
+    elseDisposition: quarantine
+    elseReason: no migrated public role makes the person a public actor (privacy rule of D7 Person)
+    target: {type: Person, token: person, labels: [Person, Entity], module: D7}
+    reason: people named in public organization and publication roles
+    fields: {publicActorBasis: "derivation publicActorBasis", credentialsVerbatim: null}
+    identity: {keys: [name, publicRole, organization], tier: provisional, nameBasis: name}
+    properties:
+      title: {disposition: retain-legacy, note: job title verbatim; role edges carry roleKind}
+      bio: {disposition: retain-legacy, note: narrative}
+  Study:
+    count: 2
+    disposition: migrate
+    target: {type: Publication, token: publication, labels: [Publication, Entity], module: D3}
+    reason: both legacy Study rows are publications (studyType Publication, registryNamespace DOI); a D3 Study is a registered/described research study and is not evidenced
+    fields: {publicationKind: "enumMap evidenceLevel", publishedAt: null, venueName: null}
+    enumMaps:
+      evidenceLevel:
+        preprint: PREPRINT
+        peer-reviewed: ARTICLE
+    identity: {keys: [DOI], tier: exact, nameBasis: name}
+    identifiers: [{scheme: DOI, issuer: doi.org, value: "firstNonNull(doi, registryId when registryNamespace == DOI)", normalization: "lower-case; strip https://doi.org/ prefix", link: "HAS_IDENTIFIER (asserted, IdentifierLinkProperties, isPrimary true)"}]
+    properties:
+      description: {disposition: retain-legacy, note: Publication has no description field}
+      doi: {disposition: migrate, to: "Identifier(DOI)"}
+      registryId: {disposition: migrate, to: "Identifier(DOI) when registryNamespace is DOI"}
+      registryNamespace: {disposition: migrate, to: "Identifier scheme selector"}
+      evidenceLevel: {disposition: migrate, to: publicationKind, transform: enumMap}
+      studyType: {disposition: retain-legacy, note: constant Publication; consumed by the type decision}
+      canonicalUrl: {disposition: retain-legacy, note: a rendition Source needs a captured snapshot}
+  Document:
+    count: 2
+    disposition: retain-legacy
+    reason: Knowledge Services document-lane records (documentId/documentKey under the live document_* constraints); v2 represents a captured document as Source/SourceSnapshot with captured bytes, which these rows do not carry. Re-anchoring is Knowledge Services capture work.
+    properties:
+      documentDomain: {disposition: retain-legacy}
+      documentId: {disposition: retain-legacy}
+      documentKey: {disposition: retain-legacy}
+      fileFormat: {disposition: retain-legacy}
+      isPeerReviewed: {disposition: retain-legacy}
+      isPrimarySource: {disposition: retain-legacy}
+      languageCode: {disposition: retain-legacy}
+      publishedAt: {disposition: retain-legacy}
+      publisher: {disposition: retain-legacy}
+      title: {disposition: retain-legacy}
+      type: {disposition: retain-legacy}
+      url: {disposition: retain-legacy}
+      description: {disposition: retain-legacy}
+      searchText: {disposition: retain-legacy}
+      mongoResearchRunId: {disposition: retain-legacy}
+  Event:
+    count: 3
+    disposition: migrate
+    condition: "eventStatus in enumMaps.eventStatus"
+    elseDisposition: quarantine
+    elseReason: "ANNOUNCED is not a v2 EventStatus (PLANNED | IN_PROGRESS | OCCURRED | CANCELLED); whether an announced event occurred is not stated"
+    target: {type: Event, token: event, labels: [Event, Entity], module: D13}
+    fields: {eventKind: "enumMap eventCategory", eventKindNote: "legacy eventCategory verbatim when mapped to OTHER", eventStatus: "enumMap eventStatus", startedAt: "isoInstant(happenedAt)", startedAtBasis: UNKNOWN, startedAtPrecision: null, summaryText: summaryText, jurisdiction: null}
+    enumMaps:
+      eventCategory:
+        FINANCING_EVENT: FINANCING
+        CORPORATE_EVENT: OTHER
+      eventStatus:
+        COMPLETED: OCCURRED
+    identity: {keys: [eventKind, primarySubjectUid, jurisdiction, firstStatedTimeAtPrecision, discriminator], tier: provisional, primarySubject: "derivation eventPrimarySubject", nameBasis: name}
+    properties:
+      description: {disposition: retain-legacy, note: Event has no description field}
+      eventCategory: {disposition: migrate, to: eventKind, transform: enumMap}
+      eventStatus: {disposition: migrate, to: eventStatus, transform: enumMap}
+      happenedAt: {disposition: migrate, to: startedAt, transform: isoInstant}
+      summaryText: {disposition: migrate, to: summaryText}
+      impactLevel: {disposition: retain-legacy, note: editorial rating}
+      sourceUrl: {disposition: retain-legacy, note: evidence needs a captured snapshot}
+  PhysicalLocation:
+    count: 2
+    disposition: retain-legacy
+    reason: v2 has no location node type; headquarters text has no registered predicate
+    properties:
+      addressText: {disposition: retain-legacy}
+      city: {disposition: retain-legacy}
+      country: {disposition: retain-legacy}
+      isHeadquarters: {disposition: retain-legacy}
+      locationType: {disposition: retain-legacy}
+      region: {disposition: retain-legacy}
+      name: {disposition: retain-legacy}
+      description: {disposition: retain-legacy}
+      id: {disposition: retain-legacy}
+      mongoResearchRunId: {disposition: retain-legacy}
+  RegulatoryStatus:
+    count: 6
+    disposition: migrate
+    condition: "statusCode in enumMaps.statusCode"
+    elseDisposition: quarantine
+    elseReason: "LDT_CLIA_CAP_NOT_FDA_CLEARED_OR_APPROVED states an absence of FDA clearance plus CLIA/CAP laboratory accreditation; mapping it to a LegalStatusKind (e.g. ENFORCEMENT_DISCRETION) is a regulatory interpretation that needs a reviewed RegulatoryRecord"
+    target: {type: LegalStatus, token: legal-status, labels: [LegalStatus, Entity], module: D8}
+    fields: {statusKind: "enumMap statusCode", statusFamily: MARKET_ACCESS, jurisdiction: jurisdictionCode, pathway: null, statusVerbatim: statusCode, marketStatus: null, claimNumbers: null}
+    enumMaps:
+      statusCode:
+        FDA_APPROVED: APPROVED
+    identity: {keys: [statusOf, jurisdiction, pathway, statusKind, marketStatus, claimNumbers], tier: provisional, nameBasis: name}
+    properties:
+      description: {disposition: retain-legacy, note: LegalStatus has no description field}
+      statusCode: {disposition: migrate, to: [statusKind, statusVerbatim], transform: [enumMap, copy]}
+      jurisdictionCode: {disposition: migrate, to: jurisdiction}
+      effectiveDate: {disposition: retain-legacy, note: String; the STATUS_OF episode takes the edge validFrom}
+  Compound:
+    count: 19
+    disposition: migrate
+    target: {type: ChemicalSubstance, token: substance, labels: [ChemicalSubstance, Entity], module: D1}
+    reason: named substances without identifiers; the register's provisional identity tier (normalized preferred name, substanceClass) applies until UNII/InChIKey resolution
+    fields: {substanceClass: null}
+    identity: {keys: [UNII, INCHIKEY, "normalized preferred name", substanceClass], tier: provisional, nameBasis: name}
+    heldWork: ["identifier resolution (UNII / INCHIKEY / PUBCHEM_CID)"]
+    properties:
+      description: {disposition: retain-legacy, note: ChemicalSubstance has no description field}
+      searchText: {disposition: migrate, to: searchText}
+      commonName: {disposition: retain-legacy, note: synonym; regenerated into searchText by the v2 writer}
+  CompoundForm:
+    count: 26
+    disposition: migrate
+    target: {type: IngredientMaterial, token: material, labels: [IngredientMaterial, Entity], module: D1}
+    reason: product formulation ingredients; their defining substance and form are not resolved, which v2 records as materialKind UNRESOLVED
+    fields: {materialKind: UNRESOLVED}
+    identity: {keys: [materialKind, "defining substance", brandName, physicalForm, formDescriptor], tier: provisional, nameBasis: name}
+    heldWork: ["REALIZES_SUBSTANCE -> ChemicalSubstance (resolution)"]
+    properties:
+      description: {disposition: retain-legacy, note: IngredientMaterial has no description field}
+      searchText: {disposition: migrate, to: searchText}
+      dosageForm: {disposition: quarantine, note: "product dosage-form text with per-serving counts; input to held label/variant work"}
+  BellLabsSchemaDeploymentEvidence:
+    count: 1
+    disposition: retain-legacy
+    reason: operational deployment attestation (not domain knowledge); kept as-is, tagged LegacyV0, never migrated
+    properties:
+      active: {disposition: retain-legacy}
+      database: {disposition: retain-legacy}
+      deployed_sdl_digest: {disposition: retain-legacy}
+      deployment_id: {disposition: retain-legacy}
+      deployment_succeeded: {disposition: retain-legacy}
+      environment: {disposition: retain-legacy}
+      event_kind: {disposition: retain-legacy}
+      evidence_digest: {disposition: retain-legacy}
+      evidence_id: {disposition: retain-legacy}
+      issued_at: {disposition: retain-legacy}
+      issuer_authority_ref: {disposition: retain-legacy}
+      live_schema_snapshot_digest: {disposition: retain-legacy}
+      revoked: {disposition: retain-legacy}
+      schema_definition_ref: {disposition: retain-legacy}
+
+# Common legacy edge property dispositions (overridable per triple).
+commonEdgeProperties:
+  confidence: {disposition: migrate, to: Assertion.extractionConfidence}
+  mongoResearchRunId: {disposition: migrate, to: "qualifier legacy:runId; legacy research Activity"}
+  recordedFrom: {disposition: migrate, to: "qualifier legacy:recordedFrom", note: legacy record time kept verbatim}
+  validFrom: {disposition: migrate, to: "Assertion.validFrom / episode validFrom (basis UNKNOWN)", transform: isoInstant}
+  createdAt: {disposition: retain-legacy}
+  role: {disposition: retain-legacy, note: verbatim role text stays on the legacy edge; the locator cites it}
+  roleType: {disposition: retain-legacy, note: consumed by conditions/enum maps where listed}
+  title: {disposition: retain-legacy}
+  notes: {disposition: retain-legacy}
+
+relationships:
+  - {type: ABOUT, from: Document, to: Organization, count: 2, disposition: retain-legacy, reason: Knowledge Services document lane (Document retained)}
+  - type: ABOUT
+    from: Event
+    to: Organization
+    count: 3
+    disposition: migrate
+    target: {kind: predicate-assertion, predicate: EVENT_ABOUT, subject: from, object: to}
+    requires: [from migrated, to migrated]
+    reason: D13 registered predicate EVENT_ABOUT (object Subjectable)
+    properties:
+      aboutness: {disposition: retain-legacy, note: extraction score; no v2 field}
+      salience: {disposition: retain-legacy}
+      extractedAt: {disposition: migrate, to: "qualifier legacy:extractedAt"}
+      extractionMethod: {disposition: retain-legacy}
+      extractorVersion: {disposition: retain-legacy}
+      supportType: {disposition: retain-legacy}
+  - type: ADVISES
+    from: Person
+    to: Organization
+    count: 18
+    disposition: migrate
+    target: {kind: asserted-relationship, type: HOLDS_ROLE, class: asserted, edgeProperties: RoleEdgeProperties, roleKind: ADVISOR, direction: same}
+    requires: [from migrated, to migrated]
+  - {type: AUTHORED_BY, from: Document, to: Organization, count: 2, disposition: retain-legacy, reason: Knowledge Services document lane (Document retained), properties: {}}
+  - type: CONTAINS_COMPOUND_FORM
+    from: Product
+    to: CompoundForm
+    count: 27
+    disposition: quarantine
+    reason: v2 carries formulation through LabelVersion DECLARES_COMPONENT (ComponentLineProperties) under Package/ProductVariant; no label version is evidenced (OD-43). Dose and unit stay on the legacy edge as held label work.
+    properties:
+      dose: {disposition: quarantine}
+      doseUnit: {disposition: quarantine}
+  - type: DELIVERS_LABTEST
+    from: Product
+    to: LabTest
+    count: 7
+    disposition: migrate
+    target: {kind: asserted-relationship, type: DELIVERS, class: asserted, edgeProperties: AssertedRecordedProperties, direction: same}
+    requires: [from migrated, to migrated]
+  - type: DEVELOPS_PLATFORM
+    from: Organization
+    to: TechnologyPlatform
+    count: 7
+    disposition: quarantine
+    reason: no registered v2 relationship from an Organization to an AlgorithmVersion; the developer is an identity input of AlgorithmVersion (derivation developerOrganization) and the edge is held for D4 review
+  - type: EMPLOYS
+    from: Organization
+    to: Person
+    count: 15
+    disposition: migrate
+    target: {kind: asserted-relationship, type: HOLDS_ROLE, class: asserted, edgeProperties: RoleEdgeProperties, roleKind: "enumMap role", direction: reversed}
+    enumMaps:
+      role:
+        Employee: EMPLOYEE
+        Chief Operating Officer: EXECUTIVE_OFFICER
+        Chief Product Officer: EXECUTIVE_OFFICER
+        General Counsel: OTHER
+        Vice President of Communications and Brand Marketing: OTHER
+    requires: [from migrated, to migrated]
+    properties:
+      role: {disposition: migrate, to: roleKind, transform: enumMap}
+  - type: FOUNDED_BY
+    from: Organization
+    to: Person
+    count: 4
+    disposition: migrate
+    target: {kind: asserted-relationship, type: HOLDS_ROLE, class: asserted, edgeProperties: RoleEdgeProperties, roleKind: FOUNDER, direction: reversed}
+    requires: [from migrated, to migrated]
+  - type: HAS_CEO
+    from: Organization
+    to: Person
+    count: 2
+    disposition: migrate
+    target: {kind: asserted-relationship, type: HOLDS_ROLE, class: asserted, edgeProperties: RoleEdgeProperties, roleKind: EXECUTIVE_OFFICER, direction: reversed}
+    requires: [from migrated, to migrated]
+  - {type: HAS_LOCATION, from: Organization, to: PhysicalLocation, count: 2, disposition: retain-legacy, reason: PhysicalLocation has no v2 type}
+  - {type: HAS_PRIMARY_SOURCE, from: Study, to: Document, count: 2, disposition: quarantine, reason: "role 'Cited by report' contradicts the edge direction; citation semantics and the Document's capture are unresolved"}
+  - type: HAS_REGULATORY_STATUS
+    from: Product
+    to: RegulatoryStatus
+    count: 6
+    disposition: migrate
+    target: {kind: asserted-relationship, type: STATUS_OF, class: asserted, edgeProperties: AssertedEdgeProperties, direction: reversed}
+    requires: [from migrated, to migrated]
+    reason: v2 STATUS_OF (LegalStatus -> Product) episode; held with its LegalStatus when the status is held
+  - {type: HAS_SNAPSHOT, from: Listing, to: ListingSnapshot, count: 10, disposition: retain-legacy, reason: snapshot state caches are retained legacy}
+  - {type: HAS_SNAPSHOT, from: Organization, to: OrganizationSnapshot, count: 1, disposition: retain-legacy, reason: snapshot state caches are retained legacy}
+  - {type: HAS_SNAPSHOT, from: Product, to: ProductSnapshot, count: 10, disposition: retain-legacy, reason: snapshot state caches are retained legacy}
+  - type: IMPLEMENTS
+    from: Product
+    to: TechnologyPlatform
+    count: 14
+    disposition: quarantine
+    reason: no registered v2 relationship from Product to an algorithm/assay version; v2 reaches it through DELIVERS -> LabTest -> PERFORMED_WITH_VERSION, which is migrated where the legacy LabTest USES_PLATFORM exists
+    properties:
+      usageContext: {disposition: quarantine}
+  - type: IMPLEMENTS_PANEL
+    from: Product
+    to: PanelDefinition
+    count: 8
+    disposition: migrate
+    target: {kind: asserted-relationship, type: DELIVERS, class: asserted, edgeProperties: AssertedRecordedProperties, direction: same}
+    requires: [from migrated, to migrated]
+  - type: INCLUDES_BIOMARKER
+    from: PanelDefinition
+    to: Biomarker
+    count: 38
+    disposition: migrate
+    target: {kind: asserted-relationship, type: MEASURES_METRIC, class: asserted, edgeProperties: AssertedEdgeProperties, direction: same}
+    requires: [from migrated, to migrated]
+  - type: INCLUDES_LABTEST
+    from: PanelDefinition
+    to: LabTest
+    count: 4
+    disposition: migrate
+    target: {kind: asserted-relationship, type: INCLUDES_TEST, class: asserted, edgeProperties: AssertedEdgeProperties, direction: same}
+    requires: [from migrated, to migrated]
+  - type: INVESTIGATED_BY
+    from: Study
+    to: Person
+    count: 5
+    disposition: migrate
+    condition: "roleType == AUTHOR"
+    target: {kind: predicate-assertion, predicate: AUTHORED_BY, subject: from, object: to}
+    requires: [from migrated, to migrated]
+    reason: legacy roleType AUTHOR on a Publication; D3 predicate AUTHORED_BY (Publication -> Person)
+  - type: LISTS
+    from: Organization
+    to: Listing
+    count: 10
+    disposition: migrate
+    condition: "derivation hostMatchesLister"
+    target: {kind: predicate-assertion, predicate: HOSTED_BY, subject: to, object: from}
+    requires: [from migrated, to migrated]
+    reason: the listing's host domain is the organization's own website domain, which is what HOSTED_BY states; seller of record is not stated (Offer held)
+  - type: LISTS_PRODUCT
+    from: Listing
+    to: Product
+    count: 10
+    disposition: quarantine
+    reason: OD-43 maps a listing only to a single evidenced Package; no Package is evidenced
+  - type: MEASURES
+    from: LabTest
+    to: Biomarker
+    count: 45
+    disposition: migrate
+    target: {kind: asserted-relationship, type: MEASURES_METRIC, class: asserted, edgeProperties: AssertedEdgeProperties, direction: same}
+    requires: [from migrated, to migrated]
+    properties:
+      method: {disposition: retain-legacy}
+      methodRole: {disposition: retain-legacy}
+      sampleType: {disposition: retain-legacy}
+  - type: OFFERS
+    from: Organization
+    to: Product
+    count: 14
+    disposition: migrate
+    condition: "roleType == DISTRIBUTOR"
+    target: {kind: predicate-assertion, predicate: DISTRIBUTES, subject: from, object: to}
+    requires: [from migrated, to migrated]
+    reason: D7 registered predicate DISTRIBUTES (Organization -> Product) matches the stated roleType; rows without a roleType are held
+  - {type: REPORTED_IN, from: Event, to: Document, count: 3, disposition: quarantine, reason: evidence pointer to a document without captured bytes; becomes HAS_EVIDENCE once Knowledge Services captures the document, properties: {aboutness: {disposition: quarantine}, salience: {disposition: quarantine}, extractedAt: {disposition: quarantine}, extractionMethod: {disposition: quarantine}, extractorVersion: {disposition: quarantine}, supportType: {disposition: quarantine}}}
+  - {type: SPONSORED_BY, from: Study, to: Organization, count: 2, disposition: quarantine, reason: "role 'Sponsor / affiliated company' does not distinguish funding (FUNDED_BY) from affiliation"}
+  - type: USES_PLATFORM
+    from: LabTest
+    to: TechnologyPlatform
+    count: 10
+    disposition: migrate
+    target: {kind: asserted-relationship, type: PERFORMED_WITH_VERSION, class: asserted, edgeProperties: AssertedEdgeProperties, direction: same}
+    requires: [from migrated, to migrated]
+    reason: held with its platform when the platform is held (assay platform)
+    properties:
+      method: {disposition: retain-legacy}
+      methodRole: {disposition: retain-legacy}
+      sampleType: {disposition: retain-legacy}
+      usageContext: {disposition: retain-legacy}
+  - {type: USES_PLATFORM, from: Organization, to: TechnologyPlatform, count: 7, disposition: quarantine, reason: no registered v2 relationship for an organization using an algorithm version, properties: {usageContext: {disposition: quarantine}, method: {disposition: quarantine}, methodRole: {disposition: quarantine}, sampleType: {disposition: quarantine}}}
+
+v1Policy:
+  liveOccurrence: none (no relationship-type token ABOUT_CONDITION, ASSESSES_CLAIM_EVIDENCE, CLAIM_EVIDENCE_BASED_ON, DEPENDS_ON, HOSTS_CHANNEL, PART_OF_PLAN or USES_COMPONENT exists in the reference export tokens or data)
+  authority: DECISIONS.md "Seven unmapped legacy relationships"; S1 hosts migration/v1-map.yaml for v1-shaped imports
+  plannerBehaviour: an export containing any of these types fails coverage and must be planned with v1-map.yaml
+
+operationalFindings:
+  - id: KS-CHUNK-CONSTRAINTS
+    finding: "Aura carries Knowledge Services Enterprise existence constraints on :Chunk (chunkId, chunkKey, index, text NOT NULL) and uniqueness on chunkId/chunkKey. The v2 D9 Chunk stores chunkIndex (not index) and no chunkId/chunkKey, so any v2 Chunk write on Aura fails these constraints."
+    impact: no impact on this migration (no Chunk nodes exist or are created); blocks a future v2 Chunk writer and the optional native chunk-vector route
+    owner: S1 DDL + lead/operator (production DDL change); recorded in OPTIONAL-CAPABILITIES.md
+  - id: LEGACY-INDEXES
+    finding: 46 legacy FULLTEXT/VECTOR indexes and 56 RANGE indexes target labels that v2 reuses (Biomarker, LabTest, Metric, Organization, Person, Product, Event, Study, Mechanism, Condition, Claim, Protocol, Chunk). After relabeling, legacy rows leave them and v2 rows with the same property names enter them.
+    impact: no correctness impact on typed reads; S1 decides retain/replace in ddl.json; the migration never drops an index

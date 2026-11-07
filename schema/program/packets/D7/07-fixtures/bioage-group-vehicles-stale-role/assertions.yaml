@@ -1,0 +1,140 @@
+# assertions.yaml — fixture bioage-group-vehicles-stale-role (D7, fixtures stage, A6, 2026-10-08; optional fixture)
+#
+# Disconfirmation case: (1) an investor group named collectively ("Entities affiliated with Andreessen Horowitz") is
+# decomposed into fund vehicles and general-partner LLCs without collapsing the group into one entity; (2) a director's
+# affiliation with the investor ended in a stated month, so any later statement that presents him in that role is
+# contradicted (Q-D7-17). Kernel shape as in the sinclair fixture; locators in ./locators.yaml (offsets index the h2t.py
+# text projection). producedBy ids are FIXTURE-SCOPED. Ages printed in the proxy and the shared business address are
+# not stored.
+fixture: bioage-group-vehicles-stale-role
+producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-bioage-group-vehicles-stale-role" }
+
+entities:
+  - { uid: "hu:org:bioage-labs-inc", type: Organization, name: "BioAge Labs, Inc.", entityKind: LEGAL_ENTITY, organizationKind: BIOTECH_OR_PHARMA, identifiers: [{ scheme: SEC_CIK, issuer: "US SEC", value: "0001709941" }, { scheme: LEI, issuer: GLEIF, value: "529900NG0C40250Z7875", note: "from the research-stage GLEIF lookup (tool log #16)" }] }
+  - { uid: "hu:org:entities-affiliated-with-andreessen-horowitz", type: Organization, name: "Entities affiliated with Andreessen Horowitz", entityKind: CORPORATE_GROUP, organizationKind: INVESTOR_OR_FUND }
+  - { uid: "hu:org:ah-bio-fund-i-lp", type: Organization, name: "AH Bio Fund I, L.P.", entityKind: LEGAL_ENTITY, organizationKind: INVESTOR_OR_FUND }
+  - { uid: "hu:org:ah-equity-partners-bio-i-llc", type: Organization, name: "AH Equity Partners Bio I, L.L.C.", entityKind: LEGAL_ENTITY, organizationKind: INVESTOR_OR_FUND, note: "defined term 'AH EP Bio I'" }
+  - { uid: "hu:org:andreessen-horowitz", type: Organization, name: "Andreessen Horowitz", entityKind: UNSPECIFIED, organizationKind: INVESTOR_OR_FUND, note: "'a venture capital firm' (the firm as an employer); NOT the same record as the group of fund entities above" }
+  - { uid: "hu:person:marc-andreessen", type: Person, name: "Marc Andreessen", publicActorBasis: [FOUNDER_OR_INVESTOR], privacyClass: PUBLIC }
+  - { uid: "hu:person:vijay-pande", type: Person, name: "Vijay Pande", credentialsVerbatim: "Ph.D.", publicActorBasis: [OFFICER_OR_DIRECTOR, FOUNDER_OR_INVESTOR], privacyClass: PUBLIC }
+
+assertions:
+  # ---- the group holding: two clocks, two Assertions (adversarial-review stage). The share count is the 13D's figure as
+  #      of 2024-09-27 (footnote 1); the percentage is the registrant's, over 44,397,817 shares outstanding on 2026-04-16.
+  - id: b-01
+    predicate: HOLDS_STAKE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:bioage-labs-inc", type: Organization }
+    subject: { uid: "hu:org:entities-affiliated-with-andreessen-horowitz", type: Organization }
+    object: { uid: "hu:org:bioage-labs-inc", type: Organization }
+    edge: { type: HOLDS_STAKE, properties: { stakeKind: EQUITY, stakeBand: UNSTATED, ownershipBasis: BENEFICIAL, votingPower: UNSTATED, dispositivePower: UNSTATED, stakeClassVerbatim: "3,233,170 shares of common stock (group total)" } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2024-09-27T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["GROUP-LEVEL total, aggregated over member vehicles (labelled as aggregated in any answer)", "share count as of 2024-09-27 per the Schedule 13D (filed 2024-10-04) that footnote (1) relies on; the four vehicle counts in the footnote (1,269,072 + 189,609 + 655,294 + 1,119,195) sum to 3,233,170", "no percentage on this clock: the printed 7.28 % is the registrant's figure at 2026-04-16 (b-01p)"]
+    evidence: [{ locator: loc-bio-a16z-row, role: SUPPORTS, origin: DECLARED }, { locator: loc-bio-fn1-13d, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-bioage-group-vehicles-stale-role" }
+  - id: b-01p
+    predicate: HOLDS_STAKE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:bioage-labs-inc", type: Organization }
+    subject: { uid: "hu:org:entities-affiliated-with-andreessen-horowitz", type: Organization }
+    object: { uid: "hu:org:bioage-labs-inc", type: Organization }
+    edge: { type: HOLDS_STAKE, properties: { stakeKind: EQUITY, stakePercent: 7.28, stakeBand: AT_LEAST_5, ownershipBasis: BENEFICIAL, votingPower: UNSTATED, dispositivePower: UNSTATED, stakeClassVerbatim: "7.28 % of common stock (group total; table as of April 16, 2026)" } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2026-04-16T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["percent of class as printed in the beneficial-ownership table dated April 16, 2026, over 44,397,817 shares outstanding at the close of business on that date (loc-bio-outstanding)", "the numerator is the 2024-09-27 share count of b-01: the registrant applies an older holder figure to a current denominator; the percent is the registrant's statement at 2026-04-16, not the holder's"]
+    evidence: [{ locator: loc-bio-a16z-row, role: SUPPORTS, origin: DECLARED }, { locator: loc-bio-table-asof, role: SUPPORTS, origin: DECLARED }, { locator: loc-bio-outstanding, role: QUALIFIES, origin: DECLARED }, { locator: loc-bio-fn1-13d, role: QUALIFIES, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-bioage-group-vehicles-stale-role" }
+  - id: b-02
+    predicate: HOLDS_STAKE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:bioage-labs-inc", type: Organization }
+    subject: { uid: "hu:org:ah-bio-fund-i-lp", type: Organization }
+    object: { uid: "hu:org:bioage-labs-inc", type: Organization }
+    edge: { type: HOLDS_STAKE, properties: { stakeKind: EQUITY, ownershipBasis: OF_RECORD, stakeClassVerbatim: "1,269,072 shares of common stock held of record (for itself and as nominee for AH Bio Fund I-B, L.P.)" } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2024-09-27T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    evidence: [{ locator: loc-bio-fn1-fund1, role: SUPPORTS, origin: DECLARED }, { locator: loc-bio-fn1-13d, role: QUALIFIES, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-bioage-group-vehicles-stale-role" }
+  - id: b-03
+    predicate: PARENT_OF
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:bioage-labs-inc", type: Organization }
+    subject: { uid: "hu:org:entities-affiliated-with-andreessen-horowitz", type: Organization }
+    object: { uid: "hu:org:ah-bio-fund-i-lp", type: Organization }
+    edge: { type: PARENT_OF, properties: { controlKind: GROUP_MEMBER_UNSPECIFIED } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2024-09-27T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["the group row 'consists of' the holdings listed in footnote (1): membership only, no control detail"]
+    evidence: [{ locator: loc-bio-fn1-fund1, role: SUPPORTS, origin: DECLARED }, { locator: loc-bio-a16z-row, role: CONTEXT, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-bioage-group-vehicles-stale-role" }
+  - id: b-04
+    predicate: PARENT_OF
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:bioage-labs-inc", type: Organization }
+    subject: { uid: "hu:org:ah-equity-partners-bio-i-llc", type: Organization }
+    object: { uid: "hu:org:ah-bio-fund-i-lp", type: Organization }
+    edge: { type: PARENT_OF, properties: { controlKind: GENERAL_PARTNER_OR_MANAGING_MEMBER } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2024-09-27T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["'the general partner of the AH Bio Fund I Entities, may be deemed to have voting and dispositive power'"]
+    evidence: [{ locator: loc-bio-fn1-gp, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-bioage-group-vehicles-stale-role" }
+  - id: b-05
+    predicate: HOLDS_ROLE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:bioage-labs-inc", type: Organization }
+    subject: { uid: "hu:person:marc-andreessen", type: Person }
+    object: { uid: "hu:org:ah-equity-partners-bio-i-llc", type: Organization }
+    edge: { type: HOLDS_ROLE, properties: { roleKind: MANAGING_MEMBER_OR_GENERAL_PARTNER, roleTitleVerbatim: "managing member" } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2024-09-27T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["the same span names a second managing member and three further GP LLCs (same shape, not repeated)"]
+    evidence: [{ locator: loc-bio-fn1-managing, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-bioage-group-vehicles-stale-role" }
+
+  # ---- the stale role
+  - id: b-06
+    predicate: HOLDS_ROLE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:bioage-labs-inc", type: Organization }
+    subject: { uid: "hu:person:vijay-pande", type: Person }
+    object: { uid: "hu:org:bioage-labs-inc", type: Organization }
+    edge: { type: HOLDS_ROLE, properties: { roleKind: DIRECTOR, roleTitleVerbatim: "member of our Board of Directors" } }
+    validTime: { validFrom: "2017-06-01T00:00:00Z", validFromPrecision: MONTH, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2026-04-21T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    evidence: [{ locator: loc-bio-pande-board, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-bioage-group-vehicles-stale-role" }
+  - id: b-07
+    predicate: HOLDS_ROLE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:bioage-labs-inc", type: Organization }
+    subject: { uid: "hu:person:vijay-pande", type: Person }
+    object: { uid: "hu:org:andreessen-horowitz", type: Organization }
+    edge: { type: HOLDS_ROLE, properties: { roleKind: MANAGING_MEMBER_OR_GENERAL_PARTNER, roleTitleVerbatim: "General Partner" } }
+    validTime: { validFrom: "2015-09-01T00:00:00Z", validFromPrecision: MONTH, validFromBasis: STATED_BY_SOURCE, validTo: "2025-06-01T00:00:00Z", validToPrecision: MONTH, validToBasis: STATED_BY_SOURCE }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["'From September 2014 to June 2025 ... various roles ... most recently as a General Partner since September 2015': the GP episode is 2015-09 to 2025-06; an EMPLOYEE episode 2014-09 to 2025-06 is the same shape (not repeated)", "corroborated by 'Dr. Pande departed from Andreessen Horowitz in June 2025.'"]
+    evidence: [{ locator: loc-bio-pande-a16z, role: SUPPORTS, origin: DECLARED }, { locator: loc-bio-pande-departed, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-bioage-group-vehicles-stale-role" }
+
+assessments:
+  - id: as-stale-01
+    assessmentKind: EVIDENCE_SYNTHESIS
+    assessmentSubkind: "D7.role-agreement"
+    status: PROPOSED
+    methodVersion: "fixture-expected/1"
+    conclusionCode: ROLE_CLOSED
+    about: [{ uid: "hu:person:vijay-pande", type: Person }, { uid: "hu:org:andreessen-horowitz", type: Organization }]
+    inputAssertions: [b-07]
+    outcome: "ROLE_CLOSED: the General Partner episode ends in June 2025 (MONTH, stated twice in the same proxy). OVERLAP rule (03): a statement dated July 2025 or later that presents him as an Andreessen Horowitz partner is DISJOINT -> 'title used after role ended' (Q-D7-17); a statement dated in June 2025 is UNKNOWN (equal at MONTH precision). The proxy's own 'was affiliated with Andreessen Horowitz at the time of this transaction' is consistent (past tense)."
+    evidence: [{ locator: loc-bio-pande-departed, role: SUPPORTS }, { locator: loc-bio-pande-at-time, role: CONTEXT }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-bioage-group-vehicles-stale-role" }

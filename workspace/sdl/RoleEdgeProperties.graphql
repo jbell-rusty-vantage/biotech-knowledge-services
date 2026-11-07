@@ -1,0 +1,22 @@
+"""
+HOLDS_ROLE episode: AssertedEdgeProperties plus the role qualifier. `roleKind` is the normalized role; the title or code
+exactly as printed ("B", "Director", "paid advisor", "Chief Executive Officer") is the authorizing Assertion's qualifier
+`roleText:` (R-30: a field that only reproduces the source's wording stays on the Assertion). When no bound is
+stated, the bounds stay null (basis OBSERVATION_ONLY / PUBLICATION_PROXY) and the date at which the source states the role
+held (table as-of date, filing signature date, revision date of a present-tense statement) is the authorizing Assertion's
+`validObservedAt`, read through `assertionUid`.
+"""
+type RoleEdgeProperties @relationshipProperties {
+  relationshipUid: String!
+  assertionUid: String!
+  validFrom: DateTime
+  validTo: DateTime
+  validFromPrecision: TimePrecision
+  validToPrecision: TimePrecision
+  validFromBasis: ValidTimeBasis!
+  validToBasis: ValidTimeBasis!
+  recordedFrom: DateTime!
+  recordedTo: DateTime
+  lastWriterRunId: String
+  roleKind: OrgRoleKind!
+}

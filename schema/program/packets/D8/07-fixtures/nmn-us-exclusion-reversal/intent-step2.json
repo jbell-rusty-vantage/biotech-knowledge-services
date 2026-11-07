@@ -1,0 +1,799 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v1",
+  "intentId": "ft-d8-nmn-step2-cp0872",
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "ft-D8-A7-fixtures",
+      "model": "claude-opus-5-5"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run:ft-D8-nmn-us-exclusion-reversal",
+      "missionId": "mission:ft-D8-fixtures"
+    },
+    "activityKind": "INGESTION"
+  },
+  "preconditions": [],
+  "onStale": "fail",
+  "sources": [
+    {
+      "ref": "snap-ndi-pdf",
+      "source": {
+        "canonicalUri": "https://downloads.regulations.gov/FDA-2022-S-0023-0051/attachment_1.pdf",
+        "title": "FDA letter re NDI 1259 β-Nicotinamide Mononucleotide (Inner Mongolia Kingdomway Pharmaceutical Limited), 2022-10-11",
+        "sourceKind": "PDF",
+        "properties": {
+          "genre": "REGULATOR_DETERMINATION_LETTER"
+        }
+      },
+      "snapshot": {
+        "observedAt": "2026-10-08T21:38:49Z",
+        "retrievedAt": "2026-10-08T21:38:49Z",
+        "contentHash": "sha256:6321a2bb36896f5d4a0f4037ca688532468e12739bc03eeb8ea37d9611ab5ad2",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "captureMethod": "curl 8.x with browser User-Agent + Referer https://www.regulations.gov/ + Accept application/pdf (plain curl gets 403)",
+          "mimeType": "application/pdf"
+        }
+      },
+      "locators": [
+        {
+          "ref": "loc-ndi-date",
+          "selectorKind": "PDF_TEXT",
+          "page": 1,
+          "quote": "October 11, 2022",
+          "quotePrefix": "lege Park, MD 20740 www.fda.gov ",
+          "quoteSuffix": " Dear : This letter is to inform",
+          "startOffset": 87,
+          "endOffset": 103,
+          "properties": {
+            "selectorDigest": "sha256:63fa3e342474fc6c1da73c151c44e7a86c1428d79f76819c7bf9743ab04d238e",
+            "textHash": "sha256:5ecc84c51592ef88dc055ee3950887a0efc005d810652d5b720d4dfc6ac3627b",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-ndi-determination",
+          "selectorKind": "PDF_TEXT",
+          "page": 2,
+          "quote": "Accordingly, we conclude that NMN is excluded from the",
+          "quotePrefix": "igations has been made public.1 ",
+          "quoteSuffix": " dietaiy supplement definition u",
+          "startOffset": 4446,
+          "endOffset": 4500,
+          "properties": {
+            "selectorDigest": "sha256:dc4d5e7f7f8ffa9f72b399bca7abf802fb55eca4428ce9af235a1516596e2c3c",
+            "textHash": "sha256:5ecc84c51592ef88dc055ee3950887a0efc005d810652d5b720d4dfc6ac3627b",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-ndi-signature",
+          "selectorKind": "PDF_TEXT",
+          "page": 2,
+          "quote": "Date: 2022.10.11",
+          "quotePrefix": "ally signed by Philip Yeager -5 ",
+          "quoteSuffix": " 17:59:25 -04'00' R. Philip Yeag",
+          "startOffset": 5291,
+          "endOffset": 5307,
+          "properties": {
+            "selectorDigest": "sha256:65b6a7b0967661e310caf7d322993fc73efe61daa9da0902a0a4bfded957ed9b",
+            "textHash": "sha256:5ecc84c51592ef88dc055ee3950887a0efc005d810652d5b720d4dfc6ac3627b",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        }
+      ]
+    },
+    {
+      "ref": "snap-ndi-fc",
+      "source": {
+        "canonicalUri": "https://downloads.regulations.gov/FDA-2022-S-0023-0051/attachment_1.pdf",
+        "title": "Same letter, Firecrawl markdown projection",
+        "sourceKind": "PDF",
+        "properties": {
+          "genre": "REGULATOR_DETERMINATION_LETTER"
+        }
+      },
+      "snapshot": {
+        "observedAt": "2026-10-08T21:38:36Z",
+        "retrievedAt": "2026-10-08T21:38:36Z",
+        "contentHash": "sha256:4f600af2e7d70242bc38fb213ca897f451c07b2ce5534f484dccde0c37be8f35",
+        "contentHashBasis": "NORMALIZED_TEXT",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "captureMethod": "firecrawl CLI 1.23.1 scrape --max-age 0 (markdown); NOT the document bytes",
+          "mimeType": "text/markdown"
+        }
+      },
+      "locators": [
+        {
+          "ref": "loc-fc-determination",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "Accordingly, we conclude that NMN is excluded from the dietary supplement definition under 21 U.S.C. § 321(ff)(3)(B)(ii) and may not be marketed as or in a dietary supplement.",
+          "quotePrefix": "s been made public.<sup>1</sup> ",
+          "quoteSuffix": " Your notification will be kept ",
+          "startOffset": 4366,
+          "endOffset": 4541,
+          "properties": {
+            "selectorDigest": "sha256:27d26b67e8bfdd14501c45ff1b340f290bb2e6da949bb036fa4c382c385a8265",
+            "textHash": "sha256:dd75e44d63f9b8fea75b0be16c0dae3cda1c26ef1bbfee8dfc3143717e760307",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        }
+      ]
+    },
+    {
+      "ref": "snap-cp-pdf",
+      "source": {
+        "canonicalUri": "https://downloads.regulations.gov/FDA-2023-P-0872-2754/attachment_1.pdf",
+        "title": "FDA response to NPA and ANH-USA citizen petition, Docket FDA-2023-P-0872",
+        "sourceKind": "PDF",
+        "properties": {
+          "genre": "REGULATOR_PETITION_RESPONSE"
+        }
+      },
+      "snapshot": {
+        "observedAt": "2026-10-08T21:38:50Z",
+        "retrievedAt": "2026-10-08T21:38:50Z",
+        "contentHash": "sha256:371a4b936e4cb7dcd5eb87837baa08612ccfb302c01863895e09c33aeb559dc4",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "captureMethod": "curl 8.x with browser User-Agent + Referer + Accept application/pdf",
+          "mimeType": "application/pdf"
+        }
+      },
+      "locators": [
+        {
+          "ref": "loc-cp-letterhead",
+          "selectorKind": "PDF_TEXT",
+          "page": 1,
+          "quote": "Human Foods Program",
+          "quotePrefix": "S. Food and Drug Administration ",
+          "quoteSuffix": " 5001 Campus Drive College Park,",
+          "startOffset": 34,
+          "endOffset": 53,
+          "properties": {
+            "selectorDigest": "sha256:e61526c998ab111a14306f1cb8e00b0de0e87f25d859091e8355e05e8dc2bc8b",
+            "textHash": "sha256:8a2b921b4e2f7915fee697fc77ec8a306538dd08bf09f7d8ee37b65c6d0c2dfd",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-cp-printed-date",
+          "selectorKind": "PDF_TEXT",
+          "page": 1,
+          "quote": "September 29, 2029",
+          "quotePrefix": "lege Park, MD 20740 www.fda.gov ",
+          "quoteSuffix": " Daniel Fabricant, Ph.D. Natural",
+          "startOffset": 107,
+          "endOffset": 125,
+          "properties": {
+            "selectorDigest": "sha256:6a4aa82f910407761db09c3f7a6ae48b8a3b7a93589fcc50bd7f957344a971de",
+            "textHash": "sha256:8a2b921b4e2f7915fee697fc77ec8a306538dd08bf09f7d8ee37b65c6d0c2dfd",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-cp-docket",
+          "selectorKind": "PDF_TEXT",
+          "page": 1,
+          "quote": "Re: Docket Number FDA-2023-P-0872",
+          "quoteSuffix": " Dear Dr. Fabricant and Ms. DuBe",
+          "startOffset": 392,
+          "endOffset": 425,
+          "properties": {
+            "selectorDigest": "sha256:5dd87136ad2ecb4bf9c8a0eef48b5b43b7057351ca0889e515a6a21892b2bdec",
+            "textHash": "sha256:8a2b921b4e2f7915fee697fc77ec8a306538dd08bf09f7d8ee37b65c6d0c2dfd",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-cp-npa",
+          "selectorKind": "PDF_TEXT",
+          "page": 1,
+          "quote": "Natural Products Association 440 1st Street, NW",
+          "quotePrefix": "9, 2029 Daniel Fabricant, Ph.D. ",
+          "quoteSuffix": " Washington, DC 20001 Gretchen D",
+          "startOffset": 150,
+          "endOffset": 197,
+          "properties": {
+            "selectorDigest": "sha256:aafa245be47afc26f75114ced443a1309e86dbfed0b97f5f11c1c347af9390f9",
+            "textHash": "sha256:8a2b921b4e2f7915fee697fc77ec8a306538dd08bf09f7d8ee37b65c6d0c2dfd",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-cp-anh",
+          "selectorKind": "PDF_TEXT",
+          "page": 1,
+          "quote": "Alliance for Natural Health USA Edinburg, VA 22824",
+          "quotePrefix": "au Executive and Legal Director ",
+          "quoteSuffix": " Sent via email to: daniel.fabri",
+          "startOffset": 264,
+          "endOffset": 314,
+          "properties": {
+            "selectorDigest": "sha256:a41b8923d6db94d1df0d8e8a617ba8db6309bbc41ac264a9cff30cf58a911acb",
+            "textHash": "sha256:8a2b921b4e2f7915fee697fc77ec8a306538dd08bf09f7d8ee37b65c6d0c2dfd",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-cp-subject",
+          "selectorKind": "PDF_TEXT",
+          "page": 1,
+          "quote": "regarding the regulatory status of Beta (β) Nicotinamide Mononucleotide (NMN)",
+          "quotePrefix": "sponds to your citizen petition ",
+          "quoteSuffix": ".1 Your petition, as amended, re",
+          "startOffset": 507,
+          "endOffset": 584,
+          "properties": {
+            "selectorDigest": "sha256:480e88e42361687df640dd1156247f0730daf1f3a849d79451bb565511449fd1",
+            "textHash": "sha256:8a2b921b4e2f7915fee697fc77ec8a306538dd08bf09f7d8ee37b65c6d0c2dfd",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-cp-decision",
+          "selectorKind": "PDF_TEXT",
+          "page": 2,
+          "quote": "we are granting your petition in part and denying it in part.",
+          "quotePrefix": "d for the reasons stated below, ",
+          "quoteSuffix": " Specifically, we are granting y",
+          "startOffset": 4168,
+          "endOffset": 4229,
+          "properties": {
+            "selectorDigest": "sha256:a8cec92f8cee20dd007b211bb1eeb85a3b66295d7b246134b020718f5cba1d91",
+            "textHash": "sha256:8a2b921b4e2f7915fee697fc77ec8a306538dd08bf09f7d8ee37b65c6d0c2dfd",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-cp-conclusion",
+          "selectorKind": "PDF_TEXT",
+          "page": 22,
+          "quote": "In light of FDA’s revised interpretation of the race-to-market clause in section 201(ff)(3)(B), we now conclude that NMN is not excluded from the definition of dietary supplement under section 201(ff)(3)(B).",
+          "quotePrefix": "NMN Under Section 201(ff)(3)(B) ",
+          "quoteSuffix": " Specifically, although NMN was ",
+          "startOffset": 77848,
+          "endOffset": 78055,
+          "properties": {
+            "selectorDigest": "sha256:40efbc0e45f0f7df28148df3d4dc6d395ea0fd848f50d83d13d19f63235d7a5f",
+            "textHash": "sha256:8a2b921b4e2f7915fee697fc77ec8a306538dd08bf09f7d8ee37b65c6d0c2dfd",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-cp-signature",
+          "selectorKind": "PDF_TEXT",
+          "page": 26,
+          "quote": "Date: 2025.09.29 09:36:52 -04'00'",
+          "quotePrefix": "y signed by Donald A. Prater -S ",
+          "startOffset": 90882,
+          "endOffset": 90915,
+          "properties": {
+            "selectorDigest": "sha256:d7ebf565264b5f4a7f187a887a7a3bf9aef522bb957f8d21ddbdb5119857d7f0",
+            "textHash": "sha256:8a2b921b4e2f7915fee697fc77ec8a306538dd08bf09f7d8ee37b65c6d0c2dfd",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        }
+      ]
+    },
+    {
+      "ref": "snap-dkt-cp",
+      "source": {
+        "canonicalUri": "https://api.regulations.gov/v4/documents/FDA-2023-P-0872-2754",
+        "title": "regulations.gov API v4 document FDA-2023-P-0872-2754",
+        "sourceKind": "API",
+        "properties": {
+          "genre": "REGULATOR_DOCKET_RECORD"
+        }
+      },
+      "snapshot": {
+        "observedAt": "2026-10-08T21:38:18Z",
+        "retrievedAt": "2026-10-08T21:38:18Z",
+        "contentHash": "sha256:f20364e08cc7b3dfec391eea256e0b64fe6a9b5b628fd51cf1df0718d5d37fd6",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "captureMethod": "curl 8.x, regulations.gov API v4 with the public DEMO_KEY (key not part of canonicalUri)",
+          "mimeType": "application/json"
+        }
+      },
+      "locators": [
+        {
+          "ref": "loc-dkt-cp-posted",
+          "selectorKind": "JSON_POINTER",
+          "quote": "2025-09-29T04:00:00Z",
+          "properties": {
+            "selectorDigest": "sha256:037831a41792d32fe1e6a374b247560194d816159ae8e7e209606d22a0777ebb",
+            "jsonPointer": "/data/attributes/postedDate"
+          }
+        },
+        {
+          "ref": "loc-dkt-cp-title",
+          "selectorKind": "JSON_POINTER",
+          "quote": "Response Letter from FDA HFP to Natural Products Association and Alliance for Natural Health USA",
+          "properties": {
+            "selectorDigest": "sha256:0e2b6a0cc9ae12eb3a685aa7d63db10aed2a461b449417d2a40d0aed0626170d",
+            "jsonPointer": "/data/attributes/title"
+          }
+        },
+        {
+          "ref": "loc-dkt-cp-subtype",
+          "selectorKind": "JSON_POINTER",
+          "quote": "Partial Petition Approval and Denial",
+          "properties": {
+            "selectorDigest": "sha256:45648becae7a25af7d1bb7da3d936c03ff484a3d68860ecaeb4ebd90cdf6b858",
+            "jsonPointer": "/data/attributes/subtype"
+          }
+        }
+      ]
+    },
+    {
+      "ref": "snap-dkt-ndi",
+      "source": {
+        "canonicalUri": "https://api.regulations.gov/v4/documents/FDA-2022-S-0023-0051",
+        "title": "regulations.gov API v4 document FDA-2022-S-0023-0051",
+        "sourceKind": "API",
+        "properties": {
+          "genre": "REGULATOR_DOCKET_RECORD"
+        }
+      },
+      "snapshot": {
+        "observedAt": "2026-10-08T21:38:19Z",
+        "retrievedAt": "2026-10-08T21:38:19Z",
+        "contentHash": "sha256:5dd6548cab88481d503d2281d057e5cc5d6e686894265b4c5cad84c247765415",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "captureMethod": "curl 8.x, regulations.gov API v4 with the public DEMO_KEY",
+          "mimeType": "application/json"
+        }
+      },
+      "locators": [
+        {
+          "ref": "loc-dkt-ndi-title",
+          "selectorKind": "JSON_POINTER",
+          "quote": "NDI 1259 - B-Nicotinamide Mononucleotide (NMN) from Inner Mongolia Kingdomway Pharmaceutical Limited",
+          "properties": {
+            "selectorDigest": "sha256:d3b3ac54f45ab0cac6efcd6f92461583ce93112994b0dcdc2f070d129a201229",
+            "jsonPointer": "/data/attributes/title"
+          }
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "fda",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "U.S. Food and Drug Administration",
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "npa",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "Natural Products Association",
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "anh",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "Alliance for Natural Health USA",
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "nmn",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "β-nicotinamide mononucleotide (NMN)",
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "rr-ndi1259",
+      "mode": "new",
+      "nodeType": "RegulatoryRecord",
+      "name": "FDA response to NDI notification 1259 (β-NMN, Inner Mongolia Kingdomway), 2022-10-11",
+      "uidSegment": "fda-ndi_response-1259",
+      "identifiers": [
+        {
+          "scheme": "FDA_NDI",
+          "issuer": "FDA ODSP",
+          "value": "1259"
+        },
+        {
+          "scheme": "FDA_DOCKET",
+          "issuer": "regulations.gov",
+          "value": "FDA-2022-S-0023-0051"
+        }
+      ],
+      "onMatch": "review"
+    },
+    {
+      "ref": "rr-cp0872",
+      "mode": "new",
+      "nodeType": "RegulatoryRecord",
+      "name": "FDA response to citizen petition FDA-2023-P-0872 (NPA, ANH-USA) on β-NMN, 2025-09-29",
+      "uidSegment": "fda-citizen_petition_response-FDA-2023-P-0872-2754",
+      "identifiers": [
+        {
+          "scheme": "FDA_DOCKET",
+          "issuer": "regulations.gov",
+          "value": "FDA-2023-P-0872-2754"
+        }
+      ],
+      "onMatch": "review"
+    },
+    {
+      "ref": "ls-nmn-excluded",
+      "mode": "new",
+      "nodeType": "LegalStatus",
+      "name": "β-NMN — US — excluded from the dietary supplement definition",
+      "uidSegment": "nmn-us-dietary_supplement-excluded",
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "ls-nmn-not-excluded",
+      "mode": "new",
+      "nodeType": "LegalStatus",
+      "name": "β-NMN — US — not excluded from the dietary supplement definition",
+      "uidSegment": "nmn-us-dietary_supplement-not_excluded",
+      "identifiers": [],
+      "onMatch": "review"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "up-rr-ndi1259",
+      "kind": "node.upsert",
+      "subjectRef": "rr-ndi1259",
+      "properties": {
+        "recordKind": "NDI_RESPONSE",
+        "recordFamily": "MARKET_ACCESS",
+        "pathway": "US_NDI",
+        "jurisdiction": "US",
+        "recordNumber": "1259",
+        "docketId": "FDA-2022-S-0023",
+        "issuedAt": "2022-10-11T00:00:00Z",
+        "issuingOffice": "Division of Research and Evaluation, Office of Dietary Supplement Programs, CFSAN",
+        "outcome": "EXCLUDED_FROM_DEFINITION",
+        "outcomeVerbatim": "Accordingly, we conclude that NMN is excluded from the dietary supplement definition under 21 U.S.C. § 321(ff)(3)(B)(ii) and may not be marketed as or in a dietary supplement.",
+        "legalBasisCitation": "21 U.S.C. § 321(ff)(3)(B)(ii)"
+      },
+      "evidence": [
+        "loc-ndi-date",
+        "loc-ndi-signature",
+        "loc-fc-determination",
+        "loc-dkt-ndi-title"
+      ]
+    },
+    {
+      "proposalId": "up-rr-cp0872",
+      "kind": "node.upsert",
+      "subjectRef": "rr-cp0872",
+      "properties": {
+        "recordKind": "CITIZEN_PETITION_RESPONSE",
+        "recordFamily": "PETITION",
+        "pathway": "US_DIETARY_SUPPLEMENT",
+        "jurisdiction": "US",
+        "recordNumber": "FDA-2023-P-0872-2754",
+        "docketId": "FDA-2023-P-0872",
+        "issuedAt": "2025-09-29T00:00:00Z",
+        "issuingOffice": "Human Foods Program",
+        "outcome": "GRANTED_IN_PART",
+        "outcomeVerbatim": "In light of FDA’s revised interpretation of the race-to-market clause in section 201(ff)(3)(B), we now conclude that NMN is not excluded from the definition of dietary supplement under section 201(ff)(3)(B).",
+        "legalBasisCitation": "FD&C Act section 201(ff)(3)(B); 21 CFR 10.30(e)(3)"
+      },
+      "evidence": [
+        "loc-cp-docket",
+        "loc-cp-decision",
+        "loc-cp-conclusion",
+        "loc-cp-signature",
+        "loc-dkt-cp-posted",
+        "loc-dkt-cp-subtype"
+      ]
+    },
+    {
+      "proposalId": "up-ls-nmn-excluded",
+      "kind": "node.upsert",
+      "subjectRef": "ls-nmn-excluded",
+      "properties": {
+        "statusKind": "EXCLUDED_FROM_DEFINITION",
+        "statusFamily": "MARKET_ACCESS",
+        "jurisdiction": "US",
+        "pathway": "US_DIETARY_SUPPLEMENT",
+        "statusVerbatim": "excluded from the dietary supplement definition under 21 U.S.C. § 321(ff)(3)(B)(ii)"
+      },
+      "evidence": [
+        "loc-fc-determination"
+      ]
+    },
+    {
+      "proposalId": "up-ls-nmn-not-excluded",
+      "kind": "node.upsert",
+      "subjectRef": "ls-nmn-not-excluded",
+      "properties": {
+        "statusKind": "NOT_EXCLUDED_FROM_DEFINITION",
+        "statusFamily": "MARKET_ACCESS",
+        "jurisdiction": "US",
+        "pathway": "US_DIETARY_SUPPLEMENT",
+        "statusVerbatim": "not excluded from the definition of dietary supplement under section 201(ff)(3)(B)"
+      },
+      "evidence": [
+        "loc-cp-conclusion"
+      ]
+    },
+    {
+      "proposalId": "n10",
+      "kind": "edge.assert",
+      "relationshipType": "ISSUED_BY",
+      "fromRef": "rr-cp0872",
+      "toRef": "fda",
+      "evidence": [
+        "loc-cp-letterhead",
+        "loc-cp-signature"
+      ],
+      "assertion": {
+        "predicate": "ISSUED_BY",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "fda"
+    },
+    {
+      "proposalId": "n11",
+      "kind": "edge.assert",
+      "relationshipType": "ADDRESSED_TO",
+      "fromRef": "rr-cp0872",
+      "toRef": "npa",
+      "evidence": [
+        "loc-cp-npa",
+        "loc-dkt-cp-title"
+      ],
+      "assertion": {
+        "predicate": "ADDRESSED_TO",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "fda"
+    },
+    {
+      "proposalId": "n12",
+      "kind": "edge.assert",
+      "relationshipType": "ADDRESSED_TO",
+      "fromRef": "rr-cp0872",
+      "toRef": "anh",
+      "evidence": [
+        "loc-cp-anh",
+        "loc-dkt-cp-title"
+      ],
+      "assertion": {
+        "predicate": "ADDRESSED_TO",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "fda"
+    },
+    {
+      "proposalId": "n13",
+      "kind": "edge.assert",
+      "relationshipType": "CONCERNS",
+      "fromRef": "rr-cp0872",
+      "toRef": "nmn",
+      "evidence": [
+        "loc-cp-subject"
+      ],
+      "assertion": {
+        "predicate": "CONCERNS",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "fda"
+    },
+    {
+      "proposalId": "n14",
+      "kind": "edge.assert",
+      "relationshipType": "STATUS_OF",
+      "fromRef": "ls-nmn-excluded",
+      "toRef": "nmn",
+      "evidence": [
+        "loc-ndi-determination",
+        "loc-cp-conclusion",
+        "loc-dkt-cp-posted"
+      ],
+      "assertion": {
+        "predicate": "STATUS_OF",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFrom": "2022-10-11T00:00:00Z",
+          "validTo": "2025-09-29T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validToPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE",
+          "validToBasis": "STATED_BY_SOURCE"
+        }
+      },
+      "asserterRef": "fda",
+      "rationale": "episode 2 of the same status: valid [2022-10-11, 2025-09-29); supersedes n04 (supersedesUid)"
+    },
+    {
+      "proposalId": "n15",
+      "kind": "edge.assert",
+      "relationshipType": "STATUS_OF",
+      "fromRef": "ls-nmn-not-excluded",
+      "toRef": "nmn",
+      "evidence": [
+        "loc-cp-conclusion",
+        "loc-cp-signature",
+        "loc-dkt-cp-posted"
+      ],
+      "assertion": {
+        "predicate": "STATUS_OF",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFrom": "2025-09-29T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE"
+        }
+      },
+      "asserterRef": "fda",
+      "rationale": "validFrom from the signature timestamp and the docket postedDate (2025-09-29), not the printed '2029'"
+    },
+    {
+      "proposalId": "n16",
+      "kind": "edge.assert",
+      "relationshipType": "STATUS_FROM",
+      "fromRef": "ls-nmn-not-excluded",
+      "toRef": "rr-cp0872",
+      "evidence": [
+        "loc-cp-conclusion"
+      ],
+      "assertion": {
+        "predicate": "STATUS_FROM",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "fda"
+    },
+    {
+      "proposalId": "n17",
+      "kind": "edge.assert",
+      "relationshipType": "STATUS_FROM",
+      "fromRef": "ls-nmn-excluded",
+      "toRef": "rr-cp0872",
+      "evidence": [
+        "loc-cp-conclusion"
+      ],
+      "assertion": {
+        "predicate": "STATUS_FROM",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "fda",
+      "rationale": "the record that ENDED the excluded status (STATUS_FROM covers establish, confirm or end)"
+    },
+    {
+      "proposalId": "n18",
+      "kind": "assertion.literal",
+      "subjectRef": "rr-cp0872",
+      "predicate": "REVISES_DETERMINATION_OF",
+      "evidence": [
+        "loc-cp-conclusion"
+      ],
+      "assertion": {
+        "predicate": "REVISES_DETERMINATION_OF",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "fda",
+      "valueString": "NDI 1259 response of 2022-10-11",
+      "rationale": "predicate-only (05 predicateOnly)"
+    },
+    {
+      "proposalId": "n19",
+      "kind": "assertion.literal",
+      "subjectRef": "rr-cp0872",
+      "predicate": "D8.ISSUED_AT",
+      "evidence": [
+        "loc-cp-signature",
+        "loc-dkt-cp-posted"
+      ],
+      "assertion": {
+        "predicate": "D8.ISSUED_AT",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "fda",
+      "valueString": "2025-09-29"
+    },
+    {
+      "proposalId": "n20",
+      "kind": "assertion.literal",
+      "subjectRef": "rr-cp0872",
+      "predicate": "D8.ISSUED_AT_AS_PRINTED",
+      "evidence": [
+        "loc-cp-printed-date"
+      ],
+      "assertion": {
+        "predicate": "D8.ISSUED_AT_AS_PRINTED",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "fda",
+      "valueString": "September 29, 2029",
+      "rationale": "faithful capture of a typo in the letter: CAPTURE_FIDELITY passes; the CONFLICT assessment below keeps n19 as the date of record"
+    },
+    {
+      "proposalId": "close-n04",
+      "kind": "edge.close",
+      "relationshipUid": "from-step1-receipt:n04",
+      "reason": "superseded by the FDA-2023-P-0872 response (2025-09-29); successor episode n14 carries validTo 2025-09-29",
+      "evidence": [
+        "loc-cp-conclusion"
+      ]
+    }
+  ],
+  "notes": "Step 2 of 2: the 2025 citizen-petition response. edge.close needs the relationshipUid that the step-1 receipt returns; 'from-step1-receipt:n04' is a placeholder the runner substitutes (not a real uid)."
+}

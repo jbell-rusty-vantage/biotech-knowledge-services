@@ -1,0 +1,964 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v2",
+  "intentId": "ft-d13-mfin-2026-10-08",
+  "pins": {
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+    "policyVersion": "bks-admission-policy/v1"
+  },
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "agent:d13-event-linker"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run:ft-D13-madrigal-financing-after-readout",
+      "missionId": "mission:ft-D13-fixtures"
+    },
+    "activityKind": "INGESTION"
+  },
+  "basis": {
+    "creationOnly": {
+      "reason": "FU-03 v2 fixture round: replay of a packet fixture into a graph without a prior custody snapshot",
+      "expectAbsent": [],
+      "expectPresent": []
+    }
+  },
+  "defaults": {
+    "privacyClass": "PUBLIC"
+  },
+  "sources": [
+    {
+      "ref": "s-mdgl-8k-2022-12-23",
+      "source": {
+        "canonicalUri": "https://www.sec.gov/Archives/edgar/data/1157601/000119312522311537/d434336d8k.htm",
+        "title": "Madrigal Form 8-K (Items 1.01, 5.03, 7.01, 8.01, 9.01), accession 0001193125-22-311537",
+        "sourceKind": "WEB_PAGE",
+        "genre": "REGULATORY_FILING"
+      },
+      "snapshot": {
+        "uid": "hu:snapshot:fx-d13-mdgl-8k-2022-12-23",
+        "retrievedAt": "2026-10-08T00:00:00Z",
+        "observedAt": "2026-10-08T00:00:00Z",
+        "publishedAt": "2022-12-23",
+        "contentHash": "sha256:e67b4342dc932400f5149353f2573b039778ef546d61b66299d42929cebbe459",
+        "contentHashBasis": "CANONICAL_PROJECTION",
+        "canonicalProjectionHash": "sha256:e67b4342dc932400f5149353f2573b039778ef546d61b66299d42929cebbe459",
+        "captureMethodDescription": "curl -> SEC EDGAR Archives (User-Agent from EDGAR_IDENTITY) + h2t-v1 projection",
+        "captureCompleteness": "COMPLETE",
+        "metadata": {
+          "captureTool": "tool:sec-edgar-archives",
+          "rawBytesHashSessionOnly": "sha256:416740c759506ea973ec4ae242b6a8707c51972c879a6656be1cdb36e0333536"
+        }
+      },
+      "locators": [
+        {
+          "ref": "l01",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)",
+            "exact": "On December 19, 2022, as a result of the Company’s announcement of Phase 3 MAESTRO-NASH clinical trial topline results, the Company received confirmation from Hercules Capital, Inc. (“Hercules”) that it has satisfied the clinical development milestone under the Company’s previously disclosed Loan and Security Agreement",
+            "prefix": "lability Under Loan Agreement \n\n",
+            "refinedBy": {
+              "end": 10721,
+              "start": 10401,
+              "type": "TextPositionSelector"
+            },
+            "suffix": ", dated May 9, 2022, among the C",
+            "type": "TextQuoteSelector"
+          },
+          "exact": "On December 19, 2022, as a result of the Company’s announcement of Phase 3 MAESTRO-NASH clinical trial topline results, the Company received confirmation from Hercules Capital, Inc. (“Hercules”) that it has satisfied the clinical development milestone under the Company’s previously disclosed Loan and Security Agreement",
+          "prefix": "lability Under Loan Agreement \n\n",
+          "suffix": ", dated May 9, 2022, among the C",
+          "startOffset": 10401,
+          "endOffset": 10721
+        },
+        {
+          "ref": "l02",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)",
+            "exact": "As a result of the achievement of the clinical development milestone, the Company is now eligible to borrow up to an additional $50 million under the Loan Agreement.",
+            "prefix": "thereto (the “Loan Agreement”). ",
+            "refinedBy": {
+              "end": 11088,
+              "start": 10923,
+              "type": "TextPositionSelector"
+            },
+            "suffix": " \n\nATM Program Update \n\nOn Decem",
+            "type": "TextQuoteSelector"
+          },
+          "exact": "As a result of the achievement of the clinical development milestone, the Company is now eligible to borrow up to an additional $50 million under the Loan Agreement.",
+          "prefix": "thereto (the “Loan Agreement”). ",
+          "suffix": " \n\nATM Program Update \n\nOn Decem",
+          "startOffset": 10923,
+          "endOffset": 11088
+        },
+        {
+          "ref": "l03",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)",
+            "exact": "On December 21, 2022, Madrigal Pharmaceuticals, Inc. (the “Company” or “Madrigal”) entered into a Securities Purchase Agreement (the “Securities Purchase Agreement”) with a group of institutional investors",
+            "prefix": "Securities Purchase Agreement \n\n",
+            "refinedBy": {
+              "end": 2601,
+              "start": 2396,
+              "type": "TextPositionSelector"
+            },
+            "suffix": " (collectively, the “Investors”)",
+            "type": "TextQuoteSelector"
+          },
+          "exact": "On December 21, 2022, Madrigal Pharmaceuticals, Inc. (the “Company” or “Madrigal”) entered into a Securities Purchase Agreement (the “Securities Purchase Agreement”) with a group of institutional investors",
+          "prefix": "Securities Purchase Agreement \n\n",
+          "suffix": " (collectively, the “Investors”)",
+          "startOffset": 2396,
+          "endOffset": 2601
+        },
+        {
+          "ref": "l04",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)",
+            "exact": "The gross proceeds from the transaction will be $100 million in the aggregate before estimated transaction expenses",
+            "prefix": "(“Series A Preferred Stock”). \n\n",
+            "refinedBy": {
+              "end": 3617,
+              "start": 3502,
+              "type": "TextPositionSelector"
+            },
+            "suffix": ", which gross proceeds are compr",
+            "type": "TextQuoteSelector"
+          },
+          "exact": "The gross proceeds from the transaction will be $100 million in the aggregate before estimated transaction expenses",
+          "prefix": "(“Series A Preferred Stock”). \n\n",
+          "suffix": ", which gross proceeds are compr",
+          "startOffset": 3502,
+          "endOffset": 3617
+        },
+        {
+          "ref": "l05",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)",
+            "exact": "On December 21, 2022, the Company issued a press release announcing the Offering and other financing updates.",
+            "prefix": " | \nRegulation FD Disclosure. \n\n",
+            "refinedBy": {
+              "end": 9778,
+              "start": 9669,
+              "type": "TextPositionSelector"
+            },
+            "suffix": " \n\nThe press release is furnishe",
+            "type": "TextQuoteSelector"
+          },
+          "exact": "On December 21, 2022, the Company issued a press release announcing the Offering and other financing updates.",
+          "prefix": " | \nRegulation FD Disclosure. \n\n",
+          "suffix": " \n\nThe press release is furnishe",
+          "startOffset": 9669,
+          "endOffset": 9778
+        },
+        {
+          "ref": "l08",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)",
+            "exact": "Date of Report (Date of earliest event reported): December 19, 2022",
+            "prefix": "ecurities Exchange Act of 1934\n\n",
+            "refinedBy": {
+              "end": 307,
+              "start": 240,
+              "type": "TextPositionSelector"
+            },
+            "suffix": "\n\nMADRIGAL PHARMACEUTICALS, INC.",
+            "type": "TextQuoteSelector"
+          },
+          "exact": "Date of Report (Date of earliest event reported): December 19, 2022",
+          "prefix": "ecurities Exchange Act of 1934\n\n",
+          "suffix": "\n\nMADRIGAL PHARMACEUTICALS, INC.",
+          "startOffset": 240,
+          "endOffset": 307
+        },
+        {
+          "ref": "l10",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)",
+            "exact": "On December 19, 2022, the Company sold 738,900 shares of Common Stock under its “at-the-market” sales program (“ATM Program”) pursuant to the Sales Agreement, dated June 1, 2021 with Cowen and Company, LLC (“Cowen”), for $159.1 million in gross proceeds before any discounts and fees, under the Sales Agreement.",
+            "prefix": "reement. \n\nATM Program Update \n\n",
+            "refinedBy": {
+              "end": 11423,
+              "start": 11112,
+              "type": "TextPositionSelector"
+            },
+            "suffix": " Cowen and Company, LLC, acted a",
+            "type": "TextQuoteSelector"
+          },
+          "exact": "On December 19, 2022, the Company sold 738,900 shares of Common Stock under its “at-the-market” sales program (“ATM Program”) pursuant to the Sales Agreement, dated June 1, 2021 with Cowen and Company, LLC (“Cowen”), for $159.1 million in gross proceeds before any discounts and fees, under the Sales Agreement.",
+          "prefix": "reement. \n\nATM Program Update \n\n",
+          "suffix": " Cowen and Company, LLC, acted a",
+          "startOffset": 11112,
+          "endOffset": 11423
+        },
+        {
+          "ref": "l12",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)",
+            "exact": "Cowen and Company, LLC, acted as sales agent under the ATM Program.",
+            "prefix": "ees, under the Sales Agreement. ",
+            "refinedBy": {
+              "end": 11491,
+              "start": 11424,
+              "type": "TextPositionSelector"
+            },
+            "suffix": " The $159.1 million in gross pro",
+            "type": "TextQuoteSelector"
+          },
+          "exact": "Cowen and Company, LLC, acted as sales agent under the ATM Program.",
+          "prefix": "ees, under the Sales Agreement. ",
+          "suffix": " The $159.1 million in gross pro",
+          "startOffset": 11424,
+          "endOffset": 11491
+        }
+      ]
+    },
+    {
+      "ref": "s-mdgl-ex991-2022-12-21",
+      "source": {
+        "canonicalUri": "https://www.sec.gov/Archives/edgar/data/1157601/000119312522311537/d434336dex991.htm",
+        "title": "Exhibit 99.1 'Madrigal Pharmaceuticals Announces $300+ Million in Financing Events to Advance Resmetirom Program'",
+        "sourceKind": "WEB_PAGE",
+        "genre": "PRESS_RELEASE"
+      },
+      "snapshot": {
+        "uid": "hu:snapshot:fx-d13-mdgl-ex991-2022-12-21",
+        "retrievedAt": "2026-10-08T00:00:00Z",
+        "observedAt": "2026-10-08T00:00:00Z",
+        "publishedAt": "2022-12-23",
+        "contentHash": "sha256:3fdd41e2668e4bac47ea9abaa78f9d503a3ef1afa89be727b2e3a440155579cc",
+        "contentHashBasis": "CANONICAL_PROJECTION",
+        "canonicalProjectionHash": "sha256:3fdd41e2668e4bac47ea9abaa78f9d503a3ef1afa89be727b2e3a440155579cc",
+        "captureMethodDescription": "curl -> SEC EDGAR Archives (User-Agent from EDGAR_IDENTITY) + h2t-v1 projection",
+        "captureCompleteness": "COMPLETE",
+        "metadata": {
+          "captureTool": "tool:sec-edgar-archives",
+          "rawBytesHashSessionOnly": "sha256:ef32efcdb18957c0f7f254c78fa16b7d703fa4f4222142162d3c8748008b20e5"
+        }
+      },
+      "locators": [
+        {
+          "ref": "l06",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)",
+            "exact": "The financings secured following the positive topline readout of our\nPhase 3 MAESTRO-NASH trial reflect the strong support that Madrigal has established with long-standing strategic and institutional investors.",
+            "prefix": "e Officer of Madrigal, stated: “",
+            "refinedBy": {
+              "end": 1019,
+              "start": 809,
+              "type": "TextPositionSelector"
+            },
+            "suffix": " The funds provide a solid found",
+            "type": "TextQuoteSelector"
+          },
+          "exact": "The financings secured following the positive topline readout of our\nPhase 3 MAESTRO-NASH trial reflect the strong support that Madrigal has established with long-standing strategic and institutional investors.",
+          "prefix": "e Officer of Madrigal, stated: “",
+          "suffix": " The funds provide a solid found",
+          "startOffset": 809,
+          "endOffset": 1019
+        },
+        {
+          "ref": "l07",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)",
+            "exact": "In connection with Madrigal’s December 19, 2022 announcement of positive topline data from its pivotal Phase 3 MAESTRO-NASH clinical trial of\nresmetirom, Hercules Capital, Inc. (NYSE:HTGC) confirmed that Madrigal has achieved its clinical milestone under the Company’s Credit Facility with Hercules",
+            "prefix": "344 common equivalent shares. \n\n",
+            "refinedBy": {
+              "end": 2494,
+              "start": 2196,
+              "type": "TextPositionSelector"
+            },
+            "suffix": ", thereby enabling Madrigal to d",
+            "type": "TextQuoteSelector"
+          },
+          "exact": "In connection with Madrigal’s December 19, 2022 announcement of positive topline data from its pivotal Phase 3 MAESTRO-NASH clinical trial of\nresmetirom, Hercules Capital, Inc. (NYSE:HTGC) confirmed that Madrigal has achieved its clinical milestone under the Company’s Credit Facility with Hercules",
+          "prefix": "344 common equivalent shares. \n\n",
+          "suffix": ", thereby enabling Madrigal to d",
+          "startOffset": 2196,
+          "endOffset": 2494
+        },
+        {
+          "ref": "l11",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)",
+            "exact": "Madrigal has completed $159 million in gross sales of\ncommon stock under its ATM Program (“ATM Sales”)",
+            "prefix": "al of resmetirom in the U.S.” \n\n",
+            "refinedBy": {
+              "end": 1317,
+              "start": 1215,
+              "type": "TextPositionSelector"
+            },
+            "suffix": " and has separately entered into",
+            "type": "TextQuoteSelector"
+          },
+          "exact": "Madrigal has completed $159 million in gross sales of\ncommon stock under its ATM Program (“ATM Sales”)",
+          "prefix": "al of resmetirom in the U.S.” \n\n",
+          "suffix": " and has separately entered into",
+          "startOffset": 1215,
+          "endOffset": 1317
+        },
+        {
+          "ref": "l13",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)",
+            "exact": "$259 Million in Equity Securities Sales and $50 Million in Additional Debt Financing Capacity",
+            "prefix": "tirom Program\n\n | \n | •\n | \n | \n",
+            "refinedBy": {
+              "end": 271,
+              "start": 178,
+              "type": "TextPositionSelector"
+            },
+            "suffix": "\n\n | \n | •\n | \n | \nMadrigal inte",
+            "type": "TextQuoteSelector"
+          },
+          "exact": "$259 Million in Equity Securities Sales and $50 Million in Additional Debt Financing Capacity",
+          "prefix": "tirom Program\n\n | \n | •\n | \n | \n",
+          "suffix": "\n\n | \n | •\n | \n | \nMadrigal inte",
+          "startOffset": 178,
+          "endOffset": 271
+        }
+      ]
+    },
+    {
+      "ref": "s-mdgl-edgar-submissions",
+      "source": {
+        "canonicalUri": "https://data.sec.gov/submissions/CIK0001157601.json",
+        "title": "SEC EDGAR submissions index, CIK 0001157601 (Madrigal Pharmaceuticals)",
+        "sourceKind": "API",
+        "genre": "REGISTRY_RECORD"
+      },
+      "snapshot": {
+        "uid": "hu:snapshot:fx-d13-mdgl-edgar-submissions",
+        "retrievedAt": "2026-10-08T00:00:00Z",
+        "observedAt": "2026-10-08T00:00:00Z",
+        "contentHash": "sha256:6b23ab5df12518ae53921769482dfaf108cc4336e22136b8f944aad7c0297860",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "curl -> data.sec.gov submissions API (User-Agent from EDGAR_IDENTITY)",
+        "captureCompleteness": "COMPLETE",
+        "metadata": {
+          "captureTool": "tool:sec-edgar-submissions"
+        }
+      },
+      "locators": [
+        {
+          "ref": "l09",
+          "selectorKind": "API_RECORD",
+          "selector": {
+            "arrayRoot": "/filings/recent",
+            "field": "filingDate",
+            "recordKey": {
+              "accessionNumber": "0001193125-22-311537"
+            },
+            "rule": "edgar-accession/v1",
+            "type": "RecordFieldSelector"
+          },
+          "exact": "2022-12-23"
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "ev-readout",
+      "mode": "resolved",
+      "uid": "hu:event:fx-mdgl-maestro-nash-topline-2022-12-19",
+      "nodeType": "Event"
+    },
+    {
+      "ref": "ev-hercules",
+      "mode": "new",
+      "nodeType": "Event",
+      "name": "Hercules loan clinical-milestone tranche becomes available to Madrigal",
+      "uidSegment": "fx-mdgl-hercules-milestone-tranche-2022-12-19",
+      "properties": {
+        "eventKind": "FINANCING",
+        "eventStatus": "OCCURRED",
+        "identityKey": "FINANCING|hu:org:fx-madrigal-pharmaceuticals|-|2022-12-19/DAY|loan-tranche"
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "ev-atm",
+      "mode": "new",
+      "nodeType": "Event",
+      "name": "Madrigal at-the-market common stock sales ($159.1M gross, Cowen as sales agent)",
+      "uidSegment": "fx-mdgl-atm-sales-2022-12-19",
+      "properties": {
+        "eventKind": "FINANCING",
+        "eventStatus": "OCCURRED",
+        "identityKey": "FINANCING|hu:org:fx-madrigal-pharmaceuticals|-|2022-12-19/DAY|atm-sales"
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "ev-regdirect",
+      "mode": "new",
+      "nodeType": "Event",
+      "name": "Madrigal $100M Series B preferred + common registered direct (securities purchase agreement)",
+      "uidSegment": "fx-mdgl-registered-direct-2022-12-21",
+      "properties": {
+        "eventKind": "FINANCING",
+        "eventStatus": "OCCURRED",
+        "identityKey": "FINANCING|hu:org:fx-madrigal-pharmaceuticals|-|2022-12-21/DAY|registered-direct"
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "madrigal",
+      "mode": "resolved",
+      "uid": "hu:org:fx-madrigal-pharmaceuticals",
+      "nodeType": "Organization"
+    },
+    {
+      "ref": "hercules",
+      "mode": "resolved",
+      "uid": "hu:org:fx-hercules-capital",
+      "nodeType": "Organization"
+    },
+    {
+      "ref": "cowen",
+      "mode": "resolved",
+      "uid": "hu:org:fx-cowen-and-company",
+      "nodeType": "Organization"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "p-a01",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "ev-hercules",
+      "assertion": {
+        "predicate": "EVENT_OCCURRED",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "qualifiers": [],
+        "validity": {
+          "validFrom": "2022-12-19T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "value": {},
+      "evidence": [
+        "l01"
+      ],
+      "asserterRef": "madrigal",
+      "hold": {
+        "reason": "FU-03 round v2 SEMANTIC: PREDICATE_KIND_MISMATCH: EVENT_OCCURRED is a relationship predicate; this proposal kind needs literal | field | computation"
+      }
+    },
+    {
+      "proposalId": "p-a02",
+      "rationale": "qualifiers (intent v1 has no qualifiers field): amountKind=BORROWING_CAPACITY; amountBasis=AVAILABLE; upTo=true (drawn amount not stated)",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "ev-hercules",
+      "assertion": {
+        "predicate": "FINANCING_AMOUNT",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "UNKNOWN",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "value": {
+        "valueNumber": 50000000,
+        "unitCode": "iso4217:USD"
+      },
+      "evidence": [
+        "l02"
+      ],
+      "asserterRef": "madrigal",
+      "hold": {
+        "reason": "FU-03 v1 semantics not mechanically mappable: qualifiers (intent v1 has no qualifiers field): amountKind=BORROWING_CAPACITY; amountBasis=AVAILABLE; upTo=true (drawn amount not stated)"
+      }
+    },
+    {
+      "proposalId": "p-a03",
+      "rationale": "qualifiers (intent v1 has no qualifiers field): role=LENDER",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "INVOLVES",
+      "fromRef": "ev-hercules",
+      "toRef": "hercules",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "UNKNOWN",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "edgeProperties": {
+        "role": "LENDER"
+      },
+      "evidence": [
+        "l01"
+      ],
+      "asserterRef": "madrigal",
+      "hold": {
+        "reason": "FU-03 v1 semantics not mechanically mappable: qualifiers (intent v1 has no qualifiers field): role=LENDER"
+      }
+    },
+    {
+      "proposalId": "p-a04",
+      "rationale": "qualifiers (intent v1 has no qualifiers field): role=BORROWER; primary=true; roleText=the Company (borrower under the Loan and Security Agreement)",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "INVOLVES",
+      "fromRef": "ev-hercules",
+      "toRef": "madrigal",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "UNKNOWN",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "edgeProperties": {
+        "role": "BORROWER"
+      },
+      "evidence": [
+        "l01"
+      ],
+      "asserterRef": "madrigal",
+      "hold": {
+        "reason": "FU-03 v1 semantics not mechanically mappable: qualifiers (intent v1 has no qualifiers field): role=BORROWER; primary=true; roleText=the Company (borrower under the Loan and Security Agreement)"
+      }
+    },
+    {
+      "proposalId": "p-a05",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "LEADS_TO",
+      "fromRef": "ev-readout",
+      "toRef": "ev-hercules",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "UNKNOWN",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "l01",
+        "l07"
+      ],
+      "asserterRef": "madrigal",
+      "hold": {
+        "reason": "FU-03 round v2 DEPENDENCY: SUBJECT_MISSING: madrigal (SUBJECT_UNKNOWN: no Organization with uid hu:org:fx-madrigal-pharmaceuticals)"
+      }
+    },
+    {
+      "proposalId": "p-a06",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "ev-regdirect",
+      "assertion": {
+        "predicate": "EVENT_OCCURRED",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "qualifiers": [],
+        "validity": {
+          "validFrom": "2022-12-21T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "value": {},
+      "evidence": [
+        "l03"
+      ],
+      "asserterRef": "madrigal",
+      "hold": {
+        "reason": "FU-03 round v2 SEMANTIC: PREDICATE_KIND_MISMATCH: EVENT_OCCURRED is a relationship predicate; this proposal kind needs literal | field | computation"
+      }
+    },
+    {
+      "proposalId": "p-a07",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "ev-regdirect",
+      "assertion": {
+        "predicate": "EVENT_ANNOUNCED",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "qualifiers": [],
+        "validity": {
+          "validFrom": "2022-12-21T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "value": {},
+      "evidence": [
+        "l05"
+      ],
+      "asserterRef": "madrigal",
+      "hold": {
+        "reason": "FU-03 round v2 SEMANTIC: PREDICATE_KIND_MISMATCH: EVENT_ANNOUNCED is a relationship predicate; this proposal kind needs literal | field | computation"
+      }
+    },
+    {
+      "proposalId": "p-a08",
+      "rationale": "qualifiers (intent v1 has no qualifiers field): amountKind=GROSS_PROCEEDS; amountBasis=COMMITTED; before estimated transaction expenses; agreement signed, closing expected",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "ev-regdirect",
+      "assertion": {
+        "predicate": "FINANCING_AMOUNT",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "UNKNOWN",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "value": {
+        "valueNumber": 100000000,
+        "unitCode": "iso4217:USD"
+      },
+      "evidence": [
+        "l04"
+      ],
+      "asserterRef": "madrigal",
+      "hold": {
+        "reason": "FU-03 v1 semantics not mechanically mappable: qualifiers (intent v1 has no qualifiers field): amountKind=GROSS_PROCEEDS; amountBasis=COMMITTED; before estimated transaction expenses; agreement signed, closing expected"
+      }
+    },
+    {
+      "proposalId": "p-a09",
+      "rationale": "qualifiers (intent v1 has no qualifiers field): role=ISSUER; primary=true; roleText=the “Company”",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "INVOLVES",
+      "fromRef": "ev-regdirect",
+      "toRef": "madrigal",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "UNKNOWN",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "edgeProperties": {
+        "role": "ISSUER"
+      },
+      "evidence": [
+        "l03"
+      ],
+      "asserterRef": "madrigal",
+      "hold": {
+        "reason": "FU-03 v1 semantics not mechanically mappable: qualifiers (intent v1 has no qualifiers field): role=ISSUER; primary=true; roleText=the “Company”"
+      }
+    },
+    {
+      "proposalId": "p-a11",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "ev-atm",
+      "assertion": {
+        "predicate": "EVENT_OCCURRED",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "qualifiers": [],
+        "validity": {
+          "validFrom": "2022-12-19T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "value": {},
+      "evidence": [
+        "l10"
+      ],
+      "asserterRef": "madrigal",
+      "hold": {
+        "reason": "FU-03 round v2 SEMANTIC: PREDICATE_KIND_MISMATCH: EVENT_OCCURRED is a relationship predicate; this proposal kind needs literal | field | computation"
+      }
+    },
+    {
+      "proposalId": "p-a12",
+      "rationale": "qualifiers (intent v1 has no qualifiers field): amountKind=GROSS_PROCEEDS; amountBasis=SOLD; before any discounts and fees (8-K); EX-99.1 rounds to '$159 million'",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "ev-atm",
+      "assertion": {
+        "predicate": "FINANCING_AMOUNT",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "UNKNOWN",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "value": {
+        "valueNumber": 159100000,
+        "unitCode": "iso4217:USD"
+      },
+      "evidence": [
+        "l10",
+        "l11"
+      ],
+      "asserterRef": "madrigal",
+      "hold": {
+        "reason": "FU-03 v1 semantics not mechanically mappable: qualifiers (intent v1 has no qualifiers field): amountKind=GROSS_PROCEEDS; amountBasis=SOLD; before any discounts and fees (8-K); EX-99.1 rounds to '$159 million'"
+      }
+    },
+    {
+      "proposalId": "p-a13",
+      "rationale": "qualifiers (intent v1 has no qualifiers field): role=ISSUER; primary=true; roleText=the Company",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "INVOLVES",
+      "fromRef": "ev-atm",
+      "toRef": "madrigal",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "UNKNOWN",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "edgeProperties": {
+        "role": "ISSUER"
+      },
+      "evidence": [
+        "l10"
+      ],
+      "asserterRef": "madrigal",
+      "hold": {
+        "reason": "FU-03 v1 semantics not mechanically mappable: qualifiers (intent v1 has no qualifiers field): role=ISSUER; primary=true; roleText=the Company"
+      }
+    },
+    {
+      "proposalId": "p-a14",
+      "rationale": "qualifiers (intent v1 has no qualifiers field): role=UNDERWRITER; roleText=sales agent",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "INVOLVES",
+      "fromRef": "ev-atm",
+      "toRef": "cowen",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "UNKNOWN",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "edgeProperties": {
+        "role": "UNDERWRITER"
+      },
+      "evidence": [
+        "l12"
+      ],
+      "asserterRef": "madrigal",
+      "hold": {
+        "reason": "FU-03 v1 semantics not mechanically mappable: qualifiers (intent v1 has no qualifiers field): role=UNDERWRITER; roleText=sales agent"
+      }
+    }
+  ],
+  "notes": "Fixture intent for D13 fixture madrigal-financing-after-readout (fixtures stage, A7, 2026-10-08); validated against packages/contracts IngestionIntent (zod). Real captures (contentHash over RAW_BYTES of the capture artifact). Not expressible in biotech-knowledge-intent.v1 and therefore omitted (see assertions.yaml for the full set and 11-open-questions.md): a10 LEADS_TO (CONTEXT_ONLY candidate: intent v1 has no 'assertion only, project after SUPPORT adjudication' proposal kind; edge.assert would write the episode at admission) | a15 LEADS_TO (CONTEXT_ONLY candidate: intent v1 has no 'assertion only, project after SUPPORT adjudication' proposal kind; edge.assert would write the episode at admission)",
+  "provenance": {
+    "derivedFrom": {
+      "schemaVersion": "biotech-knowledge-intent.v1",
+      "path": "schema/program/final/fixtures/D13/madrigal-financing-after-readout/intent.json",
+      "rawBytesDigest": "sha256:f97788191ab171c62a3fffa44b43d7c46a800cb6c0cc945e25fa73f5d537b213"
+    },
+    "migrator": "bks-migrate-intent-v1/1",
+    "edits": [
+      {
+        "at": "onStale",
+        "rule": "strict-stale",
+        "from": "fail",
+        "to": null,
+        "note": "production onStale removed; stale state is a new plan"
+      },
+      {
+        "at": "sources[0].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl -> SEC EDGAR Archives (User-Agent from EDGAR_IDENTITY) + h2t-v1 projection",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[0].snapshot.metadata",
+        "rule": "retained-not-written",
+        "from": [
+          "captureTool",
+          "rawBytesHashSessionOnly"
+        ]
+      },
+      {
+        "at": "sources[0].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:b203c12cd0b216c3182c9b73e8932ef11d997b7469d8974fcf5e3e9f8a4bdbc8",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[1].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:3b442ddb320d513b554a6ff3541a89aeb5c7695466a425da63db582870bc1316",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[2].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:07611da8337894f92a2c129f839724e315f1c619e16757663e4bd27696673b46",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[3].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:7b51d199cf310dbca784ecf77e6526265f555973f377a4107e2701e8ced500ca",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[4].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:a27bae1e790e4079fe51299ede8a5414bcde876f110aef39343e2b4f5f8ab4fc",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[5].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:8e5f04b772ebf45b0ad0565ed2ae5ec38ce3c8767735632ad57472421fa8a155",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[6].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:851ad849ab4ae8a9184d14fc7b332a8ad43e62b50890132a601bd433a7bb960b",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[7].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:cf43cd9d6fae543901eebb6abd01990efaf631e9b5f331131fae5aad6fc939a6",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[1].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl -> SEC EDGAR Archives (User-Agent from EDGAR_IDENTITY) + h2t-v1 projection",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[1].snapshot.metadata",
+        "rule": "retained-not-written",
+        "from": [
+          "captureTool",
+          "rawBytesHashSessionOnly"
+        ]
+      },
+      {
+        "at": "sources[1].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:e7b3ad7adb06be0b61abb8fa95dae3aef41ede822e9a58b438d7b9b88cd8b54c",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[1].locators[1].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:051ec807315ff4faf76ca862d07b58587b39f1fff8c082cc6b9c78588f9152fe",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[1].locators[2].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:07272937c88f3c552c302ff08d79d028a3f27e9ac4a23cb05cbae72c0362f3f5",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[1].locators[3].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:f983fd17e38e0233b0869681c8c0496db69469abaad23643aea146baa7436c83",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[2].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl -> data.sec.gov submissions API (User-Agent from EDGAR_IDENTITY)",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[2].snapshot.metadata",
+        "rule": "retained-not-written",
+        "from": [
+          "captureTool"
+        ]
+      },
+      {
+        "at": "sources[2].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:1c9cda7d008584e70845537fd2a6f4c6b07b6d3d202448230b71c92aa96c2cc1",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      }
+    ]
+  }
+}

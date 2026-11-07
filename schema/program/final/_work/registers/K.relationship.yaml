@@ -1,0 +1,363 @@
+version: 1
+module: K
+# Source: packets/K/05-relationship-register.yaml (sha256 4d296e0e…), edited by the S kernel editor 2026-10-08 per
+# final/decision-report.md and final/_work/rulings.yaml (modules.K). Every entry keeps the 01-PACKET-CONTRACT fields
+# and adds `module: K`. Synthesis edits:
+#   R-15  ASSERTED_BY admits D3 Publication and D9 MediaWork (multi-author work's own voice; executor P20).
+#   R-22  register field `projectionGate` (absent = an edge projects only from a current POSITIVE Assertion; SUPPORT =
+#         also needs a SUPPORT Adjudication DIRECTLY_SUPPORTED | SUPPORTED_WITH_QUALIFICATION). No K type is gated.
+#   R-10  register field `exclusive: true` (replaces StateEpisodeProperties; executor enforces non-overlapping episodes
+#         per relationship type). No K type is exclusive; D3 HAS_REGISTRATION_VERSION, D5 HAS_EDITION, D6
+#         HAS_LABEL_VERSION carry it.
+#   R-42  HAS_IDENTIFIER: one (scheme, issuer, normalized value) identifies at most one Subjectable.
+#   R-48  DERIVED_FROM rationale: ReportItem.citesAssociations stays cut.
+#   R-43  RENDITION_OF has kernel meaning (asserted, recorded-only); declared by D9 and D3, registered by D3 (deferred row).
+#   R-52  kernel predicate conventions registered once, registrar K (FIELD_NOT_REPORTED, HAS_REVISION_STATUS, RATES_CLAIM,
+#         CORRECTS, HAS_IDENTIFIER, CITES_AS_SUPPORT, HAS_CREDENTIAL); CORRECTS added (R-20).
+#   R-53  HAS_IDENTIFIER is the authorizing predicate of K's own typed edge: listed under `authorizingPredicates`, not
+#         `predicateOnly`, so no predicateOnly value equals a relationship type name.
+#   R-16, R-31, R-44 meanings of FIELD_NOT_REPORTED, RATES_CLAIM, HAS_REVISION_STATUS.
+# A1 model stage, 2026-10-08; adversarial review 2026-10-08: MENTIONS left the kernel SDL with Mention (D9 declares it
+# on Chunk with kernel meaning and registers it) and Adjudication.considers was cut. One entry per relationship type
+# declared in final/schema/kernel.graphql (13 types, 32 fields = packet-check pairs; inverse fields of the same stored
+# edge count once each, see 09-reasoning.md "Size").
+# `declaredOn` lists the GraphQL fields that expose the type (OUT = stored direction from that type, IN = inverse).
+# Tool ids in populatedBy are stable ids the fixtures stage lists in 08-sources-and-tools.md:
+#   tool:kg-executor (biotech-knowledge-intent.v1 apply), tool:ks-verification (verification.v1 service and sealed bundles),
+#   tool:mission-control (run identity), tool:ncbi-eutils, tool:pubmed-mcp, tool:crossref-rest, tool:wikidata-api,
+#   tool:bioregistry-api, tool:tavily-search, tool:tavily-extract, tool:firecrawl-scrape, tool:http-capture,
+#   tool:entity-link-projection (RESOLUTION Assessments and the derived D9 Chunk MENTIONS, method entity-link/vN).
+relationships:
+  - type: HAS_SNAPSHOT
+    module: K
+    class: structural
+    from: Source
+    to: SourceSnapshot
+    declaredOn: [Source.snapshots (OUT), SourceSnapshot.source (IN)]
+    edgeProperties: StructuralEdgeProperties
+    cardinality: one Source to one_or_more snapshots; each snapshot exactly_one Source
+    temporal: recorded-only
+    questions: [Q-K-02, Q-K-10, Q-K-17, Q-K-22, Q-K-26, CQ-TM-03]
+    pattern: "03#Q-K-10"
+    populatedBy: [kg-executor, ncbi-eutils-pubmed, crossref-rest, http-capture, firecrawl-cli]
+    fixture: final/fixtures/K/retracted-sah-2017-stale-evidence
+    nestedOperations: "[CREATE, CONNECT] on Source.snapshots; [CONNECT] on the inverse"
+    aggregate: false
+    rationale: >-
+      A changed page is a new snapshot, never an edit; revision status (retraction) is read by comparing two snapshots of
+      one Source, so the source → captures edge must be traversed. Replaces PRIOR_SNAPSHOT / RESULTING_SNAPSHOT /
+      REVISES_SOURCE (revisionKind + revisesSnapshotUid on the later snapshot; revisionKind is a capture cache, the
+      authority is D3 REVISES or a HAS_REVISION_STATUS Assertion, R-44).
+  - type: HAS_LOCATOR
+    module: K
+    class: structural
+    from: SourceSnapshot
+    to: SourceLocator
+    declaredOn: [SourceLocator.snapshot (IN)]
+    edgeProperties: StructuralEdgeProperties
+    cardinality: each locator exactly_one snapshot; a snapshot many locators
+    temporal: recorded-only
+    questions: [Q-K-01, Q-K-10, Q-K-14, Q-K-20, Q-K-28]
+    pattern: "03#Q-K-01"
+    populatedBy: [kg-executor, ks-verification]
+    fixture: final/fixtures/K/hubbard-2013-unstructured-to-entity
+    nestedOperations: "[CONNECT]"
+    aggregate: false
+    rationale: A locator is meaningful only on one captured representation (Web Annotation States; verification.v1 SourceFragment.captureId); every trace to bytes crosses this edge.
+  - type: HAS_SUBJECT
+    module: K
+    class: structural
+    from: Assertion
+    to: Subjectable
+    declaredOn: [Assertion.subject (OUT)]
+    edgeProperties: null
+    cardinality: exactly_one per Assertion (the most specific record the source speaks about, R-18)
+    temporal: recorded-only
+    questions: [Q-K-01, Q-K-02, Q-K-05, Q-K-15, Q-K-22, Q-K-27, CQ-AX-04]
+    pattern: "03#Q-K-02"
+    populatedBy: [kg-executor]
+    fixture: final/fixtures/K/resveratrol-sirt1-evidence-mission
+    nestedOperations: "[CONNECT]"
+    aggregate: false
+    rationale: The kernel pattern's one any-entity subject edge (interface target, ≈0 cost per implementer); replaces the 144-member AssertionSubjectTarget union.
+  - type: HAS_OBJECT
+    module: K
+    class: structural
+    from: Assertion
+    to: Subjectable
+    declaredOn: [Assertion.object (OUT)]
+    edgeProperties: null
+    cardinality: zero_or_one per Assertion (exclusive with the typed literal)
+    temporal: recorded-only
+    questions: [Q-K-01, Q-K-02, Q-K-04, Q-K-07]
+    pattern: "03#Q-K-04"
+    populatedBy: [kg-executor]
+    fixture: final/fixtures/K/hubbard-2013-unstructured-to-entity
+    nestedOperations: "[CONNECT]"
+    aggregate: false
+    rationale: Binds the object of a relationship assertion; with HAS_SUBJECT it lets lineage find the asserted edge an Assertion authorized with both endpoints bound (no relationship scan).
+  - type: ASSERTED_BY
+    module: K
+    class: structural
+    from: Assertion
+    to: Subjectable
+    declaredOn: [Assertion.assertedBy (OUT)]
+    edgeProperties: null
+    cardinality: exactly_one per Assertion (D7 Person or Organization, K Agent, D3 Publication or D9 MediaWork for a multi-author work's own voice (R-15), D9 Channel ACCOUNT; executor-validated, P20)
+    temporal: recorded-only
+    questions: [Q-K-01, Q-K-09, Q-K-11, Q-K-15, Q-K-22, Q-K-23, Q-K-27]
+    pattern: "03#Q-K-23"
+    populatedBy: [kg-executor]
+    fixture: final/fixtures/K/seller-claim-occurrences
+    nestedOperations: "[CONNECT]"
+    aggregate: false
+    rationale: >-
+      One asserter per Assertion (OPEN-QUESTIONS 6); asserter track records and interested-party checks traverse it. Not
+      the producing software (that is the Activity's Agent). Asserter defaults (R-16): the issuer the document presents;
+      else the Source's publisher with qualifier asserterBasis:PUBLISHER_DEFAULT; the BellLabs Agent only for BellLabs
+      statements; inferred speakers asserterBasis:INFERRED plus a RESOLUTION Assessment. A multi-author work asserts what
+      it states in its own voice; Q-K-15 / Q-K-23 reach its authors through the AUTHORED_BY predicate (D3, R-15).
+  - type: HAS_EVIDENCE
+    module: K
+    class: structural
+    from: [Assertion, Adjudication, Assessment, Report]
+    to: SourceLocator
+    declaredOn: [Assertion.evidence, Adjudication.evidence, Assessment.evidence, Report.evidence]
+    edgeProperties: EvidenceEdgeProperties
+    cardinality: Assertion one_or_more (role SUPPORTS, origin DECLARED; never authority / independence / facet); Adjudication many (VERIFIER_FOUND, carries the verifier's authority / independence / facet); Assessment / Report many (a RESOLUTION Assessment cites the surface-form span with role CONTEXT)
+    temporal: recorded-only
+    questions: [Q-K-01, Q-K-09, Q-K-13, Q-K-14, Q-K-15, Q-K-16, Q-K-17, Q-K-20, Q-K-21, Q-K-30]
+    pattern: "03#Q-K-14"
+    populatedBy: [kg-executor, ks-verification]
+    fixture: final/fixtures/K/hubbard-2013-unstructured-to-entity
+    nestedOperations: "[CONNECT]"
+    aggregate: false
+    rationale: >-
+      Mirrors verification.v1 EvidenceEdge (role, origin, expectedSelectedContentDigest, and now authority, independence,
+      facet). Support and contradiction live here, record → locator, never document → entity (00-DIRECTIVE 3.8).
+      Replaces SUPPORTED_BY, CONTRADICTED_BY, SUPPORTED_BY_CHUNK and locator → Mention MENTIONS (the surface-form span
+      is now cited by the RESOLUTION Assessment directly). authority / independence / facet are written only on
+      Adjudication edges (adversarial review), so the extractor's DECLARED edges are never rewritten by a verifier. A
+      qualification is role QUALIFIES plus qualifier prefixes (R-20).
+  - type: ASSESSES
+    module: K
+    class: structural
+    from: [Adjudication, Assessment, Report, Activity]
+    to: [Assertion, Subjectable]
+    declaredOn: [Adjudication.evaluates (OUT → Assertion), Assertion.adjudications (IN), Assessment.about (OUT → Subjectable), Report.about (OUT → Subjectable), Activity.about (OUT → Subjectable), Claim.assessments (IN), Claim.reports (IN)]
+    edgeProperties: null
+    cardinality: Adjudication one_or_more Assertions; Assessment and Report one_or_more; Activity zero_or_more (EVIDENCE_MISSION exactly one Claim)
+    temporal: recorded-only
+    questions: [Q-K-05, Q-K-08, Q-K-09, Q-K-11, Q-K-13, Q-K-16, Q-K-19, Q-K-23, Q-K-25, Q-K-26, CQ-AX-04]
+    pattern: "03#Q-K-19"
+    populatedBy: [kg-executor, ks-verification, mission-control]
+    fixture: final/fixtures/K/resveratrol-sirt1-evidence-mission
+    nestedOperations: "[CONNECT]"
+    aggregate: false
+    rationale: >-
+      One "judges / is about" type for every judgment and for the evidence mission's charter (Activity → Claim, added in
+      the model stage so a mission is tied to the exact Claim it tests even when one vetting run queues many claims;
+      owner confirms, R-12). Replaces EVALUATES, ABOUT, ASSESSES_SOURCE_AUTHORITY, PROPOSES_MATCH, COMPARES_IDENTITIES.
+      Kernel meaning: D10 ReportItem may declare it. An assessment of one occurrence ASSESSES the Claim and is
+      DERIVED_FROM the occurrence (R-20).
+  - type: DERIVED_FROM
+    module: K
+    class: structural
+    from: [Assertion, Assessment, Report]
+    to: [Assertion, Assessment]
+    declaredOn: [Assertion.derivedFrom, Assessment.inputAssertions, Assessment.inputAssessments, Report.citesAssertions, Report.citesAssessments]
+    edgeProperties: null
+    cardinality: many
+    temporal: recorded-only
+    questions: [Q-K-06, Q-K-17, Q-K-18, Q-K-20, Q-K-21, Q-K-25, Q-K-30]
+    pattern: "03#Q-K-06"
+    populatedBy: [kg-executor, ks-verification]
+    fixture: final/fixtures/K/two-run-lineage
+    nestedOperations: "[CONNECT]"
+    aggregate: false
+    rationale: >-
+      PROV wasDerivedFrom: inputs of calculated assertions, retellings and relayed records (occurrence → primary
+      occurrence, basisKind CITED_FROM_PRIOR_WORK; R-21), corrections (CORRECTS occurrence → corrected occurrence; R-20),
+      assessment inputs, report citations, computed-state inputs (domains declare it with kernel meaning; D10 ReportItem
+      and Association declare it; ReportItem.citesAssociations stays cut, R-48). One type makes "what depends on mission
+      M" a single variable-length pattern. Replaces DERIVED_FROM_ASSERTION, CONSIDERS_ASSESSMENT, CITES_ASSERTION,
+      CITES_ASSESSMENT (R-11, migration-notes). Assessment.inputAssessments is instantiated by as-synthesis-general
+      (fixture resveratrol-sirt1-evidence-mission) and by D1, D5 and D7 fixtures; Adjudication.considers was cut.
+  - type: OCCURRENCE_OF
+    module: K
+    class: structural
+    from: Assertion
+    to: Claim
+    declaredOn: [Assertion.occurrenceOf (OUT), Claim.occurrences (IN)]
+    edgeProperties: null
+    cardinality: zero_or_one per Assertion (assertionKind CLAIM only); a Claim many occurrences
+    temporal: recorded-only
+    questions: [Q-K-09, Q-K-11, Q-K-19, Q-K-21, Q-K-23, Q-K-26]
+    pattern: "03#Q-K-09"
+    populatedBy: [kg-executor]
+    fixture: final/fixtures/K/resveratrol-sirt1-evidence-mission
+    nestedOperations: "[CONNECT]"
+    aggregate: false
+    rationale: The claim lifecycle's join from who-said-it-where to the proposition (00-DIRECTIVE 3.4); the extractor knows which proposition it extracted, so it is structural, not a derived INSTANCE_OF.
+  - type: WAS_GENERATED_BY
+    module: K
+    class: structural
+    from: [Assertion, Adjudication, Assessment, Report, Entity]
+    to: Activity
+    declaredOn: [Assertion.generatedBy, Adjudication.generatedBy, Assessment.generatedBy, Report.generatedBy, Activity.generated (IN, from Entity)]
+    edgeProperties: null
+    cardinality: one_or_more per node (create and every update; the creator is the earliest Activity)
+    temporal: recorded-only
+    questions: [Q-K-03, Q-K-04, Q-K-05, Q-K-06, Q-K-07, Q-K-08, Q-K-18, Q-K-20, Q-K-24, CQ-AX-07]
+    pattern: "03#Q-K-07"
+    populatedBy: [kg-executor, mission-control]
+    fixture: final/fixtures/K/two-run-lineage
+    nestedOperations: "[CONNECT]"
+    aggregate: false
+    rationale: >-
+      The single lineage spine (00-DIRECTIVE 4); written on create and update (executor change P9) so "which missions
+      touched X" and "what changed between runs" are answerable without a database as-of. One Activity per run (R-13).
+      Lineage patterns traverse this type and never scan the :Entity label (R-17).
+  - type: WAS_ASSOCIATED_WITH
+    module: K
+    class: structural
+    from: Activity
+    to: Agent
+    declaredOn: [Activity.agents (OUT)]
+    edgeProperties: null
+    cardinality: one_or_more per Activity
+    temporal: recorded-only
+    questions: [Q-K-03, Q-K-24]
+    pattern: "03#Q-K-24"
+    populatedBy: [kg-executor, ks-verification]
+    fixture: final/fixtures/K/two-run-lineage
+    nestedOperations: "[CONNECT]"
+    aggregate: false
+    rationale: Which model, prompt and skill version produced a run's records (producer error rate, replay); replaces ASSESSED_BY.
+  - type: WAS_INFORMED_BY
+    module: K
+    class: structural
+    from: Activity
+    to: Activity
+    declaredOn: [Activity.informedBy (OUT)]
+    edgeProperties: null
+    cardinality: many
+    temporal: recorded-only
+    questions: [Q-K-06, Q-K-08]
+    pattern: "03#Q-K-06"
+    populatedBy: [mission-control, kg-executor]
+    fixture: final/fixtures/K/two-run-lineage
+    nestedOperations: "[CONNECT]"
+    aggregate: false
+    rationale: PROV wasInformedBy (vetting run → evidence mission, research → ingestion, mission → its VERIFICATION run); OpenLineage parent-run facet is the same idea. The only chaining relationship (R-12).
+  - type: HAS_IDENTIFIER
+    module: K
+    class: asserted
+    from: Subjectable
+    to: Identifier
+    declaredOn: [Identifier.identifies (IN)]
+    edgeProperties: IdentifierLinkProperties
+    cardinality: many (one episode per authorizing Assertion); one (scheme, issuer, normalized value) identifies at most one Subjectable (R-42)
+    temporal: episode
+    questions: [Q-K-12, Q-K-29]
+    pattern: "03#Q-K-12"
+    populatedBy: [kg-executor, wikidata, ncbi-eutils-pubmed, bioregistry]
+    fixture: final/fixtures/K/resveratrol-identifier-crosswalk
+    nestedOperations: "[CONNECT]"
+    aggregate: false
+    rationale: >-
+      Declared once on Identifier against the Subjectable interface so no domain re-declares it; assignment validity (GTIN
+      reassigned, code deprecated) needs the episode. Uniqueness (R-42): no cross-type join through a shared Identifier
+      (renditions group by RENDITION_OF, R-43; condition-to-target by OPERATIONALIZED_BY, R-70). Assignment status lives
+      on the episode; Identifier.registrationStatus is declined.
+
+predicateOnly:
+  - predicate: RATES_CLAIM
+    registrar: K
+    meaning: >-
+      a third party's verdict on a Claim (ClaimReview, regulator finding); subject the Claim, asserter the rater,
+      valueString the rating, qualifier scale; optional HAS_OBJECT = the rating instrument record (a D8 RegulatoryRecord
+      or a review page); the mapping of ratings to the verdict lattice is a versioned D10 query-time rule, never stored
+      (R-31; values with the owner, K 11-OQ 14)
+    promoteWhen: Q-K-27 needs GraphQL edge filters by reviewer across thousands of claims (today a Cypher join from the Claim)
+  - predicate: HAS_REVISION_STATUS
+    registrar: K
+    meaning: >-
+      retraction / expression of concern / erratum status of a Source, valueString a SourceRevisionKind value, one
+      Assertion per authority (publisher, Retraction Watch, PubMed, OpenAlex); written only for non-scholarly Sources and
+      for status flags with no identified notice. When the revising work is identified it is D3 REVISES; never both for
+      one (asserter, notice) (R-44)
+    promoteWhen: Q-K-22 has to rank authorities per Source in GraphQL without Cypher
+  - predicate: FIELD_NOT_REPORTED
+    registrar: K
+    meaning: >-
+      the source was read for field F and does not report it (CQ-AX-04; D4 convention made kernel-wide); subject the
+      entity the field would describe (e.g. the Study), valueString the field, locator the section read or WHOLE_SNAPSHOT;
+      asserted by the BellLabs Agent when we read a record and find the field silent, by the source when it answers a
+      query with no items (R-16)
+    promoteWhen: never as an edge (it has no object)
+  - predicate: CORRECTS
+    registrar: K
+    meaning: >-
+      a correction is an occurrence Assertion with predicate CORRECTS plus DERIVED_FROM the corrected occurrence (R-20;
+      in place of typed CORRECTS / QUALIFIED_BY relationship types)
+    promoteWhen: a value-1 question needs GraphQL traversal from an occurrence to its corrections (today DERIVED_FROM from the CORRECTS occurrence; CQ-CL-04, Q-D9-04)
+  - predicate: CITES_AS_SUPPORT
+    registrar: K
+    meaning: an occurrence's own reference list entry when the cited work cannot be resolved to an occurrence Assertion
+    promoteWhen: Q-K-30 needs reference-list traversal for unresolved citations
+  - predicate: HAS_CREDENTIAL
+    registrar: K
+    meaning: a speaker's stated credential (checked by D7/D9)
+    promoteWhen: Q-K-23 track records filtered by credential
+authorizingPredicates:
+  # R-52 kernel convention whose value equals K's own typed relationship type (allowed by R-53; not a predicateOnly entry)
+  - predicate: HAS_IDENTIFIER
+    registrar: K
+    authorizes: HAS_IDENTIFIER
+    meaning: the Assertion that authorizes each HAS_IDENTIFIER episode (written by identifier.attach)
+    promoteWhen: already typed (HAS_IDENTIFIER edge); the predicate value is the authorization record
+deferred:
+  - { type: USED, reason: "PROV used; the claim a mission tests is Activity ASSESSES Claim, inputs of judgments are DERIVED_FROM; no question traverses generic usage" }
+  - { type: TESTS_CLAIM, reason: "considered for mission → Claim in the model stage; ASSESSES with kernel meaning carries it without a 15th type" }
+  - { type: SUPERSEDES, reason: "supersedesUid (same asserter only, R-23) + recordedTo on the older record; no question walks chains deeper than one hop" }
+  - { type: REANCHORS, reason: "SourceLocator.reanchorsLocatorUid + reanchorMatch" }
+  - { type: PRIOR_SNAPSHOT, reason: "SourceSnapshot.revisesSnapshotUid" }
+  - { type: RESULTING_SNAPSHOT, reason: "SourceSnapshot.revisionKind on the later capture" }
+  - { type: ANNOUNCED_IN, reason: "an identified notice is a D3 Publication that REVISES the work (R-44); otherwise the notice is its own Source and a HAS_REVISION_STATUS assertion cites its locator" }
+  - { type: REVISES_SOURCE, reason: "revisionKind + revisesSnapshotUid on the later snapshot of the same Source; work-level revisions are D3 REVISES (R-44)" }
+  - { type: SUPPORTED_BY, reason: "HAS_EVIDENCE {role: SUPPORTS}" }
+  - { type: CONTRADICTED_BY, reason: "HAS_EVIDENCE {role: CONTRADICTS}" }
+  - { type: SUPPORTED_BY_CHUNK, reason: "a chunk is never evidence; D9 COVERS_LOCATOR (derived) then HAS_EVIDENCE" }
+  - { type: EVALUATES, reason: "ASSESSES" }
+  - { type: ABOUT, reason: "ASSESSES (W20 Document ABOUT → D9 decides for its containers)" }
+  - { type: PROPOSES_MATCH, reason: "RESOLUTION Assessment ASSESSES the candidate and cites the surface-form span (HAS_EVIDENCE role CONTEXT)" }
+  - { type: COMPARES_IDENTITIES, reason: "EQUIVALENCE Assessment ASSESSES both identities" }
+  - { type: COMPETES_WITH, reason: "competing hypotheses are sibling RESOLUTION Assessments citing the same span" }
+  - { type: RESOLVES_MENTION, reason: "MENTIONS is licensed by its entity-link/vN derivationRule; a RESOLUTION Assessment (named in derivedFromAssessmentUids) only when a binding rests on the surface form (R-27)" }
+  - { type: "MENTIONS on Mention (Mention.resolvedTo)", reason: "cut with Mention in the adversarial review (owner confirms, R-09): it restated what the RESOLUTION Assessment records; MENTIONS stays a kernel-meaning type declared and registered by D9 on Chunk" }
+  - { type: "DERIVED_FROM on Adjudication (Adjudication.considers)", reason: "cut in the adversarial review (owner confirms, R-09): nothing populated it (verification.v1 Judgment carries fragments, not assessment inputs) and per-evidence authority is on HAS_EVIDENCE; promote when a question needs the assessments a judgment weighed (e.g. Q-K-15 reading a SOURCE_AUTHORITY register entry through the judgment)" }
+  - { type: DERIVED_FROM_ASSERTION, reason: "DERIVED_FROM (R-11)" }
+  - { type: CONSIDERS_ASSESSMENT, reason: "DERIVED_FROM (R-11)" }
+  - { type: CITES_ASSERTION, reason: "DERIVED_FROM (W23, R-11)" }
+  - { type: CITES_ASSESSMENT, reason: "DERIVED_FROM (W23, R-11)" }
+  - { type: INSTANCE_OF, reason: "OCCURRENCE_OF (structural); re-clustering is an EQUIVALENCE Assessment" }
+  - { type: ASSESSED_BY, reason: "the Activity's Agent (WAS_ASSOCIATED_WITH)" }
+  - { type: ACTED_ON_BEHALF_OF, reason: "deferred to a D7 seam if a question asks which organization's agent asserted" }
+  - { type: AUTHORIZED_BY, reason: "policyVersion string on Report and Activity (R-33); D10 promotes PolicyVersion if a question traverses it" }
+  - { type: DECLARES_CRITERION, reason: "D10 (DecisionCriterion)" }
+  - { type: CORRECTS, reason: "kernel predicate CORRECTS + DERIVED_FROM (R-20)" }
+  - { type: QUALIFIED_BY, reason: "Assertion.qualifiers (verification.v1 qualifiers); a qualification is HAS_EVIDENCE {role QUALIFIES} (R-20)" }
+  - { type: OBSERVED_IN_CONTEXT, reason: "qualifier or D3/D4 context node owned by the domain (D2 declares it IN on MechanismEvidenceContext, R-29)" }
+  - { type: LOCATES_REGION, reason: "BOUNDING_BOX selector in SourceLocator.selectorJson; regions of media assets are D9" }
+  - { type: LOCATOR_IN_TEXT_VERSION, reason: "D9 Chunk carries textVersionHash; locator offsets carry their basis in selectorJson (basis mandatory, R-38)" }
+  - { type: RESOLVES_TO_CHUNK, reason: "D9 COVERS_LOCATOR (derived)" }
+  - { type: TEXT_OF_SNAPSHOT, reason: "D9 CHUNK_OF" }
+  - { type: HAS_TEXT_VERSION, reason: "D9 (text version absorbed into Chunk properties)" }
+  - { type: RENDITION_OF, reason: "not declared in the K SDL: kernel meaning (Source → MediaWork | Publication, asserted, AssertedRecordedProperties, recorded-only); declared IN on D9 MediaWork.renditions and D3 Publication.renditions, registered by D3 (R-43). Source family = OCCURS_IN work, else RENDITION_OF work, else Source" }
+  - { type: MENTIONS_ENTITY, reason: "MENTIONS (derived) from D9 Chunk" }
+  - { type: ASSESSED_ON_SNAPSHOT, reason: "SOURCE_AUTHORITY Assessment HAS_EVIDENCE the snapshot's locator (WHOLE_SNAPSHOT)" }
+  - { type: ASSESSES_SOURCE_AUTHORITY, reason: "ASSESSES (Assessment kind SOURCE_AUTHORITY → Source) plus per-evidence authority on HAS_EVIDENCE" }
+  - { type: DISCOVERED_SOURCE, reason: "operational discovery log → D11 action-space registry" }
+  - { type: FOR_COVERAGE_REQUIREMENT, reason: "operational coverage plan → D11 action-space registry" }
+  - { type: "W20 HAS_CHUNK, HAS_SEGMENTATION, FROM_TEXT_VERSION, NEXT_CHUNK, OCCURS_IN_SEGMENT, AUTHORED_BY, PRESENTED_AT, SPONSORS_CONTENT", reason: "D9 (documents, chunks, containers, sponsorship); AUTHORED_BY is a predicate registered by D3 (R-80)" }

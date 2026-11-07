@@ -1,0 +1,237 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v2",
+  "intentId": "ft-d11-capture-failures-coverage",
+  "pins": {
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+    "policyVersion": "bks-admission-policy/v1"
+  },
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "a8-d11-fixtures",
+      "model": "claude-opus-5-5"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run:ft-D11-capture-failures-coverage",
+      "missionId": "mission:ft-D11-fixtures"
+    },
+    "activityKind": "RESEARCH"
+  },
+  "basis": {
+    "creationOnly": {
+      "reason": "FU-03 v2 fixture round: replay of a packet fixture into a graph without a prior custody snapshot",
+      "expectAbsent": [],
+      "expectPresent": []
+    }
+  },
+  "defaults": {
+    "privacyClass": "PUBLIC"
+  },
+  "sources": [
+    {
+      "ref": "pubmed-si",
+      "source": {
+        "canonicalUri": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=NCT02921659%5Bsi%5D&retmode=json",
+        "title": "PubMed esearch NCT02921659[si] - count 0 (same snapshot as nr-trial-jats-unstructured#snap-pubmed-si-nct02921659)",
+        "sourceKind": "API",
+        "genre": "BIBLIOGRAPHIC_INDEX_QUERY"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:54:49Z",
+        "observedAt": "2026-10-08T21:54:49Z",
+        "contentHash": "sha256:d6564b024587c2a0c3aac5fd24b0ae9091255596d9aeb019f5ab1a0c2bcad7ad",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "ncbi-eutils-pubmed/curl-8",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "l-esearch-count0",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"count\":\"0\"",
+            "prefix": "ersion\":\"0.3\"},\"esearchresult\":{",
+            "suffix": ",\"retmax\":\"0\",\"retstart\":\"0\",\"id",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 62,
+              "end": 73
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/esearchresult/count",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"count\":\"0\"",
+          "prefix": "ersion\":\"0.3\"},\"esearchresult\":{",
+          "suffix": ",\"retmax\":\"0\",\"retstart\":\"0\",\"id",
+          "quoteHash": "sha256:b54baa7820ed51e5ddd535ba7696a0c536c3ef8a24a4c9c755bdb8c1082233fd",
+          "startOffset": 62,
+          "endOffset": 73
+        },
+        {
+          "ref": "l-esearch-notfound",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"errorlist\":{\"phrasesnotfound\":[\"NCT02921659\"]",
+            "prefix": "ytranslation\":\"NCT02921659[si]\",",
+            "suffix": ",\"fieldsnotfound\":[]},\"warningli",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 171,
+              "end": 217
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/esearchresult/errorlist/phrasesnotfound/0",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"errorlist\":{\"phrasesnotfound\":[\"NCT02921659\"]",
+          "prefix": "ytranslation\":\"NCT02921659[si]\",",
+          "suffix": ",\"fieldsnotfound\":[]},\"warningli",
+          "quoteHash": "sha256:eeb05b629e0866642d5bf7271c49c1604a45d77e57e023b85d8955ea7ca178b6",
+          "startOffset": 171,
+          "endOffset": 217
+        },
+        {
+          "ref": "l-esearch-nomsg",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"outputmessages\":[\"No items found.\"]",
+            "prefix": "\":[],\"quotedphrasesnotfound\":[],",
+            "suffix": "}}}\n",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 301,
+              "end": 337
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/esearchresult/warninglist/outputmessages/0",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"outputmessages\":[\"No items found.\"]",
+          "prefix": "\":[],\"quotedphrasesnotfound\":[],",
+          "suffix": "}}}\n",
+          "quoteHash": "sha256:2040f39735f8bf673ff63ceaeb70fca407330c0630e6d1ac704a2f99b2320d1c",
+          "startOffset": 301,
+          "endOffset": 337
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "study",
+      "mode": "new",
+      "nodeType": "Study",
+      "name": "NCT02921659",
+      "uidSegment": "nct02921659",
+      "properties": {},
+      "identifiers": [
+        {
+          "scheme": "NCT",
+          "issuer": "NLM ClinicalTrials.gov",
+          "value": "NCT02921659"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "nlm",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "U.S. National Library of Medicine",
+      "properties": {
+        "entityKind": "UNSPECIFIED"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "p01-pubmed-silent",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "study",
+      "assertion": {
+        "speechAct": "STATES",
+        "basisKind": "DIRECT_MEASUREMENT",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "OBSERVATION_ONLY",
+          "validObservedAt": "2026-10-08T21:07:24Z"
+        },
+        "predicate": "FIELD_NOT_REPORTED"
+      },
+      "value": {
+        "valueString": "PubMed secondary-source id [si] linking a PubMed record to NCT02921659"
+      },
+      "evidence": [
+        "l-esearch-count0",
+        "l-esearch-notfound",
+        "l-esearch-nomsg"
+      ],
+      "asserterRef": "nlm",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: SUBJECT_CONFLICT: study (REQUIRED_PROPERTY_MISSING: Study.studyKind)"
+      }
+    }
+  ],
+  "notes": "PARTIAL by design. The seven CaptureAttempt records (ca-01..ca-07 in assertions.yaml) are NOT expressible as biotech-knowledge-intent.v1 proposals and should not be: CaptureAttempt is executor-only (@mutation operations [], ADR 0003) and is written by the capture layer for every FAILED or PARTIAL request (action-space gap G10, 'capture-attempt recorder'), generated by the run's Activity. An intent cannot assert a failed request because there are no bytes to locate. This intent carries the one statement the coverage supports: the empty-result snapshot (kept whole, COMPLETE) and its FIELD_NOT_REPORTED assertion (since the adversarial review the empty search is not a CaptureAttempt).",
+  "provenance": {
+    "derivedFrom": {
+      "schemaVersion": "biotech-knowledge-intent.v1",
+      "path": "schema/program/final/fixtures/D11/capture-failures-coverage/intent.json",
+      "rawBytesDigest": "sha256:a3118abf11ef73a0cc313da711070f6700bdac1ada5ab3edb59bb7a238cc4040"
+    },
+    "migrator": "bks-migrate-intent-v1/1",
+    "edits": [
+      {
+        "at": "sources[0].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "ncbi-eutils-pubmed/curl-8",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[0].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[2].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "proposals[0].assertion.validity.statedAsOf",
+        "rule": "validObservedAt",
+        "from": "2026-10-08T21:07:24Z",
+        "to": "validObservedAt"
+      },
+      {
+        "at": "subjects[nlm].properties.entityKind",
+        "rule": "schema-unknown-marker",
+        "from": null,
+        "to": "UNSPECIFIED",
+        "note": "not stated by the fixture source; OrganizationEntityKind.UNSPECIFIED is the release's explicit unknown member (OD-24 / OD-25), not a sourced fact"
+      }
+    ]
+  }
+}

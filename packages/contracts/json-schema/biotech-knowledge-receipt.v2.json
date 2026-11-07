@@ -1,0 +1,694 @@
+{
+  "$id": "https://belllabs.dev/contracts/biotech-knowledge-receipt.v2.json",
+  "title": "biotech-knowledge-receipt.v2",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "biotech-knowledge-receipt.v2"
+    },
+    "receiptId": {
+      "type": "string"
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "applied",
+        "noop",
+        "partial",
+        "rejected",
+        "failed",
+        "duplicate",
+        "unresolved"
+      ]
+    },
+    "duplicateOf": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "effect": {
+      "type": "object",
+      "properties": {
+        "effectKey": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,199}$"
+        },
+        "markerKey": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "installationId": {
+              "type": "string"
+            },
+            "applicationId": {
+              "type": "string"
+            },
+            "tenantId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "installationId",
+            "applicationId",
+            "tenantId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "effectKey",
+        "markerKey",
+        "scope"
+      ],
+      "additionalProperties": false
+    },
+    "intent": {
+      "type": "object",
+      "properties": {
+        "intentId": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+        },
+        "intentDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "intentId",
+        "intentDigest"
+      ],
+      "additionalProperties": false
+    },
+    "plan": {
+      "type": "object",
+      "properties": {
+        "planRef": {
+          "type": "string"
+        },
+        "planDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "partialPolicy": {
+          "$ref": "#/$defs/__schema0"
+        }
+      },
+      "required": [
+        "planRef",
+        "planDigest",
+        "partialPolicy"
+      ],
+      "additionalProperties": false
+    },
+    "release": {
+      "type": "object",
+      "properties": {
+        "schemaReleaseDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "executorVersion": {
+          "type": "string"
+        },
+        "rulesDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "schemaReleaseDigest",
+        "executorVersion",
+        "rulesDigest"
+      ],
+      "additionalProperties": false
+    },
+    "attemptId": {
+      "type": "string"
+    },
+    "priorGraphRevision": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "nextGraphRevision": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "witness": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "jti": {
+              "type": "string"
+            },
+            "kid": {
+              "type": "string"
+            },
+            "iss": {
+              "type": "string"
+            },
+            "iat": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "exp": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "revocationGeneration": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "digest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "jti",
+            "kid",
+            "iss",
+            "iat",
+            "exp",
+            "revocationGeneration",
+            "digest"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "activityUid": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^hu:[a-z0-9-]+:[A-Za-z0-9][A-Za-z0-9._\\-/]*$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "proposals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "proposalId": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+          },
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "applied",
+              "noop",
+              "held",
+              "rejected",
+              "excluded",
+              "failed"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "proposalId",
+          "outcome"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "effects": {
+      "type": "object",
+      "properties": {
+        "nodes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "uid": {
+                "type": "string",
+                "pattern": "^hu:[a-z0-9-]+:[A-Za-z0-9][A-Za-z0-9._\\-/]*$"
+              },
+              "label": {
+                "type": "string"
+              },
+              "op": {
+                "type": "string",
+                "enum": [
+                  "create",
+                  "update"
+                ]
+              },
+              "proposalId": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              },
+              "statementId": {
+                "type": "string"
+              },
+              "properties": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "uid",
+              "label",
+              "op",
+              "statementId"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "relationships": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "fromUid": {
+                "type": "string",
+                "pattern": "^hu:[a-z0-9-]+:[A-Za-z0-9][A-Za-z0-9._\\-/]*$"
+              },
+              "toUid": {
+                "type": "string",
+                "pattern": "^hu:[a-z0-9-]+:[A-Za-z0-9][A-Za-z0-9._\\-/]*$"
+              },
+              "relationshipUid": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "op": {
+                "type": "string",
+                "enum": [
+                  "create",
+                  "close"
+                ]
+              },
+              "proposalId": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              },
+              "statementId": {
+                "type": "string"
+              },
+              "assertionUid": {
+                "default": null,
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^hu:[a-z0-9-]+:[A-Za-z0-9][A-Za-z0-9._\\-/]*$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "key",
+              "type",
+              "fromUid",
+              "toUid",
+              "relationshipUid",
+              "op",
+              "statementId"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "total": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "nodes",
+        "relationships",
+        "total"
+      ],
+      "additionalProperties": false
+    },
+    "invariants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "ok": {
+            "type": "boolean"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "ok"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "counters": {
+      "anyOf": [
+        {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "failure": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string",
+              "enum": [
+                "BKS_RELEASE_MISMATCH",
+                "BKS_RELEASE_TAMPERED",
+                "BKS_UNAUTHORIZED",
+                "BKS_FORBIDDEN_SCOPE",
+                "BKS_PLAN_NOT_FOUND",
+                "BKS_PLAN_DIGEST_MISMATCH",
+                "BKS_PLAN_FORGED",
+                "BKS_WITNESS_INVALID",
+                "BKS_WITNESS_EXPIRED",
+                "BKS_WITNESS_REVOKED",
+                "BKS_EFFECT_DUPLICATE",
+                "BKS_EFFECT_CONFLICT",
+                "BKS_EFFECT_PENDING",
+                "BKS_EFFECT_UNRESOLVED",
+                "BKS_STALE_REVISION",
+                "BKS_STALE_PRECONDITION",
+                "BKS_IDENTITY_CONFLICT",
+                "BKS_SLOT_CONFLICT",
+                "BKS_EVIDENCE_UNVERIFIED",
+                "BKS_SNAPSHOT_UNVERIFIED",
+                "BKS_UNSUPPORTED",
+                "BKS_LIMIT_EXCEEDED",
+                "BKS_TIMEOUT",
+                "BKS_PARSE_REJECTED",
+                "BKS_PROCEDURE_FORBIDDEN",
+                "BKS_VISIBILITY_DENIED",
+                "BKS_PARTIAL_REFUSED",
+                "BKS_PARTIAL_NOT_CLOSED",
+                "BKS_PLAN_REJECTED",
+                "BKS_AUTHORITY_UNAVAILABLE"
+              ]
+            },
+            "message": {
+              "type": "string"
+            },
+            "details": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            }
+          },
+          "required": [
+            "code",
+            "message"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "recovery": {
+      "type": "object",
+      "properties": {
+        "effectKey": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,199}$"
+        },
+        "markerKey": {
+          "type": "string"
+        },
+        "attemptId": {
+          "type": "string"
+        },
+        "lookup": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "effectKey",
+        "markerKey",
+        "attemptId",
+        "lookup"
+      ],
+      "additionalProperties": false
+    },
+    "attempts": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "attemptId": {
+            "type": "string"
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+          },
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "applied",
+              "failed",
+              "unresolved"
+            ]
+          },
+          "code": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "message": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "planDigest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "attemptId",
+          "at",
+          "outcome",
+          "code",
+          "message",
+          "planDigest"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "cancellation": {
+      "type": "object",
+      "properties": {
+        "requestedAfterCommit": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "requestedAfterCommit"
+      ],
+      "additionalProperties": false
+    },
+    "admission": {
+      "type": "object",
+      "properties": {
+        "markerSchemaVersion": {
+          "type": "string",
+          "const": "bks-intent-marker.v2"
+        },
+        "dispatchId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,199}$"
+        },
+        "markerDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "payloadDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "boundEffectDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "useDecision": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "digest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "id",
+            "digest"
+          ],
+          "additionalProperties": false
+        },
+        "revocationEpoch": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "appliedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+        }
+      },
+      "required": [
+        "markerSchemaVersion",
+        "dispatchId",
+        "markerDigest",
+        "payloadDigest",
+        "boundEffectDigest",
+        "useDecision",
+        "revocationEpoch",
+        "appliedAt"
+      ],
+      "additionalProperties": false
+    },
+    "executedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+    },
+    "durationMs": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "receiptId",
+    "outcome",
+    "duplicateOf",
+    "effect",
+    "intent",
+    "plan",
+    "release",
+    "attemptId",
+    "priorGraphRevision",
+    "nextGraphRevision",
+    "witness",
+    "activityUid",
+    "proposals",
+    "effects",
+    "invariants",
+    "counters",
+    "failure",
+    "recovery",
+    "executedAt"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "__schema0": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema0"
+          }
+        },
+        {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/__schema0"
+          }
+        }
+      ]
+    }
+  }
+}

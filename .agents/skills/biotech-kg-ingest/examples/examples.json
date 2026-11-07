@@ -1,0 +1,426 @@
+{
+  "format": "bks-skill-examples.v1",
+  "skill": "biotech-kg-ingest",
+  "release": {
+    "releaseId": "biotech-schema-v2.2.0",
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74"
+  },
+  "runner": {
+    "test": "apps/executor/src/skill-examples.integration.test.ts",
+    "surface": "executor HTTP: POST /kg/plan -> POST /kg/admit (development admission; production witnesses come from the admission service) -> POST /kg/apply -> GET /kg/receipt -> POST /kg/verify-effects",
+    "graph": "fresh disposable Neo4j 5.26 created with scripts/neo4j-test.sh (release DDL --phase all, release marker installed); never Aura",
+    "order": "examples run in file order; a step may reference an earlier step's result",
+    "placeholders": {
+      "${step:<stepId>.subject.<ref>}": "uid of subject <ref> in that step's plan",
+      "${step:<stepId>.mint.<proposalId>.<key>}": "record minted by that proposal (assertion | assessment | report | relationship | association)"
+    },
+    "principals": {
+      "writer": "role writer, no grants (ordinary knowledge agent)",
+      "projector": "role writer with grant projection.write (trusted projection job)"
+    },
+    "expect": {
+      "plan.outcome": "applicable | partial | held | rejected | noop",
+      "plan.dispositions": "proposalId -> admitted | noop_duplicate | held | rejected",
+      "plan.reason": "proposalId -> regex the first planner reason must match",
+      "apply": "list of apply calls; each names partialPolicy (all | {include: [...]}) and the expected receipt outcome or error code; every apply call is preceded by its own admission (the witness binds effectKey and partialPolicy)",
+      "verify": "paginated readback of every declared effect must report 0 failures"
+    }
+  },
+  "examples": [
+    {
+      "id": "ex01",
+      "title": "Product label: component line with amount basis, per-field evidence, source-stated vs calculated quantity",
+      "teaches": [
+        "edge.assert with ComponentLineProperties (amount, unitCode, massBasis, amountBasis, amountReferent)",
+        "node.upsert with fieldEvidence: the FIELD predicate MAX_DAILY_SERVINGS gets its own Assertion",
+        "CALCULATED literal with derivation inputs (never written as if the label stated it)"
+      ],
+      "steps": [
+        {
+          "id": "ex01",
+          "intent": "01-label-amount-basis.intent.json",
+          "principal": "writer",
+          "expect": {
+            "plan.outcome": "applicable",
+            "plan.dispositions": {
+              "line": "admitted",
+              "servings": "admitted",
+              "daily-total": "admitted"
+            }
+          },
+          "apply": [
+            {
+              "effectKey": "skill-ex01",
+              "partialPolicy": "all",
+              "outcome": "applied"
+            }
+          ],
+          "verify": true
+        }
+      ]
+    },
+    {
+      "id": "ex02",
+      "title": "Study: the paper and the registry disagree on masking",
+      "teaches": [
+        "two Assertions, two asserters, two sources; ingestion records both and chooses no winner",
+        "Study / Publication / Organization asserters (P20)"
+      ],
+      "steps": [
+        {
+          "id": "ex02",
+          "intent": "02-paper-registry-disagreement.intent.json",
+          "principal": "writer",
+          "expect": {
+            "plan.outcome": "applicable",
+            "plan.dispositions": {
+              "masking-paper": "admitted",
+              "masking-registry": "admitted"
+            }
+          },
+          "apply": [
+            {
+              "effectKey": "skill-ex02",
+              "partialPolicy": "all",
+              "outcome": "applied"
+            }
+          ],
+          "verify": true
+        }
+      ]
+    },
+    {
+      "id": "ex03",
+      "title": "Predicate-only relation assertion with an object (no typed edge)",
+      "teaches": [
+        "assertion.relate for a registered relationship predicate without a typed edge",
+        "a registered qualifier (exclusivity=EXCLUSIVE)"
+      ],
+      "steps": [
+        {
+          "id": "ex03",
+          "intent": "03-predicate-only-assertion.intent.json",
+          "principal": "writer",
+          "expect": {
+            "plan.outcome": "applicable",
+            "plan.dispositions": {
+              "supplies": "admitted"
+            }
+          },
+          "apply": [
+            {
+              "effectKey": "skill-ex03",
+              "partialPolicy": "all",
+              "outcome": "applied"
+            }
+          ],
+          "verify": true
+        }
+      ]
+    },
+    {
+      "id": "ex04",
+      "title": "Corrected same-source temporal episode (supersession by the same asserter)",
+      "teaches": [
+        "edge.assert opens an episode with stated valid time and precision",
+        "the same asserter supersedes its earlier Assertion; the old episode closes in recorded time, history is kept"
+      ],
+      "steps": [
+        {
+          "id": "s1",
+          "intent": "04-corrected-episode.step1.intent.json",
+          "principal": "writer",
+          "expect": {
+            "plan.outcome": "applicable"
+          },
+          "apply": [
+            {
+              "effectKey": "skill-ex04-1",
+              "partialPolicy": "all",
+              "outcome": "applied"
+            }
+          ],
+          "verify": true
+        },
+        {
+          "id": "s2",
+          "intent": "04-corrected-episode.step2.intent.json",
+          "principal": "writer",
+          "expect": {
+            "plan.outcome": "applicable",
+            "plan.dispositions": {
+              "owns-corrected": "admitted"
+            }
+          },
+          "apply": [
+            {
+              "effectKey": "skill-ex04-2",
+              "partialPolicy": "all",
+              "outcome": "applied"
+            }
+          ],
+          "verify": true,
+          "graph": {
+            "closedEpisodes": {
+              "type": "OWNS_BRAND",
+              "from": "${step:s1.subject.org}",
+              "open": 1,
+              "closed": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ex05",
+      "title": "Multi-source contradictory episodes (different asserters coexist)",
+      "teaches": [
+        "OWNS_BRAND episodes from two asserters overlap in valid time; neither overwrites the other (OD-05 is per asserter)"
+      ],
+      "steps": [
+        {
+          "id": "ex05",
+          "intent": "05-contradictory-episodes.intent.json",
+          "principal": "writer",
+          "expect": {
+            "plan.outcome": "applicable",
+            "plan.dispositions": {
+              "owns-a": "admitted",
+              "owns-b": "admitted"
+            }
+          },
+          "apply": [
+            {
+              "effectKey": "skill-ex05",
+              "partialPolicy": "all",
+              "outcome": "applied"
+            }
+          ],
+          "verify": true
+        }
+      ]
+    },
+    {
+      "id": "ex06",
+      "title": "Claim occurrence with asserter and locator",
+      "teaches": [
+        "Claim subject (identity = propositionHash, computed by the executor)",
+        "lineage.start about the claim",
+        "assertion.relate with assertionKind CLAIM and occurrenceOf"
+      ],
+      "steps": [
+        {
+          "id": "ex06",
+          "intent": "06-claim-occurrence.intent.json",
+          "principal": "writer",
+          "expect": {
+            "plan.outcome": "applicable",
+            "plan.dispositions": {
+              "lineage": "admitted",
+              "occurrence": "admitted"
+            }
+          },
+          "apply": [
+            {
+              "effectKey": "skill-ex06",
+              "partialPolicy": "all",
+              "outcome": "applied"
+            }
+          ],
+          "verify": true
+        }
+      ]
+    },
+    {
+      "id": "ex07",
+      "title": "Derived result through a trusted projection job (ordinary writer refused)",
+      "teaches": [
+        "projection.write requires the projection.write grant",
+        "a derived edge is never written by an ordinary proposal"
+      ],
+      "steps": [
+        {
+          "id": "ex07-writer",
+          "intent": "07-derived-projection.intent.json",
+          "principal": "writer",
+          "expect": {
+            "plan.outcome": "rejected",
+            "plan.reason": {
+              "affects": "^BKS_FORBIDDEN_SCOPE"
+            }
+          }
+        },
+        {
+          "id": "ex07",
+          "intent": "07-derived-projection.intent.json",
+          "principal": "projector",
+          "expect": {
+            "plan.outcome": "applicable",
+            "plan.dispositions": {
+              "affects": "admitted"
+            }
+          },
+          "apply": [
+            {
+              "effectKey": "skill-ex07",
+              "partialPolicy": "all",
+              "outcome": "applied"
+            }
+          ],
+          "verify": true
+        }
+      ]
+    },
+    {
+      "id": "ex08",
+      "title": "Ambiguous identity is held, never guessed",
+      "teaches": [
+        "a new subject with onMatch review that matches an existing node by exact name is review_required",
+        "its proposals are held; a plan with every proposal held has outcome held and cannot be admitted"
+      ],
+      "steps": [
+        {
+          "id": "ex08-1",
+          "intent": "08-ambiguous-identity.step1.intent.json",
+          "principal": "writer",
+          "expect": {
+            "plan.outcome": "applicable"
+          },
+          "apply": [
+            {
+              "effectKey": "skill-ex08-1",
+              "partialPolicy": "all",
+              "outcome": "applied"
+            }
+          ],
+          "verify": true
+        },
+        {
+          "id": "ex08-2",
+          "intent": "08-ambiguous-identity.step2.intent.json",
+          "principal": "writer",
+          "expect": {
+            "plan.outcome": "held",
+            "plan.dispositions": {
+              "legal-us": "held"
+            },
+            "plan.reason": {
+              "legal-us": "^SUBJECT_REVIEW_REQUIRED"
+            }
+          },
+          "admit": {
+            "effectKey": "skill-ex08-2",
+            "partialPolicy": "all",
+            "error": "BKS_PLAN_REJECTED"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ex09",
+      "title": "Partial plan: apply only an explicit closed dependency subset",
+      "teaches": [
+        "an author hold keeps one proposal out",
+        "all-required is refused for a partial plan; a subset that omits a dependency is refused; a closed subset applies"
+      ],
+      "steps": [
+        {
+          "id": "ex09",
+          "intent": "09-partial-dependent.intent.json",
+          "principal": "writer",
+          "expect": {
+            "plan.outcome": "partial",
+            "plan.dispositions": {
+              "servings": "admitted",
+              "daily-total": "admitted",
+              "owns": "admitted",
+              "supplies": "held"
+            }
+          },
+          "apply": [
+            {
+              "effectKey": "skill-ex09",
+              "partialPolicy": "all",
+              "error": "BKS_PARTIAL_REFUSED"
+            },
+            {
+              "effectKey": "skill-ex09",
+              "partialPolicy": {
+                "include": [
+                  "daily-total"
+                ]
+              },
+              "error": "BKS_PARTIAL_NOT_CLOSED"
+            },
+            {
+              "effectKey": "skill-ex09",
+              "partialPolicy": {
+                "include": [
+                  "servings",
+                  "daily-total",
+                  "owns"
+                ]
+              },
+              "outcome": "partial"
+            }
+          ],
+          "verify": true
+        }
+      ]
+    },
+    {
+      "id": "ex10",
+      "title": "Duplicate apply, lost response recovery and a refused forged plan",
+      "teaches": [
+        "the same apply request again returns the recorded receipt (duplicate)",
+        "after a lost response: GET /kg/receipt?effectKey=<original key>; never a new intentId or a re-plan with a new clock",
+        "statements in an apply request are BKS_PLAN_FORGED; a wrong expectedPlanDigest is refused"
+      ],
+      "steps": [
+        {
+          "id": "ex10",
+          "intent": "10-recovery.intent.json",
+          "principal": "writer",
+          "expect": {
+            "plan.outcome": "applicable"
+          },
+          "apply": [
+            {
+              "effectKey": "skill-ex10",
+              "partialPolicy": "all",
+              "outcome": "applied"
+            },
+            {
+              "effectKey": "skill-ex10",
+              "partialPolicy": "all",
+              "outcome": "duplicate"
+            }
+          ],
+          "receipt": {
+            "effectKey": "skill-ex10",
+            "found": true,
+            "status": "applied"
+          },
+          "forged": [
+            {
+              "mutate": "addStatements",
+              "effectKey": "skill-ex10-forged",
+              "error": "BKS_PLAN_FORGED"
+            },
+            {
+              "mutate": "wrongPlanDigest",
+              "effectKey": "skill-ex10-forged",
+              "error": "BKS_PLAN_DIGEST_MISMATCH"
+            }
+          ],
+          "verify": true,
+          "replan": {
+            "effectKey": "skill-ex10",
+            "error": "BKS_EFFECT_CONFLICT",
+            "note": "re-planning the same intent gives a new plan (new clock); applying it under the original effect key is a conflict, never a retry"
+          }
+        }
+      ]
+    }
+  ]
+}

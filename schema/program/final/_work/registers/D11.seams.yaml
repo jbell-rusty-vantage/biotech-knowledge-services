@@ -1,0 +1,110 @@
+version: 1
+module: D11
+# Source: packets/D11/10-seams.yaml (sha256 7bcba2d4…), edited by the S module editor 2026-10-08 per final/decision-report.md
+# and final/_work/rulings.yaml (modules.D11 and global). Every row keeps the 01-PACKET-CONTRACT fields (type, from, to,
+# questions, direction, owner), adds `module: D11`, and is marked `status: accepted | added | cut` with the ruling that
+# decides it (`ruling`). Synthesis edits:
+#   R-94  relationship seams (`seams`) and predicate seams (`predicateSeams`, checked against final/vocabularies/predicates.yaml)
+#         are separate lists; every relationship row was re-checked against the final module SDLs in final/schema/
+#         (declaring field, target union, edge-property type) on 2026-10-08 — the owner's SDL wins.
+#   R-10  HAS_REGISTRATION_VERSION and HAS_LABEL_VERSION use AssertedEdgeProperties + register `exclusive: true`
+#         (StateEpisodeProperties retired).
+#   R-43 / R-44  added RENDITION_OF K.Source -> D3.Publication (Q-D11-04/05 read Source -RENDITION_OF-> Publication
+#         <-REVISES- notice) and predicate seam HAS_REVISION_STATUS (K; non-scholarly Sources and flags without an identified
+#         notice); REVISES revisionKind is K SourceRevisionKind.
+#   R-82  added predicate seams FUNDED_BY (D3) and DISCLOSES_INTEREST (D9) for Q-D11-08 (D11's own copies removed).
+#   R-72  CONCERNS target union is RegulatoryRecordTopic = ChemicalSubstance | IngredientMaterial | Product | Lot.
+#   R-84 / R-85 / R-88  CAUSES_ADVERSE_EFFECT object D2.Condition, sourceKind SPONTANEOUS_REPORT confirmed; USE_CONSTRAINED_IN
+#         section BOXED_WARNING added by D5; D5 removed D11 from the targets consumer list.
+#   R-16 / R-52  FIELD_NOT_REPORTED registrar K; subject = the entity the field would describe; "no items" from a source is
+#         asserted by that source.
+#   R-17 / R-41  CaptureAttempt labels [CaptureAttempt, Occurrence]; not a second lineage mechanism.
+#   R-27  MENTIONS licensed by its entity-link/vN derivationRule; COVERS_LOCATOR is never support.
+#   R-50  Q-D11-22 is materialized by a PROJECTION Activity; Report{PROFILE} only when BellLabs publishes coverage.
+#   R-09 / R-60  vocabulary references point at final/vocabularies/; pins targets 0.2.2, frontiers 0.2.1.
+# Original note (A8): D11 declares no relationship field, so it has no declared seam (no D11 field targets a type outside
+# the module). Section 1 lists the implicit seams: other modules' relationships and types that D11's retrieval patterns
+# (packets/D11/03-retrieval-patterns.md) read, so the synthesizer sees the dependency and can tell when a rename breaks a
+# D11 pattern. owner: other = the named module declares it.
+seams:
+  # ---- 1. Implicit seams (read by D11 patterns; declared by other modules)
+  - { type: REPORTS_ON, module: D11, from: D3.Publication, to: D3.Study, questions: [Q-D11-02, Q-D11-08], direction: OUT, owner: other, status: accepted, ruling: R-94, note: "final D3 Publication.reportsOn, AssertedRecordedProperties (recorded time only), [CONNECT]; asserted, one record per asserter (paper text, registry references module, NLM DataBank); one-sided link flag" }
+  - { type: REVISES, module: D11, from: D3.Publication, to: D3.Publication, questions: [Q-D11-04, Q-D11-05, Q-D11-19], direction: OUT, owner: other, status: accepted, ruling: R-44, note: "final D3 Publication.revises, RevisionEdgeProperties = AssertedRecordedProperties + revisionKind: SourceRevisionKind! (K, the only revision vocabulary); written when the revising work (notice or new version) is identified, per asserter; recordedFrom = since when BellLabs knows, notice.publishedAt = revision date; Q-D11-04/05 also read HAS_REVISION_STATUS (predicateSeams); never both for one (asserter, notice); Publication.revisionStatus is the work-level cache (R-45)" }
+  - { type: RENDITION_OF, module: D11, from: K.Source, to: D3.Publication, questions: [Q-D11-04, Q-D11-05], direction: "OUT (declared on D3.Publication.renditions with direction IN)", owner: other, status: added, ruling: "R-43, R-44", note: "kernel meaning, asserted, AssertedRecordedProperties, [CONNECT]; the branch Source -RENDITION_OF-> Publication <-REVISES- notice that ties an assertion's evidence Source to the revised work" }
+  - { type: HAS_REGISTRATION_VERSION, module: D11, from: D3.Study, to: D3.RegistrationVersion, questions: [Q-D11-06, Q-D11-07], direction: OUT, owner: other, status: accepted, ruling: R-10, note: "final D3 Study.registrationVersions, AssertedEdgeProperties with register exclusive: true (was StateEpisodeProperties); firstSubmittedDate vs startDate; the history floor is a D11 CaptureAttempt" }
+  - { type: HAS_ARM, module: D11, from: D3.Study, to: D3.StudyArm, questions: [Q-D11-03], direction: OUT, owner: other, status: accepted, ruling: R-94, note: "final D3 Study.arms, StructuralEdgeProperties" }
+  - { type: HAS_COMPONENT, module: D11, from: D3.StudyArm, to: D3.InterventionComponent, questions: [Q-D11-03], direction: OUT, owner: other, status: accepted, ruling: R-94, note: "final D3 StudyArm.components, StructuralEdgeProperties" }
+  - { type: ADMINISTERS, module: D11, from: D3.InterventionComponent, to: "D1.IngredientMaterial (member of D3 union AdministeredMaterial)", questions: [Q-D11-03, CQ-PV-04, Q-D11-21], direction: OUT, owner: other, status: accepted, ruling: R-94, note: "final D3 InterventionComponent.administers -> AdministeredMaterial (IngredientMaterial | ProductVariant | Intervention | FoodItem | DietaryPattern), AssertedRecordedProperties (recorded time only); quantity, unitCode, quantityBasis, scheduleText on the component" }
+  - { type: HAS_STUDY_ROLE, module: D11, from: D3.Study, to: "D3.StudyParty (D7.Organization | D7.Person | D7.Award)", questions: [Q-D11-08], direction: OUT, owner: other, status: accepted, ruling: R-82, note: "final D3 Study.roles, StudyRoleEdgeProperties; roleKind COLLABORATOR / MATERIAL_PROVIDER / FUNDER; funding of a Study is the typed HAS_STUDY_ROLE {FUNDER}, a paper-level funding statement is the D3 FUNDED_BY predicate (R-82)" }
+  - { type: REALIZES_SUBSTANCE, module: D11, from: D1.IngredientMaterial, to: D1.ChemicalSubstance, questions: [Q-D11-03, CQ-PV-04, Q-D11-11], direction: OUT, owner: other, status: accepted, ruling: R-94, note: "final D1 IngredientMaterial.substances, AssertedRecordedProperties" }
+  - { type: HAS_ACTIVE_MOIETY, module: D11, from: D1.ChemicalSubstance, to: D1.ChemicalSubstance, questions: [Q-D11-09, CQ-PV-04], direction: OUT, owner: other, status: accepted, ruling: R-94, note: "final D1 ChemicalSubstance.activeMoieties, AssertedRecordedProperties (recorded time only); GSRS ACTIVE MOIETY relationship (FC-4); salt vs moiety quantity basis" }
+  - { type: HAS_LABEL_VERSION, module: D11, from: D6.Package, to: D6.LabelVersion, questions: [Q-D11-11, Q-D11-12, CQ-PV-04], direction: OUT, owner: other, status: accepted, ruling: R-10, note: "final D6 Package.labelVersions, AssertedEdgeProperties with register exclusive: true (was StateEpisodeProperties); SPL effectiveTime; DSLD entry dates" }
+  - { type: DECLARES_COMPONENT, module: D11, from: D6.LabelVersion, to: "D1.IngredientMaterial (member of D6 union DeclaredComponentTarget)", questions: [Q-D11-11, CQ-PV-04], direction: OUT, owner: other, status: accepted, ruling: R-94, note: "final D6 LabelVersion.components -> DeclaredComponentTarget (IngredientMaterial | Constituent | FoodItem), ComponentLineProperties amount/unit/basis (AmountBasis, R-58)" }
+  - { type: STATUS_OF, module: D11, from: D8.LegalStatus, to: "D1.ChemicalSubstance (member of D8 union LegalStatusSubject)", questions: [Q-D11-14], direction: OUT, owner: other, status: accepted, ruling: R-94, note: "final D8 LegalStatus.statusOf -> LegalStatusSubject (ChemicalSubstance | IngredientMaterial | Product | Patent), AssertedEdgeProperties" }
+  - { type: STATUS_FROM, module: D11, from: D8.LegalStatus, to: D8.RegulatoryRecord, questions: [Q-D11-14], direction: OUT, owner: other, status: accepted, ruling: R-94, note: "final D8 LegalStatus.establishedBy, AssertedRecordedProperties; NDI letters; the 2025 reinstatement sets aside the 2022 letters (FC-7 candidate)" }
+  - { type: CONCERNS, module: D11, from: D8.RegulatoryRecord, to: "D8.RegulatoryRecordTopic (D1.ChemicalSubstance | D1.IngredientMaterial | D6.Product | D8.Lot)", questions: [Q-D11-18], direction: OUT, owner: other, status: accepted, ruling: R-72, note: "final D8 RegulatoryRecord.concerns, AssertedRecordedProperties; recordKind RECALL; union narrowed by R-72 (no Device, no Patent); replaces D11's dropped predicate recall_names_product (adversarial review)" }
+  - { type: LOT_OF, module: D11, from: D8.Lot, to: "D8.LotOfTarget (D6.Product | D6.ProductVariant)", questions: [Q-D11-18], direction: OUT, owner: other, status: accepted, ruling: R-94, note: "final D8 Lot.lotOf, AssertedRecordedProperties; recall of a lot of the product" }
+  - { type: CHUNK_OF, module: D11, from: D9.Chunk, to: K.SourceSnapshot, questions: [Q-D11-03], direction: OUT, owner: other, status: accepted, ruling: R-94, note: "final D9 Chunk.snapshot, StructuralEdgeProperties" }
+  - { type: COVERS_LOCATOR, module: D11, from: D9.Chunk, to: K.SourceLocator, questions: [Q-D11-03], direction: OUT, owner: other, status: accepted, ruling: "R-27, R-38", note: "final D9 Chunk.locators, derived (DerivedEdgeProperties, nestedOperations []); the chunk→span hop of the 3.8 path; never support: answers cite HAS_EVIDENCE" }
+  - { type: MENTIONS, module: D11, from: D9.Chunk, to: K.Subjectable, questions: [Q-D11-03], direction: OUT, owner: other, status: accepted, ruling: R-27, note: "kernel meaning, declared by D9 (Chunk.mentions, DerivedEdgeProperties, nestedOperations []); method-versioned entity-link projection licensed by derivationRule entity-link/vN; never evidence, never a mutation input" }
+  - { type: ASSESSES, module: D11, from: K.Assessment, to: K.Subjectable, questions: [CQ-AX-14, Q-D11-10, Q-D11-13, Q-D11-15, Q-D11-16, Q-D11-18, Q-D11-21, CQ-PV-04], direction: OUT, owner: other, status: accepted, ruling: R-54, note: "kinds RESOLUTION, EQUIVALENCE, APPLICABILITY; D11 requests subkind D11.quantity-basis (APPLICABILITY) in final/vocabularies/assessment-vocabularies.yaml (R-54: unregistered subkinds are rejected)" }
+  - { type: ASSESSES, module: D11, from: K.Report, to: K.Claim, questions: [Q-D11-21], direction: OUT, owner: other, status: accepted, ruling: R-94, note: "EVIDENCE_REPORT about the brand's claim (evidence mission)" }
+  - { type: WAS_GENERATED_BY, module: D11, from: K.Report, to: K.Activity, questions: [Q-D11-21, Q-D11-22], direction: OUT, owner: other, status: accepted, ruling: R-50, note: "the evidence mission (Q-D11-21); Q-D11-22 is materialized by a PROJECTION Activity, and a Report{PROFILE} is written only when BellLabs publishes coverage (no ASSESSES target: a coverage profile is about the graph)" }
+  - { type: OCCURRENCE_OF, module: D11, from: K.Assertion, to: K.Claim, questions: [Q-D11-19, Q-D11-21], direction: OUT, owner: other, status: accepted, ruling: R-94 }
+  - { type: WAS_GENERATED_BY, module: D11, from: D11.CaptureAttempt, to: K.Activity, questions: [Q-D11-17, CQ-AX-04], direction: "OUT (declared once on K Activity.generated: [Entity!]!, direction IN)", owner: other, status: accepted, ruling: "R-41, R-17", note: "kernel lineage edge; CaptureAttempt points at the run's Activity and has no run identity of its own (not a second lineage mechanism); stored labels [CaptureAttempt, Occurrence]; matches K.seams row WAS_GENERATED_BY D11.CaptureAttempt -> K.Activity" }
+# ---- 2. Predicate seams (Assertion.predicate values other modules register; D11 patterns read them, D11 declares no copy)
+predicateSeams:
+  - { predicate: USE_CONSTRAINED_IN, module: D11, owner: D5, registrar: D5, file: final/vocabularies/predicates.yaml, questions: [Q-D11-11], status: accepted, ruling: "R-52, R-85, R-88", note: "boxed warning = use constraint with qualifier section:BOXED_WARNING (added by D5); the asserter is the labeler of record; replaces D11's dropped has_boxed_warning" }
+  - { predicate: CAUSES_ADVERSE_EFFECT, module: D11, owner: D5, registrar: D5, file: final/vocabularies/predicates.yaml, questions: [Q-D11-18], status: accepted, ruling: "R-84, R-85", note: "object D2.Condition; CAERS/FAERS reports with qualifier sourceKind:SPONTANEOUS_REPORT (confirmed); the causality disclaimer is a CAUTIONS Assertion on the dataset snapshot (D5 Q-D5-20); replaces D11's dropped adverse_event_report_names_product" }
+  - { predicate: FIELD_NOT_REPORTED, module: D11, owner: K, registrar: K, file: final/vocabularies/predicates.yaml, questions: [CQ-AX-04, Q-D11-19], status: accepted, ruling: "R-16, R-52, R-09", note: "not reported by the source; subject = the entity the field would describe (e.g. the Study); the BellLabs Agent asserts it when we read a record and find the field silent, the source asserts a 'no items' answer; K's CQ-AX-04 reads CaptureAttempt only for 'blocked'; replaces D11's dropped CaptureOutcome EMPTY_RESULT" }
+  - { predicate: HAS_REVISION_STATUS, module: D11, owner: K, registrar: K, file: final/vocabularies/predicates.yaml, questions: [Q-D11-04, Q-D11-05], status: added, ruling: "R-44, R-52", note: "the second branch of Q-D11-04/05: only for non-scholarly Sources and for status flags with no identified notice (OpenAlex, PubMed), one Assertion per authority; never written together with D3 REVISES for one (asserter, notice)" }
+  - { predicate: FUNDED_BY, module: D11, owner: D3, registrar: D3, file: final/vocabularies/predicates.yaml, questions: [Q-D11-08], status: added, ruling: R-82, note: "paper-level funding statement (subject D3.Publication, object D7.Organization), FUNDER_ROLE_STATEMENT folded in as qualifiers; replaces D11's own FUNDED_BY registration (alias 'FUNDED_BY (D11)'); a Study's funder is the typed D3 HAS_STUDY_ROLE {FUNDER}" }
+  - { predicate: DISCLOSES_INTEREST, module: D11, owner: D9, registrar: D9, file: final/vocabularies/predicates.yaml, questions: [Q-D11-08], status: added, ruling: R-82, note: "the one disclosure predicate (subject the discloser or the work, object D7.Organization); replaces D11's DISCLOSES_SUPPORT_FROM; 'no competing interest' (D11's DECLARES_NO_COMPETING_INTEREST) = DISCLOSES_INTEREST with polarity NEGATIVE, speechAct DENIES" }
+kernelTypesReferenced:
+  - { type: Entity, kind: interface, usedOn: [CaptureAttempt], owner: K, note: "allowlisted; GraphQL interface only: CaptureAttempt does not carry the :Entity storage label (R-17)" }
+  - { type: Occurrence, kind: "stored label (no GraphQL type)", usedOn: [CaptureAttempt], owner: K, note: "K archetype label, as on Activity [Activity, Occurrence] (R-17)" }
+  - { type: PrivacyClass, kind: enum, usedOn: [CaptureAttempt.privacyClass], owner: K, note: "Entity field listed verbatim; INTERNAL by default on CaptureAttempt (R-41)" }
+  - { type: Claim, kind: node, usedOn: "patterns only (Q-D11-19, Q-D11-21); no D11 field", owner: K }
+  - { type: Assessment, kind: node, usedOn: "patterns only (RESOLUTION, EQUIVALENCE, APPLICABILITY); no D11 field", owner: K }
+  - { type: Report, kind: node, usedOn: "patterns only (EVIDENCE_REPORT, PROFILE); no D11 field", owner: K }
+  - { type: IdentifierLinkProperties, kind: relationshipProperties, usedOn: "patterns read HAS_IDENTIFIER episodes (CQ-ID-04, Q-D11-13, Q-D11-15); no D11 field", owner: K }
+  - { type: EvidenceEdgeProperties, kind: relationshipProperties, usedOn: "patterns read HAS_EVIDENCE role (Q-D11-03); no D11 field", owner: K }
+dependsOn:
+  - { what: "D9 vector index on Chunk (name assumed `chunk_embedding`) and a fulltext index `chunk_text`", owner: D9, why: "Q-D11-03 3.8 path entry point", note: "deployment DDL listed in migration-notes, never @vector / @fulltext in the SDL (R-04)" }
+  - { what: "fulltext index over Subjectable names (`subjectable_names`) for candidate generation", owner: K, why: "CQ-AX-14", note: "deployment DDL (R-04)" }
+  - { what: "Identifier (scheme, issuer, value) uniqueness constraint; SourceSnapshot.captureMethod range index", owner: K, why: "every identifier join (one (scheme, issuer, normalized value) identifies at most one Subjectable, R-42); tool joins in Q-D11-01, CQ-AX-04, Q-D11-20", note: "deployment DDL (R-04)" }
+sharedVocabularies:
+  - name: identifier-schemes
+    file: final/vocabularies/identifier-schemes.yaml
+    owner: K
+    consumedAs: "Identifier.scheme codes in every pattern; D11 supplies the bridge table identifier-bridges.yaml; K adds SPL_SET_ID, EIN, ORG_STUDY_ID and the uniqueness rule (R-42)"
+  - name: predicates
+    file: final/vocabularies/predicates.yaml
+    owner: S
+    consumedAs: "one predicate registry (R-52); D11 registers PROSPECTIVE_REGISTRATION_FLAG and RECORD_LAST_UPDATED (D11.relationship.yaml predicateOnly) and reads the predicateSeams above"
+  - name: assessment-vocabularies
+    file: final/vocabularies/assessment-vocabularies.yaml
+    owner: S
+    consumedAs: "APPLICABILITY subkind D11.quantity-basis (CQ-PV-04 qualification block) requested (R-54)"
+  - name: action-space tool ids
+    file: schema/program/packets/D11/tooling/action-space.yaml
+    owner: D11
+    providedAs: "the canonical `<id>` of kernel SourceSnapshot.captureMethod (`<id>/<tool version>`) and CaptureAttempt.toolId, for every module's captures (R-39); its top-level `aliases` map (402 packet-local ids -> 167 entries, 0 unresolved) is the rewrite map for every 05 populatedBy and fixture captureMethod (R-39); hosts the projection registry (h2t-v1, xml-textcontent/v1, canonical-json, EDGAR tag strip) behind contentHashBasis CANONICAL_PROJECTION and selectorJson.basis (R-35, R-38; registry text still to be added by its generator)"
+  - name: identifier normalization rule ids
+    file: schema/program/packets/D11/identifier-bridges.yaml
+    owner: D11 (proposed) / K (adoption into final/vocabularies/identifier-schemes.yaml, R-42)
+    providedAs: "Identifier.normalizationRule values (doi-lowercase-v1, gtin14-v1, npi-v1, lei-upper-v1, casrn-v1, …)"
+  - name: capture outcome and failure kinds
+    file: final/schema/D11.graphql (enums CaptureOutcome, CaptureFailureKind)
+    owner: D11
+    providedAs: "CaptureAttempt properties; Mission Control receipts may reuse the same codes"
+  - name: targets
+    file: final/vocabularies/targets.yaml
+    version: "0.2.2"
+    owner: D5
+    consumedAs: "not consumed: no D11 question asks about a target; D5 removed D11 from its consumer list (R-85; pin R-60)"
+  - name: frontiers
+    file: final/vocabularies/frontiers.yaml
+    version: "0.2.1"
+    owner: D13
+    consumedAs: "not consumed (pin R-60)"

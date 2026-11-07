@@ -1,0 +1,71 @@
+"""
+Purpose: one reported outcome for one analyte or check, from one row of a COA, a lot test summary, a certifier batch
+page, a lot-identified survey table or a paper — with HOW it was obtained (resultBasis), the criterion printed beside it and the
+verdict the source printed. A survey row that names no lot is not a QualityResult: it stays the D1 predicate
+MEASURED_CONTENT_IN_PRODUCT or CONTAINS_UNDECLARED_SUBSTANCE on the Product (R-73). A "Certificate of Analysis" is not a node: it is a kernel Source (genre COA or
+TEST_SUMMARY) whose rows are QualityResults; "is it a real COA" is a kernel Assessment (QUALITY, subkind
+D8.coa-classification) over its rows (Q-D8-05). Merges pinned MeasuredResult, TestExecution, TestSample,
+TestMethod, SpecificationCriterion, PassFailInterpretation (source-stated part), CertificateOfAnalysis and
+LotTestSummary (row content). Identity rule: (issuer Organization uid, reportNumber or source canonicalUri,
+normalized analyteVerbatim, lot uid, testedAt); when the document names no issuer (a COA "manufactured for"
+a brand with no laboratory), (source canonicalUri, snapshot contentHash, row selector) replaces issuer and reportNumber.
+A re-capture of the same report re-anchors its locators and reuses the result. uid token: `quality-result`. Questions: CQ-AX-19, Q-D8-05, Q-D8-06, Q-D8-09, Q-D8-19.
+"""
+type QualityResult implements Entity & Subjectable
+  @node(labels: ["QualityResult", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "How the row was obtained; MEASURED is the only basis that is a measurement."
+  resultBasis: ResultBasis!
+  "Analyte or check as printed (e.g. 'NMN', '2.5% Withanolides', 'Lead')."
+  analyteVerbatim: String! @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  value: Float
+  "UCUM unit of value (and of labelClaimValue)."
+  unitCode: String
+  valueQualifier: ResultValueQualifier
+  "Value cell verbatim (keeps '<0.5', 'ND', 'Conforms', 'Quantity by Input')."
+  valueVerbatim: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "Detection or reporting limit printed for the row."
+  reportingLimit: Float @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "Label claim the row compares against, when the source prints it."
+  labelClaimValue: Float @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "Percent of label claim when the source states it; otherwise computed at query time, never stored."
+  percentOfLabelClaimStated: Float
+  "Method as printed (e.g. HPLC-UV, ICP-MS, 'batch record review'); replaces pinned TestMethod."
+  method: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "Compendial or published method reference (e.g. USP <2091>, AOAC 2012.15)."
+  methodReference: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  sampleKind: SampleKind
+  "Lab report or certificate number (e.g. Eurofins 3921057-0)."
+  reportNumber: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  testedAt: DateTime
+  reportedAt: DateTime @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "Criterion printed beside the result (inline; replaces pinned SpecificationCriterion). specComparator uses D1 QuantityComparator (R-57); UNKNOWN is kept because comparator glyphs are lost by some PDF extractions (tool-log E4)."
+  specComparator: QuantityComparator @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  specLow: Float @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  specHigh: Float @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  specVerbatim: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  specBasis: CriterionBasis
+  specPeriod: SpecPeriod
+  "Verdict as the source printed it; an evaluated verdict is a kernel Assessment."
+  statedVerdict: PassFailVerdict
+  """class: asserted; cardinality: exactly_one (the lot the source names; a row without a lot is a D1 predicate on the Product, R-73); questions: CQ-AX-19, Q-D8-05, Q-D8-06, Q-D8-09, Q-D8-18, Q-D8-19."""
+  resultFor: [Lot!]!
+    @relationship(type: "QUALITY_RESULT_FOR", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: zero_or_one (only when the analyte resolves; analyteVerbatim always kept); questions: Q-D8-06, CQ-AX-19."""
+  analyte: [QualityAnalyte!]!
+    @relationship(type: "MEASURES_ANALYTE", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: zero_or_one (the laboratory or tester that reported the row, when the document names one — fixture eurofins-coa-quantity-by-input has a COA that names none; its financial interest is a D7 join); questions: Q-D8-05, Q-D8-06, CQ-AX-19."""
+  issuedBy: [Organization!]!
+    @relationship(type: "ISSUED_BY", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

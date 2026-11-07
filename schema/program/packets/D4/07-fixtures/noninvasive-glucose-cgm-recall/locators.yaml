@@ -1,0 +1,377 @@
+# Fixture noninvasive-glucose-cgm-recall - locators (fixtures stage, A3, 2026-10-08).
+# selectorKind values are the kernel SelectorKind enum (verification.v1 kinds + WHOLE_SNAPSHOT); W3C selector JSON in `selector`.
+# Every exact quote was re-verified as an exact substring of a fresh capture made today (scratch ft/D4/refetch);
+# offsets are 0-based [start, end) in the basis named by the snapshot (offsetBasis / derivedText.rule).
+snapshots:
+- ref: snap-fda
+  uid: hu:snapshot:a406e0fb4dca30ab
+  url: https://www.fda.gov/medical-devices/safety-communications/do-not-use-smartwatches-or-smart-rings-measure-blood-glucose-levels-fda-safety-communication
+  title: 'FDA - Do Not Use Smartwatches or Smart Rings to Measure Blood Glucose Levels: FDA Safety Communication (2024-02-21)'
+  sourceKind: WEB_PAGE
+  genre: REGULATOR_SAFETY_COMMUNICATION
+  retrievedAt: '2026-10-08T17:40:00-04:00'
+  contentHash: sha256:a406e0fb4dca30ab1f1916e417146ea39be3a2a2343f875039db9b67e98edb8f
+  contentHashBasis: RAW_BYTES
+  bytes: 10002
+  mimeType: text/markdown
+  captureMethod: Firecrawl CLI 1.23.1 scrape --only-main-content --max-age 0 (found with Tavily CLI search in the research stage)
+  captureCompleteness: COMPLETE
+  researchStageDigest: identical (re-fetch returned the same bytes)
+- ref: snap-openfda
+  uid: hu:snapshot:4a16676ef1ddb4c1
+  url: https://api.fda.gov/device/recall.json?search=product_description:%22FreeStyle+Libre+3%22&limit=3
+  title: openFDA device recall API - FreeStyle Libre 3 (3 records; meta.last_updated 2026-10-05)
+  sourceKind: API
+  genre: REGULATOR_RECORD
+  retrievedAt: '2026-10-08T17:39:00-04:00'
+  contentHash: sha256:4a16676ef1ddb4c15725332f830ba0fb94715a0262fcce58b84cf905d81de6bc
+  contentHashBasis: RAW_BYTES
+  bytes: 7261559
+  mimeType: application/json
+  captureMethod: curl openFDA device/recall (no API key)
+  captureCompleteness: COMPLETE
+  researchStageDigest: identical (re-fetch returned the same bytes)
+  note: 7.26 MB for 3 records (openfda.registration_number lists are large); a narrower query res_event_number:98049 returns 4 products (8.6 MB)
+locators:
+- ref: f1-date
+  uid: hu:locator:ft-d4-gluc-f1-date
+  snapshot: snap-fda
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 2262
+    end: 2292
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: 'Date Issued: February 21, 2024'
+    prefix: 'asyon sa Kaligtasan ng FDA")
+
+
+      **'
+    suffix: '**
+
+
+      The U.S. Food and Drug Admin'
+  exact: 'Date Issued: February 21, 2024'
+  startOffset: 2262
+  endOffset: 2292
+  occurrences: 1
+  quoteHash: sha256:481c6f8fac4837c875578afe9b7ab67f9007fd7acca644ce5a6c9ca07f855f26
+  quoteNormalization: none (exact code points)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: f2-not-authorized
+  uid: hu:locator:ft-d4-gluc-f2-not-authorized
+  snapshot: snap-fda
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 2748
+    end: 2898
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: The FDA has not authorized, cleared, or approved any smartwatch or smart ring that is intended to measure or estimate blood glucose values on its own.
+    prefix: 'cose monitoring devices (CGMs). '
+    suffix: '
+
+
+      For people with diabetes, inac'
+  exact: The FDA has not authorized, cleared, or approved any smartwatch or smart ring that is intended to measure or estimate blood glucose values on its own.
+  startOffset: 2748
+  endOffset: 2898
+  occurrences: 1
+  quoteHash: sha256:39e53036647526b7e98c5f0319858cef74fe1f41713ea12bdc33efd674707694
+  quoteNormalization: none (exact code points)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: f3-hypoglycaemia
+  uid: hu:locator:ft-d4-gluc-f3-hypoglycaemia
+  snapshot: snap-fda
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 3125
+    end: 3277
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: Taking too much of these medications can quickly lead to dangerously low glucose, leading to mental confusion, coma, or death within hours of the error.
+    prefix: 'an rapidly lower blood glucose. '
+    suffix: '
+
+
+      ## Recommendations for Consume'
+  exact: Taking too much of these medications can quickly lead to dangerously low glucose, leading to mental confusion, coma, or death within hours of the error.
+  startOffset: 3125
+  endOffset: 3277
+  occurrences: 1
+  quoteHash: sha256:30ce20e9fbe0da20d62243cfd57f1c62d7dfd2e00adc009587d98e37d2e257fe
+  quoteNormalization: none (exact code points)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: f4-seller-claim
+  uid: hu:locator:ft-d4-gluc-f4-seller-claim
+  snapshot: snap-fda
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 4212
+    end: 4373
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: Sellers of these smartwatches and smart rings claim their devices measure blood glucose levels without requiring people to prick their finger or pierce
+      the skin.
+    prefix: 'needed.
+
+
+      ## Device Description
+
+
+      '
+    suffix: ' They claim to use non-invasive '
+  exact: Sellers of these smartwatches and smart rings claim their devices measure blood glucose levels without requiring people to prick their finger or pierce the
+    skin.
+  startOffset: 4212
+  endOffset: 4373
+  occurrences: 1
+  quoteHash: sha256:74a3e64bdb6dc6a453f473b8845a1b11972c51c51a5cd145f02293388f441ac6
+  quoteNormalization: none (exact code points)
+  section: Device Description
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: f5-no-direct-test
+  uid: hu:locator:ft-d4-gluc-f5-no-direct-test
+  snapshot: snap-fda
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 4417
+    end: 4494
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: These smartwatches and smart rings do not directly test blood glucose levels.
+    prefix: 'to use non-invasive techniques. '
+    suffix: '
+
+
+      These smartwatches and smart r'
+  exact: These smartwatches and smart rings do not directly test blood glucose levels.
+  startOffset: 4417
+  endOffset: 4494
+  occurrences: 1
+  quoteHash: sha256:f1af836d29ed64e6b2b17990e1dd20fb8705a33db06dad03aabd0ee21148978a
+  quoteNormalization: none (exact code points)
+  section: Device Description
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: f6-scope
+  uid: hu:locator:ft-d4-gluc-f6-scope
+  snapshot: snap-fda
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 6278
+    end: 6373
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: Any smartwatch or smart ring, regardless of brand, that claims to measure blood glucose levels.
+    prefix: '796-7100.
+
+
+      ## Affected Devices
+
+
+      '
+    suffix: '
+
+
+      ### Success
+
+
+      Thank you. Your f'
+  exact: Any smartwatch or smart ring, regardless of brand, that claims to measure blood glucose levels.
+  startOffset: 6278
+  endOffset: 6373
+  occurrences: 1
+  quoteHash: sha256:8fde89aa485c861c54321019d0ef8e828a8761a92dd6f006cc5aaf4731a1a39d
+  quoteNormalization: none (exact code points)
+  section: Affected Devices
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: o1-product
+  uid: hu:locator:ft-d4-gluc-o1-product
+  snapshot: snap-openfda
+  selectorKind: JSON_POINTER
+  selector:
+    type: JsonPointerSelector
+    pointer: /results/1/product_description
+    refinedBy:
+      type: TextPositionSelector
+      start: 67
+      end: 173
+      offsetBasis: Unicode code points of the decoded JSON string value at pointer
+  exact: The FreeStyle Libre 3 sensor is a component of the FreeStyle Libre 3 Continuous Glucose Monitoring System.
+  prefix: '01
+
+    UDI-DI code: 00357599818005
+
+
+    '
+  suffix: ''
+  startOffset: 67
+  endOffset: 173
+  jsonPointer: /results/1/product_description
+  quoteHash: sha256:3429c283ffb437c769d5ed6f2bb9ca7db599661bd613c1e76289e5e0ea1b8306
+  quoteNormalization: none (exact code points)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: o2-udi
+  uid: hu:locator:ft-d4-gluc-o2-udi
+  snapshot: snap-openfda
+  selectorKind: JSON_POINTER
+  selector:
+    type: JsonPointerSelector
+    pointer: /results/1/product_description
+    refinedBy:
+      type: TextPositionSelector
+      start: 38
+      end: 65
+      offsetBasis: Unicode code points of the decoded JSON string value at pointer
+  exact: 'UDI-DI code: 00357599818005'
+  prefix: 'yle Libre 3 Sensor REF 72081-01
+
+    '
+  suffix: '
+
+
+    The FreeStyle Libre 3 sensor i'
+  startOffset: 38
+  endOffset: 65
+  jsonPointer: /results/1/product_description
+  quoteHash: sha256:17ddd06b87e898605b6756b974b94893ff563e0233cd342be89671f960e4f143
+  quoteNormalization: none (exact code points)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: o3-reason
+  uid: hu:locator:ft-d4-gluc-o3-reason
+  snapshot: snap-openfda
+  selectorKind: JSON_POINTER
+  selector:
+    type: JsonPointerSelector
+    pointer: /results/1/reason_for_recall
+    refinedBy:
+      type: TextPositionSelector
+      start: 0
+      end: 130
+      offsetBasis: Unicode code points of the decoded JSON string value at pointer
+  exact: Due to a manufacturing process issue that may cause carbon build up in the sensor that may result in incorrect low glucose results
+  prefix: ''
+  suffix: ''
+  startOffset: 0
+  endOffset: 130
+  jsonPointer: /results/1/reason_for_recall
+  quoteHash: sha256:378ad1c6e39fb46fee5d541c6523f3d8963fd305835522d3e4c92feba2b0e185
+  quoteNormalization: none (exact code points)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: o4-initiated
+  uid: hu:locator:ft-d4-gluc-o4-initiated
+  snapshot: snap-openfda
+  selectorKind: JSON_POINTER
+  selector:
+    type: JsonPointerSelector
+    pointer: /results/1/event_date_initiated
+    refinedBy:
+      type: TextPositionSelector
+      start: 0
+      end: 10
+      offsetBasis: Unicode code points of the decoded JSON string value at pointer
+  exact: '2025-11-24'
+  prefix: ''
+  suffix: ''
+  startOffset: 0
+  endOffset: 10
+  jsonPointer: /results/1/event_date_initiated
+  quoteHash: sha256:78e740d94bc1a4061ff45b177ec1c3852c36a092f3cec3e35040e0ac0a79ebf2
+  quoteNormalization: none (exact code points)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: o5-k-number
+  uid: hu:locator:ft-d4-gluc-o5-k-number
+  snapshot: snap-openfda
+  selectorKind: JSON_POINTER
+  selector:
+    type: JsonPointerSelector
+    pointer: /results/1/k_numbers/0
+    refinedBy:
+      type: TextPositionSelector
+      start: 0
+      end: 7
+      offsetBasis: Unicode code points of the decoded JSON string value at pointer
+  exact: K212132
+  prefix: ''
+  suffix: ''
+  startOffset: 0
+  endOffset: 7
+  jsonPointer: /results/1/k_numbers/0
+  quoteHash: sha256:44fa2006992f827984ca3881c3555a1586d62febf4263e0a8a375ed20eb89771
+  quoteNormalization: none (exact code points)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: o6-readings
+  uid: hu:locator:ft-d4-gluc-o6-readings
+  snapshot: snap-openfda
+  selectorKind: JSON_POINTER
+  selector:
+    type: JsonPointerSelector
+    pointer: /results/1/action
+    refinedBy:
+      type: TextPositionSelector
+      start: 158
+      end: 257
+      offsetBasis: Unicode code points of the decoded JSON string value at pointer
+  exact: certain FreeStyle Libre 3 and FreeStyle Libre 3 Plus sensors provide incorrect low glucose readings
+  prefix: 'tt has recently identified that '
+  suffix: '. We learned about this through '
+  startOffset: 158
+  endOffset: 257
+  jsonPointer: /results/1/action
+  quoteHash: sha256:c18fa4cb0ade9b819fab8544572d62056d414e17b1813a9378555bd9462f2b3f
+  quoteNormalization: none (exact code points)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: o7-root-cause
+  uid: hu:locator:ft-d4-gluc-o7-root-cause
+  snapshot: snap-openfda
+  selectorKind: JSON_POINTER
+  selector:
+    type: JsonPointerSelector
+    pointer: /results/1/root_cause_description
+    refinedBy:
+      type: TextPositionSelector
+      start: 0
+      end: 15
+      offsetBasis: Unicode code points of the decoded JSON string value at pointer
+  exact: Process control
+  prefix: ''
+  suffix: ''
+  startOffset: 0
+  endOffset: 15
+  jsonPointer: /results/1/root_cause_description
+  quoteHash: sha256:f6fc325a9594e9b3e99462f8846c9eb02f225e71195ae8721de4a9f565ece1f2
+  quoteNormalization: none (exact code points)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: o8-recall-number
+  uid: hu:locator:ft-d4-gluc-o8-recall-number
+  snapshot: snap-openfda
+  selectorKind: JSON_POINTER
+  selector:
+    type: JsonPointerSelector
+    pointer: /results/1/product_res_number
+    refinedBy:
+      type: TextPositionSelector
+      start: 0
+      end: 11
+      offsetBasis: Unicode code points of the decoded JSON string value at pointer
+  exact: Z-1020-2026
+  prefix: ''
+  suffix: ''
+  startOffset: 0
+  endOffset: 11
+  jsonPointer: /results/1/product_res_number
+  quoteHash: sha256:eae683d2d1d5619f81cd5b52a01f65671d0ade3d90bd7d1676a5ba9245d23498
+  quoteNormalization: none (exact code points)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)

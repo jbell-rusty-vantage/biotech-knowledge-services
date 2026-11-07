@@ -1,0 +1,19 @@
+"""
+Asserted recorded-time episode for INVOLVES (Event → Organization | Person). Domain-local superset of the kernel
+base type AssertedRecordedProperties (kernel rule M11): its five fields verbatim and in order (same names, types,
+nullability; executor-set from the one authorizing Assertion, predicate INVOLVES), then the qualifiers investor
+questions filter on: the event role only (Q-D13-03 sponsors and applicants, Q-D13-06 investors, lenders and issuers,
+Q-D13-14 regulators and sponsors, Q-D13-33 sponsors). No valid-time fields: an involvement has no validity of its own
+beyond the event's clocks (09-reasoning.md, bitemporal table); any time the source states stays on the authorizing
+Assertion. Class asserted (the base type's class). `role` is copied from the authorizing Assertion's qualifier
+`role=<EventRole>`; what the source printed ("lead investor", "sole book-running manager") stays on that Assertion as the
+qualifier `roleText:<label>` (kernel rule M11(3): a field that only reproduces the source's wording is not an edge field).
+"""
+type EventRoleEdgeProperties @relationshipProperties {
+  relationshipUid: String!
+  assertionUid: String!
+  recordedFrom: DateTime!
+  recordedTo: DateTime
+  lastWriterRunId: String
+  role: EventRole!
+}

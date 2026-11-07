@@ -1,0 +1,27 @@
+"""
+Asserted, recorded-time-only FOOD_CONTAINS line: the five AssertedRecordedProperties fields verbatim (executor-set,
+copied from the one authorizing Assertion; nothing deleted, a revised value supersedes through recordedTo), then
+`statementKind` (D1's enum, the same tail D1's ContentEdgeProperties keeps), then the three fields a D12 question filters
+on: `quantity` + `unitCode` (Q-D12-19/21 "at least A of C") and `amountBasis` (Q-D12-01/21 per 100 g vs per serving).
+`quantity` is set only for a point value (FDC and Phenol-Explorer amounts); a bounded or ranged statement leaves it null
+and carries `comparator:<GTE|GT|LTE|LT>` (D1 QuantityComparator values, R-57) / `range:<low>-<high>` in Assertion.qualifiers, as D1 does, so a threshold filter
+never matches a "< LOQ" or a range by accident. The authorizing Assertion carries the same number in valueNumber/unitCode,
+any source-stated valid time, n / min / max / derivation code (qualifiers; no question filters on them) and the verbatim
+text through its locator. No valid-time fields: no reference-composition source read in this packet states a sampling
+period per value (adversarial review, 2026-10-08).
+"""
+type FoodContentProperties @relationshipProperties {
+  relationshipUid: String!
+  assertionUid: String!
+  recordedFrom: DateTime!
+  recordedTo: DateTime
+  lastWriterRunId: String
+  "D1 ContentStatementKind: MEASURED_IN_SAMPLE (FDC derivation A), CALCULATED (FDC NC), TYPICAL_COMPOSITION_REPORTED (Phenol-Explorer content value), QUALITATIVE_PROVIDES (no amount) (filter: Q-D12-24)."
+  statementKind: ContentStatementKind!
+  "Point amount per amountBasis; null for bounded, ranged or qualitative statements (filter: Q-D12-19, Q-D12-21 >= A)."
+  quantity: Float
+  "UCUM unit of quantity ('mg', 'kcal', 'ug'); null only for QUALITATIVE_PROVIDES (filter: Q-D12-21)."
+  unitCode: String
+  "D6 AmountBasis (the single amount-basis enum, R-58); D12 writes PER_100G | PER_100ML | PER_SERVING (a named portion; its label is the Assertion qualifier portion:<label>) (filter: Q-D12-01, Q-D12-21)."
+  amountBasis: AmountBasis
+}

@@ -1,0 +1,151 @@
+# Fixture acrylamide-fried-potato-harm — assertions (harm formed by a preparation, at brand level).
+# Fixture stage (A2, 2026-10-08). Kernel shapes: packets/K/04-schema-proposal.graphql; D8 QualityResult shape:
+# ../biotech-knowledge-services-A7 packets/D8/04-schema-proposal.graphql. uids are fixture-scoped; producedBy ids are
+# FIXTURE ids. Research is not medical advice; the source itself says its data are not for consumer food choices.
+# Adversarial-review pass (2026-10-08): the hazard the page states is now an assertion (acr-05, D5 CAUSES_ADVERSE_EFFECT,
+# laboratory animals at doses much greater than in food); the reporting window of the 428 row starts at the previous
+# incremental table's cutoff (2003-10-01, INFERRED), not 2002; qualifiers in the 05 qualifierGrammar; the McDonald's
+# mention is a kernel RESOLUTION Assessment (the kernel has no Mention node since its review). `notes` are annotations.
+version: 1
+fixture: acrylamide-fried-potato-harm
+producedBy: &run { missionId: "mission:ft-D12-fixtures", runId: "run:ft-D12-acrylamide-fried-potato-harm", note: "fixture ids, not a real Mission Control run" }
+
+entities:
+  - { uid: "hu:substance:acrylamide", type: D1.ChemicalSubstance, name: "acrylamide", owner: D1, identifiers: [ { scheme: PUBCHEM_CID, value: "6579", locator: loc-pubchem-acrylamide }, { scheme: INCHIKEY, value: "HRPVXLWXLXDGHG-UHFFFAOYSA-N", locator: loc-pubchem-acrylamide } ] }
+  - { uid: "hu:org:us-fda", type: D7.Organization, name: "U.S. Food and Drug Administration", owner: D7 }
+  - { uid: "hu:product:mcdonalds-world-famous-fries-us", type: D6.Product, name: "World Famous Fries (McDonald's, US)", owner: D6, mode: resolved, note: "same Product as fixture mcdonalds-fries-prepared-food; the FDA row names it 'McDonald's French Fries' (size not stated)" }
+  - { uid: "hu:food:fdc-170721", type: D12.FoodItem, name: "McDONALD'S, french fries", mode: resolved, note: "reached through the existing HAS_REFERENCE_FOOD episode (hu:assertion:ft-d12-mcd-01); not re-asserted" }
+  - { uid: "hu:food-category:fda-acrylamide-survey-2004-french-fries-restaurant", type: D12.FoodCategory, name: "French Fries and Other Potato Foods, Restaurant and Take-Out", properties: { system: SOURCE_DEFINED, code: "fda-acrylamide-survey-2004:french-fries-and-other-potato-foods-restaurant-and-take-out", systemVersion: "FDA acrylamide survey, data through October 7, 2004", label: "French Fries and Other Potato Foods, Restaurant and Take-Out" } }
+  - { uid: "hu:food-category:fda-plant-based-potato-and-cereal-foods", type: D12.FoodCategory, name: "plant-based foods, including potato and cereal-grain-based foods (FDA wording)", properties: { system: SOURCE_DEFINED, code: "fda-acrylamide:plant-based-potato-and-cereal-grain-foods", label: "plant-based foods – including potato and cereal-grain-based foods" } }
+  - { uid: "hu:condition:cancer", type: D2.Condition, name: "cancer (as the FDA page states it, in laboratory animals)", owner: D2, mode: resolve-or-new, note: "D2 resolves the term; the fixture keeps the source's word" }
+  - { uid: "hu:quality-result:fda-acrylamide-2004-mcdonalds-french-fries", type: D8.QualityResult, name: "Acrylamide, McDonald's French Fries, FDA survey (table 'Data through October 7, 2004')", owner: D8, properties: { resultBasis: MEASURED, analyteVerbatim: "Acrylamide", value: 428, unitCode: "ug/kg", valueQualifier: EXACT, valueVerbatim: "428", reportingLimit: 20, sampleKind: RETAIL_PURCHASE, method: null, reportedAt: null }, note: "ppb read as µg/kg (UCUM ug/kg); LOQ 20 ppb per Notes (3); sampleKind RETAIL_PURCHASE is the closest D8 value for 'collected from restaurants and take-out stores' (Notes (5)); method and lab not named for this row (Notes (2): a private laboratory under contract unless indicated)" }
+
+assertions:
+  - id: "hu:assertion:ft-d12-acr-01"
+    predicate: FORMS_DURING_PREPARATION
+    predicateOnly: true
+    assertionKind: RELATIONSHIP
+    subject: { uid: "hu:substance:acrylamide", type: D1.ChemicalSubstance }
+    object: { uid: "hu:food-category:fda-plant-based-potato-and-cereal-foods", type: D12.FoodCategory }
+    asserter: { uid: "hu:org:us-fda", type: D7.Organization }
+    locators:
+      - { ref: loc-fda-forms, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-fda-plant-foods, role: SUPPORTS, origin: DECLARED }
+    basisKind: CITED_FROM_PRIOR_WORK
+    polarity: POSITIVE
+    speechAct: STATES
+    claimType: CAUSAL
+    qualifiers: ["preparationMethod:FRIED_DEEP", "preparationMethod:FRIED_PAN", "preparationMethod:ROASTED", "preparationMethod:BAKED", "preparationVerbatim:high-temperature cooking, such as frying, roasting, and baking"]
+    notes: ["the source says 'frying' without deep/pan; both PreparationMethod values are written so either filter finds the statement"]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, note: "general chemistry statement; no valid-time bound" }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-acr-02"
+    predicate: IN_FOOD_CATEGORY
+    assertionKind: RELATIONSHIP
+    edge: { type: IN_FOOD_CATEGORY, class: asserted, edgeProperties: AssertedEdgeProperties, field: "FoodCategory.memberProducts (IN)" }
+    subject: { uid: "hu:product:mcdonalds-world-famous-fries-us", type: D6.Product }
+    object: { uid: "hu:food-category:fda-acrylamide-survey-2004-french-fries-restaurant", type: D12.FoodCategory }
+    asserter: { uid: "hu:org:us-fda", type: D7.Organization }
+    locators:
+      - { ref: loc-fda-mcd-row, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-fda-group-row, role: SUPPORTS, origin: DECLARED }
+    basisKind: UNSTATED
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["surveyTable:2004-10-07"]
+    notes: ["source-stated grouping of the survey table (group label printed on the first row of the group only)"]
+    validTime: { validFrom: "2003-10-01T00:00:00Z", validFromPrecision: DAY, validFromBasis: INFERRED, validFromLocator: loc-fda-prev-cutoff, validTo: "2004-10-07T00:00:00Z", validToPrecision: DAY, validToBasis: STATED_BY_SOURCE, validToLocator: loc-fda-table-heading, note: "the survey's four tables are incremental (data through 2002-11-15, 2003-02-07, 2003-10-01, 2004-10-07; product rows almost never repeat across them, and this row occurs only in the 2004-10-07 table), so the window is from the previous cutoff to this table's cutoff; the row's own sampling date is not printed (review finding: the earlier 2002-01-01 bound cited a sentence about the 2002-2006 programme)" }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  # D8-owned record (seam): the measured level is a QualityResult with RESULT_FOR → Product, MEASURES_ANALYTE → acrylamide,
+  # ISSUED_BY → FDA. One Assertion per D8 edge in the intent; the RESULT_FOR one is shown here with the value it carries.
+  - id: "hu:assertion:ft-d12-acr-03"
+    predicate: RESULT_FOR
+    owner: D8
+    assertionKind: METRIC
+    edge: { type: RESULT_FOR, class: asserted, edgeProperties: AssertedEdgeProperties, from: D8.QualityResult, to: D6.Product }
+    subject: { uid: "hu:quality-result:fda-acrylamide-2004-mcdonalds-french-fries", type: D8.QualityResult }
+    object: { uid: "hu:product:mcdonalds-world-famous-fries-us", type: D6.Product }
+    asserter: { uid: "hu:org:us-fda", type: D7.Organization }
+    locators:
+      - { ref: loc-fda-mcd-row, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-fda-loq, role: QUALIFIES, origin: DECLARED }
+      - { ref: loc-fda-restaurants, role: QUALIFIES, origin: DECLARED }
+      - { ref: loc-fda-caveat, role: QUALIFIES, origin: DECLARED }
+    valueNumber: 428
+    unitCode: "ug/kg"
+    basisKind: DIRECT_MEASUREMENT
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["analyte:hu:substance:acrylamide", "loq:20", "sampleVerbatim:freshly cooked restaurant / take-out product"]
+    notes:
+      - "LOQ 20 ppb; values below are reported as ND"
+      - "one individual purchased product; no lot"
+      - "source caveat (travels with every answer): data are not designed to be used to inform consumer food choices"
+    validTime: { validFrom: "2003-10-01T00:00:00Z", validFromPrecision: DAY, validFromBasis: INFERRED, validFromLocator: loc-fda-prev-cutoff, validTo: "2004-10-07T00:00:00Z", validToPrecision: DAY, validToBasis: STATED_BY_SOURCE, validToLocator: loc-fda-table-heading, note: "reporting window of the incremental table that first lists this row (previous cutoff 2003-10-01 → 2004-10-07); the row's own sampling date is not printed, and a sample analysed after 2003-10-01 may have been bought earlier" }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-acr-05"
+    predicate: CAUSES_ADVERSE_EFFECT
+    predicateOnly: true
+    owner: "D5 vocabulary consumed as-is (seam: subject D1.ChemicalSubstance, object D2.Condition)"
+    assertionKind: RELATIONSHIP
+    subject: { uid: "hu:substance:acrylamide", type: D1.ChemicalSubstance }
+    object: { uid: "hu:condition:cancer", type: D2.Condition }
+    asserter: { uid: "hu:org:us-fda", type: D7.Organization }
+    locators:
+      - { ref: loc-fda-hazard, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-fda-hazard-dose, role: QUALIFIES, origin: DECLARED }
+      - { ref: loc-fda-monitor, role: CONTEXT, origin: DECLARED }
+    basisKind: CITED_FROM_PRIOR_WORK
+    polarity: POSITIVE
+    speechAct: STATES
+    claimType: CAUSAL
+    qualifiers: ["species:LABORATORY_ANIMALS", "doseContext:ABOVE_DIETARY_EXPOSURE", "outcomeVerbatim:cancer"]
+    notes:
+      - "added in the adversarial review: the page states the hazard ('In research studies, high levels of acrylamide caused cancer in laboratory animals') and, in the same sentence, its own dose caveat ('but the levels of acrylamide used in these studies were much greater than those found in human food.'), carried as QUALIFIES"
+      - "the FDA cites 'research studies' without naming them: basisKind CITED_FROM_PRIOR_WORK, asserter FDA"
+      - "a hazard in animals at high dose, not a person-level target effect: no population qualifier, no WORSENS_TARGET (refusedInferences)"
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, note: "general hazard statement; the page prints no date for it" }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+assessments:
+  - id: "hu:assessment:ft-d12-acr-04"
+    assessmentKind: RESOLUTION
+    owner: K
+    about: "hu:product:mcdonalds-world-famous-fries-us (ASSESSES, the candidate)"
+    evidence: [ { ref: loc-fda-mcd-row, role: CONTEXT } ]
+    facets: ["surfaceForm=McDonald's French Fries", "typeHint=Product"]
+    asserter: { uid: "hu:agent:d12-curation-agent", type: K.Agent }
+    methodVersion: "food-resolution/v1 (fixture)"
+    conclusionCode: RESOLVED
+    notes: ["was a MENTION_RESOLUTION assertion on a kernel Mention node; the kernel's adversarial review cut Mention (K 04: 'a surface form is a SourceLocator plus a RESOLUTION Assessment')", "the survey row names chain and item, not size or formulation; 2003–2004 formulation ≠ the January 2022 declaration (different LabelVersions in D6)"]
+    expectedOutcome: "accepted as resolution; equivalence of formulations across 2004 and 2022 is NOT asserted"
+    producedBy: *run
+
+reused:
+  - { assertion: "hu:assertion:ft-d12-mcd-01", relationship: HAS_REFERENCE_FOOD, from: "hu:product:mcdonalds-world-famous-fries-us", to: "hu:food:fdc-170721", fixture: "../mcdonalds-fries-prepared-food" }
+
+# The harm path for Q-D12-03 / Q-D12-06: FoodItem 170721 ←HAS_REFERENCE_FOOD— Product ←RESULT_FOR— QualityResult (428 µg/kg,
+# 2003-10-01 [INFERRED] to 2004-10-07) —MEASURES_ANALYTE→ acrylamide —FORMS_DURING_PREPARATION (Assertion)→ plant-based
+# potato foods, FRIED; acrylamide —CAUSES_ADVERSE_EFFECT (Assertion, laboratory animals, high dose)→ cancer.
+refusedInferences:
+  - wouldBe: "WORSENS_TARGET (fries or acrylamide → any D5 Target)"
+    why: "the page states formation, measured levels and a hazard in laboratory animals at doses 'much greater than those found in human food' (acr-05), not an effect on a person's target; its caveat forbids consumer-choice use. A person-level target effect needs its own sourced assertion (e.g. an IARC or EFSA assessment)."
+  - wouldBe: "FOOD_CONTAINS FoodItem 170721 → acrylamide 428"
+    why: "the level was measured on a purchased Product (D8 QualityResult), not stated for the reference-food record; HAS_REFERENCE_FOOD joins them at query time."
+
+relationshipsExercised:
+  HAS_REFERENCE_FOOD: "reused (hu:assertion:ft-d12-mcd-01)"
+  IN_FOOD_CATEGORY: ["hu:assertion:ft-d12-acr-02 (source-stated table group, Product → SOURCE_DEFINED category)"]
+  predicateOnly: { FORMS_DURING_PREPARATION: ["hu:assertion:ft-d12-acr-01"], CAUSES_ADVERSE_EFFECT: ["hu:assertion:ft-d12-acr-05 (D5 predicate)"] }
+  seams: { "D8 RESULT_FOR / MEASURES_ANALYTE / ISSUED_BY": ["hu:assertion:ft-d12-acr-03"], "K RESOLUTION Assessment": ["hu:assessment:ft-d12-acr-04"] }

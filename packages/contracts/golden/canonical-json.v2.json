@@ -1,0 +1,356 @@
+{
+  "format": "bks-canonical-json.v2-golden",
+  "version": 1,
+  "description": "Cross-language golden vectors for bks-canonical-json.v2 (KN-08). `input` is JSON text parsed by the host language's standard JSON parser; the result must equal `canonical` and `digest`, or fail with `error`. `scalars` exercise the typed spellings (instant, date, duration, decimal).",
+  "vectors": [
+    {
+      "id": "object-key-order",
+      "input": "{\"b\":1,\"a\":2,\"c\":{\"y\":true,\"x\":null}}",
+      "canonical": "{\"a\":2,\"b\":1,\"c\":{\"x\":null,\"y\":true}}",
+      "digest": "sha256:f94abb0d3f6166a8eacbfeaa925679391efc20e036d898e0e929259b94ddf607"
+    },
+    {
+      "id": "key-order-utf16-code-units",
+      "input": "{\"\\ufb01\":1,\"\\ud83d\\ude00\":2,\"Z\":3,\"a\":4,\"\\u00e9\":5,\"\":6}",
+      "note": "U+1F600 sorts before U+FB01 in UTF-16 code-unit order (RFC 8785), unlike code-point order",
+      "canonical": "{\"\":6,\"Z\":3,\"a\":4,\"é\":5,\"😀\":2,\"ﬁ\":1}",
+      "digest": "sha256:d105cdf8d2fbd98010f98d2c3ec4c9c2b876e74a33ae466f72beb6741e490186"
+    },
+    {
+      "id": "numbers-es6",
+      "input": "[0,-0,-0.0,1.0,1e-7,0.000001,1e-6,0.0000001,5e-324,0.1,0.30000000000000004,-1.5,100,1e2,9007199254740991,-9007199254740991,123.456,2.5e-8,1.7976931348623157e-300,4503599627370496.5]",
+      "canonical": "[0,0,0,1,1e-7,0.000001,0.000001,1e-7,5e-324,0.1,0.30000000000000004,-1.5,100,100,9007199254740991,-9007199254740991,123.456,2.5e-8,1.7976931348623157e-300,4503599627370496]",
+      "digest": "sha256:287548712958fccf620ba5cee07558227ec5c55a24a6950a0075877d718d195a"
+    },
+    {
+      "id": "unsafe-integer-2^53",
+      "input": "9007199254740992",
+      "error": "CANONICAL_UNSAFE_INTEGER"
+    },
+    {
+      "id": "unsafe-integer-big",
+      "input": "12345678901234567890",
+      "error": "CANONICAL_UNSAFE_INTEGER"
+    },
+    {
+      "id": "unsafe-integer-float-1e21",
+      "input": "1e21",
+      "note": "integral magnitudes >= 2^53 must be carried as strings",
+      "error": "CANONICAL_UNSAFE_INTEGER"
+    },
+    {
+      "id": "unsafe-integer-float-1.5e300",
+      "input": "[1.5e300]",
+      "note": "1.5e300 is integral in IEEE 754",
+      "error": "CANONICAL_UNSAFE_INTEGER"
+    },
+    {
+      "id": "nonfinite",
+      "input": "1e400",
+      "error": "CANONICAL_NONFINITE"
+    },
+    {
+      "id": "large-integer-as-string",
+      "input": "{\"count\":\"12345678901234567890\"}",
+      "canonical": "{\"count\":\"12345678901234567890\"}",
+      "digest": "sha256:5794f3327a1a403dcdd51a15228e882992d3601080cffac0f998c72d45afaa5f"
+    },
+    {
+      "id": "strings-escapes",
+      "input": "[\"\\u0000\\u001f\\b\\f\\n\\r\\t\\\"\\\\/\",\"\\u00e9\",\"e\\u0301\",\"\\u2028\\u2029\",\"\\u007f\",\"\\ud83d\\ude00\"]",
+      "note": "no NFC: e + U+0301 stays two code points",
+      "canonical": "[\"\\u0000\\u001f\\b\\f\\n\\r\\t\\\"\\\\/\",\"é\",\"é\",\"  \",\"\",\"😀\"]",
+      "digest": "sha256:05584355ebf9d2a695889533de9ed47dcdeeb1161247ea3f22d152e78a30bbdf"
+    },
+    {
+      "id": "lone-surrogate",
+      "input": "\"\\ud800\"",
+      "error": "CANONICAL_LONE_SURROGATE"
+    },
+    {
+      "id": "lone-surrogate-key",
+      "input": "{\"\\udc00\":1}",
+      "error": "CANONICAL_LONE_SURROGATE"
+    },
+    {
+      "id": "null-bool-empty",
+      "input": "{\"a\":null,\"b\":[true,false,null],\"c\":{},\"d\":[],\"e\":\"\"}",
+      "canonical": "{\"a\":null,\"b\":[true,false,null],\"c\":{},\"d\":[],\"e\":\"\"}",
+      "digest": "sha256:f1dedf3f4e773502a883c31d61219eb985a853abc7119b180d556d4c41260feb"
+    },
+    {
+      "id": "set-vs-sequence",
+      "input": "{\"tags\":[\"b\",\"a\",\"b\"],\"seq\":[\"b\",\"a\"]}",
+      "profile": {
+        "sets": [
+          "tags"
+        ]
+      },
+      "canonical": "{\"seq\":[\"b\",\"a\"],\"tags\":[\"a\",\"b\"]}",
+      "digest": "sha256:a2a73d4a7cda2a96de6d7fa1a242ca2729a0ed8e5c1d5ef9400cb1ad6abb53de"
+    },
+    {
+      "id": "set-of-objects",
+      "input": "{\"items\":[{\"k\":2},{\"k\":1},{\"k\":2}]}",
+      "profile": {
+        "sets": [
+          "items"
+        ]
+      },
+      "canonical": "{\"items\":[{\"k\":1},{\"k\":2}]}",
+      "digest": "sha256:98f3f8b7022e8995eeadbb146ca43085d06115fdd1d8843840437f08795111c1"
+    },
+    {
+      "id": "nested-set-path",
+      "input": "{\"p\":[{\"e\":[\"z\",\"y\"]},{\"e\":[\"x\"]}]}",
+      "profile": {
+        "sets": [
+          "p[].e"
+        ]
+      },
+      "canonical": "{\"p\":[{\"e\":[\"y\",\"z\"]},{\"e\":[\"x\"]}]}",
+      "digest": "sha256:b79e2d5c93f56719474003cdb5f3559eeecc4eb8220909b1a343312f89cfb1fe"
+    },
+    {
+      "id": "wildcard-set-path",
+      "input": "{\"m\":{\"a\":{\"s\":[2,1]},\"b\":{\"s\":[3,1]}}}",
+      "profile": {
+        "sets": [
+          "m.*.s"
+        ]
+      },
+      "canonical": "{\"m\":{\"a\":{\"s\":[1,2]},\"b\":{\"s\":[1,3]}}}",
+      "digest": "sha256:3708ae4e10ba444ea86f2243bf77babe8757af580cd1a975e01d70d887c7f942"
+    },
+    {
+      "id": "field-set-ok",
+      "input": "{\"a\":1,\"b\":2}",
+      "profile": {
+        "fields": {
+          "": [
+            "a",
+            "b",
+            "c"
+          ]
+        }
+      },
+      "canonical": "{\"a\":1,\"b\":2}",
+      "digest": "sha256:43258cff783fe7036d8a43033f830adfc60ec037382473548ac742b888292777"
+    },
+    {
+      "id": "field-set-unknown",
+      "input": "{\"a\":1,\"x\":2}",
+      "profile": {
+        "fields": {
+          "": [
+            "a"
+          ]
+        }
+      },
+      "error": "CANONICAL_UNKNOWN_FIELD"
+    },
+    {
+      "id": "unicode-preserved",
+      "input": "{\"name\":\"\\u00c5ngstr\\u00f6m \\u2014 \\u9244 \\ud83e\\uddea\"}",
+      "canonical": "{\"name\":\"Ångström — 鉄 🧪\"}",
+      "digest": "sha256:5050ab4d0d4cc242221b5d87f9e83328147d92f4bc9705493ca73c28c3cc1816"
+    }
+  ],
+  "scalars": [
+    {
+      "kind": "instant",
+      "input": "2026-10-08T21:28:36Z",
+      "output": "2026-10-08T21:28:36Z"
+    },
+    {
+      "kind": "instant",
+      "input": "2026-10-08T21:28:36+02:00",
+      "output": "2026-10-08T19:28:36Z"
+    },
+    {
+      "kind": "instant",
+      "input": "2026-10-08T21:28:36.120Z",
+      "output": "2026-10-08T21:28:36.12Z"
+    },
+    {
+      "kind": "instant",
+      "input": "2026-10-08T21:28:36.000Z",
+      "output": "2026-10-08T21:28:36Z"
+    },
+    {
+      "kind": "instant",
+      "input": "2026-10-08T21:28Z",
+      "output": "2026-10-08T21:28:00Z"
+    },
+    {
+      "kind": "instant",
+      "input": "2026-12-31T23:30:00-01:00",
+      "output": "2027-01-01T00:30:00Z"
+    },
+    {
+      "kind": "instant",
+      "input": "2026-02-29T00:00:00Z",
+      "error": "CANONICAL_TEMPORAL"
+    },
+    {
+      "kind": "instant",
+      "input": "2024-02-29T00:00:00Z",
+      "output": "2024-02-29T00:00:00Z"
+    },
+    {
+      "kind": "instant",
+      "input": "2026-10-08 21:28:36Z",
+      "error": "CANONICAL_TEMPORAL"
+    },
+    {
+      "kind": "instant",
+      "input": "2026-10-08T21:28:36",
+      "error": "CANONICAL_TEMPORAL"
+    },
+    {
+      "kind": "instant",
+      "input": "2026-10-08T21:28:36.123456789+00:00",
+      "output": "2026-10-08T21:28:36.123456789Z"
+    },
+    {
+      "kind": "instant",
+      "input": "2026-10-08t21:28:36z",
+      "output": "2026-10-08T21:28:36Z"
+    },
+    {
+      "kind": "instant",
+      "input": "0099-01-01T00:00:00Z",
+      "output": "0099-01-01T00:00:00Z"
+    },
+    {
+      "kind": "instant",
+      "input": "2026-10-08T23:59:60Z",
+      "error": "CANONICAL_TEMPORAL"
+    },
+    {
+      "kind": "instant",
+      "input": "2026-10-08T21:28:36.1234567891Z",
+      "error": "CANONICAL_TEMPORAL"
+    },
+    {
+      "kind": "instant",
+      "input": "2026-10-08T00:30:00+05:45",
+      "output": "2026-10-07T18:45:00Z"
+    },
+    {
+      "kind": "instant",
+      "input": "0000-01-01T00:00:00Z",
+      "error": "CANONICAL_TEMPORAL"
+    },
+    {
+      "kind": "date",
+      "input": "2026-10-08",
+      "output": "2026-10-08"
+    },
+    {
+      "kind": "date",
+      "input": "2026-13-01",
+      "error": "CANONICAL_TEMPORAL"
+    },
+    {
+      "kind": "date",
+      "input": "2024-02-29",
+      "output": "2024-02-29"
+    },
+    {
+      "kind": "date",
+      "input": "2023-02-29",
+      "error": "CANONICAL_TEMPORAL"
+    },
+    {
+      "kind": "date",
+      "input": "2026-1-08",
+      "error": "CANONICAL_TEMPORAL"
+    },
+    {
+      "kind": "duration",
+      "input": "p1dt2h",
+      "output": "P1DT2H"
+    },
+    {
+      "kind": "duration",
+      "input": "P",
+      "error": "CANONICAL_TEMPORAL"
+    },
+    {
+      "kind": "duration",
+      "input": "PT",
+      "error": "CANONICAL_TEMPORAL"
+    },
+    {
+      "kind": "duration",
+      "input": "P1.5D",
+      "error": "CANONICAL_TEMPORAL"
+    },
+    {
+      "kind": "duration",
+      "input": "PT1.5S",
+      "output": "PT1.5S"
+    },
+    {
+      "kind": "duration",
+      "input": "P1Y2M3W4DT5H6M7S",
+      "output": "P1Y2M3W4DT5H6M7S"
+    },
+    {
+      "kind": "duration",
+      "input": "P1DT",
+      "error": "CANONICAL_TEMPORAL"
+    },
+    {
+      "kind": "decimal",
+      "input": "001.2300",
+      "output": "1.23"
+    },
+    {
+      "kind": "decimal",
+      "input": "-0.000",
+      "output": "0"
+    },
+    {
+      "kind": "decimal",
+      "input": "+5",
+      "output": "5"
+    },
+    {
+      "kind": "decimal",
+      "input": "1e3",
+      "error": "CANONICAL_DECIMAL"
+    },
+    {
+      "kind": "decimal",
+      "input": "-12.50",
+      "output": "-12.5"
+    },
+    {
+      "kind": "decimal",
+      "input": "0.0",
+      "output": "0"
+    },
+    {
+      "kind": "decimal",
+      "input": ".5",
+      "error": "CANONICAL_DECIMAL"
+    },
+    {
+      "kind": "decimal",
+      "input": "5.",
+      "error": "CANONICAL_DECIMAL"
+    },
+    {
+      "kind": "decimal",
+      "input": "-007",
+      "output": "-7"
+    },
+    {
+      "kind": "decimal",
+      "input": "123456789012345678901234567890.10",
+      "output": "123456789012345678901234567890.1"
+    }
+  ]
+}

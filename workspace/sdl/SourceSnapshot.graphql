@@ -1,0 +1,51 @@
+"""
+Purpose: immutable capture of a Source at a retrieval time (verification.v1 VerificationSourceCapture): the bytes
+that every claim must trace to. Identity rule: (source, contentHash, retrievedAt); a changed page is a new
+snapshot, never an edit. uid token: `snapshot`. Clocks: `retrievedAt` (BellLabs fetched; lower bound of any
+citing assertion's recordedAt), `observedAt` (known displayed), `publishedAt` (issuer time). A publisher revision
+(retraction, erratum) is recorded on the later snapshot (`revisionKind`, `revisesSnapshotUid`).
+Questions: Q-K-01, Q-K-02, Q-K-10, Q-K-20.
+"""
+type SourceSnapshot implements Entity
+  @node(labels: ["SourceSnapshot", "InformationArtifact"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "When BellLabs fetched the bytes."
+  retrievedAt: DateTime!
+  "When the content is known to have been displayed (archive capture time for a late source)."
+  observedAt: DateTime
+  "Issuer's date for this version."
+  publishedAt: DateTime
+  "sha256:<hex> of the captured artifact (verification.v1 contentArtifact digest); snapshot identity."
+  contentHash: String!
+  "Input of contentHash (R-35): RAW_BYTES | CANONICAL_PROJECTION (a registered projection id@version over stored raw bytes) | TOOL_RENDITION (Firecrawl / Tavily output; captureMethod names tool, version, options) | STORED_EXCERPT_TEXT | SYNTHETIC_FIXTURE."
+  contentHashBasis: String!
+  "sha256:<hex> of the canonical projection artifact when the verifier registered one; change detection across snapshots, not identity (R-37)."
+  canonicalProjectionHash: String
+  "verification.v1 captureMethod and version, e.g. firecrawl-scrape/2."
+  captureMethod: String
+  "COMPLETE | PARTIAL_EXCERPT | UNKNOWN; partial captures never support absence claims."
+  captureCompleteness: String
+  "Durable object-store key of the bytes (internal; R-37)."
+  storageUri: String
+  "External archive copy (web archive URI)."
+  archiveUri: String
+  mimeType: String
+  "BCP 47 language tag."
+  language: String
+  "Publisher revision this snapshot records, if any (capture cache; the authority is the REVISES episode or HAS_REVISION_STATUS Assertion, R-44)."
+  revisionKind: SourceRevisionKind
+  "uid of the earlier snapshot this one revises (retraction notice, new version)."
+  revisesSnapshotUid: String
+  """class: structural (inverse); cardinality: exactly_one; questions: Q-K-01, Q-K-20."""
+  source: [Source!]!
+    @relationship(type: "HAS_SNAPSHOT", direction: IN, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

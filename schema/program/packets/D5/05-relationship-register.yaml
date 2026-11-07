@@ -1,0 +1,270 @@
+version: 1
+module: D5
+# Model stage (Wave 2) by A5, 2026-10-08. Kernel pattern: packets/K/09-reasoning.md (A1). Six relationship types,
+# 8 from->to pairs after the adversarial review (union members counted; an interface target counts 1): STEP_USES now
+# targets the kernel interface Subjectable (was union StepMeans, 6 pairs) and STATES_CONSTRAINT is derived. Every typed relationship below has a question, a pattern in
+# 03-retrieval-patterns.md, a populating tool (ids listed by the fixtures stage in 08-sources-and-tools.md) and a fixture.
+# Fixtures stage (A5, 2026-10-08): every fixture path below exists and exercises its type; the other fixtures exercise them too
+# (HAS_EDITION/HAS_STEP/STEP_USES/STATES_CONSTRAINT/RESOLVES_TO_CONSTRAINT also in pregnancy-magnesium-upper-limit; RESOLVES_TO_CONSTRAINT in all four).
+# Adversarial review (A5, 2026-10-08, late): identity rule use-constraint-key/v2 (timing component); fixtures regenerated.
+# Tool ids used here: tool:tavily-extract, tool:firecrawl-scrape, tool:wayback-cdx, tool:openfda-label,
+# tool:dailymed-spl-history, tool:pubmed-eutils, tool:hc-nhpid, tool:ks-curation (BellLabs curator agent writing
+# vocabulary mappings through intents), tool:ks-projection (Knowledge Services projection job).
+relationships:
+  - type: HAS_EDITION
+    class: asserted
+    from: Protocol
+    to: ProtocolEdition
+    edgeProperties: StateEpisodeProperties
+    cardinality: "one_or_more (EXCLUSIVE per protocol: one open episode in valid x recorded time)"
+    temporal: episode
+    questions: [Q-D5-10, CQ-PR-01, Q-D5-13, Q-D5-24]
+    pattern: "03#Q-D5-10; 03#CQ-PR-01; 03#Q-D5-13"
+    populatedBy: [tool:tavily-extract, tool:firecrawl-scrape, tool:wayback-cdx]
+    fixture: 07-fixtures/sleep-toolkit-unstructured
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      The only D5 edge that needs a bitemporal episode: which edition of an in-place-versioned page was current when
+      (valid time from dated captures, bounded by first/last observation; recorded time service-assigned). Attached by
+      kernel state.attach; the authorizing Assertion cites the step locators. The edition node itself is immutable
+      and carries no time. Answers "what did protocol P prescribe on date D" and lets D7 interest intervals be
+      overlapped with edition intervals (Q-D5-13).
+
+  - type: HAS_STEP
+    class: structural
+    from: ProtocolEdition
+    to: ProtocolStep
+    edgeProperties: StructuralEdgeProperties
+    cardinality: "one_or_more (orderIndex = source order)"
+    temporal: recorded-only
+    questions: [Q-D5-10, CQ-PR-01, CQ-PR-02, Q-D5-11, Q-D5-12]
+    pattern: "03#Q-D5-10; 03#CQ-PR-01; 03#Q-D5-12"
+    populatedBy: [tool:tavily-extract, tool:firecrawl-scrape, tool:wayback-cdx]
+    fixture: 07-fixtures/sleep-toolkit-unstructured
+    nestedOperations: [CREATE, CONNECT]
+    aggregate: false
+    rationale: >-
+      Internal shape of one immutable edition; every protocol question walks it. Recorded time only: the edition is
+      immutable and its validity lives on HAS_EDITION. Steps are not shared across editions (a step's identity is
+      (edition, stepKey)); unchanged steps are recognized by equal payloadHash, so the diff (CQ-PR-01) needs no edge.
+
+  - type: STEP_USES
+    class: structural
+    from: ProtocolStep
+    to: Subjectable   # kernel interface; admissible (executor-validated per stepKind): D1.ChemicalSubstance, D1.IngredientMaterial, D6.Product, D12.FoodItem, D12.FoodCategory, D12.DietaryPattern, Intervention, D4.Metric, D4.Device
+    edgeProperties: StructuralEdgeProperties
+    cardinality: "zero_or_more per step (one primary means; alternatives are sibling steps sharing alternativeGroup; informational OTHER and CONSULT steps may have none, as fixtures sleep-toolkit-unstructured s09/s12 and pregnancy-magnesium-upper-limit preg-01 show)"
+    temporal: recorded-only
+    questions: [Q-D5-06, Q-D5-10, Q-D5-11, Q-D5-12, Q-D5-19, CQ-PR-04]
+    pattern: "03#Q-D5-12; 03#Q-D5-06; 03#Q-D5-11; 03#Q-D5-19"
+    populatedBy: [tool:tavily-extract, tool:firecrawl-scrape]
+    fixture: 07-fixtures/pregnancy-magnesium-upper-limit
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      The join from protocol content to the means the rest of the graph knows about: "which protocols include X"
+      (Q-D5-12), the dose-vs-limit comparison (Q-D5-06), the omitted-constraint check (Q-D5-11) and the GDS
+      co-occurrence projection (Q-D5-19) all traverse it. Target: the kernel interface Subjectable (adversarial review;
+      was union StepMeans of 6). The union cost +2.9 KB / +8 input types, sat at the 6-member limit and could not admit
+      D12 DietaryPattern, so a diet had two homes (Intervention kind DIETARY_PATTERN and DietaryPattern); with the
+      interface the executor validates the admissible types per stepKind and DIETARY_PATTERN is retired (09 D-05).
+      Dose lives on the step node (filterable), not on the edge, so no custom edge-property type is needed.
+
+  - type: STATES_CONSTRAINT
+    class: derived
+    from: ProtocolStep
+    to: UseConstraint
+    edgeProperties: DerivedEdgeProperties
+    cardinality: "many"
+    temporal: recorded-only (derivedAt)
+    questions: [Q-D5-11, CQ-PR-02, Q-D5-03]
+    pattern: "03#Q-D5-11; 03#CQ-PR-02"
+    populatedBy: [tool:ks-projection]
+    fixture: 07-fixtures/sleep-toolkit-unstructured
+    nestedOperations: []
+    aggregate: false
+    derivationRule: "use-constraint-key/v2 (stated-by-step clause): for each protocol-author USE_CONSTRAINED_IN | INTERACTS_WITH | HAS_UPPER_LIMIT Assertion that cites the step's locatorUid (or a locator inside the step span on the same snapshot) and resolves to a UseConstraint, emit step -> that UseConstraint"
+    rationale: >-
+      Separates the cautions a protocol states itself ("Don't take theanine if ...", Blueprint's pregnancy avoid-list)
+      from the constraints that apply to the same means elsewhere but that the protocol omits (Q-D5-11: an anti-join on
+      this edge). Derived since the adversarial review: the edge pointed from immutable edition content to a node whose
+      identity a regenerable projection mints, so a rule bump (v1 -> v2 here) would have orphaned it or changed edition
+      payloads. Now the same projection that mints the UseConstraint emits the edge from the protocol author's caution
+      Assertion whose locator is the step's own; the step payload hashes the verbatim caution fields (statedLevel,
+      conditionText), never constraint uids. Replaces pinned HAS_CONSTRAINT -> Constraint and its ConstraintRole edge
+      properties (role is derivable from stepKind + statedLevel).
+
+  - type: RESOLVES_TO_CONSTRAINT
+    class: derived
+    from: K.Assertion
+    to: UseConstraint
+    edgeProperties: DerivedEdgeProperties
+    cardinality: "zero_or_one per Assertion; one_or_more per UseConstraint"
+    temporal: recorded-only
+    questions: [Q-D5-03, Q-D5-04, Q-D5-05, Q-D5-21, Q-D5-23, CQ-RC-06, Q-D5-24, Q-D5-26]
+    pattern: "03#Q-D5-23; 03#Q-D5-05; 03#Q-D5-04"
+    populatedBy: [tool:ks-projection]
+    fixture: 07-fixtures/sirolimus-label-interactions-harm
+    nestedOperations: []
+    aggregate: false
+    rationale: >-
+      Groups many asserters' statements (label, clinic, monograph, protocol, forum) of one scoped concern under the
+      shared blocking identity. Derived and regenerable (derivationRule use-constraint-key/v2: identity key computed
+      from the Assertion's predicate, subject, object, population qualifiers, dose band, route, jurisdiction and timing
+      window; v1 had no timing component, OQ-D5-29), so it
+      never carries a level or a confidence; superseded assertions drop out by recordedTo. Declared on UseConstraint
+      with direction IN (stored Assertion -> UseConstraint). Cut alternatives: typed CONSTRAINS_USE_OF (union 5) and
+      CONSTRAINT_SCOPE (union 6) duplicated the resolving Assertions' HAS_SUBJECT / HAS_OBJECT (09-reasoning D-07).
+
+  - type: OPERATIONALIZED_BY
+    class: structural
+    from: Target
+    to: [D4.Biomarker, D4.Metric, D2.Outcome]
+    edgeProperties: StructuralEdgeProperties
+    cardinality: "many"
+    temporal: recorded-only
+    questions: [Q-D5-01, Q-D5-14, Q-D5-20]
+    crossPacketQuestions: [Q-D3-04, Q-D4-17]   # the main traversers (D3 study evidence -> target; D4 target -> metrics, tests, devices)
+    pattern: "03#Q-D5-01 (study branch, a UNION branch since the adversarial review); 03#Q-D5-20 (shared-identifier join)"
+    populatedBy: [tool:ks-curation]
+    fixture: 07-fixtures/antioxidant-exercise-disconfirmation   # Target -> D4 Metric, D4 Biomarker and (adversarial review) D2 Outcome
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      The only typed edge the targets vocabulary spends (vocab-targets.yaml measuresSeam): lets study evidence reach a
+      target (StudyResult -[RESULT_FOR]-> OutcomeDefinition -[MEASURES]-> Metric|Biomarker|Outcome <-[OPERATIONALIZED_BY]- Target, D3 SDL names) and answers "how do
+      I measure progress toward T". Curated vocabulary mapping, not an effect claim, so structural and recorded-only.
+      Model stage retargeted it from D2 Outcome to D4 Biomarker | Metric on the premise that D2 proposes no Outcome node;
+      D2's SDL keeps Outcome (the endpoint concept D3 OutcomeDefinition MEASURES: lifespan, all-cause mortality, handgrip
+      strength), so the check stage restored D2.Outcome as a third member (union 3, +1 pair) at D2's request; endpoint
+      concepts without a metric (all-cause mortality for target:longevity) otherwise could not reach a target.
+
+predicateOnly:
+  # Assertion.predicate values owned by D5 (kernel Assertion; subject/object through HAS_SUBJECT / HAS_OBJECT).
+  # Qualifier syntax in Assertion.qualifiers: "<key>:<value>"; `population:<PopulationGroup code | D3 StudyPopulation uid>`
+  # is MANDATORY on every predicate below except PROTOCOL_AUTHORED_BY and INTERVENTION_INCLUDES (UNSPECIFIED when unnamed).
+  - predicate: INTENDED_FOR_TARGET
+    subject: any means (D1, D6, D12, D5 Intervention/Protocol/ProtocolEdition, D4 device-as-product)
+    object: D5.Target
+    value: none (no effect implied)
+    qualifiers: [population, claimClass (STRUCTURE_FUNCTION | DISEASE_CLAIM | APPROVED_INDICATION | PERMITTED_NHP_CLAIM | NONE_STATED)]
+    questions: [Q-D5-15, Q-D5-01]
+    promoteWhen: "never as a typed means->Target edge (vocab seamRule); a derived SERVES_TARGET projection only if Q-D5-01 latency needs it"
+  - predicate: IMPROVES_TARGET
+    subject: any means
+    object: D5.Target
+    qualifiers: [population, dose, duration, coExposure, outcomeUid]
+    questions: [Q-D5-01, Q-D5-28]
+    promoteWhen: same as INTENDED_FOR_TARGET
+  - predicate: WORSENS_TARGET
+    subject: any means
+    object: D5.Target
+    qualifiers: [population, dose, duration, coExposure (e.g. coExposure:hu:intervention:endurance-training), outcomeUid]
+    questions: [Q-D5-02, Q-D5-14, Q-D5-20]
+    promoteWhen: same as INTENDED_FOR_TARGET
+  - predicate: NO_EFFECT_ON_TARGET
+    subject: any means
+    object: D5.Target
+    qualifiers: [population, dose, duration, outcomeUid]
+    questions: [Q-D5-14, Q-D5-02]
+    promoteWhen: same as INTENDED_FOR_TARGET
+  - predicate: MIXED_EFFECT_ON_TARGET
+    subject: any means
+    object: D5.Target
+    qualifiers: [population, dose, coExposure, outcomeUid]
+    questions: [Q-D5-02, Q-D5-14]
+    promoteWhen: same as INTENDED_FOR_TARGET
+  - predicate: USE_CONSTRAINED_IN
+    subject: means (substance, material, product, food, intervention)
+    object: D2.Condition when the scope is a condition; none when the scope is only a population code
+    value: "valueString = ConstraintLevel code (CONTRAINDICATED, AVOID, ...); proposition = verbatim directive"
+    qualifiers: [population, section (CONTRAINDICATIONS | WARNINGS | PRECAUTIONS | CAUTIONS | PROTOCOL_TEXT ...), window, route, jurisdiction]
+    resolvesTo: UseConstraint (kind CONDITION or POPULATION)
+    questions: [Q-D5-03, Q-D5-11, Q-D5-21, Q-D5-23]
+    promoteWhen: "a typed CONSTRAINS_USE_OF / CONSTRAINT_SCOPE pair if Q-D5-23 latency through Assertions exceeds budget (09 'twice the budget')"
+  - predicate: INTERACTS_WITH
+    subject: affected means (victim, e.g. sirolimus)
+    object: co-exposure means (perpetrator, e.g. grapefruit juice, St John's wort, an Intervention such as endurance training)
+    value: "valueString = ConstraintLevel code; proposition = verbatim directive"
+    qualifiers: [population, exposureChange (INCREASES_EXPOSURE | DECREASES_EXPOSURE | REDUCES_ABSORPTION | ADDITIVE_EFFECT | ANTAGONIZES_EFFECT | UNKNOWN; per asserter, never a UseConstraint property since the adversarial review), mechanism (free text, e.g. CYP3A4), window, stance (AVOID | DELIBERATE_USE)]
+    resolvesTo: UseConstraint (kind INTERACTION)
+    questions: [Q-D5-04, Q-D5-05, Q-D5-19, Q-D5-27]
+    promoteWhen: same as USE_CONSTRAINED_IN
+  - predicate: HAS_UPPER_LIMIT
+    subject: substance or material (with intake scope)
+    object: none (typed literal)
+    value: "valueNumber + unitCode (UCUM, per day); valueString = DO_NOT_EXCEED_DOSE"
+    qualifiers: [population, ageBand, intakeScope (SUPPLEMENTAL_ONLY | TOTAL_INTAKE | NOT_STATED), limitKind (UL | MONOGRAPH_MAX | LABEL_MAX | PROTOCOL_MAX — a protocol author's own ceiling, e.g. Blueprint "limit caffeine to 200 mg daily" in pregnancy; added in the adversarial review)]
+    resolvesTo: UseConstraint (kind DOSE_LIMIT, dose band GT value)
+    questions: [Q-D5-06, Q-D5-09, Q-D5-21]
+    promoteWhen: never (a literal; the comparison is computed at query time)
+  - predicate: HAS_AUTHORIZED_DOSE_RANGE
+    subject: substance or material
+    object: none (typed literal)
+    value: "valueString = 'min-max unit/period' verbatim; qualifiers carry doseMin/doseMax/doseUnit/dosePeriod"
+    qualifiers: [population, use (e.g. 'all uses except jet lag'), jurisdiction]
+    questions: [Q-D5-06, Q-D5-21]
+    promoteWhen: never
+  - predicate: CAUSES_ADVERSE_EFFECT
+    subject: means
+    object: D2.Condition (adverse-effect term; MedDRA/MeSH/HPO ids attach to the Condition)
+    value: "valueString = frequency text as stated ('~5%', 'common'); valueNumber = frequency when numeric"
+    qualifiers: [population, dose, schedule, route, severity (<scheme>:<grade>, scheme CTCAE_V5 | CTCAE_V6 | LABEL_TEXT | SOURCE_TEXT), context (OVERDOSE | ACCIDENTAL_INGESTION | THERAPEUTIC), sourceKind (LABEL | TRIAL_ARM | CASE_REPORT | SPONTANEOUS_REPORT | PROTOCOL_AUTHOR | COMMUNITY)]
+    questions: [Q-D5-07, Q-D5-09, Q-D5-20]
+    promoteWhen: "a typed edge only if D2 refuses the Condition seam and D5 re-mints AdverseEffect (11-open-questions OQ-D5-03)"
+  - predicate: PROTOCOL_AUTHORED_BY
+    subject: D5.Protocol
+    object: D7.Person or D7.Organization
+    questions: [Q-D5-13]
+    promoteWhen: "Q-D5-13 needs author traversal at volume (typed asserted AUTHORED_BY, union 2)"
+  - predicate: INTERVENTION_INCLUDES
+    subject: D5.Intervention (COMBINATION or named regimen)
+    object: substance, product or Intervention
+    qualifiers: [dose, role]
+    questions: [Q-D5-25, Q-D5-28]
+    promoteWhen: "Q-D5-25 identity matching needs component traversal (typed INTERVENTION_COMPONENT)"
+    renamedFrom: "HAS_COMPONENT (adversarial review: same name as D3's typed StudyArm -HAS_COMPONENT-> InterventionComponent, which D5's own Q-D5-01 / Q-D5-25 traverse)"
+  # Consumed, owned elsewhere (listed so consumers do not re-mint them):
+  - predicate: OFFERS_INTERVENTION
+    owner: D6/D7 (offering of an Intervention by a clinic or telehealth service)
+    questions: [Q-D5-17]
+    promoteWhen: owner decides
+  - predicate: "HOLDS_ROLE | HOLDS_STAKE | RECEIVES_VALUE_FROM (financial interest; typed D7 asserted edges, each authorized by an Assertion with that predicate)"
+    owner: D7
+    questions: [Q-D5-13]
+    promoteWhen: "already typed in D7 (Shape B); the fixtures-stage name HAS_INTEREST_IN was D7's Shape A, measured and not chosen (D7 OQ-D7-29)"
+  # Rejected / not registered by D5 (adversarial review; 11-open-questions):
+  - predicate: REPORTS_ADVERSE_EXPERIENCE
+    owner: D9 (proposed)
+    status: "rejected as a second adverse-effect predicate: a community adverse experience is CAUSES_ADVERSE_EFFECT with basisKind PERSONAL_EXPERIENCE, qualifier sourceKind:COMMUNITY, object a D2 Condition (there is no 'D5 adverse-effect term'; OQ-D5-41)"
+  - predicate: "RECOMMENDS_AGAINST with a D5.Target object"
+    owner: D10 (RECOMMENDS_AGAINST itself is D10's guideline predicate)
+    status: "rejected for goal statements: with a Target object use one of the five goal predicates (WORSENS_TARGET, or USE_CONSTRAINED_IN for population/condition guidance) with speechAct RECOMMENDS or CAUTIONS; RECOMMENDS_AGAINST stays valid with a means subject and no Target object (OQ-D5-40)"
+
+deferred:
+  - {type: CONSTRAINS_USE_OF, reason: "UseConstraint -> subject means (union 5): duplicates the resolving Assertions' HAS_SUBJECT; every question reaches the subject through RESOLVES_TO_CONSTRAINT + HAS_SUBJECT (09 D-07)"}
+  - {type: CONSTRAINT_SCOPE, reason: "UseConstraint -> condition / population / co-exposure (union 6+): duplicates HAS_OBJECT and the population qualifier; population codes are the scopePopulations property"}
+  - {type: STEP_FOR_TARGET / FOR_TARGET, reason: "step -> Target edge conflicted with the vocab seam rule; replaced by the captured-content property ProtocolStep.targetKeys (vocab-targets.yaml 0.2.0 amendment)"}
+  - {type: STEP_DEPENDS_ON (pinned DEPENDS_ON), reason: "CQ-PR-02 (value 2) reads dependencies within one edition; property dependsOnStepKeys suffices"}
+  - {type: INTERVENTION_COMPONENT (pinned USES_COMPONENT), reason: "no value-1 question traverses components; predicate INTERVENTION_INCLUDES (renamed from HAS_COMPONENT in the adversarial review)"}
+  - {type: "STEP_USES -> union StepMeans", reason: "adversarial review: retargeted to Subjectable (union at 6/6, +2.9 KB / +8 inputs, could not admit D12 DietaryPattern or D4 Device); admissible types are executor-validated"}
+  - {type: HAS_SAFETY_SIGNAL / REPORTS_SAFETY_SIGNAL / SIGNAL_BASED_ON, reason: "SafetySignal is a kernel Assessment (SAFETY_SIGNAL) using kernel ASSESSES and DERIVED_FROM"}
+  - {type: RELATES_TO_EFFECT / RELATES_TO_CONDITION / ASSOCIATED_WITH_CONDITION / AFFECTS_ORGAN, reason: "adverse-effect and condition links are Assertion objects (CAUSES_ADVERSE_EFFECT, USE_CONSTRAINED_IN); organ is a D2 property"}
+  - {type: HAS_PROTOCOL_EDITION, reason: "renamed HAS_EDITION (D5-internal, one meaning)"}
+  - {type: HAS_PROTOCOL_STEP, reason: "renamed HAS_STEP"}
+  - {type: USES / EMPLOYS (pinned step edges, unions 6 + 6), reason: "merged into STEP_USES (union 6); instruments are D6 Products, measured quantities D4 Metrics"}
+  - {type: TARGETS (step/edition -> TherapeuticTargetTarget union 3), reason: "therapeutic target = Condition (D2) or Target; captured purpose is targetKeys, disease intent is an Assertion"}
+  - {type: HAS_TARGET / MODIFIES_TARGET / FOR_METRIC / TRACKS_METRIC / MEASURES_METRIC, reason: "pinned numeric Target and MeasurementPlan absorbed into ProtocolStep threshold properties + STEP_USES -> Metric"}
+  - {type: HAS_MEASUREMENT_PLAN / HAS_ADJUSTMENT_RULE / RULE_TRIGGERED_BY / MODIFIES_STEP, reason: "MeasurementPlan and ProtocolAdjustmentRule are step kinds MEASURE / REVIEW"}
+  - {type: HAS_CONSTRAINT (pinned, -> Constraint), reason: "replaced by STATES_CONSTRAINT -> UseConstraint"}
+  - {type: HAS_FUNCTIONAL_GOAL, reason: "FunctionalGoal -> Target; protocol purpose = INTENDED_FOR_TARGET assertion or step targetKeys"}
+  - {type: HAS_SUBPROTOCOL / INCLUDES_PROTOCOL / DERIVED_FROM_PROTOCOL / BASED_ON, reason: "no question traverses protocol composition; sections are sectionLabel; derivation is an Assertion if ever needed"}
+  - {type: HAS_CURRENT_PROTOCOL_STEP, reason: "current = the step of the edition whose HAS_EDITION episode is open; a cached shortcut is not needed"}
+  - {type: POSTS_RESULT / FOR_PROTOCOL / INCLUDES_OBSERVATION / RECORDS / ABOUT_PROTOCOL / CLAIMS_OUTCOME / COMPARED_TO, reason: "Observation and ProtocolResult are kernel Assertions (METRIC) about the protocol; comparisons are computed (directive 3.5)"}
+  - {type: COMPUTED_BY_ALGORITHM_VERSION / PRODUCED_BY_ASSAY_VERSION / FROM_DEVICE / FROM_LAB_TEST / INTERPRETED_WITH_REFERENCE_INTERVAL_VERSION, reason: "measurement provenance of public observations belongs to D4 and the kernel assertion"}
+  - {type: OFFERS_TREATMENT / OFFERS_PROCEDURE / LISTS_PROCEDURE / DEVELOPS_TREATMENT, reason: "D6/D7 own offerings and development; predicate OFFERS_INTERVENTION until they decide"}
+  - {type: FOLLOWS_INTERVENTION_DEFINITION, reason: "D3 owns the arm -> Intervention edge (seam, owner other)"}
+  - {type: TARGETS_CONDITION, reason: "disease intent is an Assertion (INTENDED_FOR_TARGET is for goals; indication is D8)"}
+  - {type: SUPPORTED_BY / SUPPORTED_BY_CHUNK / SUPPORTED_BY_DOCUMENT / MENTIONS_ENTITY / HAS_SUBJECT / HAS_OBJECT / ASSERTED_BY / HAS_IDENTIFIER / WAS_GENERATED_BY / SUPERSEDES, reason: "kernel (HAS_EVIDENCE -> SourceLocator, MENTIONS derived, Assertion.supersedesUid)"}
+  - {type: CO_OCCURS_IN_PROTOCOLS (GDS output), reason: "Q-D5-19 is a GDS stream or a D10 materialized association; D5 does not own association edges"}

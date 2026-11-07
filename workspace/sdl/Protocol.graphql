@@ -1,0 +1,30 @@
+"""
+Purpose: the enduring identity of a public protocol (a creator's toolkit page, a published longevity protocol, a
+clinic's program definition). Questions traverse from it to its editions over time (HAS_EDITION episodes) and, through
+kernel assertions, to its author (predicate AUTHORED_BY, registered by D3, -> D7 Person/Organization; R-80) and the
+author's financial interests (D7 HOLDS_ROLE | HOLDS_STAKE | RECEIVES_VALUE_FROM, R-78).
+Identity rule: (publisher, canonical URL) when published online, else (publisher, title); the page itself is a kernel
+Source with that canonicalUri. Not merged into Source (09 D-18): a protocol keeps its identity when its URL moves
+(Huberman: hubermanlab.com/toolkit-for-sleep -> /newsletter/toolkit-for-sleep) and exists without a URL (book, clinic
+handout), while a Source is one retrieval endpoint. uid token: `protocol` (hu:protocol:<slug>).
+Questions: Q-D5-10, CQ-PR-01, Q-D5-12, Q-D5-13, Q-D5-19.
+"""
+type Protocol implements Entity & Subjectable
+  @node(labels: ["Protocol", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Normalized canonical URL of the protocol page (equals the kernel Source.canonicalUri); null for print-only protocols."
+  canonicalUri: String
+  description: String
+  """class: asserted; cardinality: one_or_more (EXCLUSIVE: at most one open episode per protocol in valid x recorded time; AssertedEdgeProperties, register field exclusive: true enforced by the executor per relationship type, R-10); questions: Q-D5-10, CQ-PR-01, Q-D5-13, Q-D5-24."""
+  editions: [ProtocolEdition!]!
+    @relationship(type: "HAS_EDITION", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

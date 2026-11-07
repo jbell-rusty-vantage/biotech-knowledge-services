@@ -1,0 +1,162 @@
+# Fixture olive-oil-polyphenols-preparation — what a preparation does to composition (Phenol-Explorer report on oils).
+# Fixture stage (A2, 2026-10-08). uids are fixture-scoped; producedBy ids are FIXTURE ids. Research is not medical advice.
+# The report states the content for EXTRA VIRGIN olive oil and the frying losses for VIRGIN olive oil; they are two
+# FoodItems (the model-stage stub said "virgin" for both — corrected here to what the source prints). Adversarial-review
+# pass: FOOD_CONTAINS amounts typed on the edge (edgeValues); qualifiers in the 05 qualifierGrammar; olive-05's subject is
+# the grade-unstated olive oil (the tyrosol sentences name no grade) with the object named by loc-pe-tyrosol-more-stable;
+# olive-04's 180 °C is marked as inferred; the (393, 394) citation is scoped to the lignan sentence. `notes` are annotations.
+version: 1
+fixture: olive-oil-polyphenols-preparation
+producedBy: &run { missionId: "mission:ft-D12-fixtures", runId: "run:ft-D12-olive-oil-polyphenols-preparation", note: "fixture ids, not a real Mission Control run" }
+
+entities:
+  - { uid: "hu:org:phenol-explorer", type: D7.Organization, name: "Phenol-Explorer (database publisher; report 'Oils', version 3.6)", owner: D7, note: "the report cites primary studies by number; '(393, 394)' is printed after the lignan sentence, and its scope over the frying sentences is an inference; the asserter is the database as publisher" }
+  - { uid: "hu:food:pe-olive-oil-extra-virgin", type: D12.FoodItem, name: "extra virgin olive oil (Phenol-Explorer)", properties: { descriptionVerbatim: "extra virgin olive oil", definingSystem: PHENOL_EXPLORER, sourceRecordId: null, preparationMethod: NOT_STATED, variantKind: PROCESSING, processingVerbatim: ["extra virgin"] }, note: "Phenol-Explorer food record id not resolved in this capture (PHENOL_EXPLORER_FOOD scheme requested in 06)" }
+  - { uid: "hu:food:pe-olive-oil-virgin", type: D12.FoodItem, name: "virgin olive oil (Phenol-Explorer)", properties: { descriptionVerbatim: "virgin olive oil", definingSystem: PHENOL_EXPLORER, preparationMethod: NOT_STATED, variantKind: PROCESSING, processingVerbatim: ["virgin"] } }
+  - { uid: "hu:food:pe-olive-oil", type: D12.FoodItem, name: "olive oil (grade not stated, Phenol-Explorer report prose)", properties: { descriptionVerbatim: "olive oil", definingSystem: PHENOL_EXPLORER, preparationMethod: NOT_STATED, variantKind: BASE } }
+  - { uid: "hu:substance:hydroxytyrosol", type: D1.ChemicalSubstance, name: "hydroxytyrosol", owner: D1, identifiers: [ { scheme: PUBCHEM_CID, value: "82755", locator: loc-pubchem-hydroxytyrosol }, { scheme: INCHIKEY, value: "JUUBCHWRXWPFFH-UHFFFAOYSA-N", locator: loc-pubchem-hydroxytyrosol } ] }
+  - { uid: "hu:substance:tyrosol", type: D1.ChemicalSubstance, name: "tyrosol", owner: D1, identifiers: [ { scheme: PUBCHEM_CID, value: "10393", locator: loc-pubchem-tyrosol }, { scheme: INCHIKEY, value: "YCCILVSKPBXVIP-UHFFFAOYSA-N", locator: loc-pubchem-tyrosol } ] }
+  - { uid: "hu:constituent:total-polyphenols", type: D1.Constituent, name: "polyphenols (total)", owner: D1 }
+
+assertions:
+  - id: "hu:assertion:ft-d12-olive-01"
+    predicate: FOOD_CONTAINS
+    assertionKind: METRIC
+    edge: { type: FOOD_CONTAINS, class: asserted, edgeProperties: FoodContentProperties, temporal: recorded-only }
+    edgeValues: { statementKind: TYPICAL_COMPOSITION_REPORTED, quantity: 0.8, unitCode: mg, amountBasis: PER_100G }
+    subject: { uid: "hu:food:pe-olive-oil-extra-virgin", type: D12.FoodItem }
+    object: { uid: "hu:substance:hydroxytyrosol", type: D1.ChemicalSubstance }
+    asserter: { uid: "hu:org:phenol-explorer", type: D7.Organization }
+    locators:
+      - { ref: loc-pe-hydroxytyrosol, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-pe-evoo-scope, role: CONTEXT, origin: DECLARED }
+    valueNumber: 0.8
+    unitCode: mg
+    basisKind: CITED_FROM_PRIOR_WORK
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["dataType:ANALYTICAL_DB"]
+    notes: ["report prose summarizing Phenol-Explorer content values", "scope: extra virgin olive oil (preceding sentence of the same paragraph, loc-pe-evoo-scope)", "n, spread and method not printed in the report prose"]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-olive-02"
+    predicate: FOOD_CONTAINS
+    assertionKind: METRIC
+    edge: { type: FOOD_CONTAINS, class: asserted, edgeProperties: FoodContentProperties, temporal: recorded-only }
+    edgeValues: { statementKind: TYPICAL_COMPOSITION_REPORTED, quantity: 1.1, unitCode: mg, amountBasis: PER_100G }
+    subject: { uid: "hu:food:pe-olive-oil-extra-virgin", type: D12.FoodItem }
+    object: { uid: "hu:substance:tyrosol", type: D1.ChemicalSubstance }
+    asserter: { uid: "hu:org:phenol-explorer", type: D7.Organization }
+    locators:
+      - { ref: loc-pe-hydroxytyrosol, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-pe-evoo-scope, role: CONTEXT, origin: DECLARED }
+    valueNumber: 1.1
+    unitCode: mg
+    basisKind: CITED_FROM_PRIOR_WORK
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["dataType:ANALYTICAL_DB"]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-olive-03"
+    predicate: PREPARATION_CHANGES_CONTENT
+    predicateOnly: true
+    assertionKind: METRIC
+    subject: { uid: "hu:food:pe-olive-oil-virgin", type: D12.FoodItem }
+    object: { uid: "hu:substance:hydroxytyrosol", type: D1.ChemicalSubstance }
+    asserter: { uid: "hu:org:phenol-explorer", type: D7.Organization }
+    locators:
+      - { ref: loc-pe-frying, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-pe-refs, role: CONTEXT, origin: DECLARED }
+    valueString: "reduced by 40-50%"
+    unitCode: "%"
+    basisKind: CITED_FROM_PRIOR_WORK
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["preparationMethod:FRIED_DEEP", "preparationMethod:FRIED_PAN", "preparationVerbatim:frying", "temperatureC:180", "duration:PT10M", "cycles:1", "direction:DECREASE", "changeLow:-50", "changeHigh:-40"]
+    notes: ["the source does not distinguish deep from pan frying; both values are written", "also stated for 3,4-DHPEA-EDA and 3,4-DHPEA-EA (not D1-resolved in this fixture)"]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-olive-04"
+    predicate: PREPARATION_CHANGES_CONTENT
+    predicateOnly: true
+    assertionKind: METRIC
+    subject: { uid: "hu:food:pe-olive-oil-virgin", type: D12.FoodItem }
+    object: { uid: "hu:substance:hydroxytyrosol", type: D1.ChemicalSubstance }
+    asserter: { uid: "hu:org:phenol-explorer", type: D7.Organization }
+    locators:
+      - { ref: loc-pe-frying, role: SUPPORTS, origin: DECLARED }
+    valueNumber: -90
+    unitCode: "%"
+    valueString: "by about 90% after six frying operations"
+    basisKind: CITED_FROM_PRIOR_WORK
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["preparationMethod:FRIED_DEEP", "preparationMethod:FRIED_PAN", "preparationVerbatim:six frying operations", "cycles:6", "direction:DECREASE", "comparator:APPROX"]
+    notes: ["no temperature qualifier: 180 °C is stated for the 10-minute frying clause of the same sentence; that it also holds for the six operations is an inference (review finding), so temperatureC is not written"]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-olive-05"
+    predicate: PREPARATION_CHANGES_CONTENT
+    predicateOnly: true
+    assertionKind: METRIC
+    subject: { uid: "hu:food:pe-olive-oil", type: D12.FoodItem, note: "grade not stated: the paragraph's topic sentence (loc-pe-frying-intro) is about 'olive oil'; the 'virgin' grade is printed only in the hydroxytyrosol sentence" }
+    object: { uid: "hu:substance:tyrosol", type: D1.ChemicalSubstance }
+    asserter: { uid: "hu:org:phenol-explorer", type: D7.Organization }
+    locators:
+      - { ref: loc-pe-tyrosol-more-stable, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-pe-tyrosol-stable, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-pe-frying-intro, role: CONTEXT, origin: DECLARED }
+    valueNumber: -20
+    unitCode: "%"
+    valueString: "only reduced by 20% during up to 12 frying operations"
+    basisKind: CITED_FROM_PRIOR_WORK
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["preparationMethod:FRIED_DEEP", "preparationMethod:FRIED_PAN", "preparationVerbatim:up to 12 frying operations", "cycles:<=12", "direction:DECREASE"]
+    notes: ["object named by 'Tyrosol, p-HPEA-EDA and p-HPEA-EA however are much more stable.' (loc-pe-tyrosol-more-stable); the amount by the next sentence, whose 'Their' refers back to it (review finding: the amount sentence alone names neither side)", "subject moved from virgin olive oil to the grade-unstated olive oil record in the review"]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-olive-06"
+    predicate: PREPARATION_CHANGES_CONTENT
+    predicateOnly: true
+    assertionKind: RELATIONSHIP
+    subject: { uid: "hu:food:pe-olive-oil", type: D12.FoodItem }
+    object: { uid: "hu:constituent:total-polyphenols", type: D1.Constituent }
+    asserter: { uid: "hu:org:phenol-explorer", type: D7.Organization }
+    locators:
+      - { ref: loc-pe-microwave, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-pe-heating-ways, role: CONTEXT, origin: DECLARED }
+    valueString: "only minor losses"
+    basisKind: CITED_FROM_PRIOR_WORK
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["preparationMethod:MICROWAVED", "direction:DECREASE"]
+    notes: ["magnitude not quantified by the source ('minor')"]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+relationshipsExercised:
+  FOOD_CONTAINS: ["hu:assertion:ft-d12-olive-01 (hydroxytyrosol 0.8 mg/100 g)", "hu:assertion:ft-d12-olive-02 (tyrosol 1.1 mg/100 g)"]
+  predicateOnly: { PREPARATION_CHANGES_CONTENT: ["hu:assertion:ft-d12-olive-03", "hu:assertion:ft-d12-olive-04", "hu:assertion:ft-d12-olive-05", "hu:assertion:ft-d12-olive-06"] }
+
+notComputed:
+  - "Hydroxytyrosol left in EVOO after 10 min of frying is NOT computed (0.8 × 0.5–0.6): the content is stated for extra virgin oil and the loss for virgin oil; combining them would cross two FoodItems and is refused."
+  - "VARIANT_OF between extra virgin / virgin / olive oil is not asserted: the report does not state the hierarchy as records; a curator would need Phenol-Explorer's food table."

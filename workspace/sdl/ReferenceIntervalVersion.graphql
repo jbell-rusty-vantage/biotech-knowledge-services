@@ -1,0 +1,51 @@
+"""
+Purpose: one interval or limit a laboratory or vendor applies for one Metric on one AssayVersion and one population
+partition, with its kind (reference interval, decision limit, guideline target, vendor 'optimal' target) and
+derivation (usually NOT_REPORTED), the verbatim interval text, and the source-stated effective period as payload.
+Absorbs the pinned legacy ReferenceRange (derivation NOT_REPORTED, partition as text). A Labcorp HbA1c page yields
+four of these from one list. Insert-only; a change is a new version.
+Identity rule: payloadHash over (assay version uid, metric uid, intervalKind, partition, bounds, unit, intervalText).
+uid token: `ri-version`.
+Questions: CQ-DX-06, Q-D4-12, Q-D4-02.
+"""
+type ReferenceIntervalVersion implements Entity & Subjectable
+  @node(labels: ["ReferenceIntervalVersion", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  intervalKind: ReferenceIntervalKind!
+  derivation: ReferenceIntervalDerivation!
+  "Interval exactly as printed ('4.8% to 5.6%', 'Optimal 40–100 μM')."
+  intervalText: String!
+  lowerBound: Float
+  upperBound: Float
+  lowerInclusive: Boolean
+  upperInclusive: Boolean
+  "UCUM code of the bounds."
+  unitCode: String
+  "D3 population vocabulary (shared enum SexScope: ALL, FEMALE, MALE, NOT_REPORTED)."
+  sex: SexScope
+  minAgeYears: Float
+  maxAgeYears: Float
+  "Other partition as written (pregnancy, fasting state, ancestry)."
+  partitionText: String
+  "Source-stated effective period (payload; query validity is the publishing source's snapshot time)."
+  effectiveFrom: Date
+  effectiveTo: Date
+  notReported: [MeasurementField!]
+  payloadHash: String!
+  """class: structural; cardinality: zero_or_one (null only for a vendor target published without any test procedure); questions: CQ-DX-06, Q-D4-12."""
+  assayVersions: [AssayVersion!]!
+    @relationship(type: "INTERVAL_FOR", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: exactly_one; questions: CQ-DX-06, Q-D4-12."""
+  metrics: [Metric!]!
+    @relationship(type: "INTERVAL_FOR", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

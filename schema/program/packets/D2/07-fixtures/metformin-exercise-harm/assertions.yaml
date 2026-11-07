@@ -1,0 +1,234 @@
+# Assertions for fixture metformin-exercise-harm (packet D2, fixtures stage, A3, 2026-10-08).
+# Same conventions as ../nr-muscle-unstructured/assertions.yaml. Harm is never a property here: the harm reading is a
+# kernel Assessment (effectDirection HARM on a D5 Target) that cites A-m-01 through DERIVED_FROM (seamRecords below).
+# Deviation from the model-stage stub, with reason: the placebo-group context gets aerobic exercise training (AET) as its
+# TESTED exposure (the SDL rule is "exactly one TESTED unless geneticManipulation is set"); in the metformin-group
+# context AET is BACKGROUND and metformin is TESTED.
+# Adversarial review (2026-10-08): (1) A-m-02 is scoped to the SUIT1 protocol (CIP, CI+FAOP: non-significant trend) and a
+# new A-m-05 records the significant AET-induced increase in CI-linked respiration in the ADP-titration protocol, so AET →
+# mitochondrial respiration projects MIXED; (2) sampleSize is the respiration-analysis n (Fig 2 legend: PLA 24, MET 26),
+# the randomized n (26 / 27) stays in groupLabel; (3) both contexts are registered groups (IN_STUDY_ARM), so their dose of
+# record is D3's InterventionComponent (seamRecords) and the context exposure fields are empty; (4) the metformin →
+# complex I projection is gone (MolecularEntity pair cut): A-m-03 / A-m-04 answer Q-D2-08 directly.
+fixture: metformin-exercise-harm
+idNote: fixture-scoped ids (hu:<token>:fx-d2-...); mission/run ids are fixture ids, not Mission Control ids
+producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-metformin-exercise-harm" }
+
+entities:
+  - { ref: metformin, type: D1.ChemicalSubstance, uid: "hu:chemical-substance:fx-d2-metformin", name: metformin,
+      identifiers: [ { scheme: CHEMBL, value: CHEMBL1431, note: "parent molecule; the ChEMBL mechanism record sits on the salt CHEMBL1703 (L-m-11); D1 rolls the salt up to the parent" } ] }
+  - { ref: aet, type: D5.Intervention, uid: "hu:intervention:fx-d2-aerobic-exercise-training-12w", name: "aerobic exercise training (supervised, 12 weeks, 3 sessions/week)",
+      note: "D5 owns Intervention (11-open-questions item 8); member of ContextExposure and MechanismModulator" }
+  - { ref: m-mito-respiration, type: D2.Mechanism, uid: "hu:mechanism:fx-d2-mitochondrial-respiration", name: mitochondrial respiration, note: "declared in ../reactome-chembl-reference (BELLLABS_CURATED)" }
+  - { ref: me-complex-i, type: D2.MolecularEntity, uid: "hu:molecular-entity:fx-d2-mitochondrial-complex-i", name: "Mitochondrial complex I (NADH dehydrogenase)",
+      properties: { entityKind: PROTEIN_COMPLEX, organism: HUMAN, ncbiTaxonId: "9606" },
+      identifiers: [ { scheme: CHEMBL, value: CHEMBL2363065, evidence: L-m-10, note: "ChEMBL target id; kernel identifier-schemes v2 folds CHEMBL_TARGET into CHEMBL (check stage)" } ] }
+  - { ref: arm-met-cho, type: D3.StudyArm, uid: "hu:study-arm:fx-d2-nct02552355-metformin-carbohydrate", name: "NCT02552355 arm 'Metformin/Carbohydrate'", identifiers: [ { scheme: NCT, value: NCT02552355, evidence: L-m-12 } ] }
+  - { ref: arm-met-pro, type: D3.StudyArm, uid: "hu:study-arm:fx-d2-nct02552355-metformin-protein", name: "NCT02552355 arm 'Metformin/Protein'", identifiers: [ { scheme: NCT, value: NCT02552355, evidence: L-m-13 } ] }
+  - { ref: arm-pla-cho, type: D3.StudyArm, uid: "hu:study-arm:fx-d2-nct02552355-placebo-carbohydrate", name: "NCT02552355 arm 'Placebo/Carbohydrate'", identifiers: [ { scheme: NCT, value: NCT02552355, evidence: L-m-14 } ] }
+  - { ref: arm-pla-pro, type: D3.StudyArm, uid: "hu:study-arm:fx-d2-nct02552355-placebo-protein", name: "NCT02552355 arm 'Placebo/Protein'", identifiers: [ { scheme: NCT, value: NCT02552355, evidence: L-m-15 } ],
+      note: "registry description of this placebo arm says 'Daily oral administration of Metformin ...' (L-m-16): a registry inconsistency for D3" }
+  - { ref: asserter-konopka2019, type: D7.Person, uid: "hu:person:fx-d2-konopka-ar", name: "Adam R. Konopka (first author, for the author group of PMID 30548390)" }
+  - { ref: org-chembl, type: D7.Organization, uid: "hu:organization:fx-d2-embl-ebi-chembl", name: "ChEMBL (EMBL-EBI), release ChEMBL_37 (2026-05-01)" }
+  - { ref: t-endurance, type: D5.Target, uid: "hu:target:fx-d2-aerobic-capacity", name: "aerobic capacity / endurance (D5 goal vocabulary; key decided by D5)" }
+
+contexts:
+  - ref: ctx-met
+    type: D2.MechanismEvidenceContext
+    uid: "hu:mech-context:fx-d2-konopka2019-metformin-aet-muscle"
+    evidence: [L-m-02, L-m-05, L-m-06, L-m-07, L-m-19, L-m-20, L-m-22]
+    properties:
+      groupLabel: "metformin (randomized n = 27) treatment during 12 weeks of AET"
+      setting: HUMAN_INTERVENTIONAL
+      organism: HUMAN
+      ncbiTaxonId: "9606"
+      sexScope: ALL
+      ageDescriptor: "older adults (62 ± 1 years)"
+      sampleSize: 26                   # respiration analysis (Fig 2 legend 'MET (n = 26)', L-m-22); randomized 27 (L-m-02)
+      compartmentKind: TISSUE
+      compartmentOntologyId: "UBERON:0001379"
+      compartmentLabel: "vastus lateralis biopsy, permeabilized fibres"
+      geneticManipulation: NONE
+      # exposure fields empty: registered group; dose of record = D3 InterventionComponent (seamRecords IC-m-01, IC-m-02)
+      assayText: "high-resolution respirometry, SUIT1 and ADP titration protocols (CI-linked substrates)"
+  - ref: ctx-pla
+    type: D2.MechanismEvidenceContext
+    uid: "hu:mech-context:fx-d2-konopka2019-placebo-aet-muscle"
+    evidence: [L-m-02, L-m-05, L-m-06, L-m-07, L-m-19, L-m-20, L-m-22]
+    properties:
+      groupLabel: "placebo (randomized n = 26) during 12 weeks of AET"
+      setting: HUMAN_INTERVENTIONAL
+      organism: HUMAN
+      ncbiTaxonId: "9606"
+      sexScope: ALL
+      ageDescriptor: "older adults (62 ± 1 years)"
+      sampleSize: 24                   # respiration analysis (Fig 2 legend 'PLA (n = 24)', L-m-22); randomized 26 (L-m-02)
+      compartmentKind: TISSUE
+      compartmentOntologyId: "UBERON:0001379"
+      compartmentLabel: "vastus lateralis biopsy, permeabilized fibres"
+      geneticManipulation: NONE
+      # exposure fields empty: registered group; the TESTED exposure is the exercise programme (D5 Intervention, 12 weeks)
+      assayText: "high-resolution respirometry, SUIT1 and ADP titration protocols (CI-linked substrates)"
+
+structuralEdges:
+  - { type: EXPOSED_TO, from: ctx-met, to: metformin, properties: { exposureRole: TESTED, orderIndex: 0 }, evidence: [L-m-03] }
+  - { type: EXPOSED_TO, from: ctx-met, to: aet, properties: { exposureRole: BACKGROUND, orderIndex: 1 }, evidence: [L-m-06] }
+  - { type: EXPOSED_TO, from: ctx-pla, to: aet, properties: { exposureRole: TESTED, orderIndex: 0 }, evidence: [L-m-06] }
+  # Two arms per context: the paper pooled the carbohydrate and protein feeding arms (L-m-05). The register says
+  # IN_STUDY_ARM is zero_or_one; the fixture needs zero_or_more (11-open-questions item 22).
+  - { type: IN_STUDY_ARM, from: ctx-met, to: arm-met-cho, evidence: [L-m-05, L-m-12] }
+  - { type: IN_STUDY_ARM, from: ctx-met, to: arm-met-pro, evidence: [L-m-05, L-m-13] }
+  - { type: IN_STUDY_ARM, from: ctx-pla, to: arm-pla-cho, evidence: [L-m-05, L-m-14] }
+  - { type: IN_STUDY_ARM, from: ctx-pla, to: arm-pla-pro, evidence: [L-m-05, L-m-15] }
+
+assertions:
+  - id: A-m-01
+    uid: "hu:assertion:fx-d2-m-01"
+    assertionKind: RELATIONSHIP
+    claimType: MEASUREMENT
+    predicate: ATTENUATES_INDUCTION_OF
+    subject: { ref: metformin, type: D1.ChemicalSubstance }
+    object: { ref: m-mito-respiration, type: D2.Mechanism }
+    polarity: POSITIVE
+    basisKind: DIRECT_MEASUREMENT
+    speechAct: STATES
+    asserter: { ref: asserter-konopka2019, type: D7.Person }
+    evidence:
+      - { locator: L-m-01, role: SUPPORTS, origin: DECLARED }
+      - { locator: L-m-17, role: SUPPORTS, origin: DECLARED }
+      - { locator: L-m-21, role: SUPPORTS, origin: DECLARED }
+      - { locator: L-m-23, role: SUPPORTS, origin: DECLARED }
+      - { locator: L-m-18, role: QUALIFIES, origin: DECLARED }
+    context: ctx-met
+    qualifiers: ["inducer = the BACKGROUND exposure of the context (AET)", "ADP titration: the AET-induced increases in submaximal and maximal CI-linked respiration and Vmax were abolished by metformin (L-m-21, L-m-23)", "SUIT1 between-group: change in CI+II&FAOP greater in placebo vs metformin, p < 0.05 (L-m-17)", "SUIT1 within placebo: CIP and CI+FAOP rose only as a non-significant trend (p = 0.07, L-m-18)"]
+    validTime: { validFrom: null, validTo: null, validFromBasis: UNKNOWN }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-metformin-exercise-harm" }
+  - id: A-m-02
+    uid: "hu:assertion:fx-d2-m-02"
+    assertionKind: RELATIONSHIP
+    claimType: MEASUREMENT
+    predicate: NO_CHANGE_IN
+    subject: { ref: aet, type: D5.Intervention }
+    object: { ref: m-mito-respiration, type: D2.Mechanism }
+    polarity: POSITIVE
+    basisKind: DIRECT_MEASUREMENT
+    speechAct: STATES
+    asserter: { ref: asserter-konopka2019, type: D7.Person }
+    evidence: [ { locator: L-m-18, role: SUPPORTS, origin: DECLARED } ]
+    context: ctx-pla
+    qualifiers: ["protocol = SUIT1 (CIP and CI+FAOP) only", "'nonsignificantly increased CIP and CI+FAOP (both p = 0.07)': recorded as a measured null with the trend as qualifier", "the ADP-titration readout of the same context increased significantly: A-m-05"]
+    validTime: { validFrom: null, validTo: null, validFromBasis: UNKNOWN }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-metformin-exercise-harm" }
+  - id: A-m-05
+    uid: "hu:assertion:fx-d2-m-05"
+    assertionKind: RELATIONSHIP
+    claimType: MEASUREMENT
+    predicate: INCREASES_ACTIVITY_OF
+    subject: { ref: aet, type: D5.Intervention }
+    object: { ref: m-mito-respiration, type: D2.Mechanism }
+    polarity: POSITIVE
+    basisKind: DIRECT_MEASUREMENT
+    speechAct: STATES
+    asserter: { ref: asserter-konopka2019, type: D7.Person }
+    evidence:
+      - { locator: L-m-21, role: SUPPORTS, origin: DECLARED }
+      - { locator: L-m-23, role: SUPPORTS, origin: DECLARED }
+      - { locator: L-m-22, role: CONTEXT, origin: DECLARED }
+    context: ctx-pla
+    qualifiers: ["protocol = ADP titration: submaximal and maximal CI-linked respiration and Vmax (Figure 2f-h; '*p < 0.05, **p < 0.01 vs. PRE')", "~25% increase in maximal CI-linked respiration after AET (Discussion, L-m-23)", "added in the adversarial review 2026-10-08"]
+    validTime: { validFrom: null, validTo: null, validFromBasis: UNKNOWN }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-metformin-exercise-harm" }
+  - id: A-m-03
+    uid: "hu:assertion:fx-d2-m-03"
+    assertionKind: RELATIONSHIP
+    claimType: CAUSAL
+    predicate: INHIBITS
+    subject: { ref: metformin, type: D1.ChemicalSubstance }
+    object: { ref: me-complex-i, type: D2.MolecularEntity }
+    polarity: POSITIVE
+    basisKind: CITED_FROM_PRIOR_WORK      # ChEMBL curation citing PubMed 23277337, 23358356, 25017630
+    speechAct: STATES
+    asserter: { ref: org-chembl, type: D7.Organization }
+    evidence:
+      - { locator: L-m-09, role: SUPPORTS, origin: DECLARED }
+      - { locator: L-m-10, role: SUPPORTS, origin: DECLARED }
+      - { locator: L-m-11, role: QUALIFIES, origin: DECLARED }
+    context: null
+    qualifiers: ["action_type INHIBITOR; record on salt CHEMBL1703, rolled up to parent CHEMBL1431", "ChEMBL records a second mechanism for the same parent (/mechanisms/1: mitochondrial glycerol-3-phosphate dehydrogenase inhibitor, target CHEMBL3391681); this fixture asserts /mechanisms/0 only"]
+    validTime: { validFrom: null, validTo: null, validFromBasis: UNKNOWN, statedAsOf: "2026-05-01T00:00:00Z", statedAsOfPrecision: DAY }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-metformin-exercise-harm" }
+  - id: A-m-04
+    uid: "hu:assertion:fx-d2-m-04"
+    assertionKind: RELATIONSHIP
+    claimType: CAUSAL
+    predicate: INHIBITS
+    subject: { ref: metformin, type: D1.ChemicalSubstance }
+    object: { ref: me-complex-i, type: D2.MolecularEntity }
+    polarity: POSITIVE
+    basisKind: CITED_FROM_PRIOR_WORK
+    speechAct: SPECULATES                 # "a putative role of metformin is to inhibit complex I"
+    asserter: { ref: asserter-konopka2019, type: D7.Person }
+    evidence: [ { locator: L-m-04, role: SUPPORTS, origin: DECLARED } ]
+    context: null
+    validTime: { validFrom: null, validTo: null, validFromBasis: UNKNOWN }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-metformin-exercise-harm" }
+
+adjudications:
+  - id: ADJ-m-01
+    uid: "hu:adjudication:fx-d2-m-01"
+    assesses: A-m-01
+    adjudicationKind: CAPTURE_FIDELITY
+    judgeKind: DETERMINISTIC
+    methodVersion: "d2-fixture-quote-reselect/v1"
+    verdict: DIRECTLY_SUPPORTED
+    policyOutcome: PASS
+    evidence: [ { locator: L-m-01, role: SUPPORTS, origin: DECLARED }, { locator: L-m-17, role: SUPPORTS, origin: DECLARED } ]
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-metformin-exercise-harm" }
+
+# Records owned by other modules that complete the harm path (shape only; their owners decide final names).
+seamRecords:
+  - id: AS-m-01
+    owner: "K Assessment, kind/subkind owned by D5 (D5.interaction-risk)"
+    type: K.Assessment
+    uid: "hu:assessment:fx-d2-metformin-blunts-aet"
+    properties: { assessmentKind: SAFETY_SIGNAL, assessmentSubkind: "D5.interaction-risk", effectDirection: HARM, methodVersion: "fixture-illustration/v0" }
+    about: { ref: t-endurance, type: D5.Target }       # ASSESSES
+    derivedFrom: [A-m-01, A-m-02, A-m-05]               # DERIVED_FROM
+    rationale: "Metformin taken during aerobic training abolished the training-induced increase in CI-linked muscle mitochondrial respiration that placebo showed in the ADP-titration protocol (significant vs pre) and reduced the change in CI+II&FAOP (between-group p < 0.05); in the SUIT1 protocol the within-placebo increase was only a trend (p = 0.07). Older adults; respiration n 24 placebo, 26 metformin."
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-metformin-exercise-harm" }
+  # D3 dose of record for the registered metformin groups (adversarial review: D2 contexts no longer duplicate D3's dose
+  # model). Shape only; D3 builds these from its own stating records (registry version or this publication).
+  - id: IC-m-01
+    owner: D3
+    type: D3.InterventionComponent
+    arm: arm-met-cho                                     # StudyArm -HAS_COMPONENT-> InterventionComponent
+    administers: metformin                               # -ADMINISTERS-> (D1 roll-up from the administered material)
+    properties: { componentRole: ACTIVE, materialTextVerbatim: "metformin", quantity: 2000, unitCode: "mg", quantityBasis: PER_DAY, route: ORAL, durationIso: P12W,
+                  verbatimDoseText: "500 mg/day the first week and increased by 500 mg each week until reaching 2000 mg/day (1,000 mg twice daily) by week 4" }
+    evidence: [L-m-03, L-m-12]
+  - id: IC-m-02
+    owner: D3
+    type: D3.InterventionComponent
+    arm: arm-met-pro
+    administers: metformin
+    properties: { componentRole: ACTIVE, materialTextVerbatim: "metformin", quantity: 2000, unitCode: "mg", quantityBasis: PER_DAY, route: ORAL, durationIso: P12W,
+                  verbatimDoseText: "500 mg/day the first week and increased by 500 mg each week until reaching 2000 mg/day (1,000 mg twice daily) by week 4" }
+    evidence: [L-m-03, L-m-13]
+
+derivedEdges:
+  - type: AFFECTS_MECHANISM
+    from: metformin
+    to: m-mito-respiration
+    properties: { derivationRule: d2.affects-mechanism/v1, derivedFromAssertionUids: ["hu:assertion:fx-d2-m-01"], direction: DECREASES, bestBasis: DIRECT_MEASUREMENT, highestSetting: HUMAN_INTERVENTIONAL, humanMeasured: true, nContexts: 1, nHumanContexts: 1, nNoChangeContexts: 0, viaParticipant: false, score: 1.0 }
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-projection" }
+  - type: AFFECTS_MECHANISM
+    from: aet
+    to: m-mito-respiration
+    properties: { derivationRule: d2.affects-mechanism/v1, derivedFromAssertionUids: ["hu:assertion:fx-d2-m-02", "hu:assertion:fx-d2-m-05"], direction: MIXED, bestBasis: DIRECT_MEASUREMENT, highestSetting: HUMAN_INTERVENTIONAL, humanMeasured: true, nContexts: 1, nHumanContexts: 1, nNoChangeContexts: 1, viaParticipant: false, score: null }
+    note: "adversarial review: SUIT1 trend (A-m-02, 0) and ADP-titration increase (A-m-05, +) in the same context give MIXED; was NO_CHANGE from A-m-02 alone"
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-projection" }

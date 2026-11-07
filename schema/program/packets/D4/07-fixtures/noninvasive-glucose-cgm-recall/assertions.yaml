@@ -1,0 +1,413 @@
+# Fixture noninvasive-glucose-cgm-recall - assertions (fixtures stage, A3, 2026-10-08).
+# producedBy ids are FIXTURE ids (mission:ft-D4-fixtures / run:ft-D4-<fixture>), not real Mission Control runs.
+# Types: D4 types from 04-schema-proposal.graphql; kernel types (Assertion, Claim, Assessment, Agent, SourceLocator) from
+# packets/K/04-schema-proposal.graphql; other modules' types through the seams in 10-seams.yaml.
+# edgeClass: asserted = AssertedEdgeProperties episode authorized by this Assertion (assertionUid on the edge);
+# structural = StructuralEdgeProperties edge written by edge.structural, the row's locator cites the captured record;
+# literal / field = kernel Assertion with a typed value (predicate-only or a node property), no edge.
+fixture: noninvasive-glucose-cgm-recall
+producedBy:
+  missionId: mission:ft-D4-fixtures
+  runId: run:ft-D4-noninvasive-glucose-cgm-recall
+entities:
+- ref: claim-noninvasive-glucose
+  type: Claim
+  module: K
+  uid: hu:claim:smartwatch-ring-measures-blood-glucose-noninvasively
+  name: Smartwatches or smart rings measure blood glucose without piercing the skin
+  props:
+    proposition: A smartwatch or smart ring measures blood glucose levels without piercing the skin (non-invasively, on its own).
+    claimType: CAPABILITY
+  onMatch: use_existing
+- ref: metric-glucose-blood
+  type: Metric
+  module: D4
+  uid: hu:metric:glucose-in-blood
+  name: Glucose concentration in blood
+  props:
+    metricKind: MEASURAND
+    defaultResultKind: MEASURED
+    definitionSource: BELLLABS
+    systemText: Bld
+    scale: QUANTITATIVE
+    notReported:
+    - UNIT
+    searchText: blood glucose, blood sugar
+  onMatch: use_existing
+  note: 'LOINC code not attached: no LOINC record for blood glucose was captured in this run (never invented)'
+- ref: metric-glucose-cgm
+  type: Metric
+  module: D4
+  uid: hu:metric:glucose-interstitial-cgm-estimate-abbott-libre3
+  name: Glucose reading of the FreeStyle Libre 3 sensor (interstitial, device estimate)
+  props:
+    metricKind: DEVICE_ESTIMATE
+    defaultResultKind: INFERRED
+    definitionSource: VENDOR
+    definitionIssuerName: Abbott Diabetes Care
+    systemText: interstitial fluid (CGM sensor)
+    scale: QUANTITATIVE
+    notReported:
+    - UNIT
+    - METRIC_METHOD
+  onMatch: review
+- ref: device-libre3-sensor
+  type: Device
+  module: D4
+  uid: hu:device:abbott-freestyle-libre-3-sensor
+  name: FreeStyle Libre 3 Sensor (REF 72081-01)
+  props:
+    deviceKind: CGM_SENSOR
+    sensingModalities:
+    - ELECTROCHEMICAL_GLUCOSE
+    deviceFamily: FreeStyle Libre
+    generationLabel: '3'
+    makerName: Abbott Diabetes Care, Inc.
+  identifiers:
+  - scheme: UDI_DI
+    issuer: GS1 (as printed in the FDA recall record)
+    value: 00357599818005
+  - scheme: FDA_510K
+    issuer: FDA
+    value: K212132
+  onMatch: use_existing
+  note: 'UDI_DI and FDA_510K are requested identifier schemes (11-open-questions #15); sensing modality is the curator mapping of a CGM sensor'
+- ref: product-libre3-system
+  type: Product
+  module: D6
+  uid: hu:product:abbott-freestyle-libre-3-cgm-system
+  name: FreeStyle Libre 3 Continuous Glucose Monitoring System
+  onMatch: use_existing
+- ref: av-libre3-glucose
+  type: AlgorithmVersion
+  module: D4
+  uid: hu:algorithm-version:abbott-libre3-glucose-estimation-unversioned
+  name: FreeStyle Libre 3 sensor glucose estimation (software state not stated)
+  props:
+    algorithmFamily: FreeStyle Libre glucose estimation
+    familyKey: abbott-libre-glucose
+    algorithmKind: SIGNAL_PROCESSING
+    realization: DEVICE_SOFTWARE
+    versionBasis: UNKNOWN
+    outputKind: FEATURE_MEASURE
+    componentLabel: glucose reading
+    notReported:
+    - VERSION_LABEL
+    - SOFTWARE_VERSION
+    - FIRMWARE_VERSION
+  onMatch: review
+- ref: org-fda
+  type: Organization
+  module: D7
+  uid: hu:org:us-fda
+  name: U.S. Food and Drug Administration
+  onMatch: use_existing
+- ref: org-abbott
+  type: Organization
+  module: D7
+  uid: hu:org:abbott-diabetes-care
+  name: Abbott Diabetes Care, Inc.
+  onMatch: use_existing
+- ref: agent-curation
+  type: Agent
+  module: K
+  uid: hu:agent:bks-curation-d4
+  name: BellLabs D4 curation agent
+  props:
+    agentKind: AUTOMATED_AGENT
+  onMatch: use_existing
+assertions:
+- id: c01
+  uid: hu:assertion:ft-d4-gluc-c01
+  edgeClass: literal
+  predicate: RATES_CLAIM
+  assertionKind: FIELD
+  subject:
+    ref: claim-noninvasive-glucose
+    type: Claim
+  value:
+    valueString: 'NOT_AUTHORIZED: not authorized, cleared, or approved (any smartwatch or smart ring, on its own)'
+  qualifiers:
+  - 'scale: none (regulator safety communication; rating-scale mapping is D10, regulator content D8)'
+  asserter:
+    ref: org-fda
+    type: Organization
+  locators:
+  - f2-not-authorized
+  - f4-seller-claim
+  - f6-scope
+  - f1-date
+  speechAct: STATES
+  polarity: NEGATIVE
+  basisKind: EXPERT_OPINION
+  validTime:
+    validFrom: '2024-02-21T00:00:00Z'
+    validFromPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-noninvasive-glucose-cgm-recall
+- id: c02
+  uid: hu:assertion:ft-d4-gluc-c02
+  edgeClass: literal
+  predicate: RATES_CLAIM
+  assertionKind: FIELD
+  subject:
+    ref: claim-noninvasive-glucose
+    type: Claim
+  value:
+    valueString: 'CAPABILITY_DENIED: these devices do not directly test blood glucose levels'
+  qualifiers:
+  - 'scale: none (regulator safety communication; rating-scale mapping is D10, regulator content D8)'
+  asserter:
+    ref: org-fda
+    type: Organization
+  locators:
+  - f5-no-direct-test
+  speechAct: STATES
+  polarity: NEGATIVE
+  basisKind: EXPERT_OPINION
+  validTime:
+    validFrom: '2024-02-21T00:00:00Z'
+    validFromPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-noninvasive-glucose-cgm-recall
+- id: c03
+  uid: hu:assertion:ft-d4-gluc-c03
+  edgeClass: literal
+  predicate: RATES_CLAIM
+  assertionKind: FIELD
+  subject:
+    ref: claim-noninvasive-glucose
+    type: Claim
+  value:
+    valueString: 'HARMFUL_IF_RELIED_ON: inaccurate readings -> wrong medication dose -> dangerously low glucose, confusion, coma or death'
+  qualifiers:
+  - 'scale: none (regulator safety communication; rating-scale mapping is D10, regulator content D8)'
+  asserter:
+    ref: org-fda
+    type: Organization
+  locators:
+  - f3-hypoglycaemia
+  speechAct: CAUTIONS
+  polarity: POSITIVE
+  basisKind: EXPERT_OPINION
+  validTime:
+    validFrom: '2024-02-21T00:00:00Z'
+    validFromPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-noninvasive-glucose-cgm-recall
+- id: c04
+  uid: hu:assertion:ft-d4-gluc-c04
+  edgeClass: asserted
+  predicate: DELIVERS
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: product-libre3-system
+    type: Product
+  object:
+    ref: device-libre3-sensor
+    type: Device
+  objectField: Device.products (direction IN)
+  asserter:
+    ref: org-abbott
+    type: Organization
+  locators:
+  - o1-product
+  speechAct: STATES
+  polarity: POSITIVE
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-05T00:00:00Z'
+    statedAsOfPrecision: DAY
+  qualifiers:
+  - firm-supplied product description published by FDA in recall Z-1020-2026
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-noninvasive-glucose-cgm-recall
+- id: c05
+  uid: hu:assertion:ft-d4-gluc-c05
+  edgeClass: asserted
+  predicate: RUNS_ON_DEVICE
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: av-libre3-glucose
+    type: AlgorithmVersion
+  object:
+    ref: device-libre3-sensor
+    type: Device
+  asserter:
+    ref: agent-curation
+    type: Agent
+  locators:
+  - o6-readings
+  - o1-product
+  speechAct: STATES
+  basisKind: CALCULATED
+  validTime:
+    validFrom: null
+    validFromBasis: UNKNOWN
+  derivationRule: 'D4 rule: every device value is an algorithm output (Device <- RUNS_ON_DEVICE <- AlgorithmVersion -> OUTPUTS_METRIC); software state not stated
+    -> versionBasis UNKNOWN'
+  rationale: Lets a recall on the device reach every glucose value the device produced (Q-D4-09).
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-noninvasive-glucose-cgm-recall
+- id: c06
+  uid: hu:assertion:ft-d4-gluc-c06
+  edgeClass: structural
+  predicate: OUTPUTS_METRIC
+  subject:
+    ref: av-libre3-glucose
+    type: AlgorithmVersion
+  object:
+    ref: metric-glucose-cgm
+    type: Metric
+  asserter:
+    ref: agent-curation
+    type: Agent
+  locators:
+  - o6-readings
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-noninvasive-glucose-cgm-recall
+- id: c07
+  uid: hu:assertion:ft-d4-gluc-c07
+  edgeClass: literal
+  predicate: REPORTED_MEASUREMENT_ERROR
+  assertionKind: FIELD
+  subject:
+    ref: device-libre3-sensor
+    type: Device
+  value:
+    valueString: 'incorrect low glucose results (carbon build-up from a manufacturing process issue); root cause: Process control; recall Z-1020-2026, event 98049'
+  asserter:
+    ref: org-abbott
+    type: Organization
+  locators:
+  - o3-reason
+  - o4-initiated
+  - o7-root-cause
+  - o8-recall-number
+  speechAct: STATES
+  polarity: POSITIVE
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: '2025-11-24T00:00:00Z'
+    validFromPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+  qualifiers:
+  - 'affected: certain lots/serials of REF 72081-01 (code_info), not every sensor'
+  - record status Open, Classified as of openFDA meta.last_updated 2026-10-05
+  note: 'the recall record is a D8 record; it reaches this Device through the D6 Product that DELIVERS it (c04): D8 RegulatoryRecord -CONCERNS-> Product <-DELIVERS-
+    ... This predicate-only assertion keeps the device-level error statement and the UDI-DI / REF for disambiguation (adversarial review: no D8 union change).'
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-noninvasive-glucose-cgm-recall
+- id: c08
+  uid: hu:assertion:ft-d4-gluc-c08
+  edgeClass: identifier
+  predicate: HAS_IDENTIFIER
+  subject:
+    ref: device-libre3-sensor
+    type: Device
+  asserter:
+    ref: org-abbott
+    type: Organization
+  locators:
+  - o2-udi
+  identifier:
+    scheme: UDI_DI
+    issuer: GS1 (as printed in the FDA recall record)
+    value: 00357599818005
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-noninvasive-glucose-cgm-recall
+- id: c09
+  uid: hu:assertion:ft-d4-gluc-c09
+  edgeClass: identifier
+  predicate: HAS_IDENTIFIER
+  subject:
+    ref: device-libre3-sensor
+    type: Device
+  asserter:
+    ref: org-fda
+    type: Organization
+  locators:
+  - o5-k-number
+  identifier:
+    scheme: FDA_510K
+    issuer: FDA
+    value: K212132
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-noninvasive-glucose-cgm-recall
+assessments:
+- id: s01
+  uid: hu:assessment:ft-d4-gluc-s01
+  assessmentKind: SAFETY_SIGNAL
+  assessmentSubkind: D4.unauthorized-measurement
+  status: PROPOSED
+  methodVersion: d4-safety-signal/0.1 (fixture)
+  about:
+  - hu:claim:smartwatch-ring-measures-blood-glucose-noninvasively
+  - hu:metric:glucose-in-blood
+  effectDirection: HARM
+  verdict: CONTRADICTED
+  inputAssertions:
+  - c01
+  - c02
+  - c03
+  evidence:
+  - locator: f2-not-authorized
+    role: CONTRADICTS
+  - locator: f5-no-direct-test
+    role: CONTRADICTS
+  - locator: f3-hypoglycaemia
+    role: CONTEXT
+  - locator: f6-scope
+    role: QUALIFIES
+  summary: 'Any smartwatch or smart ring sold as measuring blood glucose without piercing the skin: claimed capability contradicted by the regulator (not authorized;
+    does not directly test blood glucose); harm pathway = wrong dosing -> hypoglycaemia.'
+  questions:
+  - Q-D4-08
+  - Q-D4-18
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-noninvasive-glucose-cgm-recall
+- id: s02
+  uid: hu:assessment:ft-d4-gluc-s02
+  assessmentKind: SAFETY_SIGNAL
+  assessmentSubkind: D4.measurement-error-recall
+  status: PROPOSED
+  methodVersion: d4-safety-signal/0.1 (fixture)
+  about:
+  - hu:device:abbott-freestyle-libre-3-sensor
+  - hu:metric:glucose-interstitial-cgm-estimate-abbott-libre3
+  effectDirection: HARM
+  inputAssertions:
+  - c04
+  - c05
+  - c06
+  - c07
+  evidence:
+  - locator: o3-reason
+    role: SUPPORTS
+  - locator: o6-readings
+    role: SUPPORTS
+  - locator: o4-initiated
+    role: CONTEXT
+  summary: Glucose readings from affected FreeStyle Libre 3 sensors (REF 72081-01, listed lots) may be falsely low from 2025-11-24 (recall initiation); readings of
+    the interstitial glucose metric from those sensors need the lot check before use.
+  questions:
+  - Q-D4-09
+  - Q-D4-17
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-noninvasive-glucose-cgm-recall

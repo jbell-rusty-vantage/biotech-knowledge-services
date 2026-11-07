@@ -1,0 +1,21 @@
+"""
+HAS_STUDY_ROLE episode: AssertedEdgeProperties fields verbatim (bitemporal, one authorizing Assertion) plus the role a
+question filters on (Q-D3-08, Q-D3-09, D7 Q-D7-05). Valid time is read (sponsors and funders change; a registry's own record
+correction, e.g. ISRCTN removing Bayer as funder on 22/08/2018, is record time: it supersedes the listing Assertion and
+never closes a valid-time episode). The role label as printed ('Lead Sponsor', 'provided the study drug') is
+`Assertion.qualifiers` `roleText:<label>`, not an edge field. Every field executor-set.
+"""
+type StudyRoleEdgeProperties @relationshipProperties {
+  relationshipUid: String!
+  assertionUid: String!
+  validFrom: DateTime
+  validTo: DateTime
+  validFromPrecision: TimePrecision
+  validToPrecision: TimePrecision
+  validFromBasis: ValidTimeBasis!
+  validToBasis: ValidTimeBasis!
+  recordedFrom: DateTime!
+  recordedTo: DateTime
+  lastWriterRunId: String
+  roleKind: StudyRoleKind!
+}

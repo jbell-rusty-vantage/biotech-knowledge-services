@@ -1,0 +1,44 @@
+"""
+Purpose: a chemical substance at the granularity of its FDA GSRS substance record — salts, esters, hydrates and the
+free moiety are DIFFERENT substances (NR chloride UNII 8XM2XT8VWI vs NR 0I8H2M0L7N; pyridoxine HCl vs pyridoxine vs
+P5P), and GSRS "structurally diverse" records (WITHANIA SOMNIFERA ROOT, V038D626IF) are substances too. It is the join
+point across labels (D6), trials (D3), foods (D12), analytes (D4), mechanisms (D2) and safety (D5); the salt→moiety and
+form→nutrient edges below are what make "every form that converts to M" one traversal.
+Identity rule: UNII when GSRS registers one; else InChIKey (structure-defined) ; else (normalized preferred name,
+substanceClass) as a provisional record. Identifiers (UNII, INCHIKEY, PUBCHEM_CID, CAS_RN, CHEBI, DRUGBANK, RXCUI,
+MESH, WIKIDATA) attach through the kernel HAS_IDENTIFIER, never as fields. A PubChem name→CID hit is never accepted
+without a salt-vs-moiety check (the "Niagen" → CID 439924 trap).
+uid token: `substance` (hu:substance:<opaque>).
+Questions: CQ-PF-01, Q-D1-01, Q-D1-02, Q-D1-03, Q-D1-04, Q-D1-05, CQ-ID-03, CQ-ID-04, Q-D1-06, CQ-ST-02, Q-D1-08,
+Q-D1-10, Q-D1-18, Q-D1-19, Q-D1-20, Q-D1-22, Q-D1-24, Q-D1-26, Q-D1-28.
+"""
+type ChemicalSubstance implements Entity & Subjectable
+  @node(labels: ["ChemicalSubstance", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "GSRS substance class of the defining record."
+  substanceClass: SubstanceClass
+  "Hill formula as the authority prints it, counter-ions included ('C11H15N2O5.Cl')."
+  molecularFormula: String
+  "Average molecular weight of the defining record (g/mol). A derivation cites the FIELD Assertion that recorded it (authority snapshot + record version), never this cache."
+  molecularWeight: Float
+  "Net formal charge of the defining structure."
+  charge: Int
+  "Normalized preferred name, synonyms and label spellings joined for the fulltext index d1_identity_fulltext (Q-D1-26)."
+  searchText: String
+  """class: asserted; cardinality: zero_or_more (a salt of two moieties has two; a moiety has none); questions: Q-D1-01, Q-D1-03, Q-D1-04, Q-D1-05, Q-D1-24."""
+  activeMoieties: [ChemicalSubstance!]!
+    @relationship(type: "HAS_ACTIVE_MOIETY", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: zero_or_more (a vitamer counts toward its nutrient; conversion factors live in the versioned rule nutrient-equivalent, not on the edge); questions: Q-D1-03, Q-D1-04, Q-D1-19, Q-D1-22, Q-D1-28."""
+  nutrients: [Constituent!]!
+    @relationship(type: "COUNTS_TOWARD_NUTRIENT", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

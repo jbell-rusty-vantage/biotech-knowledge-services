@@ -1,0 +1,224 @@
+# V2 decision and closeout ledger
+
+Date: 2026-10-11. Decisions selected under the owner's explicit pre-approval. Input: [synthesis open questions](../../../schema/program/final/open-questions.md), SHA-256 `ee1caf258533474b6270eab1f8960a322c2fca310a5f15b58a5473a9e96e942b`. The current file has **160 unique entries**, not the stale header count of 156: 46 OD, 15 KN, 5 EX, 7 BM, 57 MD, 12 FX, 14 FU and 4 TL.
+
+This ledger resolves design choices and assigns verification work. It does **not** claim that all fixtures passed, all external facts are known, or implementation is complete. `G` means required implementation/evidence before the relevant release capability is qualified; `C` means a settled contract/policy with a conformance check; `D` means explicitly excluded/deferred capability, reported unavailable/unknown. A deferred external source does not block the core schema release; it cannot be advertised as supported. Value-1 questions retained in the supported catalog must pass their fixtures, including truthful unknown/held answers where evidence is unavailable.
+
+Task IDs S0–S9 refer to [IMPLEMENTATION](IMPLEMENTATION.md). Preserve the original candidate reports as historical evidence. At S0, publish these decisions upstream and annotate the original question catalog with links/status, without rewriting historical measurement claims.
+
+## Owner decisions
+
+| ID | Selected answer and rationale | Closure requirement |
+| --- | --- | --- |
+| OD-01 | Adopt collapsed semantic pairs <=600. Keep expanded count visible at the existing 848 baseline; explicitly retire the old expanded <=600 acceptance rule. Preserve useful interface relationships rather than cutting 14 Subjectable types arbitrarily. | C/S0: publish both metrics and exception history; S6 measures actual executable/runtime cost. |
+| OD-02 | Ratify L1 and L2. Adopt all five deprecated-field exclusions in consumer builds. Apply scalar `byValue:false`/sorting cuts only where no supported operation needs them. Executor permissions come from the register. | G/S1,S3,S6: zero mutation root, migrated client documents, executable size and planner fixtures. |
+| OD-03 | Accept local structural CREATE/CONNECT and cross-module CONNECT semantics in the register. Keep `{graphql:none, executor:[...]}` explicit; no GraphQL flag grants executor writes. | C/S1,S3: exact operation matrix validated. |
+| OD-04 | Accept removal of Mention and Adjudication.considers. Locator + resolution Assessment and DERIVED_FROM carry the supported meanings. | G/S0,S3: stale descriptions, fixtures and skills repaired. |
+| OD-05 | Remove duplicate StateEpisodeProperties. For source-asserted exclusive episodes, scope non-overlap to `(subject, relationship/predicate slot, asserter)`; cross-source disagreement is preserved. Separately defined global identity constraints are not weakened by this scope. | G/S3: same-asserter overlap rejected, different asserters coexist; D6 label versions replay. |
+| OD-06 | EVIDENCE_MISSION Activity ASSESSES exactly one Claim. WAS_INFORMED_BY remains the run chaining relationship. Write a trusted mission-start lineage intent; do not replace the traversal with a loose property. | G/S3,S7: idempotent start + completion fixture. |
+| OD-07 | One Activity per actual Mission Control run, accumulating distinct operation/intent/plan/receipt IDs and lineage on creates/updates. Standalone executions use a native namespaced run identity. | G/S3,S7: two intents in one run and retry preserve one Activity. |
+| OD-08 | Permit tool-rendition-only ACCEPTED capture fidelity with PASS_WITH_WARNINGS only when recorded failed capture attempts establish unavailable issuer bytes and policy permits the use. Preserve the warning and independent SUPPORT/publication gates; never treat this as scientific truth. | G/S3: rendition exception, absent attempt and mechanical-failure adversarial fixtures. |
+| OD-09 | Approve contracts v2 and P1–P21. Biotech owns native contracts/planner; shared KS owns reusable evidence verification, not graph syntax. | G/S3: TS/JSON Schema/Python parity and migrated fixture intents without dropped notes-only semantics. |
+| OD-10 | Choose option A: model no-lot purchased-product measurement using the registered MEASURED_CONTENT_IN_PRODUCT predicate and provenance; do not add Product back to QUALITY_RESULT_FOR. | G/S0,S3: adopt the already drafted option-A Q-D12-03/Q-D12-06 patterns and re-key acr-03. |
+| OD-11 | FIELD evidence applies to factual fields in versioned payloads too. An attach Assertion proves the version association, not all payload facts. Batch field evidence mappings to reduce authoring overhead. | G/S3: RegistrationVersion values each resolve to their own support selector. |
+| OD-12 | No assumed commercial licenses. Keep restricted providers disabled unless the installation supplies verified rights. Store permitted public identifiers/links only; restricted names/text require applicable rights metadata. | D/S0,S7: per-provider entitlement matrix; missing license returns unsupported, not scraped substitutes. |
+| OD-13 | Host-side service accounts and secrets manager; action registry names required credentials, quota and organization role contact. Available unkeyed routes may run; missing keyed routes are disabled individually. | C/S7: no secrets in artifacts; real access probes recorded by adapter owners. |
+| OD-14 | Use existing app-scoped Supabase knowledge-artifacts custody, content-addressed immutable objects and digest validation. Retain issuer bytes alongside renditions when legally available; canonical projections identify transformation/version and original digest. | G/S3,S7: retrieve and verify retained artifacts; no ephemeral URLs as sole custody. |
+| OD-15 | Prefer authorized platform APIs/feeds/public permitted captures. No access-control bypass. Missing social access is explicit unsupported/partial coverage; event/retelling discovery uses the enabled provider registry rather than a presumed replacement service. | D/S7: current access/terms evidence is installation work, not asserted here. |
+| OD-16 | Accept registry history from first retained observation; import older versions only with trustworthy captures. Do not imply complete historical coverage or require a browser-access exception to launch. | C/S3: coverage start and unavailable historical intervals shown. |
+| OD-17 | No family/private-person relationships or PI contact details in the scientific graph. Minimize public professional person facts to task-relevant, sourced roles. Operational PII stays in restricted app custody, with explicit access classification; no new graph privacy enum required now. | G/S3,S6: contact stripping and output authorization fixtures. |
+| OD-18 | Rights are attached to capture/representation/span metadata in custody and effective at retrieval/render time. A locator carries an access-checked reference; answer generation cannot quote a disallowed span. | G/S3,S7: quotation denied even when parent source metadata is public. |
+| OD-19 | Preserve third-party text/scale. Register an exact provider+rubric-version mapping; Science Feedback “Unsupported” maps to NOT_SUPPORTED in that provider's rating interpretation, never to a BellLabs adjudication. Unknown rubric versions remain unmapped. | C/S0,S3: external rating and our support verdict remain separate. |
+| OD-20 | Versioned upstream YAML owns action-space definitions; build/publish to capability catalog. Runtime grants/health live in services. Accept `access:internal`; metadata priority is advisory, never authority. Discovery connectors hand off to capture adapters for retained evidence. | C/S1,S7: no live graph becomes an alternative editable registry. |
+| OD-21 | Adopt the six D11 readiness classifications as candidate labels, then requalify from executable adapter tests. Build G13 contracts and G4 normalizer first, G11 selectors with them, G12 faithful capture next; G6 credentials in parallel per provider. | G/S3,S7: required paths pass; no inherited “ready” claim without proof. |
+| OD-22 | Core release targets the existing Aura database after actual version/edition/procedure discovery; no GDS dependency. Optional AGA is a separate budgeted analytical capability. Use isolated/offline computation when AGA unavailable. | C/S0,S8: capability manifest; unavailable analytics does not block core CRUD. |
+| OD-23 | Compute first. Materialize when repeated whole-graph work or measured p95 >200 ms justifies it, with semantic equivalence and invalidation proof; benchmark representative sizes, not only tiny fixtures. | C/S4,S8: each retained cache has authority, method version, input digest and freshness policy. |
+| OD-24 | Accept explicit UNKNOWN for unreported assay/instrument/software details. Do not buy tests to force completeness in this release. | C/S3,S9: documented missing fields and no fabricated values. |
+| OD-25 | Accept a per-type `notReported` list. NOT_APPLICABLE is not inferred from absence; where material, record a registered qualifier/assessment or return unknown. | C/S1,S3: distinguish value, missing and explicitly inapplicable. |
+| OD-26 | Accept targetKeys for source-stated purpose, validated against target vocabulary. They never assert efficacy. | C/S3: purpose-versus-effect negative fixture. |
+| OD-27 | Sponsor/disclosure-only changes do not mint ProtocolEdition; D7 temporal interest assertions capture them. Changed protocol instructions/doses do mint a version. | C/S3: edition hash excludes disclosure-only content. |
+| OD-28 | Keep D5 together. Protocol and safety questions share means and UseConstraint; no repository/module split now. | C/S0: task routes distinguish use cases within the module. |
+| OD-29 | Do not relabel high intake as overdose. Keep the accepted enum shape; encode source-stated high-intake context with a registered qualifier and UNKNOWN/unspecified structured context when no exact code exists. | C/S1,S3: typed qualifier and no unsupported clinical inference. |
+| OD-30 | No store-specific menu pricing feature in v2 core. Preserve sourced market/variant/served-portion offers; unsupported finer scope is explicit. | D/S0: keep future scope separate from current offer identity. |
+| OD-31 | Accept EnforcementAction folded into RegulatoryRecord. Its subtype and Event link retain distinction. | C/S3: enforcement fixture and query. |
+| OD-32 | Accept QualityResult.statedVerdict as the lab's statement with its own locator. BellLabs conformance remains a separate Assessment. | C/S3: source verdict never auto-promotes our conclusion. |
+| OD-33 | Use regulatory records/status episodes plus legalBasisCitation; no RegulatoryPathwayVersion node now. Interpretation changes have evidence and time. | C/S3: old/new basis remains traceable. |
+| OD-34 | Keep manufacturing capability as HAS_CAPABILITY_STAGE predicate-only facts. | C/S1,S3: no retired node recreation. |
+| OD-35 | Validate discourse-independence/v1 on 30 stratified claims, at least 10 with syndication/retelling and 10 with ambiguous authority (overlap allowed), independently annotated and disagreements resolved; zero known double-counts in release fixtures. | G/S8,S9: frozen human review set and reports, not a claim of statistical generalization. |
+| OD-36 | First pass supports IMAGE works only for media-asset-specific processing. Existing text/audio/video source capture remains separate; no implied rich media asset pipeline. | D/S0: capability inventory states the distinction. |
+| OD-37 | Accept D10 polarity rule: harm/risk/avoidance/disconfirmed benefit are harm-facing; workflow queues, misstatement audits and ranking differences remain neutral. | C/S1,S3: versioned rule examples. |
+| OD-38 | Do not purge closed Associations in this release. Later GC may remove only unreferenced regenerable versions after retention/reference proof; cited versions and historical answer evidence remain. | D/S8: no deletion permission for knowledge agents. |
+| OD-39 | Kernel + verification contract own SourceKind/selectors; D9 owns genre; D11 submits adapter evidence/requests. Versioned compatibility mapping resolves names. | C/S1,S7: one emitter per vocabulary. |
+| OD-40 | Require a sealed systematic-search coverage artifact for absence claims: queries, scopes, time, tools, responses, failures and limits. Report links it as context; no new graph type necessary. Field-not-reported applies only to that artifact. | G/S3,S7: failed provider cannot support “none exists.” |
+| OD-41 | Retraction of a foundational work may be a frontier timeline event, tagged as a sourced scientific-record event. No causal claim about market value follows automatically. | C/S3: event and investor interpretation separated. |
+| OD-42 | Versioned curation Source is authoritative for hallmark mappings. Publish a Report view when useful for citation, referencing that source and exact mapping version. | C/S3: Report is not a second mapping authority. |
+| OD-43 | Perform shadow migration. Map listing to a single evidenced Package only; ambiguous mappings become held resolution work. Fold ProductSnapshot/HAS_STATE into LabelVersion history without inventing dates or losing source lineage. | G/S8: total migration accounting and ambiguous-case quarantine. |
+| OD-44 | Select `text-embedding-3-small`, 1,536 dimensions, cosine for the first optional native Chunk embedding profile. This is a newly selected baseline, not grandfathered truth from the placeholder. Record model/representation/chunker/index generation; qualify on Biotech retrieval tasks before serving. Model changes create a new generation. | C/S8: model access/dimension/index checks and coverage. Separate from managed OpenAI schema Vector Stores. |
+| OD-45 | Accept Entity/Subjectable interface targets as registered kernel traversal and explicit D5/D10 exceptions. Retain Activity.generated and the supported domain relationships; no blanket any-entity additions. | C/S0,S1: concrete endpoint validation, budget disclosure and consumer bounds. |
+| OD-46 | Count kernel-meaning edges once in K; accept K=15 against original 14 as a documented exception. Avoid changing attribution just to hide the excess. | C/S1: same attribution in all reports. |
+
+## Kernel and executor
+
+| ID | Selected answer and rationale | Closure requirement |
+| --- | --- | --- |
+| KN-01 | No generic new Assessment fields for HED now. Define a versioned dose-translation assessment subkind with structured numeric result artifact and validated units/bounds; facets expose only declared searchable keys. | C/S1,S3: no untyped prose numbers used as computable values. |
+| KN-02 | Use EQUIVALENCE assessment with REFINES conclusion and governed refinesClaimUid cache; no new REFINES edge. | C/S3: cache updated atomically with authoritative assessment. |
+| KN-03 | Keep SOURCE_AUTHORITY assessments scoped to claim kind and evidence. Complete the source-genre registry from sourced, reviewed entries; unseeded combinations remain UNKNOWN. | G/S1,S3: no authority inferred merely from HAS_EVIDENCE presence. |
+| KN-04 | Do not add Subjectable to Assessment/Report without a supported question. Use current ASSESSES/DERIVED_FROM/report provenance; unsupported generic assessment-of-assessment is deferred. | D/S0: preserve existing v2 targets. |
+| KN-05 | K owns CQ-TM-05 and exclusivity contract; module records supply slot policies. | G/S3: overlapping independent sources and forbidden same-source overlap fixture. |
+| KN-06 | Activate identifier schemes only with namespace/issuer/normalization/uniqueness/rights definitions and exercised capture route. Required fixture schemes receive this work now; other requested rows remain disabled. | G/S1,S3: no blanket promotion of every requested scheme. |
+| KN-07 | Native named reads handle identifier chains, comparison/report/association. Add consumer fields only for supported product operations with measured value; no per-question `@cypher` proliferation. | C/S4,S6. |
+| KN-08 | Versioned canonical JSON with explicit field sets, Unicode/number/date rules and TS/Python golden vectors. Sort semantic sets, preserve ordered sequences; exclude timestamps generated outside frozen context. Keep raw-byte and semantic digests distinct. | G/S1,S3: assertion, proposition and input-set identity fixtures. |
+| KN-09 | CAPTURE_FIDELITY asks whether each source was represented faithfully. Registry/paper disagreements remain separate results and require SUPPORT/synthesis; no “correct number” choice by capture verification. | C/S3: disagreement fixture. |
+| KN-10 | Multi-turn locator retains both turns; assign an assent occurrence to the assenting speaker and the earlier proposition to its speaker. Ambiguous assent remains unresolved rather than inheriting a guessed asserter. | C/S3: turn-spanning attribution example. |
+| KN-11 | Sentence-level evidence lives in a sealed report ledger keyed by sentence ID/digest, referenced from Report/ReportItem. No ReportStatement node explosion. | G/S3,S4: authorized sentence trace resolves exact ledger bytes. |
+| KN-12 | K owns CQ-PV-01; add its pattern and evidence/authority/provenance distinctions to the generated catalog. | G/S1,S4: all required provenance states visible. |
+| KN-13 | Reuse QualityResult only when stable semantic identity and source measurement are unchanged. New snapshot/locator is retained; reanchoring alone is not an identity proof. Changed result becomes new/superseding sourced record. | C/S3: same capture, changed capture and genuinely new measurement fixtures. |
+| KN-14 | Retain MechanismEvidenceContext in D2; do not create a cross-domain super-context now. Shared context fields/contracts can be reused without forcing one node. | D/S0. |
+| KN-15 | Freeze an explicit decision table: EXTRACTED = captured but unadjudicated; human REJECT of a held assertion prevents acceptance through an attributed superseding adjudication, never overrides mechanical failure. Use `outcomeUid` for entity identity and `outcome` only for named text with separate grammar. Do not rank conflicting asserters by a scalar “highest verdict”; preserve disagreement. | G/S1,S3: current-per-asserter projection table, admissible positive verdicts and ties tested. |
+| EX-01 | Implement all P1–P21 and listed register/admission rules; generated GraphQL permission is irrelevant. Add trusted-plan custody, scoped markers and stable writer fence per specification. | G/S3: every supported proposal + denied bypass cases. |
+| EX-02 | event-clock/v1 deterministically rematerializes accepted event clocks/status after assertion changes; SUPPORT gates causal edges; accepted equivalence is required for event merging. | G/S3: two authorities, supersession and denied merge. |
+| EX-03 | Every capture attempt, including partial/soft failures, gets sanitized metadata. Canonical request digest covers method, normalized URI, body digest and behavior-affecting non-secret headers; secret inputs use credential identity/version references, never values. | G/S3,S7: soft 200/error page and redaction fixtures. |
+| EX-04 | Replace slug-only Source identity with versioned canonical URI digest preserving semantic query keys (e.g. YouTube `v`). Strip only documented tracking keys; normalize per-host rules. Retain canonical URI and collision checks. | G/S1,S3: distinct query-keyed URLs, ordering normalization and legacy collision quarantine. |
+| EX-05 | Implement capture normalizer/projection registry and selector builder/verifier as shared reusable interfaces with Biotech binding. Register exact h2t/xml/canonical-json/EDGAR transformations, original/output hashes and version. | G/S3,S7: selector replay from immutable bytes and mismatch rejection. |
+
+## Ontology/catalog decisions
+
+| ID | Selected answer and rationale | Closure requirement |
+| --- | --- | --- |
+| BM-01 | Adopt the proposed equivalence scale and material boundary rules. Supplier-only change under the same evidenced specification does not create a new material; unresolved specification equivalence is held. | C/S1,S3: identity comparison fixtures. |
+| BM-02 | Use versioned GSRS moiety `structure.mwt` for the named derivation policy; preserve source mass basis and precision. Missing value stays unknown; no silent PubChem substitution. | C/S3: golden conversion with retained source version. |
+| BM-03 | Do not equate an extract to a plant-part UNII merely because a label database does. Record Taxon/plant part/preparation; REALIZES_SUBSTANCE only when exact source scope supports it. | C/S3: normalized identity must not erase extract composition. |
+| BM-04 | Keep the five D6 boundaries; add true fixtures for same formula/different dosage presentation, jurisdictional labels and packaging-only change. Classification follows resolved composition, format and market scope. | G/S3: the reported AG1 formulation change is not a packaging-only fixture. |
+| BM-05 | Vendor implementation is a distinct AlgorithmVersion until accepted equivalence evidence says otherwise. | C/S3. |
+| BM-06 | Use section slug + normalized action-text hash with stepKeyAlignmentVersion; changes/ambiguous alignment preserve prior step identity and require a mapping decision. | C/S1,S3: edition ordering and rename fixtures. |
+| BM-07 | Promote food competency IDs to supported numbered CQ-FL IDs with a bijective alias map; update checker/catalog without dropping historical references. | G/S1. |
+
+## Domain module decisions
+
+| ID | Selected answer and rationale | Closure requirement |
+| --- | --- | --- |
+| MD-D1-01 | Defer Taxon as a MATERIAL_CONTAINS target. Preserve material CFU statements as scoped source assertions where supported; do not imply cell count equals substance quantity. | D/S0. |
+| MD-D1-02 | Cell-free postbiotic preparations are materials with sourced composition; REALIZES_SUBSTANCE only for evidenced metabolites, not a guessed defining substance. Use registered predicate-only composition for complex mixtures. | C/S3. |
+| MD-D1-03 | compositionDigest uses resolved D1 UIDs, normalized quantity/basis/unit and explicit unknown markers. Provisional names cannot establish cross-source equivalence. | G/S1,S3: spelling variants and changed formula. |
+| MD-D1-04 | Monograph scope is a sourced assertion about the exact extract/beverage/material class stated. Keep distinct records; broad “Green Tea” scope remains qualified/ambiguous, not automatically applied to all forms. | C/S3. |
+| MD-D2-01 | Version roll-up: compute participant effects first; propagate only INPUT/OUTPUT/CATALYST semantics, not MEMBER. Preserve NO_CHANGE explicitly; mixed directions stay MIXED, no-change has no fabricated numeric effect score. Partition by protocol/context. | G/S3,S8: directional/mixed/no-change golden cases. |
+| MD-D2-02 | Record multiple TESTED exposures with amounts/context; use regimen subject only when source defines a regimen. Never project combination benefit onto each constituent. | C/S3. |
+| MD-D2-03 | Use a versioned ontology/ancestor mapping artifact for MONDO expansion; no new graph relationship/list property now. Return ontology release with expansion. | C/S4. |
+| MD-D3-01 | “Robust design” is a versioned assessment/filter over explicit design criteria, not ITP/sponsor membership alone. Sponsor provenance is an input, not a quality verdict. | C/S4. |
+| MD-D3-02 | BEST categories are versioned endpoint-classification Assessment vocabulary scoped to intended use; not intrinsic universal Biomarker class. | C/S1,S3. |
+| MD-D3-03 | Preserve source-stated salt/cation dose basis and unknowns. Do not assume an unexamined paper's basis or convert without molecular-weight/stoichiometric evidence. | C/S3: evidence work required before that fact is published. |
+| MD-D4-01 | Research assays can resolve through the existing assay/metric method relationships or sourced assay text without an orderable LabTest. Product answer says research-only/no orderable test. | G/S4: validate actual v2 path; no fabricated LabTest. |
+| MD-D4-02 | Model vendor DunedinPACE implementation as AlgorithmVersion delivered by Product; separate published algorithm identity and trademark/name. Equivalence requires assessment. | C/S3. |
+| MD-D4-03 | Use the single D7.conflict-relevance method entry; D4 test-and-sell is a task/use-case alias, not a duplicate subkind. | C/S1. |
+| MD-D5-01 | Reuse D4 TargetMeasure rules; Metric for vendor composite scores with method/version and missingness visible. Scores do not become biological endpoints by name. | C/S3,S4. |
+| MD-D5-02 | Use registered dose-basis/referent qualifiers plus notReportedFields when ambiguous. Do not add a mandatory ProtocolStep field or infer elemental mass. | C/S1,S3. |
+| MD-D5-03 | Fan out one assertion/UseConstraint per condition, sharing locator and source statement identity. This preserves independently queryable scope. | C/S3: multi-condition count and provenance. |
+| MD-D5-04 | Hash normalized instruction payload per logical protocol edition/section set, not the entire page. Preserve page capture separately; disclosure-only changes excluded. | C/S1,S3. |
+| MD-D5-05 | Curator mapping from certifier goal text to target uses INTENDED_FOR_TARGET with curation asserter, mapping version and source text. Never attributed to the certifier as a scientific efficacy claim. | C/S3. |
+| MD-D5-06 | Keep provider FAERS counts separate with query/term/drug mapping/data-cut manifests. Reconcile only after comparable scopes are demonstrated; counts are not causal incidence. | C/S3,S4. |
+| MD-D5-07 | DOI/ISBN identifies the Publication; Protocol/Edition links to its publication. No second identifier holder for the same namespace key. | G/S1,S3. |
+| MD-D6-01 | Add permitted EU/UK/ARTG source captures and explicit declaration bases before advertising those routes. No guessed conversion from US labels. | G/S3: required geographic capability fixtures or mark route unsupported. |
+| MD-D6-02 | Two GTINs may identify one Package when format/count/market equivalence is evidenced; otherwise retain separate candidates and resolve. Do not split solely on sales channel. | C/S3. |
+| MD-D6-03 | Keep differently named enforcement products distinct until EQUIVALENCE Assessment supports merging; store observed names and source. | C/S3. |
+| MD-D7-01 | Account claims contribute to a person's track record only through accepted, time-applicable RESOLUTION. Preserve account identity and prevent double-counting the same occurrence. | C/S4,S8. |
+| MD-D7-02 | Brand is a legal sponsor target; ownership traversal is a qualified, dated inference. No forced Organization resolution at write; unresolved owner is visible. | C/S3,S4. |
+| MD-D7-03 | Unknown ownership/commercial ties remain unknown until captured authoritative evidence. No conjectured tie is seeded to complete a fixture. | D/S3: research fact gap, not schema ambiguity. |
+| MD-D7-04 | Use platform Organization for evidenced revenue payor; retain channel as context. If payor is not established, store a scoped source statement rather than inventing a financial edge. | C/S3. |
+| MD-D7-05 | A discount link alone does not prove receipt of value. Use a disclosure/link assertion with benefit NOT_STATED; only project RECEIVES_VALUE_FROM when the registered rule's evidence threshold is met. | C/S3: intentional correction of overly strong fixture semantics. |
+| MD-D7-06 | Register D7.role-agreement synthesis method with role-specific source precedence as a heuristic, preserved competing assertions and documented conflict outcome. Precedence cannot overwrite contrary evidence. | G/S1,S3. |
+| MD-D7-07 | “An X company” without control evidence stays an assertion with unspecified relation scope. Do not project PARENT_OF into ownership chains. | C/S3,S4. |
+| MD-D7-08 | Brand operation is not ownership. Use registered operator/DBA predicate and time qualifiers; OWNS_BRAND requires ownership evidence. | C/S1,S3. |
+| MD-D7-09 | Brands remain D7 identity; D9 Channels are distribution/account surfaces and can be associated through sourced predicates. Restaurant/food brands can brand D6 Products. Do not collapse brand and channel. | C/S3. |
+| MD-D7-10 | Distinguish the reported subsidiary from renamed parent through sourced legal identity and temporal names; rename alone does not create a new Organization. Specific corporate linkage requires evidence. | C/S3. |
+| MD-D8-01 | No new shared crystal-form type now. Preserve Patent -> ChemicalSubstance plus sourced form qualifiers/material associations; unsupported fine-grained equivalence remains held. | D/S0,S3. |
+| MD-D8-02 | Separate licence validity from market presence as distinct sourced status assertions/families. Active licence never implies marketed. | C/S1,S3. |
+| MD-D8-03 | No EU NMN authorization fact from an EFSA opinion alone. Require a captured operative Commission act for that jurisdiction/date; until then status is unknown/unverified. | D/S3: no current legal determination made in this packet. |
+| MD-D8-04 | Keep inspection information in RegulatoryRecord and the supported enforcement Event; do not add EventKind.INSPECTION for an unneeded standalone event. | C/S3. |
+| MD-D8-05 | Retain each source date with semantic role and locator. Article-effective date and annex authorization date can differ; do not choose one silently as a single event clock. | C/S3: date disagreement fixture; legal interpretation remains sourced. |
+| MD-D9-01 | One recommendation occurrence per independently stated item/claim, sharing protocol container and locator as appropriate. No single occurrence hides item-specific qualifiers. | C/S3. |
+| MD-D9-02 | Third-party AI answers are discovery aids, not new authoritative Source kinds. Capture cited originals; irreproducible outputs cannot be the sole admitted evidence. | C/S3,S7. |
+| MD-D9-03 | Add both D9 indexes to reviewed DDL where supported; emit assessment subkinds/facets; make Q-D9-19 include accepted fidelity matches with deduplication; replace hard four-hop interest assumption with the final bounded P-09 path set. | G/S1,S4,S8. |
+| MD-D10-01 | Nutrient conversion rules live in versioned source-backed calculation tables distributed with projection rules, not graph nodes. Every derived value cites the rule/table version. | C/S1,S3. |
+| MD-D10-02 | Keep numeric thresholds in a versioned typed DecisionCriterion rule artifact (value, unit, comparator, scope). No new SDL scalar fields now; query templates load allowed rules, never parse arbitrary prose. | C/S3,S4. |
+| MD-D10-03 | No APPLIES_CRITERION edge now. Bind the exact criteria set by digest/version in the Assessment method/result artifact and report evidence. | C/S3,S4. |
+| MD-D10-04 | Allow derived ciExcludesNull only with interval/scale/null-value and derivation evidence; do not equate it to an unreported source p-value or general study quality. | C/S3,S4. |
+| MD-D10-05 | Publish one versioned status-nonimplication policy with the release; D8 owns meanings, D10 consumes for answers. | G/S1,S4,S6: licence/market/approval/patent negative cases. |
+| MD-D10-06 | Retain publisherUid only with generated methodVersion/derivedAt and input/authority reference. Add necessary source stamps before freeze; otherwise omit cache from product projection and resolve authority directly. | G/S0,S1,S3: eliminate unproven cache authority. |
+| MD-D11-01 | Record provider cache age/fetch metadata; use live-fetch request where supported, but do not call fetched time observed content time. Stale/unknown content clocks remain explicit. | C/S3,S7. |
+| MD-D11-02 | Quarantine corrupted reason strings. Prefer an authorized versioned Retraction Watch CSV capture after actual integrity checks; never repair the first character by guess. | C/S7. |
+| MD-D11-03 | External scores are source Assertions with producer/release/data-cut/method metadata, not BellLabs derived Assessments. | C/S3. |
+| MD-D11-04 | Resolve sponsor names with kernel RESOLUTION and time-aware aliases; no D11-owned competing alias database. | C/S3. |
+| MD-D12-01 | Keep per-source HAS_PORTION_WEIGHT assertions; join at query time with unit/basis/source. No generic structured-list scalar/property. | C/S3,S4. |
+| MD-D12-02 | `comparatorArm:` names an arm UID; `comparator:` is an operator with GTE/LTE. Migrate GE/LE and ambiguous values explicitly. | G/S1,S3: qualifier grammar validates kind. |
+| MD-D13-01 | Frontier anchors belong in versioned frontier curation/config keyed to Mechanism IDs; no new anchorMechanismKeys property now. Queries resolve the configured mapping and cite its version. | C/S1,S4. |
+| MD-X-01 | Require tested authority route and namespace semantics for every active scheme. Drop unsupported schemes from advertised write capabilities, retaining requested registry history. | G/S1,S7. |
+| MD-X-02 | Accept prior closeout re-keys/registrars, then regenerate and validate current patterns/fixtures. Retired predicates stay explicit aliases only where semantics match; never silently accept unknown names. | G/S1,S3. |
+| MD-X-03 | Register required FIELD predicates from actual fields and fixture-backed literal/object predicates; reject unused proposed names. Default registrar is subject owner; intentional D2/D10 semantic-family ownership is an explicit exception. Consolidate dose duplicates under D6.CALCULATED_DAILY_MAX_INTAKE, rename under D7.FORMER_NAME; use MEASURES for true outcome/metric relationships. Repair DECLARES_AMOUNT docstring and MEASURES asserted classification. | G/S1,S3: all 35 candidates/33 registrar flags accounted for in generated registry report; no blanket promotion. |
+
+## Fixtures, follow-ups and tooling
+
+| ID | Selected answer and rationale | Closure requirement |
+| --- | --- | --- |
+| FX-01 | Retain OPERATIONALIZED_BY -> Condition and supply the requested condition-coded outcome fixture. | G/S3,S4. |
+| FX-02 | Retain COVERS -> ProductVariant and supply sourced scope fixture. | G/S3,S4. |
+| FX-03 | Retain STATUS_OF -> Product with an independently sourced product status fixture. | G/S3,S4. |
+| FX-04 | Retain INVOLVES -> Person for PRESENTER, not removed AUTHOR semantics; supply numbered presentation fixture. | G/S3,S4. |
+| FX-05 | Add measured-versus-declared and undeclared-substance examples without conflating lab measurement with label declaration. | G/S3,S4. |
+| FX-06 | Add re-review queue after rule change and enforcement-linked comparison fixtures; verify stale publication handling. | G/S3,S4,S6. |
+| FX-07 | Add food recommendation/financial interest and claim-condition threshold fixtures under accepted qualifier/literal semantics. | G/S3,S4. |
+| FX-08 | Do not invent a seller occurrence. Fixture explicitly traces the FDA retelling and marks absent primary seller capture; later capture can add it. | C/S3,S4. |
+| FX-09 | Add a permitted consumer-panel source including image/OCR path if needed; parser quality and notReported are visible. Until qualified, only existing exercised panel route is supported. | G/S3,S7 for the new route. |
+| FX-10 | Add evidenced Source -> Publication RENDITION_OF rows and fix class in D9 fixtures; never attach a rendition solely from guessed URL/DOI match. | G/S3,S4. |
+| FX-11 | Keep study independence, verification independence and discourse independence separate catalog questions, methods and outputs. | C/S1,S4,S8. |
+| FX-D13-01 | Move DERIVED_FROM out of rationale into v2 fields; author stance requires its own occurrence/locator; add rendition identity only with URL/DOI evidence; Retraction Watch corroborates REVISES without a second invented event clock; update obsolete fixture descriptions. | G/S3,S4: each residual recorded as supported or explicit evidence gap. |
+| FU-01 | Keep added discourse/influence cache fields; regenerate from accepted source and enforce their projection provenance. | G/S1,S8. |
+| FU-02 | Keep RQ-01..RQ-06 and link each to an executed fixture or explicitly excluded capability. A request alone is not proof. | G/S0,S9. |
+| FU-03 | Apply all residual fixture re-keys and source-supported locator/asserter fixes in a new versioned fixture round. Preserve original captured bytes and provenance of edits. | G/S3: 77 packet intents plus example and cross-domain inventory accounted for, no TypeError or silently dropped semantics. |
+| FU-04 | Accept final rewrite files over obsolete packet patterns; use OD-10 option A for the final two questions. Run EXPLAIN plus result assertions, not EXPLAIN alone. | G/S4: catalog 454-question status regenerated; supported questions fully exercised. |
+| FU-05 | Retain measured answer-kind closeout; regenerate after accepted changes and keep all disagreements explicit. | C/S1. |
+| FU-06 | Rewrite free-text captureMethod to canonical registry IDs with separately retained human description; ambiguous mapping is an explicit error needing adapter evidence. | G/S1,S3: zero unexplained free-text IDs; no mechanical guess for the 516 reported cases. |
+| FU-07 | Generate complete v2 DDL from registers/query requirements, including marker/fence and identifier/index requirements. Separate required constraints from edition-specific optimizations. | G/S1,S8: installed definitions and ONLINE readiness checked. |
+| FU-08 | Generate v2 validation params; every current node gets a UID token; MEASURES asserted, HAS_VARIANT/REQUIRES_INPUT_METRIC structural. Remove inherited v1-only predicates/types. | G/S1: IR/register/SDL agreement. |
+| FU-09 | Rewrite all sidecars on K/D modules and v2 concepts; preserve task usability and old-name migration routes. | G/S1,S2: zero stale refs and zero sidecar validation errors. |
+| FU-10 | Reconcile question IDs/fixture claims against files and executed results; include CQ-PF-03a/b with aliases/ownership. | G/S1,S9: no fabricated “fixture yes.” |
+| FU-11 | Per-frontier influence is a versioned D10 ranking Report, optionally computed on demand; graph-wide cache remains graph-wide. No property-per-frontier proliferation. | C/S4,S8. |
+| FU-12 | Run Subjectable usage audit and record justification per implementer. Do not remove 14 arbitrary types to meet a superseded metric; unused candidates become separately reviewed future removals. | C/S0,S1. |
+| FU-13 | Preserve the prior registered/re-keyed closeout, then validate allowed endpoints and qualifiers as well as names. | G/S1,S3. |
+| FU-14 | Emit qualifier grammar; validate predicate endpoint types; pin `bl-assoc/evidence-aggregate@1`; add Identifier(scheme,value) lookup index; keep diagnostic-frontier/publisher query parameters explicit; give D8 ownership of action/claim-condition predicates with legal subject forms and literal semantics; standardize disclosure finding to INADEQUATE_DISCLOSURE_PER_REGULATOR; use allowlisted static-label UID queries on 5.26; keep registry/label evidence-based rendition grouping and D12 conditionSubjectUids. | G/S1,S3,S4: checklist explicitly covers residuals (a)–(j). |
+| TL-01 | Update packet-check for removed Mention, edge-property classes and kernel enum/type references; run against final accepted bundle. | G/S1. |
+| TL-02 | Explicit missing BKS_SCHEMA_PATH fails immediately. Every schema-print/build report names resolved release/path/digest; production forbids unchecked overrides. | G/S1,S6. |
+| TL-03 | Keep tested Cypher 5/5.26 patterns as baseline. New SEARCH/in-index filtering is capability-gated and version-tested; upgrading server/language is not a prerequisite. | C/S0,S4,S8. |
+| TL-04 | Keep generator quoting fix and add Node/Python YAML parse equivalence for action-space output. | G/S1: regenerated content parses identically. |
+
+## Seven unmapped legacy relationships
+
+Migration notes identify these outside the numbered question rows. None may disappear silently:
+
+| Legacy relationship | Selected migration handling |
+| --- | --- |
+| ABOUT_CONDITION | Convert the sourced observation to an Assertion about Condition with registered predicate/context; retain old edge ID in mapping lineage. |
+| ASSESSES_CLAIM_EVIDENCE | Map assessment to Claim through ASSESSES and link judged assertions by DERIVED_FROM; do not point Assessment at unsupported Assertion targets. |
+| CLAIM_EVIDENCE_BASED_ON | Preserve the evidence dependency through DERIVED_FROM and locator-backed HAS_EVIDENCE as appropriate; no invented support verdict. |
+| DEPENDS_ON | Keep dependency semantics in the versioned protocol execution/step artifact until a registered v2 representation is accepted; quarantine graph-only migration, retain old edge, report unsupported traversal. Do not turn dependency into mere ordering. |
+| HOSTS_CHANNEL | Map hosting/distribution meaning to supported Channel/platform properties or registered operator/distribution predicate only after endpoint inspection; ambiguous hosting is retained in migration quarantine. |
+| PART_OF_PLAN | Map evidenced membership to ProtocolEdition/step containment; retain unsupported runtime-plan membership externally. |
+| USES_COMPONENT | Map true intervention means to registered regimen/step/component representations; unresolved dose/role meaning is quarantined. |
+
+S8 MUST emit a complete row/edge accounting report: migrated, unchanged-retained, held/quarantined, or deliberately excluded with retained source and reason. Quarantined data cannot quietly appear as v2-approved facts.
+
+## Decision completion versus evidence completion
+
+All IDs above have a selected disposition. The implementation release checklist remains open until the corresponding evidence exists. In particular, no source licence, provider key, commercial contract, unknown scientific measurement or regulatory fact is created by owner pre-approval. The settled answer in those cases is how the service handles unavailable evidence and which capability stays disabled.
+
+## Release decisions after v2.0 (authored in biotech-knowledge-services)
+
+These entries are release decisions, not rows of the 160-entry v2 closeout ledger above (they are written as sections, so the decision closure keeps its 160 ids).
+
+### R-SV10 (biotech-schema-v2.1.0): schema authoring moves to this repository; verification/report binding
+
+- **Owner decision SV-D10 (2026-10-24, Sprint V):** biotech-knowledge-services is the schema author. The source tree is `schema/source/<release>/`, initialized for v2.1.0 from the verified pinned v2.0.2 inputs (SDL modules, registers, rules, vocabularies, tooling, workspace inputs, query sources, decisions, migration maps). Releases are generated with `node scripts/release/generate.mjs --release schema/source/<release>` and pinned with `pnpm schema:pin -- --release schema/source/<release>`. The absent historical `biotech-meta` checkout is provenance only, not a blocker or an edit destination.
+- **Change (minor, additive, backward compatible):** nullable fields on kernel `Activity` (verificationRunRef, runManifestDigest, runSealKind, useDecisionRef, boundEffectDigest, effectKey, originatingOrigin, revocationEpoch), `Report` (reportRevisionRef, reportSchema, reportKindRef, structuredBodyDigest, supersedesReportRevisionRef, custodyKind), `Assessment` (rubricRef, policyRef, useDecisionRef, useDisposition, revocationEpoch, expiresAt, reviewerAdjudicationRef) and `Assertion` (assertionVersionRef, logicalAssertionId, supportSetDigest, qualifiersDigest); new enums `RunSealKind` and `UseDisposition`. No label, relationship type, required field or DDL statement is added or removed. Existing `Report.bodyDigest`, `bodyUri`, `ledgerDigest`, `reportKind`, `supersedesUid` and `Assessment.disposition` keep their meaning; the new names avoid them.
+- **Ownership boundary (Sprint V design sections 6 and 7):** PostgreSQL, the Knowledge Services common component, owns the run, its sealed manifests (verification, decision and admission snapshots in one run lineage), the use decision, the outbox and the authoritative revocation epoch. The graph holds immutable references and digests only, never a competing run or decision store. Graph apply and its native KsIntentMarker are atomic; PostgreSQL and Neo4j are not, so official uses re-check current eligibility against the authority and hold when it is unavailable.
+- **Also in this release:** `workspace-inputs/task-routes.yaml` no longer offers `state.attach` (not a biotech-knowledge-intent.v2 kind) on ingest-product-label, ingest-study-publication and correct-a-stale-fact; the label-version step uses `edge.assert`.
+- **Evidence:** EXPLAIN evidence (`query-catalog/explain.json`) is inherited from v2.0.2 unchanged; no query source changed, so every template's statement digest is identical. No new live-database evidence is claimed.

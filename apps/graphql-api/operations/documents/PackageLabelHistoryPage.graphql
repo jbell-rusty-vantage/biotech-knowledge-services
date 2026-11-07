@@ -1,0 +1,40 @@
+# Label/version history page for one package (paged with offset cursors; ProductLabelHistory gives the first page).
+query PackageLabelHistoryPage($packageUid: String!, $first: Int = 10, $after: String) {
+  packages(where: { uid: { eq: $packageUid } }, limit: 1) {
+    uid
+    name
+    packageKind
+    labelVersionsConnection(first: $first, after: $after, sort: [{ edge: { validFrom: DESC } }, { node: { uid: ASC } }]) {
+      totalCount
+      pageInfo {
+        ...PageInfoFields
+      }
+      edges {
+        cursor
+        properties {
+          validFrom
+          validTo
+          validFromPrecision
+          validToPrecision
+          recordedFrom
+          recordedTo
+        }
+        node {
+          uid
+          labelVersionCode
+          panelKind
+          jurisdiction
+          contentDigest
+          compositionDigest
+          servingSizeVerbatim
+          servingsPerContainer
+          directionsText
+          warningsText
+          containsAllergens
+          firstObservedAt
+          lastObservedAt
+        }
+      }
+    }
+  }
+}

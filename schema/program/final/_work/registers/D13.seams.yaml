@@ -1,0 +1,277 @@
+version: 1
+module: D13
+# Source: packets/D13/10-seams.yaml (sha256 c7e7adbd…b67bba4), edited by the S module editor for D13 2026-10-08 per
+# final/decision-report.md and final/_work/rulings.yaml (global, modules.D13). Every entry keeps the 01-PACKET-CONTRACT
+# fields (type, from, to, questions, direction, owner), adds `module: D13`, and carries `status: accepted | cut` with the
+# ruling that decides it (`ruling: none` = no conflict was raised; the row stands as the packet published it).
+# Synthesis edits:
+#   R-94  relationship seams and Assertion.predicate seams are separate lists (`seams`, `predicateSeams`); predicate
+#         rows are checked against final/vocabularies/predicates.yaml (R-52 registrars).
+#   R-69  new predicate seam EVENT_ABOUT D13.Event → D7.Award (AWARD Event = milestone, no amount).
+#   R-44  INVOLVES Event → Person no longer carries authors (CQ-EV-05 removed from it); new rows D3 REVISES (relationship)
+#         and AUTHORED_BY / HAS_REVISION_STATUS (predicates) for the retraction branch the D13 questions read.
+#   R-52  RECORDING_OF registrar D9; HAS_REVISION_STATUS registrar K; FINANCING_AMOUNT, DATE_OF_FIRST_SALE,
+#         INVESTOR_COUNT, PRESENTED_AT_CONFERENCE registrar D13.
+#   R-92  FINANCING_AMOUNT qualifiers + ROUND_TOTAL / REMAINING; DATE_OF_FIRST_SALE and INVESTOR_COUNT rows (read by D7).
+#   R-66  DOCUMENTED_BY_RECORD path is the only regulator/applicant path when a record exists; regulatory-pathways
+#         vocabulary consumed from D8.
+#   R-60  targets re-pinned @0.2.2 (frontiers @0.2.1); R-09 vocabulary refs point at final/ (seed file named).
+#   R-81  D7 uses PRESENTER (not SPEAKER) and retires SPEAKS_AT (INVOLVES note updated).
+# No D13 seam is cut.
+seams:
+  # ---- declared in the D13 SDL ----
+  - type: INVOLVES
+    module: D13
+    from: D13.Event
+    to: D7.Organization
+    field: Event.involvedOrganizations
+    direction: OUT
+    edgeProperties: D13.EventRoleEdgeProperties
+    questions: [Q-D13-03, Q-D13-06, Q-D13-14, Q-D13-15, Q-D13-21, Q-D13-23, Q-D13-33]
+    owner: this
+    status: accepted
+    ruling: [R-67, R-69, R-66]
+    note: "D7 declares no inverse field on Organization (role edges live on the asking module's type, R-67); 'which events involve org X' is read as events(where: { involvedOrganizations: { some: { uid: { eq: X } } } }). Round participation = INVESTOR | LEAD_INVESTOR, D7 HOLDS_STAKE only when stated (R-69). REGULATOR / APPLICANT / ISSUER only while no DOCUMENTED_BY_RECORD exists, executor-enforced (R-66). D7 uses PRESENTER, not SPEAKER, and retires SPEAKS_AT (R-81)"
+  - type: INVOLVES
+    module: D13
+    from: D13.Event
+    to: D7.Person
+    field: Event.involvedPeople
+    direction: OUT
+    edgeProperties: D13.EventRoleEdgeProperties
+    questions: [Q-D13-14, Q-D13-25]
+    owner: this
+    status: accepted
+    ruling: [R-81, R-44]
+    note: "public actors only (presenters, named individual investors); a presentation at a meeting is INVOLVES {PRESENTER} (R-81). Authors of a retracted paper are reached through D3 AUTHORED_BY on the Publication, not INVOLVES (R-44), so CQ-EV-05 left this pair. Open (R-06): the pair has no fixture after the lesne AUTHOR rows were dropped; coordinator to file a fixture request or cut"
+  - type: ON_FRONTIER
+    module: D13
+    from: D3.Study
+    to: D13.Frontier
+    field: Frontier.studies
+    direction: IN
+    edgeProperties: K.AssertedRecordedProperties
+    questions: [Q-D13-02, Q-D13-03, Q-D13-16]
+    owner: this
+    status: accepted
+    ruling: [R-91, R-25]
+    note: "declared on Frontier with direction IN so D3 Study spends no relationship field and ON_FRONTIER stays one D13-owned type (vocab-frontiers consumerObligations: D3 declares nothing); only Event and Study attach to a Frontier (R-91); authorizing Assertion basisKind CURATOR_CLASSIFICATION (R-25); fixture madrigal-maestro-nash-topline-8k a12 exercises this pair"
+  - type: DOCUMENTED_BY_RECORD
+    module: D13
+    from: D13.Event
+    to: D8.RegulatoryRecord
+    field: Event.regulatoryRecords
+    direction: OUT
+    edgeProperties: K.AssertedRecordedProperties
+    questions: [Q-D13-12, Q-D13-14, Q-D13-22]
+    owner: this
+    status: accepted
+    ruling: [R-66, R-07]
+    note: "a regulatory act is one D8 RegulatoryRecord plus at most one D13 Event linked by this edge (R-66); regulator, applicant and record date are read from the record's ISSUED_BY / ADDRESSED_TO / issuedAt, so documented Events carry no INVOLVES REGULATOR / APPLICANT / ISSUER; D8 declares no inverse (OQ-D8-02 settled). First demotion candidate if step 7 runs over budget (R-07)"
+  # ---- kernel records that point AT D13 types (declared by the kernel; listed so the dependency is visible) ----
+  - type: HAS_SUBJECT
+    module: D13
+    from: K.Assertion
+    to: [D13.Event, D13.Frontier]
+    direction: OUT
+    questions: [Q-D13-05, Q-D13-10, Q-D13-11, CQ-TM-03, CQ-TM-01, Q-D13-22, Q-D13-28]
+    owner: other
+    status: accepted
+    ruling: none
+    note: "time assertions (EVENT_OCCURRED, EVENT_SCHEDULED, EVENT_ANNOUNCED, EVENT_EFFECTIVE, EVENT_CANCELLED), EVENT_ABOUT, qualifier FIELD assertions (R-14) and every asserted D13 edge's authorizing Assertion"
+  - type: HAS_OBJECT
+    module: D13
+    from: K.Assertion
+    to: [D13.Event, D13.Frontier]
+    direction: OUT
+    questions: [Q-D13-05, Q-D13-07]
+    owner: other
+    status: accepted
+    ruling: none
+    note: "object of LEADS_TO / RESPONDS_TO / ON_FRONTIER assertions; claims whose object is a Frontier or an Event (Q-D13-07; R-91: claims reach a Frontier through HAS_OBJECT)"
+  - type: ASSESSES
+    module: D13
+    from: K.Assessment
+    to: [D13.Event, D13.Frontier]
+    direction: OUT
+    questions: [Q-D13-07, Q-D13-17, Q-D13-27, Q-D13-30, Q-D13-31]
+    owner: other
+    status: accepted
+    ruling: R-54
+    assessmentKinds: "assessmentKind BREAKTHROUGH_JUDGMENT (Q-D13-30; conclusionCode registered by D13: MEETS_CRITERION / DOES_NOT_MEET / NOT_CHECKABLE, criterion version in methodVersion) and EVENT_IMPACT (Q-D13-31; facets impactDomain=MARKET|CLINICAL_PRACTICE|REGULATORY|SCIENTIFIC|COMMERCIAL|PATIENT_ACCESS); INSIGHT with assessmentSubkind D13.press-language-check (Q-D13-17) and D13.hypothesis-disconfirmation (Q-D13-27); EVIDENCE_SYNTHESIS for Q-D13-07 claim before/after; all in the one assessment-vocabularies register (R-54)"
+    note: "kernel meaning; D13 declares no inverse field; questions read from the Assessment side"
+  - type: ASSESSES
+    module: D13
+    from: K.Report
+    to: D13.Frontier
+    direction: OUT
+    questions: [Q-D13-29]
+    owner: other
+    status: accepted
+    ruling: none
+    note: "frontier progress brief = kernel Report (reportKind PROFILE, skeletonKey d10.frontier-brief@1); D10 owns the composition method; rows cite events through DERIVED_FROM → their time, link and ON_FRONTIER Assertions"
+  - type: OCCURRENCE_OF
+    module: D13
+    from: K.Assertion
+    to: K.Claim
+    direction: OUT
+    questions: [Q-D13-07, Q-D13-17]
+    owner: other
+    status: accepted
+    ruling: none
+    note: "claim occurrences about frontiers or events ('historic moment', 'remains compelling') are kernel/D9 records; D13 splits them by occurrence time against Event.announcedAt"
+  # ---- D3 scholarly revisions read by the D13 retraction questions (added in synthesis, R-44) ----
+  - type: REVISES
+    module: D13
+    from: D3.Publication
+    to: D3.Publication
+    direction: OUT
+    questions: [CQ-EV-05, Q-D13-08]
+    owner: other
+    status: accepted
+    ruling: R-44
+    note: "an identified retraction / correction notice is D3 REVISES, asserted per asserter, revisionKind typed by K SourceRevisionKind; a RETRACTION Event (curated frontier milestone only) points EVENT_ABOUT → the Publication and its clock cites the notice's locator; lesne a09-a11 statuses move to REVISES (fixtures stage)"
+predicateSeams:
+  # Assertion.predicate values (no SDL field; Assertion object). Registrar per R-52; checked against final/vocabularies/predicates.yaml.
+  - predicate: EVENT_ABOUT
+    module: D13
+    registrar: D13
+    subjects: [D13.Event]
+    objects: [D1.ChemicalSubstance, D6.Product, D3.Study, D5.Intervention, D2.Condition, D3.Publication]
+    questions: [Q-D13-05, Q-D13-16, Q-D13-26, Q-D13-27, CQ-EV-05]
+    owner: this
+    status: accepted
+    ruling: [R-44, R-84]
+    note: "kernel subject/object pattern; object may be any Subjectable; the listed types are the expected ones as their owners publish them; adverse-effect phenotypes are D2.Condition (R-84); a RETRACTION Event points at the D3 Publication (R-44, R-71). One EVENT_ABOUT per Event carries qualifier primary=true (identity rule)"
+  - predicate: EVENT_ABOUT
+    module: D13
+    registrar: D13
+    subjects: [D13.Event]
+    objects: [D7.Award]
+    questions: [Q-D7-04, Q-D7-05, Q-D3-08]
+    owner: this
+    status: accepted
+    ruling: R-69
+    note: "an AWARD Event is only an announcement or milestone pointing at the D7 Award, with no amount; the amount, funders and recipients are D7's (D3 HAS_STUDY_ROLE FUNDING_AWARD); deciding questions as R-69 lists them"
+  - predicate: CONTINGENT_ON
+    module: D13
+    registrar: D13
+    subjects: [D13.Event]
+    objects: [D3.Study]
+    questions: [Q-D13-12]
+    owner: this
+    status: accepted
+    ruling: R-94
+  - predicate: PRESENTED_AT_CONFERENCE
+    module: D13
+    registrar: D13
+    subjects: [D13.Event]
+    objects: [D9.Channel]
+    questions: [Q-D13-25]
+    owner: this
+    status: accepted
+    ruling: R-65
+    note: "object = D9 Channel with channelKind EVENT_SERIES (the recurring meeting); edition and session are Assertion qualifiers; no Conference or Session node and no Event per edition; only a presentation with a data claim is a DATA_PRESENTATION Event"
+  - predicate: REPORTED_MARKET_MOVE
+    module: D13
+    registrar: D13
+    subjects: [D13.Event]
+    objects: [D7.Organization]
+    questions: [Q-D13-14, Q-D13-21]
+    owner: this
+    status: accepted
+    ruling: R-92
+    note: "one shape: subject Event, object the Organization whose shares moved, valueString = the located magnitude text, asserter = the reporting source; market data series stay D7's"
+  - predicate: FINANCING_AMOUNT
+    module: D13
+    registrar: D13
+    subjects: [D13.Event]
+    objects: "literal (valueNumber + unitCode iso4217:<CODE>)"
+    questions: [Q-D13-06, Q-D13-23, Q-D7-04]
+    owner: this
+    status: accepted
+    ruling: R-92
+    note: "qualifiers amountKind (GROSS_PROCEEDS | NET_PROCEEDS | BORROWING_CAPACITY | DRAWN_PRINCIPAL | UPFRONT_PAYMENT | MILESTONE_POTENTIAL | DEAL_VALUE | ROUND_TOTAL) and amountBasis (OFFERED | SOLD | COMMITTED | AVAILABLE | REMAINING); D7's FINANCING_AMOUNT_SOLD is retired and D7 re-keys its fixtures to amountKind/amountBasis; award amounts stay D7 Award.amount"
+  - predicate: DATE_OF_FIRST_SALE
+    module: D13
+    registrar: D13
+    subjects: [D13.Event]
+    objects: "literal date (Form D dateOfFirstSale)"
+    questions: [Q-D7-04]
+    owner: this
+    status: accepted
+    ruling: R-92
+    note: "registered by D13 because its subject is the D13 FINANCING Event (R-52 rule 3); read by D7 Form D questions"
+  - predicate: INVESTOR_COUNT
+    module: D13
+    registrar: D13
+    subjects: [D13.Event]
+    objects: "literal integer (Form D totalNumberAlreadyInvested)"
+    questions: [Q-D7-04]
+    owner: this
+    status: accepted
+    ruling: R-92
+    note: "registered by D13 because its subject is the D13 FINANCING Event (R-52 rule 3); read by D7 Form D questions"
+  - predicate: RECORDING_OF
+    module: D13
+    registrar: D9
+    subjects: [D9.MediaWork]
+    objects: [D13.Event]
+    questions: [Q-D13-25]
+    owner: other
+    status: accepted
+    ruling: [R-52, R-65]
+    note: "inbound, registered by D9: a recording of a presentation, call or session points at the D13 Event; D13 declares nothing and reads it from the Assertion side"
+  - predicate: AUTHORED_BY
+    module: D13
+    registrar: D3
+    subjects: [D3.Publication]
+    objects: [D7.Person, D7.Organization]
+    questions: [CQ-EV-05]
+    owner: other
+    status: accepted
+    ruling: [R-44, R-80]
+    note: "authors of a retracted work are reached through the Publication, replacing the dropped INVOLVES AUTHOR rows"
+  - predicate: HAS_REVISION_STATUS
+    module: D13
+    registrar: K
+    subjects: [K.Source]
+    objects: "literal SourceRevisionKind"
+    questions: [CQ-EV-05, Q-D13-22]
+    owner: other
+    status: accepted
+    ruling: [R-44, R-52, R-21]
+    note: "only for non-scholarly Sources and status flags with no identified notice (OpenAlex, PubMed), one Assertion per authority; never written both ways with D3 REVISES for one (asserter, notice). A relayed authority record links (a)-[:DERIVED_FROM]->(primary) with basisKind CITED_FROM_PRIOR_WORK instead of the derivedFrom= qualifier (R-21); Q-D13-22 counts origins by collapsing DERIVED_FROM chains"
+sharedVocabularies:
+  - name: kernel-types
+    module: D13
+    ref: final/schema/kernel.graphql (sha256 ec981e2a…60424c71, 56,040 bytes, read 2026-10-08)
+    role: consumed
+    edgePropertyTypes: "AssertedRecordedProperties (ON_FRONTIER, LEADS_TO, RESPONDS_TO, DOCUMENTED_BY_RECORD; base of D13.EventRoleEdgeProperties for INVOLVES)"
+    enums: "TimePrecision (Event.startedAtPrecision, endedAtPrecision, announcedAtPrecision, effectiveFromPrecision, scheduledFromPrecision, scheduledToPrecision); ValidTimeBasis (Event.startedAtBasis, effectiveFromBasis); PrivacyClass (Entity field on Event and Frontier); BasisKind CURATOR_CLASSIFICATION (ON_FRONTIER authorizing Assertions, R-25); SourceRevisionKind (R-44)"
+    questions: [CQ-TM-03, Q-D13-10, Q-D13-11, Q-D13-22, Q-D13-32]
+    note: "no HALF_YEAR TimePrecision value is needed: guidance windows are half-open intervals with MONTH precision on both bounds"
+  - name: frontiers
+    module: D13
+    ref: final/vocabularies/vocab-frontiers.yaml@0.2.1 (seed packets/D13/vocab-frontiers.yaml@0.2.1; pin per R-60)
+    role: owned
+    note: "Frontier keys, EventKind values (PUBLICATION removed, R-44), event relations (LEADS_TO, RESPONDS_TO asserted with projectionGate SUPPORT, R-22; FOLLOWS computed), seam rule (only Event and Study attach via ON_FRONTIER, R-91). Pending for the vocabularies stage (R-66): remap breakthroughCriteria and their FIELD Assertions from ApprovalPathway / DesignationType values to D8 RegulatoryPathway values"
+  - name: targets
+    module: D13
+    ref: final/vocabularies/vocab-targets.yaml@0.2.2 (seed packets/D5/vocab-targets.yaml; re-pinned per R-60)
+    role: consumed
+    seamRule: >-
+      Frontier.targetKeys lists D5 target keys as a curated relevance mapping (vocabulary to vocabulary), never an
+      effect claim; no D13 entity points at a Target through an edge; effect on a target is D5's Assertion pattern
+      (INTENDED_FOR_TARGET, IMPROVES_TARGET, ...) with a means as subject.
+  - name: regulatory-pathways
+    module: D13
+    ref: "D8 enum RegulatoryPathway (final/schema/D8.graphql; seed packets/D8/04-schema-proposal.graphql)"
+    role: consumed
+    note: "R-66: Event.approvalPathway and Event.designationType are typed RegulatoryPathway; OQ-D8-02 mapping FULL → US_DRUG_NDA / US_BLA (by application type), ACCELERATED → US_ACCELERATED_APPROVAL, CONDITIONAL → EU_CONDITIONAL_MA, SUPPLEMENTAL → recordKind DRUG_APPLICATION_ACTION with the supplement in recordNumber, CLEARANCE_510K → US_DEVICE_510K, DE_NOVO → US_DEVICE_DE_NOVO, PMA → US_DEVICE_PMA, EMERGENCY_USE → US_EUA; BREAKTHROUGH_THERAPY / FAST_TRACK / RMAT / PRIORITY_REVIEW / PRIORITY_REVIEW_VOUCHER → the US_ value, PRIME → EU_PRIME, SAKIGAKE → JP_SAKIGAKE, ORPHAN → US_ or EU_ORPHAN_DESIGNATION by jurisdiction, OTHER → OTHER"
+    questions: [Q-D13-04]
+  - name: identifier-schemes
+    module: D13
+    ref: final/vocabularies/identifier-schemes.yaml (R-42 scheme register; seed packets/K/identifier-schemes.yaml)
+    role: consumed
+    note: "D13 node types carry no identifiers of their own; SEC_CIK (participants, D7) and WIKIDATA (anchors) are used through other modules; SEC_ACCESSION requested for filing Sources"

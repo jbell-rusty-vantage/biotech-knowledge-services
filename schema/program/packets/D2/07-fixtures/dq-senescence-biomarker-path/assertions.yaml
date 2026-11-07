@@ -1,0 +1,280 @@
+# Assertions for fixture dq-senescence-biomarker-path (packet D2 with D4, fixtures stage, A3, 2026-10-08).
+# Same conventions as ../nr-muscle-unstructured/assertions.yaml. This fixture carries the compound -> mechanism ->
+# biomarker -> test path (Q-D2-03 / Q-D4-01) across D2 and D4 in one source. D4-owned records (Biomarker, Metric,
+# REFLECTS_MECHANISM, QUANTIFIES, AssayVersion) are typed D4.* and use the D4 SDL names in this worktree (2026-10-08).
+# Deviation from the model-stage stub, with reason: the D+Q effect is asserted with the combination regimen as subject
+# (D5.Intervention "D+Q", a MechanismModulator member) and both drugs as TESTED exposures of the context; it is NOT
+# projected onto dasatinib or quercetin alone, because the source never tested either alone (attributing it would
+# overclaim). Single-substance questions reach the finding through EXPOSED_TO.
+# Structural edges without their own producedBy use the file-level producedBy.
+# Adversarial review (2026-10-08): the three contexts are one registered group (IN_STUDY_ARM NCT02848131 'Group 2'), so
+# their dose of record is D3's InterventionComponent, one per drug (seamRecords IC-dq-01, IC-dq-02), which also resolves
+# the one-amount-per-context problem for this combination (11 item 24); the context exposure fields are empty. The
+# D+Q → IL-6 (MolecularEntity) projection is gone (pair cut); A-dq-05 still answers Q-D2-22 directly.
+fixture: dq-senescence-biomarker-path
+idNote: fixture-scoped ids (hu:<token>:fx-d2-...); mission/run ids are fixture ids, not Mission Control ids
+producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-dq-senescence-biomarker-path" }
+
+entities:
+  - { ref: dasatinib, type: D1.ChemicalSubstance, uid: "hu:chemical-substance:fx-d2-dasatinib", name: dasatinib,
+      identifiers: [ { scheme: CHEMBL, value: CHEMBL1421, note: "ChEMBL parent of CHEMBL5416410 (pref_name DASATINIB), lookup 2026-10-08" } ] }
+  - { ref: quercetin, type: D1.ChemicalSubstance, uid: "hu:chemical-substance:fx-d2-quercetin", name: quercetin,
+      identifiers: [ { scheme: CHEMBL, value: CHEMBL50, note: "ChEMBL lookup 2026-10-08" } ] }
+  - { ref: dq, type: D5.Intervention, uid: "hu:intervention:fx-d2-dasatinib-quercetin-3d", name: "dasatinib 100 mg + quercetin 1000 mg, oral, 3 days (D+Q)",
+      evidence: [L-dq-01, L-dq-09, L-dq-10] }
+  - { ref: m-senescence, type: D2.Mechanism, uid: "hu:mechanism:fx-d2-go-0090398", name: cellular senescence,
+      properties: { key: "go:GO:0090398", mechanismKind: PROCESS, referenceScheme: GO },
+      identifiers: [ { scheme: GO, value: "GO:0090398", evidence: L-dq-12 } ] }
+  - { ref: me-il6, type: D2.MolecularEntity, uid: "hu:molecular-entity:fx-d2-il6", name: Interleukin-6, note: "declared in ../nr-muscle-unstructured" }
+  - { ref: arm-dq, type: D3.StudyArm, uid: "hu:study-arm:fx-d2-nct02848131-group-2-dq", name: "NCT02848131 arm 'Group 2: Dasatinib & Quercetin'",
+      identifiers: [ { scheme: NCT, value: NCT02848131, evidence: L-dq-08 } ] }
+  # D4 side (owned by D4; names from the D4 SDL)
+  - { ref: b-p16-cells, type: D4.Biomarker, uid: "hu:biomarker:fx-d2-p16ink4a-positive-cells", name: "p16INK4A-expressing cell abundance", properties: { biomarkerKind: CELL_POPULATION } }
+  - { ref: b-sabgal-cells, type: D4.Biomarker, uid: "hu:biomarker:fx-d2-sa-beta-gal-positive-cells", name: "senescence-associated beta-galactosidase (SAbetagal)-positive cell abundance", properties: { biomarkerKind: CELL_POPULATION } }
+  - { ref: b-il6, type: D4.Biomarker, uid: "hu:biomarker:fx-d2-circulating-il6", name: "circulating IL-6", properties: { biomarkerKind: PROTEIN } }
+  - { ref: met-p16-adipose, type: D4.Metric, uid: "hu:metric:fx-d2-p16-cells-abdominal-sc-adipose-ihc", name: "p16INK4A+ cells in abdominal subcutaneous adipose tissue (IHC)",
+      properties: { metricKind: MEASURAND, defaultResultKind: MEASURED, definitionSource: PUBLICATION, definitionIssuerName: "Hickson et al. 2019", systemText: "abdominal subcutaneous adipose tissue", systemOntologyId: "UBERON:0014455", methodText: "immunohistochemistry, anti-p16INK4A clone E6H4" },
+      evidence: [L-dq-04, L-dq-07] }
+  - { ref: av-p16-ihc, type: D4.AssayVersion, uid: "hu:assay-version:fx-d2-cintec-e6h4-ihc-mayo-research", name: "CINtec Histology anti-p16INK4A (clone E6H4) IHC, research use (Hickson 2019)",
+      properties: { methodText: "immunohistochemistry on formalin-fixed, paraffin-embedded 5 um sections", reagentKitText: "CINtec Histology monoclonal mouse anti-human p16INK4A (clone E6H4; Roche Tissue Diagnostics)", specimenOntologyIds: ["UBERON:0014455"] },
+      evidence: [L-dq-04], note: "No orderable LabTest delivers this assay; D4 has no edge from a research AssayVersion to a Metric without a LabTest (11-open-questions item 23)" }
+  - { ref: asserter-hickson2019, type: D7.Person, uid: "hu:person:fx-d2-hickson-lj", name: "LaTonya J. Hickson (first author, for the author group of PMID 31542391)" }
+
+contexts:
+  - ref: ctx-dq-adipose
+    type: D2.MechanismEvidenceContext
+    uid: "hu:mech-context:fx-d2-hickson2019-dq-adipose"
+    evidence: [L-dq-01, L-dq-06, L-dq-07, L-dq-14]
+    properties:
+      groupLabel: "subjects with diabetic kidney disease, 3 days of oral D 100 mg and Q 1000 mg"
+      setting: HUMAN_INTERVENTIONAL
+      organism: HUMAN
+      ncbiTaxonId: "9606"
+      sexScope: ALL
+      ageDescriptor: "68·7 ± 3·1 years old"
+      sampleSize: 9
+      compartmentKind: TISSUE
+      compartmentOntologyId: "UBERON:0014455"
+      compartmentLabel: "abdominal subcutaneous adipose tissue biopsy"
+      geneticManipulation: NONE
+      # exposure fields empty: registered group; per-drug dose of record = D3 InterventionComponents IC-dq-01, IC-dq-02
+      assayText: "IHC p16INK4A / p21CIP1; SAbetagal activity; adipocyte progenitor replicative potential; sampled 11 days after the last dose"
+  - ref: ctx-dq-skin
+    type: D2.MechanismEvidenceContext
+    uid: "hu:mech-context:fx-d2-hickson2019-dq-skin"
+    evidence: [L-dq-01, L-dq-05, L-dq-14]
+    properties:
+      groupLabel: "subjects with diabetic kidney disease, 3 days of oral D 100 mg and Q 1000 mg"
+      setting: HUMAN_INTERVENTIONAL
+      organism: HUMAN
+      ncbiTaxonId: "9606"
+      sexScope: ALL
+      ageDescriptor: "68·7 ± 3·1 years old"
+      sampleSize: 9
+      compartmentKind: TISSUE
+      compartmentOntologyId: "UBERON:0001003"
+      compartmentLabel: "skin epidermis"
+      geneticManipulation: NONE
+      # exposure fields empty: registered group (IC-dq-01, IC-dq-02)
+      assayText: "IHC p16INK4A / p21CIP1"
+  - ref: ctx-dq-plasma
+    type: D2.MechanismEvidenceContext
+    uid: "hu:mech-context:fx-d2-hickson2019-dq-plasma"
+    evidence: [L-dq-01, L-dq-05, L-dq-13, L-dq-14]
+    properties:
+      groupLabel: "subjects with diabetic kidney disease, 3 days of oral D 100 mg and Q 1000 mg"
+      setting: HUMAN_INTERVENTIONAL
+      organism: HUMAN
+      ncbiTaxonId: "9606"
+      sexScope: ALL
+      ageDescriptor: "68·7 ± 3·1 years old"
+      sampleSize: 9
+      compartmentKind: BODY_FLUID
+      compartmentOntologyId: "UBERON:0001969"
+      compartmentLabel: "plasma (circulating SASP factors)"
+      geneticManipulation: NONE
+      # exposure fields empty: registered group (IC-dq-01, IC-dq-02)
+      assayText: "circulating SASP factor panel"
+
+structuralEdges:
+  # Two TESTED exposures per context (combination), ordered
+  - { type: EXPOSED_TO, from: ctx-dq-adipose, to: dasatinib, properties: { exposureRole: TESTED, orderIndex: 0 }, evidence: [L-dq-01, L-dq-09] }
+  - { type: EXPOSED_TO, from: ctx-dq-adipose, to: quercetin, properties: { exposureRole: TESTED, orderIndex: 1 }, evidence: [L-dq-01, L-dq-10] }
+  - { type: EXPOSED_TO, from: ctx-dq-skin, to: dasatinib, properties: { exposureRole: TESTED, orderIndex: 0 }, evidence: [L-dq-01] }
+  - { type: EXPOSED_TO, from: ctx-dq-skin, to: quercetin, properties: { exposureRole: TESTED, orderIndex: 1 }, evidence: [L-dq-01] }
+  - { type: EXPOSED_TO, from: ctx-dq-plasma, to: dasatinib, properties: { exposureRole: TESTED, orderIndex: 0 }, evidence: [L-dq-01] }
+  - { type: EXPOSED_TO, from: ctx-dq-plasma, to: quercetin, properties: { exposureRole: TESTED, orderIndex: 1 }, evidence: [L-dq-01] }
+  - { type: IN_STUDY_ARM, from: ctx-dq-adipose, to: arm-dq, evidence: [L-dq-08] }
+  - { type: IN_STUDY_ARM, from: ctx-dq-skin, to: arm-dq, evidence: [L-dq-08] }
+  - { type: IN_STUDY_ARM, from: ctx-dq-plasma, to: arm-dq, evidence: [L-dq-08] }
+  # D4-owned structural edges (shape for the path; D4 writes them)
+  - { type: QUANTIFIES, owner: D4, from: met-p16-adipose, to: b-p16-cells, evidence: [L-dq-04] }
+  - { type: HAS_ANALYTE, owner: D4, from: b-il6, to: me-il6, note: "D4 Biomarker.analyteEntities -> D2 MolecularEntity" }
+
+assertions:
+  - id: A-dq-01
+    uid: "hu:assertion:fx-d2-dq-01"
+    assertionKind: RELATIONSHIP
+    claimType: MEASUREMENT
+    predicate: DECREASES_LEVEL_OF
+    subject: { ref: dq, type: D5.Intervention }
+    object: { ref: m-senescence, type: D2.Mechanism }
+    polarity: POSITIVE
+    basisKind: DIRECT_MEASUREMENT
+    speechAct: STATES
+    asserter: { ref: asserter-hickson2019, type: D7.Person }
+    evidence: [ { locator: L-dq-02, role: SUPPORTS, origin: DECLARED } ]
+    context: ctx-dq-adipose
+    qualifiers: ["'reduced adipose tissue senescent cell burden within 11 days'", "open-label Phase 1 pilot, no placebo group"]
+    validTime: { validFrom: null, validTo: null, validFromBasis: UNKNOWN }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-dq-senescence-biomarker-path" }
+  - id: A-dq-02
+    uid: "hu:assertion:fx-d2-dq-02"
+    assertionKind: RELATIONSHIP
+    claimType: MEASUREMENT
+    predicate: DECREASES_LEVEL_OF
+    subject: { ref: dq, type: D5.Intervention }
+    object: { ref: b-p16-cells, type: D4.Biomarker }
+    polarity: POSITIVE
+    basisKind: DIRECT_MEASUREMENT
+    speechAct: STATES
+    asserter: { ref: asserter-hickson2019, type: D7.Person }
+    evidence: [ { locator: L-dq-02, role: SUPPORTS, origin: DECLARED } ]
+    context: ctx-dq-adipose
+    validTime: { validFrom: null, validTo: null, validFromBasis: UNKNOWN }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-dq-senescence-biomarker-path" }
+  - id: A-dq-03
+    uid: "hu:assertion:fx-d2-dq-03"
+    assertionKind: RELATIONSHIP
+    claimType: MEASUREMENT
+    predicate: DECREASES_LEVEL_OF
+    subject: { ref: dq, type: D5.Intervention }
+    object: { ref: b-sabgal-cells, type: D4.Biomarker }
+    polarity: POSITIVE
+    basisKind: DIRECT_MEASUREMENT
+    speechAct: STATES
+    asserter: { ref: asserter-hickson2019, type: D7.Person }
+    evidence: [ { locator: L-dq-02, role: SUPPORTS, origin: DECLARED } ]
+    context: ctx-dq-adipose
+    validTime: { validFrom: null, validTo: null, validFromBasis: UNKNOWN }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-dq-senescence-biomarker-path" }
+  - id: A-dq-04
+    uid: "hu:assertion:fx-d2-dq-04"
+    assertionKind: RELATIONSHIP
+    claimType: MEASUREMENT
+    predicate: DECREASES_LEVEL_OF
+    subject: { ref: dq, type: D5.Intervention }
+    object: { ref: b-p16-cells, type: D4.Biomarker }
+    polarity: POSITIVE
+    basisKind: DIRECT_MEASUREMENT
+    speechAct: STATES
+    asserter: { ref: asserter-hickson2019, type: D7.Person }
+    evidence: [ { locator: L-dq-05, role: SUPPORTS, origin: DECLARED } ]
+    context: ctx-dq-skin
+    qualifiers: ["skin epidermal p16INK4A+ cells"]
+    validTime: { validFrom: null, validTo: null, validFromBasis: UNKNOWN }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-dq-senescence-biomarker-path" }
+  - id: A-dq-05
+    uid: "hu:assertion:fx-d2-dq-05"
+    assertionKind: RELATIONSHIP
+    claimType: MEASUREMENT
+    predicate: DECREASES_LEVEL_OF
+    subject: { ref: dq, type: D5.Intervention }
+    object: { ref: me-il6, type: D2.MolecularEntity }
+    polarity: POSITIVE
+    basisKind: DIRECT_MEASUREMENT
+    speechAct: STATES
+    asserter: { ref: asserter-hickson2019, type: D7.Person }
+    evidence: [ { locator: L-dq-05, role: SUPPORTS, origin: DECLARED } ]
+    context: ctx-dq-plasma
+    qualifiers: ["circulating SASP factors IL-1alpha, IL-6, MMP-9 and -12 reduced (IL-6 asserted here)"]
+    validTime: { validFrom: null, validTo: null, validFromBasis: UNKNOWN }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-dq-senescence-biomarker-path" }
+  # D4-owned asserted edges (REFLECTS_MECHANISM is AssertedEdgeProperties in the D4 SDL: an Assertion authorizes the episode)
+  - id: A-dq-06
+    uid: "hu:assertion:fx-d2-dq-06"
+    owner: D4
+    assertionKind: RELATIONSHIP
+    claimType: RELATIONSHIP
+    predicate: REFLECTS_MECHANISM
+    subject: { ref: b-p16-cells, type: D4.Biomarker }
+    object: { ref: m-senescence, type: D2.Mechanism }
+    polarity: POSITIVE
+    basisKind: CITED_FROM_PRIOR_WORK
+    speechAct: STATES
+    asserter: { ref: asserter-hickson2019, type: D7.Person }
+    evidence: [ { locator: L-dq-03, role: SUPPORTS, origin: DECLARED } ]
+    context: null
+    validTime: { validFrom: "2019-09-18T00:00:00Z", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-dq-senescence-biomarker-path" }
+  - id: A-dq-07
+    uid: "hu:assertion:fx-d2-dq-07"
+    owner: D4
+    assertionKind: RELATIONSHIP
+    claimType: RELATIONSHIP
+    predicate: REFLECTS_MECHANISM
+    subject: { ref: b-sabgal-cells, type: D4.Biomarker }
+    object: { ref: m-senescence, type: D2.Mechanism }
+    polarity: POSITIVE
+    basisKind: CITED_FROM_PRIOR_WORK
+    speechAct: STATES
+    asserter: { ref: asserter-hickson2019, type: D7.Person }
+    evidence: [ { locator: L-dq-03, role: SUPPORTS, origin: DECLARED } ]
+    context: null
+    validTime: { validFrom: "2019-09-18T00:00:00Z", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-dq-senescence-biomarker-path" }
+
+adjudications:
+  - id: ADJ-dq-01
+    uid: "hu:adjudication:fx-d2-dq-01"
+    assesses: A-dq-01
+    adjudicationKind: CAPTURE_FIDELITY
+    judgeKind: DETERMINISTIC
+    methodVersion: "d2-fixture-quote-reselect/v1"
+    verdict: DIRECTLY_SUPPORTED
+    policyOutcome: PASS
+    evidence: [ { locator: L-dq-02, role: SUPPORTS, origin: DECLARED } ]
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-dq-senescence-biomarker-path" }
+
+seamRecords:
+  # D3 dose of record for the registered D+Q group (shape only; D3 builds these from the registry version it captures).
+  - id: IC-dq-01
+    owner: D3
+    type: D3.InterventionComponent
+    arm: arm-dq
+    administers: dasatinib          # via the D1 material that REALIZES_SUBSTANCE dasatinib (D3 ADMINISTERS targets materials)
+    properties: { componentRole: ACTIVE, materialTextVerbatim: "Dasatinib", quantity: 100, unitCode: "mg", quantityBasis: PER_DAY, route: ORAL, durationIso: P3D,
+                  verbatimDoseText: "Dasatinib - take one 100 mg tablet by mouth once daily for 3 consecutive days." }
+    evidence: [L-dq-09, L-dq-08]
+  - id: IC-dq-02
+    owner: D3
+    type: D3.InterventionComponent
+    arm: arm-dq
+    administers: quercetin
+    properties: { componentRole: ACTIVE, materialTextVerbatim: "Quercetin", quantity: 1000, unitCode: "mg", quantityBasis: PER_DAY, route: ORAL, durationIso: P3D,
+                  verbatimDoseText: "Quercetin - take four 250 mg capsules daily (total 1000 mg daily) for 3 consecutive days." }
+    evidence: [L-dq-10, L-dq-08]
+
+derivedEdges:
+  - type: AFFECTS_MECHANISM
+    from: dq
+    to: m-senescence
+    properties: { derivationRule: d2.affects-mechanism/v1, derivedFromAssertionUids: ["hu:assertion:fx-d2-dq-01"], direction: DECREASES, bestBasis: DIRECT_MEASUREMENT, highestSetting: HUMAN_INTERVENTIONAL, humanMeasured: true, nContexts: 1, nHumanContexts: 1, nNoChangeContexts: 0, viaParticipant: false, score: 1.0 }
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-projection" }
+crossDomainPath:
+  pattern: "03-retrieval-patterns.md#Q-D2-03"
+  rows:
+    - { modulator: "D+Q (D5 Intervention)", hop1: "AFFECTS_MECHANISM DECREASES, humanMeasured true (A-dq-01)", mechanism: "cellular senescence GO:0090398",
+        hop2: "REFLECTS_MECHANISM (A-dq-06)", biomarker: "p16INK4A-expressing cell abundance", hop3: "QUANTIFIES", metric: "p16INK4A+ cells in abdominal subcutaneous adipose tissue (IHC), UBERON:0014455",
+        test: "none orderable; research IHC (AssayVersion CINtec E6H4)", compartmentMatch: SAME_COMPARTMENT }
+    - { modulator: "D+Q", mechanism: "cellular senescence", hop2: "REFLECTS_MECHANISM (A-dq-07)", biomarker: "SAbetagal+ cell abundance", metric: null, test: null, compartmentMatch: null }
+    - { modulator: "nicotinamide riboside (D1)", hop1: "AFFECTS_MECHANISM MIXED via NAAD/NAD+ participants (../nr-muscle-unstructured)", mechanism: "Nicotinate metabolism R-HSA-196807",
+        hop2: "analyte-participant (D4 HAS_ANALYTE NAD+ -> PARTICIPATES_IN)", biomarker: "NAD+ (D4)", metric: "NAD+ in red blood cells / whole blood (D4 fixture nr-nad-compound-to-test)",
+        test: "Jinfiniti Intracellular NAD test (D4/D6)", compartmentMatch: DIFFERENT_COMPARTMENT, note: "NR finding is skeletal muscle (UBERON:0001379); the consumer test measures blood" }

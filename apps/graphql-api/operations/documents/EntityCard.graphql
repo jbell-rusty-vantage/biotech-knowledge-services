@@ -1,0 +1,52 @@
+# Entity card: one entity by uid through the Entity interface root (one indexed uid branch per implementing label).
+query EntityCard($uid: String!) {
+  entities(where: { uid: { eq: $uid } }, limit: 1) {
+    __typename
+    uid
+    name
+    privacyClass
+    createdAt
+    updatedAt
+    ... on Product {
+      productKind
+      marketedName
+      jurisdiction
+    }
+    ... on Organization {
+      organizationKind
+      legalName
+      jurisdiction
+      status
+      description
+    }
+    ... on ChemicalSubstance {
+      substanceClass
+      molecularFormula
+      molecularWeight
+    }
+    ... on IngredientMaterial {
+      materialKind
+      brandName
+      physicalForm
+    }
+    ... on Person {
+      publicActorBasis
+      credentialsVerbatim
+      description
+    }
+    ... on Study {
+      studyKind
+      acronym
+      phase
+      overallStatus
+    }
+    ... on Biomarker {
+      biomarkerKind
+      description
+    }
+    ... on Condition {
+      conditionKind
+      description
+    }
+  }
+}

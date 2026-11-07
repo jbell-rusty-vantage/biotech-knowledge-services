@@ -1,0 +1,33 @@
+"""
+Purpose: an external identifier string with scheme and issuer (PMID, DOI, NCT, UNII, CAS, GTIN, LOINC, ...; the
+scheme register is packets/K/identifier-schemes.yaml). Identity rule: (scheme, issuer, normalized value), unique;
+the same (scheme, value) from two issuers never establishes identity; names never establish identity; one Identifier
+identifies at most one Subjectable, so no cross-type join runs through a shared Identifier (R-42). Trade-item
+identifiers (GTIN, UPC, EAN, ASIN, SKU) are Identifiers with those schemes. uid token: `identifier`.
+Questions: Q-K-12, Q-K-13.
+"""
+type Identifier implements Entity
+  @node(labels: ["Identifier", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Scheme code from the register (upper case)."
+  scheme: String!
+  issuer: String!
+  "Normalized value (normalizationRule applied)."
+  value: String!
+  normalizationRule: String
+  "Scheme-level validity of the identifier string itself (e.g. a deprecated code)."
+  validFrom: DateTime
+  validTo: DateTime
+  """class: asserted (inverse); cardinality: many (episodes carry assignment validity); questions: Q-K-12, Q-K-13."""
+  identifies: [Subjectable!]!
+    @relationship(type: "HAS_IDENTIFIER", direction: IN, properties: "IdentifierLinkProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

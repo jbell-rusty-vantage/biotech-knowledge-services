@@ -1,0 +1,378 @@
+# Assertions for fixture vitamin-b6-threshold-harm (FIXTURES stage, A2, 2026-10-08) — harm case.
+# Kernel Assertion shape (A1 packets/K); locators in locators.yaml (verified offsets in fresh captures).
+# producedBy ids are FIXTURE ids (mission:ft-D1-fixtures / run:ft-D1-<fixture>), not live Mission Control ids.
+# Harm is never a D1 property (00-DIRECTIVE 3.2): it is a D5 SAFETY_SIGNAL Assessment (effectDirection HARM) and D5
+# threshold Assertions about the D1 Constituent; D1 supplies the identity edges and the derived amounts they compare.
+# Adversarial review (2026-10-08): b05 NUTRIENT_EXPRESSED_AS is predicate-only (no typed edge); d01/d02 use D5's
+# HAS_UPPER_LIMIT with a limitKind qualifier (requested values SCHEDULING_THRESHOLD, LABEL_WARNING_THRESHOLD, OQ-D1-03);
+# the threshold screen is one CALCULATED Assertion per (label, threshold) pair (c10a-c10d); D6 lines carry massBasis
+# (D1 MassBasis) on ComponentLineProperties since D6's adversarial review.
+fixture: vitamin-b6-threshold-harm
+producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+activities:
+  - { ref: act-ingest, activityKind: INGESTION, agent: "agent:a2-d1-fixtures", missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+  - { ref: act-project, activityKind: PROJECTION, agent: "agent:d1-amount-projection", methodVersion: "d1-amounts/v1", missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+
+nodes:
+  - { ref: con-b6, module: D1, type: Constituent, name: "Vitamin B6", properties: { constituentKind: NUTRIENT, nutrientKind: VITAMIN, referenceUnitCode: "mg", searchText: "vitamin B6 | pyridoxine | pyridoxal | pyridoxamine | P-5-P | P5P | pyridoxal 5-phosphate | pyridoxine hydrochloride" } }
+  - { ref: sub-p5p, module: D1, type: ChemicalSubstance, name: "Pyridoxal phosphate anhydrous", properties: { substanceClass: CHEMICAL, molecularFormula: "C8H10NO6P", molecularWeight: 247.1422 }, identifiers: [ { scheme: UNII, issuer: "FDA GSRS", value: "F06SGE49M6", evidence: l-gsrsf06-version } ] }
+  - { ref: sub-pyridoxine, module: D1, type: ChemicalSubstance, name: "PYRIDOXINE", properties: { substanceClass: CHEMICAL, molecularFormula: "C8H11NO3", molecularWeight: 169.1782 }, identifiers: [ { scheme: UNII, issuer: "FDA GSRS", value: "KV2JZ1BI6Z", evidence: l-gsrskv2-version } ] }
+  - { ref: sub-pyridoxine-hcl, module: D1, type: ChemicalSubstance, name: "PYRIDOXINE HYDROCHLORIDE", properties: { substanceClass: CHEMICAL, molecularFormula: "C8H11NO3.ClH" }, identifiers: [ { scheme: UNII, issuer: "FDA GSRS", value: "68Y4CF58BV" } ] }
+  - { ref: mat-p5p-cl, module: D1, type: IngredientMaterial, name: "Pyridoxal 5-Phosphate (as listed on Country Life P-5-P 50 mg)", properties: { materialKind: CHEMICALLY_DEFINED } }
+  - { ref: lv-us-326829, module: D6, type: LabelVersion, name: "Country Life P-5-P 50 mg — US label (DSLD 326829)", properties: { maxDailyServings: 1 }, identifiers: [ { scheme: DSLD, issuer: "NIH ODS", value: "326829" } ] }
+  - { ref: lv-us-309443, module: D6, type: LabelVersion, name: "EuroMedica Magnesium + P-5-P — US label (DSLD 309443)", properties: { maxDailyServings: 4 }, identifiers: [ { scheme: DSLD, issuer: "NIH ODS", value: "309443" } ] }
+  - { ref: org-tga, module: D7, type: Organization, name: "Therapeutic Goods Administration (Australia)" }
+  - { ref: org-nih-ods, module: D7, type: Organization, name: "NIH Office of Dietary Supplements" }
+  - { ref: org-fda-srs, module: D7, type: Organization, name: "FDA Substance Registration System (GSRS)" }
+  - { ref: org-country-life, module: D7, type: Organization, name: "Country Life (label brand)" }
+  - { ref: org-euromedica, module: D7, type: Organization, name: "EuroMedica (label brand)" }
+  - { ref: agent-projection, module: K, type: Agent, name: "agent:d1-amount-projection (d1-amounts/v1)" }
+
+assertions:
+  # ---------- vitamer -> nutrient membership (COUNTS_TOWARD_NUTRIENT) ----------
+  - id: b01-p5p-counts-tga
+    predicate: COUNTS_TOWARD_NUTRIENT
+    assertionKind: RELATIONSHIP
+    subject: { ref: sub-p5p, type: ChemicalSubstance }
+    object: { ref: con-b6, type: Constituent }
+    asserter: { ref: org-tga, type: Organization }
+    locators: [l-tga-b6-forms]
+    qualifiers: ["jurisdiction AU", "TGA lists pyridoxal 5-phosphate (and its monohydrate) as forms of vitamin B6 in low-risk products"]
+    speechAct: STATES
+    polarity: POSITIVE
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    edge: { type: COUNTS_TOWARD_NUTRIENT, properties: AssertedRecordedProperties, episode: recorded-only }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+  - id: b02-p5p-counts-ods
+    predicate: COUNTS_TOWARD_NUTRIENT
+    assertionKind: RELATIONSHIP
+    subject: { ref: sub-p5p, type: ChemicalSubstance }
+    object: { ref: con-b6, type: Constituent }
+    asserter: { ref: org-nih-ods, type: Organization }
+    locators: [l-ods-vitamers]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    edge: { type: COUNTS_TOWARD_NUTRIENT, episode: "corroborates b01 (same edge)" }
+    note: "ODS: six vitamers incl. 'their respective 5'-phosphate esters' — pyridoxal 5'-phosphate is one of them"
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+  - id: b03-pyridoxine-hcl-counts
+    predicate: COUNTS_TOWARD_NUTRIENT
+    assertionKind: RELATIONSHIP
+    subject: { ref: sub-pyridoxine-hcl, type: ChemicalSubstance }
+    object: { ref: con-b6, type: Constituent }
+    asserter: { ref: org-tga, type: Organization }
+    locators: [l-tga-b6-forms]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    edge: { type: COUNTS_TOWARD_NUTRIENT, properties: AssertedRecordedProperties }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+  - id: b04-pyridoxine-counts
+    predicate: COUNTS_TOWARD_NUTRIENT
+    assertionKind: RELATIONSHIP
+    subject: { ref: sub-pyridoxine, type: ChemicalSubstance }
+    object: { ref: con-b6, type: Constituent }
+    asserter: { ref: org-nih-ods, type: Organization }
+    locators: [l-ods-vitamers]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    edge: { type: COUNTS_TOWARD_NUTRIENT, properties: AssertedRecordedProperties }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+
+  # ---------- nutrient reference form (NUTRIENT_EXPRESSED_AS, predicate-only Assertion with jurisdiction) ----------
+  - id: b05-expressed-as-pyridoxine
+    predicate: NUTRIENT_EXPRESSED_AS
+    assertionKind: RELATIONSHIP
+    subject: { ref: con-b6, type: Constituent }
+    object: { ref: sub-pyridoxine, type: ChemicalSubstance }
+    asserter: { ref: org-tga, type: Organization }
+    locators: [l-tga-b6-asequivalent]
+    qualifiers: ["jurisdiction AU", "TGA states that ARTG PDF summaries give the amount of a vitamin B6 ingredient as the equivalent amount of pyridoxine (no ARTG PDF was fetched)"]
+    speechAct: STATES
+    polarity: POSITIVE
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN, statedAsOf: "2026-10-08T00:00:00Z", statedAsOfPrecision: DAY }
+    edge: { type: NUTRIENT_EXPRESSED_AS, written: false, reason: "predicate-only since the adversarial review (05 predicateOnly): the projection reads this Assertion filtered by its jurisdiction qualifier and valid time and cites it in DERIVED_FROM; no typed edge is written" }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+
+  # ---------- salt -> moiety, and its absence for P5P ----------
+  - id: b06-hcl-moiety
+    predicate: HAS_ACTIVE_MOIETY
+    assertionKind: RELATIONSHIP
+    subject: { ref: sub-pyridoxine-hcl, type: ChemicalSubstance }
+    object: { ref: sub-pyridoxine, type: ChemicalSubstance }
+    asserter: { ref: org-fda-srs, type: Organization }
+    locators: [l-gsrs68y4-moiety]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    edge: { type: HAS_ACTIVE_MOIETY, properties: AssertedRecordedProperties, episode: recorded-only }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+  - id: b07-p5p-self-moiety
+    predicate: HAS_ACTIVE_MOIETY
+    assertionKind: RELATIONSHIP
+    subject: { ref: sub-p5p, type: ChemicalSubstance }
+    object: { ref: sub-p5p, type: ChemicalSubstance }
+    asserter: { ref: org-fda-srs, type: Organization }
+    locators: [l-gsrsf06-moiety, l-gsrsf06-version]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    edge: { type: HAS_ACTIVE_MOIETY, written: false, reason: "self-moiety: no edge is written (a substance without an outgoing HAS_ACTIVE_MOIETY is its own moiety). This is why P5P -> pyridoxine equivalence must ride on COUNTS_TOWARD_NUTRIENT + NUTRIENT_EXPRESSED_AS + rule:nutrient-equivalent.v1, never on HAS_ACTIVE_MOIETY." }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+  - id: b08-mw-p5p
+    predicate: MOLECULAR_WEIGHT
+    assertionKind: FIELD
+    subject: { ref: sub-p5p, type: ChemicalSubstance }
+    literal: { valueNumber: 247.1422, unitCode: "g/mol" }
+    qualifiers: ["GSRS record F06SGE49M6 version 32 (/structure/mwt)"]
+    asserter: { ref: org-fda-srs, type: Organization }
+    locators: [l-gsrsf06-mwt, l-gsrsf06-version]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+  - id: b09-mw-pyridoxine
+    predicate: MOLECULAR_WEIGHT
+    assertionKind: FIELD
+    subject: { ref: sub-pyridoxine, type: ChemicalSubstance }
+    literal: { valueNumber: 169.1782, unitCode: "g/mol" }
+    qualifiers: ["GSRS record KV2JZ1BI6Z version 38 (/structure/mwt)"]
+    asserter: { ref: org-fda-srs, type: Organization }
+    locators: [l-gsrskv2-mwt, l-gsrskv2-version]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+  - id: b10-realizes-p5p
+    predicate: REALIZES_SUBSTANCE
+    assertionKind: RELATIONSHIP
+    subject: { ref: mat-p5p-cl, type: IngredientMaterial }
+    object: { ref: sub-p5p, type: ChemicalSubstance }
+    asserter: { ref: org-nih-ods, type: Organization }
+    locators: [l-dsld326829-p5pname]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    edge: { type: REALIZES_SUBSTANCE, properties: AssertedRecordedProperties }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+
+  # ---------- D6 seam: label declarations (two bases on one label) ----------
+  - id: b11-declares-p5p
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    subject: { ref: lv-us-326829, type: LabelVersion, module: D6 }
+    object: { ref: mat-p5p-cl, type: IngredientMaterial }
+    asserter: { ref: org-country-life, type: Organization }
+    locators: [l-dsld326829-p5p, l-dsld326829-p5pname]
+    speechAct: STATES
+    basisKind: MANUFACTURER_CLAIM
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2025-03-25T00:00:00Z" }
+    edge: { type: DECLARES_COMPONENT, module: D6, properties: { orderIndex: 1, lineRole: DIETARY_INGREDIENT, declaredNameVerbatim: "Pyridoxal 5-Phosphate", amount: 50, unitCode: "mg", amountReferent: AS_NAMED, amountBasis: PER_SERVING, massBasis: SALT_FORM } }
+    note: "D6 ComponentLineProperties (asserted line, AssertedRecordedProperties superset, D6 adversarial review); massBasis SALT_FORM (D1 MassBasis) = 'the listed salt/ester/hydrate form as named' (P5P is a phosphate ester); statedAsOf = DSLD entryDate 2025-03-25"
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+  - id: b12-declares-b6
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    subject: { ref: lv-us-326829, type: LabelVersion, module: D6 }
+    object: { ref: con-b6, type: Constituent }
+    asserter: { ref: org-country-life, type: Organization }
+    locators: [l-dsld326829-b6, l-dsld326829-b6name]
+    speechAct: STATES
+    basisKind: MANUFACTURER_CLAIM
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2025-03-25T00:00:00Z" }
+    edge: { type: DECLARES_COMPONENT, module: D6, properties: { orderIndex: 0, lineRole: NUTRIENT, declaredNameVerbatim: "Vitamin B6", formVerbatim: "Pyridoxal 5-Phosphate", amount: 34, unitCode: "mg", amountReferent: AS_NUTRIENT, amountBasis: PER_SERVING, massBasis: NUTRIENT_EQUIVALENT } }
+    note: "DSLD maps the nutrient row to UNII KV2JZ1BI6Z (pyridoxine): DSLD's convention, consistent with the pyridoxine-equivalent reading the stoichiometry check c07 confirms"
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+  - id: b13-max-daily-326829
+    predicate: MAX_DAILY_SERVINGS
+    assertionKind: FIELD
+    subject: { ref: lv-us-326829, type: LabelVersion, module: D6 }
+    literal: { valueNumber: 1, unitCode: "{serving}/d" }
+    asserter: { ref: org-country-life, type: Organization }
+    locators: [l-dsld326829-maxdaily]
+    speechAct: RECOMMENDS
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2025-03-25T00:00:00Z" }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+  - id: b14-declares-309443
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    subject: { ref: lv-us-309443, type: LabelVersion, module: D6 }
+    object: { ref: con-b6, type: Constituent }
+    asserter: { ref: org-euromedica, type: Organization }
+    locators: [l-dsld309443-b6, l-dsld309443-b6group]
+    speechAct: STATES
+    basisKind: MANUFACTURER_CLAIM
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2024-05-23T00:00:00Z" }
+    edge: { type: DECLARES_COMPONENT, module: D6, properties: { orderIndex: 0, lineRole: NUTRIENT, declaredNameVerbatim: "Vitamin B6", formVerbatim: "Pyridoxal 5-Phosphate", amount: 10, unitCode: "mg", amountReferent: AS_NUTRIENT, amountBasis: PER_SERVING, massBasis: UNSPECIFIED } }
+    note: "the label does not say whether 10 mg is P5P mass or pyridoxine equivalent (CQ-PF-01): massBasis UNSPECIFIED, both readings computed in c09"
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+  - id: b15-max-daily-309443
+    predicate: MAX_DAILY_SERVINGS
+    assertionKind: FIELD
+    subject: { ref: lv-us-309443, type: LabelVersion, module: D6 }
+    literal: { valueNumber: 4, unitCode: "{serving}/d" }
+    asserter: { ref: org-euromedica, type: Organization }
+    locators: [l-dsld309443-maxdaily]
+    speechAct: RECOMMENDS
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2024-05-23T00:00:00Z" }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+
+  # ---------- D5 seam: regulator thresholds (D5 owns HAS_UPPER_LIMIT; shown as the comparison input) ----------
+  - id: d01-threshold-au-2027
+    predicate: HAS_UPPER_LIMIT
+    assertionKind: FIELD
+    subject: { ref: con-b6, type: Constituent }
+    literal: { valueNumber: 50, unitCode: "mg/d" }
+    qualifiers: ["limitKind:SCHEDULING_THRESHOLD", "jurisdiction AU", "per (maximum) recommended daily dose, oral preparations", "> 50 mg to <= 200 mg: Pharmacist Only Medicine; > 200 mg: prescription", "final decision released 25 November 2025", "at least 125 medicines above 50 mg at the time of the decision"]
+    asserter: { ref: org-tga, type: Organization }
+    locators: [l-tga-b6-schedule, l-tga-b6-effective, l-tga-b6-final, l-tga-b6-count]
+    speechAct: STATES
+    validTime: { validFrom: "2027-06-01T00:00:00Z", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: UNKNOWN }
+    module: D5
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+  - id: d02-warning-threshold-au-2022
+    predicate: HAS_UPPER_LIMIT
+    assertionKind: FIELD
+    subject: { ref: con-b6, type: Constituent }
+    literal: { valueNumber: 10, unitCode: "mg/d" }
+    qualifiers: ["limitKind:LABEL_WARNING_THRESHOLD", "jurisdiction AU", "label warning statement required for daily doses over 10 mg 'or equivalent'"]
+    asserter: { ref: org-tga, type: Organization }
+    locators: [l-tga-b6-warning2022]
+    speechAct: STATES
+    validTime: { validFrom: "2022-03-01T00:00:00Z", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: UNKNOWN }
+    module: D5
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+
+  # ---------- derived amounts and comparisons (CALCULATED) ----------
+  - id: c06-nutrient-equivalent-326829
+    predicate: NUTRIENT_EQUIVALENT_AMOUNT
+    assertionKind: COMPUTATION
+    basisKind: CALCULATED
+    derivationRule: "rule:nutrient-equivalent.v1"
+    subject: { ref: lv-us-326829, type: LabelVersion, module: D6 }
+    object: { ref: con-b6, type: Constituent }
+    literal: { valueNumber: 34.2, unitCode: "mg" }
+    qualifiers: ["per serving", "50 mg P5P x 169.1782 / 247.1422 = 34.227 mg pyridoxine equivalent", "reference form from the NUTRIENT_EXPRESSED_AS Assertion b05 (predicate-only, jurisdiction AU)"]
+    asserter: { ref: agent-projection, type: Agent }
+    derivedFrom: [b11-declares-p5p, b10-realizes-p5p, b01-p5p-counts-tga, b05-expressed-as-pyridoxine, b08-mw-p5p, b09-mw-pyridoxine]
+    locators: []
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2025-03-25T00:00:00Z" }
+    generatedBy: act-project
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+  - id: c07-stoichiometry-326829
+    predicate: DECLARATION_STOICHIOMETRY_CHECK
+    assertionKind: COMPUTATION
+    basisKind: CALCULATED
+    derivationRule: "rule:nutrient-equivalent.v1 (tolerance 1 mg or 5%)"
+    subject: { ref: lv-us-326829, type: LabelVersion, module: D6 }
+    object: { ref: con-b6, type: Constituent }
+    literal: { valueBoolean: true, valueNumber: -0.23, unitCode: "mg" }
+    qualifiers: ["declared 34 mg vitamin B6 minus derived 34.23 mg = -0.23 mg: the label's 34 mg is the pyridoxine equivalent of its 50 mg P5P"]
+    asserter: { ref: agent-projection, type: Agent }
+    derivedFrom: [b12-declares-b6, c06-nutrient-equivalent-326829]
+    locators: []
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2025-03-25T00:00:00Z" }
+    generatedBy: act-project
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+  - id: c08-max-day-326829
+    predicate: PER_MAX_DAILY_DOSE_AMOUNT
+    assertionKind: COMPUTATION
+    basisKind: CALCULATED
+    derivationRule: "rule:daily-max.v1"
+    subject: { ref: lv-us-326829, type: LabelVersion, module: D6 }
+    object: { ref: con-b6, type: Constituent }
+    literal: { valueNumber: 34.2, unitCode: "mg/d" }
+    qualifiers: ["34.227 mg x 1 serving/day", "massBasis NUTRIENT_EQUIVALENT (as pyridoxine)"]
+    asserter: { ref: agent-projection, type: Agent }
+    derivedFrom: [c06-nutrient-equivalent-326829, b13-max-daily-326829]
+    locators: []
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2025-03-25T00:00:00Z" }
+    generatedBy: act-project
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+  - id: c09-max-day-309443
+    predicate: PER_MAX_DAILY_DOSE_AMOUNT
+    assertionKind: COMPUTATION
+    basisKind: CALCULATED
+    derivationRule: "rule:daily-max.v1"
+    subject: { ref: lv-us-309443, type: LabelVersion, module: D6 }
+    object: { ref: con-b6, type: Constituent }
+    literal: { valueNumber: 40, unitCode: "mg/d" }
+    qualifiers: ["10 mg x 4 servings/day as declared (massBasis UNSPECIFIED)", "if the 10 mg were P5P mass: 10 x 0.684538 x 4 = 27.4 mg/d pyridoxine equivalent (rule:nutrient-equivalent.v1); upper reading kept for the threshold screen"]
+    asserter: { ref: agent-projection, type: Agent }
+    derivedFrom: [b14-declares-309443, b15-max-daily-309443, b08-mw-p5p, b09-mw-pyridoxine]
+    locators: []
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2024-05-23T00:00:00Z" }
+    generatedBy: act-project
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+  # Threshold screen: one CALCULATED Assertion per (label version, threshold) pair, each citing only its own daily amount and
+  # its own threshold (adversarial review: the former single c10 stored one valueBoolean for four comparisons).
+  # A US label screened against an AU threshold is a cross-jurisdiction comparison for a person's own avoidance question
+  # (Q-D1-03), never a regulatory finding.
+  - id: c10a-326829-vs-au-scheduling
+    predicate: EXCEEDS_DOSE_THRESHOLD
+    assertionKind: COMPUTATION
+    basisKind: CALCULATED
+    derivationRule: "rule:threshold-compare.v1 (value > threshold, same unit and basis)"
+    subject: { ref: lv-us-326829, type: LabelVersion, module: D6 }
+    object: { ref: con-b6, type: Constituent }
+    literal: { valueBoolean: false }
+    qualifiers: ["threshold=d01-threshold-au-2027", "34.2 mg/d (pyridoxine equivalent) vs AU 50 mg/d scheduling threshold (from 2027-06-01): not above"]
+    asserter: { ref: agent-projection, type: Agent }
+    derivedFrom: [c08-max-day-326829, d01-threshold-au-2027]
+    locators: []
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2026-10-08T00:00:00Z" }
+    generatedBy: act-project
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+  - id: c10b-326829-vs-au-warning
+    predicate: EXCEEDS_DOSE_THRESHOLD
+    assertionKind: COMPUTATION
+    basisKind: CALCULATED
+    derivationRule: "rule:threshold-compare.v1 (value > threshold, same unit and basis)"
+    subject: { ref: lv-us-326829, type: LabelVersion, module: D6 }
+    object: { ref: con-b6, type: Constituent }
+    literal: { valueBoolean: true }
+    qualifiers: ["threshold=d02-warning-threshold-au-2022", "34.2 mg/d (pyridoxine equivalent) vs AU 10 mg/d label-warning threshold (since 2022-03-01): above — an AU product at this dose would carry the warning statement"]
+    asserter: { ref: agent-projection, type: Agent }
+    derivedFrom: [c08-max-day-326829, d02-warning-threshold-au-2022]
+    locators: []
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2026-10-08T00:00:00Z" }
+    generatedBy: act-project
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+  - id: c10c-309443-vs-au-scheduling
+    predicate: EXCEEDS_DOSE_THRESHOLD
+    assertionKind: COMPUTATION
+    basisKind: CALCULATED
+    derivationRule: "rule:threshold-compare.v1 (value > threshold, same unit and basis)"
+    subject: { ref: lv-us-309443, type: LabelVersion, module: D6 }
+    object: { ref: con-b6, type: Constituent }
+    literal: { valueBoolean: false }
+    qualifiers: ["threshold=d01-threshold-au-2027", "40 mg/d as declared (upper reading; 27.4 mg/d if the 10 mg is P5P mass) vs AU 50 mg/d scheduling threshold (from 2027-06-01): not above under either reading"]
+    asserter: { ref: agent-projection, type: Agent }
+    derivedFrom: [c09-max-day-309443, d01-threshold-au-2027]
+    locators: []
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2026-10-08T00:00:00Z" }
+    generatedBy: act-project
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+  - id: c10d-309443-vs-au-warning
+    predicate: EXCEEDS_DOSE_THRESHOLD
+    assertionKind: COMPUTATION
+    basisKind: CALCULATED
+    derivationRule: "rule:threshold-compare.v1 (value > threshold, same unit and basis)"
+    subject: { ref: lv-us-309443, type: LabelVersion, module: D6 }
+    object: { ref: con-b6, type: Constituent }
+    literal: { valueBoolean: true }
+    qualifiers: ["threshold=d02-warning-threshold-au-2022", "40 mg/d as declared (27.4 mg/d if the 10 mg is P5P mass) vs AU 10 mg/d label-warning threshold (since 2022-03-01): above under either reading"]
+    asserter: { ref: agent-projection, type: Agent }
+    derivedFrom: [c09-max-day-309443, d02-warning-threshold-au-2022]
+    locators: []
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2026-10-08T00:00:00Z" }
+    generatedBy: act-project
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }
+
+assessments:
+  - id: s01-b6-neuropathy-signal
+    assessmentKind: SAFETY_SIGNAL
+    assessmentSubkind: "D5.threshold-harm"
+    about: [ { ref: con-b6, type: Constituent } ]
+    effectDirection: HARM
+    inputAssertions: [d01-threshold-au-2027, d02-warning-threshold-au-2022]
+    evidence: [ { locator: l-tga-b6-neuropathy, role: SUPPORTS }, { locator: l-tga-b6-chemname, role: SUPPORTS }, { locator: l-tga-b6-count, role: CONTEXT } ]
+    summary: "TGA: vitamin B6 can cause peripheral neuropathy; risk greatest at higher intakes but not excluded below 50 mg/day; consumers miss B6 when labels list only the chemical name. The harm attaches to the nutrient (all forms that COUNT_TOWARD it), not to any one label."
+    methodVersion: "d5-safety-signal/v1 (fixture)"
+    status: PROPOSED
+    module: D5
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-vitamin-b6-threshold-harm" }

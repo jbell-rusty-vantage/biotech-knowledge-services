@@ -1,0 +1,43 @@
+"""
+Purpose: one curated goal people pursue (sleep, strength, brain fitness, body composition, longevity, energy, mood,
+recovery ...): the shared targets vocabulary (00-DIRECTIVE 3.1; packets/D5/vocab-targets.yaml). Every "what helps /
+hurts T" and "what is this for" question starts or ends here. Means never point at a Target with a typed edge or a
+property: they reach it as the object of a kernel Assertion (predicate INTENDED_FOR_TARGET | IMPROVES_TARGET |
+WORSENS_TARGET | NO_EFFECT_ON_TARGET | MIXED_EFFECT_ON_TARGET) or of a kernel Assessment (ASSESSES, effectDirection).
+Hierarchy is the `parentKey` property (2 levels). Not a molecular target (D2), not a Condition (D2), not a Frontier (D13).
+Identity rule: `key` (target:<slug>), stable, never reused; MeSH / Wikidata ids attach through the kernel.
+Not a D2 Outcome either: an Outcome is a study-independent endpoint concept (all-cause mortality, handgrip strength,
+sleep quality as an endpoint) that a Target is OPERATIONALIZED_BY; the Target is what a person pursues, the Outcome
+how a study scores it (09 D-19).
+uid token: `target` (hu:target:<slug>).
+Questions: Q-D5-01, Q-D5-02, Q-D5-03, Q-D5-14, Q-D5-15, Q-D5-18, Q-D5-19, Q-D5-20, Q-D5-28.
+"""
+type Target implements Entity & Subjectable
+  @node(labels: ["Target", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Stable vocabulary key, e.g. target:sleep (unique)."
+  key: String!
+  label: String!
+  definition: String!
+  "Parent key for a level-2 target (target:fat-loss -> target:body-composition); null at top level."
+  parentKey: String
+  level: Int
+  "Feeds the fulltext index TargetSearch(label, synonyms, definition) used for entity linking of goal phrases."
+  synonyms: [String!]
+  "vocab-targets.yaml version at creation or last edit."
+  vocabVersion: String!
+  status: TargetStatus!
+  replacedBy: String
+  """class: asserted, recorded time only (R-26: a curator states the mapping; the authorizing Assertion carries basis CURATOR_CLASSIFICATION, R-25); cardinality: many (curated vocabulary mapping, not a claim of effect); questions: Q-D5-01, Q-D5-14, Q-D5-20, Q-D3-04, Q-D3-05."""
+  operationalizedBy: [TargetMeasure!]!
+    @relationship(type: "OPERATIONALIZED_BY", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

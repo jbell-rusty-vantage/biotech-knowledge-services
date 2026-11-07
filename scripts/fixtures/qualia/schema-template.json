@@ -1,0 +1,37 @@
+{
+  "templateOnly": true,
+  "instructions": "NONEXECUTABLE TEMPLATE: replace every <PLACEHOLDER> with captured source facts and computed digests. Remove any unproven optional subject, property or edge. Never ingest this template as evidence. Duplicate product/variant/package/label refs for a second product. Every new subject also requires subjectEvidence in buildQualiaIntent.",
+  "subjects": [
+    {"ref":"org","mode":"new","nodeType":"Organization","name":"<SOURCE_ORGANIZATION_NAME>","properties":{"entityKind":"UNSPECIFIED","organizationKind":"SUPPLEMENT_OR_CONSUMER_HEALTH"},"onMatch":"review"},
+    {"ref":"person","mode":"new","nodeType":"Person","name":"<PUBLIC_PERSON_FULL_NAME>","properties":{"privacyClass":"PUBLIC","publicActorBasis":["OTHER_PUBLIC_ROLE"]},"onMatch":"review"},
+    {"ref":"brand","mode":"new","nodeType":"Brand","name":"<SOURCE_BRAND_NAME>","properties":{"brandKind":"CONSUMER_PRODUCT"},"onMatch":"review"},
+    {"ref":"product","mode":"new","nodeType":"Product","name":"<MARKETED_PRODUCT_NAME>","properties":{"productKind":"DIETARY_SUPPLEMENT","marketedName":"<MARKETED_PRODUCT_NAME>"},"onMatch":"review"},
+    {"ref":"variant","mode":"new","nodeType":"ProductVariant","name":"<SOURCE_VARIANT_DESCRIPTION>","properties":{},"onMatch":"review"},
+    {"ref":"package","mode":"new","nodeType":"Package","name":"<SOURCE_PACKAGE_DESCRIPTION>","properties":{"packageKind":"CONTAINER"},"onMatch":"review"},
+    {"ref":"label","mode":"new","nodeType":"LabelVersion","name":"<SOURCE_LABEL_VERSION_DESCRIPTION>","properties":{"panelKind":"SUPPLEMENT_FACTS","contentDigest":"sha256:<HASH_OF_NORMALIZED_CAPTURED_PANEL>","compositionDigest":"sha256:<HASH_OF_NORMALIZED_CAPTURED_COMPOSITION>"},"onMatch":"review"},
+    {"ref":"material","mode":"new","nodeType":"IngredientMaterial","name":"<PRECISE_SOURCE_INGREDIENT_MATERIAL>","properties":{"materialKind":"CHEMICALLY_DEFINED"},"onMatch":"review"},
+    {"ref":"chemical","mode":"new","nodeType":"ChemicalSubstance","name":"<IDENTIFIED_SOURCE_CHEMICAL_SUBSTANCE>","properties":{},"onMatch":"review"}
+  ],
+  "subjectEvidence": {"org":["company-quote"],"person":["public-role-quote"],"brand":["brand-quote"],"product":["product-quote"],"variant":["variant-quote"],"package":["package-quote"],"label":["panel-quote"],"material":["ingredient-quote"],"chemical":["substance-identity-quote"]},
+  "proposals": [
+    {"proposalId":"p-variant","kind":"edge.structural","relationshipType":"HAS_VARIANT","fromRef":"product","toRef":"variant"},
+    {"proposalId":"p-package","kind":"edge.structural","relationshipType":"HAS_PACKAGE","fromRef":"variant","toRef":"package"},
+    {"proposalId":"label-state","kind":"edge.assert","relationshipType":"HAS_LABEL_VERSION","fromRef":"package","toRef":"label","asserterRef":"org","evidence":["panel-quote"],"assertion":{"speechAct":"STATES","validity":{"validFromBasis":"OBSERVATION_ONLY","validObservedAt":"<ACTUAL_CAPTURE_RFC3339_UTC_INSTANT>"}}},
+    {"proposalId":"declared-component","kind":"edge.assert","relationshipType":"DECLARES_COMPONENT","fromRef":"label","toRef":"material","asserterRef":"org","evidence":["ingredient-quote"],"edgeProperties":{"lineRole":"DIETARY_INGREDIENT","orderIndex":1,"amountReferent":"AS_NAMED","amountBasis":"NOT_STATED"},"assertion":{"speechAct":"STATES","validity":{}}},
+    {"proposalId":"material-substance","kind":"edge.assert","relationshipType":"REALIZES_SUBSTANCE","fromRef":"material","toRef":"chemical","asserterRef":"org","evidence":["substance-identity-quote"],"assertion":{"speechAct":"STATES","validity":{}}},
+    {"proposalId":"product-brand","kind":"edge.assert","relationshipType":"BRANDED_AS","fromRef":"product","toRef":"brand","asserterRef":"org","evidence":["brand-quote"],"assertion":{"speechAct":"STATES","validity":{"validObservedAt":"<ACTUAL_CAPTURE_RFC3339_UTC_INSTANT>"}}},
+    {"proposalId":"brand-owner","kind":"edge.assert","relationshipType":"OWNS_BRAND","fromRef":"org","toRef":"brand","asserterRef":"org","evidence":["company-quote"],"assertion":{"speechAct":"STATES","validity":{"validObservedAt":"<ACTUAL_CAPTURE_RFC3339_UTC_INSTANT>"}}},
+    {"proposalId":"public-role","kind":"edge.assert","relationshipType":"HOLDS_ROLE","fromRef":"person","toRef":"org","asserterRef":"org","evidence":["public-role-quote"],"edgeProperties":{"roleKind":"OTHER"},"assertion":{"speechAct":"STATES","validity":{"validObservedAt":"<ACTUAL_CAPTURE_RFC3339_UTC_INSTANT>"}}}
+  ],
+  "notes": [
+    "Source refs, locator refs, subject refs and proposal IDs share one namespace. Use source-label for the source, label for the subject, panel-quote for its locator, and p-label for a proposal; never reuse a ref across categories.",
+    "Organization.entityKind LEGAL_ENTITY and legalName need evidence of actual legal identity; UNSPECIFIED avoids silently treating a brand or trading name as a registered corporation.",
+    "Replace publicActorBasis with the proved enum: OFFICER_OR_DIRECTOR, FOUNDER_OR_INVESTOR, AUTHOR_OR_INVESTIGATOR, SPEAKER_OR_CREATOR, CLINICIAN_PUBLIC_COMMENTATOR, ENDORSER_NAMED_BY_REGULATOR or OTHER_PUBLIC_ROLE. Do not ingest personal contacts, addresses or family data.",
+    "Choose the evidenced materialKind; CHEMICALLY_DEFINED is only a template example. Botanical ingredients can use BOTANICAL_PREPARATION. Label spelling alone does not establish salt, moiety or chemical equivalence: omit REALIZES_SUBSTANCE when unresolved.",
+    "Unknown amount is omitted and amountBasis NOT_STATED. When captured, add numeric amount plus unitCode (for example mg) and actual amountBasis (PER_SERVING, PER_UNIT, PER_DAY, etc.). Never default a dose.",
+    "Only add OWNS_BRAND when ownership is stated; a product page alone can establish branding without corporate ownership.",
+    "Use actual roleKind (FOUNDER, DIRECTOR, ADVISOR, EXECUTIVE_OFFICER, etc.) when proved; do not default every public person to advisor.",
+    "LabelVersion is immutable product content state; SourceSnapshot is the immutable source capture generated from sources[].snapshot. Neither is a generic StateSnapshot node.",
+    "contentDigest hashes the normalized full panel; compositionDigest hashes normalized composition lines. They are different from the raw captured-source contentHash."
+  ]
+}

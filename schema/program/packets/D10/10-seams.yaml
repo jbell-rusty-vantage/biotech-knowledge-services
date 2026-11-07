@@ -1,0 +1,118 @@
+version: 1
+module: D10
+# Every reference from D10 to a type outside the module that is not on packet-check's kernel allowlist
+# (Entity, Subjectable, Assertion, Source, SourceSnapshot, SourceLocator, Adjudication, Activity, Agent, Identifier,
+# Mention, AssertedEdgeProperties, DerivedEdgeProperties, StructuralEdgeProperties, StateEpisodeProperties).
+# Section 2 lists the implicit seams: other modules' types D10 reaches only through the kernel Subjectable pattern
+# or through a property join (no D10 field targets them; listed so the synthesizer sees the dependency).
+# Adversarial-review stage (2026-10-08): + BLOCKED_BY -> D5.UseConstraint (section 1); type names aligned with the owners'
+# SDL (D1.ChemicalSubstance / IngredientMaterial, D4.LabTest); D5.Intervention added to ASSOCIATES; the publisherUid
+# property join moved to sharedVocabularies.propertyJoins (it is not a relationship).
+seams:
+  # ---- 1. Kernel types outside the allowlist that D10 fields target
+  - type: HAS_ITEM
+    from: K.Report
+    to: D10.ReportItem
+    declaredOn: D10.ReportItem.report (direction IN)
+    questions: [CQ-AX-01, CQ-RC-01, Q-D10-02, Q-D10-14]
+    direction: K.Report -> D10.ReportItem
+    owner: this
+  - type: USES_CRITERION
+    from: K.Report
+    to: D10.DecisionCriterion
+    declaredOn: D10.DecisionCriterion.usedByReports (direction IN)
+    questions: [CQ-RC-01, CQ-RC-02, CQ-RC-07, Q-D10-02]
+    direction: K.Report -> D10.DecisionCriterion
+    owner: this
+  - type: DERIVED_FROM
+    from: D10.ReportItem
+    to: K.Assessment
+    declaredOn: D10.ReportItem.citesAssessments
+    questions: [CQ-AX-11, CQ-RC-02, Q-D10-13, Q-D10-16]
+    direction: D10.ReportItem -> K.Assessment
+    owner: this
+    note: "kernel relationship type used with kernel meaning; DERIVED_FROM → Assertion (allowlisted) and → D10.Association are internal"
+  - type: BLOCKED_BY
+    from: D10.ReportItem
+    to: K.Assessment
+    declaredOn: D10.ReportItem.blockedByAssessments
+    questions: [CQ-RC-06, Q-D10-08]
+    direction: D10.ReportItem -> K.Assessment
+    owner: this
+    note: "the blocking Assessment is typically a D5 interaction-risk assessment (assessmentSubkind D5.*) or a D10 harm-causality assessment, used when no source states a use concern"
+  - type: BLOCKED_BY
+    from: D10.ReportItem
+    to: D5.UseConstraint
+    declaredOn: D10.ReportItem.blockedBy
+    questions: [CQ-RC-06, Q-D10-08]
+    direction: D10.ReportItem -> D5.UseConstraint
+    owner: this
+    note: "D5's shared blocking identity (D5 SDL: 'recommendations and answers cite its uid as the blocking constraint (CQ-RC-06)'); trace UseConstraint <- RESOLVES_TO_CONSTRAINT (D5, derived) <- Assertion -> HAS_EVIDENCE -> locator. Replaces D5's proposed 'K.Report ASSESSES D5.UseConstraint' seam for CQ-RC-06 (request to D5 in 11-open-questions #19): ASSESSES on a report means 'about the option or target', not 'blocked by'"
+  - type: ASSESSES
+    from: D10.ReportItem
+    to: K.Subjectable
+    declaredOn: D10.ReportItem.about
+    questions: [CQ-RC-01, CQ-RC-06, Q-D10-02, Q-D10-16]
+    direction: D10.ReportItem -> Subjectable
+    owner: this
+    note: "kernel relationship type with kernel meaning extended to ReportItem; K accepts (A1 owns K and D10); recorded in 11-open-questions.md for the synthesizer"
+
+  # ---- 2. Implicit seams (no D10 field; reached through kernel Subjectable edges or property joins)
+  - type: ASSESSES
+    from: K.Report | K.Assessment | D10.ReportItem
+    to: D5.Target
+    via: kernel ASSESSES → Subjectable (Target implements Subjectable)
+    questions: [Q-D10-01, Q-D10-03, Q-D10-08, CQ-RC-01]
+    direction: out
+    owner: other
+    note: "'for target T' on a comparison, profile or harm assessment; D5 seam rule: no means → Target edge; D10 never declares FOR_TARGET"
+  - type: ASSESSES
+    from: D10.ReportItem
+    to: [D1.ChemicalSubstance, D1.IngredientMaterial, D6.Product, D5.Intervention, D5.ProtocolStep, D12.FoodItem, D4.Device, D4.LabTest]
+    via: kernel ASSESSES → Subjectable
+    questions: [CQ-RC-01, CQ-RC-06, Q-D10-02, Q-D10-16]
+    direction: out
+    owner: other
+    note: "the options a comparison row or protocol-review section is about (a ROW ASSESSES exactly its option); type names from the owners' SDL on 2026-10-08 (D1 has no Compound / IngredientForm; D4 has no PanelDefinition, a panel is a LabTest)"
+  - type: ASSOCIATES
+    from: D10.Association
+    to: [D1.ChemicalSubstance, D1.IngredientMaterial, D2.Outcome, D2.Mechanism, D2.Condition, D2.MolecularEntity, D4.Biomarker, D5.Target, D5.Intervention, D12.FoodItem, D7.Organization, D7.Person]
+    via: Subjectable interface target (derived)
+    questions: [Q-D10-05, Q-D10-06, Q-D10-19]
+    direction: out
+    owner: this
+    note: "BellLabs-computed projections only. Hosts the scored mechanism -> outcome / condition projections D2 handed over when it cut INFLUENCES_OUTCOME, and proposes to hold the score D2 keeps on AFFECTS_MECHANISM (the edge stays a D2 traversal shortcut; contested, 11-open-questions #15). Sibling projections it can host if materialized: D5 Q-D5-19 (intervention co-occurrence, d5-stack-cooccurrence/v1, members D5.Intervention; answers OQ-D5-21), D2 Q-D2-18 / Q-D2-19, D7 Q-D7-22 (evidence-backer share, compound <-> organization) and Q-D7-23 (tie leads). Not D4 Q-D4-25 or D12 Q-D12-20: both stream GDS results and write nothing."
+  - type: CONCERNS / ADDRESSED_TO
+    from: D8.RegulatoryRecord
+    to: "D6.Product | D7.Organization"
+    via: D8 asserted edges, read by Q-D10-25 (enforcement records about a compared product or its maker, through D6's predicate-only MANUFACTURES)
+    questions: [Q-D10-25]
+    direction: out
+    owner: other
+    note: "added in the adversarial-review stage; D10 declares nothing"
+  - type: OCCURRENCE_OF
+    from: K.Assertion (assertionKind CLAIM, speechAct RECOMMENDS) in D9 containers
+    to: K.Claim
+    via: kernel claim-occurrence pattern; containers and speakers D9; interest D7
+    questions: [Q-D10-04, Q-D10-21, Q-D10-23, CQ-RC-05]
+    direction: out
+    owner: other
+    note: "recommendations by people and company claims; D10 reads them, never stores RECOMMENDS"
+  - type: ON_FRONTIER
+    from: D13.Event | D3.Study
+    to: D13.Frontier
+    via: D13 asserted classification edge
+    questions: [Q-D10-20, Q-D10-22]
+    direction: out
+    owner: other
+    note: "frontier-scoped rankings and clusters filter through D13's ON_FRONTIER; D10 declares nothing"
+
+sharedVocabularies:
+  propertyJoins:   # not relationships; listed so the synthesizer sees the dependency (adversarial-review stage: moved out of seams)
+    - { from: D10.DecisionCriterion.publisherUid, to: D7.Organization.uid, questions: [Q-D10-10], note: "who defines a third-party ranking; its commercial interest is read through D7 (stake / role edges)" }
+  targets: packets/D5/vocab-targets.yaml@0.1.0      # DecisionCriterion.targetKeys; Report/Assessment ASSESSES Target; predicates IMPROVES_TARGET … read by criteria
+  frontiers: packets/D13/vocab-frontiers.yaml@0.1.0 # Q-D10-20, Q-D10-22 scope by frontier key
+  identifierSchemes: packets/K/identifier-schemes.yaml   # D10 types carry no external identifiers; listed for completeness
+  verificationVerdicts: "K SemanticVerdict (verification.v1 lattice) on Report.verdict and Assessment.verdict"
+  kernelEnums: [EffectDirection, ReportKind, AssessmentKind, SemanticVerdict, PolicyOutcome]   # read in patterns; not used as D10 property types
+  kernelEnumsAsPropertyTypes: [PrivacyClass]   # the Entity-contract field privacyClass on DecisionCriterion, ReportItem and Association (check stage, 2026-10-08)

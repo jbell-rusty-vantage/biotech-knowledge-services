@@ -1,0 +1,188 @@
+# Assertions for fixture lgg-strain-resolution (FIXTURES stage, A2, 2026-10-08).
+# Kernel Assertion shape (A1 packets/K); locators in locators.yaml (verified offsets in fresh captures).
+# producedBy ids are FIXTURE ids (mission:ft-D1-fixtures / run:ft-D1-<fixture>), not live Mission Control ids.
+# Per-serving CFU counts are D6 label amounts (seam), not D1 edges (OQ-D1-06).
+fixture: lgg-strain-resolution
+producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-lgg-strain-resolution" }
+activities:
+  - { ref: act-ingest, activityKind: INGESTION, agent: "agent:a2-d1-fixtures", missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-lgg-strain-resolution" }
+
+nodes:
+  - { ref: mat-lgg, module: D1, type: IngredientMaterial, name: "LGG (Lacticaseibacillus rhamnosus GG preparation)", properties: { materialKind: MICROBIAL_PREPARATION, brandName: "LGG", viabilityState: VIABLE, searchText: "LGG | Lactobacillus rhamnosus GG | Lacticaseibacillus rhamnosus GG | L. rhamnosus GG | ATCC 53103" }, propertyEvidence: { brandName: l-dsld250851-tm, viabilityState: [l-dsld250851-notes, l-dsld273846-notes] }, note: "viabilityState VIABLE rests on counts stated in CFUs (colony-forming units); the labels do not say 'live' in the captured rows" }
+  - { ref: tax-lgg, module: D1, type: Taxon, name: "Lacticaseibacillus rhamnosus GG", properties: { scientificName: "Lacticaseibacillus rhamnosus GG", rank: STRAIN, organismGroup: BACTERIUM, searchText: "Lacticaseibacillus rhamnosus GG | Lactobacillus rhamnosus GG | Lactobacillus rhamnosus strain GG | Lactobacillus rhamnosus str. GG | ATCC 53103 | LMG 18243" }, identifiers: [ { scheme: "NCBI_TAXON (requested OQ-D1-07)", issuer: "NCBI", value: "568703", evidence: l-ncbi568703-name } ] }
+  - { ref: tax-lrh, module: D1, type: Taxon, name: "Lacticaseibacillus rhamnosus", properties: { scientificName: "Lacticaseibacillus rhamnosus", rank: SPECIES, organismGroup: BACTERIUM, searchText: "Lacticaseibacillus rhamnosus | Lactobacillus rhamnosus | Lactobacillus casei subsp. rhamnosus" }, identifiers: [ { scheme: "NCBI_TAXON (requested OQ-D1-07)", issuer: "NCBI", value: "47715", evidence: l-ncbi47715-name } ] }
+  - { ref: tax-lacticaseibacillus, module: D1, type: Taxon, name: "Lacticaseibacillus", properties: { scientificName: "Lacticaseibacillus", rank: GENUS, organismGroup: BACTERIUM }, identifiers: [ { scheme: "NCBI_TAXON (requested OQ-D1-07)", issuer: "NCBI", value: "2759736", evidence: l-ncbi47715-genus } ] }
+  - { ref: tax-lactobacillus, module: D1, type: Taxon, name: "Lactobacillus", properties: { scientificName: "Lactobacillus", rank: GENUS, organismGroup: BACTERIUM }, identifiers: [ { scheme: "NCBI_TAXON (requested OQ-D1-07)", issuer: "NCBI", value: "1578", evidence: l-ncbi1578-genus } ] }
+  - { ref: lv-us-250851, module: D6, type: LabelVersion, name: "Culturelle Digestive Daily Probiotic — US label (DSLD 250851)", identifiers: [ { scheme: DSLD, issuer: "NIH ODS", value: "250851" } ] }
+  - { ref: lv-us-273846, module: D6, type: LabelVersion, name: "Culturelle Pro Strength Digestive Daily Probiotic — US label (DSLD 273846)", identifiers: [ { scheme: DSLD, issuer: "NIH ODS", value: "273846" } ] }
+  - { ref: org-ncbi, module: D7, type: Organization, name: "NCBI Taxonomy (NLM)" }
+  - { ref: org-culturelle, module: D7, type: Organization, name: "Culturelle (label brand; 'a trademark of DSM' per the label)" }
+  - { ref: org-chr-hansen, module: D7, type: Organization, name: "Chr. Hansen A/S" }
+
+assertions:
+  - id: g01-lgg-derived-from-strain
+    predicate: DERIVED_FROM_TAXON
+    assertionKind: RELATIONSHIP
+    subject: { ref: mat-lgg, type: IngredientMaterial }
+    object: { ref: tax-lgg, type: Taxon }
+    asserter: { ref: org-culturelle, type: Organization }
+    locators: [l-dsld250851-notes]
+    speechAct: STATES
+    basisKind: MANUFACTURER_CLAIM
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    edge: { type: DERIVED_FROM_TAXON, properties: AssertedRecordedProperties, episode: recorded-only }
+    note: "label string 'Lactobacillus rhamnosus GG' (legacy genus) -> NCBI 568703 is licensed by RESOLUTION r05; the strain is a Taxon of rank STRAIN, so strain-matched evidence joins on it"
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-lgg-strain-resolution" }
+  - id: g02-lgg-derived-from-strain-pro
+    predicate: DERIVED_FROM_TAXON
+    assertionKind: RELATIONSHIP
+    subject: { ref: mat-lgg, type: IngredientMaterial }
+    object: { ref: tax-lgg, type: Taxon }
+    asserter: { ref: org-culturelle, type: Organization }
+    locators: [l-dsld273846-claim]
+    speechAct: STATES
+    basisKind: MANUFACTURER_CLAIM
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    edge: { type: DERIVED_FROM_TAXON, episode: "corroborates g01 (same edge)" }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-lgg-strain-resolution" }
+  - id: g03-strain-parent
+    predicate: PARENT_TAXON
+    assertionKind: RELATIONSHIP
+    subject: { ref: tax-lgg, type: Taxon }
+    object: { ref: tax-lrh, type: Taxon }
+    asserter: { ref: org-ncbi, type: Organization }
+    locators: [l-ncbi568703-parent]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    edge: { type: PARENT_TAXON, properties: AssertedEdgeProperties, episode: "open; unaffected by the 2020 genus change because the species keeps taxid 47715" }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-lgg-strain-resolution" }
+  - id: g04-species-parent-current
+    predicate: PARENT_TAXON
+    assertionKind: RELATIONSHIP
+    subject: { ref: tax-lrh, type: Taxon }
+    object: { ref: tax-lacticaseibacillus, type: Taxon }
+    asserter: { ref: org-ncbi, type: Organization }
+    locators: [l-ncbi47715-parent, l-ncbi47715-genus, l-ncbi47715-auth2020, l-zheng2020-date]
+    speechAct: STATES
+    validTime: { validFrom: "2020-04-15T00:00:00Z", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: UNKNOWN }
+    edge: { type: PARENT_TAXON, properties: AssertedEdgeProperties, episode: "open episode from the reclassification (authority 'Zheng et al. 2020'; first published 2020-04-15 per Europe PMC, DOI 10.1099/ijsem.0.004107, PMID 32293557)" }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-lgg-strain-resolution" }
+  - id: g05-species-parent-legacy
+    predicate: PARENT_TAXON
+    assertionKind: RELATIONSHIP
+    subject: { ref: tax-lrh, type: Taxon }
+    object: { ref: tax-lactobacillus, type: Taxon }
+    asserter: { ref: org-ncbi, type: Organization }
+    locators: [l-ncbi47715-auth1989, l-ncbi47715-synonym, l-ncbi1578-genus, l-ncbi47715-auth2020, l-zheng2020-date]
+    speechAct: STATES
+    validTime: { validFrom: "1989-01-01T00:00:00Z", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: "2020-04-15T00:00:00Z", validToPrecision: DAY, validToBasis: INFERRED }
+    edge: { type: PARENT_TAXON, properties: AssertedEdgeProperties, episode: "closed episode: 'Lactobacillus rhamnosus (Hansen 1968) Collins et al. 1989' until the 2020 reclassification; validTo INFERRED from g04's validFrom. Nothing is deleted; the label's legacy genus resolves through this episode" }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-lgg-strain-resolution" }
+  - id: g06-deposit-atcc
+    predicate: HAS_IDENTIFIER
+    assertionKind: RELATIONSHIP
+    subject: { ref: tax-lgg, type: Taxon }
+    identifier: { scheme: "CULTURE_COLLECTION (requested OQ-D1-07)", issuer: "ATCC", value: "53103" }
+    asserter: { ref: org-ncbi, type: Organization }
+    locators: [l-ncbi568703-atcc]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    edge: { type: HAS_IDENTIFIER, module: K, properties: IdentifierLinkProperties }
+    note: "parsed from the NCBI <Synonym> string 'Lactobacillus rhamnosus ATCC 53103' (deposits are not structured identifiers in NCBI); the ATCC catalog page was not addressable (research: 404)"
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-lgg-strain-resolution" }
+  - id: g07-deposit-lmg
+    predicate: HAS_IDENTIFIER
+    assertionKind: RELATIONSHIP
+    subject: { ref: tax-lgg, type: Taxon }
+    identifier: { scheme: "CULTURE_COLLECTION (requested OQ-D1-07)", issuer: "LMG (BCCM/LMG)", value: "18243" }
+    asserter: { ref: org-ncbi, type: Organization }
+    locators: [l-ncbi568703-lmg]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    edge: { type: HAS_IDENTIFIER, module: K, properties: IdentifierLinkProperties }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-lgg-strain-resolution" }
+
+  # ---------- D6 seam: per-serving declarations of the same material ----------
+  # (D6 adversarial review: each line is asserted with its own Assertion; massBasis MATERIAL_AS_IS = 40 mg of the microbial material as is, D1 MassBasis)
+  - id: g08-declares-250851
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    subject: { ref: lv-us-250851, type: LabelVersion, module: D6 }
+    object: { ref: mat-lgg, type: IngredientMaterial }
+    asserter: { ref: org-culturelle, type: Organization }
+    locators: [l-dsld250851-notes, l-dsld250851-qty]
+    speechAct: STATES
+    basisKind: MANUFACTURER_CLAIM
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2021-07-27T00:00:00Z" }
+    edge: { type: DECLARES_COMPONENT, module: D6, properties: { orderIndex: 2, lineRole: DIETARY_INGREDIENT, declaredNameVerbatim: "Lactobacillus rhamnosus GG", amount: 40, unitCode: "mg", amountReferent: AS_NAMED, amountBasis: PER_SERVING, massBasis: MATERIAL_AS_IS } }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-lgg-strain-resolution" }
+  - id: g09-count-250851
+    predicate: DECLARED_VIABLE_COUNT
+    assertionKind: FIELD
+    subject: { ref: lv-us-250851, type: LabelVersion, module: D6 }
+    literal: { valueNumber: 10000000000, unitCode: "{CFU}" }
+    qualifiers: ["per serving (1 capsule)", "printed '10 billion CFUs' in the row notes, not in the quantity field", "material: mat-lgg"]
+    asserter: { ref: org-culturelle, type: Organization }
+    locators: [l-dsld250851-notes]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2021-07-27T00:00:00Z" }
+    module: D6
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-lgg-strain-resolution" }
+  - id: g10-declares-273846
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    subject: { ref: lv-us-273846, type: LabelVersion, module: D6 }
+    object: { ref: mat-lgg, type: IngredientMaterial }
+    asserter: { ref: org-culturelle, type: Organization }
+    locators: [l-dsld273846-notes]
+    speechAct: STATES
+    basisKind: MANUFACTURER_CLAIM
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2022-09-22T00:00:00Z" }
+    edge: { type: DECLARES_COMPONENT, module: D6, properties: { orderIndex: 2, lineRole: DIETARY_INGREDIENT, declaredNameVerbatim: "Lactobacillus rhamnosus GG", amount: 40, unitCode: "mg", amountReferent: AS_NAMED, amountBasis: PER_SERVING, massBasis: MATERIAL_AS_IS } }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-lgg-strain-resolution" }
+  - id: g11-count-273846
+    predicate: DECLARED_VIABLE_COUNT
+    assertionKind: FIELD
+    subject: { ref: lv-us-273846, type: LabelVersion, module: D6 }
+    literal: { valueNumber: 12000000000, unitCode: "{CFU}" }
+    qualifiers: ["per serving (1 capsule)", "same 40 mg declared material mass as label 250851"]
+    asserter: { ref: org-culturelle, type: Organization }
+    locators: [l-dsld273846-notes, l-dsld273846-claim]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2022-09-22T00:00:00Z" }
+    module: D6
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-lgg-strain-resolution" }
+  - id: p03-marketed-under-mark
+    predicate: MARKETED_UNDER_MARK
+    assertionKind: RELATIONSHIP
+    subject: { ref: mat-lgg, type: IngredientMaterial }
+    object: { ref: org-chr-hansen, type: Organization, module: D7 }
+    asserter: { ref: org-culturelle, type: Organization }
+    locators: [l-dsld250851-tm]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2021-07-27T00:00:00Z" }
+    edge: null
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-lgg-strain-resolution" }
+
+assessments:
+  - id: r05-resolve-legacy-strain-name
+    assessmentKind: RESOLUTION
+    assessmentSubkind: "D1.strain-resolution"
+    about: [ { ref: tax-lgg, type: Taxon } ]
+    inputAssertions: [g05-species-parent-legacy, g06-deposit-atcc]
+    evidence: [ { locator: l-dsld250851-notes, role: CONTEXT }, { locator: l-ncbi568703-equiv, role: SUPPORTS }, { locator: l-ncbi568703-name, role: SUPPORTS }, { locator: l-ncbi47715-auth2020, role: CONTEXT } ]
+    score: 1.0
+    verdict: DIRECTLY_SUPPORTED
+    summary: "Q-D1-15: the label's 'Lactobacillus rhamnosus GG' (genus 'Lactobacillus' as printed) resolves to the deposited strain NCBI 568703 'Lacticaseibacillus rhamnosus GG' (EquivalentName 'Lactobacillus rhamnosus strain GG'; deposits ATCC 53103 = LMG 18243), not only to the species. Strain-specific evidence applies; the genus on the label is the pre-2020 name (closed PARENT_TAXON episode g05)."
+    methodVersion: "d1-strain-resolve/v1"
+    status: PROPOSED
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-lgg-strain-resolution" }
+  - id: e02-same-material-two-labels
+    assessmentKind: EQUIVALENCE
+    assessmentSubkind: "D1.identity-level.SAME_BRANDED_MATERIAL"
+    about: [ { ref: lv-us-250851, type: LabelVersion, module: D6 }, { ref: lv-us-273846, type: LabelVersion, module: D6 } ]
+    inputAssertions: [g08-declares-250851, g09-count-250851, g10-declares-273846, g11-count-273846, g01-lgg-derived-from-strain]
+    summary: "Both labels declare 40 mg of the LGG material (same mark, same strain). Counts differ (10 vs 12 billion CFU per 40 mg), so SAME_SPECIFICATION is not supported: the CFU density per mg of material differs or one label states an overage — a D6/D8 question, not a D1 identity split."
+    methodVersion: "d1-equivalence/v1"
+    status: PROPOSED
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-lgg-strain-resolution" }

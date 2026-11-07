@@ -1,0 +1,73 @@
+"""
+Purpose: one version of one registration as a registry stated it at a point in valid time — status, enrollment
+(actual vs estimated), dates, results posting and submission events, design fields, verbatim sponsor/condition/
+intervention names. Two populating modes: OBSERVED (BellLabs captured the registry record; its own snapshot) and
+RECONSTRUCTED (a past version stated inside a later snapshot, e.g. ISRCTN 'Provided at time of registration' and
+'Amended 02/03/2009'), each attached to the Study by a HAS_REGISTRATION_VERSION episode whose Assertion cites the
+locator. Absorbs pinned TrialRegistration (registry, registrationId) and the registry side of ProtocolVersion.
+Implements Subjectable (unlike most state payloads) because it is the object of HAS_REGISTRATION_VERSION and STATED_IN
+Assertions (Assertion.object targets Subjectable).
+Identity rule: (registry, registrationId, versionNumber) when the registry numbers versions (CTG history index, ISRCTN
+XML version attribute); else (registry, registrationId, versionDate, populatingMode, payloadHash). Immutable.
+Field facts are cited by the HAS_REGISTRATION_VERSION attach Assertion, one locator per field (reportsField naming the
+field: overallStatus, enrollmentCount, masking, studyTypeVerbatim, resultsSubmissionEvents ...), the same rule as
+STATED_IN; no per-field predicates. Labels `Entity` like every other version type (D4 AssayVersion, D6 LabelVersion);
+the pinned VersionedState archetype label is dropped (adversarial-review stage).
+uid token: `registration-version`.
+Questions: CQ-ST-04, CQ-ST-08, Q-D3-02, Q-D3-16, Q-D3-18, Q-D3-10.
+"""
+type RegistrationVersion implements Entity & Subjectable
+  @node(labels: ["RegistrationVersion", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  registry: RegistryKind!
+  "Registration number as issued (NCT01038583, ISRCTN83772183)."
+  registrationId: String!
+  "Registry's own version counter when it has one."
+  versionNumber: Int
+  "Date the registry says this version took effect (CTG update posted, ISRCTN amendment date)."
+  versionDate: DateTime
+  versionDatePrecision: TimePrecision @filterable(byValue: false) @sortable(byValue: false)
+  populatingMode: VersionPopulatingMode!
+  "sha256:<hex> over the normalized version payload."
+  payloadHash: String! @filterable(byValue: false) @sortable(byValue: false)
+  officialTitle: String @filterable(byValue: false) @sortable(byValue: false)
+  acronym: String @filterable(byValue: false) @sortable(byValue: false)
+  overallStatus: RegistryStatus
+  overallStatusVerbatim: String @filterable(byValue: false) @sortable(byValue: false)
+  "Study type as the registry states it (CTG 'OBSERVATIONAL' for ASPREE vs ISRCTN 'Randomized controlled trial'; Q-D3-15)."
+  studyTypeVerbatim: String @filterable(byValue: false) @sortable(byValue: false)
+  whyStopped: String @filterable(byValue: false) @sortable(byValue: false)
+  enrollmentCount: Int
+  enrollmentCountType: EnrollmentCountType
+  firstSubmittedDate: DateTime @filterable(byValue: false) @sortable(byValue: false)
+  startDate: DateTime @filterable(byValue: false) @sortable(byValue: false)
+  startDateType: RegistryDateType @filterable(byValue: false) @sortable(byValue: false)
+  primaryCompletionDate: DateTime
+  primaryCompletionDatePrecision: TimePrecision @filterable(byValue: false) @sortable(byValue: false)
+  primaryCompletionDateType: RegistryDateType
+  completionDate: DateTime @filterable(byValue: false) @sortable(byValue: false)
+  completionDateType: RegistryDateType @filterable(byValue: false) @sortable(byValue: false)
+  resultsPosted: Boolean
+  resultsFirstPostedDate: DateTime @filterable(byValue: false) @sortable(byValue: false)
+  "Results submission events as stated (CTG annotation), e.g. RELEASE:2018-03-14, RESET:2018-10-12."
+  resultsSubmissionEvents: [String!] @filterable(byValue: false)
+  phase: [TrialPhase!] @filterable(byValue: false)
+  allocation: AllocationKind @filterable(byValue: false) @sortable(byValue: false)
+  masking: MaskingKind @filterable(byValue: false) @sortable(byValue: false)
+  primaryPurpose: String @filterable(byValue: false) @sortable(byValue: false)
+  interventionModel: String @filterable(byValue: false) @sortable(byValue: false)
+  conditionsVerbatim: [String!] @filterable(byValue: false)
+  interventionNamesVerbatim: [String!] @filterable(byValue: false)
+  sponsorNameVerbatim: String @filterable(byValue: false) @sortable(byValue: false)
+  collaboratorNamesVerbatim: [String!] @filterable(byValue: false)
+  funderNamesVerbatim: [String!] @filterable(byValue: false)
+  siteCountries: [String!] @filterable(byValue: false)
+}

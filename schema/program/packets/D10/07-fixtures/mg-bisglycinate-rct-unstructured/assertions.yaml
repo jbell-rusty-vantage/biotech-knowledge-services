@@ -1,0 +1,327 @@
+# Assertions and derived records for fixture mg-bisglycinate-rct-unstructured (D10, fixtures stage, A1, 2026-10-08).
+# Kind: unstructured-to-entity (00-DIRECTIVE 3.8). Source: open-access JATS full text (CC BY 4.0) + PubMed record.
+#
+# Conventions (all five D10 fixtures):
+# - uids are FIXTURE ids (hu:<token>:fx-d10-...), not production uids; missionId / runId are FIXTURE ids too:
+#   mission:ft-D10-fixtures / run:ft-D10-<fixture>. Nothing here was written to a graph.
+# - `locators:` refs point into ./locators.yaml (every exact quote there was re-found in the 2026-10-08 re-fetch).
+# - Types: K.* = kernel (packets/K/04-schema-proposal.graphql); D10.* = this module; D1/D3/D5/D6/D7/D9.* = sibling
+#   modules (names from their 04-schema-proposal.graphql in worktrees A2-A8 on 2026-10-08; their predicates are
+#   placeholders until those packets publish fixtures).
+# - asserter = who said it in the source (ASSERTED_BY); producedBy = the run that captured it (WAS_GENERATED_BY).
+# - Numbers are copied from the quoted spans; nothing is computed except where `basisKind: CALCULATED` says so.
+# - Report bodies (`composed-body*.txt`) are fixture drafts; sentence counts and citationCompleteness exclude the framing
+#   paragraph above the first section (fixture metadata) unless a SCOPE item covers it.
+
+fixture: mg-bisglycinate-rct-unstructured
+producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-bisglycinate-rct-unstructured" }   # fixture ids
+activity:
+  uid: hu:activity:fx-d10-run-mg-bisglycinate-rct
+  activityKind: INGESTION
+  externalRunSystem: mission-control
+  missionId: mission:ft-D10-fixtures
+  runId: run:ft-D10-mg-bisglycinate-rct-unstructured
+  agent: { uid: hu:agent:fx-d10-a1, agentKind: AUTOMATED_AGENT, name: "A1 fixtures-stage agent (Claude)" }
+
+entities:   # subjects and objects the assertions bind (resolution to production uids is out of scope)
+  - { ref: e-mg, type: D1.ChemicalSubstance, uid: hu:chemical-substance:fx-magnesium, name: magnesium }
+  - { ref: e-mg-bisglycinate, type: D1.IngredientMaterial, uid: hu:ingredient-material:fx-magnesium-bisglycinate, name: magnesium bisglycinate }
+  - { ref: e-study, type: D3.Study, uid: hu:study:fx-drks00031494, name: "Magnesium bisglycinate in healthy adults reporting poor sleep (RCT)", identifiers: ["DRKS:DRKS00031494"] }
+  - { ref: e-arm-mg, type: D3.StudyArm, uid: hu:study-arm:fx-drks00031494-mg, name: "magnesium bisglycinate, 2 capsules/day" }
+  - { ref: e-arm-pbo, type: D3.StudyArm, uid: hu:study-arm:fx-drks00031494-placebo, name: placebo }
+  - ref: e-result-isi
+    type: D3.StudyResult
+    uid: hu:study-result:fx-drks00031494-isi-wk4-between
+    name: "ISI change baseline to week 4, magnesium bisglycinate vs placebo (ITT GLMM)"
+    properties:   # D3 StudyResult fields, values copied from loc-isi-fulltext
+      comparisonKind: BETWEEN_GROUP
+      analysisPopulation: INTENTION_TO_TREAT
+      timepointText: "baseline to Week 4"
+      resultText: "[−3.9 (95% CI, −5.8 to −2.0)] compared to the placebo group [−2.3 (95% CI, −4.1 to −0.4)] (p = 0.049)"
+      pValue: 0.049
+  - { ref: e-publication, type: D3.Publication, uid: hu:publication:fx-pmid-40918053, name: "Schuster J et al. Nat Sci Sleep 2025;17:2027-2040", identifiers: ["PMID:40918053", "PMCID:PMC12412596", "DOI:10.2147/NSS.S524348"] }
+  - { ref: e-target-sleep, type: D5.Target, uid: "target:sleep", name: sleep, note: "D5 shared vocabulary targets@0.1.0 key" }
+  - { ref: e-biogena, type: D7.Organization, uid: hu:organization:fx-biogena, name: "Biogena (Salzburg, Austria)" }
+  - { ref: e-lopresti, type: D7.Person, uid: hu:person:fx-adrian-lopresti, name: Adrian Lopresti }
+  - { ref: e-cra, type: D7.Organization, uid: hu:organization:fx-clinical-research-australia, name: Clinical Research Australia }
+  - { ref: e-authors, type: D7.Person, uid: hu:person:fx-julius-schuster, name: "Julius Schuster (first author; stands for the author list, see note)" }
+  - { ref: e-nlm, type: D7.Organization, uid: hu:organization:fx-nlm, name: "U.S. National Library of Medicine (MEDLINE indexing)" }
+
+assertions:
+  - id: a-isi-between
+    uid: hu:assertion:fx-d10-isi-between
+    assertionKind: METRIC
+    predicate: STATED_IN            # D3 asserted edge StudyResult -> stating record; the numbers are StudyResult properties
+    subject: { ref: e-result-isi, type: D3.StudyResult }
+    object: { ref: e-publication, type: D3.Publication }
+    asserter: { ref: e-authors, type: D7.Person }
+    locators: [loc-isi-fulltext, loc-isi-abstract]     # HAS_EVIDENCE role SUPPORTS, origin DECLARED
+    polarity: POSITIVE
+    speechAct: REPORTS_PRACTICE
+    basisKind: DIRECT_MEASUREMENT
+    qualifiers: ["adults 18-65 reporting poor sleep", "Insomnia Severity Index", "intention-to-treat GLMM", "4 weeks"]
+    validTime: { validFrom: "2025-08-30", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-bisglycinate-rct-unstructured" }
+
+  - id: a-effect-size
+    uid: hu:assertion:fx-d10-isi-effect-size
+    assertionKind: METRIC
+    predicate: REPORTS_EFFECT_SIZE
+    subject: { ref: e-result-isi, type: D3.StudyResult }
+    value: { valueNumber: 0.2, unitCode: "1", valueString: "Cohen's d = 0.2 (small)" }
+    asserter: { ref: e-authors, type: D7.Person }
+    locators: [loc-effect-size]
+    polarity: POSITIVE
+    speechAct: STATES
+    basisKind: INFERRED_FROM_MEASUREMENT
+    qualifiers: ["Cohen's d", "between-group", "described by the authors as small, a modest treatment effect"]
+    validTime: { validFrom: "2025-08-30", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-bisglycinate-rct-unstructured" }
+
+  - id: a-dose-mg
+    uid: hu:assertion:fx-d10-arm-dose-mg
+    assertionKind: FIELD
+    predicate: ARM_DAILY_DOSE
+    subject: { ref: e-arm-mg, type: D3.StudyArm }
+    value: { valueNumber: 250, unitCode: "mg/d", valueString: "250 mg/day elemental magnesium (893 mg magnesium bisglycinate per capsule, 2 capsules)" }
+    asserter: { ref: e-authors, type: D7.Person }
+    locators: [loc-dose]
+    speechAct: STATES
+    basisKind: UNSTATED
+    qualifiers: ["elemental magnesium", "material: magnesium bisglycinate"]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, note: "trial period not quoted here; D3 owns arm timing" }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-bisglycinate-rct-unstructured" }
+
+  - id: a-dose-glycine
+    uid: hu:assertion:fx-d10-arm-dose-glycine
+    assertionKind: FIELD
+    predicate: ARM_DAILY_DOSE
+    subject: { ref: e-arm-mg, type: D3.StudyArm }
+    value: { valueNumber: 1523, unitCode: "mg/d", valueString: "1523 mg/day glycine (co-delivered by the bisglycinate)" }
+    asserter: { ref: e-authors, type: D7.Person }
+    locators: [loc-dose]
+    speechAct: STATES
+    basisKind: UNSTATED
+    qualifiers: ["glycine", "co-delivered"]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-bisglycinate-rct-unstructured" }
+
+  - id: a-manufacturer
+    uid: hu:assertion:fx-d10-trial-material-manufacturer
+    assertionKind: RELATIONSHIP
+    predicate: MATERIAL_MANUFACTURED_BY   # placeholder; D6/D3 seam owns the name
+    subject: { ref: e-arm-mg, type: D3.StudyArm }
+    object: { ref: e-biogena, type: D7.Organization }
+    asserter: { ref: e-authors, type: D7.Person }
+    locators: [loc-manufacturer]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-bisglycinate-rct-unstructured" }
+
+  - id: a-limitation
+    uid: hu:assertion:fx-d10-limitation-self-report
+    assertionKind: CLAIM
+    claimType: METHODOLOGICAL
+    predicate: STATES_LIMITATION
+    subject: { ref: e-study, type: D3.Study }
+    value: { valueString: "sleep outcomes self-reported only; no objective verification" }
+    asserter: { ref: e-authors, type: D7.Person }
+    locators: [loc-limitation]
+    speechAct: STATES
+    polarity: NEGATIVE
+    validTime: { validFrom: "2025-08-30", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null }
+    status: ACCEPTED
+    occurrenceOf: hu:claim:fx-d10-drks00031494-outcomes-self-reported
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-bisglycinate-rct-unstructured" }
+
+  - id: a-coi
+    uid: hu:assertion:fx-d10-coi-lopresti
+    assertionKind: RELATIONSHIP
+    predicate: DISCLOSES_ROLE_AT        # placeholder; D7 owns roles and financial interests
+    subject: { ref: e-lopresti, type: D7.Person }
+    object: { ref: e-cra, type: D7.Organization }
+    asserter: { ref: e-authors, type: D7.Person }
+    locators: [loc-coi]
+    speechAct: STATES
+    qualifiers: ["managing director", "contract research organization that receives research funding from nutraceutical companies"]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, statedAsOf: "2025-08-30" }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-bisglycinate-rct-unstructured" }
+
+  - id: a-design-rct
+    uid: hu:assertion:fx-d10-design-rct
+    assertionKind: FIELD
+    predicate: STATES_STUDY_DESIGN
+    subject: { ref: e-publication, type: D3.Publication }
+    value: { valueString: "Randomized, Placebo-Controlled Trial" }
+    asserter: { ref: e-authors, type: D7.Person }
+    locators: [loc-design-title]
+    speechAct: STATES
+    validTime: { validFrom: "2025-08-30", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-bisglycinate-rct-unstructured" }
+
+  - id: a-pubtype-case-reports
+    uid: hu:assertion:fx-d10-pubtype-case-reports
+    assertionKind: FIELD
+    predicate: INDEXED_AS_PUBLICATION_TYPE
+    subject: { ref: e-publication, type: D3.Publication }
+    value: { valueString: "Case Reports (MeSH publication type D002363)" }
+    asserter: { ref: e-nlm, type: D7.Organization }
+    locators: [loc-pubtype-case-reports]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, validTo: null, statedAsOf: "2026-10-08" }
+    status: ACCEPTED      # capture fidelity: the record does say this; truth is judged by s-fidelity-design-label
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-bisglycinate-rct-unstructured" }
+
+adjudications:
+  - id: adj-effect-size-capture
+    uid: hu:adjudication:fx-d10-effect-size-capture
+    type: K.Adjudication
+    adjudicationKind: CAPTURE_FIDELITY
+    verdict: DIRECTLY_SUPPORTED
+    judgeKind: DETERMINISTIC
+    methodVersion: "fixture-reselect/gen_locators.py@2026-10-08"
+    mechanicalStatus: passed
+    evaluates: [a-effect-size]                 # ASSESSES -> Assertion
+    evidence: [{ locator: loc-effect-size, role: SUPPORTS, origin: VERIFIER_FOUND }]
+    rationale: "Re-fetched snapshot is byte-identical (sha256:85a35d77...343c); the TEXT_QUOTE selector re-selects the same span at [53183, 53318)."
+    note: "Produced by the fixture's deterministic re-selection, not by ks-verification; a verification.v1 run would emit the same verdict for an exact re-selection."
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-bisglycinate-rct-unstructured" }
+  - id: adj-isi-capture
+    uid: hu:adjudication:fx-d10-isi-capture
+    type: K.Adjudication
+    adjudicationKind: CAPTURE_FIDELITY
+    verdict: DIRECTLY_SUPPORTED
+    judgeKind: DETERMINISTIC
+    methodVersion: "fixture-reselect/gen_locators.py@2026-10-08"
+    mechanicalStatus: passed
+    evaluates: [a-isi-between]
+    evidence: [{ locator: loc-isi-fulltext, role: SUPPORTS, origin: VERIFIER_FOUND }, { locator: loc-isi-abstract, role: SUPPORTS, origin: VERIFIER_FOUND }]
+    rationale: "Both spans re-selected exactly in byte-identical re-fetches (JATS full text and PubMed XML)."
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-bisglycinate-rct-unstructured" }
+
+assessments:
+  - id: s-fidelity-design-label
+    uid: hu:assessment:fx-d10-fidelity-design-label-pmid-40918053
+    type: K.Assessment
+    assessmentKind: RETELLING_FIDELITY
+    assessmentSubkind: D10.fidelity.design-label
+    status: PROPOSED
+    methodVersion: "bl-fidelity/design-label@0 (fixture)"
+    verdict: CONTRADICTED
+    summary: "MEDLINE indexes PMID 40918053 with publication type 'Case Reports' (D002363); the article itself states it is a randomized, placebo-controlled trial (the record also carries 'Clinical Trial')."
+    about: [{ ref: e-publication, type: D3.Publication }]                  # ASSESSES
+    inputAssertions: [a-pubtype-case-reports, a-design-rct]                # DERIVED_FROM (secondary first, primary second)
+    evidence:
+      - { locator: loc-pubtype-case-reports, role: CONTEXT, origin: DECLARED }
+      - { locator: loc-design-title, role: CONTRADICTS, origin: DECLARED }
+    recordedAt: "2026-10-08T22:00:00Z"
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-bisglycinate-rct-unstructured" }
+
+reports:
+  - id: r-mg-profile
+    uid: hu:report:fx-d10-mg-profile-draft-1
+    type: K.Report
+    reportKind: PROFILE
+    skeleton: "d10.compound-profile@1"
+    name: "Magnesium: compound profile (fixture draft, not published)"
+    status: PROPOSED                     # a fixture draft; never published
+    policyVersion: "policy:bl-publish@fixture"
+    bodyFile: composed-body.txt
+    bodyDigest: "sha256:42f4fda3351431c0cb427ff30b17b97cdb662d1b615610b2f2e41baef18afaec"
+    citationCompleteness: 0.8            # 4 of 5 body sentences cited (sentence-weighted approximation of verification.v1)
+    # about: the Report ASSESSES magnesium; the target (sleep) of the EVIDENCE_FOR rows is on the EVIDENCE_FOR section (row rule, report-skeletons.md rule 9)
+    about: [{ ref: e-mg, type: D1.ChemicalSubstance }]                     # ASSESSES (kernel)
+    citesAssertions: [a-isi-between, a-effect-size, a-dose-mg, a-dose-glycine, a-limitation]   # DERIVED_FROM (kernel minimum citation set)
+    evidence: [loc-isi-fulltext, loc-effect-size, loc-dose, loc-limitation]       # HAS_EVIDENCE
+    recordedAt: "2026-10-08T22:00:00Z"
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-bisglycinate-rct-unstructured" }
+
+reportItems:   # D10.ReportItem; HAS_ITEM from r-mg-profile with orderIndex = position
+  - id: i-evidence-for
+    uid: hu:report-item:fx-d10-mg-profile-draft-1-evidence-for
+    report: r-mg-profile
+    orderIndex: 4                        # section 4 of d10.compound-profile@1
+    itemKind: SECTION
+    sectionKind: EVIDENCE_FOR
+    itemKey: "sec:evidence-for"
+    name: Evidence for
+    about: [{ ref: e-mg-bisglycinate, type: D1.IngredientMaterial }, { ref: e-target-sleep, type: D5.Target }]   # ASSESSES
+    citesAssertions: [a-isi-between, a-effect-size, a-dose-mg, a-dose-glycine]                                   # DERIVED_FROM -> Assertion
+    bodyStartOffset: 302
+    bodyEndOffset: 694
+    citationCompleteness: 1.0
+    uncitedSentenceCount: 0
+    recordedAt: "2026-10-08T22:00:00Z"
+  - id: i-evidence-for-row
+    uid: hu:report-item:fx-d10-mg-profile-draft-1-evidence-for-bisglycinate-sleep
+    report: r-mg-profile
+    orderIndex: 5
+    itemKind: ROW
+    sectionKind: EVIDENCE_FOR
+    itemKey: "row:evidence-for/mg-bisglycinate-sleep"
+    parentItemKey: "sec:evidence-for"
+    name: "magnesium bisglycinate, 250 mg/day elemental, sleep (ISI)"
+    about: [{ ref: e-mg-bisglycinate, type: D1.IngredientMaterial }]   # ROW ASSESSES exactly its option; the target is on the section
+    citesAssertions: [a-isi-between, a-effect-size, a-dose-mg, a-dose-glycine]
+    bodyStartOffset: 319
+    bodyEndOffset: 694
+    citationCompleteness: 1.0
+    uncitedSentenceCount: 0
+    recordedAt: "2026-10-08T22:00:00Z"
+  - id: i-open-questions
+    uid: hu:report-item:fx-d10-mg-profile-draft-1-open-questions
+    report: r-mg-profile
+    orderIndex: 10
+    itemKind: SECTION
+    sectionKind: OPEN_QUESTIONS
+    itemKey: "sec:open-questions"
+    name: Open questions
+    about: [{ ref: e-mg-bisglycinate, type: D1.IngredientMaterial }]
+    citesAssertions: [a-limitation]
+    missingFactKeys: [objective-sleep-measure, glycine-co-delivery-control]
+    bodyStartOffset: 696
+    bodyEndOffset: 881
+    citationCompleteness: 0.5
+    uncitedSentenceCount: 1              # "The design does not separate a magnesium effect from a glycine effect." (allowed in OPEN_QUESTIONS; counted)
+    recordedAt: "2026-10-08T22:00:00Z"
+
+retrieval:   # derived retrieval structures (D9), not evidence: the directive 3.8 walk for Q-D10-17
+  chunk:
+    uid: hu:chunk:fx-d10-pmc12412596-s0003-s2002
+    type: D9.Chunk
+    snapshot: snap-epmc-jats             # CHUNK_OF -> SourceSnapshot (D9 SDL, A8 worktree)
+    chunkIndex: null                     # fixture chunk = one JATS <sec>; not produced by a D9 chunker run
+    startOffset: 52697                   # <sec id="s0003-s2002"> ... </sec> in the raw JATS (same offset basis as the locators)
+    endOffset: 56007
+    textBasis: "RAW_JATS_XML (fixture simplification; D9 chunks extracted text with its own textVersionHash)"
+    chunkerVersion: "fixture:jats-section@0"
+    embeddingModel: null                 # no embedding computed; the vector hop is described, not executed (the keyword hop below was executed)
+    keywordRetrieval:                    # adversarial-review stage, 2026-10-08: the question-to-chunk hop executed, not asserted
+      tool: "scratch adv/tools/keyword_retrieve.py (BM25 k1=1.2 b=0.75 over the 28 tag-stripped leaf <sec> spans of the JATS file; stopwords removed)"
+      corpusDigest: "sha256:85a35d77b404a5ad50f415f298cb618b90f9aab23d8bcbeb032ebdd8f742343c"
+      runs:
+        - { question: "Does magnesium bisglycinate reduce insomnia severity compared with placebo?", topHit: s0003-s2002, topHitTitle: "Primary Endpoint: Insomnia Severity Index", score: 7.0378, rankOfFixtureChunk: 1, runnerUp: { id: s0001, score: 5.2038 } }
+        - { question: "Does magnesium help sleep, and which form?", topHit: s0003-s2001, topHitTitle: "Study Population", score: 1.9937, rankOfFixtureChunk: 23, note: "a generic question does not reach the result section by keywords; it needs the MENTIONS hop (entity link to magnesium bisglycinate) or the vector index - recorded as a retrieval finding" }
+    coversLocators: [loc-isi-fulltext, loc-effect-size]      # COVERS_LOCATOR (derived span-overlap): both lie inside [52697, 56007)
+    mentions:                            # MENTIONS (derived, entity-link): surface forms present in the section text; listed by hand, no entity-linker run (no MENTIONS extraction run id)
+      - { ref: e-mg-bisglycinate, surfaceForm: "magnesium bisglycinate" }
+  walk:
+    - "question: 'Does magnesium bisglycinate reduce insomnia severity compared with placebo?' (Q-D10-17)"
+    - "chunk: hu:chunk:fx-d10-pmc12412596-s0003-s2002, BM25 rank 1 of 28 (score 7.0378, keywordRetrieval above; executed); the vector index chunk_embedding and the MENTIONS hop are described, not executed"
+    - "assertions: a-isi-between (locators loc-isi-fulltext + loc-isi-abstract), a-effect-size (loc-effect-size); offsets inside the chunk span"
+    - "locator: loc-effect-size TEXT_QUOTE [53183, 53318) quoteHash sha256:7be0243d...37c4"
+    - "snapshot: sha256:85a35d77b404a5ad50f415f298cb618b90f9aab23d8bcbeb032ebdd8f742343c (123,191 bytes, Europe PMC fullTextXML)"
+    - "adjudication: adj-effect-size-capture CAPTURE_FIDELITY DIRECTLY_SUPPORTED (same span re-selected in the re-fetch)"
+
+edgesExercised:   # D10 relationship types this fixture instantiates (05-relationship-register.yaml)
+  - { type: HAS_ITEM, from: r-mg-profile, to: [i-evidence-for, i-evidence-for-row, i-open-questions] }
+  - { type: ASSESSES, from: i-evidence-for-row, to: [e-mg-bisglycinate] }
+  - { type: ASSESSES, from: i-evidence-for, to: [e-mg-bisglycinate, e-target-sleep] }
+  - { type: DERIVED_FROM, pair: "ReportItem -> Assertion", from: i-evidence-for-row, to: [a-isi-between, a-effect-size, a-dose-mg, a-dose-glycine] }

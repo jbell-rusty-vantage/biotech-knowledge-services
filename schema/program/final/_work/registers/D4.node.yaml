@@ -1,0 +1,141 @@
+version: 1
+module: D4
+# Source: packets/D4/06-node-register.yaml (sha256 223b34b3…), edited by the S module editor for D4, 2026-10-08, per
+# final/decision-report.md and final/_work/rulings.yaml (modules.D4 + global). Every entry keeps the 01-PACKET-CONTRACT
+# fields and adds `module: D4`. Synthesis edits:
+#   R-03  `mutations` is written { graphql: none, executor: ... } (the GraphQL API exposes no mutation).
+#   R-42 / R-70  Metric keeps LOINC; D2 drops LOINC from Outcome (D4 11 #37 closed).
+#   R-26  AssayVersion identity still includes the performing lab uid; PERFORMED_BY_LAB is now asserted.
+# Node types unchanged (7).
+# Model stage (Wave 2) by A3, 2026-10-08. 7 node types (budget 8). Every type implements Entity & Subjectable and lists
+# the 7 Entity fields verbatim; counts below exclude those 7. Identifier schemes use codes from packets/K/identifier-schemes.yaml;
+# codes marked (requested) are asked for in 11-open-questions.md.
+nodes:
+  - name: Biomarker
+    module: D4
+    uidToken: biomarker
+    identityKeys: [curated slug (hu:biomarker:<slug>)]
+    # Adversarial-review pass: was [CHEBI, UNIPROT, HGNC, MESH]. Those (scheme, value) pairs identify the analyte (D1 ChemicalSubstance:
+    # CHEBI, MESH; D2 MolecularEntity: UNIPROT, HGNC), so attaching them here too would make the kernel identifier lookup (K Q-K-12)
+    # return two entities. Analyte identifiers are reached through HAS_ANALYTE; a biomarker-level MeSH descriptor waits for a question.
+    identifierSchemes: []
+    whyNode: >-
+      The join point every cross-domain measure path traverses: D1 or D2 analyte (HAS_ANALYTE) and D2 mechanism
+      (REFLECTS_MECHANISM) on one side, Metric → LabTest on the other (Q-D4-01, Q-D4-02); D3 OutcomeDefinition MEASURES and
+      D5 Target OPERATIONALIZED_BY land here (Q-D4-17, Q-D4-14); Q-D4-16 groups several Metrics under one referent without
+      merging their series.
+    filterProperties: [biomarkerKind, name, searchText (fulltext)]
+    otherProperties: 1
+    archetype: Entity & Subjectable (curated vocabulary node)
+    mutations: { graphql: none, executor: "create; update descriptive fields; never delete" }
+  - name: Metric
+    module: D4
+    uidToken: metric
+    identityKeys: [LOINC code via kernel Identifier when one exists, "else (definitionSource, definitionIssuerName, verbatim name, canonicalUnitCode)"]
+    # LOINC identifies a Metric (a measurand). Synthesis R-42 / R-70: LOINC belongs to D4 Metric only; D2 drops LOINC from
+    # Outcome (11-open-questions #37 closed).
+    identifierSchemes: [LOINC]
+    whyNode: >-
+      Comparability is decided at the Metric (compartment systemOntologyId, methodText RMSSD vs SDNN, unit): Q-D4-02 and
+      Q-D4-07 compare two Metrics; CQ-DX-01/02 traverse LabTest or AlgorithmVersion → Metric; Q-D4-22 resolves free-text
+      measurement names to Metrics; Q-D4-21 filters Metrics without a LOINC identifier. NLM's LOINC index has no term for
+      RMSSD, epigenetic age or NAD+ as an analyte, so BellLabs definitions are first-class.
+    filterProperties: [metricKind, defaultResultKind, definitionSource, systemOntologyId, methodText, canonicalUnitCode, notReported, searchText (fulltext + vector)]
+    otherProperties: 6
+    archetype: Entity & Subjectable (definition node)
+    mutations: { graphql: none, executor: "create; update descriptive fields; never delete" }
+  - name: LabTest
+    module: D4
+    uidToken: lab-test
+    identityKeys: ["(issuer, issuer test code) via kernel Identifier scheme LAB_TEST_CODE (requested)", "else (issuer, verbatim test name)"]
+    identifierSchemes: [LAB_TEST_CODE (requested), CPT (requested; licence check)]
+    whyNode: >-
+      The orderable/purchasable thing a user can act on: Q-D4-01 ends here; CQ-DX-01 starts here; it carries the
+      as-of episodes (MEASURES_METRIC, PERFORMED_WITH_VERSION, INCLUDES_TEST) that split trends (Q-D4-23) and panel
+      composition (Q-D4-03, Q-D4-25); D6 Product reaches it (Q-D4-13, Q-D4-24).
+    filterProperties: [testKind, orderChannel, collectionModes, notReported]
+    otherProperties: 2
+    archetype: Entity & Subjectable
+    mutations: { graphql: none, executor: "create; update descriptive fields; never delete" }
+  - name: AssayVersion
+    module: D4
+    uidToken: assay-version
+    identityKeys: [payloadHash (identity fields + performing lab uid; + snapshot digest when any identity field is NOT_REPORTED)]
+    # R-26: the performing lab arrives through the asserted PERFORMED_BY_LAB edge (AssertedRecordedProperties).
+    identifierSchemes: []
+    whyNode: >-
+      The unit comparability is judged on (kernel Assessment ASSESSES two AssayVersions: CQ-DX-03, CQ-AX-21, Q-D4-02) and
+      the as-of target of a LabTest's method episodes (CQ-DX-01, Q-D4-23); interference assertions (Q-D4-11) and reference
+      intervals (CQ-DX-06) hang on it. The private store references it by uid without sending results (CQ-AX-21).
+    filterProperties: [methodPrinciple, platform, specimenKinds, specimenOntologyIds, calibrationTraceability, notReported]
+    otherProperties: 6
+    archetype: Entity & Subjectable (versioned state; insert-only)
+    mutations: { graphql: none, executor: "create only (insert-only versioned state)" }
+  - name: AlgorithmVersion
+    module: D4
+    uidToken: algorithm-version
+    identityKeys: ["(familyKey, realization, versionLabel)", "else (familyKey, realization, issuer, versionPinnedAt) with versionBasis"]
+    identifierSchemes: []
+    whyNode: >-
+      Every computed value (clock, wearable score, CGM estimate, firmware state) is produced by one: CQ-DX-02/04 ask which
+      version produced a score; CQ-DX-09 and Q-D4-23 traverse its RUNS_ON_DEVICE episodes; Q-D4-06/Q-D4-20 traverse vendor →
+      publication versions; CQ-DX-05/Q-D4-05/Q-D4-15 attach reliability assertions and change-detectability assessments to it;
+      Q-D4-26 finds the scores whose input metrics carry a HARM signal (REQUIRES_INPUT_METRIC in reverse).
+    filterProperties: [familyKey, algorithmKind, realization, versionBasis, outputKind, inputPlatforms, notReported]
+    otherProperties: 7
+    archetype: Entity & Subjectable (versioned state; insert-only)
+    mutations: { graphql: none, executor: "create only (insert-only versioned state)" }
+  - name: ReferenceIntervalVersion
+    module: D4
+    uidToken: ri-version
+    identityKeys: [payloadHash over (assay version uid, metric uid, intervalKind, partition, bounds, unit, intervalText)]
+    identifierSchemes: []
+    whyNode: >-
+      CQ-DX-06 asks which interval applied at report date D (kind, partition, derivation) and Q-D4-12 whether a vendor
+      "optimal" band is a reference interval or a vendor target and who set it; one source page yields several intervals
+      for one (assay version, metric) pair, each a separate filterable record.
+    filterProperties: [intervalKind, derivation, sex (D3 SexScope), minAgeYears, maxAgeYears, effectiveFrom, effectiveTo, notReported]
+    otherProperties: 8
+    archetype: Entity & Subjectable (versioned state; insert-only)
+    mutations: { graphql: none, executor: "create only (insert-only versioned state)" }
+  - name: Device
+    module: D4
+    uidToken: device
+    identityKeys: ["(maker, model designation, generation)"]
+    identifierSchemes: [UDI_DI (requested), FDA_510K (requested), FDA_PRODUCT_CODE (requested)]
+    whyNode: >-
+      The measuring instrument model that software states run on (CQ-DX-09, Q-D4-23); D8 clearances, recalls and
+      adverse-event records reach it through the D6 Product that DELIVERS it (Q-D4-08/09/10/18), with its UDI-DI and
+      510(k) identifiers telling which model a record names; the D6 Product join (Q-D4-17, Q-D4-24).
+    filterProperties: [deviceKind, sensingModalities, deviceFamily, notReported]
+    otherProperties: 2
+    archetype: Entity & Subjectable
+    mutations: { graphql: none, executor: "create; update descriptive fields; never delete" }
+
+deferred:
+  - { name: DiagnosticResult (interface), reason: "private-store contract only (biotech-meta competency question DX-08, deliberately not a D4 row: no personal results in the shared graph); the shared graph exposes AssayVersion/AlgorithmVersion/Metric uids the private store references (CQ-AX-21)" }
+  - { name: Specimen, reason: "no question traverses from a specimen; comparisons are equality on specimenOntologyIds / systemOntologyId (D2 agrees). Reverse if a question needs specimen-level stability or collection-device relationships" }
+  - { name: MeasurementMethod, reason: "'all labs using method M' is a property filter on AssayVersion.methodPrinciple; reverse if methods need their own interference or performance records at scale" }
+  - { name: Algorithm (family node), reason: "questions group and filter by family, none traverses from a family: algorithmFamily + familyKey properties" }
+  - { name: ComparabilityAssessment, reason: "kernel Assessment (A1 ownership map: equivalence assessments are K type, kind and questions by the domain)" }
+
+mergedInto:
+  - { from: PanelDefinition, into: LabTest, how: "testKind PANEL; composition versions = INCLUDES_TEST episodes" }
+  - { from: MeasurementMethod, into: AssayVersion, how: "methodPrinciple enum + methodText" }
+  - { from: Specimen, into: AssayVersion, how: "specimenKinds enum list + specimenOntologyIds (UBERON/CL); LabTest.collectionModes + specimenText" }
+  - { from: ReferenceSystem, into: AssayVersion, how: "calibrationTraceability enum; certificate details as CERTIFIED_TRACEABLE_TO assertions" }
+  - { from: Algorithm, into: AlgorithmVersion, how: "algorithmFamily + familyKey + algorithmKind" }
+  - { from: ComparabilityAssessment, into: K.Assessment, how: "assessmentKind COMPARABILITY, assessmentSubkind D4.comparability; verdict in conclusionCode (vocabulary in 09-reasoning.md); ASSESSES the two versions" }
+  - { from: ReferenceRange, into: ReferenceIntervalVersion, how: "derivation NOT_REPORTED, partitionText; no AssayVersion edge when the source gives none" }
+  - { from: TechnologyPlatform, into: AssayVersion, how: "MeasurementPlatform enum (AssayVersion.platform, AlgorithmVersion.inputPlatforms)" }
+  - { from: ToolOrInstrument, into: Device, how: "deviceKind LAB_ANALYZER / ARRAY_SCANNER / SEQUENCER; on AssayVersion the instrument is instrumentModelText (almost always NOT_REPORTED)" }
+  - { from: Modality, into: Device, how: "sensingModalities enum list" }
+  - { from: Sensor, into: Device, how: "sensingModalities enum list" }
+  - { from: FirmwareVersion, into: AlgorithmVersion, how: "algorithmKind FIRMWARE, realization DEVICE_SOFTWARE, versionLabel = firmware string, componentLabel; RUNS_ON_DEVICE episodes" }
+  - { from: Biomarker, into: Biomarker, how: "kept; legacy display properties stripped" }
+  - { from: Metric, into: Metric, how: "kept; LOINC code moved to kernel Identifier; LOINC parts as properties" }
+  - { from: LabTest, into: LabTest, how: "kept; absorbs PanelDefinition" }
+  - { from: AssayVersion, into: AssayVersion, how: "kept; ReportedStatus per field → notReported list" }
+  - { from: AlgorithmVersion, into: AlgorithmVersion, how: "kept; absorbs Algorithm and FirmwareVersion; versionBasis + CHANGE_EVENT_UNLABELED" }
+  - { from: ReferenceIntervalVersion, into: ReferenceIntervalVersion, how: "kept; + VENDOR_TARGET kind, VENDOR_DEFINED derivation" }
+  - { from: Device, into: Device, how: "kept; absorbs ToolOrInstrument, Modality, Sensor" }

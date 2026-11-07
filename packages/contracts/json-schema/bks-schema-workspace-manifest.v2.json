@@ -1,0 +1,421 @@
+{
+  "$id": "https://belllabs.dev/contracts/bks-schema-workspace-manifest.v2.json",
+  "title": "bks-schema-workspace-manifest.v2",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "string",
+      "const": "bks-schema-workspace.v2"
+    },
+    "rendererVersion": {
+      "type": "string"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+    },
+    "release": {
+      "type": "object",
+      "properties": {
+        "releaseId": {
+          "type": "string"
+        },
+        "schemaDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "schemaReleaseDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "queryCatalogDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "irVersion": {
+          "type": "string"
+        },
+        "sdlPath": {
+          "type": "string"
+        },
+        "pinnedAt": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "pinned",
+            "override"
+          ]
+        }
+      },
+      "required": [
+        "releaseId",
+        "schemaDigest",
+        "schemaReleaseDigest",
+        "irVersion",
+        "sdlPath",
+        "pinnedAt",
+        "source"
+      ],
+      "additionalProperties": false
+    },
+    "workspaceInputs": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      }
+    },
+    "workspaceFingerprint": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "fingerprintRule": {
+      "type": "string"
+    },
+    "counts": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": -9007199254740991,
+        "maximum": 9007199254740991
+      }
+    },
+    "layers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "depth": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "name": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "depth",
+          "name",
+          "path",
+          "purpose"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "entryPoints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "domains": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "modules": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "nodeCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "slug",
+          "title",
+          "modules",
+          "nodeCount"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "modules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "nodeCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "owner",
+          "nodeCount"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "cardIdPrefixes": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "limits": {
+      "type": "object",
+      "properties": {
+        "policyVersion": {
+          "type": "string"
+        },
+        "search": {
+          "type": "object",
+          "properties": {
+            "defaultLimit": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "maxLimit": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "maxQueryChars": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "defaultLimit",
+            "maxLimit",
+            "maxQueryChars"
+          ],
+          "additionalProperties": false
+        },
+        "traversal": {
+          "type": "object",
+          "properties": {
+            "defaultDepth": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "maxDepth": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "maxNodes": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "maxArcs": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "defaultDepth",
+            "maxDepth",
+            "maxNodes",
+            "maxArcs"
+          ],
+          "additionalProperties": false
+        },
+        "paths": {
+          "type": "object",
+          "properties": {
+            "defaultMaxHops": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "maxHops": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "maxPaths": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "defaultMaxHops",
+            "maxHops",
+            "maxPaths"
+          ],
+          "additionalProperties": false
+        },
+        "slice": {
+          "type": "object",
+          "properties": {
+            "targetTokens": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "estimator": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "targetTokens",
+            "estimator"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "policyVersion",
+        "search",
+        "traversal",
+        "paths",
+        "slice"
+      ],
+      "additionalProperties": false
+    },
+    "semantic": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "not-configured",
+            "available",
+            "unavailable"
+          ]
+        },
+        "generationId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "generationId",
+        "note"
+      ],
+      "additionalProperties": false
+    },
+    "compatibility": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "reason"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "contracts": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "inventory": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "sha256": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "sha256",
+          "bytes"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "format",
+    "rendererVersion",
+    "generatedAt",
+    "release",
+    "workspaceInputs",
+    "workspaceFingerprint",
+    "fingerprintRule",
+    "counts",
+    "layers",
+    "entryPoints",
+    "domains",
+    "modules",
+    "cardIdPrefixes",
+    "limits",
+    "semantic",
+    "contracts",
+    "inventory"
+  ],
+  "additionalProperties": false
+}

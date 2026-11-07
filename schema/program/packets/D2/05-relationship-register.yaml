@@ -1,0 +1,188 @@
+version: 1
+module: D2
+stage: model (Wave 2), A3, 2026-10-08; revised after the adversarial review (2026-10-08)
+# Six relationship types, 10 from→to pairs (union members counted as pairs; packet-check count).
+# Adversarial review: INFLUENCES_OUTCOME demoted to predicate-only (deferred list); the ChemicalSubstance → MolecularEntity
+# pair of AFFECTS_MECHANISM cut (MolecularEntity.affectedBy); PART_OF_MECHANISM and PARTICIPATES_IN rebased from structural
+# to asserted (recorded only, MechanismReferenceProperties ⊇ kernel AssertedRecordedProperties); every `questions` list
+# trimmed to the questions whose 03 pattern actually traverses the relationship.
+# Tool / source ids are stable ids listed in 08-sources-and-tools.md.
+# job:* ids are projection Activities (kernel Activity, activityKind PROJECTION, methodVersion = derivationRule).
+relationships:
+  - type: PART_OF_MECHANISM
+    class: asserted
+    from: Mechanism
+    to: Mechanism
+    edgeProperties: MechanismReferenceProperties   # superset of kernel AssertedRecordedProperties (K M11)
+    cardinality: "many (a mechanism can sit under several parents: Reactome hasEvent, GO part_of, BellLabs hallmark mapping); one episode per authorizing Assertion"
+    temporal: recorded-only
+    questions: [Q-D2-02, Q-D2-12]
+    pattern: "03#Q-D2-02"
+    populatedBy: [tool:reactome-content-service, tool:quickgo, curation:bellabs-hallmark-map]
+    fixture: 07-fixtures/reactome-chembl-reference
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Q-D2-02 ("which compounds act on hallmark/pathway P") and Q-D2-12 (hallmark ancestry) traverse the hierarchy
+      variable-length; a property cannot do that. Replaces pinned INVOLVES_PATHWAY (Mechanism→Pathway, Condition→Pathway)
+      and the implicit hallmark grouping. Asserted, not structural (adversarial review): the edge links two independent
+      vocabulary records on an authority's word (Reactome, GO) or BellLabs curation, so each episode is authorized by one
+      Assertion per authority record and release (asserter = authority or curation Agent; JSON_POINTER locator), as
+      sibling packets do for D1 PARENT_TAXON, D4 REFLECTS_MECHANISM and D13 ON_FRONTIER. Filtered qualifiers:
+      referenceScheme (Q-D2-12 mapping source), referenceRelease. Recorded time only: "as of release R" is a property
+      filter; a release that drops the edge closes the episode (recordedTo).
+
+  - type: PARTICIPATES_IN
+    class: asserted
+    from: [MolecularEntity, D1.ChemicalSubstance]
+    to: Mechanism
+    edgeProperties: MechanismReferenceProperties
+    cardinality: "many (a gene or metabolite participates in many mechanisms; a pathway has tens to hundreds of participants); one episode per authorizing Assertion"
+    temporal: recorded-only
+    questions: [Q-D2-11, Q-D2-03, CQ-MX-01, Q-D2-08, Q-D2-13, Q-D2-19]
+    pattern: "03#Q-D2-11"
+    populatedBy: [tool:reactome-content-service, tool:quickgo, tool:uniprot-rest, tool:hagr-genage]
+    fixture: 07-fixtures/reactome-chembl-reference
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      The resolver hop of every mechanism question: an assertion about FKBP1A, SIRT1 or NAAD reaches its Mechanism
+      through this edge (projection rule, Q-D2-03 analyte branch, Q-D2-11 players list, Q-D2-13 step resolution,
+      Q-D2-19 second path). Absorbs pinned CONTRIBUTES_TO (MolecularEntity→Mechanism) and PARTICIPATES_IN (→Pathway).
+      Two pairs: MolecularEntity→Mechanism (declared OUT on MolecularEntity) and D1 ChemicalSubstance→Mechanism
+      (declared IN on Mechanism as metaboliteParticipants, so D1's hub gets no field). participantRole absorbs the pinned
+      RegulatorySign and is filtered by Q-D2-11 and the projection (NEGATIVE_REGULATOR flips the sign). Asserted for the
+      same reason as PART_OF_MECHANISM (Q-D2-11 shows the authority, release and locator).
+
+  - type: OBSERVED_IN_CONTEXT
+    class: structural
+    from: K.Assertion
+    to: MechanismEvidenceContext
+    edgeProperties: StructuralEdgeProperties
+    cardinality: "zero_or_one context per Assertion; one_or_more Assertions per context"
+    temporal: recorded-only
+    questions: [CQ-MX-01, CQ-MX-02, CQ-MX-03, Q-D2-04, Q-D2-13, Q-D2-26, Q-D2-09, Q-D2-20]
+    pattern: "03#CQ-MX-02"
+    populatedBy: [tool:europepmc-fulltext, tool:pubmed-eutils, tool:hagr-drugage-bulk, tool:hagr-genage]
+    fixture: 07-fixtures/nr-muscle-unstructured
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      The per-context rule (round 0003 M3): every observation Assertion names the one exposure group × compartment ×
+      organism it was measured in, so "where and in what was this measured, and was it null" is a filter on the context.
+      Declared on MechanismEvidenceContext with direction IN (kernel rule: edges between a kernel node and a domain node
+      live on the domain type). D2 mechanism Assertions only: D5 adverse-effect Assertions carry D5's population
+      qualifier instead (the Q-D2-15 use was dropped in the adversarial review). Offered to A1 as a shared qualifier
+      edge if D3/D4/D5 need the same shape (11-open-questions item 2).
+
+  - type: EXPOSED_TO
+    class: structural
+    from: MechanismEvidenceContext
+    to: [D1.ChemicalSubstance, D1.IngredientMaterial, D5.Intervention]
+    edgeProperties: ExposureRoleProperties
+    cardinality: "one_or_more per context (exactly one TESTED unless geneticManipulation is set; BACKGROUND and COMPARATOR optional; combinations are several TESTED with orderIndex)"
+    temporal: recorded-only
+    questions: [CQ-MX-02, CQ-MX-04, Q-D2-09, Q-D2-04]
+    pattern: "03#Q-D2-09"
+    populatedBy: [tool:europepmc-fulltext, tool:pubmed-eutils, tool:ctgov-v2, tool:hagr-drugage-bulk]
+    fixture: 07-fixtures/metformin-exercise-harm
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      CQ-MX-04 joins product → material → context to compare exposures; Q-D2-09 traverses the BACKGROUND exposure
+      (exercise) that the tested agent counteracts; Q-D2-04 pairs contexts by their TESTED exposure. One field with a
+      3-member union replaces the pinned three EXPOSED_TO fields (IngredientMaterial, ChemicalForm, ChemicalSubstance);
+      ChemicalForm is gone in D1; the D5 Intervention member is new (non-substance exposures: exercise training, fasting).
+      exposureRole is the only edge property (Q-D2-09, CQ-MX-04 filter on it). Structural: part of the one immutable
+      context record, built from the same Methods span the context's Assertions cite (HAS_EVIDENCE role CONTEXT).
+
+  - type: IN_STUDY_ARM
+    class: structural
+    from: MechanismEvidenceContext
+    to: D3.StudyArm
+    edgeProperties: StructuralEdgeProperties
+    cardinality: "zero_or_more (usually one; a paper may pool registry arms into one analysed group: Konopka 2019 collapses two NCT02552355 arms per group; check stage 2026-10-08, 11 item 22)"
+    temporal: recorded-only
+    questions: [CQ-MX-02, Q-D2-06, Q-D2-27, Q-D2-04]
+    pattern: "03#Q-D2-27"
+    populatedBy: [tool:ctgov-v2, tool:europepmc-fulltext]
+    fixture: 07-fixtures/dq-senescence-biomarker-path
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      The human-evidence join (Q-D2-06) and the frontier → study → mechanism readout path (Q-D2-27) traverse it; Q-D2-04
+      uses it to pair a biomarker context with other compartments measured in the same arm; CQ-MX-02 reads a registered
+      group's dose of record through it (StudyArm → D3 InterventionComponent, adversarial review). Kept from the pinned
+      schema unchanged.
+
+  - type: AFFECTS_MECHANISM
+    class: derived
+    from: [D1.ChemicalSubstance, D5.Intervention]
+    to: Mechanism
+    edgeProperties: MechanismProjectionProperties
+    cardinality: "many; at most one edge per (modulator, mechanism, derivationRule)"
+    temporal: recorded-only
+    questions: [CQ-MX-05, Q-D2-02, Q-D2-03, Q-D2-06, Q-D2-18, Q-D2-26, Q-D2-10, Q-D2-19]
+    pattern: "03#CQ-MX-05"
+    populatedBy: [job:d2.affects-mechanism-v1, tool:europepmc-fulltext, tool:chembl-rest]
+    fixture: 07-fixtures/nr-muscle-unstructured
+    nestedOperations: []
+    aggregate: false
+    rationale: >-
+      The only compound→mechanism edge, and it is a read-only projection over Assertions + contexts (method
+      d2.affects-mechanism/v1, 09-reasoning "Derived projection method spec"); it exists because Q-D2-02/-06/-18, hop 1
+      of Q-D2-03 (value 1) and hop 1 of Q-D2-26 must filter many modulators by direction, best basis and human evidence
+      without re-aggregating assertions per query. Two pairs: ChemicalSubstance|Intervention → Mechanism (declared IN on
+      Mechanism). Molecular-target and metabolite objects roll up to their Mechanisms through PARTICIPATES_IN
+      (viaParticipant); the ChemicalSubstance → MolecularEntity pair was cut in the adversarial review (only value-3
+      Q-D2-19 used it; Q-D2-08 reads the INHIBITS/ACTIVATES/BINDS Assertions directly). Absorbs pinned AFFECTS_MECHANISM
+      from 8 source types and MODULATES from 6 (roll-up to the D1 active substance). Contested by D10 (Association
+      records): D2 keeps the edge, D10 keeps Association for cross-domain scores (11-open-questions item 1).
+
+predicateOnly:
+  # Assertion.predicate values registered by D2 (closed list). Each stays a predicate until the named question traverses it often enough to need a typed edge.
+  - { predicate: INCREASES_ACTIVITY_OF, subject: "D1 substance|IngredientMaterial|D5 Intervention", object: "Mechanism|MolecularEntity", promoteWhen: "never as a typed edge; aggregated by AFFECTS_MECHANISM (CQ-MX-01)" }
+  - { predicate: DECREASES_ACTIVITY_OF, subject: same, object: same, promoteWhen: "never; aggregated by AFFECTS_MECHANISM (CQ-MX-01)" }
+  - { predicate: INCREASES_LEVEL_OF, subject: "means or Mechanism|MolecularEntity", object: "D1 metabolite|MolecularEntity|Outcome|D4 Biomarker", promoteWhen: "never; aggregated (Q-D2-22)" }
+  - { predicate: DECREASES_LEVEL_OF, subject: same, object: same, promoteWhen: "never; aggregated (Q-D2-22)" }
+  - { predicate: NO_CHANGE_IN, subject: same, object: same, promoteWhen: "never; measured null, counted in nNoChangeContexts (CQ-MX-03)" }
+  - { predicate: MIXED_EFFECT_ON, subject: same, object: same, promoteWhen: "never (CQ-MX-06)" }
+  - { predicate: ATTENUATES_INDUCTION_OF, subject: "D1 substance|D5 Intervention", object: "Mechanism", promoteWhen: "Q-D2-09 if D5 needs a typed interaction-by-mechanism edge; today D5 interaction records cite the Assertion" }
+  - { predicate: INHIBITS, subject: "D1 substance", object: "MolecularEntity", promoteWhen: "Q-D2-08 if curated molecular-target lookups need a typed edge (today they read these Assertions; the MolecularEntity projection pair was cut in the adversarial review)" }
+  - { predicate: ACTIVATES, subject: "D1 substance", object: "MolecularEntity", promoteWhen: "Q-D2-08 (same)" }
+  - { predicate: BINDS, subject: "D1 substance", object: "MolecularEntity", promoteWhen: "Q-D2-08 (same)" }
+  - { predicate: MECHANISM_OF, subject: "Mechanism", object: "Condition|Outcome", promoteWhen: "Q-D2-14 / Q-D2-26 if mechanism → outcome traversal becomes a top query (pinned HAS_MECHANISM, INFLUENCES_OUTCOME)" }
+  - { predicate: INCREASES_RISK_OF, subject: "Mechanism|MolecularEntity|Condition(RISK_STATE)", object: "Condition", promoteWhen: "Q-D2-15 (pinned INCREASES_RISK_FOR)" }
+  - { predicate: DECREASES_RISK_OF, subject: same, object: "Condition", promoteWhen: "Q-D2-14" }
+  - { predicate: MEDIATES_TARGET, subject: "Mechanism", object: "D5 Target", promoteWhen: "Q-D2-10 if D5 later wants a curated structural Target → Mechanism mapping (then D5 declares it). D5 accepted the predicate (D5 OQ-D5-37, 10-seams predicateSeams)" }
+  - { predicate: DEVELOPS_THERAPY_TARGETING, subject: "D7 Organization", object: "Mechanism|MolecularEntity", promoteWhen: "Q-D2-17 if investor screens traverse company → thesis mechanism at scale (D7 would own it)" }
+  - { predicate: ORTHOLOG_OF, subject: "MolecularEntity", object: "MolecularEntity", promoteWhen: "Q-D2-20 if a question must traverse model-organism gene → human gene (today symbol + synonyms)" }
+  - { predicate: AFFECTS_ORGAN, subject: "Condition|Mechanism", object: "literal UBERON id (valueString)", promoteWhen: "never as an edge: compartments are enum + ontology id (pinned AFFECTS_ORGAN)" }
+
+deferred:
+  - { type: INFLUENCES_OUTCOME, reason: "adversarial review 2026-10-08: demoted from a derived Mechanism → Outcome|Condition projection to predicate-only. All its questions are value 2; Q-D2-15's pattern never traversed it; Q-D2-14 already had an Assertion branch; its only fixture edge was built from cited inputs. Q-D2-26 hop 2 is now query-time aggregation over MECHANISM_OF / INCREASES_RISK_OF / level-change Assertions with their contexts; cross-domain computed scores are D10 Association records (ASSOCIATES). −1 relationship type, −2 pairs, −1 union." }
+  - { type: IN_SPECIES, reason: "Species is an enum (ModelOrganism) + ncbiTaxonId on the context; no question traverses through a species" }
+  - { type: MEASURED_IN, reason: "AnatomicalContext is CompartmentKind + compartmentOntologyId on the context; cross-domain compartment check is equality on the ontology id" }
+  - { type: APPLIES_TO_SPECIES, reason: "derived from contexts at query time (Q-D2-13); projection field `organisms` not needed by any filter" }
+  - { type: ACTS_IN, reason: "same as APPLIES_TO_SPECIES for compartments (Q-D2-13 groups contexts)" }
+  - { type: STUDIED_IN, reason: "D3 Study → Species; D3 carries organism as ncbiTaxonId on StudyPopulation (seam note in 11-open-questions)" }
+  - { type: MEASURED_IN_MATRIX, reason: "D4 Biomarker/Metric specimen is an ontology-id property (D4 systemOntologyId)" }
+  - { type: EXPRESSED_IN, reason: "D4 Biomarker → Organ; no question traverses expression site" }
+  - { type: EXPRESSED_IN_CONTEXT, reason: "same as EXPRESSED_IN" }
+  - { type: INVOLVES_PATHWAY, reason: "mergedInto PART_OF_MECHANISM (Pathway is a Mechanism kind); Condition→Pathway becomes predicate MECHANISM_OF" }
+  - { type: CONTRIBUTES_TO, reason: "mergedInto PARTICIPATES_IN" }
+  - { type: MODULATES, reason: "pinned compound → molecular target; first mergedInto AFFECTS_MECHANISM (→ MolecularEntity pair), that pair cut in the adversarial review: the target is the object of INHIBITS/ACTIVATES/BINDS Assertions (Q-D2-08) and rolls up to its Mechanisms through PARTICIPATES_IN" }
+  - { type: HAS_MECHANISM, reason: "predicate MECHANISM_OF (Q-D2-14 promotes)" }
+  - { type: INCREASES_RISK_FOR, reason: "predicate INCREASES_RISK_OF (Q-D2-15)" }
+  - { type: MEDIATES_RISK_THROUGH, reason: "predicate; RiskFactor merged into Condition RISK_STATE" }
+  - { type: ASSOCIATED_WITH_CONDITION, reason: "predicate MECHANISM_OF / INCREASES_RISK_OF (Mechanism → Condition); computed associations are D10 Association records" }
+  - { type: ASSOCIATED_WITH_OUTCOME, reason: "Lifestyle → Outcome: D5 Intervention reaches outcomes through D5 target predicates and D3 results" }
+  - { type: AFFECTS_ORGAN, reason: "predicate / property (UBERON id); Organ is not a node" }
+  - { type: REFLECTS_MECHANISM, reason: "owned by D4 (declared on Biomarker, AssertedRecordedProperties); D2 consumes it in Q-D2-03 / Q-D2-22 (10-seams owner: other)" }
+  - { type: ENCODES, reason: "MolecularEntity → Biomarker becomes D4 HAS_ANALYTE (Biomarker → MolecularEntity), owned by D4" }
+  - { type: IN_PATHWAY, reason: "D4 Biomarker → Pathway: replaced by REFLECTS_MECHANISM (D4)" }
+  - { type: OPERATIONALIZED_BY, reason: "pinned Outcome → Metric; D5 owns Target OPERATIONALIZED_BY → D4 Biomarker | D4 Metric | D2 Outcome (D5 check stage, union TargetMeasure); Outcome → D4 Metric not needed (D3 OutcomeDefinition carries the metric)" }
+  - { type: HAS_IDENTIFIER, reason: "kernel pattern (Identifier.identifies); D2 declares nothing" }
+  - { type: MECHANISM_CHAIN_STEP, reason: "MechanismChain node stays deferred (OPEN-QUESTIONS item 7); an ordered chain is a query-time path or a published Report" }
+  - { type: MEASURED_WITH_ASSAY, reason: "context → D4 AssayVersion; assayText property until a question asks which mechanism findings used assay X" }
+  - { type: CANDIDATE_MODULATOR_OF, reason: "GDS link-prediction output (Q-D2-19) is a D10 materialized association or query-time result, never a D2 edge" }

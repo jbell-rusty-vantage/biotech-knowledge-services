@@ -1,0 +1,67 @@
+# Fly.io deployment of the bounded consumer GraphQL API (Neo4j stays on Aura). Run from the repository root so the
+# workspace packages and schema/pinned (PIN.json + release/) are in the build context:
+#   bash scripts/fly.sh deploy . --config apps/graphql-api/fly.toml --dockerfile apps/graphql-api/Dockerfile --remote-only
+# Deployed 2026-10-12 (S9, biotech-schema-v2.0.2). Deploy ON HOLD since 2026-11-07 (owner): see docs/ENVIRONMENT.md first.
+# Secrets (S9 operator; names only):
+#   BKS_BIOTECH_GRAPH_URI, BKS_BIOTECH_GRAPH_READER_USERNAME, BKS_BIOTECH_GRAPH_READER_PASSWORD
+#                                                              (read-only bks_reader principal; BKS_BIOTECH_GRAPH_USERNAME/
+#                                                              _PASSWORD remain accepted as a warned fallback)
+#   GRAPHQL_API_KEY                                            (service credential held by the product BFF, >= 32 chars)
+#   GRAPHQL_ACTOR_PUBLIC_KEY                                   (BFF actor-context Ed25519 public key, SPKI PEM or JWKS)
+#   OPENAI_API_KEY is no longer read by this app (vector is unsupported in this release) and can be unset.
+app = "bks-biotech-graphql-api"
+primary_region = "iad"
+
+[env]
+  PORT = "4010"
+  NODE_ENV = "production"
+  # Resources unchanged pending the S9 30-minute soak (SPECIFICATION 5.3). Measured v2 executable: ~0.62 MB printed,
+  # ~1.2 s in-process build, ~110 MB retained heap (apps/graphql-api/benchmarks/).
+  NODE_OPTIONS = "--max-old-space-size=3072"
+  BKS_BIOTECH_GRAPH_DATABASE = "neo4j"
+  GRAPHQL_PROFILE = "product"
+  # Explicitly off: startup DDL belongs to the migration job; product vector search is unsupported in this release.
+  GRAPHQL_ENSURE_OPERATIONS = "false"
+  GRAPHQL_ENABLE_VECTOR = "false"
+  GRAPHQL_ALLOW_MUTATIONS = "false"
+  GRAPHQL_ACTOR_ISSUER = "bks-product-bff"
+  GRAPHQL_ACTOR_AUDIENCE = "bks-graphql-api"
+  GRAPHQL_READINESS_RELEASE_CHECK = "enforce"
+  GRAPHQL_WARMUP = "true"
+  GRAPHQL_MAX_DEPTH = "8"
+  GRAPHQL_MAX_COST = "5000"
+  GRAPHQL_MAX_OFFSET = "1000"
+  GRAPHQL_TX_TIMEOUT_MS = "5000"
+  GRAPHQL_DEADLINE_MS = "8000"
+  GRAPHQL_BODY_LIMIT_BYTES = "262144"
+  GRAPHQL_MAX_RESPONSE_BYTES = "2097152"
+  GRAPHQL_MAX_TOKENS = "5000"
+  NEO4J_MAX_POOL_SIZE = "20"
+  NEO4J_ACQUISITION_TIMEOUT_MS = "2000"
+  NEO4J_CONNECTION_TIMEOUT_MS = "3000"
+  NEO4J_MAX_RETRY_TIME_MS = "1000"
+
+[http_service]
+  internal_port = 4010
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 1
+  [http_service.concurrency]
+    type = "requests"
+    soft_limit = 50
+    hard_limit = 100
+
+# Traffic readiness: connectivity, installed release marker vs compatibility matrix, required DDL ONLINE, plan warm-up.
+# A graph without the v2 KsReleaseMarker keeps the machine out of rotation (intended: Gate D/F before traffic).
+[[http_service.checks]]
+  grace_period = "60s"
+  interval = "30s"
+  method = "GET"
+  path = "/readyz"
+  timeout = "5s"
+
+[[vm]]
+  memory = "4gb"
+  cpu_kind = "shared"
+  cpus = 2

@@ -1,0 +1,86 @@
+"""
+Purpose: the single lineage spine (00-DIRECTIVE 4). One Activity per Mission Control run (or verification run,
+projection job, answer composition): `externalRunSystem` + `runId` unique. Everything the run writes points at it
+(nodes by WAS_GENERATED_BY; edges by `lastWriterRunId` = runId). A verification.v1 run is an Activity of kind
+VERIFICATION carrying its sealed `bundleDigest` (no VerificationRun node). An evidence mission is an Activity of kind
+EVIDENCE_MISSION that ASSESSES the Claim it tries to disqualify and WAS_INFORMED_BY the VETTING activity whose
+Assessment queued the claim. Granularity (model stage): one Activity per run, never per applied intent; the intents a
+run applied are list-valued (`operationIds`, `intentDigests`, `planDigests`, `receiptIds`; each receipt is tied to its
+graph effects by the executor's KsIntentMarker). Retries (Mission Control attempts) keep the run's identity and never
+create another Activity. The Activity carries admission (`policyOutcome`) and times, never the KS operation state
+machine (queued … quarantined), which stays in Mission Control / Knowledge Services. WAS_GENERATED_BY is written for
+every node a run creates OR updates, so a node may point at several Activities; its creator is the earliest.
+Identity rule: (externalRunSystem, runId). uid token: `activity`. Questions: Q-K-03, Q-K-04, Q-K-05, Q-K-06, Q-K-07,
+Q-K-08, Q-K-19, Q-K-24, CQ-AX-07.
+"""
+type Activity implements Entity
+  @node(labels: ["Activity", "Occurrence"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  activityKind: ActivityKind!
+  "mission-control | ks-verification | projection | manual."
+  externalRunSystem: String!
+  "Mission Control run.runId (or verification run UUID); replaces externalRunId / mongoResearchRunId."
+  runId: String!
+  missionId: String
+  activationId: String
+  "Operation intent ids (Mission Control) or the Knowledge Services operation id(s) this run executed."
+  operationIds: [String!]
+  "The run's main step: knowledge.ingestion_apply, verification_claims, entity-link projection, ..."
+  operationKind: String
+  startedAt: DateTime
+  endedAt: DateTime
+  "Executor or method version that makes outputs interpretable."
+  methodVersion: String
+  "biotech-knowledge-intent.v1 digests and plan digests of the intents the run applied (ADR 0003), in apply order."
+  intentDigests: [String!]
+  planDigests: [String!]
+  "biotech-knowledge-receipt.v1 ids (the references Mission Control stores), in apply order."
+  receiptIds: [String!]
+  "verification.v1 sealed audit bundle digest, when the run produced one."
+  bundleDigest: String
+  "verification.v1 policy outcome of the run, and the PolicyVersion id applied."
+  policyOutcome: PolicyOutcome
+  policyVersion: String
+  "Knowledge Services verification run id (the common operational run; PostgreSQL owns the run and its manifests, R-SV10)."
+  verificationRunRef: String
+  "sha256:<hex> of the canonical unsigned sealed run manifest this Activity references (R-SV10)."
+  runManifestDigest: String
+  "Which seal runManifestDigest names (verification, decision or admission snapshot, R-SV10)."
+  runSealKind: RunSealKind
+  "Immutable reference to the Knowledge Services use decision the applied effect was admitted under (R-SV10)."
+  useDecisionRef: String
+  "sha256:<hex> digest of that use decision record (R-SV11); official reads compare it with the authority's record before serving."
+  useDecisionDigest: String
+  "sha256:<hex> of the exact normalized native effect the use decision bound (R-SV10); the apply verifies it before writing."
+  boundEffectDigest: String
+  "Effect key of the applied effect (the KsIntentMarker scope key, R-SV10)."
+  effectKey: String
+  "Canonical JSON digest (or compact string) of the admitted original invocation (origin) the effect descends from (R-SV10)."
+  originatingOrigin: String
+  "Revocation epoch checked at admission under the native transaction (R-SV10)."
+  revocationEpoch: Int
+  """class: structural; cardinality: one_or_more; questions: Q-K-03."""
+  agents: [Agent!]!
+    @relationship(type: "WAS_ASSOCIATED_WITH", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: many (the activity this one was started from: vetting → evidence mission, research → ingestion); questions: Q-K-06, Q-K-08."""
+  informedBy: [Activity!]!
+    @relationship(type: "WAS_INFORMED_BY", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: zero_or_more (EVIDENCE_MISSION: exactly one, the Claim under test; RESEARCH: the entities the mission was chartered for; written at run start from the Mission Control charter); questions: Q-K-05, Q-K-08, Q-K-19."""
+  about: [Subjectable!]!
+    @relationship(type: "ASSESSES", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural (inverse); cardinality: many (every node the run wrote, any module); questions: Q-K-04, Q-K-05, Q-K-07."""
+  generated: [Entity!]!
+    @relationship(type: "WAS_GENERATED_BY", direction: IN, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

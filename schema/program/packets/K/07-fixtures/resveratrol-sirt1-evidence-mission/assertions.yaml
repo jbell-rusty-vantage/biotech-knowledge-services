@@ -1,0 +1,366 @@
+# Assertions and judgments for fixture resveratrol-sirt1-evidence-mission (K, fixtures stage, A1, 2026-10-08).
+# Kind: disconfirmation. The claim lifecycle of 00-DIRECTIVE 3.4 end to end: four occurrences of one Claim -> VETTING
+# Assessment (disposition RESEARCH) -> EVIDENCE_MISSION Activity that ASSESSES the Claim -> SUPPORT Adjudications ->
+# EVIDENCE_REPORT with the verification.v1 lattice verdict; plus the refined Claim (EQUIVALENCE / K.claim-relation / REFINES)
+# and its own report.
+#
+# Conventions (all six K fixtures):
+# - uids are FIXTURE ids (hu:<token>:fx-k-...); missionId / runId are FIXTURE ids (mission:ft-K-fixtures, run:ft-K-...),
+#   not Mission Control ids. Nothing here was written to a graph. Activities and Agents are defined once in
+#   ../two-run-lineage/assertions.yaml (the lineage view of the records of this fixture and of ../seller-claim-occurrences,
+#   ../retracted-sah-2017-stale-evidence and ../hubbard-2013-unstructured-to-entity).
+# - `locators:` / `evidence[].locator` refs point into ./locators.yaml (every exact quote there was re-found in the fixtures-
+#   stage capture). A VERIFIER_FOUND edge's expectedSelectedContentDigest is that locator's quoteHash.
+# - Types: K.* = kernel (../../04-schema-proposal.graphql); D1/D2/D7/D9.* = sibling modules (names as used by their packets
+#   on 2026-10-08: D1.ChemicalSubstance, D2.MolecularEntity, D7.Person / D7.Organization, D9.Chunk).
+# - asserter = who said it in the source (ASSERTED_BY); producedBy = the run that wrote the record (WAS_GENERATED_BY).
+# - recordedAt values are fixture clock values (run start times), not service-assigned commit times.
+# - Judgments (judgeKind LLM) are this fixtures-stage agent's own reading of the quoted spans; they are fixture
+#   judgments, not verification.v1 outputs. Research is not medical advice.
+
+fixture: resveratrol-sirt1-evidence-mission
+producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }   # default; fixture ids
+activities:   # defined in ../two-run-lineage/assertions.yaml
+  - { ref: act-r1-ingest, uid: "hu:activity:fx-k-r1-ingest", activityKind: INGESTION, runId: "run:ft-K-r1-ingest" }
+  - { ref: act-r1-vetting, uid: "hu:activity:fx-k-r1-vetting", activityKind: VETTING, runId: "run:ft-K-r1-vetting" }
+  - { ref: act-r2-mission, uid: "hu:activity:fx-k-r2-evidence-mission", activityKind: EVIDENCE_MISSION, runId: "run:ft-K-r2-evidence-mission" }
+  - { ref: act-r2-verification, uid: "hu:activity:fx-k-r2-verification", activityKind: VERIFICATION, runId: "run:ft-K-r2-verification" }
+
+entities:
+  - { ref: e-resveratrol, type: D1.ChemicalSubstance, uid: "hu:chemical-substance:fx-k-resveratrol", name: resveratrol, identifiers: ["UNII:Q369O8926L", "MESH:D000077185"], note: "identifiers from the PubMed ChemicalList of each record (see ../resveratrol-identifier-crosswalk)" }
+  - { ref: e-sirt1, type: D2.MolecularEntity, uid: "hu:molecular-entity:fx-k-sirt1-human", name: "NAD-dependent protein deacetylase sirtuin-1 (SIRT1)", note: "MeSH D056564 'Sirtuin 1' in the same ChemicalLists; D2 owns the type" }
+  - { ref: e-howitz, type: D7.Person, uid: "hu:person:fx-k-howitz-kt", name: "Konrad T. Howitz (first author for the 12-author group of PMID 12939617; BIOMOL Research Laboratories)" }
+  - { ref: e-kaeberlein, type: D7.Person, uid: "hu:person:fx-k-kaeberlein-m", name: "Matt Kaeberlein (first author for the 12-author group of PMID 15684413; University of Washington)" }
+  - { ref: e-pacholec, type: D7.Person, uid: "hu:person:fx-k-pacholec-m", name: "Michelle Pacholec (first author for the 17-author group of PMID 20061378; Pfizer Global Research and Development)" }
+  - { ref: e-hubbard, type: D7.Person, uid: "hu:person:fx-k-hubbard-bp", name: "Basil P. Hubbard (first author for the 30-author group of PMID 23471411; Harvard Medical School)" }
+  - ref: e-source-family-note
+    note: >-
+      Source families for independence counting (Report.independentSourceFamilyCount): PMID 12939617 and PMID 23471411
+      share three authors, Konrad T Howitz, Dudley W Lamming and David A Sinclair (AuthorList of both captured records;
+      corrected from "two" in the adversarial review) -> one family; Kaeberlein 2005 and Pacholec 2010 share no author with
+      either or with each other -> two more families. 3 distinct families for the general claim.
+
+sources:   # K.Source (one per canonicalUri) -> HAS_SNAPSHOT -> the snapshots in locators.yaml
+  - { ref: src-pubmed-12939617, uid: "hu:source:fx-k-pubmed-12939617", canonicalUri: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=12939617&retmode=xml", sourceKind: API, genre: BIBLIOGRAPHIC_INDEX_RECORD, snapshots: [snap-pubmed-12939617], identifiers: ["PMID:12939617", "DOI:10.1038/nature01960"] }
+  - { ref: src-pubmed-15684413, uid: "hu:source:fx-k-pubmed-15684413", canonicalUri: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=15684413&retmode=xml", sourceKind: API, genre: BIBLIOGRAPHIC_INDEX_RECORD, snapshots: [snap-pubmed-15684413], identifiers: ["PMID:15684413", "DOI:10.1074/jbc.M500655200"] }
+  - { ref: src-pubmed-20061378, uid: "hu:source:fx-k-pubmed-20061378", canonicalUri: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=20061378&retmode=xml", sourceKind: API, genre: BIBLIOGRAPHIC_INDEX_RECORD, snapshots: [snap-pubmed-20061378], identifiers: ["PMID:20061378", "DOI:10.1074/jbc.M109.088682", "PMCID:PMC2832984"] }
+  - { ref: src-pubmed-23471411, uid: "hu:source:fx-k-pubmed-23471411", canonicalUri: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=23471411&retmode=xml", sourceKind: API, genre: BIBLIOGRAPHIC_INDEX_RECORD, snapshots: [snap-pubmed-23471411], identifiers: ["PMID:23471411", "DOI:10.1126/science.1231097", "PMCID:PMC3799917"] }
+
+claims:
+  - ref: claim-general
+    uid: "hu:claim:fx-k-resveratrol-directly-activates-sirt1"
+    type: K.Claim
+    name: resveratrol directly activates SIRT1
+    proposition: "resveratrol directly activates SIRT1"
+    propositionHash: "sha256:75051446cfb227c0c54311b38c22e25776ec7d7e6fc61fa94ae356cebcdf382e"
+    propositionHashInput: '{"object":"hu:molecular-entity:fx-k-sirt1-human","predicate":"DIRECTLY_ACTIVATES","proposition":"resveratrol directly activates sirt1","qualifiers":[],"subject":"hu:chemical-substance:fx-k-resveratrol"}'
+    claimType: RELATIONSHIP
+    lifecycleState: REPORTED                     # cache after R2 (was QUEUED_FOR_RESEARCH after R1-vetting)
+    latestVerdict: MIXED_OR_CONFLICTING          # cache of rpt-general.verdict
+    createdBy: act-r1-ingest                     # WAS_GENERATED_BY (create)
+    updatedBy: [act-r2-mission]                  # WAS_GENERATED_BY (update of the caches)
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r1-ingest" }
+  - ref: claim-refined
+    uid: "hu:claim:fx-k-resveratrol-activates-sirt1-hydrophobic-motif"
+    type: K.Claim
+    name: resveratrol directly activates SIRT1 when the substrate carries a hydrophobic motif
+    proposition: "resveratrol directly activates SIRT1 through an allosteric mechanism when the substrate carries a hydrophobic motif"
+    propositionHash: "sha256:1f659796821bca47523ef3b8a1501a1e9328a4dcbef14f8d9ac2d4c9f56a09c7"
+    propositionHashInput: '{"object":"hu:molecular-entity:fx-k-sirt1-human","predicate":"DIRECTLY_ACTIVATES","proposition":"resveratrol directly activates sirt1 through an allosteric mechanism when the substrate carries a hydrophobic motif","qualifiers":["allosteric; requires sirt1 glu230","substrate carries a hydrophobic motif (e.g. pgc-1alpha, foxo3a sites) or a hydrophobic fluorophore"],"subject":"hu:chemical-substance:fx-k-resveratrol"}'
+    claimType: RELATIONSHIP
+    refinesClaimUid: "hu:claim:fx-k-resveratrol-directly-activates-sirt1"   # cache of as-refines
+    lifecycleState: REPORTED
+    latestVerdict: SUPPORTED_WITH_QUALIFICATION
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }
+  - ref: claim-hash-method
+    note: "propositionHash = sha256 over canonical JSON (sorted keys, no spaces) of {proposition, subject uid, predicate, object uid, qualifiers}, each string NFKC + lower case + whitespace collapsed (fixture method claim-hash@0; propositionHashInput shows the exact input)."
+
+assertions:   # claim occurrences: K.Assertion assertionKind CLAIM (stored label ClaimOccurrence) -> OCCURRENCE_OF -> Claim
+  - id: a-occ-howitz
+    uid: "hu:assertion:fx-k-occ-howitz-2003"
+    assertionKind: CLAIM
+    claimType: RELATIONSHIP
+    predicate: DIRECTLY_ACTIVATES        # predicate-only value (D2 seam owns any typed mechanism edge)
+    subject: { ref: e-resveratrol, type: D1.ChemicalSubstance }   # HAS_SUBJECT
+    object: { ref: e-sirt1, type: D2.MolecularEntity }            # HAS_OBJECT
+    asserter: { ref: e-howitz, type: D7.Person }                  # ASSERTED_BY
+    occurrenceOf: claim-general                                   # OCCURRENCE_OF
+    proposition: "resveratrol lowers the Michaelis constant of SIRT1 for the acetylated substrate and NAD(+)"
+    locators: [loc-howitz-km]                                     # HAS_EVIDENCE role SUPPORTS origin DECLARED
+    polarity: POSITIVE
+    speechAct: STATES
+    basisKind: DIRECT_MEASUREMENT
+    qualifiers: ["in vitro enzyme kinetics", "substrate type not named in the abstract"]
+    validTime: { validFrom: "2003-08-24", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN, note: "ArticleDate (electronic) of the PubMed record" }
+    status: ACCEPTED                     # capture fidelity (adj-cf-howitz), never truth
+    recordedAt: "2026-10-08T22:09:18Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }
+  - id: a-occ-kaeberlein
+    uid: "hu:assertion:fx-k-occ-kaeberlein-2005"
+    assertionKind: CLAIM
+    claimType: RELATIONSHIP
+    predicate: DIRECTLY_ACTIVATES
+    subject: { ref: e-resveratrol, type: D1.ChemicalSubstance }
+    object: { ref: e-sirt1, type: D2.MolecularEntity }
+    asserter: { ref: e-kaeberlein, type: D7.Person }
+    occurrenceOf: claim-general
+    proposition: "resveratrol is a substrate-specific activator of yeast Sir2 and human SirT1: in vitro it enhances deacetylation of Fluor de Lys-tagged peptides but has no effect on acetylated peptides lacking the fluorophore"
+    locators: [loc-kaeb-specific, loc-kaeb-native]
+    polarity: MIXED                      # adversarial review: activation only with the fluorophore, none with native peptides (was POSITIVE)
+    speechAct: STATES
+    basisKind: DIRECT_MEASUREMENT
+    qualifiers: ["substrate-specific (fluorophore-tagged peptides only)", "no detectable effect on Sir2 activity in vivo in yeast (loc-kaeb-invivo)", "the authors ask for the longevity mechanism to be reexamined (loc-kaeb-reexamine)"]
+    validTime: { validFrom: "2005-01-31", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN }
+    status: ACCEPTED
+    recordedAt: "2026-10-08T22:09:18Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }
+  - id: a-occ-pacholec
+    uid: "hu:assertion:fx-k-occ-pacholec-2010"
+    assertionKind: CLAIM
+    claimType: RELATIONSHIP
+    predicate: DIRECTLY_ACTIVATES
+    subject: { ref: e-resveratrol, type: D1.ChemicalSubstance }
+    object: { ref: e-sirt1, type: D2.MolecularEntity }
+    asserter: { ref: e-pacholec, type: D7.Person }
+    occurrenceOf: claim-general
+    proposition: "resveratrol is not a direct activator of SIRT1"
+    locators: [loc-pach-conclude, loc-pach-fluor]
+    polarity: NEGATIVE                   # a denial (not 'not reported')
+    speechAct: DENIES
+    basisKind: DIRECT_MEASUREMENT
+    qualifiers: ["no apparent activation with native peptide or full-length protein substrates", "activation only with a covalently attached fluorophore"]
+    validTime: { validFrom: "2010-01-08", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN }
+    status: ACCEPTED
+    recordedAt: "2026-10-08T22:09:18Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }
+  - id: a-occ-hubbard
+    uid: "hu:assertion:fx-k-occ-hubbard-2013"
+    assertionKind: CLAIM
+    claimType: RELATIONSHIP
+    predicate: DIRECTLY_ACTIVATES
+    subject: { ref: e-resveratrol, type: D1.ChemicalSubstance }
+    object: { ref: e-sirt1, type: D2.MolecularEntity }
+    asserter: { ref: e-hubbard, type: D7.Person }
+    occurrenceOf: claim-general
+    proposition: "SIRT1 can be directly activated through an allosteric mechanism common to chemically diverse STACs (resveratrol is a STAC)"
+    locators: [loc-hub-conclusion-pubmed]
+    polarity: POSITIVE
+    speechAct: STATES
+    basisKind: DIRECT_MEASUREMENT
+    qualifiers: ["class-level statement about STACs", "abstract acknowledges the controversy (loc-hub-controversy-pubmed)"]
+    validTime: { validFrom: "2013-03-08", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN }
+    status: ACCEPTED
+    recordedAt: "2026-10-08T22:09:18Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }
+  - id: a-occ-hubbard-refined
+    uid: "hu:assertion:fx-k-occ-hubbard-2013-hydrophobic-motifs"
+    assertionKind: CLAIM
+    claimType: RELATIONSHIP
+    predicate: DIRECTLY_ACTIVATES
+    subject: { ref: e-resveratrol, type: D1.ChemicalSubstance }
+    object: { ref: e-sirt1, type: D2.MolecularEntity }
+    asserter: { ref: e-hubbard, type: D7.Person }
+    occurrenceOf: claim-refined          # the 5th occurrence: same paper, the qualified proposition
+    proposition: "specific hydrophobic motifs in SIRT1 substrates such as PGC-1alpha and FOXO3a facilitate SIRT1 activation by STACs"
+    locators: [loc-hub-motifs-pubmed]
+    polarity: POSITIVE
+    speechAct: STATES
+    basisKind: DIRECT_MEASUREMENT
+    qualifiers: ["PGC-1alpha and FOXO3a substrate motifs", "STAC class, resveratrol included"]
+    validTime: { validFrom: "2013-03-08", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN }
+    status: ACCEPTED
+    recordedAt: "2026-10-08T22:09:18Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }
+  - id: a-pach-offtarget
+    uid: "hu:assertion:fx-k-pacholec-2010-off-target"
+    assertionKind: CLAIM
+    claimType: RELATIONSHIP
+    predicate: HAS_OFF_TARGET_ACTIVITY   # predicate-only; D5 seam (interaction / adverse-effect knowledge)
+    subject: { ref: e-resveratrol, type: D1.ChemicalSubstance }
+    value: { valueString: "multiple off-target activities against receptors, enzymes, transporters, and ion channels" }
+    asserter: { ref: e-pacholec, type: D7.Person }
+    locators: [loc-pach-offtarget]
+    polarity: POSITIVE
+    speechAct: STATES
+    basisKind: DIRECT_MEASUREMENT
+    validTime: { validFrom: "2010-01-08", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN }
+    status: ACCEPTED
+    recordedAt: "2026-10-08T22:09:18Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }
+    note: "harm-relevant side finding of the same disconfirming paper (seam to D5); no OCCURRENCE_OF (no Claim was vetted for it)"
+
+assessments:
+  - id: as-vetting
+    uid: "hu:assessment:fx-k-vetting-resveratrol-sirt1"
+    type: K.Assessment
+    assessmentKind: VETTING
+    status: ACCEPTED
+    methodVersion: "fixture:claim-vetting@0"
+    disposition: RESEARCH
+    about: [{ ref: claim-general, type: K.Claim }]                       # ASSESSES -> Claim
+    inputAssertions: ["hu:assertion:fx-k-occ-activemotif-r1", "hu:assertion:fx-k-occ-megaresveratrol-takeaway"]   # DERIVED_FROM (R1 occurrences, ../seller-claim-occurrences)
+    rationale: "A reagent vendor states the proposition as present fact citing a 2003 paper while a supplement brand states that later assays cast doubt on direct activation: contested, repeated commercially, mechanism-level -> research."
+    recordedAt: "2026-10-08T21:40:00Z"
+    generatedBy: act-r1-vetting
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r1-vetting" }
+  - id: as-refines
+    uid: "hu:assessment:fx-k-claim-relation-refines"
+    type: K.Assessment
+    assessmentKind: EQUIVALENCE
+    assessmentSubkind: K.claim-relation
+    conclusionCode: REFINES
+    status: ACCEPTED
+    methodVersion: "fixture:claim-relation@0"
+    about: [{ ref: claim-refined, type: K.Claim }, { ref: claim-general, type: K.Claim }]   # ASSESSES both (narrow first)
+    inputAssertions: [a-occ-hubbard-refined, a-occ-pacholec]
+    evidence:
+      - { locator: loc-hub-motifs-pubmed, role: SUPPORTS, origin: DECLARED }
+      - { locator: loc-pach-fluor, role: CONTEXT, origin: DECLARED }
+    rationale: "The general proposition is mixed; the evidence divides along the substrate: activation with hydrophobic-motif or fluorophore-tagged substrates, none with native peptides lacking it. The narrower proposition is a separate Claim that refines the general one."
+    recordedAt: "2026-10-08T22:09:18Z"
+    generatedBy: act-r2-mission
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }
+  - id: as-synthesis-general              # adversarial review: instantiates Assessment.inputAssessments (DERIVED_FROM -> Assessment)
+    uid: "hu:assessment:fx-k-evidence-synthesis-resveratrol-sirt1"
+    type: K.Assessment
+    assessmentKind: EVIDENCE_SYNTHESIS
+    status: ACCEPTED
+    methodVersion: "fixture:evidence-synthesis/claude-opus-5-5@2026-10-08"
+    verdict: MIXED_OR_CONFLICTING
+    about: [{ ref: claim-general, type: K.Claim }]                       # ASSESSES -> Claim
+    inputAssertions: [a-occ-howitz, a-occ-kaeberlein, a-occ-pacholec, a-occ-hubbard, "hu:assertion:fx-k-occ-sah-2017-presupposition", "hu:assertion:fx-k-occ-activemotif-r2", "hu:assertion:fx-k-occ-megaresveratrol-takeaway", "hu:assertion:fx-k-occ-megaresveratrol-pacholec-retelling"]   # DERIVED_FROM (current occurrences of claim-general)
+    inputAssessments: ["hu:assessment:fx-k-retelling-fidelity-activemotif-howitz", "hu:assessment:fx-k-retelling-fidelity-megaresveratrol-pacholec", as-refines]   # DERIVED_FROM -> Assessment
+    facets: ["distinctSourceFamilies=3", "independentSourceFamilies=3", "retellingsCountedInPrimaryFamily=2", "excludedRetractedOccurrences=1"]
+    summary: "Primary evidence comes from 3 independent source families (Howitz 2003 and Hubbard 2013 share three authors). The two seller retellings restate primaries and add no family (as-retelling-am, as-retelling-mr); the 2017 rat-study presupposition is on a retracted source and is not counted; the substrate-dependent split is recorded as the refinement as-refines."
+    recordedAt: "2026-10-08T22:28:00Z"
+    generatedBy: act-r2-mission
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }
+
+adjudications:   # generated by the VERIFICATION Activity act-r2-verification (no VerificationRun node)
+  - id: adj-sup-general
+    uid: "hu:adjudication:fx-k-support-general"
+    type: K.Adjudication
+    adjudicationKind: SUPPORT            # world question; never changes Assertion.status
+    verdict: MIXED_OR_CONFLICTING
+    policyOutcome: REVIEW
+    judgeKind: LLM
+    methodVersion: "fixture:support-judgment/claude-opus-5-5@2026-10-08"
+    evidenceSupport: NOT_SATISFIED
+    worldCorrectness: UNKNOWN
+    attributionFaithfulness: SATISFIED
+    sourceAuthority: SATISFIED
+    provenanceIntegrity: SATISFIED
+    unsupportedFacets: ["direct activation with native substrates lacking a hydrophobic motif"]
+    evaluates: [a-occ-howitz, a-occ-kaeberlein, a-occ-pacholec, a-occ-hubbard]      # ASSESSES -> Assertion
+    evidence:   # HAS_EVIDENCE with verifier-set authority / independence
+      - { locator: loc-howitz-km, role: SUPPORTS, origin: VERIFIER_FOUND, authority: PRIMARY, independence: INDEPENDENT }
+      - { locator: loc-kaeb-specific, role: QUALIFIES, origin: VERIFIER_FOUND, authority: PRIMARY, independence: INDEPENDENT }
+      - { locator: loc-kaeb-native, role: CONTRADICTS, origin: VERIFIER_FOUND, authority: PRIMARY, independence: INDEPENDENT }
+      - { locator: loc-kaeb-invivo, role: CONTEXT, origin: VERIFIER_FOUND, authority: PRIMARY, independence: INDEPENDENT }
+      - { locator: loc-kaeb-reexamine, role: CONTEXT, origin: VERIFIER_FOUND, authority: PRIMARY, independence: INDEPENDENT }
+      - { locator: loc-pach-fluor, role: CONTRADICTS, origin: VERIFIER_FOUND, authority: PRIMARY, independence: INDEPENDENT }
+      - { locator: loc-pach-conclude, role: CONTRADICTS, origin: VERIFIER_FOUND, authority: PRIMARY, independence: INDEPENDENT }
+      - { locator: loc-hub-conclusion-pubmed, role: SUPPORTS, origin: VERIFIER_FOUND, authority: PRIMARY, independence: INDEPENDENT }
+      - { locator: loc-hub-controversy-pubmed, role: CONTEXT, origin: VERIFIER_FOUND, authority: PRIMARY, independence: INDEPENDENT }
+    rationale: "Primary papers disagree on the general proposition: two (one source family) support it; one denies it for native substrates; one finds activation only with fluorophore-tagged peptides and none with acetylated peptides lacking the fluorophore (contradicting the general proposition for native substrates) and no detectable effect on yeast Sir2 in vivo."
+    recordedAt: "2026-10-08T22:20:00Z"
+    generatedBy: act-r2-verification
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-verification" }
+  - id: adj-sup-refined
+    uid: "hu:adjudication:fx-k-support-refined"
+    type: K.Adjudication
+    adjudicationKind: SUPPORT
+    verdict: SUPPORTED_WITH_QUALIFICATION
+    policyOutcome: PASS_WITH_WARNINGS
+    judgeKind: LLM
+    methodVersion: "fixture:support-judgment/claude-opus-5-5@2026-10-08"
+    evidenceSupport: SATISFIED
+    worldCorrectness: UNKNOWN
+    attributionFaithfulness: SATISFIED
+    sourceAuthority: SATISFIED
+    provenanceIntegrity: SATISFIED
+    unsupportedFacets: ["effect in humans", "independent replication outside the 2003/2013 author network"]
+    evaluates: [a-occ-hubbard-refined]
+    evidence:
+      - { locator: loc-hub-motifs-pubmed, role: SUPPORTS, origin: VERIFIER_FOUND, authority: PRIMARY, independence: INDEPENDENT }
+      - { locator: loc-hub-conclusion-pubmed, role: SUPPORTS, origin: VERIFIER_FOUND, authority: PRIMARY, independence: INDEPENDENT }
+      - { locator: loc-pach-fluor, role: CONTEXT, origin: VERIFIER_FOUND, authority: PRIMARY, independence: INDEPENDENT }
+    recordedAt: "2026-10-08T22:20:00Z"
+    generatedBy: act-r2-verification
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-verification" }
+  - id: adj-cf-occurrences
+    note: "one CAPTURE_FIDELITY Adjudication per occurrence (deterministic re-selection; feeds Assertion.status through 09-reasoning's mapping: DIRECTLY_SUPPORTED + PASS -> ACCEPTED)"
+    records:
+      - { uid: "hu:adjudication:fx-k-cf-howitz", evaluates: [a-occ-howitz], evidence: [{ locator: loc-howitz-km, role: SUPPORTS, origin: VERIFIER_FOUND }] }
+      - { uid: "hu:adjudication:fx-k-cf-kaeberlein", evaluates: [a-occ-kaeberlein], evidence: [{ locator: loc-kaeb-specific, role: SUPPORTS, origin: VERIFIER_FOUND }, { locator: loc-kaeb-native, role: SUPPORTS, origin: VERIFIER_FOUND }] }
+      - { uid: "hu:adjudication:fx-k-cf-pacholec", evaluates: [a-occ-pacholec], evidence: [{ locator: loc-pach-conclude, role: SUPPORTS, origin: VERIFIER_FOUND }, { locator: loc-pach-fluor, role: SUPPORTS, origin: VERIFIER_FOUND }] }
+      - { uid: "hu:adjudication:fx-k-cf-hubbard", evaluates: [a-occ-hubbard], evidence: [{ locator: loc-hub-conclusion-pubmed, role: SUPPORTS, origin: VERIFIER_FOUND }] }
+      - { uid: "hu:adjudication:fx-k-cf-hubbard-refined", evaluates: [a-occ-hubbard-refined], evidence: [{ locator: loc-hub-motifs-pubmed, role: SUPPORTS, origin: VERIFIER_FOUND }] }
+      - { uid: "hu:adjudication:fx-k-cf-pacholec-offtarget", evaluates: [a-pach-offtarget], evidence: [{ locator: loc-pach-offtarget, role: SUPPORTS, origin: VERIFIER_FOUND }] }
+    common: { type: K.Adjudication, adjudicationKind: CAPTURE_FIDELITY, verdict: DIRECTLY_SUPPORTED, policyOutcome: PASS, mechanicalStatus: passed, judgeKind: DETERMINISTIC, methodVersion: "fixture-reselect/gen_locators_k.py@2026-10-08", attributionFaithfulness: SATISFIED, provenanceIntegrity: SATISFIED, recordedAt: "2026-10-08T22:20:00Z", generatedBy: act-r2-verification }
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-verification" }
+
+reports:
+  - id: rpt-general
+    uid: "hu:report:fx-k-evidence-report-resveratrol-sirt1"
+    type: K.Report
+    reportKind: EVIDENCE_REPORT
+    name: "Evidence report: does resveratrol directly activate SIRT1? (fixture draft)"
+    status: PROPOSED                     # fixture draft; never published
+    verdict: MIXED_OR_CONFLICTING        # verification.v1 lattice, about claim-general's propositionHash
+    worldCorrectness: UNKNOWN
+    policyOutcome: REVIEW
+    policyVersion: "policy:bl-publish@fixture"
+    bodyFile: composed-body-general.txt
+    bodyDigest: "sha256:8b902b3cab9855d46331325940536c8e115ce6a2f55c582721a2a307db0f04ee"
+    bundleDigest: "sha256:a280037271403a5b419d0785747c5f2d6262e5f832339ea7d539a6c3c3d9e0bc"
+    citationCompleteness: 1.0            # 6 of 6 body sentences carry a citation (sentence-weighted approximation)
+    distinctSourceFamilyCount: 3
+    independentSourceFamilyCount: 3      # families of SUPPORTS/CONTRADICTS/QUALIFIES evidence; see e-source-family-note
+    about: [{ ref: claim-general, type: K.Claim }]                                                    # ASSESSES
+    citesAssertions: [a-occ-howitz, a-occ-kaeberlein, a-occ-pacholec, a-occ-hubbard, a-occ-hubbard-refined, "hu:assertion:fx-k-occ-sah-2017-presupposition"]   # DERIVED_FROM
+    citesAssessments: [as-vetting, as-refines, as-synthesis-general]                                  # DERIVED_FROM
+    evidence: [loc-howitz-km, loc-kaeb-specific, loc-kaeb-native, loc-pach-fluor, loc-pach-conclude, loc-hub-conclusion-pubmed, loc-hub-motifs-pubmed]   # HAS_EVIDENCE (quoted spans)
+    adjudicationsConsidered: [adj-sup-general]
+    recordedAt: "2026-10-08T22:30:00Z"
+    publishedAt: null
+    generatedBy: act-r2-mission
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }
+  - id: rpt-refined
+    uid: "hu:report:fx-k-evidence-report-resveratrol-sirt1-hydrophobic-motif"
+    type: K.Report
+    reportKind: EVIDENCE_REPORT
+    name: "Evidence report: resveratrol and SIRT1 with hydrophobic-motif substrates (fixture draft)"
+    status: PROPOSED
+    verdict: SUPPORTED_WITH_QUALIFICATION
+    worldCorrectness: UNKNOWN
+    policyOutcome: PASS_WITH_WARNINGS
+    policyVersion: "policy:bl-publish@fixture"
+    bodyFile: composed-body-refined.txt
+    bodyDigest: "sha256:fe6533edc5dc981b08a33b0b79951a9993fe5bc1b1b1a0e46edd37ffe3c577b9"
+    bundleDigest: "sha256:a280037271403a5b419d0785747c5f2d6262e5f832339ea7d539a6c3c3d9e0bc"
+    citationCompleteness: 1.0            # 4 of 4 body sentences cited
+    distinctSourceFamilyCount: 1
+    independentSourceFamilyCount: 1      # Hubbard 2013 only (Pacholec is CONTEXT)
+    about: [{ ref: claim-refined, type: K.Claim }]
+    citesAssertions: [a-occ-hubbard-refined, a-occ-pacholec, "hu:assertion:fx-k-hub-occ-e230k"]   # e230k is an occurrence of claim-refined (adversarial review: was attached to claim-general)
+    citesAssessments: [as-refines]
+    evidence: [loc-hub-motifs-pubmed, loc-pach-fluor]
+    adjudicationsConsidered: [adj-sup-refined]
+    recordedAt: "2026-10-08T22:30:00Z"
+    publishedAt: null
+    generatedBy: act-r2-mission
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }
+
+edgesExercised:   # K relationship types this fixture instantiates (05-relationship-register.yaml)
+  - { type: OCCURRENCE_OF, count: 5, from: [a-occ-howitz, a-occ-kaeberlein, a-occ-pacholec, a-occ-hubbard], to: claim-general, also: "a-occ-hubbard-refined -> claim-refined (and ../hubbard-2013-unstructured-to-entity a-hub-occ-e230k -> claim-refined)" }
+  - { type: HAS_SUBJECT, from: [a-occ-howitz, a-occ-kaeberlein, a-occ-pacholec, a-occ-hubbard, a-occ-hubbard-refined, a-pach-offtarget], to: e-resveratrol }
+  - { type: HAS_OBJECT, from: [a-occ-howitz, a-occ-kaeberlein, a-occ-pacholec, a-occ-hubbard, a-occ-hubbard-refined], to: e-sirt1 }
+  - { type: ASSERTED_BY, pairs: "a-occ-howitz->e-howitz, a-occ-kaeberlein->e-kaeberlein, a-occ-pacholec->e-pacholec, a-occ-hubbard(-refined)->e-hubbard" }
+  - { type: HAS_EVIDENCE, from: "every assertion (SUPPORTS/DECLARED, no authority), adj-sup-general (SUPPORTS, QUALIFIES, CONTRADICTS, CONTEXT / VERIFIER_FOUND, with authority / independence), as-refines, rpt-general, rpt-refined", to: "locators of ./locators.yaml" }
+  - { type: ASSESSES, pairs: "as-vetting->claim-general (VETTING RESEARCH); as-synthesis-general->claim-general (EVIDENCE_SYNTHESIS); act-r2-mission->claim-general (Activity -> Claim, the charter); adj-sup-general->4 occurrences; adj-sup-refined->a-occ-hubbard-refined; adj-cf-*->each occurrence; rpt-general->claim-general (EVIDENCE_REPORT); rpt-refined->claim-refined; as-refines->claim-refined, claim-general (EQUIVALENCE K.claim-relation REFINES)" }
+  - { type: DERIVED_FROM, pairs: "rpt-general->6 assertions + as-vetting + as-refines + as-synthesis-general; rpt-refined->3 assertions + as-refines; as-vetting->2 R1 occurrences; as-refines->a-occ-hubbard-refined, a-occ-pacholec; as-synthesis-general->8 current occurrences (Assessment.inputAssertions) and as-retelling-am, as-retelling-mr, as-refines (Assessment.inputAssessments)" }
+  - { type: WAS_INFORMED_BY, pairs: "act-r2-mission->act-r1-vetting; act-r2-verification->act-r2-mission (declared in ../two-run-lineage)" }
+  - { type: WAS_GENERATED_BY, pairs: "every record -> its producedBy run's Activity; claim-general -> act-r1-ingest (create) and act-r2-mission (update)" }
+  - { type: HAS_SNAPSHOT, pairs: "each src-pubmed-* -> its snapshot" }
+  - { type: HAS_LOCATOR, pairs: "each snapshot -> its locators" }

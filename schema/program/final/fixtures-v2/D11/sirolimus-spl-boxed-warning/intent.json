@@ -1,0 +1,824 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v2",
+  "intentId": "ft-d11-sirolimus-spl-boxed-warning",
+  "pins": {
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+    "policyVersion": "bks-admission-policy/v1"
+  },
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "a8-d11-fixtures",
+      "model": "claude-opus-5-5"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run:ft-D11-sirolimus-spl-boxed-warning",
+      "missionId": "mission:ft-D11-fixtures"
+    },
+    "activityKind": "INGESTION"
+  },
+  "basis": {
+    "creationOnly": {
+      "reason": "FU-03 v2 fixture round: replay of a packet fixture into a graph without a prior custody snapshot",
+      "expectAbsent": [],
+      "expectPresent": []
+    }
+  },
+  "defaults": {
+    "privacyClass": "PUBLIC"
+  },
+  "sources": [
+    {
+      "ref": "spl",
+      "source": {
+        "canonicalUri": "https://dailymed.nlm.nih.gov/dailymed/services/v2/spls/19880f51-badb-4846-a02a-592a210690ab.xml",
+        "title": "SIROLIMUS SOLUTION [VISTAPHARM, LLC] - SPL set 19880f51-badb-4846-a02a-592a210690ab, versionNumber 11, effectiveTime 20240430",
+        "sourceKind": "API",
+        "genre": "DRUG_LABEL_SPL"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:54:52Z",
+        "observedAt": "2026-10-08T21:54:52Z",
+        "publishedAt": "2026-01-14",
+        "contentHash": "sha256:78a1edf8dba1144e83c42ad1b06d14f84afa99b125034b7da986143915d1b837",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "dailymed-spl/curl-8",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/xml",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "l-spl-bw-section",
+          "selectorKind": "HTML",
+          "selector": {
+            "type": "CssSelector",
+            "exact": "<section ID=\"LINK_b7e90274-8447-41bf-8803-c34d58d232cd\">",
+            "prefix": "        <component>\n            ",
+            "suffix": "\n               <id root=\"3c724d",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 11033,
+              "end": 11089
+            },
+            "offsetBasis": "CODE_POINT",
+            "htmlSelector": "section[ID=\"LINK_b7e90274-8447-41bf-8803-c34d58d232cd\"]",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "<section ID=\"LINK_b7e90274-8447-41bf-8803-c34d58d232cd\">",
+          "prefix": "        <component>\n            ",
+          "suffix": "\n               <id root=\"3c724d",
+          "quoteHash": "sha256:c6001263e51084463dce206a063929714e7211c8cb7e7a400ed7a860e32d25fd",
+          "startOffset": 11033,
+          "endOffset": 11089
+        },
+        {
+          "ref": "l-spl-bw-code",
+          "selectorKind": "HTML",
+          "selector": {
+            "type": "CssSelector",
+            "exact": "<code code=\"34066-1\" codeSystem=\"2.16.840.1.113883.6.1\" displayName=\"BOXED WARNING SECTION\"/>",
+            "prefix": "-601f8cfcfdbb\"/>\n               ",
+            "suffix": "\n               <title>WARNING: ",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 11170,
+              "end": 11263
+            },
+            "offsetBasis": "CODE_POINT",
+            "htmlSelector": "section[ID=\"LINK_b7e90274-8447-41bf-8803-c34d58d232cd\"] > code[codeSystem=\"2.16.840.1.113883.6.1\"]",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "<code code=\"34066-1\" codeSystem=\"2.16.840.1.113883.6.1\" displayName=\"BOXED WARNING SECTION\"/>",
+          "prefix": "-601f8cfcfdbb\"/>\n               ",
+          "suffix": "\n               <title>WARNING: ",
+          "quoteHash": "sha256:be5242bb800dac17a236e79373fbb143f85396c100311d649d784546fa7d7fe7",
+          "startOffset": 11170,
+          "endOffset": 11263
+        },
+        {
+          "ref": "l-spl-bw-title",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "WARNING: IMMUNOSUPPRESSION, USE IS NOT RECOMMENDED IN LIVER OR LUNG TRANSPLANT PATIENTS",
+            "prefix": "ECTION\"/>\n               <title>",
+            "suffix": "</title>\n               <text>\n ",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 11286,
+              "end": 11373
+            },
+            "offsetBasis": "CODE_POINT",
+            "htmlSelector": "section[ID=\"LINK_b7e90274-8447-41bf-8803-c34d58d232cd\"] > title",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "WARNING: IMMUNOSUPPRESSION, USE IS NOT RECOMMENDED IN LIVER OR LUNG TRANSPLANT PATIENTS",
+          "prefix": "ECTION\"/>\n               <title>",
+          "suffix": "</title>\n               <text>\n ",
+          "quoteHash": "sha256:083e700ce935aed834a19df19a9a2cab8880b5dccb87154614958673ba5afc55",
+          "startOffset": 11286,
+          "endOffset": 11373
+        },
+        {
+          "ref": "l-spl-bw-physicians",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "Only physicians experienced in immunosuppressive therapy and management of renal transplant patients should use sirolimus for prophylaxis of organ rejection in patients receiving renal transplants.",
+            "prefix": " result from immunosuppression. ",
+            "suffix": " Patients receiving the drug sho",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 11976,
+              "end": 12173
+            },
+            "offsetBasis": "CODE_POINT",
+            "htmlSelector": "section[ID=\"LINK_b7e90274-8447-41bf-8803-c34d58d232cd\"] content",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Only physicians experienced in immunosuppressive therapy and management of renal transplant patients should use sirolimus for prophylaxis of organ rejection in patients receiving renal transplants.",
+          "prefix": " result from immunosuppression. ",
+          "suffix": " Patients receiving the drug sho",
+          "quoteHash": "sha256:827b597295fcf004c9b73c3ce0e6412e5e6664812502120abe01c9ada0a12935",
+          "startOffset": 11976,
+          "endOffset": 12173
+        },
+        {
+          "ref": "l-spl-effective",
+          "selectorKind": "HTML",
+          "selector": {
+            "type": "CssSelector",
+            "exact": "<effectiveTime value=\"20240430\"/>",
+            "prefix": ": 1999</content>\n   </title>\n   ",
+            "suffix": "\n   <setId root=\"19880f51-badb-4",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 832,
+              "end": 865
+            },
+            "offsetBasis": "CODE_POINT",
+            "htmlSelector": "document > effectiveTime",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "<effectiveTime value=\"20240430\"/>",
+          "prefix": ": 1999</content>\n   </title>\n   ",
+          "suffix": "\n   <setId root=\"19880f51-badb-4",
+          "quoteHash": "sha256:2df4a285eeb1cf864b606bf95d6bb5f930d55653b71ee8e5851f901ad0318927",
+          "startOffset": 832,
+          "endOffset": 865
+        },
+        {
+          "ref": "l-spl-setid",
+          "selectorKind": "HTML",
+          "selector": {
+            "type": "CssSelector",
+            "exact": "<setId root=\"19880f51-badb-4846-a02a-592a210690ab\"/>",
+            "prefix": "ctiveTime value=\"20240430\"/>\n   ",
+            "suffix": "\n   <versionNumber value=\"11\"/>\n",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 869,
+              "end": 921
+            },
+            "offsetBasis": "CODE_POINT",
+            "htmlSelector": "document > setId",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "<setId root=\"19880f51-badb-4846-a02a-592a210690ab\"/>",
+          "prefix": "ctiveTime value=\"20240430\"/>\n   ",
+          "suffix": "\n   <versionNumber value=\"11\"/>\n",
+          "quoteHash": "sha256:bec697cd64554f52491175cacad046af6d56e603e892d6be0f9acbb82b0fd796",
+          "startOffset": 869,
+          "endOffset": 921
+        },
+        {
+          "ref": "l-spl-version",
+          "selectorKind": "HTML",
+          "selector": {
+            "type": "CssSelector",
+            "exact": "<versionNumber value=\"11\"/>",
+            "prefix": "db-4846-a02a-592a210690ab\"/>\n   ",
+            "suffix": "\n   <author>\n      <time/>\n     ",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 925,
+              "end": 952
+            },
+            "offsetBasis": "CODE_POINT",
+            "htmlSelector": "document > versionNumber",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "<versionNumber value=\"11\"/>",
+          "prefix": "db-4846-a02a-592a210690ab\"/>\n   ",
+          "suffix": "\n   <author>\n      <time/>\n     ",
+          "quoteHash": "sha256:523b000504b6ea9d2d7f9e5a91e640c5ac0e3741bdd6af9680ef88a8ca4f3c5b",
+          "startOffset": 925,
+          "endOffset": 952
+        },
+        {
+          "ref": "l-spl-labeler",
+          "selectorKind": "HTML",
+          "selector": {
+            "type": "CssSelector",
+            "exact": "<name>VistaPharm, LLC</name>",
+            "prefix": ".3.6.1.4.1.519.1\"/>\n            ",
+            "suffix": "\n         </representedOrganizat",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 1114,
+              "end": 1142
+            },
+            "offsetBasis": "CODE_POINT",
+            "htmlSelector": "author > assignedEntity > representedOrganization > name",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "<name>VistaPharm, LLC</name>",
+          "prefix": ".3.6.1.4.1.519.1\"/>\n            ",
+          "suffix": "\n         </representedOrganizat",
+          "quoteHash": "sha256:c08808951608f24e20ba19ff82e8fdee76a1dcf726ee3f368ced07580f92d470",
+          "startOffset": 1114,
+          "endOffset": 1142
+        },
+        {
+          "ref": "l-spl-unii",
+          "selectorKind": "HTML",
+          "selector": {
+            "type": "CssSelector",
+            "exact": "<code code=\"W36ZG6FT64\" codeSystem=\"2.16.840.1.113883.4.9\"/>",
+            "prefix": ">\n                              ",
+            "suffix": "\n                              <",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 2461,
+              "end": 2521
+            },
+            "offsetBasis": "CODE_POINT",
+            "htmlSelector": "ingredient > ingredientSubstance > code[codeSystem=2.16.840.1.113883.4.9]",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "<code code=\"W36ZG6FT64\" codeSystem=\"2.16.840.1.113883.4.9\"/>",
+          "prefix": ">\n                              ",
+          "suffix": "\n                              <",
+          "quoteHash": "sha256:4a3f2513ba36fc5c8d0f7b2ba026f63cec9d09e2c174a6db8a9303426a985d69",
+          "startOffset": 2461,
+          "endOffset": 2521
+        },
+        {
+          "ref": "l-spl-ndc-package",
+          "selectorKind": "HTML",
+          "selector": {
+            "type": "CssSelector",
+            "exact": "<code code=\"66689-347-02\" codeSystem=\"2.16.840.1.113883.6.69\"/>",
+            "prefix": "                                ",
+            "suffix": "\n                               ",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 7416,
+              "end": 7479
+            },
+            "offsetBasis": "CODE_POINT",
+            "htmlSelector": "containerPackagedProduct > code[codeSystem=2.16.840.1.113883.6.69]",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "<code code=\"66689-347-02\" codeSystem=\"2.16.840.1.113883.6.69\"/>",
+          "prefix": "                                ",
+          "suffix": "\n                               ",
+          "quoteHash": "sha256:ee82d9e887625cb25ba81e4b271c1b33ec112337f723b8044a1d3b5a33282bef",
+          "startOffset": 7416,
+          "endOffset": 7479
+        }
+      ]
+    },
+    {
+      "ref": "dm-history",
+      "source": {
+        "canonicalUri": "https://dailymed.nlm.nih.gov/dailymed/services/v2/spls/19880f51-badb-4846-a02a-592a210690ab/history.json",
+        "title": "DailyMed SPL version history for set 19880f51-badb-4846-a02a-592a210690ab",
+        "sourceKind": "API",
+        "genre": "DRUG_LABEL_VERSION_INDEX"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:54:52Z",
+        "observedAt": "2026-10-08T21:54:52Z",
+        "contentHash": "sha256:5c40fce91dd7772f3730d8080a5d4a2290d5714f0e65317320aba7d121382f06",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "dailymed-spl/curl-8",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "l-dm-history-v11",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "{\"spl_version\": 11, \"published_date\": \"Jan 14, 2026\"}",
+            "prefix": "02a-592a210690ab\"}, \"history\": [",
+            "suffix": ", {\"spl_version\": 10, \"published",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 129,
+              "end": 182
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/data/history/0/published_date",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "{\"spl_version\": 11, \"published_date\": \"Jan 14, 2026\"}",
+          "prefix": "02a-592a210690ab\"}, \"history\": [",
+          "suffix": ", {\"spl_version\": 10, \"published",
+          "quoteHash": "sha256:2b539cb66f8c9ee3c45b2df8e3acbea4fa4c4ee7c1597faeb01c30e31f9a47f8",
+          "startOffset": 129,
+          "endOffset": 182
+        }
+      ]
+    },
+    {
+      "ref": "openfda",
+      "source": {
+        "canonicalUri": "https://api.fda.gov/drug/label.json?search=set_id:\"19880f51-badb-4846-a02a-592a210690ab\"&limit=1",
+        "title": "openFDA drug label record for SPL set 19880f51-badb-4846-a02a-592a210690ab (aggregator rendition; meta.last_updated 2026-10-07)",
+        "sourceKind": "API",
+        "genre": "AGGREGATOR_RENDITION"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:54:53Z",
+        "observedAt": "2026-10-08T21:54:53Z",
+        "contentHash": "sha256:db1ab9a37f06a773454f1491ae46cf95c87c6fbd149a997bb11904221a6ceedc",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "openfda-drug-label/curl-8",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "l-ofda-bw",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"WARNING: IMMUNOSUPPRESSION, USE IS NOT RECOMMENDED IN LIVER OR LUNG TRANSPLANT PATIENTS Increased susceptibility to infection",
+            "prefix": "     \"boxed_warning\": [\n        ",
+            "suffix": " and the possible development of",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 821,
+              "end": 947
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/results/0/boxed_warning/0",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"WARNING: IMMUNOSUPPRESSION, USE IS NOT RECOMMENDED IN LIVER OR LUNG TRANSPLANT PATIENTS Increased susceptibility to infection",
+          "prefix": "     \"boxed_warning\": [\n        ",
+          "suffix": " and the possible development of",
+          "quoteHash": "sha256:9895dc53fabf12fd2106308535a7da7189c54b3787eced57cfc53351c5482366",
+          "startOffset": 821,
+          "endOffset": 947
+        },
+        {
+          "ref": "l-ofda-setid",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"set_id\": \"19880f51-badb-4846-a02a-592a210690ab\"",
+            "prefix": "t for Sirolimus\"\n      ],\n      ",
+            "suffix": ",\n      \"id\": \"909758a8-92f7-443",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 245159,
+              "end": 245207
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/results/0/set_id",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"set_id\": \"19880f51-badb-4846-a02a-592a210690ab\"",
+          "prefix": "t for Sirolimus\"\n      ],\n      ",
+          "suffix": ",\n      \"id\": \"909758a8-92f7-443",
+          "quoteHash": "sha256:cbb7ed69601e149158236fc4d4127d8d65aff47ee866e1c56fd63c353791ebd4",
+          "startOffset": 245159,
+          "endOffset": 245207
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "prod",
+      "mode": "new",
+      "nodeType": "Product",
+      "name": "Sirolimus oral solution (VistaPharm, LLC)",
+      "uidSegment": "sirolimus-oral-solution-vistapharm",
+      "properties": {},
+      "identifiers": [
+        {
+          "scheme": "NDC",
+          "issuer": "FDA",
+          "value": "66689-347"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "pkg",
+      "mode": "new",
+      "nodeType": "Package",
+      "name": "Sirolimus oral solution, package NDC 66689-347-02",
+      "uidSegment": "ndc-66689-347-02",
+      "properties": {
+        "packageKind": "KIT"
+      },
+      "identifiers": [
+        {
+          "scheme": "NDC",
+          "issuer": "FDA",
+          "value": "66689-347-02",
+          "evidence": [
+            "l-spl-ndc-package"
+          ]
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "lv",
+      "mode": "new",
+      "nodeType": "LabelVersion",
+      "name": "SIROLIMUS SOLUTION [VISTAPHARM, LLC] SPL version 11",
+      "uidSegment": "spl-19880f51-v11",
+      "properties": {
+        "panelKind": "OTHER",
+        "labelVersionCode": "11",
+        "jurisdiction": "US",
+        "responsiblePartyVerbatim": "VistaPharm, LLC",
+        "contentDigest": "sha256:78a1edf8dba1144e83c42ad1b06d14f84afa99b125034b7da986143915d1b837 (fixture: digest of the SPL bytes; D6 computes it over the normalized panel)"
+      },
+      "identifiers": [],
+      "onMatch": "create_anyway"
+    },
+    {
+      "ref": "sirolimus-api",
+      "mode": "new",
+      "nodeType": "IngredientMaterial",
+      "name": "Sirolimus (active ingredient as declared in SPL)",
+      "uidSegment": "sirolimus-api",
+      "properties": {
+        "materialKind": "UNRESOLVED"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "sirolimus",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "SIROLIMUS",
+      "uidSegment": "unii-w36zg6ft64",
+      "properties": {},
+      "identifiers": [
+        {
+          "scheme": "UNII",
+          "issuer": "FDA GSRS",
+          "value": "W36ZG6FT64",
+          "evidence": [
+            "l-spl-unii"
+          ]
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "vistapharm",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "VistaPharm, LLC",
+      "properties": {
+        "entityKind": "UNSPECIFIED"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "p01-label-version",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "HAS_LABEL_VERSION",
+      "fromRef": "pkg",
+      "toRef": "lv",
+      "assertion": {
+        "speechAct": "STATES",
+        "qualifiers": [],
+        "validity": {
+          "validFrom": "2024-04-30T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE"
+        }
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "l-spl-effective",
+        "l-spl-setid",
+        "l-spl-version",
+        "l-spl-labeler",
+        "l-spl-ndc-package"
+      ],
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: SUBJECT_CONFLICT: lv (REQUIRED_PROPERTY_MISSING: LabelVersion.compositionDigest)"
+      }
+    },
+    {
+      "proposalId": "p02-boxed-warning",
+      "rationale": "D5 use-constraint predicate (replaces dropped has_boxed_warning). Assertion.proposition = \"WARNING: IMMUNOSUPPRESSION, USE IS NOT RECOMMENDED IN LIVER OR LUNG TRANSPLANT PATIENTS\"; qualifiers section:BOXED_WARNING, population:liver transplant recipients, population:lung transplant recipients. biotech-knowledge-intent.v1 assertion.literal has no proposition or qualifiers field (11-open-questions item 29), so they are carried here.",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "prod",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "CAUTIONS",
+        "qualifiers": [
+          "bOXEDWARNINGPopulationVerbatim:liver transplant recipients, population:lung transplant recipients. biotech-knowledge-intent.v1 assertion.literal has no proposition or qualifiers field (11-open-questions item 29), so they are carried here."
+        ],
+        "validity": {
+          "validFrom": "2024-04-30T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE"
+        },
+        "predicate": "USE_CONSTRAINED_IN"
+      },
+      "value": {
+        "valueString": "NOT_RECOMMENDED"
+      },
+      "evidence": [
+        "l-spl-bw-section",
+        "l-spl-bw-code",
+        "l-spl-bw-title",
+        "l-spl-bw-physicians"
+      ],
+      "asserterRef": "vistapharm",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: SUBJECT_CONFLICT: prod (REQUIRED_PROPERTY_MISSING: Product.productKind, marketedName)"
+      }
+    },
+    {
+      "proposalId": "p03-component",
+      "rationale": "DECLARES_COMPONENT is asserted in the candidate (was edge.structural; R-10/R-26), asserted by the labeler. R-30: the verbatim declared-name edge field is removed from ComponentLineProperties. Assertion.qualifiers (no AssertionCore field in intent v1, OD-09): declaredName: SIROLIMUS; statement: numerator 1 mg / denominator 1 mL.",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "DECLARES_COMPONENT",
+      "fromRef": "lv",
+      "toRef": "sirolimus-api",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "qualifiers": [
+          "declaredName:SIROLIMUS",
+          "statement:numerator 1 mg / denominator 1 mL."
+        ],
+        "validity": {}
+      },
+      "edgeProperties": {
+        "orderIndex": 0,
+        "amount": 1,
+        "unitCode": "mg/mL"
+      },
+      "evidence": [
+        "l-spl-unii"
+      ],
+      "asserterRef": "vistapharm",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: SUBJECT_CONFLICT: lv (REQUIRED_PROPERTY_MISSING: LabelVersion.compositionDigest)"
+      }
+    },
+    {
+      "proposalId": "p04-realizes",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "REALIZES_SUBSTANCE",
+      "fromRef": "sirolimus-api",
+      "toRef": "sirolimus",
+      "assertion": {
+        "speechAct": "STATES",
+        "qualifiers": [],
+        "validity": {}
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "l-spl-unii"
+      ],
+      "asserterRef": "vistapharm"
+    },
+    {
+      "proposalId": "p05-setid",
+      "rationale": "SPL_SET_ID is a requested kernel scheme (packets/D11/identifier-bridges.yaml); the planner rejects it until K adds it",
+      "dependsOn": [],
+      "kind": "identifier.attach",
+      "subjectRef": "lv",
+      "identifier": {
+        "scheme": "SPL_SET_ID",
+        "issuer": "FDA SPL",
+        "value": "19880f51-badb-4846-a02a-592a210690ab"
+      },
+      "evidence": [
+        "l-spl-setid",
+        "l-spl-version"
+      ],
+      "qualifiers": [],
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: SUBJECT_CONFLICT: lv (REQUIRED_PROPERTY_MISSING: LabelVersion.compositionDigest)"
+      }
+    },
+    {
+      "proposalId": "p06-boxed-warning-openfda",
+      "rationale": "aggregator rendition corroboration (CQ-PV-05); prefer p02 for citation D5 use-constraint predicate (replaces dropped has_boxed_warning). Assertion.proposition = \"WARNING: IMMUNOSUPPRESSION, USE IS NOT RECOMMENDED IN LIVER OR LUNG TRANSPLANT PATIENTS\"; qualifiers section:BOXED_WARNING, population:liver transplant recipients, population:lung transplant recipients. biotech-knowledge-intent.v1 assertion.literal has no proposition or qualifiers field (11-open-questions item 29), so they are carried here.",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "prod",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "CAUTIONS",
+        "qualifiers": [
+          "bOXEDWARNINGPopulationVerbatim:liver transplant recipients, population:lung transplant recipients. biotech-knowledge-intent.v1 assertion.literal has no proposition or qualifiers field (11-open-questions item 29), so they are carried here."
+        ],
+        "validity": {},
+        "predicate": "USE_CONSTRAINED_IN"
+      },
+      "value": {
+        "valueString": "NOT_RECOMMENDED"
+      },
+      "evidence": [
+        "l-ofda-bw",
+        "l-ofda-setid"
+      ],
+      "asserterRef": "vistapharm",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: SUBJECT_CONFLICT: prod (REQUIRED_PROPERTY_MISSING: Product.productKind, marketedName)"
+      }
+    }
+  ],
+  "notes": "D11 fixture intent (fixture ids). Research, not medical advice. The DailyMed published date (Jan 14, 2026) sets SourceSnapshot.publishedAt of the spl snapshot; valid time of the label version is its effectiveTime 2024-04-30. The openfda source is an AGGREGATOR RENDITION of the same SPL set. FU-03 close-out: p03 DECLARES_COMPONENT is edge.assert (asserted type, ComponentLineProperties) with declaredName:/statement: carried in the rationale (R-30); p04 REALIZES_SUBSTANCE edge is AssertedRecordedProperties. OWNER-GATED: the SPL_SET_ID shared by the LabelVersion and the openFDA Source (assertions.yaml i02, CQ-PV-05) conflicts with R-42 and has no RENDITION_OF target for a label.",
+  "provenance": {
+    "derivedFrom": {
+      "schemaVersion": "biotech-knowledge-intent.v1",
+      "path": "schema/program/final/fixtures/D11/sirolimus-spl-boxed-warning/intent.json",
+      "rawBytesDigest": "sha256:7ec6d9cd62c5c06ee9e7cfb179b81eaebb994585bd1d009282bf4f8711397cbf"
+    },
+    "migrator": "bks-migrate-intent-v1/1",
+    "edits": [
+      {
+        "at": "sources[0].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "dailymed-spl/curl-8",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[0].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[2].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[3].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[4].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[5].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[6].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[7].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[8].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[9].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[1].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "dailymed-spl/curl-8",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[1].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[2].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "openfda-drug-label/curl-8",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[2].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[2].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "proposals[0].kind",
+        "rule": "state.attach->edge.assert",
+        "from": "state.attach",
+        "to": "edge.assert",
+        "note": "exclusive slots come from the relationship register (R-10)"
+      },
+      {
+        "at": "proposals[1].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "D5 use-constraint predicate (replaces dropped has_boxed_warning). Assertion.proposition = \"WARNING: IMMUNOSUPPRESSION, USE IS NOT RECOMMENDED IN LIVER OR LUNG T"
+      },
+      {
+        "at": "proposals[2].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "DECLARES_COMPONENT is asserted in the candidate (was edge.structural; R-10/R-26), asserted by the labeler. R-30: the verbatim declared-name edge field is remove"
+      },
+      {
+        "at": "proposals[5].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "aggregator rendition corroboration (CQ-PV-05); prefer p02 for citation D5 use-constraint predicate (replaces dropped has_boxed_warning). Assertion.proposition ="
+      },
+      {
+        "at": "subjects[sirolimus-api].properties.materialKind",
+        "rule": "schema-unknown-marker",
+        "from": null,
+        "to": "UNRESOLVED",
+        "note": "not stated by the fixture source; MaterialKind.UNRESOLVED is the release's explicit unknown member (OD-24 / OD-25), not a sourced fact"
+      },
+      {
+        "at": "subjects[vistapharm].properties.entityKind",
+        "rule": "schema-unknown-marker",
+        "from": null,
+        "to": "UNSPECIFIED",
+        "note": "not stated by the fixture source; OrganizationEntityKind.UNSPECIFIED is the release's explicit unknown member (OD-24 / OD-25), not a sourced fact"
+      }
+    ]
+  }
+}

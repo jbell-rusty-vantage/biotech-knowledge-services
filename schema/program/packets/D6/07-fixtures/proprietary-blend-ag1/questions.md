@@ -1,0 +1,9 @@
+# proprietary-blend-ag1 — questions answered
+
+| question | expected answer (from the captured records) | path |
+| --- | --- | --- |
+| Q-D6-08 | AG1 (Athletic Greens (USA), Inc.) declares Ashwagandha Root Extract (and on the 2021 label Rhodiola (Rhodiola rosea) root dry extract) only as members of the blend "Nutrient Dense Extracts, Herbs & Antioxidants", 2732 mg per 12 g serving, with no member amount (amountReferent NOT_DECLARED). The per-serving amount cannot be known from the label; 21 CFR 101.36(c) permits declaring only the blend total. Same for every member of the other three blends (7388 mg, 154 mg, 38/54 mg). | LabelVersion → DECLARES_COMPONENT BLEND_MEMBER lines with amount null (parentOrderIndex 1) + as71 citing G40 |
+| CQ-AX-25 | At V = 2026-10-08 AG1 declares ashwagandha only as a blend member (listed separately, no amount): "blend-only mention". | DECLARES_COMPONENT lineRole BLEND_MEMBER |
+| CQ-ID-05 | Between DSLD 262237 (entered 2021-11-19) and 323512 (entered 2025-03-25): FORMULATION change plus net-contents change (as70): "Dairy Free Probiotics" blend 38 mg → 54 mg; calcium sources calcium carbonate and calcium phosphate added; 360 g → 350 g at the same 12 g × 30 servings; maxDailyServings 1 → not stated. Corrects the research-stage reading (packaging-only). | as70; G08/G25, G27, G01/G20, G02/G21 |
+| CQ-PF-01 | Blend totals are amountReferent BLEND_TOTAL (e.g. 2732 mg of "Nutrient Dense Extracts, Herbs & Antioxidants"); members are NOT_DECLARED; no calculated member amount follows from the label. | DECLARES_COMPONENT properties |
+| Q-D6-22 | Avoidance input: AG1 is a "blend-only dosing" product for ashwagandha (dose unknowable from the label), to be weighed with D1's ashwagandha harm evidence; additionally the newer label's 350 g net contents is 10 g less than 30 × 12 g (g05, open question, not a harm finding). | as71, g05 |

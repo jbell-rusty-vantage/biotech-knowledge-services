@@ -1,0 +1,228 @@
+# Assertions and derived records for fixture opentargets-association-signal (D10, fixtures stage, A1, 2026-10-08;
+# rebuilt in the adversarial-review stage, 2026-10-08).
+# Kind: other (materialized association, directive 3.6) with a harm-signal interpretation.
+# External scores enter as Assertions BY their producer (Open Targets release 26.09; JSON_POINTER locators) and are never
+# copied into Association records. The only Association here is one BellLabs computes itself: a FAERS proportional
+# reporting ratio for sirolimus / transplant rejection from four openFDA report counts (each count an Assertion by FDA
+# with a JSON_POINTER locator). The interpretation "likely confounded by indication" is a kernel SAFETY_SIGNAL Assessment
+# that ASSESSES the drug and the event and cites the signal inputs; it is not about the Association record.
+# Conventions: see the header of ../mg-bisglycinate-rct-unstructured/assertions.yaml.
+
+fixture: opentargets-association-signal
+producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-opentargets-association-signal" }   # fixture ids
+activities:
+  - { uid: hu:activity:fx-d10-run-ot-ingest, activityKind: INGESTION, missionId: mission:ft-D10-fixtures, runId: run:ft-D10-opentargets-association-signal }
+  - { uid: hu:activity:fx-d10-run-ot-projection, activityKind: PROJECTION, missionId: mission:ft-D10-fixtures, runId: run:ft-D10-opentargets-association-signal-projection, methodVersion: "bl-assoc/faers-prr@1" }
+
+entities:
+  - { ref: e-apoe, type: D2.MolecularEntity, uid: hu:molecular-entity:fx-apoe, name: "APOE (gene/protein target)", identifiers: ["ENSEMBL:ENSG00000130203"] }
+  - { ref: e-alzheimer, type: D2.Condition, uid: hu:condition:fx-alzheimer-disease, name: "Alzheimer disease", identifiers: ["MONDO:0004975"] }
+  - { ref: e-sirolimus, type: D1.ChemicalSubstance, uid: hu:chemical-substance:fx-sirolimus, name: sirolimus, identifiers: ["CHEMBL:CHEMBL413"] }
+  - { ref: e-transplant-rejection, type: D2.Condition, uid: hu:condition:fx-transplant-rejection, name: "transplant rejection (FAERS reaction term as returned by Open Targets)" }
+  - { ref: e-neoplasm-progression, type: D2.Condition, uid: hu:condition:fx-malignant-neoplasm-progression, name: "malignant neoplasm progression (FAERS reaction term)" }
+  - { ref: e-ot, type: D7.Organization, uid: hu:organization:fx-open-targets, name: "Open Targets (Platform release 26.09, API 26.9.0)" }
+  - { ref: e-fda, type: D7.Organization, uid: hu:organization:fx-us-fda, name: "U.S. Food and Drug Administration (openFDA drug/event API; FAERS data last_updated 2026-07-30)" }
+  - { ref: e-label-holder, type: D7.Organization, uid: hu:organization:fx-remedyrepack, name: "REMEDYREPACK INC. (labeler of openFDA set_id 09f24e7a-0bea-4e02-b557-c60eb842d41a)", note: "issuer of the cited label text; named in a-label-indication qualifiers, no longer its asserter (close-out FU-03, R-88 / predicates.yaml INDICATED_FOR fixtureEdit); not an intent subject" }
+
+assertions:
+  - id: a-ot-apoe-ad-score
+    uid: hu:assertion:fx-d10-ot-26-09-apoe-alzheimer-score
+    assertionKind: METRIC
+    predicate: REPORTS_ASSOCIATION_SCORE
+    subject: { ref: e-apoe, type: D2.MolecularEntity }
+    object: { ref: e-alzheimer, type: D2.Condition }
+    value: { valueNumber: 0.695512952413486, valueString: "overall association score (Open Targets heuristic; not a confidence)" }
+    asserter: { ref: e-ot, type: D7.Organization }
+    locators: [loc-ot-apoe-ad-score, loc-ot-apoe-dataversion, loc-ot-doc-not-confidence]
+    speechAct: REPORTS_PRACTICE
+    basisKind: CALCULATED
+    derivationRule: "Open Targets harmonic-sum association score, release 26.09"
+    qualifiers: ["dataVersion 26.09", "components: literature 0.9992042452669387; genetic_association 0.8814168283246063 (see a-ot-apoe-ad-components)"]
+    validTime: { validFrom: "2026-09-01", validFromPrecision: MONTH, validFromBasis: STATED_BY_SOURCE, validTo: null, note: "release 26.09; superseded by the next release" }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-opentargets-association-signal" }
+
+  - id: a-ot-apoe-ad-components
+    uid: hu:assertion:fx-d10-ot-26-09-apoe-alzheimer-components
+    assertionKind: METRIC
+    predicate: REPORTS_ASSOCIATION_SCORE
+    subject: { ref: e-apoe, type: D2.MolecularEntity }
+    object: { ref: e-alzheimer, type: D2.Condition }
+    value: { valueString: "literature=0.9992042452669387; genetic_association=0.8814168283246063" }
+    asserter: { ref: e-ot, type: D7.Organization }
+    locators: [loc-ot-apoe-ad-literature, loc-ot-apoe-ad-genetic]
+    speechAct: REPORTS_PRACTICE
+    basisKind: CALCULATED
+    qualifiers: ["datatype scores, release 26.09", "the row also lists affected_pathway and rna_expression (not quoted)"]
+    validTime: { validFrom: "2026-09-01", validFromPrecision: MONTH, validFromBasis: STATED_BY_SOURCE, validTo: null }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-opentargets-association-signal" }
+
+  - id: a-ot-siro-rejection
+    uid: hu:assertion:fx-d10-ot-26-09-sirolimus-transplant-rejection-lrt
+    assertionKind: METRIC
+    predicate: REPORTS_DISPROPORTIONALITY_SIGNAL
+    subject: { ref: e-sirolimus, type: D1.ChemicalSubstance }
+    object: { ref: e-transplant-rejection, type: D2.Condition }
+    value: { valueNumber: 1895.665732409805, valueString: "FAERS LRT logLR 1895.665732409805; report count 686; criticalValue 290.98842339916155" }
+    asserter: { ref: e-ot, type: D7.Organization }
+    locators: [loc-ot-siro-rejection, loc-ot-siro-critical, loc-ot-siro-dataversion, loc-ot-doc-lrt]
+    speechAct: REPORTS_PRACTICE
+    basisKind: CALCULATED
+    derivationRule: "Likelihood Ratio Test over FAERS reports (Open Targets pharmacovigilance pipeline), release 26.09"
+    validTime: { validFrom: "2026-09-01", validFromPrecision: MONTH, validFromBasis: STATED_BY_SOURCE, validTo: null }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-opentargets-association-signal" }
+
+  - id: a-ot-siro-neoplasm
+    uid: hu:assertion:fx-d10-ot-26-09-sirolimus-neoplasm-progression-lrt
+    assertionKind: METRIC
+    predicate: REPORTS_DISPROPORTIONALITY_SIGNAL
+    subject: { ref: e-sirolimus, type: D1.ChemicalSubstance }
+    object: { ref: e-neoplasm-progression, type: D2.Condition }
+    value: { valueNumber: 2480.2412365213677, valueString: "FAERS LRT logLR 2480.2412365213677; report count 1423; criticalValue 290.98842339916155" }
+    asserter: { ref: e-ot, type: D7.Organization }
+    locators: [loc-ot-siro-neoplasm, loc-ot-siro-critical, loc-ot-siro-dataversion]
+    speechAct: REPORTS_PRACTICE
+    basisKind: CALCULATED
+    validTime: { validFrom: "2026-09-01", validFromPrecision: MONTH, validFromBasis: STATED_BY_SOURCE, validTo: null }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-opentargets-association-signal" }
+
+  - id: a-label-indication
+    uid: hu:assertion:fx-d10-label-sirolimus-indication-rejection-prophylaxis
+    assertionKind: RELATIONSHIP
+    predicate: HAS_APPROVED_INDICATION  # D8 (R-88); was INDICATED_FOR (alias, close-out FU-03)
+    subject: { ref: e-sirolimus, type: D1.ChemicalSubstance }
+    object: { ref: e-transplant-rejection, type: D2.Condition }
+    asserter: { ref: e-fda, type: D7.Organization }        # the regulator whose approved label is cited (predicates.yaml fixtureEdit); was the label holder
+    locators: [loc-fda-label-indication]
+    speechAct: STATES
+    qualifiers: ["prophylaxis of organ rejection", "patients aged >=13 years receiving renal transplants", "label effective_time 20250630", "labelHolder:REMEDYREPACK INC. (labeler of record of openFDA set_id 09f24e7a-0bea-4e02-b557-c60eb842d41a; e-label-holder)"]
+    validTime: { validFrom: "2025-06-30", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: null }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-opentargets-association-signal" }
+
+  - id: a-ot-indication-caveat
+    uid: hu:assertion:fx-d10-ot-pharmacovigilance-indication-caveat
+    assertionKind: CLAIM
+    claimType: METHODOLOGICAL
+    predicate: STATES_METHOD_CAVEAT
+    subject: { ref: e-ot, type: D7.Organization }
+    value: { valueString: "the indication for which a drug was prescribed commonly appears among its significant ADRs" }
+    asserter: { ref: e-ot, type: D7.Organization }
+    locators: [loc-ot-doc-indication]
+    speechAct: CAUTIONS
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, validTo: null, statedAsOf: "2026-10-08" }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-opentargets-association-signal" }
+
+  # ---- FAERS report counts by FDA (openFDA drug/event count queries, limit=0; inputs of the BellLabs PRR projection) ----
+  - id: a-faers-drug-event
+    uid: hu:assertion:fx-d10-openfda-faers-sirolimus-and-rejection-count
+    assertionKind: METRIC
+    predicate: REPORTS_REPORT_COUNT
+    subject: { ref: e-sirolimus, type: D1.ChemicalSubstance }
+    object: { ref: e-transplant-rejection, type: D2.Condition }
+    value: { valueNumber: 372, unitCode: "{report}", valueString: "FAERS reports naming sirolimus (generic_name.exact SIROLIMUS) and the reaction TRANSPLANT REJECTION: 372" }
+    asserter: { ref: e-fda, type: D7.Organization }
+    locators: [loc-faers-drug-event-total, loc-faers-last-updated]
+    speechAct: REPORTS_PRACTICE
+    basisKind: DIRECT_MEASUREMENT
+    qualifiers: ["openFDA meta.results.total", "FAERS data last_updated 2026-07-30", "cell a of the 2x2 table", "spontaneous reports, not de-duplicated; a report may name several drugs and reactions"]
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, validTo: null, statedAsOf: "2026-07-30" }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-opentargets-association-signal" }
+
+  - id: a-faers-drug
+    uid: hu:assertion:fx-d10-openfda-faers-sirolimus-count
+    assertionKind: METRIC
+    predicate: REPORTS_REPORT_COUNT
+    subject: { ref: e-sirolimus, type: D1.ChemicalSubstance }
+    value: { valueNumber: 13365, unitCode: "{report}", valueString: "FAERS reports naming sirolimus (generic_name.exact SIROLIMUS): 13365" }
+    asserter: { ref: e-fda, type: D7.Organization }
+    locators: [loc-faers-drug-total, loc-faers-last-updated]
+    speechAct: REPORTS_PRACTICE
+    basisKind: DIRECT_MEASUREMENT
+    qualifiers: ["openFDA meta.results.total", "FAERS data last_updated 2026-07-30", "row total a+b", "spontaneous reports, not de-duplicated; a report may name several drugs and reactions"]
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, validTo: null, statedAsOf: "2026-07-30" }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-opentargets-association-signal" }
+
+  - id: a-faers-event
+    uid: hu:assertion:fx-d10-openfda-faers-rejection-count
+    assertionKind: METRIC
+    predicate: REPORTS_REPORT_COUNT
+    subject: { ref: e-transplant-rejection, type: D2.Condition }
+    value: { valueNumber: 7906, unitCode: "{report}", valueString: "FAERS reports naming the reaction TRANSPLANT REJECTION: 7906" }
+    asserter: { ref: e-fda, type: D7.Organization }
+    locators: [loc-faers-event-total, loc-faers-last-updated]
+    speechAct: REPORTS_PRACTICE
+    basisKind: DIRECT_MEASUREMENT
+    qualifiers: ["openFDA meta.results.total", "FAERS data last_updated 2026-07-30", "column total a+c", "spontaneous reports, not de-duplicated; a report may name several drugs and reactions"]
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, validTo: null, statedAsOf: "2026-07-30" }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-opentargets-association-signal" }
+
+  - id: a-faers-all
+    uid: hu:assertion:fx-d10-openfda-faers-all-count
+    assertionKind: METRIC
+    predicate: REPORTS_REPORT_COUNT
+    subject: { ref: e-fda, type: D7.Organization }
+    value: { valueNumber: 20692690, unitCode: "{report}", valueString: "all FAERS reports in openFDA drug/event: 20692690" }
+    asserter: { ref: e-fda, type: D7.Organization }
+    locators: [loc-faers-all-total, loc-faers-last-updated]
+    speechAct: REPORTS_PRACTICE
+    basisKind: DIRECT_MEASUREMENT
+    qualifiers: ["openFDA meta.results.total", "FAERS data last_updated 2026-07-30", "N", "spontaneous reports, not de-duplicated; a report may name several drugs and reactions"]
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, validTo: null, statedAsOf: "2026-07-30" }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-opentargets-association-signal" }
+
+associations:   # D10.Association records written by the PROJECTION Activity (read-only, regenerable); BellLabs-computed only
+  - id: as-siro-rejection-prr
+    uid: hu:association:fx-d10-sirolimus-transplant-rejection-faers-prr-2026-07-30
+    associationKind: SIGNAL_DISPROPORTIONALITY
+    anchorUid: hu:chemical-substance:fx-sirolimus
+    members: [{ ref: e-sirolimus, type: D1.ChemicalSubstance }, { ref: e-transplant-rejection, type: D2.Condition }]   # ASSOCIATES x2 (DerivedEdgeProperties)
+    score: 76.39848027512836
+    statistic: "PRR"
+    statisticValue: 76.39848027512836
+    threshold: 2.0
+    components: ["a=372", "b=12993", "c=7534", "d=20671791", "ror=78.55719917471643", "prr95lo=68.94118146967259", "prr95hi=84.66242765097917", "chi2Yates=26316.835043170195"]
+    inputCount: 4
+    inputs: [a-faers-drug-event, a-faers-drug, a-faers-event, a-faers-all]          # DERIVED_FROM -> Assertion
+    inputSetDigest: "sha256:f88ef6351da3fc8551fefe72a3a294667b5b5684fb4b2b6c1f474128541e6432"   # fixture rule: sha256 of the sorted input uids joined by newline (Assertion contentHash not yet defined by the kernel)
+    methodVersion: "bl-assoc/faers-prr@1"
+    methodNote: "b = (a+b) - a; c = (a+c) - a; d = N - a - b - c; PRR = [a/(a+b)] / [c/(c+d)]; 95% CI = exp(ln PRR +/- 1.96 sqrt(1/a - 1/(a+b) + 1/c - 1/(c+d))); ROR = ad/bc; Yates chi-square; signal rule PRR >= 2 and chi2 >= 4 and a >= 3 (Evans-style). Computed by BellLabs from the four FDA counts; nothing is copied from a producer's score."
+    computedAt: "2026-10-09T02:00:00Z"
+    staleAfter: "2026-12-31T00:00:00Z"
+    recordedAt: "2026-10-09T02:00:00Z"
+    derivedEdgeProperties: { derivationRule: "bl-assoc/faers-prr@1", derivedFromAssertionUids: [hu:assertion:fx-d10-openfda-faers-all-count, hu:assertion:fx-d10-openfda-faers-rejection-count, hu:assertion:fx-d10-openfda-faers-sirolimus-and-rejection-count, hu:assertion:fx-d10-openfda-faers-sirolimus-count], derivedAt: "2026-10-09T02:00:00Z" }
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-opentargets-association-signal-projection" }
+
+assessments:
+  - id: s-signal-indication-confounded
+    uid: hu:assessment:fx-d10-signal-interpretation-sirolimus-rejection
+    type: K.Assessment
+    assessmentKind: SAFETY_SIGNAL
+    assessmentSubkind: D10.signal-interpretation
+    status: PROPOSED
+    methodVersion: "bl-signal/indication-check@0 (fixture)"
+    verdict: CONTEXT_ONLY
+    effectDirection: UNKNOWN
+    summary: "Sirolimus and transplant rejection are disproportionately co-reported in FAERS: Open Targets reports an LRT logLR of 1895.665732409805 above its critical value (an Assertion by Open Targets), and BellLabs computes PRR 76.4 (95% CI 68.9 to 84.7; 372 reports) from openFDA counts (as-siro-rejection-prr). Transplant rejection is the condition sirolimus is labelled to prevent, and Open Targets warns that indications commonly appear among significant ADRs. Interpret as likely confounding by indication, not as evidence that sirolimus causes rejection."
+    about: [{ ref: e-sirolimus, type: D1.ChemicalSubstance }, { ref: e-transplant-rejection, type: D2.Condition }]          # ASSESSES the drug and the event
+    inputAssertions: [a-ot-siro-rejection, a-faers-drug-event, a-faers-drug, a-faers-event, a-faers-all, a-label-indication, a-ot-indication-caveat]
+    evidence:
+      - { locator: loc-ot-doc-indication, role: QUALIFIES, origin: DECLARED }
+      - { locator: loc-fda-label-indication, role: QUALIFIES, origin: DECLARED }
+      - { locator: loc-ot-siro-rejection, role: CONTEXT, origin: DECLARED }
+      - { locator: loc-faers-drug-event-total, role: CONTEXT, origin: DECLARED }
+    recordedAt: "2026-10-08T22:00:00Z"
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-opentargets-association-signal" }
+
+edgesExercised:
+  - { type: ASSOCIATES, from: as-siro-rejection-prr, to: [e-sirolimus, e-transplant-rejection], edgeProperties: DerivedEdgeProperties }
+  - { type: DERIVED_FROM, pair: "Association -> Assertion", from: as-siro-rejection-prr, to: [a-faers-drug-event, a-faers-drug, a-faers-event, a-faers-all] }
+  - { type: ASSESSES, note: "kernel Assessment.about -> the drug and the event (kernel field; no Assessment is about an Association record)", from: s-signal-indication-confounded, to: [e-sirolimus, e-transplant-rejection] }

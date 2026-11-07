@@ -1,0 +1,23 @@
+"""
+Purpose: a software or human-operated agent identity (executor, extraction model + prompt + skill, verifier,
+analyst seat). Runs are Activities, not Agent properties. An Agent may be an asserter (implements Subjectable) or an
+assessor (through the Activity). It is not a Person (D7) and not an Organization (D7).
+Identity rule: (agentKind, model, promptVersion, skillVersion, toolVersion). uid token: `agent`. Questions: Q-K-03.
+"""
+type Agent implements Entity & Subjectable
+  @node(labels: ["Agent", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  agentKind: AgentKind!
+  model: String
+  promptVersion: String
+  skillVersion: String
+  toolVersion: String
+}

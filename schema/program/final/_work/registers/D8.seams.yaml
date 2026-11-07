@@ -1,0 +1,134 @@
+version: 1
+module: D8
+# Source: packets/D8/10-seams.yaml (sha256 d0beff5d…), edited by the S module editor for D8 2026-10-08 per
+# final/decision-report.md and final/_work/rulings.yaml (global, modules.D8). Every entry keeps the 01-PACKET-CONTRACT fields
+# (type, from, to, questions, direction, owner), adds `module: D8`, and is marked `status: accepted | cut` with the ruling
+# that decides it. Synthesis edits:
+#   R-72  cut CONCERNS -> D4.Device and STATUS_OF -> D4.Device; new row (owner other) D4 DELIVERS D6.Product -> D4.Device,
+#         read by Q-D8-23 (RegulatoryRecord -CONCERNS-> Product -DELIVERS-> Device; LegalStatus -STATUS_OF-> Product -DELIVERS->).
+#   R-73  cut QUALITY_RESULT_FOR -> D6.Product and CONCERNS D8.Patent -> D1.IngredientMaterial; STATUS_OF -> D6.Product and
+#         COVERS -> D6.ProductVariant kept with fixture requests (final/requests.md).
+#   R-67  role edges (ISSUED_BY, ADDRESSED_TO, ASSIGNED_TO, LICENSED_TO) live on D8 types; Organization gets no field.
+#   R-07  ASSIGNED_TO, LICENSED_TO, MEASURES_ANALYTE kept, first demotion candidates.
+#   R-66  DOCUMENTED_BY_RECORD (D13 Event -> D8 RegulatoryRecord) is the one link between a regulatory act and its Event.
+#   R-08  CQ-PF-03 -> CQ-PF-03a.
+#   R-94  relationship seams and predicate seams are separate lists (`seams`, `predicateSeams`); predicate seams are checked
+#         against final/vocabularies/predicates.yaml (R-52).
+#   R-60  vocabulary pins: targets 0.2.2, frontiers 0.2.1; vocabulary files point at final/vocabularies/.
+#   R-57  new shared vocabulary row: D1 QuantityComparator (QualityResult.specComparator).
+# Packet note (A7): every D8-declared seam edge is declared on a D8 type (owner: this); the target modules declare nothing for
+# them. Read-only Cypher joins in 03 that D8 does not declare (no seam needed): D9 Chunk CHUNK_OF / COVERS_LOCATOR / MENTIONS
+# (Q-D8-03), D6 HAS_VARIANT / HAS_PACKAGE / HAS_LABEL_VERSION / DECLARES_COMPONENT and D1 REALIZES_SUBSTANCE (Q-D8-18).
+seams:
+  # ---- D7 Organization: issuers, addressees, holders (role edges on the asking module's type, R-67)
+  - { type: ISSUED_BY, module: D8, from: D8.RegulatoryRecord, to: D7.Organization, questions: [CQ-MF-02, Q-D8-02, Q-D8-22], direction: OUT, owner: this, status: accepted, ruling: R-67 }
+  - { type: ISSUED_BY, module: D8, from: D8.QualityResult, to: D7.Organization, questions: [Q-D8-05, Q-D8-06, CQ-AX-19], direction: OUT, owner: this, status: accepted, ruling: R-67 }
+  - { type: ISSUED_BY, module: D8, from: D8.CertificationListing, to: D7.Organization, questions: [CQ-PF-03a, Q-D8-19], direction: OUT, owner: this, status: accepted, ruling: R-67 }
+  - { type: ADDRESSED_TO, module: D8, from: D8.RegulatoryRecord, to: D7.Organization, questions: [Q-D8-02, Q-D8-03, Q-D8-17, CQ-EC-01, CQ-MF-06], direction: OUT, owner: this, status: accepted, ruling: R-67 }
+  - { type: ASSIGNED_TO, module: D8, from: D8.Patent, to: D7.Organization, questions: [Q-D8-10, Q-D8-11, CQ-EC-01], direction: OUT, owner: this, status: accepted, ruling: R-07, note: "first demotion candidate (R-07); role edge on the D8 type (R-67)" }
+  - { type: LICENSED_TO, module: D8, from: D8.Patent, to: D7.Organization, questions: [Q-D8-11, Q-D8-21, CQ-EC-01], direction: OUT, owner: this, status: accepted, ruling: R-07, note: "first demotion candidate (R-07); role edge on the D8 type (R-67)" }
+  # ---- CONCERNS (union RegulatoryRecordTopic, 4 members; Patent -> ChemicalSubstance)
+  - { type: CONCERNS, module: D8, from: D8.RegulatoryRecord, to: D1.ChemicalSubstance, questions: [Q-D8-17, CQ-EC-01], direction: OUT, owner: this, status: accepted, ruling: R-05 }
+  - { type: CONCERNS, module: D8, from: D8.RegulatoryRecord, to: D1.IngredientMaterial, questions: [CQ-EC-01], direction: OUT, owner: this, status: accepted, ruling: R-05 }
+  - { type: CONCERNS, module: D8, from: D8.RegulatoryRecord, to: D6.Product, questions: [Q-D8-02, Q-D8-16, Q-D8-18, Q-D8-19, Q-D8-23], direction: OUT, owner: this, status: accepted, ruling: R-72, note: "Q-D8-23 added: a device record concerns the Product that DELIVERS the Device (R-72)" }
+  - { type: CONCERNS, module: D8, from: D8.RegulatoryRecord, to: D4.Device, questions: [Q-D8-23], direction: OUT, owner: this, status: cut, ruling: R-72, note: "one path: RegulatoryRecord -CONCERNS-> D6.Product -DELIVERS-> D4.Device; no fixture writes CONCERNS -> Device; D4 closes #12" }
+  - { type: CONCERNS, module: D8, from: D8.Patent, to: D1.ChemicalSubstance, questions: [Q-D8-11, Q-D8-13], direction: OUT, owner: this, status: accepted, ruling: R-73, note: "union PatentTopic removed; Patent.concerns typed ChemicalSubstance (fixture us8197807)" }
+  - { type: CONCERNS, module: D8, from: D8.Patent, to: D1.IngredientMaterial, questions: [Q-D8-11, Q-D8-13], direction: OUT, owner: this, status: cut, ruling: R-73, note: "no fixture (Q-D8-11, v2)" }
+  # ---- STATUS_OF (union LegalStatusSubject, 4 members)
+  - { type: STATUS_OF, module: D8, from: D8.LegalStatus, to: D1.ChemicalSubstance, questions: [CQ-MF-02, Q-D8-01, CQ-AX-23], direction: OUT, owner: this, status: accepted, ruling: R-05 }
+  - { type: STATUS_OF, module: D8, from: D8.LegalStatus, to: D1.IngredientMaterial, questions: [CQ-MF-02, Q-D8-13, CQ-PF-04], direction: OUT, owner: this, status: accepted, ruling: R-05 }
+  - { type: STATUS_OF, module: D8, from: D8.LegalStatus, to: D6.Product, questions: [CQ-MF-02, Q-D8-18, Q-D8-23], direction: OUT, owner: this, status: accepted, ruling: R-73, note: "kept for CQ-MF-02 (v1) with a fixture request (LNHPD NPN licence) in final/requests.md; Q-D8-23 added: a device clearance is STATUS_OF the Product that DELIVERS the Device (R-72)" }
+  - { type: STATUS_OF, module: D8, from: D8.LegalStatus, to: D4.Device, questions: [Q-D8-23], direction: OUT, owner: this, status: cut, ruling: R-72, note: "Device left LegalStatusSubject; OQ-D8-29 closed (two free slots)" }
+  # ---- D6 Product / ProductVariant: lots, results, certification coverage
+  - { type: LOT_OF, module: D8, from: D8.Lot, to: D6.Product, questions: [Q-D8-04, CQ-AX-19], direction: OUT, owner: this, status: accepted, ruling: R-05 }
+  - { type: LOT_OF, module: D8, from: D8.Lot, to: D6.ProductVariant, questions: [Q-D8-04, CQ-AX-19, Q-D8-08], direction: OUT, owner: this, status: accepted, ruling: R-05 }
+  - { type: QUALITY_RESULT_FOR, module: D8, from: D8.QualityResult, to: D6.Product, questions: [Q-D8-06, CQ-AX-19, Q-D8-18, Q-D8-19], direction: OUT, owner: this, status: cut, ruling: R-73, note: "no fixture writes it (eurofins-coa objects are Lot); union QualityResultFor removed; a survey row without a lot is the D1 predicate MEASURED_CONTENT_IN_PRODUCT / CONTAINS_UNDECLARED_SUBSTANCE (predicateSeams). Name per R-53 (QUALITY_RESULT_FOR, D6 and D12 rename their rows)" }
+  - { type: COVERS, module: D8, from: D8.CertificationListing, to: D6.Product, questions: [CQ-PF-03a, Q-D8-19], direction: OUT, owner: this, status: accepted, ruling: R-05, note: "COVERS has no Organization member (R-67, R-94; D7 removes its stale row)" }
+  - { type: COVERS, module: D8, from: D8.CertificationListing, to: D6.ProductVariant, questions: [CQ-PF-03a], direction: OUT, owner: this, status: accepted, ruling: R-73, note: "unfixtured; kept for CQ-PF-03a (v1) with a fixture request (NSF listing naming a size or flavour variant) in final/requests.md" }
+  # ---- D1 analytes
+  - { type: MEASURES_ANALYTE, module: D8, from: D8.QualityResult, to: D1.ChemicalSubstance, questions: [Q-D8-06, CQ-AX-19], direction: OUT, owner: this, status: accepted, ruling: R-07, note: "first demotion candidate (R-07)" }
+  - { type: MEASURES_ANALYTE, module: D8, from: D8.QualityResult, to: D1.IngredientMaterial, questions: [CQ-AX-19], direction: OUT, owner: this, status: accepted, ruling: R-07 }
+  - { type: MEASURES_ANALYTE, module: D8, from: D8.QualityResult, to: D1.Constituent, questions: [CQ-AX-19], direction: OUT, owner: this, status: accepted, ruling: R-07, note: "Taxon is not a QualityAnalyte member; an organism found in a sample is SAMPLE_TESTED_POSITIVE_FOR (R-73)" }
+  # ---- Edges other modules declare toward or around D8 types (owner: other)
+  - { type: DOCUMENTED_BY_RECORD, module: D8, from: D13.Event, to: D8.RegulatoryRecord, questions: [Q-D8-03], direction: OUT, owner: other, status: accepted, ruling: R-66, note: "typed edge declared by D13 on Event.regulatoryRecords (AssertedRecordedProperties); a regulatory act is one D8 RegulatoryRecord plus at most one D13 Event; INVOLVES {REGULATOR, APPLICANT, ISSUER} only when no DOCUMENTED_BY_RECORD exists (executor); D8 declares no inverse. R-07 lists it among the first demotion candidates" }
+  - { type: DELIVERS, module: D8, from: D6.Product, to: D4.Device, questions: [Q-D8-23], direction: "OUT (declared by D4 on Device.products with direction IN)", owner: other, status: accepted, ruling: R-72, note: "added in synthesis: the single device path; Q-D8-23 reads STATUS_OF / CONCERNS Product -DELIVERS-> Device" }
+  # ---- Kernel edges over D8 types (owner: other = K)
+  - { type: ASSESSES, module: D8, from: K.Assessment, to: "D8.RegulatoryRecord | D8.QualityResult | D8.Patent | K.Source (COA)", questions: [CQ-MF-03, Q-D8-05, CQ-PF-04, Q-D8-09, Q-D8-21, CQ-MF-06, Q-D8-15], direction: OUT, owner: other, status: accepted, ruling: R-54, note: "kernel meaning (counted once in K, R-01); D8 subkinds D8.coa-classification, D8.spec-conformance, D8.conditions-of-use, D8.licence-coverage, D8.gmp-signal, D8.regulatory-characterization registered in final/vocabularies/assessment-vocabularies.yaml (R-54); kinds QUALITY, APPLICABILITY, RETELLING_FIDELITY, RESOLUTION" }
+  - { type: DERIVED_FROM, module: D8, from: K.Report, to: K.Assertion, questions: [Q-D8-19, Q-D8-18], direction: OUT, owner: other, status: accepted, ruling: R-11, note: "one kernel DERIVED_FROM replaces the pinned citation types (R-11); comparison report (reportKind COMPARISON) and published answers rest on D8 row assertions; method is D10's; Q-D8-19 is retrieved with a published variant (R-50)" }
+  - { type: OCCURRENCE_OF, module: D8, from: K.Assertion, to: K.Claim, questions: [CQ-MF-03, Q-D8-16], direction: OUT, owner: other, status: accepted, ruling: R-31, note: "company characterizations are claim occurrences (predicate CHARACTERIZES_REGULATORY_RECORD); claims quoted in enforcement letters are occurrences retold by the regulator (CITED_FROM_PRIOR_WORK) rated by RATES_CLAIM (K registrar; HAS_OBJECT optional = the rating instrument record, a D8 RegulatoryRecord, R-31)" }
+predicateSeams:
+  # Assertion.predicate values the D8 patterns and fixtures read that another module registers (R-94; registrar per R-52).
+  - { predicate: RATES_CLAIM, module: D8, registrar: K, subjects: [K.Claim], objects: [D8.RegulatoryRecord (optional, the rating instrument record)], questions: [Q-D8-16], owner: other, status: accepted, ruling: R-31, note: "D8 drops its registration (R-52); fixture imu-tek-warning-letter-recall i17; closes OQ-D8-31" }
+  - { predicate: INTENDED_FOR_TARGET, module: D8, registrar: D5, subjects: [D6.Product], objects: [D5.Target], questions: [Q-D8-18], owner: other, status: accepted, ruling: R-52, note: "D8 drops its registration; certifier category labels reach a Target only through this Assertion" }
+  - { predicate: MANUFACTURES, module: D8, registrar: D7, subjects: [D7.Organization], objects: [D6.Product, D1.IngredientMaterial], questions: [CQ-MF-01], owner: other, status: accepted, ruling: R-68, note: "D8 drops its registration; CQ-MF-01 is answered in Cypher over Assertions" }
+  - { predicate: CONTRACT_MANUFACTURES_FOR, module: D8, registrar: D7, subjects: [D7.Organization], objects: [D7.Organization], qualifiers: ["product="], questions: [CQ-MF-01], owner: other, status: accepted, ruling: R-68 }
+  - { predicate: SUPPLIES_MATERIAL, module: D8, registrar: D7, subjects: [D7.Organization], objects: [D1.IngredientMaterial, D7.Organization], qualifiers: ["exclusivity=SOLE|NON_EXCLUSIVE|UNSTATED", "buyer="], questions: [CQ-MF-01, Q-D8-10, Q-D8-13], owner: other, status: accepted, ruling: R-68, note: "replaces D8 SUPPLIES_INGREDIENT and EXCLUSIVE_SUPPLIER_OF (exclusivity=SOLE; Grace exclusive supplier of NR, buyer Niagen as buyer=)" }
+  - { predicate: DISTRIBUTES, module: D8, registrar: D7, subjects: [D7.Organization], objects: [D6.Product], questions: [CQ-MF-01], owner: other, status: accepted, ruling: R-68, note: "non-label sources only; a label's distributor is D6 NAMES_RESPONSIBLE_PARTY" }
+  - { predicate: MEASURED_CONTENT_IN_PRODUCT, module: D8, registrar: D1, subjects: [D6.Product, D6.ProductVariant], objects: [D1.ChemicalSubstance], questions: [Q-D8-06], owner: other, status: accepted, ruling: R-73, note: "survey rows that name no lot (QUALITY_RESULT_FOR -> Product cut); a lot-identified measurement is a D8 QualityResult" }
+  - { predicate: CONTAINS_UNDECLARED_SUBSTANCE, module: D8, registrar: D1, subjects: [D6.Product, D6.ProductVariant], objects: [D1.ChemicalSubstance], questions: [Q-D8-06], owner: other, status: accepted, ruling: R-73, note: "as above; an undeclared drug is also a D8 RegulatoryRecord with violationCategories UNDECLARED_DRUG_INGREDIENT" }
+  # Predicates D8 registers whose other end is another module's type (listed so the other side can check them).
+  - { predicate: SAMPLE_TESTED_POSITIVE_FOR, module: D8, registrar: D8, subjects: [D6.Product, D8.Lot], objects: [D1.Taxon], questions: [], owner: this, status: accepted, ruling: R-73, note: "D6 re-keys its provisional SAMPLE_POSITIVE_OUTBREAK_STRAIN fixture (recall-moringa-mogo) to this name" }
+  - { predicate: HAS_ACTION_LEVEL, module: D8, registrar: D8, subjects: [D1.ChemicalSubstance], objects: [D12.FoodCategory, D12.FoodItem], qualifiers: ["status=PROPOSED|ADOPTED", jurisdiction, basis], questions: [Q-D12-06, Q-D12-18], owner: this, status: accepted, ruling: R-93, note: "valueNumber + unitCode; asserted by the regulator; D12 closes OQ-D12-31" }
+  - { predicate: HAS_CLAIM_CONDITION, module: D8, registrar: D8, subjects: [D8.RegulatoryRecord, K.Claim (with productClass=)], objects: [], questions: [Q-D12-06, Q-D12-18], owner: this, status: accepted, ruling: R-93, note: "condition in valueString with qualifiers" }
+  - { predicate: HAS_APPROVED_INDICATION, module: D8, registrar: D8, subjects: [D6.Product, D1.ChemicalSubstance], objects: [D2.Condition], questions: [Q-D11-11, Q-D9-21], owner: this, status: accepted, ruling: R-88, note: "asserter = labeler of record / regulator; supersession same asserter only (R-23, closes OQ-D8-34); the same Condition is the object of CAUSES_ADVERSE_EFFECT and USE_CONSTRAINED_IN (R-84)" }
+sharedVocabularies:
+  - vocabulary: targets
+    owner: D5
+    file: final/vocabularies/targets.yaml
+    version: "0.2.2"
+    use: >-
+      Q-D8-18 reads products for target T through the D5 Assertion predicate INTENDED_FOR_TARGET (subject product, object
+      Target hu:target:<slug>; registrar D5, R-52). Certifier category labels ("Sleep Aid", "Build Muscle") stay verbatim on
+      CertificationListing.categoryLabelsVerbatim and reach a Target only through that same Assertion pattern. D8 declares no
+      edge to Target (D5 seam rule). Pin R-60.
+  - vocabulary: frontiers
+    owner: D13
+    file: final/vocabularies/frontiers.yaml
+    version: "0.2.1"
+    use: >-
+      Not consumed directly. Only Events and Studies attach to a Frontier (R-91); D8 records reach a frontier only through a
+      D13 Event documented by them (DOCUMENTED_BY_RECORD; approval, recall, adjudication). Pin R-60.
+  - vocabulary: identifier-schemes
+    owner: K
+    file: final/vocabularies/identifier-schemes.yaml
+    use: >-
+      Uses FDA_APPLICATION, NPN, PATENT_PUB, UNII, DSLD, NDC. Requests FDA_NDI, FDA_GRN, FDA_WARNING_LETTER, FDA_RECALL,
+      FDA_RECALL_EVENT, FDA_DOCKET, FDA_FEI, CELEX, LNHPD_ID, COURT_DOCKET, PTAB_TRIAL, PATENT_APPLICATION, CERT_LISTING,
+      LAB_REPORT, LOT_CODE (11-open-questions OQ-D8-08). One (scheme, issuer, normalized value) identifies at most one
+      Subjectable (R-42).
+  - vocabulary: predicates
+    owner: S
+    file: final/vocabularies/predicates.yaml
+    use: >-
+      One registry (R-52). D8 is registrar of its predicateOnly rows in D8.relationship.yaml (no module prefix), including
+      SAMPLE_TESTED_POSITIVE_FOR (R-73), HAS_ACTION_LEVEL and HAS_CLAIM_CONDITION (R-93) and HAS_APPROVED_INDICATION (R-88);
+      it reads the predicateSeams above.
+  - vocabulary: assessment-vocabularies
+    owner: S
+    file: final/vocabularies/assessment-vocabularies.yaml
+    use: D8.coa-classification, D8.spec-conformance, D8.conditions-of-use, D8.licence-coverage, D8.gmp-signal, D8.regulatory-characterization (R-54; OTHER only with a registered subkind)
+  - vocabulary: kernel-types
+    owner: K
+    file: final/schema/kernel.graphql
+    use: >-
+      Kernel types the D8 SDL uses as property types: edge-property types AssertedRecordedProperties (ISSUED_BY, ADDRESSED_TO,
+      CONCERNS, STATUS_FROM, LOT_OF, QUALITY_RESULT_FOR, MEASURES_ANALYTE) and AssertedEdgeProperties (STATUS_OF, COVERS,
+      ASSIGNED_TO, LICENSED_TO), and enum PrivacyClass (the 7 Entity fields on all six D8 node types).
+  - vocabulary: quantity-comparator
+    owner: D1
+    file: final/schema/D1.graphql (enum QuantityComparator)
+    use: >-
+      Added in synthesis (R-57): QualityResult.specComparator is typed QuantityComparator; D8's SpecComparator is deleted.
+      Mapping NOT_LESS_THAN -> GTE, NOT_MORE_THAN -> LTE, RANGE -> BETWEEN, EQUALS -> EQ, ABSENT_IN -> ABSENT;
+      CONFORMS_TO_DESCRIPTION, REFERENCE_ONLY and UNKNOWN keep their names. The mapping is recorded in final/vocabularies.
+  - vocabulary: regulatory-pathways
+    owner: D8
+    file: final/schema/D8.graphql (enum RegulatoryPathway)
+    use: >-
+      D8 owns the regulatory vocabulary (R-56, R-66): enum RegulatoryPathway carries regulatory programmes, approval routes
+      (US_DRUG_NDA, US_BLA, US_ACCELERATED_APPROVAL, US_EUA, US_DEVICE_510K, US_DEVICE_DE_NOVO, US_DEVICE_PMA,
+      EU_CONDITIONAL_MA ...) and designation programmes (US_BREAKTHROUGH_THERAPY, US_FAST_TRACK, US_RMAT, US_ORPHAN_DESIGNATION,
+      US_PRIORITY_REVIEW, US_PRIORITY_REVIEW_VOUCHER, EU_PRIME, EU_ORPHAN_DESIGNATION, JP_SAKIGAKE); LegalStatusKind and
+      RegulatoryRecordKind say what a record or standing is. Consumers: D13 (deletes ApprovalPathway and DesignationType and
+      retypes Event.approvalPathway / Event.designationType to RegulatoryPathway via the OQ-D8-02 mapping, published in
+      final/vocabularies; remaps vocab-frontiers breakthroughCriteria), D4 (device clearance as of D through Product, Q-D4-10).

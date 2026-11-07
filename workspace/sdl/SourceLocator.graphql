@@ -1,0 +1,46 @@
+"""
+Purpose: reproducible selector for the exact span, cell, page region, JSON pointer or media time range of one
+SourceSnapshot (verification.v1 SourceFragment + selector), the only evidence currency of the graph. A Chunk is
+never a locator. Identity rule: (snapshot, selectorKind, selectorDigest). uid token: `locator`. Immutable; a newer
+snapshot gets a new locator (`reanchorsLocatorUid` names the one it re-finds).
+Questions: Q-K-01, Q-K-10, Q-K-13, Q-K-14, Q-K-20.
+"""
+type SourceLocator implements Entity
+  @node(labels: ["SourceLocator", "InformationArtifact"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  selectorKind: SelectorKind!
+  "sha256:<hex> over the canonical JSON of the verification.v1 selector; identity with the snapshot."
+  selectorDigest: String!
+  "Canonical JSON of the full verification.v1 selector (offset basis, normalization, table cell, JSON pointer, bbox); `basis` (projection id@version) is mandatory and normalization is part of the projection (R-38)."
+  selectorJson: String!
+  "Verbatim selected text (TextQuoteSelector.exact) when textual."
+  exact: String
+  prefix: String
+  suffix: String
+  "sha256:<hex> of exact after normalization."
+  quoteHash: String
+  startOffset: Int
+  endOffset: Int
+  "1-based page (PDF_TEXT, BOUNDING_BOX)."
+  page: Int
+  "Media time on the captured rendition's own timeline (MEDIA_TIMECODE)."
+  mediaStartSeconds: Float
+  mediaEndSeconds: Float
+  "Speaker label printed beside the span (what the source printed, not attribution)."
+  speakerLabelInSource: String
+  "uid of the older-snapshot locator this one re-finds (exact or fuzzy, in reanchorMatch)."
+  reanchorsLocatorUid: String
+  reanchorMatch: String
+  """class: structural (inverse); cardinality: exactly_one; questions: Q-K-01, Q-K-20."""
+  snapshot: [SourceSnapshot!]!
+    @relationship(type: "HAS_LOCATOR", direction: IN, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

@@ -1,0 +1,27 @@
+"""
+HOLDS_STAKE episode: AssertedEdgeProperties plus the ownership qualifiers. `stakePercent` only as stated by the source
+(never computed; a computed share is a CALCULATED Assertion); `stakeBand` when the source gives a statutory band or a
+threshold instead of a number; `ownershipBasis` keeps "may be deemed" apart from record ownership; voting and dispositive
+power as stated. Investment is not control (control is PARENT_OF) and "investor" without an instrument is
+INVESTOR_UNSPECIFIED, never EQUITY. The class or holding as printed ("1,269,072 shares of common stock", "E", "I") is the
+authorizing Assertion's qualifier `stakeClass:` (R-30).
+"""
+type StakeEdgeProperties @relationshipProperties {
+  relationshipUid: String!
+  assertionUid: String!
+  validFrom: DateTime
+  validTo: DateTime
+  validFromPrecision: TimePrecision
+  validToPrecision: TimePrecision
+  validFromBasis: ValidTimeBasis!
+  validToBasis: ValidTimeBasis!
+  recordedFrom: DateTime!
+  recordedTo: DateTime
+  lastWriterRunId: String
+  stakeKind: StakeKind!
+  stakePercent: Float
+  stakeBand: StakeBand
+  ownershipBasis: OwnershipBasis
+  votingPower: HoldingPower
+  dispositivePower: HoldingPower
+}

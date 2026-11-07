@@ -1,0 +1,96 @@
+"""
+Purpose: an immutable, versioned, supersedable judgment asserted by an agent or analyst with named inputs (PLAN 6.1
+"assessment"): claim vetting (with `disposition`), derived insight, evidence synthesis, safety signal, resolution
+hypothesis (a surface form or handle at a located span → candidate entity: the span is HAS_EVIDENCE role CONTEXT,
+the candidate is ASSESSES, and `surfaceForm=`, `normalizedForm=`, `typeHint=` go in facets; there is no Mention node),
+equivalence of two identities, source authority per claim kind. An assessment that judges one occurrence (retelling
+fidelity, conflict relevance) ASSESSES that occurrence's Claim (and the speaker) and is DERIVED_FROM the judged
+occurrence(s), with `occurrence=<uid>` / `retelling=<uid>` / `original=<uid>` facets (R-20).
+Domain-specific assessment kinds are values of `assessmentKind` with their detail in `assessmentSubkind`; a domain
+needing typed, filterable properties on an assessment requests a kernel addition rather than declaring its own type.
+Harm is `effectDirection: HARM` on an assessment about a target, never a property of an entity. Typed slots shared
+by every domain (model stage): `gradeScheme` + `grade` + `certainty` (evidence grades, severity grades such as
+CTCAE), `conclusionCode` (one categorical outcome from the vocabulary the owning domain registers for its subkind,
+e.g. COMPARABLE, CONFIRMED_ASSOCIATION, REFINES for K.claim-relation), `facets` (registered `<facet>=<value>` codes). A third party's
+verdict is never an Assessment (it is a RATES_CLAIM Assertion by that party).
+Identity rule: (kind, subjects, methodVersion, inputs digest, recordedAt). uid token: `assessment`.
+Questions: Q-K-06, Q-K-09, Q-K-11, Q-K-13, Q-K-15, Q-K-19, Q-K-21, Q-K-30.
+"""
+type Assessment implements Entity
+  @node(labels: ["Assessment", "EvidenceAssessment"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  assessmentKind: AssessmentKind!
+  "Domain detail of the kind, registered by the owning domain (e.g. D5.interaction-risk)."
+  assessmentSubkind: String
+  status: AssessmentStatus!
+  methodVersion: String!
+  "VETTING only."
+  disposition: ClaimDisposition
+  "When the assessment judges support of a proposition."
+  verdict: SemanticVerdict
+  effectDirection: EffectDirection
+  "The method's own score (e.g. resolution score); never a truth value."
+  score: Float
+  "Named grading scheme (GRADE, OCEBM-2011, USPSTF-2012, CTCAE_V5, LIVERTOX-LIKELIHOOD, BELLLABS-<name>@<version>)."
+  gradeScheme: String
+  "Grade under gradeScheme, as the scheme spells it."
+  grade: String
+  certainty: CertaintyLevel
+  "Categorical outcome from the vocabulary registered for assessmentSubkind by the owning domain."
+  conclusionCode: String
+  "Registered `<facet>=<value>` codes for further categorical facets (filter with includes)."
+  facets: [String!]
+  summary: String
+  rationale: String
+  "Latest evidence the assessment considered (as-of cutoff)."
+  evidenceCutoffAt: DateTime
+  "sha256:<hex> over the sorted input uids and their contentHashes."
+  inputSetDigest: String
+  "Versioned rubric reference (assessment kind version) the judgment applied (R-SV10)."
+  rubricRef: String
+  "Versioned policy reference the use decision was taken under (R-SV10)."
+  policyRef: String
+  "Immutable reference to the Knowledge Services use decision (PostgreSQL authority) this assessment records (R-SV10)."
+  useDecisionRef: String
+  "sha256:<hex> digest of that use decision record (R-SV11); official reads compare it with the authority's record before serving."
+  useDecisionDigest: String
+  "Disposition of that use decision for the exact effect, use and audience (R-SV10). Separate from disposition (claim vetting)."
+  useDisposition: UseDisposition
+  "Revocation epoch (authoritative per-scope high-water mark) the decision was checked against (R-SV10). A projection never authorizes use after an observed later epoch; official reads revalidate eligibility."
+  revocationEpoch: Int
+  "Expiry of the use decision, when it has one (R-SV10)."
+  expiresAt: DateTime
+  "Reference to the qualified human reviewer adjudication that signed the exact bindings, when one did (R-SV10)."
+  reviewerAdjudicationRef: String
+  recordedAt: DateTime!
+  recordedTo: DateTime
+  supersedesUid: String
+  """class: structural; cardinality: one_or_more (Claim, domain entity, Source, Agent); questions: Q-K-09, Q-K-13, Q-K-19."""
+  about: [Subjectable!]!
+    @relationship(type: "ASSESSES", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: many; questions: Q-K-06, Q-K-15."""
+  inputAssertions: [Assertion!]!
+    @relationship(type: "DERIVED_FROM", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: many; questions: Q-K-06."""
+  inputAssessments: [Assessment!]!
+    @relationship(type: "DERIVED_FROM", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: many (role per locator); questions: Q-K-11, Q-K-13."""
+  evidence: [SourceLocator!]!
+    @relationship(type: "HAS_EVIDENCE", direction: OUT, properties: "EvidenceEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: exactly_one; questions: Q-K-04, Q-K-06."""
+  generatedBy: [Activity!]!
+    @relationship(type: "WAS_GENERATED_BY", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

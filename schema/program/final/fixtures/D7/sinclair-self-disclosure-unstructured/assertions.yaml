@@ -1,0 +1,303 @@
+# assertions.yaml — fixture sinclair-self-disclosure-unstructured (D7, fixtures stage, A6, 2026-10-08)
+#
+# Kernel pattern (packets/K/09-reasoning.md in worktree A1): each record below is one kernel `Assertion` (exactly one
+# subject, one object or one literal, one asserter, >= 1 SourceLocator via HAS_EVIDENCE role SUPPORTS origin DECLARED)
+# that authorizes one D7 edge episode (edge.properties = the D7 edge-property type; relationshipUid/assertionUid/
+# recordedFrom/lastWriterRunId are executor-set and omitted). Locator ids resolve in ./locators.yaml.
+#
+# producedBy ids are FIXTURE-SCOPED ids invented for this packet (mission:ft-D7-fixtures / run:ft-D7-<fixture>); they
+# are not Mission Control ids. In the graph they become Activity {missionId, runId} and every node/edge below is
+# WAS_GENERATED_BY that Activity.
+#
+# Valid-time convention (03-retrieval-patterns.md OVERLAP): a bound with precision YEAR stores the first instant of the
+# STATED year and means "some time in that year" (so "2011-2017" is validFrom 2011/YEAR, validTo 2017/YEAR and "(2018)"
+# is validFrom 2018/YEAR, validTo 2018/YEAR); "present" leaves validTo null with basis OBSERVATION_ONLY and sets
+# validObservedAt to the page's own "Updated Oct 8th, 2024" date. A bound the source does not give is null with basis UNKNOWN.
+#
+# Close-out FU-03 (S fixture editor, 2026-10-09): R-30 the printed codes move from the HOLDS_ROLE / HOLDS_STAKE edges to
+# the authorizing Assertion qualifiers roleText: / stakeClass: (a-01..a-05, a-07..a-09, a-13); R-09/R-27 there is no
+# Mention node: the former mentions section is removed, a surface form is its SourceLocator plus a RESOLUTION Assessment
+# (surfaceForm= / typeHint= facets, span evidence role CONTEXT, as-res-01), and MENTIONS stays a derived D9 Chunk projection.
+fixture: sinclair-self-disclosure-unstructured
+producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-sinclair-self-disclosure-unstructured" }
+
+entities:
+  - { uid: "hu:person:david-a-sinclair", type: Person, name: "David A. Sinclair", publicActorBasis: [FOUNDER_OR_INVESTOR, AUTHOR_OR_INVESTIGATOR], privacyClass: PUBLIC, note: "page owner; no identifier on the page (ORCID 0000-0002-9936-436X exists in ORCID, research-stage tool log #15, not attached here because the page does not print it)" }
+  - { uid: "hu:org:life-biosciences-llc", type: Organization, name: "Life Biosciences LLC", entityKind: LEGAL_ENTITY, organizationKind: BIOTECH_OR_PHARMA, identifiers: [{ scheme: SEC_CIK, issuer: "US SEC", value: "0001751806" }], note: "the page prints 'Life Biosciences' (link lifebiosciences.com); the Form D prints the legal name and CIK; page name -> this record is as-res-02" }
+  - { uid: "hu:org:segterra", type: Organization, name: "Segterra", entityKind: UNSPECIFIED, organizationKind: DIAGNOSTICS_OR_DEVICE, note: "printed as 'InsideTracker (Segterra)' (loc-sin-insidetracker); no InsideTracker Brand is written: brand vs operating entity is not resolvable from this page, and the surface form stays at its locator (R-09: no surface-form node)" }
+  - { uid: "hu:org:edenroc-sciences-companies", type: Organization, name: "EdenRoc Sciences companies", entityKind: CORPORATE_GROUP, note: "a group named collectively; codes on its line are group-level and are never pushed to members" }
+  - { uid: "hu:org:metrobiotech-international", type: Organization, name: "MetroBiotech International", entityKind: UNSPECIFIED, organizationKind: BIOTECH_OR_PHARMA }
+  - { uid: "hu:org:caudalie", type: Organization, name: "Caudalie", entityKind: UNSPECIFIED, organizationKind: SUPPLEMENT_OR_CONSUMER_HEALTH, note: "printed 'Caudalie ... Paris, France'; organizationKind is a coarse filter value chosen by the extractor (consumer skin care), not a source fact" }
+  - { uid: "hu:org:elysium-health-inc", type: Organization, name: "Elysium Health Inc.", entityKind: LEGAL_ENTITY, organizationKind: SUPPLEMENT_OR_CONSUMER_HEALTH, note: "shared with fixture elysium-paper-funding-award; this page prints 'Elysium Health ... New York, NY'" }
+
+assertions:
+  # ---- Life Biosciences: F and B (B is corroborated by the Form D, a-13)
+  - id: a-01
+    predicate: HOLDS_ROLE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:person:david-a-sinclair", type: Person }
+    subject: { uid: "hu:person:david-a-sinclair", type: Person }
+    object: { uid: "hu:org:life-biosciences-llc", type: Organization }
+    edge: { type: HOLDS_ROLE, properties: { roleKind: FOUNDER } }
+    validTime: { validFrom: "2017-01-01T00:00:00Z", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2024-10-08T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    basisKind: UNSTATED
+    qualifiers: ["roleText:'F'", "code 'F' per the page legend 'F=Founder'", "(2017-present) as of the page's 'Updated Oct 8th, 2024'"]
+    evidence: [{ locator: loc-sin-lifebio, role: SUPPORTS, origin: DECLARED }, { locator: loc-sin-legend, role: SUPPORTS, origin: DECLARED }, { locator: loc-sin-asof, role: QUALIFIES, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-sinclair-self-disclosure-unstructured" }
+  - id: a-02
+    predicate: HOLDS_ROLE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:person:david-a-sinclair", type: Person }
+    subject: { uid: "hu:person:david-a-sinclair", type: Person }
+    object: { uid: "hu:org:life-biosciences-llc", type: Organization }
+    edge: { type: HOLDS_ROLE, properties: { roleKind: DIRECTOR } }
+    validTime: { validFrom: "2017-01-01T00:00:00Z", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2024-10-08T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["roleText:'B'", "code 'B' per the page legend 'B=Board of Directors'"]
+    evidence: [{ locator: loc-sin-lifebio, role: SUPPORTS, origin: DECLARED }, { locator: loc-sin-legend, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-sinclair-self-disclosure-unstructured" }
+
+  # ---- InsideTracker (Segterra): B closed 2011-2017; I, A, IP open 2011-present
+  - id: a-03
+    predicate: HOLDS_ROLE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:person:david-a-sinclair", type: Person }
+    subject: { uid: "hu:person:david-a-sinclair", type: Person }
+    object: { uid: "hu:org:segterra", type: Organization }
+    edge: { type: HOLDS_ROLE, properties: { roleKind: DIRECTOR } }
+    validTime: { validFrom: "2011-01-01T00:00:00Z", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: "2017-01-01T00:00:00Z", validToPrecision: YEAR, validToBasis: STATED_BY_SOURCE }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["roleText:'B'", "'B (2011-2017)': board role closed; the other codes on the same line stay open"]
+    evidence: [{ locator: loc-sin-insidetracker, role: SUPPORTS, origin: DECLARED }, { locator: loc-sin-legend, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-sinclair-self-disclosure-unstructured" }
+  - id: a-04
+    predicate: HOLDS_ROLE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:person:david-a-sinclair", type: Person }
+    subject: { uid: "hu:person:david-a-sinclair", type: Person }
+    object: { uid: "hu:org:segterra", type: Organization }
+    edge: { type: HOLDS_ROLE, properties: { roleKind: ADVISOR } }
+    validTime: { validFrom: "2011-01-01T00:00:00Z", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2024-10-08T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["roleText:'A'", "'A=Advisor/Consultant': ADVISOR chosen; the code does not separate advisor from consultant"]
+    evidence: [{ locator: loc-sin-insidetracker, role: SUPPORTS, origin: DECLARED }, { locator: loc-sin-legend, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-sinclair-self-disclosure-unstructured" }
+  - id: a-05
+    predicate: HOLDS_STAKE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:person:david-a-sinclair", type: Person }
+    subject: { uid: "hu:person:david-a-sinclair", type: Person }
+    object: { uid: "hu:org:segterra", type: Organization }
+    edge: { type: HOLDS_STAKE, properties: { stakeKind: INVESTOR_UNSPECIFIED, stakeBand: UNSTATED, ownershipBasis: UNSTATED } }
+    validTime: { validFrom: "2011-01-01T00:00:00Z", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2024-10-08T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["stakeClass:'I'", "'I=Investor' without 'E' on this line: investor with no instrument stated (INVESTOR_UNSPECIFIED, never EQUITY)"]
+    evidence: [{ locator: loc-sin-insidetracker, role: SUPPORTS, origin: DECLARED }, { locator: loc-sin-legend, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-sinclair-self-disclosure-unstructured" }
+  - id: a-06
+    predicate: RECEIVES_VALUE_FROM
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:person:david-a-sinclair", type: Person }
+    subject: { uid: "hu:person:david-a-sinclair", type: Person }
+    object: { uid: "hu:org:segterra", type: Organization }
+    edge: { type: RECEIVES_VALUE_FROM, properties: { valueKind: INVENTOR_ON_LICENSED_IP } }
+    validTime: { validFrom: "2011-01-01T00:00:00Z", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2024-10-08T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["'IP=Inventor on licensed patents': the payer is the licensee as listed; no amount stated", "patent identities are a D8 seam (not resolved here)"]
+    evidence: [{ locator: loc-sin-insidetracker, role: SUPPORTS, origin: DECLARED }, { locator: loc-sin-legend, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-sinclair-self-disclosure-unstructured" }
+
+  # ---- EdenRoc Sciences companies (group) and its member MetroBiotech (NAD boosters)
+  - id: a-07
+    predicate: HOLDS_STAKE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:person:david-a-sinclair", type: Person }
+    subject: { uid: "hu:person:david-a-sinclair", type: Person }
+    object: { uid: "hu:org:edenroc-sciences-companies", type: Organization }
+    edge: { type: HOLDS_STAKE, properties: { stakeKind: EQUITY, stakeBand: UNSTATED, ownershipBasis: UNSTATED } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2024-10-08T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["stakeClass:'E'", "group-level code: which member companies the equity is in is not stated", "the group line prints no years"]
+    evidence: [{ locator: loc-sin-edenroc, role: SUPPORTS, origin: DECLARED }, { locator: loc-sin-legend, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-sinclair-self-disclosure-unstructured" }
+  - id: a-08
+    predicate: HOLDS_STAKE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:person:david-a-sinclair", type: Person }
+    subject: { uid: "hu:person:david-a-sinclair", type: Person }
+    object: { uid: "hu:org:edenroc-sciences-companies", type: Organization }
+    edge: { type: HOLDS_STAKE, properties: { stakeKind: INVESTOR_UNSPECIFIED, stakeBand: UNSTATED, ownershipBasis: UNSTATED } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2024-10-08T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["stakeClass:'I'", "'I' and 'E' are separate codes: two episodes, never collapsed (INVESTED_IN does not imply HOLDS_EQUITY_IN)"]
+    evidence: [{ locator: loc-sin-edenroc, role: SUPPORTS, origin: DECLARED }, { locator: loc-sin-legend, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-sinclair-self-disclosure-unstructured" }
+  - id: a-09
+    predicate: HOLDS_ROLE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:person:david-a-sinclair", type: Person }
+    subject: { uid: "hu:person:david-a-sinclair", type: Person }
+    object: { uid: "hu:org:edenroc-sciences-companies", type: Organization }
+    edge: { type: HOLDS_ROLE, properties: { roleKind: FOUNDER } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2024-10-08T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["roleText:'F'", "group-level founder code; B and A on the same line are further HOLDS_ROLE episodes of the same shape (not repeated in this fixture)"]
+    evidence: [{ locator: loc-sin-edenroc, role: SUPPORTS, origin: DECLARED }, { locator: loc-sin-legend, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-sinclair-self-disclosure-unstructured" }
+  - id: a-10
+    predicate: PARENT_OF
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:person:david-a-sinclair", type: Person }
+    subject: { uid: "hu:org:edenroc-sciences-companies", type: Organization }
+    object: { uid: "hu:org:metrobiotech-international", type: Organization }
+    edge: { type: PARENT_OF, properties: { controlKind: GROUP_MEMBER_UNSPECIFIED } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2024-10-08T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["'an EdenRoc Sciences company': membership with no ownership detail; ownership-chain questions exclude GROUP_MEMBER_UNSPECIFIED unless asked", "'(2015-present)' on the member line dates the page owner's engagement with the member, not the membership; it is not used as valid time here", "'NAD boosters' is the member's field as printed (D1 seam; not a Product or Compound link)"]
+    evidence: [{ locator: loc-sin-metrobiotech, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-sinclair-self-disclosure-unstructured" }
+
+  # ---- Consumer: Caudalie L (lab funding, closed 2023) and Elysium Health IP (2018)
+  - id: a-11
+    predicate: RECEIVES_VALUE_FROM
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:person:david-a-sinclair", type: Person }
+    subject: { uid: "hu:person:david-a-sinclair", type: Person }
+    object: { uid: "hu:org:caudalie", type: Organization }
+    edge: { type: RECEIVES_VALUE_FROM, properties: { valueKind: RESEARCH_FUNDING } }
+    validTime: { validFrom: "2013-01-01T00:00:00Z", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: "2023-01-01T00:00:00Z", validToPrecision: YEAR, validToBasis: STATED_BY_SOURCE }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["'L=Funding for laboratory': value received by the person's laboratory, recorded on the Person (no lab Organization node)", "no amount stated", "listed under PAST ENGAGEMENTS / Consumer / Biotracking"]
+    evidence: [{ locator: loc-sin-caudalie, role: SUPPORTS, origin: DECLARED }, { locator: loc-sin-legend, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-sinclair-self-disclosure-unstructured" }
+  - id: a-12
+    predicate: RECEIVES_VALUE_FROM
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:person:david-a-sinclair", type: Person }
+    subject: { uid: "hu:person:david-a-sinclair", type: Person }
+    object: { uid: "hu:org:elysium-health-inc", type: Organization }
+    edge: { type: RECEIVES_VALUE_FROM, properties: { valueKind: INVENTOR_ON_LICENSED_IP } }
+    validTime: { validFrom: "2018-01-01T00:00:00Z", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: "2018-01-01T00:00:00Z", validToPrecision: YEAR, validToBasis: STATED_BY_SOURCE }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["'(2018) IP': a single stated year; both bounds YEAR 2018 = within 2018"]
+    evidence: [{ locator: loc-sin-elysium, role: SUPPORTS, origin: DECLARED }, { locator: loc-sin-legend, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-sinclair-self-disclosure-unstructured" }
+
+  # ---- SEC Form D (structured corroboration). Held until the RESOLUTION Assessment as-res-01 is accepted: the Form D
+  #      related person "David" "Sinclair" carries no identifier, so the subject is a resolution hypothesis, not a merge.
+  - id: a-13
+    predicate: HOLDS_ROLE
+    assertionKind: FIELD
+    asserter: { uid: "hu:org:life-biosciences-llc", type: Organization, note: "the issuer files the Form D (signature date 2026-04-24)" }
+    subject: { uid: "hu:person:david-a-sinclair", type: Person, via: "surface form at loc-fd-sinclair-name + as-res-01 (RESOLUTION, PROPOSED)" }
+    object: { uid: "hu:org:life-biosciences-llc", type: Organization }
+    edge: { type: HOLDS_ROLE, properties: { roleKind: DIRECTOR } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2026-04-24T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    status: PROPOSED
+    heldUntil: "as-res-01 status ACCEPTED (planner keeps the proposal held; no edge episode is written before)"
+    qualifiers: ["roleText:'Director'", "Form D related person relationship 'Director' (relatedPersonInfo 6 of the filing)", "the filing gives no start date; validObservedAt = signature date"]
+    evidence: [{ locator: loc-fd-sinclair-rel, role: SUPPORTS, origin: DECLARED }, { locator: loc-fd-sinclair-name, role: SUPPORTS, origin: DECLARED }, { locator: loc-fd-issuer, role: CONTEXT, origin: DECLARED }, { locator: loc-fd-signature, role: QUALIFIES, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-sinclair-self-disclosure-unstructured" }
+
+# (close-out FU-03, R-09/R-27) the former `mentions:` section is removed: the Form D surface form 'David Sinclair' is
+# loc-fd-sinclair-name plus the RESOLUTION Assessment as-res-01 (facets surfaceForm= / typeHint=); the 'InsideTracker'
+# brand surface form stays at loc-sin-insidetracker with no binding (no Assertion rests on it, so no Assessment is needed).
+
+assessments:
+  - id: as-res-01
+    assessmentKind: RESOLUTION
+    assessmentSubkind: "D7.person-resolution"
+    status: PROPOSED
+    methodVersion: "fixture-expected/1 (human review expected; no resolver was run)"
+    about: [{ uid: "hu:person:david-a-sinclair", type: Person }, { uid: "hu:org:life-biosciences-llc", type: Organization }]
+    hypothesis: "The Form D related person 'David Sinclair' (Director, Life Biosciences LLC, 2026-04-24) is the Person who publishes the affiliations page (B, Life Biosciences, 2017-present)."
+    basis: ["same family and given name (no middle initial on the Form D)", "same organization in both sources (as-res-02)", "role kind agrees (B ↔ Director)", "no shared identifier: the Form D carries none"]
+    score: null
+    facets: ["surfaceForm=David Sinclair", "typeHint=Person"]   # R-09/R-27: surface form at loc-fd-sinclair-name (no Mention node)
+    inputAssertions: [a-02]
+    evidence: [{ locator: loc-fd-sinclair-name, role: CONTEXT }, { locator: loc-sin-lifebio, role: SUPPORTS }]   # the surface-form span is CONTEXT (SDL Assessment docstring)
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-sinclair-self-disclosure-unstructured" }
+  - id: as-res-02
+    assessmentKind: RESOLUTION
+    assessmentSubkind: "D7.organization-resolution"
+    status: PROPOSED
+    methodVersion: "fixture-expected/1"
+    about: [{ uid: "hu:org:life-biosciences-llc", type: Organization }]
+    hypothesis: "'Life Biosciences' (page, link lifebiosciences.com, Boston, MA) is the issuer 'Life Biosciences LLC' (CIK 0001751806, Boston)."
+    basis: ["name equal modulo legal form", "same city"]
+    score: null
+    evidence: [{ locator: loc-sin-lifebio, role: SUPPORTS }, { locator: loc-fd-issuer, role: SUPPORTS }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-sinclair-self-disclosure-unstructured" }
+  - id: as-agree-01
+    assessmentKind: EVIDENCE_SYNTHESIS
+    assessmentSubkind: "D7.role-agreement"
+    status: PROPOSED
+    methodVersion: "fixture-expected/1"
+    conclusionCode: AGREE
+    facets: ["kindAgreement=AGREE", "intervalAgreement=ONE_SIDED"]
+    about: [{ uid: "hu:person:david-a-sinclair", type: Person }, { uid: "hu:org:life-biosciences-llc", type: Organization }]
+    inputAssertions: [a-02, a-13]
+    inputAssessments: [as-res-01]
+    outcome: "AGREE_ON_KIND; INTERVAL_ONE_SIDED — page: DIRECTOR from 2017 (YEAR, stated), open as of 2024-10-08; Form D: Director observed 2026-04-24, no start. Conditional on as-res-01."
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-sinclair-self-disclosure-unstructured" }
+  - id: as-cov-01
+    assessmentKind: QUALITY
+    assessmentSubkind: "D7.disclosure-coverage"
+    status: PROPOSED
+    methodVersion: "fixture-expected/1"
+    conclusionCode: SOURCE_DECLARED_INCOMPLETE
+    about: [{ uid: "hu:person:david-a-sinclair", type: Person }]
+    finding: "SOURCE_DECLARED_INCOMPLETE: the capture is complete (captureCompleteness COMPLETE) but the source says it is not a formal list; an absent organization is NOT_FOUND_IN_SOURCE_DECLARED_INCOMPLETE_LIST, never 'no interest'."
+    evidence: [{ locator: loc-sin-incomplete, role: SUPPORTS }, { locator: loc-sin-asof, role: QUALIFIES }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-sinclair-self-disclosure-unstructured" }
+
+# ---------------------------------------------------------------------------------------------------------------------
+# 00-DIRECTIVE 3.8 walk: question -> chunk -> assertions -> locator -> snapshot bytes (and the verifier re-selects it)
+# ---------------------------------------------------------------------------------------------------------------------
+unstructuredPath:
+  question: "Q-D7-11 / CQ-EC-03: does David A. Sinclair hold a financial interest in a company that sells NAD boosters?"
+  textVersion: { snapshot: snap-sinclair-affil, text: "the Firecrawl markdown capture itself (contentHashBasis CANONICAL_PROJECTION); D9 Chunk carries textVersionHash / textBasis as properties (the pinned DocumentTextVersion is absorbed into Chunk, D9 SDL)" }
+  chunks:   # retrieval structure (D9 Chunk, CHUNK_OF -> SourceSnapshot); a chunk is never a locator
+    - { id: ch-header, startOffset: 100, endOffset: 906, textHash: "sha256:e582d7a3fc1547c5b4b05ee9f14a424b82e71f5bd60c71309be240bf3f9dac0b", rule: "heading to first section break" }
+    - { id: ch-active, startOffset: 906, endOffset: 2253, textHash: "sha256:ddd3b86ce0d56440d0a8f23c4a87c5180d0ab9ade9836a8e9d7ed73e3b88ccb3", rule: "'**ACTIVE ENGAGEMENTS**' up to '**PAST ENGAGEMENTS**'" }
+    - { id: ch-consumer, startOffset: 4649, endOffset: 4973, textHash: "sha256:a95fe658ed3f1acc82d13745569f99f3118e8007510fbcdc9a82b40486af05ee", rule: "'**Consumer / Biotracking**' up to '**Animal Health/Husbandry**'" }
+  step1_findChunk:
+    viaMentions: "derived MENTIONS (kernel type, D9 Chunk.mentions, DerivedEdgeProperties) from ch-active to hu:org:metrobiotech-international, hu:org:edenroc-sciences-companies, hu:org:segterra, hu:org:life-biosciences-llc (entity linking, method version on the projection Activity)"
+    viaVector: "D9 chunk embedding index, query text 'NAD boosters' -> ch-active (the only chunk containing the phrase)"
+    cypher: |
+      MATCH (o:Organization {uid: 'hu:org:metrobiotech-international'})<-[:MENTIONS]-(ch:Chunk)-[:CHUNK_OF]->(snap:SourceSnapshot)
+      WHERE ch.recordedTo IS NULL
+      RETURN ch.uid, ch.startOffset, ch.endOffset, ch.textVersionHash, snap.uid        // D9 SDL names (Chunk.mentions, Chunk.snapshot); adversarial-review rewrite
+  step2_assertionsInChunk:
+    rule: "Assertions whose SUPPORTS locator the chunk covers (D9 derived COVERS_LOCATOR, projection span-overlap/v1 over chunk and locator offsets in the same snapshot); the offset test is the fallback when the projection has not run"
+    cypher: |
+      MATCH (ch:Chunk {uid: $chunk})-[:COVERS_LOCATOR]->(loc:SourceLocator)<-[ev:HAS_EVIDENCE {role:'SUPPORTS'}]-(a:Assertion)
+      RETURN a.uid, a.predicate, loc.exact
+      // fallback: MATCH (ch:Chunk {uid: $chunk})-[:CHUNK_OF]->(snap:SourceSnapshot)-[:HAS_LOCATOR]->(loc:SourceLocator)<-[:HAS_EVIDENCE {role:'SUPPORTS'}]-(a:Assertion)
+      //           WHERE loc.startOffset >= ch.startOffset AND loc.endOffset <= ch.endOffset RETURN a.uid, a.predicate, loc.exact
+    expected: { ch-active: [a-01, a-02, a-03, a-04, a-05, a-06, a-07, a-08, a-09, a-10], ch-consumer: [a-11, a-12] }
+  step3_interestPath:
+    cypher: |
+      MATCH (p:Person {uid: 'hu:person:david-a-sinclair'})-[r:HOLDS_ROLE|HOLDS_STAKE|RECEIVES_VALUE_FROM]->(g:Organization)
+            -[c:PARENT_OF]->(m:Organization {uid: 'hu:org:metrobiotech-international'})
+      WHERE r.recordedTo IS NULL AND c.recordedTo IS NULL            // c.controlKind = GROUP_MEMBER_UNSPECIFIED is opted in here
+      RETURN type(r), coalesce(r.stakeKind, r.roleKind) AS kind, g.name, c.controlKind, r.assertionUid, c.assertionUid
+    expected: "EQUITY (a-07), INVESTOR_UNSPECIFIED (a-08), FOUNDER (a-09) at group level -> EdenRoc Sciences companies -> PARENT_OF GROUP_MEMBER_UNSPECIFIED (a-10) -> MetroBiotech International"
+  step4_locatorToBytes:
+    rule: "TRACE (03-retrieval-patterns.md): a.uid -> HAS_EVIDENCE -> SourceLocator (selectorJson, exact) -> SourceSnapshot (contentHash sha256:4a360dd31a561a81b4a6fc70ec16f890322f6dcbe860aab7e31b78ff69688f3f) -> bytes in the object store"
+    verifierReselect: "verification.v1 re-applies loc.selectorJson to the same snapshot bytes: text[1811:1928] (after U+00A0 -> U+0020) equals loc-sin-metrobiotech.exact and text[1665:1705] equals loc-sin-edenroc.exact; checked in this stage by the scratch re-selection script (RUNLOG)"

@@ -1,0 +1,301 @@
+# Assertions for fixture nr-salt-moiety-us-canada (FIXTURES stage, A2, 2026-10-08).
+# Shape: kernel Assertion (packets/K/04-schema-proposal.graphql, A1) — one subject, one object or one typed literal,
+# one asserter, locators = HAS_EVIDENCE {role SUPPORTS, origin DECLARED} to SourceLocators in locators.yaml.
+# producedBy ids are FIXTURE ids (mission:ft-D1-fixtures / run:ft-D1-<fixture>), not live Mission Control ids.
+# Seam rows (module D6/D7) are written in the other module's names as of 2026-10-08 (D6 LabelVersion + DECLARES_COMPONENT
+# with ComponentLineProperties, A6 worktree); D1 does not declare them. Adversarial review (2026-10-08): D6 made each
+# DECLARES_COMPONENT line asserted (ComponentLineProperties = AssertedRecordedProperties superset) with its own Assertion
+# and added massBasis (D1 MassBasis), so a10/a12 are exactly D6's per-line Assertions and the CALCULATED amounts cite them.
+fixture: nr-salt-moiety-us-canada
+producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-salt-moiety-us-canada" }
+activities:
+  - { ref: act-ingest, activityKind: INGESTION, agent: "agent:a2-d1-fixtures", missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-salt-moiety-us-canada", note: "captures + source-stated assertions" }
+  - { ref: act-project, activityKind: PROJECTION, agent: "agent:d1-amount-projection", methodVersion: "d1-amounts/v1", missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-salt-moiety-us-canada", note: "CALCULATED assertions (rules mw-ratio.v1, daily-max.v1); in production a separate PROJECTION run" }
+
+nodes:
+  - { ref: mat-niagen, module: D1, type: IngredientMaterial, name: "NIAGEN (crystalline nicotinamide riboside chloride)", properties: { materialKind: CHEMICALLY_DEFINED, brandName: "Niagen", physicalForm: CRYSTAL_FORM, formDescriptor: "crystalline form", grade: FOOD_GRADE, searchText: "Niagen | NIAGEN | Tru Niagen | NRC | NRCL | nicotinamide riboside chloride" }, propertyEvidence: { physicalForm: l-10k-crystal, formDescriptor: l-10k-crystal, grade: l-10k-niagen-form, brandName: l-dsld323170-row } }
+  - { ref: mat-lnhpd-nrcl, module: D1, type: IngredientMaterial, name: "Nicotinamide riboside chloride (source material, Health Canada NPN 80092534)", properties: { materialKind: CHEMICALLY_DEFINED }, note: "the licence names the source material only; whether it is the NIAGEN branded material is not stated (EQUIVALENCE assessment below)" }
+  - { ref: sub-nrcl, module: D1, type: ChemicalSubstance, name: "NICOTINAMIDE RIBOSIDE CHLORIDE", properties: { substanceClass: CHEMICAL, molecularFormula: "C11H15N2O5.Cl", molecularWeight: 290.7006 }, identifiers: [ { scheme: UNII, issuer: "FDA GSRS", value: "8XM2XT8VWI", evidence: l-gsrs8xm2-version } ] }
+  - { ref: sub-nr, module: D1, type: ChemicalSubstance, name: "NICOTINAMIDE RIBOSIDE", properties: { substanceClass: CHEMICAL, molecularWeight: 255.2476 }, identifiers: [ { scheme: UNII, issuer: "FDA GSRS", value: "0I8H2M0L7N", evidence: l-gsrs0i8h-version } ] }
+  - { ref: lv-us-323170, module: D6, type: LabelVersion, name: "Tru Niagen 300 mg — US Supplement Facts (DSLD 323170, productVersionCode V12.3)", properties: { maxDailyServings: 3 }, identifiers: [ { scheme: DSLD, issuer: "NIH ODS", value: "323170" } ], seam: "D6 owns; D1 calculated amounts take it as subject" }
+  - { ref: lv-ca-80092534, module: D6, type: LabelVersion, name: "Tru Niagen capsule — Health Canada licence NPN 80092534 (LNHPD 9465261)", identifiers: [ { scheme: NPN, issuer: "Health Canada", value: "80092534" } ], seam: "D6 owns" }
+  - { ref: org-chromadex, module: D7, type: Organization, name: "ChromaDex, Inc." }
+  - { ref: org-niagen-bio, module: D7, type: Organization, name: "Niagen Bioscience, Inc.", identifiers: [ { scheme: SEC_CIK, issuer: "US SEC", value: "0001386570" } ], note: "10-K filer; sameness with the label's ChromaDex, Inc. is a D7 question, not asserted here" }
+  - { ref: org-wr-grace, module: D7, type: Organization, name: "W.R. Grace" }
+  - { ref: org-nih-ods, module: D7, type: Organization, name: "NIH Office of Dietary Supplements (DSLD curator)" }
+  - { ref: org-fda-srs, module: D7, type: Organization, name: "FDA Substance Registration System (GSRS)" }
+  - { ref: org-health-canada, module: D7, type: Organization, name: "Health Canada (Natural and Non-prescription Health Products Directorate)" }
+  - { ref: agent-projection, module: K, type: Agent, name: "agent:d1-amount-projection (d1-amounts/v1)" }
+
+assertions:
+  # ---------- material → substance (REALIZES_SUBSTANCE) ----------
+  - id: a01-realizes-dsld
+    predicate: REALIZES_SUBSTANCE
+    assertionKind: RELATIONSHIP
+    subject: { ref: mat-niagen, type: IngredientMaterial }
+    object: { ref: sub-nrcl, type: ChemicalSubstance }
+    asserter: { ref: org-nih-ods, type: Organization }
+    locators: [l-dsld323170-row, l-dsld323170-form]
+    speechAct: STATES
+    polarity: POSITIVE
+    basisKind: UNSTATED
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    edge: { type: REALIZES_SUBSTANCE, properties: AssertedRecordedProperties, episode: "recorded-only (05: definitional)" }
+    note: "DSLD maps the label row 'Niagen' (uniiCode null) to the form 'Nicotinamide Riboside Chloride' with UNII 8XM2XT8VWI; the UNII mapping is DSLD curation, so the asserter is NIH ODS, not the brand."
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-salt-moiety-us-canada" }
+  - id: a02-realizes-10k
+    predicate: REALIZES_SUBSTANCE
+    assertionKind: RELATIONSHIP
+    subject: { ref: mat-niagen, type: IngredientMaterial }
+    object: { ref: sub-nrcl, type: ChemicalSubstance }
+    asserter: { ref: org-niagen-bio, type: Organization }
+    locators: [l-10k-niagen-form]
+    speechAct: STATES
+    polarity: POSITIVE
+    basisKind: MANUFACTURER_CLAIM
+    validTime: { validFrom: "2013-01-01T00:00:00Z", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: UNKNOWN }
+    edge: { type: REALIZES_SUBSTANCE, properties: AssertedRecordedProperties, episode: "corroborates a01-realizes-dsld; the existing episode keeps a01 as assertionUid, no second episode" }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-salt-moiety-us-canada" }
+  - id: a03-physical-form
+    predicate: PHYSICAL_FORM
+    assertionKind: FIELD
+    subject: { ref: mat-niagen, type: IngredientMaterial }
+    literal: { valueString: "CRYSTAL_FORM" }
+    qualifiers: ["formDescriptor: crystalline form", "exclusive manufacture by W.R. Grace (patents)"]
+    asserter: { ref: org-niagen-bio, type: Organization }
+    locators: [l-10k-crystal]
+    speechAct: STATES
+    basisKind: MANUFACTURER_CLAIM
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-salt-moiety-us-canada" }
+  - id: a04-grade
+    predicate: MATERIAL_GRADE
+    assertionKind: FIELD
+    subject: { ref: mat-niagen, type: IngredientMaterial }
+    literal: { valueString: "FOOD_GRADE" }
+    asserter: { ref: org-niagen-bio, type: Organization }
+    locators: [l-10k-niagen-form]
+    speechAct: STATES
+    basisKind: MANUFACTURER_CLAIM
+    validTime: { validFrom: "2013-01-01T00:00:00Z", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-salt-moiety-us-canada" }
+  - id: a05-realizes-lnhpd
+    predicate: REALIZES_SUBSTANCE
+    assertionKind: RELATIONSHIP
+    subject: { ref: mat-lnhpd-nrcl, type: IngredientMaterial }
+    object: { ref: sub-nrcl, type: ChemicalSubstance }
+    asserter: { ref: org-health-canada, type: Organization }
+    locators: [l-lnhpd9465261-source, l-lnhpd23195874-source]
+    speechAct: STATES
+    basisKind: UNSTATED
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    edge: { type: REALIZES_SUBSTANCE, properties: AssertedRecordedProperties }
+    note: "source_material string 'Nicotinamide riboside chloride' resolved to UNII 8XM2XT8VWI by name (RESOLUTION assessment r02)"
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-salt-moiety-us-canada" }
+
+  # ---------- salt → moiety and the authority numbers ----------
+  - id: a06-has-active-moiety
+    predicate: HAS_ACTIVE_MOIETY
+    assertionKind: RELATIONSHIP
+    subject: { ref: sub-nrcl, type: ChemicalSubstance }
+    object: { ref: sub-nr, type: ChemicalSubstance }
+    asserter: { ref: org-fda-srs, type: Organization }
+    locators: [l-gsrs8xm2-moiety, l-gsrs8xm2-version]
+    speechAct: STATES
+    basisKind: UNSTATED
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    edge: { type: HAS_ACTIVE_MOIETY, properties: AssertedRecordedProperties, episode: recorded-only }
+    note: "relationships[0] of the GSRS record (version 18): type ACTIVE MOIETY, relatedSubstance approvalID 0I8H2M0L7N"
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-salt-moiety-us-canada" }
+  - id: a07-mw-salt
+    predicate: MOLECULAR_WEIGHT
+    assertionKind: FIELD
+    subject: { ref: sub-nrcl, type: ChemicalSubstance }
+    literal: { valueNumber: 290.7006, unitCode: "g/mol" }
+    qualifiers: ["GSRS record 8XM2XT8VWI version 18", "average molecular weight of /structure"]
+    asserter: { ref: org-fda-srs, type: Organization }
+    locators: [l-gsrs8xm2-mwt, l-gsrs8xm2-version]
+    speechAct: STATES
+    basisKind: UNSTATED
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-salt-moiety-us-canada" }
+  - id: a08-formula-salt
+    predicate: MOLECULAR_FORMULA
+    assertionKind: FIELD
+    subject: { ref: sub-nrcl, type: ChemicalSubstance }
+    literal: { valueString: "C11H15N2O5.Cl" }
+    asserter: { ref: org-fda-srs, type: Organization }
+    locators: [l-gsrs8xm2-formula]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-salt-moiety-us-canada" }
+  - id: a09-mw-moiety
+    predicate: MOLECULAR_WEIGHT
+    assertionKind: FIELD
+    subject: { ref: sub-nr, type: ChemicalSubstance }
+    literal: { valueNumber: 255.2476, unitCode: "g/mol" }
+    qualifiers: ["GSRS record 0I8H2M0L7N version 24", "the moiety record's own /structure/mwt, not the in-record normalized moiety of 8XM2XT8VWI"]
+    asserter: { ref: org-fda-srs, type: Organization }
+    locators: [l-gsrs0i8h-mwt, l-gsrs0i8h-version]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-salt-moiety-us-canada" }
+
+  # ---------- D6 seam: what each label declares (D6 writes these; shown so the derivations have inputs) ----------
+  - id: a10-declares-us
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    subject: { ref: lv-us-323170, type: LabelVersion, module: D6 }
+    object: { ref: mat-niagen, type: IngredientMaterial }
+    asserter: { ref: org-chromadex, type: Organization }
+    locators: [l-dsld323170-row, l-dsld323170-qty, l-dsld323170-form]
+    speechAct: STATES
+    basisKind: MANUFACTURER_CLAIM
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2025-04-24T00:00:00Z", statedAsOfPrecision: DAY, statedAsOfEvidence: l-dsld323170-entered }
+    edge: { type: DECLARES_COMPONENT, module: D6, properties: { orderIndex: 0, lineRole: DIETARY_INGREDIENT, declaredNameVerbatim: "Niagen", formVerbatim: "Nicotinamide Riboside Chloride", amount: 300, unitCode: "mg", amountReferent: AS_NAMED, amountBasis: PER_SERVING, massBasis: SALT_FORM } }
+    note: "the D6 line's own Assertion (D6 adversarial review: asserted line, ComponentLineProperties.massBasis = D1 MassBasis); massBasis SALT_FORM"
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-salt-moiety-us-canada" }
+  - id: a11-max-daily-us
+    predicate: MAX_DAILY_SERVINGS
+    assertionKind: FIELD
+    subject: { ref: lv-us-323170, type: LabelVersion, module: D6 }
+    literal: { valueNumber: 3, unitCode: "{serving}/d" }
+    asserter: { ref: org-chromadex, type: Organization }
+    locators: [l-dsld323170-maxdaily]
+    speechAct: RECOMMENDS
+    basisKind: MANUFACTURER_CLAIM
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2025-04-24T00:00:00Z" }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-salt-moiety-us-canada" }
+  - id: a12-declares-ca
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    subject: { ref: lv-ca-80092534, type: LabelVersion, module: D6 }
+    object: { ref: mat-lnhpd-nrcl, type: IngredientMaterial }
+    asserter: { ref: org-health-canada, type: Organization }
+    locators: [l-lnhpd9465261-name, l-lnhpd9465261-qty, l-lnhpd9465261-source, l-lnhpd-licence-9465261]
+    speechAct: STATES
+    basisKind: UNSTATED
+    validTime: { validFrom: "2019-05-28T00:00:00Z", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: UNKNOWN }
+    edge: { type: DECLARES_COMPONENT, module: D6, properties: { orderIndex: 0, lineRole: DIETARY_INGREDIENT, declaredNameVerbatim: "Pyridinium, 3-(aminocarbonyl)-1-beta-D-ribofuranosyl-", formVerbatim: "Nicotinamide riboside chloride", amount: 263.0, unitCode: "mg", amountReferent: AS_NAMED, amountBasis: PER_UNIT, massBasis: ACTIVE_MOIETY } }
+    note: "licence_date 2019-05-28 is the licence's own date (l-lnhpd-licence-9465261); the licence's dose record (dose endpoint) was null, so amountBasis PER_UNIT (capsule) is the licence's dosage form, recorded as an assumption"
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-salt-moiety-us-canada" }
+
+  # ---------- derived amounts (CALCULATED, never declarations) ----------
+  - id: c01-moiety-per-serving
+    predicate: MOIETY_EQUIVALENT_AMOUNT
+    assertionKind: COMPUTATION
+    basisKind: CALCULATED
+    derivationRule: "rule:mw-ratio.v1"
+    subject: { ref: lv-us-323170, type: LabelVersion, module: D6 }
+    object: { ref: sub-nr, type: ChemicalSubstance }
+    literal: { valueNumber: 263.4, unitCode: "mg" }
+    qualifiers: ["per serving (1 vegetarian capsule)", "300 mg x 255.2476 / 290.7006 = 263.4129 mg, reported to 0.1 mg", "massBasis ACTIVE_MOIETY"]
+    asserter: { ref: agent-projection, type: Agent }
+    derivedFrom: [a10-declares-us, a01-realizes-dsld, a06-has-active-moiety, a07-mw-salt, a09-mw-moiety]
+    locators: []
+    evidenceNote: "a CALCULATED assertion's evidence is its DERIVED_FROM inputs (each with locators); the verifier recomputes it (verdict DERIVED_VERIFIED / DERIVED_FAILED)"
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2025-04-24T00:00:00Z" }
+    generatedBy: act-project
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-salt-moiety-us-canada" }
+  - id: c02-moiety-per-max-day
+    predicate: PER_MAX_DAILY_DOSE_AMOUNT
+    assertionKind: COMPUTATION
+    basisKind: CALCULATED
+    derivationRule: "rule:daily-max.v1"
+    subject: { ref: lv-us-323170, type: LabelVersion, module: D6 }
+    object: { ref: sub-nr, type: ChemicalSubstance }
+    literal: { valueNumber: 790.2, unitCode: "mg/d" }
+    qualifiers: ["263.4129 mg x 3 servings/day = 790.24 mg/d", "massBasis ACTIVE_MOIETY"]
+    asserter: { ref: agent-projection, type: Agent }
+    derivedFrom: [c01-moiety-per-serving, a11-max-daily-us]
+    locators: []
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2025-04-24T00:00:00Z" }
+    generatedBy: act-project
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-salt-moiety-us-canada" }
+  - id: c03-salt-per-max-day
+    predicate: PER_MAX_DAILY_DOSE_AMOUNT
+    assertionKind: COMPUTATION
+    basisKind: CALCULATED
+    derivationRule: "rule:daily-max.v1"
+    subject: { ref: lv-us-323170, type: LabelVersion, module: D6 }
+    object: { ref: sub-nrcl, type: ChemicalSubstance }
+    literal: { valueNumber: 900, unitCode: "mg/d" }
+    qualifiers: ["300 mg x 3 servings/day", "massBasis SALT_FORM"]
+    asserter: { ref: agent-projection, type: Agent }
+    derivedFrom: [a10-declares-us, a11-max-daily-us]
+    locators: []
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2025-04-24T00:00:00Z" }
+    generatedBy: act-project
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-salt-moiety-us-canada" }
+  - id: c04-reconcile-us-ca
+    predicate: DECLARATION_STOICHIOMETRY_CHECK
+    assertionKind: COMPUTATION
+    basisKind: CALCULATED
+    derivationRule: "rule:mw-ratio.v1 (tolerance 1% of the derived amount)"
+    subject: { ref: lv-ca-80092534, type: LabelVersion, module: D6 }
+    object: { ref: sub-nr, type: ChemicalSubstance }
+    literal: { valueBoolean: true, valueNumber: -0.41, unitCode: "mg" }
+    qualifiers: ["Q-D1-24 cross-jurisdiction reconciliation", "declared CA 263.0 mg NR (moiety basis) minus derived US 263.41 mg NR from 300 mg NR chloride = -0.41 mg (-0.16%)", "implied CA salt-basis amount 263.0 / 0.878043 = 299.5 mg vs US 300 mg", "a check, not a finding: the CA record does not state the salt mass"]
+    asserter: { ref: agent-projection, type: Agent }
+    derivedFrom: [a12-declares-ca, c01-moiety-per-serving, a05-realizes-lnhpd, a06-has-active-moiety]
+    locators: []
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2026-10-08T00:00:00Z" }
+    generatedBy: act-project
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-salt-moiety-us-canada" }
+
+  # ---------- predicate-only (05 predicateOnly), recorded as Assertions without a typed edge ----------
+  - id: p01-marketed-under-mark
+    predicate: MARKETED_UNDER_MARK
+    assertionKind: RELATIONSHIP
+    subject: { ref: mat-niagen, type: IngredientMaterial }
+    object: { ref: org-chromadex, type: Organization, module: D7 }
+    asserter: { ref: org-chromadex, type: Organization }
+    locators: [l-dsld323170-tm]
+    speechAct: STATES
+    basisKind: MANUFACTURER_CLAIM
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2025-04-24T00:00:00Z" }
+    edge: null
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-salt-moiety-us-canada" }
+  - id: p02-supplies-material
+    predicate: SUPPLIES_MATERIAL
+    assertionKind: RELATIONSHIP
+    subject: { ref: org-wr-grace, type: Organization, module: D7 }
+    object: { ref: mat-niagen, type: IngredientMaterial }
+    asserter: { ref: org-niagen-bio, type: Organization }
+    locators: [l-10k-single-supplier, l-10k-crystal]
+    qualifiers: ["single supplier", "exclusive manufacturing rights for certain forms of NRCL (patents)"]
+    speechAct: STATES
+    basisKind: MANUFACTURER_CLAIM
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, statedAsOf: "2026-03-04T00:00:00Z", statedAsOfPrecision: DAY }
+    edge: null
+    note: "10-K filed 2026-03-04 (accession 0001386570-26-000013); D7 would declare SUPPLIES_MATERIAL if Q-D1-17 rises to value 1"
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-salt-moiety-us-canada" }
+
+assessments:
+  - id: r01-resolution-cas-index-name
+    assessmentKind: RESOLUTION
+    assessmentSubkind: "D1.label-string-resolution"
+    about: [ { ref: sub-nr, type: ChemicalSubstance } ]
+    evidence: [ { locator: l-lnhpd9465261-name, role: SUPPORTS }, { locator: l-lnhpd23195874-row, role: CONTEXT, note: "the sibling powder licence (NPN 80092742) names the same moiety 'Nicotinamide riboside'" } ]
+    summary: "LNHPD ingredient_name 'Pyridinium, 3-(aminocarbonyl)-1-beta-D-ribofuranosyl-' is a CAS-index-style name of the nicotinamide riboside cation (UNII 0I8H2M0L7N), not of the chloride salt; the salt appears only as source_material."
+    methodVersion: "d1-resolve/v1 (name normalization + GSRS name search; manual check in this fixture)"
+    status: PROPOSED
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-salt-moiety-us-canada" }
+  - id: r02-resolution-source-material
+    assessmentKind: RESOLUTION
+    assessmentSubkind: "D1.label-string-resolution"
+    about: [ { ref: sub-nrcl, type: ChemicalSubstance } ]
+    evidence: [ { locator: l-lnhpd9465261-source, role: SUPPORTS }, { locator: l-gsrs8xm2-version, role: CONTEXT } ]
+    summary: "source_material 'Nicotinamide riboside chloride' = GSRS preferred name NICOTINAMIDE RIBOSIDE CHLORIDE (UNII 8XM2XT8VWI); exact name match after case folding."
+    methodVersion: "d1-resolve/v1"
+    status: PROPOSED
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-salt-moiety-us-canada" }
+  - id: e01-equivalence-us-ca-material
+    assessmentKind: EQUIVALENCE
+    assessmentSubkind: "D1.identity-level.SAME_SUBSTANCE"
+    about: [ { ref: mat-niagen, type: IngredientMaterial }, { ref: mat-lnhpd-nrcl, type: IngredientMaterial } ]
+    inputAssertions: [a01-realizes-dsld, a05-realizes-lnhpd]
+    summary: "Both materials realize NR chloride (8XM2XT8VWI). SAME_BRANDED_MATERIAL is not supported: the Canadian licence names no brand or physical form. Never a merge (06 identity rule)."
+    methodVersion: "d1-equivalence/v1"
+    status: PROPOSED
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-salt-moiety-us-canada" }

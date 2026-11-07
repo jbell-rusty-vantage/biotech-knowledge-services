@@ -1,0 +1,225 @@
+# Assertions for fixture ashwagandha-plant-part-harm (FIXTURES stage, A2, 2026-10-08) — harm case.
+# Kernel Assertion shape (A1 packets/K); locators in locators.yaml (verified offsets in fresh captures).
+# producedBy ids are FIXTURE ids (mission:ft-D1-fixtures / run:ft-D1-<fixture>), not live Mission Control ids.
+# Harm (liver injury) is a D5 SAFETY_SIGNAL Assessment about the Taxon and the preparations, never a material property.
+# Adversarial review (2026-10-08): MATERIAL_CONTAINS edges carry only statementKind, quantity, comparator (GTE/LT spelling)
+# and unitCode (content basis is an Assertion qualifier); WITHAFERIN A cites the stable GSRS full record (L6DO3QW4K5 v8)
+# instead of the search response, whose bytes change per request; s03 restricts a signal to a plant part with the
+# Assessment facet plantPart=LEAF (Q-D1-12).
+fixture: ashwagandha-plant-part-harm
+producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-ashwagandha-plant-part-harm" }
+activities:
+  - { ref: act-ingest, activityKind: INGESTION, agent: "agent:a2-d1-fixtures", missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-ashwagandha-plant-part-harm" }
+  - { ref: act-project, activityKind: PROJECTION, agent: "agent:d1-amount-projection", methodVersion: "d1-amounts/v1", missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-ashwagandha-plant-part-harm" }
+
+nodes:
+  - { ref: mat-ksm66, module: D1, type: IngredientMaterial, name: "KSM-66 (Ixoreal root-only full-spectrum ashwagandha extract)", properties: { materialKind: BOTANICAL_PREPARATION, brandName: "KSM-66", plantPart: ROOT, searchText: "KSM-66 | KSM66 | ashwagandha root extract | Withania somnifera root extract" }, propertyEvidence: { plantPart: [l-ksm-rootonly, l-ksm-noleaf, l-dsld306237-form] }, note: "preparationType, extract ratio and solvent are NOT stated in the captured sources; left null (the page says only 'without using alcohol or any other chemical solvent')" }
+  - { ref: mat-ws-tincture, module: D1, type: IngredientMaterial, name: "Withania somnifera dried root liquid extract 1:5 (Health Canada NPN 80003831)", properties: { materialKind: BOTANICAL_PREPARATION, plantPart: ROOT, preparationType: LIQUID_EXTRACT, extractRatioLow: 0.2, extractRatioHigh: 0.2 }, propertyEvidence: { plantPart: l-lnhpd4846413-source, extractRatioLow: l-lnhpd4846413-ratio, preparationType: l-lnhpd4846413-qty }, note: "ratio 1:5 = native herbal substance : preparation, so DER 0.2 (06: extractRatioLow '5 means 5:1'); LIQUID_EXTRACT from the mL quantity unit" }
+  - { ref: sub-ws-root, module: D1, type: ChemicalSubstance, name: "WITHANIA SOMNIFERA ROOT", properties: { substanceClass: STRUCTURALLY_DIVERSE }, identifiers: [ { scheme: UNII, issuer: "FDA GSRS", value: "V038D626IF", evidence: l-gsrsv038-class } ] }
+  - { ref: sub-withaferin-a, module: D1, type: ChemicalSubstance, name: "WITHAFERIN A", properties: { substanceClass: CHEMICAL }, identifiers: [ { scheme: UNII, issuer: "FDA GSRS", value: "L6DO3QW4K5", evidence: l-gsrsl6do-id } ] }
+  - { ref: con-withanolides, module: D1, type: Constituent, name: "total withanolides", properties: { constituentKind: CHEMICAL_CLASS } }
+  - { ref: tax-ws, module: D1, type: Taxon, name: "Withania somnifera", properties: { scientificName: "Withania somnifera", rank: SPECIES, organismGroup: PLANT, searchText: "Withania somnifera | ashwagandha | Physalis somnifera" }, identifiers: [ { scheme: "NCBI_TAXON (requested OQ-D1-07)", issuer: "NCBI", value: "126910", evidence: l-ncbi126910-name } ] }
+  - { ref: tax-withania, module: D1, type: Taxon, name: "Withania", properties: { scientificName: "Withania", rank: GENUS, organismGroup: PLANT }, identifiers: [ { scheme: "NCBI_TAXON (requested OQ-D1-07)", issuer: "NCBI", value: "126908", evidence: l-ncbi126908-genus } ] }
+  - { ref: lv-us-306237, module: D6, type: LabelVersion, name: "Nutricost KSM-66 600 mg — US label (DSLD 306237)", identifiers: [ { scheme: DSLD, issuer: "NIH ODS", value: "306237" } ] }
+  - { ref: lv-ca-80003831, module: D6, type: LabelVersion, name: "Withania somnifera liquid extract — Health Canada NPN 80003831 (LNHPD 4846413)", identifiers: [ { scheme: NPN, issuer: "Health Canada", value: "80003831" } ] }
+  - { ref: org-tga, module: D7, type: Organization, name: "Therapeutic Goods Administration (Australia)" }
+  - { ref: org-nih-ods, module: D7, type: Organization, name: "NIH Office of Dietary Supplements (DSLD curator)" }
+  - { ref: org-fda-srs, module: D7, type: Organization, name: "FDA Substance Registration System (GSRS)" }
+  - { ref: org-ixoreal, module: D7, type: Organization, name: "Ixoreal Biomed (KSM-66 supplier; www.ixoreal.com redirects to the captured page's domain)" }
+  - { ref: org-nutricost, module: D7, type: Organization, name: "Nutricost (label brand)" }
+  - { ref: org-ncbi, module: D7, type: Organization, name: "NCBI Taxonomy (NLM)" }
+  - { ref: org-health-canada, module: D7, type: Organization, name: "Health Canada (NNHPD)" }
+  - { ref: agent-projection, module: K, type: Agent, name: "agent:d1-amount-projection (d1-amounts/v1)" }
+
+assertions:
+  # ---------- material -> source organism (DERIVED_FROM_TAXON) ----------
+  - id: w01-ksm66-taxon
+    predicate: DERIVED_FROM_TAXON
+    assertionKind: RELATIONSHIP
+    subject: { ref: mat-ksm66, type: IngredientMaterial }
+    object: { ref: tax-ws, type: Taxon }
+    asserter: { ref: org-nih-ods, type: Organization }
+    locators: [l-dsld306237-row, l-dsld306237-form]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    edge: { type: DERIVED_FROM_TAXON, properties: AssertedRecordedProperties, episode: recorded-only }
+    note: "DSLD groups the row under 'Ashwagandha' and maps its form 'Ashwagandha Root Extract' to WITHANIA SOMNIFERA ROOT; 'ashwagandha' -> Withania somnifera is licensed by RESOLUTION r04 (NCBI CommonName)"
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-ashwagandha-plant-part-harm" }
+  - id: w02-ksm66-root-only
+    predicate: PLANT_PART
+    assertionKind: FIELD
+    subject: { ref: mat-ksm66, type: IngredientMaterial }
+    literal: { valueString: "ROOT" }
+    qualifiers: ["root-only; 'absolutely no addition of leaves'"]
+    asserter: { ref: org-ixoreal, type: Organization }
+    locators: [l-ksm-rootonly, l-ksm-noleaf]
+    speechAct: STATES
+    basisKind: MANUFACTURER_CLAIM
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2026-10-08T00:00:00Z" }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-ashwagandha-plant-part-harm" }
+  - id: w03-ksm66-realizes-root
+    predicate: REALIZES_SUBSTANCE
+    assertionKind: RELATIONSHIP
+    subject: { ref: mat-ksm66, type: IngredientMaterial }
+    object: { ref: sub-ws-root, type: ChemicalSubstance }
+    asserter: { ref: org-nih-ods, type: Organization }
+    locators: [l-dsld306237-form, l-gsrsv038-class, l-gsrsv038-part]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    edge: { type: REALIZES_SUBSTANCE, properties: AssertedRecordedProperties }
+    note: "identity-granularity mismatch (Q-D1-06): the label's extract is mapped to the GSRS record of the root itself (structurallyDiverse, part root); assessed in q01. The branded row carries the sentinel uniiCode '0'."
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-ashwagandha-plant-part-harm" }
+  - id: w04-ksm66-withanolides
+    predicate: MATERIAL_CONTAINS
+    assertionKind: RELATIONSHIP
+    subject: { ref: mat-ksm66, type: IngredientMaterial }
+    object: { ref: con-withanolides, type: Constituent }
+    literal: { valueNumber: 5, unitCode: "%" }
+    qualifiers: ["comparator:GTE", "contentBasis:MASS_FRACTION_W_W"]
+    asserter: { ref: org-nutricost, type: Organization }
+    locators: [l-dsld306237-notes]
+    speechAct: STATES
+    basisKind: MANUFACTURER_CLAIM
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2024-07-25T00:00:00Z", statedAsOfPrecision: DAY }
+    edge:
+      type: MATERIAL_CONTAINS
+      field: containsConstituents
+      properties: { statementKind: STANDARDIZATION_CLAIM, quantity: 5, comparator: GTE, unitCode: "%", validFromBasis: OBSERVATION_ONLY }
+    note: "'min. 5% total withanolides' = marker standardization claim (comparator GTE); no assay method stated (Q-D1-13). statedAsOf = DSLD entryDate."
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-ashwagandha-plant-part-harm" }
+  - id: w05-ksm66-withaferin
+    predicate: MATERIAL_CONTAINS
+    assertionKind: RELATIONSHIP
+    subject: { ref: mat-ksm66, type: IngredientMaterial }
+    object: { ref: sub-withaferin-a, type: ChemicalSubstance }
+    literal: { valueNumber: 0.1, unitCode: "%" }
+    qualifiers: ["comparator:LT", "contentBasis:MASS_FRACTION_W_W"]
+    asserter: { ref: org-nutricost, type: Organization }
+    locators: [l-dsld306237-notes, l-gsrsl6do-name]
+    speechAct: STATES
+    basisKind: MANUFACTURER_CLAIM
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, statedAsOf: "2024-07-25T00:00:00Z" }
+    edge:
+      type: MATERIAL_CONTAINS
+      field: containsSubstances
+      properties: { statementKind: STANDARDIZATION_CLAIM, quantity: 0.1, comparator: LT, unitCode: "%", validFromBasis: OBSERVATION_ONLY }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-ashwagandha-plant-part-harm" }
+  - id: w06-tincture-taxon
+    predicate: DERIVED_FROM_TAXON
+    assertionKind: RELATIONSHIP
+    subject: { ref: mat-ws-tincture, type: IngredientMaterial }
+    object: { ref: tax-ws, type: Taxon }
+    asserter: { ref: org-health-canada, type: Organization }
+    locators: [l-lnhpd4846413-name, l-lnhpd4846413-source]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    edge: { type: DERIVED_FROM_TAXON, properties: AssertedRecordedProperties }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-ashwagandha-plant-part-harm" }
+  - id: w07-tincture-ratio
+    predicate: EXTRACT_RATIO
+    assertionKind: FIELD
+    subject: { ref: mat-ws-tincture, type: IngredientMaterial }
+    literal: { valueString: "1:5" }
+    qualifiers: ["ratio_numerator 1, ratio_denominator 5", "dried herb equivalent 3 g (per 15 mL dose)", "source material: dried root(s)"]
+    asserter: { ref: org-health-canada, type: Organization }
+    locators: [l-lnhpd4846413-ratio, l-lnhpd4846413-source]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-ashwagandha-plant-part-harm" }
+  - id: w08-tincture-declared
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    subject: { ref: lv-ca-80003831, type: LabelVersion, module: D6 }
+    object: { ref: mat-ws-tincture, type: IngredientMaterial }
+    asserter: { ref: org-health-canada, type: Organization }
+    locators: [l-lnhpd4846413-name, l-lnhpd4846413-qty]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    edge: { type: DECLARES_COMPONENT, module: D6, properties: { orderIndex: 0, lineRole: DIETARY_INGREDIENT, amount: 15, unitCode: "mL", amountReferent: AS_EXTRACT_MASS, amountBasis: PER_SERVING } }
+    qualifiers: ["declaredName:Withania somnifera"]
+    note: "the D6 line's own Assertion (D6 adversarial review: asserted lines); a volume dose is unitCode mL on the line (D6 OQ-D6-24(1)); AS_EXTRACT_MASS is D6's nearest referent for the extract itself; no massBasis (a volume)"
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-ashwagandha-plant-part-harm" }
+  - id: c11-dhe-check
+    predicate: DECLARATION_STOICHIOMETRY_CHECK
+    assertionKind: COMPUTATION
+    basisKind: CALCULATED
+    derivationRule: "rule:extract-ratio-dhe.v1 (dose x ratio; tincture 1:5 read as g herb per mL)"
+    subject: { ref: lv-ca-80003831, type: LabelVersion, module: D6 }
+    object: { ref: tax-ws, type: Taxon }
+    literal: { valueBoolean: true, valueNumber: 0, unitCode: "g" }
+    qualifiers: ["15 mL x (1 g / 5 mL) = 3 g dried root; declared dried herb equivalent 3 g; residual 0 g"]
+    asserter: { ref: agent-projection, type: Agent }
+    derivedFrom: [w07-tincture-ratio, w08-tincture-declared]
+    locators: []
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    generatedBy: act-project
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-ashwagandha-plant-part-harm" }
+
+  # ---------- taxonomy (PARENT_TAXON episode) ----------
+  - id: w09-parent-genus
+    predicate: PARENT_TAXON
+    assertionKind: RELATIONSHIP
+    subject: { ref: tax-ws, type: Taxon }
+    object: { ref: tax-withania, type: Taxon }
+    asserter: { ref: org-ncbi, type: Organization }
+    locators: [l-ncbi126910-parent, l-ncbi126908-genus, l-ncbi126910-auth]
+    speechAct: STATES
+    validTime: { validFrom: "1852-01-01T00:00:00Z", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: UNKNOWN }
+    edge: { type: PARENT_TAXON, properties: AssertedEdgeProperties, episode: "open episode from the combination 'Withania somnifera (L.) Dunal, 1852'; the basionym 'Physalis somnifera L., 1753' is name history (searchText), not a second parent edge in this fixture" }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-ashwagandha-plant-part-harm" }
+
+assessments:
+  - id: r04-resolve-ashwagandha
+    assessmentKind: RESOLUTION
+    assessmentSubkind: "D1.common-name-resolution"
+    about: [ { ref: tax-ws, type: Taxon } ]
+    evidence: [ { locator: l-ncbi126910-common, role: SUPPORTS }, { locator: l-dsld306237-form, role: CONTEXT } ]
+    score: 1.0
+    summary: "'Ashwagandha' (label group and form name) -> Withania somnifera (NCBI 126910, CommonName ashwagandha)."
+    methodVersion: "d1-resolve/v1"
+    status: PROPOSED
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-ashwagandha-plant-part-harm" }
+  - id: q01-identity-granularity
+    assessmentKind: QUALITY
+    assessmentSubkind: "D1.identity-granularity"
+    about: [ { ref: mat-ksm66, type: IngredientMaterial }, { ref: sub-ws-root, type: ChemicalSubstance } ]
+    inputAssertions: [w03-ksm66-realizes-root]
+    evidence: [ { locator: l-dsld306237-row, role: SUPPORTS, note: "branded row uniiCode sentinel '0'" }, { locator: l-dsld306237-form, role: SUPPORTS }, { locator: l-gsrsv038-part, role: CONTEXT } ]
+    summary: "The extract (KSM-66) carries the UNII of the whole-root substance; GSRS has no record for this extract. Substance-level joins (all root products) are valid; extract-level joins (same ratio, same marker spec) are not. The branded row's uniiCode '0' is a sentinel, not an identifier."
+    methodVersion: "d1-identity-quality/v1"
+    status: PROPOSED
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-ashwagandha-plant-part-harm" }
+  - id: s02-ashwagandha-liver-signal
+    assessmentKind: SAFETY_SIGNAL
+    assessmentSubkind: "D5.hepatotoxicity"
+    about: [ { ref: tax-ws, type: Taxon }, { ref: sub-ws-root, type: ChemicalSubstance } ]
+    effectDirection: HARM
+    evidence: [ { locator: l-tga-ash-avoid, role: SUPPORTS }, { locator: l-tga-ash-cases, role: SUPPORTS } ]
+    summary: "TGA: very rare risk of liver injury; products containing W. somnifera should be avoided in individuals with existing liver disorders; 11 possible liver-injury cases reported to TGA. About the organism and its root preparations; never stored as a property of KSM-66 or any product. No plantPart facet: the signal applies to every plant part (Q-D1-12)."
+    methodVersion: "d5-safety-signal/v1 (fixture)"
+    status: PROPOSED
+    module: D5
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-ashwagandha-plant-part-harm" }
+  - id: s03-ashwagandha-leaf-restriction
+    assessmentKind: SAFETY_SIGNAL
+    assessmentSubkind: "D5.regulatory-restriction"
+    about: [ { ref: tax-ws, type: Taxon } ]
+    effectDirection: HARM
+    facets: ["plantPart=LEAF", "jurisdiction=IN"]
+    evidence: [ { locator: l-tga-ash-leafban, role: SUPPORTS }, { locator: l-tga-ash-rootpermitted, role: CONTEXT }, { locator: l-tga-ash-part, role: CONTEXT } ]
+    summary: "TGA reports that the use of W. somnifera leaves was recently banned in India while the roots remain permitted, subject to prescribed limits. The signal is restricted to a plant part by the kernel Assessment facet plantPart=LEAF (value from D1 PlantPart), so Q-D1-12 returns leaf preparations and not KSM-66 or the dried-root extract (plantPart ROOT). Secondary report: the Indian advisory itself was not fetched; TGA is the asserter of record."
+    methodVersion: "d5-safety-signal/v1 (fixture)"
+    status: PROPOSED
+    module: D5
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-ashwagandha-plant-part-harm" }
+  - id: ap02-plant-part-relevance
+    assessmentKind: APPLICABILITY
+    assessmentSubkind: "D1.preparation-relevance"
+    about: [ { ref: mat-ksm66, type: IngredientMaterial }, { ref: mat-ws-tincture, type: IngredientMaterial } ]
+    inputAssessments: [s02-ashwagandha-liver-signal]
+    inputAssertions: [w02-ksm66-root-only, w07-tincture-ratio, w04-ksm66-withanolides]
+    evidence: [ { locator: l-tga-ash-part, role: SUPPORTS }, { locator: l-tga-ash-extraction, role: SUPPORTS }, { locator: l-ecfr-plantpart, role: CONTEXT } ]
+    summary: "Composition (withanolides) depends on leaf vs root and on extraction method and ratio, so a signal for one preparation transfers to another only through plantPart, preparationType and ratio — which is why these are IngredientMaterial properties (enum plantPart) that Q-D1-12 filters on. US labels must name the plant part (21 CFR 101.36)."
+    methodVersion: "d1-preparation-relevance/v1"
+    status: PROPOSED
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-ashwagandha-plant-part-harm" }

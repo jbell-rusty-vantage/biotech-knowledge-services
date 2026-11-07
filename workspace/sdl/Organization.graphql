@@ -1,0 +1,47 @@
+"""
+Purpose: an organized body as an enduring identity — company, legal entity, corporate group, fund vehicle, university,
+lab, agency, clinic operator — that holds stakes, controls other organizations, holds brands, funds awards, and is the
+counterparty of a person's role, stake or payment. Absorbs the pinned LegalEntity (entityKind LEGAL_ENTITY) and the
+display fields of OrganizationSnapshot; name history is Assertions (predicate LEGAL_NAME / FORMER_NAME with valid time).
+It declares only its two outgoing ownership/control fields: every other role (sponsor, seller, manufacturer, issuer,
+event participant, content sponsor) is declared by the domain that asks, on its own type, pointing here.
+Identity rule: registry identifier first (LEI, SEC_CIK, national company number, NPI-2, ROR), then (normalized legal name,
+jurisdiction); a brand name never establishes an Organization (that is a Brand); a group named collectively is its own
+record (entityKind CORPORATE_GROUP), never merged with a member. Identifiers attach through the kernel.
+uid token: `org` (hu:org:<opaque>).
+Questions: CQ-CL-05, CQ-EC-01, CQ-EC-02, CQ-EC-03, CQ-EC-04, CQ-MF-01, Q-D7-01, Q-D7-03, Q-D7-04, Q-D7-05, Q-D7-07,
+Q-D7-09, Q-D7-10, Q-D7-13, Q-D7-14, Q-D7-15, Q-D7-19, Q-D7-21, Q-D7-22.
+"""
+type Organization implements Entity & Subjectable
+  @node(labels: ["Organization", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "LEGAL_ENTITY, CORPORATE_GROUP, DIVISION_OR_UNIT, PUBLIC_BODY (Q-D7-01, Q-D7-14, Q-D7-19 filter on it)."
+  entityKind: OrganizationEntityKind!
+  "Coarse kind for filtering (Q-D7-11, Q-D7-13, Q-D7-22); never a role."
+  organizationKind: OrganizationKind
+  "Current registered legal name (display projection of the latest LEGAL_NAME Assertion); null when not a LEGAL_ENTITY."
+  legalName: String
+  "Legal form as printed (Delaware corporation, LLC, Limited, S.A., P.A.)."
+  legalFormVerbatim: String
+  "ISO 3166-1/-2 code of formation (LEGAL_ENTITY) or of authority (PUBLIC_BODY)."
+  jurisdiction: String
+  "Registry or self-declared status (projection of the latest ORGANIZATION_STATUS Assertion)."
+  status: OrganizationStatus
+  description: String
+  """class: asserted; cardinality: many (one episode per authorizing Assertion; holder = this organization, e.g. a fund vehicle or holding company); questions: Q-D7-01, Q-D7-13, Q-D7-14, CQ-EC-01, CQ-EC-03."""
+  holdsStakes: [Organization!]!
+    @relationship(type: "HOLDS_STAKE", direction: OUT, properties: "StakeEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (parent → child; one episode per authorizing Assertion; GLEIF relationship period, acquisition and dissolution dates); questions: Q-D7-01, Q-D7-09, Q-D7-14, Q-D7-19, CQ-EC-03, CQ-EC-02."""
+  subsidiaries: [Organization!]!
+    @relationship(type: "PARENT_OF", direction: OUT, properties: "ControlEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

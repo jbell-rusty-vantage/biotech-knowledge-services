@@ -1,0 +1,21 @@
+# Fixture: FDA qualified health claim letter, magnesium and blood pressure (disconfirmation)
+
+- url: https://www.fda.gov/media/155304/download
+- title: FDA Letter in Response to Petition for a Qualified Health Claim for Magnesium and Reduced Risk of High Blood Pressure (Docket No. FDA-2016-Q-3770), digitally signed 2022-01-08 (PDF title metadata; 42 pages)
+- retrieved: 2026-10-08
+- snapshot digest: sha256:06bb4aff841eac559862dd496e63014284a46ad7311b1593e9c392fd4d35753f
+- kind: disconfirmation
+- tool: tool:fda-media-pdf (curl -L), tool:pdftotext (pdftotext 4.00 `-layout -enc UTF-8`, text projection sha256:3908c8f9567110b2e138fdd5acf86954ba86a40a4292ecb4a2fce49f94b0fd3e); discovery tool:tavily-search (research stage)
+- secondary sources: https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/ · Magnesium - Health Professional Fact Sheet (NIH ODS) · retrieved 2026-10-08 · sha256:6f0ffe69dd9ed544ab541b462ae696280607d261e6f61c0780a52ca174c96a36 (tool:tavily-extract); https://examine.com/supplements/magnesium/ · Magnesium (Examine) · retrieved 2026-10-08 · sha256:2acc1500308703e5da1df108257ec0c0a8b55bc052523997be67d9639c7cf2b9 (tool:tavily-extract)
+- re-fetch: PDF and ODS re-fetched at 2026-10-08T21:39:08Z, byte-identical to the research captures; the research-stage Tavily extraction of the Examine page rendered "Last Updated:August 31, 2026" and the fixtures-stage extraction "Last Updated:September 30, 2026"; the adversarial-review stage reads the first as a provider-cached (stale) extraction, not a content change: a Firecrawl scrape with maxAge 0 the same day shows "Last Updated: September 29, 2026" and an update history of "9 days ago" and "August 30, 2026" (the date string is rendered per viewer timezone and differs by tool, so it dates the extractor output, not the content); the quoted Examine sentence is present in the fixtures-stage capture and its locator points at it
+- note: the research-stage text layer (sha256:e04e4344…a29d) was written in the console code page by pdftotext's default encoding; the fixture uses a UTF-8 projection so curly quotes are copied verbatim. Quotes are whitespace-collapsed where the layout breaks lines (`normalization` in `locators.yaml`)
+
+## What the fixture shows
+
+The petitioner (The Center for Magnesium Education and Research, LLC, through Johnson Nutrition Solutions LLC, petition of October 4, 2016) proposed a claim whose qualifier called the evidence "supportive but inconclusive" (p. 1). FDA's response finds the evidence "inconclusive because the results of the studies are inconsistent" (p. 22), says "supportive" overstates the strength of the evidence (p. 27), lists three qualified claim wordings for which it intends to consider enforcement discretion, each describing the evidence as inconsistent and inconclusive or not conclusive (p. 28), and says it intends to consider, as a factor in its enforcement discretion, whether dietary supplements bearing the claim provide no more than 350 mg magnesium combined when used according to their labeling (p. 24). In the graph: one kernel Claim with two CHARACTERIZES_EVIDENCE_STRENGTH claim occurrences by two asserters (Q-D10-09 disagreement); an EVIDENCE_SYNTHESIS Assessment (subkind D10.strength, verdict MIXED_OR_CONFLICTING) about the Claim, with HAS_EVIDENCE roles CONTRADICTS on the p. 22 and p. 27 spans; and a draft EVIDENCE_REPORT (`composed-body.txt`, sha256:ccb2a15b…e8d3) whose ReportItems DERIVE_FROM Assertions and Assessments. Two RETELLING_FIDELITY Assessments: the letter's whole-range statement "(181 mg/day to 960 g/day)" (p. 23) contradicts the same letter's p. 22 ranges (181 to 960 mg/day for the 18 studies that showed a benefit, 240 to 720 mg/day for the 20 that did not), so the letter is internally inconsistent and the upper bound is 960 mg/day (Examine's 30 to 960 mg/day is kept only as secondary context), and the ODS fact sheet says FDA "approved" the claim where the letter describes enforcement discretion.
+
+## Files
+
+- `locators.yaml` (14 locators, 3 snapshots) · `assertions.yaml` (12 assertions, 3 assessments, 1 report, 5 items) · `intent.json` (validated) · `questions.md` · `composed-body.txt`
+
+Research is not medical advice.

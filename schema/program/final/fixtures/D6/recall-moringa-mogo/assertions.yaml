@@ -1,0 +1,1046 @@
+# recall-moringa-mogo — assertions (fixtures stage, A6, 2026-10-08). Subjects/objects are typed to D6 SDL types or to other modules' types
+# (module.Type) through the kernel Subjectable pattern. Typed literals keep currency in unitCode as iso4217:<code> (OQ-D6-06).
+# validTime.observedAtPerOBSERVED_AT is the instant 03-retrieval-patterns.md OBSERVED_AT derives (validFrom, else validObservedAt,
+# else the snapshot's observedAt). validObservedAt = kernel Assertion field (A1 change 5); validObservedAtPrecision is
+# fixture-only (the kernel field has no precision; OQ-D6-19).
+fixture: recall-moringa-mogo
+kind: harm
+producedBy:
+  missionId: mission:ft-D6-fixtures
+  runId: run:ft-D6-recall-moringa-mogo
+  note: "fixture-scoped ids (not Mission Control runs); assessments use the -assess run, verifier adjudications the -verify run, chunks the -chunk run"
+nodes:
+  - uid: hu:product:mogo-pure-moringa-oleifera-capsules
+    type: D6.Product
+    name: "MOGO Pure Moringa Oleifera Capsules"
+    properties:
+      productKind: DIETARY_SUPPLEMENT
+      marketedName: "MOGO Pure Moringa Oleifera Capsules"
+    propertyEvidence: [F02, O02]
+  - uid: hu:product-variant:mogo-moringa-350mg-capsule-us
+    type: D6.ProductVariant
+    name: "MOGO moringa capsule 350 mg (US)"
+    properties:
+      dosageForm: CAPSULE
+      strengthVerbatim: "350 MG PER CAPSULE"
+      jurisdiction: US
+    propertyEvidence: [F02]
+  - uid: hu:package:mogo-moringa-350mg-180ct
+    type: D6.Package
+    name: "MOGO moringa capsules, 180 count, white plastic bottle"
+    properties:
+      packageKind: CONTAINER
+      unitCount: 180
+      unitNoun: "QUICK RELEASE VEGGIE CAPSULE"
+    propertyEvidence: [F02, R03]
+  - uid: hu:label-version:mogo-moringa-capsules-as-transcribed-h-1128-2026
+    type: D6.LabelVersion
+    name: "MOGO moringa capsules label as transcribed in FDA enforcement report H-1128-2026"
+    properties:
+      panelKind: SUPPLEMENT_FACTS
+      jurisdiction: US
+      contentDigest: sha256:5794765cc617342ccb5a93b48b18d369f883c59b0fd68e2af310bdd5cbcbda99
+      compositionDigest: sha256:5890d455463649f3b77334ee0ea08abf639b45823a60685d171103c2d4ac00b8
+      responsiblePartyRole: MARKETED_BY
+      responsiblePartyVerbatim: "MOGO MIRINGA LLC, PO BOX 32066 Saint Louis, MO 63132"
+    propertyEvidence: [F02, F10]
+  - uid: hu:product:mogo-fresh-moringa-powder
+    type: D6.Product
+    name: "MOGO Fresh Moringa Powder"
+    properties:
+      productKind: CONVENTIONAL_FOOD
+      marketedName: "MOGO Fresh Moringa Powder"
+    propertyEvidence: [A01, A03]
+  - uid: hu:product-variant:mogo-fresh-moringa-powder-us
+    type: D6.ProductVariant
+    name: "MOGO Fresh Moringa Powder (US)"
+    properties:
+      dosageForm: POWDER
+      jurisdiction: US
+    propertyEvidence: [A01, A04]
+  - uid: hu:package:mogo-fresh-moringa-powder-1lb
+    type: D6.Package
+    name: "MOGO Fresh Moringa Powder 1 Lb"
+    properties:
+      packageKind: CONTAINER
+      netQuantityValue: 1
+      netQuantityUnit: "[lb_av]"
+    propertyEvidence: [A01]
+  - uid: hu:listing:amazon-com-B084FRXSTX
+    type: D6.MerchantListing
+    name: "Amazon ASIN B084FRXSTX"
+    properties:
+      listingKind: MARKETPLACE_DETAIL_PAGE
+      hostDomain: amazon.com
+      hostItemId: B084FRXSTX
+      titleAsDisplayed: "MOGO Fresh Moringa Powder 1 Lb, Antioxidant Rich Potent Green Superfood Rich,Single Origin Premium Moringa Oleifera 100% Leaf Powder Perfect for Teas,Smoothies,Juice."
+      canonicalUrl: https://www.amazon.com/dp/B084FRXSTX
+    propertyEvidence: [A01]
+  - uid: hu:offer:amazon-com-B084FRXSTX-displayed
+    type: D6.Offer
+    name: "Amazon B084FRXSTX displayed offer (none available)"
+    properties:
+      purchaseMode: UNKNOWN
+      jurisdiction: US
+      fulfillmentKind: UNKNOWN
+    propertyEvidence: [A02]
+externalNodes:
+  - uid: hu:org:mogo-moringa-llc
+    type: D7.Organization
+    name: "MOGO Moringa LLC (Saint Louis, MO)"
+    note: "owner D7"
+  - uid: hu:brand:mogo
+    type: D7.Brand
+    name: "MOGO / Mogo"
+    note: "owner D7"
+  - uid: hu:org:us-fda
+    type: D7.Organization
+    name: "U.S. Food and Drug Administration"
+    note: "owner D7; asserter"
+  - uid: hu:org:amazon
+    type: D7.Organization
+    name: "Amazon.com, Inc."
+    note: "owner D7"
+  - uid: hu:org:ebay
+    type: D7.Organization
+    name: "eBay Inc."
+    note: "owner D7"
+  - uid: hu:org:etsy
+    type: D7.Organization
+    name: "Etsy, Inc."
+    note: "owner D7"
+  - uid: hu:org:spices-and-organics
+    type: D7.Organization
+    name: "Spices and Organics (manufacturer named on Amazon)"
+    note: "owner D7"
+  - uid: hu:material:moringa-oleifera-leaf-powder
+    type: D1.IngredientMaterial
+    name: "Moringa oleifera leaf powder"
+    note: "owner D1"
+  - uid: hu:reg-record:fda-enforcement-h-1128-2026
+    type: D8.RegulatoryRecord
+    name: "FDA enforcement report H-1128-2026 (Class I, voluntary, firm initiated)"
+    note: "owner D8; CONCERNS -> D6 Product (D8 declares)"
+  - uid: hu:lot:mogo-15525aa
+    type: D8.Lot
+    name: "Lot 15525AA exp 6/2027"
+    note: "owner D8; LOT_OF -> variant"
+  - uid: hu:lot:mogo-00926aa
+    type: D8.Lot
+    name: "Lot 00926AA exp 1/2028"
+    note: "owner D8"
+  - uid: hu:claim:mogo-retained-samples-no-salmonella
+    type: K.Claim
+    name: "Independent testing of retained samples from the affected MOGO lots detected no Salmonella"
+    note: "kernel Claim"
+  - uid: hu:claim:mogo-no-third-party-sellers
+    type: K.Claim
+    name: "MOGO products are distributed only through authorized channels; no third-party sellers are authorized"
+    note: "kernel Claim"
+  - uid: hu:agent:d6-commerce-matcher
+    type: K.Agent
+    name: d6-commerce-matcher
+    note: "fixture agent identity"
+structuralEdges:
+  - type: HAS_VARIANT
+    from:
+      uid: hu:product:mogo-pure-moringa-oleifera-capsules
+      type: D6.Product
+    to:
+      uid: hu:product-variant:mogo-moringa-350mg-capsule-us
+      type: D6.ProductVariant
+    traceVia: [F02]
+    lastWriterRunId: run:ft-D6-recall-moringa-mogo
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - type: HAS_PACKAGE
+    from:
+      uid: hu:product-variant:mogo-moringa-350mg-capsule-us
+      type: D6.ProductVariant
+    to:
+      uid: hu:package:mogo-moringa-350mg-180ct
+      type: D6.Package
+    traceVia: [F02]
+    lastWriterRunId: run:ft-D6-recall-moringa-mogo
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - type: HAS_VARIANT
+    from:
+      uid: hu:product:mogo-fresh-moringa-powder
+      type: D6.Product
+    to:
+      uid: hu:product-variant:mogo-fresh-moringa-powder-us
+      type: D6.ProductVariant
+    traceVia: [A01]
+    lastWriterRunId: run:ft-D6-recall-moringa-mogo
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - type: HAS_PACKAGE
+    from:
+      uid: hu:product-variant:mogo-fresh-moringa-powder-us
+      type: D6.ProductVariant
+    to:
+      uid: hu:package:mogo-fresh-moringa-powder-1lb
+      type: D6.Package
+    traceVia: [A01]
+    lastWriterRunId: run:ft-D6-recall-moringa-mogo
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - type: HAS_OFFER
+    from:
+      uid: hu:listing:amazon-com-B084FRXSTX
+      type: D6.MerchantListing
+    to:
+      uid: hu:offer:amazon-com-B084FRXSTX-displayed
+      type: D6.Offer
+    traceVia: [A02]
+    lastWriterRunId: run:ft-D6-recall-moringa-mogo
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+assertions:
+  - id: e01
+    predicate: HAS_LABEL_VERSION
+    assertionKind: RELATIONSHIP
+    relationship: HAS_LABEL_VERSION
+    subject:
+      uid: hu:package:mogo-moringa-350mg-180ct
+      type: D6.Package
+    object:
+      uid: hu:label-version:mogo-moringa-capsules-as-transcribed-h-1128-2026
+      type: D6.LabelVersion
+    asserter:
+      uid: hu:org:us-fda
+      type: D7.Organization
+    locators:
+      - ref: F02
+        selectorKind: JSON_POINTER
+        source: openfda-H-1128-2026
+        snapshotDigest: sha256:98773668603a9aeacab65a07313a6fe681d1b4703496b120015c71552f6a0802
+      - ref: F04
+        selectorKind: JSON_POINTER
+        source: openfda-H-1128-2026
+        snapshotDigest: sha256:98773668603a9aeacab65a07313a6fe681d1b4703496b120015c71552f6a0802
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:53:54Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["label text as transcribed in the enforcement report product_description; label image not captured"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - id: e02
+    predicate: NAMES_RESPONSIBLE_PARTY
+    assertionKind: RELATIONSHIP
+    relationship: NAMES_RESPONSIBLE_PARTY
+    subject:
+      uid: hu:label-version:mogo-moringa-capsules-as-transcribed-h-1128-2026
+      type: D6.LabelVersion
+    object:
+      uid: hu:org:mogo-moringa-llc
+      type: D7.Organization
+    asserter:
+      uid: hu:org:us-fda
+      type: D7.Organization
+    locators:
+      - ref: F10
+        selectorKind: JSON_POINTER
+        source: openfda-H-1128-2026
+        snapshotDigest: sha256:98773668603a9aeacab65a07313a6fe681d1b4703496b120015c71552f6a0802
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:53:54Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["printed 'Marketed by: MOGO MIRINGA LLC' (sic; mention m50)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - id: e03
+    predicate: BRANDED_AS
+    assertionKind: RELATIONSHIP
+    relationship: BRANDED_AS
+    subject:
+      uid: hu:product:mogo-pure-moringa-oleifera-capsules
+      type: D6.Product
+    object:
+      uid: hu:brand:mogo
+      type: D7.Brand
+    asserter:
+      uid: hu:org:us-fda
+      type: D7.Organization
+    locators:
+      - ref: R02
+        selectorKind: TEXT_QUOTE
+        source: fda-mogo-recall
+        snapshotDigest: sha256:12133742feb0720ad19cfbb89935a1b1b726e1cc60a02643003585ff510a8d02
+      - ref: O02
+        selectorKind: TEXT_QUOTE
+        source: fda-mogo-outbreak
+        snapshotDigest: sha256:48dfb0bfed9d8adbad3a4cca1953ef5a728a8109410f6d9a75e269836e45c9de
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:54:10Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - id: e04
+    predicate: BRANDED_AS
+    assertionKind: RELATIONSHIP
+    relationship: BRANDED_AS
+    subject:
+      uid: hu:product:mogo-fresh-moringa-powder
+      type: D6.Product
+    object:
+      uid: hu:brand:mogo
+      type: D7.Brand
+    asserter:
+      uid: hu:org:amazon
+      type: D7.Organization
+    locators:
+      - ref: A03
+        selectorKind: TEXT_QUOTE
+        source: amz-B084FRXSTX
+        snapshotDigest: sha256:c7403a307b85f55c1a8da2c41f263ba76a413584dc76f4925c5b066da9569f7d
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T21:46:37Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - id: e05
+    predicate: LISTING_FOR
+    assertionKind: RELATIONSHIP
+    relationship: LISTING_FOR
+    subject:
+      uid: hu:listing:amazon-com-B084FRXSTX
+      type: D6.MerchantListing
+    object:
+      uid: hu:package:mogo-fresh-moringa-powder-1lb
+      type: D6.Package
+    asserter:
+      uid: hu:agent:d6-commerce-matcher
+      type: K.Agent
+    locators:
+      - ref: A01
+        selectorKind: TEXT_QUOTE
+        source: amz-B084FRXSTX
+        snapshotDigest: sha256:c7403a307b85f55c1a8da2c41f263ba76a413584dc76f4925c5b066da9569f7d
+      - ref: A06
+        selectorKind: TEXT_QUOTE
+        source: amz-B084FRXSTX
+        snapshotDigest: sha256:c7403a307b85f55c1a8da2c41f263ba76a413584dc76f4925c5b066da9569f7d
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T21:46:37Z"
+    status: EXTRACTED
+    basisKind: CALCULATED
+    speechAct: STATES
+    polarity: POSITIVE
+    derivationRule: d6-listing-match/v1
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - id: e06
+    predicate: OFFER_AVAILABILITY
+    assertionKind: FIELD
+    subject:
+      uid: hu:offer:amazon-com-B084FRXSTX-displayed
+      type: D6.Offer
+    value:
+      valueString: CURRENTLY_UNAVAILABLE
+    asserter:
+      uid: hu:org:amazon
+      type: D7.Organization
+    locators:
+      - ref: A02
+        selectorKind: TEXT_QUOTE
+        source: amz-B084FRXSTX
+        snapshotDigest: sha256:c7403a307b85f55c1a8da2c41f263ba76a413584dc76f4925c5b066da9569f7d
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T21:46:37Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["no Sold by / Ships from shown, so no SELLER_OF_RECORD can be asserted from this capture"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - id: e07
+    predicate: SOLD_THROUGH_CHANNEL
+    assertionKind: RELATIONSHIP
+    subject:
+      uid: hu:product:mogo-pure-moringa-oleifera-capsules
+      type: D6.Product
+    object:
+      uid: hu:org:amazon
+      type: D7.Organization
+    asserter:
+      uid: hu:org:us-fda
+      type: D7.Organization
+    locators:
+      - ref: O01
+        selectorKind: TEXT_QUOTE
+        source: fda-mogo-outbreak
+        snapshotDigest: sha256:48dfb0bfed9d8adbad3a4cca1953ef5a728a8109410f6d9a75e269836e45c9de
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:54:19Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["FDA outbreak advisory 'Stores affected'"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - id: e08
+    predicate: SOLD_THROUGH_CHANNEL
+    assertionKind: RELATIONSHIP
+    subject:
+      uid: hu:product:mogo-pure-moringa-oleifera-capsules
+      type: D6.Product
+    object:
+      uid: hu:org:ebay
+      type: D7.Organization
+    asserter:
+      uid: hu:org:us-fda
+      type: D7.Organization
+    locators:
+      - ref: O01
+        selectorKind: TEXT_QUOTE
+        source: fda-mogo-outbreak
+        snapshotDigest: sha256:48dfb0bfed9d8adbad3a4cca1953ef5a728a8109410f6d9a75e269836e45c9de
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:54:19Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - id: e09
+    predicate: SOLD_THROUGH_CHANNEL
+    assertionKind: RELATIONSHIP
+    subject:
+      uid: hu:product:mogo-pure-moringa-oleifera-capsules
+      type: D6.Product
+    object:
+      uid: hu:org:mogo-moringa-llc
+      type: D7.Organization
+    asserter:
+      uid: hu:org:us-fda
+      type: D7.Organization
+    locators:
+      - ref: O01
+        selectorKind: TEXT_QUOTE
+        source: fda-mogo-outbreak
+        snapshotDigest: sha256:48dfb0bfed9d8adbad3a4cca1953ef5a728a8109410f6d9a75e269836e45c9de
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:54:19Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["channel: mogomoringa.com (own e-commerce)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - id: e10
+    predicate: SOLD_THROUGH_CHANNEL
+    assertionKind: RELATIONSHIP
+    subject:
+      uid: hu:product:mogo-pure-moringa-oleifera-capsules
+      type: D6.Product
+    object:
+      uid: hu:org:etsy
+      type: D7.Organization
+    asserter:
+      uid: hu:org:us-fda
+      type: D7.Organization
+    locators:
+      - ref: F01
+        selectorKind: JSON_POINTER
+        source: openfda-H-1128-2026
+        snapshotDigest: sha256:98773668603a9aeacab65a07313a6fe681d1b4703496b120015c71552f6a0802
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:53:54Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["enforcement report distribution_pattern also names Amazon, Ebay and mogomiranga.com (sic)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - id: e11
+    predicate: AUTHORIZES_CHANNEL
+    assertionKind: CLAIM
+    claimType: RELATIONSHIP
+    subject:
+      uid: hu:org:mogo-moringa-llc
+      type: D7.Organization
+    value:
+      valueString: "third-party sellers"
+    asserter:
+      uid: hu:org:mogo-moringa-llc
+      type: D7.Organization
+    locators:
+      - ref: R04
+        selectorKind: TEXT_QUOTE
+        source: fda-mogo-recall
+        snapshotDigest: sha256:12133742feb0720ad19cfbb89935a1b1b726e1cc60a02643003585ff510a8d02
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:54:10Z"
+    status: EXTRACTED
+    basisKind: UNSTATED
+    speechAct: STATES
+    polarity: NEGATIVE
+    occurrenceOf: hu:claim:mogo-no-third-party-sellers
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - id: e12
+    predicate: AUTHORIZES_CHANNEL
+    assertionKind: CLAIM
+    claimType: RELATIONSHIP
+    subject:
+      uid: hu:org:mogo-moringa-llc
+      type: D7.Organization
+    value:
+      valueString: "sold online through authorized channels"
+    asserter:
+      uid: hu:org:mogo-moringa-llc
+      type: D7.Organization
+    locators:
+      - ref: R03
+        selectorKind: TEXT_QUOTE
+        source: fda-mogo-recall
+        snapshotDigest: sha256:12133742feb0720ad19cfbb89935a1b1b726e1cc60a02643003585ff510a8d02
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:54:10Z"
+    status: EXTRACTED
+    basisKind: UNSTATED
+    speechAct: STATES
+    polarity: POSITIVE
+    occurrenceOf: hu:claim:mogo-no-third-party-sellers
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - id: e13
+    predicate: RETAINED_SAMPLE_TEST_RESULT
+    assertionKind: CLAIM
+    claimType: MEASUREMENT
+    subject:
+      uid: hu:product:mogo-pure-moringa-oleifera-capsules
+      type: D6.Product
+    value:
+      valueString: "no Salmonella detected in retained samples from the affected lots"
+    asserter:
+      uid: hu:org:mogo-moringa-llc
+      type: D7.Organization
+    locators:
+      - ref: R05
+        selectorKind: TEXT_QUOTE
+        source: fda-mogo-recall
+        snapshotDigest: sha256:12133742feb0720ad19cfbb89935a1b1b726e1cc60a02643003585ff510a8d02
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:54:10Z"
+    status: EXTRACTED
+    basisKind: DIRECT_MEASUREMENT
+    speechAct: STATES
+    polarity: NEGATIVE
+    qualifiers: ["laboratory not named; results not published"]
+    occurrenceOf: hu:claim:mogo-retained-samples-no-salmonella
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - id: e14
+    predicate: SAMPLE_TESTED_POSITIVE_FOR
+    assertionKind: METRIC
+    subject:
+      uid: hu:product:mogo-pure-moringa-oleifera-capsules
+      type: D6.Product
+    value:
+      valueBoolean: true
+    asserter:
+      uid: hu:org:us-fda
+      type: D7.Organization
+    locators:
+      - ref: O03
+        selectorKind: TEXT_QUOTE
+        source: fda-mogo-outbreak
+        snapshotDigest: sha256:48dfb0bfed9d8adbad3a4cca1953ef5a728a8109410f6d9a75e269836e45c9de
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:54:19Z"
+    status: EXTRACTED
+    basisKind: DIRECT_MEASUREMENT
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["open container collected by the Washington Department of Health; reported by FDA", "predicate name provisional: sample results are D8 territory (requested, OQ-D6-27)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - id: e15
+    predicate: SAMPLE_TESTED_POSITIVE_FOR
+    assertionKind: METRIC
+    subject:
+      uid: hu:product:mogo-pure-moringa-oleifera-capsules
+      type: D6.Product
+    value:
+      valueBoolean: true
+    asserter:
+      uid: hu:org:us-fda
+      type: D7.Organization
+    locators:
+      - ref: O04
+        selectorKind: TEXT_QUOTE
+        source: fda-mogo-outbreak
+        snapshotDigest: sha256:48dfb0bfed9d8adbad3a4cca1953ef5a728a8109410f6d9a75e269836e45c9de
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:54:19Z"
+    status: EXTRACTED
+    basisKind: DIRECT_MEASUREMENT
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["open container collected by the Tennessee Department of Health; reported by FDA", "predicate name provisional: sample results are D8 territory (requested, OQ-D6-27)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - id: e19
+    predicate: SAMPLE_TESTED_POSITIVE_FOR
+    assertionKind: METRIC
+    subject:
+      uid: hu:product:mogo-pure-moringa-oleifera-capsules
+      type: D6.Product
+    value:
+      valueBoolean: true
+    asserter:
+      uid: hu:org:us-fda
+      type: D7.Organization
+    locators:
+      - ref: O11
+        selectorKind: TEXT_QUOTE
+        source: fda-mogo-outbreak
+        snapshotDigest: sha256:48dfb0bfed9d8adbad3a4cca1953ef5a728a8109410f6d9a75e269836e45c9de
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:54:19Z"
+    status: EXTRACTED
+    basisKind: DIRECT_MEASUREMENT
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["open container collected by the Florida Department of Health; positive for the outbreak strain plus one other Salmonella strain; reported by FDA", "predicate name provisional: sample results are D8 territory (requested, OQ-D6-27)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - id: e16
+    predicate: MANUFACTURES
+    assertionKind: RELATIONSHIP
+    subject:
+      uid: hu:org:spices-and-organics
+      type: D7.Organization
+    object:
+      uid: hu:product:mogo-fresh-moringa-powder
+      type: D6.Product
+    asserter:
+      uid: hu:org:amazon
+      type: D7.Organization
+    locators:
+      - ref: A05
+        selectorKind: TEXT_QUOTE
+        source: amz-B084FRXSTX
+        snapshotDigest: sha256:c7403a307b85f55c1a8da2c41f263ba76a413584dc76f4925c5b066da9569f7d
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T21:46:37Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["Amazon details table 'Manufacturer'; D7/D8 own manufacturer roles"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - id: e17
+    predicate: SOURCED_FROM_COUNTRY
+    assertionKind: FIELD
+    subject:
+      uid: hu:material:moringa-oleifera-leaf-powder
+      type: D1.IngredientMaterial
+    value:
+      valueString: India
+    asserter:
+      uid: hu:org:us-fda
+      type: D7.Organization
+    locators:
+      - ref: O08
+        selectorKind: TEXT_QUOTE
+        source: fda-mogo-outbreak
+        snapshotDigest: sha256:48dfb0bfed9d8adbad3a4cca1953ef5a728a8109410f6d9a75e269836e45c9de
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:54:19Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["predicate name provisional: material origin is D1/D8 territory (requested, OQ-D6-27)", "scope: all moringa leaf powder sourced by MOGO Moringa LLC (traceback); D1/D8 own material origin"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - id: e18
+    predicate: STOREFRONT_CATALOG_ITEM_COUNT
+    assertionKind: METRIC
+    subject:
+      uid: hu:org:mogo-moringa-llc
+      type: D7.Organization
+    value:
+      valueNumber: 0
+    asserter:
+      uid: hu:org:mogo-moringa-llc
+      type: D7.Organization
+    locators:
+      - ref: S01
+        selectorKind: JSON_POINTER
+        source: mogo-store
+        snapshotDigest: sha256:86d8b086af0fc30d06856e218fcfdb6b803f91b45f50b1b753d8deac627fc054
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T21:46:16Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["mogomoringa.com Shopify products.json returned an empty catalog on 2026-10-08"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - id: edc01
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:mogo-moringa-capsules-as-transcribed-h-1128-2026
+      type: D6.LabelVersion
+    object:
+      uid: hu:material:moringa-oleifera-leaf-powder
+      type: D1.IngredientMaterial
+    asserter:
+      uid: hu:org:us-fda
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 0
+      lineRole: DIETARY_INGREDIENT
+      amount: 1050
+      unitCode: mg
+      amountReferent: AS_NAMED
+      amountBasis: PER_SERVING
+      massBasis: MATERIAL_AS_IS
+    locators:
+      - ref: F02
+        selectorKind: JSON_POINTER
+        source: openfda-H-1128-2026
+        snapshotDigest: sha256:98773668603a9aeacab65a07313a6fe681d1b4703496b120015c71552f6a0802
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:53:54Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'MORINGA POWDER'", "form:'100% Pure Moringa Leaf Powder (Moringa Oleifera)'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the e01 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+identifierAssertions:
+  - id: i50
+    predicate: HAS_IDENTIFIER
+    subject:
+      uid: hu:package:mogo-fresh-moringa-powder-1lb
+      type: D6.Package
+    scheme: GTIN
+    issuer: GS1
+    value: "00636339970600"
+    printedForm: "636339970600"
+    asserter:
+      uid: hu:org:amazon
+      type: D7.Organization
+    locators:
+      - ref: A06
+        selectorKind: TEXT_QUOTE
+        source: amz-B084FRXSTX
+        snapshotDigest: sha256:c7403a307b85f55c1a8da2c41f263ba76a413584dc76f4925c5b066da9569f7d
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T21:46:37Z"
+    validation:
+      rule: "GS1 mod-10 check digit on the printed digits"
+      digits: "636339970600"
+      checkDigitValid: true
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - id: i51
+    predicate: HAS_IDENTIFIER
+    subject:
+      uid: hu:listing:amazon-com-B084FRXSTX
+      type: D6.MerchantListing
+    scheme: ASIN
+    issuer: amazon.com
+    value: B084FRXSTX
+    printedForm: B084FRXSTX
+    asserter:
+      uid: hu:org:amazon
+      type: D7.Organization
+    locators:
+      - ref: A01
+        selectorKind: TEXT_QUOTE
+        source: amz-B084FRXSTX
+        snapshotDigest: sha256:c7403a307b85f55c1a8da2c41f263ba76a413584dc76f4925c5b066da9569f7d
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T21:46:37Z"
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+mentions:
+  - id: m50
+    locator: F10
+    surfaceForm: "MOGO MIRINGA LLC"
+    typeHint: D7.Organization
+    reason: "misspelled firm name in the enforcement record; resolution to MOGO Moringa LLC proposed"
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+  - id: m51
+    locator: F01
+    surfaceForm: mogomiranga.com
+    typeHint: "web domain"
+    reason: "misspelled domain; mogomoringa.com proposed"
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo
+assessments:
+  - id: as50
+    assessmentKind: SAFETY_SIGNAL
+    assessmentSubkind: D6.recalled-product-harm
+    conclusionCode: CONTAMINATION_CONFIRMED
+    status: PROPOSED
+    methodVersion: d6-recall-harm/v1
+    about:
+      - uid: hu:product:mogo-pure-moringa-oleifera-capsules
+        type: D6.Product
+      - uid: hu:package:mogo-moringa-350mg-180ct
+        type: D6.Package
+    inputAssertions: [e14, e15, e19, e07]
+    evidence:
+      - locator: O10
+        role: SUPPORTS
+      - locator: O07
+        role: SUPPORTS
+      - locator: F03
+        role: SUPPORTS
+      - locator: F06
+        role: SUPPORTS
+      - locator: R06
+        role: SUPPORTS
+      - locator: O11
+        role: SUPPORTS
+      - locator: O12
+        role: CONTEXT
+    summary: "Class I recall (H-1128-2026) of two lots of MOGO moringa capsules for Salmonella Typhimurium; FDA/CDC outbreak: 34 illnesses, 11 hospitalizations, outbreak declared over on 2026-07-17; open containers collected by the Washington, Tennessee and Florida health departments positive for the outbreak strain (Florida's also for one other Salmonella strain). No D5 target is named, so the outcome is conclusionCode CONTAMINATION_CONFIRMED, not effectDirection HARM (kernel: harm is a direction on an assessment about a target); FDA advises consumers holding the two lots not to eat, sell or distribute the product and to throw it away (O12)."
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo-assess
+  - id: as51
+    assessmentKind: OTHER
+    assessmentSubkind: D6.recall-scope
+    conclusionCode: NOT_IN_SCOPE
+    status: PROPOSED
+    methodVersion: d6-recall-scope/v1
+    about:
+      - uid: hu:listing:amazon-com-B084FRXSTX
+        type: D6.MerchantListing
+      - uid: hu:package:mogo-fresh-moringa-powder-1lb
+        type: D6.Package
+    inputAssertions: [e05, e06, e17]
+    evidence:
+      - locator: R06
+        role: SUPPORTS
+      - locator: R07
+        role: SUPPORTS
+      - locator: A01
+        role: CONTEXT
+      - locator: A02
+        role: CONTEXT
+      - locator: O08
+        role: CONTEXT
+    summary: "The recall covers only capsule lots 15525AA and 00926AA (\"No other lots or Mogo Moringa LLC products are included\"). The Amazon MOGO powder listing B084FRXSTX is a different product (1 lb powder) and is out of recall scope, but it declares the same material (moringa leaf powder) from the same brand, whose powder FDA traced to India; it is currently unavailable on Amazon. Flag for Q-D6-21, not a recall match."
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo-assess
+  - id: as52
+    assessmentKind: OTHER
+    assessmentSubkind: D6.authorized-channel
+    conclusionCode: UNKNOWN
+    status: PROPOSED
+    methodVersion: d6-authorized-channel/v1
+    about:
+      - uid: hu:product:mogo-pure-moringa-oleifera-capsules
+        type: D6.Product
+      - uid: hu:org:mogo-moringa-llc
+        type: D7.Organization
+    inputAssertions: [e07, e08, e10, e11, e12]
+    summary: "Stated channels (FDA: Amazon, eBay, mogomoringa.com; enforcement report: + Etsy) versus the firm's \"no third-party sellers\": authorized status of each marketplace seller is unknown (no seller identities captured). The verifier's adjudication of the firm's channel claims (adj50) is reached through its ASSESSES edges to e11/e12, which are inputs here."
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo-assess
+  - id: as53
+    assessmentKind: QUALITY
+    assessmentSubkind: "D9.source-internal-inconsistency (requested)"
+    status: PROPOSED
+    methodVersion: d6-source-consistency/v1
+    about:
+      - uid: hu:source:fda-outbreak-moringa-leaf-powder-may-2026
+        type: K.Source
+    evidence:
+      - locator: O05
+        role: CONTEXT
+      - locator: O06
+        role: CONTEXT
+    summary: "The advisory narrative says 34 people \"from 14 states\"; the Case Counts block lists 22 state codes. Both kept verbatim; neither is silently preferred."
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo-assess
+adjudications:
+  - id: adj50
+    adjudicationKind: SUPPORT
+    evaluates: [e11, e12]
+    verdict: MIXED_OR_CONFLICTING
+    judgeKind: LLM
+    methodVersion: d6-channel-claim-check/v1
+    policyOutcome: REVIEW
+    evidenceSupport: NOT_SATISFIED
+    evidence:
+      - locator: R03
+        role: SUPPORTS
+      - locator: O01
+        role: CONTRADICTS
+      - locator: F01
+        role: CONTRADICTS
+      - locator: A07
+        role: QUALIFIES
+    unsupportedFacets: ["whether the Amazon, eBay and Etsy sales were made by MOGO Moringa LLC itself or by third parties"]
+    rationale: "The firm says it sells only through authorized channels and authorizes no third-party sellers; FDA names Amazon, eBay and mogomoringa.com as stores, and the enforcement report names Amazon, Ebay, Etsy. A MOGO brand store exists on Amazon (A07), so the Amazon channel may be the firm's own; eBay and Etsy sellers are unidentified. Conflicting, held for review."
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo-verify
+  - id: adj51
+    adjudicationKind: SUPPORT
+    evaluates: [e13]
+    verdict: UNVERIFIABLE
+    judgeKind: LLM
+    methodVersion: d6-safety-claim-check/v1
+    policyOutcome: REVIEW
+    evidenceSupport: UNKNOWN
+    worldCorrectness: UNKNOWN
+    evidence:
+      - locator: R05
+        role: CONTEXT
+      - locator: O03
+        role: QUALIFIES
+      - locator: O04
+        role: QUALIFIES
+      - locator: O11
+        role: QUALIFIES
+      - locator: O05
+        role: CONTEXT
+      - locator: F03
+        role: CONTEXT
+    unsupportedFacets: ["retained-sample results (laboratory, method and data not published)", "the implied reading that product from the affected lots was free of Salmonella is contradicted by open-container positives with the outbreak strain (O03, O04, O11)"]
+    rationale: "The literal statement (retained samples tested negative) cannot be checked from any captured source. Agency evidence concerns open containers in consumers' homes, which tested positive for the outbreak strain in three states (Washington, Tennessee, Florida); that contradicts the safety implication, not the retained-sample result itself."
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-recall-moringa-mogo-verify

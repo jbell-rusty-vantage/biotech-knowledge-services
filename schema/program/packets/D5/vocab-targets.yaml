@@ -1,0 +1,444 @@
+# Targets vocabulary — shared controlled vocabulary (00-DIRECTIVE 3.1, 3.2)
+# Owner D5 (agent A5). Every other domain consumes it through 10-seams.yaml `sharedVocabularies`
+# and NEVER re-declares a target node, a target enum or a typed edge to a target from a "means".
+# Choices, alternatives and citations: _notes/vocab-targets-notes.md (citation ids [C1]..[C9] refer there).
+# Research is not medical advice; a target is a goal people pursue, not a diagnosis or a treatment claim.
+
+version: 0.2.2
+status: review-stage              # 0.2.2 (A5 adversarial review, 2026-10-08): additive; ids unchanged since 0.1.0; consumers pinned to 0.2.0 / 0.2.1 stay valid
+published: 2026-10-08
+changes:
+  - "0.2.2: targetKeys exception now names every non-means record that carries target keys as a captured or curated property: D5 ProtocolStep (captured purpose), D13 Frontier (curated frontier-to-goal mapping) and D10 DecisionCriterion (the goals a versioned criteria set serves); still forbidden on any means. Target vs D2 Outcome disambiguated (a Target is what a person pursues; an Outcome is a study endpoint concept; OPERATIONALIZED_BY is the bridge). Goal statements with a Target object use only the five predicates: D10's RECOMMENDS_AGAINST and D9's REPORTS_ADVERSE_EXPERIENCE are not goal predicates (D5 11-open-questions OQ-D5-40, OQ-D5-41)"
+  - "0.2.1: measures seam gains D2.Outcome (union TargetMeasure = Biomarker | Metric | Outcome): D2's SDL keeps Outcome, the endpoint concept D3 OutcomeDefinitions MEASURE; the 0.2.0 premise 'D2 proposes no Outcome node' was stale (D2 11-open-questions item 27). Study path names from the D3 SDL: StudyResult -RESULT_FOR-> OutcomeDefinition -MEASURES-> measure"
+  - "0.2.0: assessment direction uses the kernel enum EffectDirection (BENEFIT | HARM | MIXED | NO_EFFECT | UNKNOWN), not pinned OutcomeDirection"
+  - "0.2.0: population qualifier = an entry `population:<PopulationGroup code | D3 StudyPopulation uid>` in kernel Assertion.qualifiers (no QUALIFIED_BY / APPLIES_TO_POPULATION qualifier assertion: the kernel has neither)"
+  - "0.2.0: measures seam retargeted to D4 Biomarker | D4 Metric (D2 proposes no Outcome node); study outcomes reach a target through D3 OutcomeDefinition -> D4 Metric/Biomarker"
+  - "0.2.0: seamRule amendment — ProtocolStep.targetKeys (D5-internal captured protocol content) is allowed; it is the protocol's stated purpose for its own step, hashed into the edition payload, never an effect claim"
+  - "0.2.0: canonical query rebased on kernel edges HAS_EVIDENCE (Assertion -> SourceLocator), Adjudication -[:ASSESSES]-> Assertion, Assessment -[:ASSESSES]-> means/Target and -[:DERIVED_FROM]-> Assertion"
+  - "0.2.0: node implements Entity & Subjectable (kernel pattern); identifier schemes MESH, WIKIDATA attach through the kernel"
+owner: D5
+agent: A5
+consumers: [K, D1, D2, D3, D4, D6, D7, D8, D9, D10, D11, D12, D13]
+
+# ---------------------------------------------------------------------------------------------
+# 1. The node that carries the vocabulary
+# ---------------------------------------------------------------------------------------------
+node:
+  type: Target                      # owner's word (directive 3.1 "Targets"); renames pinned FunctionalGoal
+  labels: [Target, Entity]
+  uidPattern: "hu:target:<slug>"    # e.g. hu:target:sleep ; slug = the part after "target:" in `id` below
+  idPattern: "target:<slug>"        # stable vocabulary key, stored as property `key`; never reused, never renamed
+  identityKeys: [key]
+  properties:                       # as declared in 04-schema-proposal.graphql type Target (plus the 7 kernel Entity fields; implements Entity & Subjectable)
+    key: "String! unique (e.g. target:sleep)"
+    label: "String! display label"
+    definition: "String! one-paragraph scope"
+    parentKey: "String (null for top level) — hierarchy is a property, max 2 levels, no relationship type spent"
+    level: "Int (1 top, 2 child)"
+    synonyms: "[String!] — feeds the fulltext index TargetSearch(label, synonyms, definition) for entity linking"
+    vocabVersion: "String! (this file's version at creation/last edit)"
+    status: "TargetStatus enum ACTIVE | DEPRECATED (deprecated targets keep their node; replacedBy names the successor key)"
+    replacedBy: "String"
+  disambiguation:
+    - "NOT a molecular/drug target (gene, protein, receptor): that is D2 (Mechanism / molecular entity). Agents translating 'what is the target of rapamycin' must go to D2, never to :Target."
+    - "NOT the pinned W16 `Target` (a source-stated numeric threshold of a protocol, e.g. 'plasma lithium 0.6-0.8 mmol/L'). That concept stays inside D5 protocols as threshold properties on a measurement plan / step; it is renamed away from `Target` in the D5 SDL (see notes section 2)."
+    - "NOT a Condition (D2). Disease treatment intent stays on Condition; a target is a function or state people try to improve. Mapping a target to related conditions is curated in `relatedConditions` below as names only."
+    - "NOT a person's private goal. Private UserGoalVersion (PCS) references a Target by uid; nothing private is in the graph."
+    - "NOT a Frontier (D13): a frontier is a field-level research goal ('senolytics in humans'); a target is a person-level goal."
+  measuresSeam:
+    # The only typed relationship the vocabulary spends (argued in 05-relationship-register.yaml, Q-D5-01/14/20).
+    relationship: OPERATIONALIZED_BY        # name reused from pinned FunctionalGoal->Target and Outcome->Metric
+    from: D5.Target
+    to: [D4.Biomarker, D4.Metric, D2.Outcome]   # union TargetMeasure (3); 0.1.0 [D2.Outcome, D4.Biomarker]; 0.2.0 [D4.Biomarker, D4.Metric]
+    class: structural (curated vocabulary mapping, not a claim of effect)
+    edgeProperties: StructuralEdgeProperties
+    nestedOperations: [CONNECT]
+    aggregate: false
+    purpose: "Lets study evidence reach a target: StudyResult -RESULT_FOR-> OutcomeDefinition -MEASURES-> Metric|Biomarker|Outcome <-OPERATIONALIZED_BY- Target, and lets 'how do I measure progress toward T' be answered."
+  sdl: packets/D5/04-schema-proposal.graphql (type Target)
+
+# ---------------------------------------------------------------------------------------------
+# 2. The targets (12 top level + 3 children = 15)
+# Measures and biomarkers are NAMES ONLY (D4 owns measures; D2 owns Outcome concepts).
+# frameworks: Examine.com category [C1], PROMIS adult core domain [C2], ICF body-function code (checklist) [C3],
+# WHO ICOPE intrinsic-capacity domain [C4], wearable score [C5][C6]. A missing key means no clean match.
+# pinned: every entry is an instance of pinned FunctionalGoal (uid hu:functional-goal:* -> hu:target:*; pinned
+# goalType was a free String with no enumerated values, so it maps to `key`).
+# ---------------------------------------------------------------------------------------------
+targets:
+
+  - id: target:longevity
+    label: Longevity
+    definition: >-
+      Living longer and staying healthy for longer: lifespan, healthspan, and slowing the biological processes of
+      aging, as people pursuing longevity frame it.
+    includes: [lifespan, healthspan, biological aging rate, frailty avoidance, all-cause mortality risk]
+    excludes: [treatment of a specific disease (Condition, D2), field-level research programs (Frontier, D13)]
+    parent: null
+    synonyms: [healthspan, lifespan, healthy aging, anti-aging, slow aging, live longer, extend life]
+    exampleOutcomes: [all-cause mortality, incident frailty, intrinsic capacity composite, gait speed decline]
+    exampleBiomarkers: [epigenetic clock age, DunedinPACE, phenotypic age, grip strength, VO2max]
+    frameworks: {examine: "Healthy Aging & Longevity", icope: "intrinsic capacity (all five domains)"}
+    relatedConditions: [frailty, sarcopenia]
+    pinned: {type: FunctionalGoal, goalType: null}
+    note: "Clock-age changes are surrogate outcomes; the direction of effect on a clock never implies a lifespan effect (D4 EndpointClass)."
+
+  - id: target:sleep
+    label: Sleep
+    definition: Getting enough, timely, uninterrupted and restorative sleep.
+    includes: [sleep duration, sleep onset latency, sleep continuity, sleep quality, circadian timing, daytime sleepiness]
+    excludes: [diagnosed sleep disorders as conditions (insomnia disorder, sleep apnea: D2 Condition; linked by relatedConditions)]
+    parent: null
+    synonyms: [better sleep, sleep quality, fall asleep faster, deep sleep, sleep hygiene, restful sleep]
+    exampleOutcomes: [PROMIS Sleep Disturbance, Pittsburgh Sleep Quality Index, sleep onset latency, total sleep time, wake after sleep onset]
+    exampleBiomarkers: [polysomnography sleep stages, actigraphy sleep efficiency, wearable sleep score, dim-light melatonin onset]
+    frameworks: {examine: "Sleep", promis: "Sleep Disturbance", icf: "b134 Sleep", wearable: "Oura Sleep Score; WHOOP Sleep Performance"}
+    relatedConditions: [insomnia, obstructive sleep apnea]
+    pinned: {type: FunctionalGoal, goalType: null}
+
+  - id: target:brain-fitness
+    label: Brain fitness
+    definition: >-
+      Cognitive performance and its preservation: attention and focus, memory, processing speed, executive function,
+      and resistance to cognitive decline.
+    includes: [focus, attention, memory, processing speed, executive function, cognitive decline prevention]
+    excludes: [mood and anxiety (target:mood), dementia treatment (Condition)]
+    parent: null
+    synonyms: [cognition, cognitive function, focus, memory, mental performance, nootropic effect, brain health]
+    exampleOutcomes: [PROMIS Cognitive Function, reaction time, digit span, Trail Making Test, incident MCI or dementia]
+    exampleBiomarkers: [plasma p-tau217, brain MRI volumetry, cognitive test battery scores]
+    frameworks: {examine: "Brain Health", promis: "Cognitive Function", icf: "b140 Attention; b144 Memory; b164 Higher level cognitive functions", icope: "cognition"}
+    relatedConditions: [mild cognitive impairment, dementia]
+    pinned: {type: FunctionalGoal, goalType: null}
+
+  - id: target:mood
+    label: Mood and stress
+    definition: "Emotional well-being: positive mood, low anxiety, stress resilience."
+    includes: [mood, anxiety, stress, emotional resilience, well-being]
+    excludes: [diagnosed depressive or anxiety disorders as conditions (relatedConditions), cognitive performance (target:brain-fitness)]
+    parent: null
+    synonyms: [mood, stress, anxiety, calm, resilience, well-being, mental health, relaxation]
+    exampleOutcomes: [PROMIS Anxiety, PROMIS Depression, Perceived Stress Scale, positive and negative affect]
+    exampleBiomarkers: [salivary cortisol, heart rate variability]
+    frameworks: {examine: "Mental Health", promis: "Anxiety; Depression", icf: "b152 Emotional functions", icope: "psychological"}
+    relatedConditions: [major depressive disorder, generalized anxiety disorder]
+    pinned: {type: FunctionalGoal, goalType: null}
+
+  - id: target:energy
+    label: Energy
+    definition: Subjective energy and vitality across the day; absence of fatigue.
+    includes: [fatigue, vitality, alertness, daytime energy]
+    excludes: [exercise capacity (target:endurance), sleepiness caused by sleep loss (scored on target:sleep)]
+    parent: null
+    synonyms: [energy, fatigue, vitality, tiredness, alertness, stamina (everyday)]
+    exampleOutcomes: [PROMIS Fatigue, Fatigue Severity Scale, vitality subscale]
+    exampleBiomarkers: [ferritin, TSH, hemoglobin]
+    frameworks: {examine: "Energy & Fatigue", promis: "Fatigue", icf: "b130 Energy and drive functions", icope: "vitality"}
+    relatedConditions: [myalgic encephalomyelitis/chronic fatigue syndrome, hypothyroidism, iron deficiency anemia]
+    pinned: {type: FunctionalGoal, goalType: null}
+
+  - id: target:strength
+    label: Strength
+    definition: Muscular strength and power and the physical function they support.
+    includes: [maximal strength, power, grip strength, physical function, mobility]
+    excludes: [muscle size (target:muscle-mass), aerobic capacity (target:endurance)]
+    parent: null
+    synonyms: [strength, power, muscle function, physical function, functional fitness]
+    exampleOutcomes: [one-repetition maximum, handgrip strength, chair-stand test, PROMIS Physical Function]
+    exampleBiomarkers: [grip dynamometry, isokinetic torque]
+    frameworks: {examine: "Muscle Gain & Exercise", promis: "Physical Function", icf: "b730 Muscle power", icope: "locomotion"}
+    relatedConditions: [sarcopenia]
+    pinned: {type: FunctionalGoal, goalType: null}
+
+  - id: target:endurance
+    label: Endurance
+    definition: Cardiorespiratory fitness and the capacity to sustain aerobic work.
+    includes: [VO2max, aerobic capacity, exercise tolerance, endurance performance]
+    excludes: [everyday subjective energy (target:energy), strength]
+    parent: null
+    synonyms: [cardio fitness, aerobic fitness, VO2max, stamina, cardiorespiratory fitness, zone 2]
+    exampleOutcomes: [VO2max, time to exhaustion, 6-minute walk distance, time-trial performance]
+    exampleBiomarkers: [VO2max (CPET or wearable estimate), lactate threshold, resting heart rate]
+    frameworks: {examine: "Muscle Gain & Exercise", icope: "locomotion; vitality"}
+    pinned: {type: FunctionalGoal, goalType: null}
+
+  - id: target:recovery
+    label: Recovery
+    definition: >-
+      How well the body restores between loads (training, stress, illness): readiness to perform, soreness,
+      autonomic balance.
+    includes: [training recovery, readiness, muscle soreness, autonomic recovery]
+    excludes: [sleep itself (target:sleep; sleep is an input to recovery), injury rehabilitation as a condition]
+    parent: null
+    synonyms: [recovery, readiness, soreness, bounce back, recovery score, overtraining]
+    exampleOutcomes: [delayed-onset muscle soreness rating, performance recovery between sessions, wearable recovery/readiness score]
+    exampleBiomarkers: [heart rate variability, resting heart rate, creatine kinase]
+    frameworks: {wearable: "Oura Readiness Score; WHOOP Recovery"}
+    pinned: {type: FunctionalGoal, goalType: null}
+
+  - id: target:body-composition
+    label: Body composition
+    definition: The proportion and distribution of fat, lean mass and bone; includes weight management.
+    includes: [body fat, visceral fat, lean mass, body weight, waist circumference]
+    excludes: [glucose and lipid control (target:cardiometabolic-health)]
+    parent: null
+    synonyms: [body composition, physique, weight, body recomposition]
+    exampleOutcomes: [body weight, waist circumference, DEXA fat and lean mass]
+    exampleBiomarkers: [DEXA, bioimpedance, BMI]
+    frameworks: {examine: "Fat Loss; Muscle Gain & Exercise", icf: "b530 Weight maintenance"}
+    relatedConditions: [obesity, overweight]
+    pinned: {type: FunctionalGoal, goalType: null}
+
+  - id: target:fat-loss
+    label: Fat loss
+    definition: Reducing body fat, including visceral fat, and keeping it off.
+    includes: [weight loss, fat mass reduction, visceral fat reduction, weight maintenance]
+    excludes: [muscle loss during weight loss (scored on target:muscle-mass, usually WORSENS)]
+    parent: target:body-composition
+    synonyms: [weight loss, fat loss, lose weight, cutting, slimming]
+    exampleOutcomes: [body weight change, fat mass change, visceral adipose tissue change]
+    exampleBiomarkers: [DEXA fat mass, waist-to-height ratio]
+    frameworks: {examine: "Fat Loss", icf: "b530 Weight maintenance"}
+    relatedConditions: [obesity]
+    pinned: {type: FunctionalGoal, goalType: null}
+
+  - id: target:muscle-mass
+    label: Muscle mass
+    definition: Building or preserving skeletal muscle mass.
+    includes: [hypertrophy, lean mass gain, lean mass preservation with age or weight loss]
+    excludes: [strength and power (target:strength)]
+    parent: target:body-composition
+    synonyms: [muscle gain, hypertrophy, lean mass, bulking, muscle preservation]
+    exampleOutcomes: [appendicular lean mass, muscle cross-sectional area]
+    exampleBiomarkers: [DEXA lean mass, D3-creatine dilution muscle mass, ultrasound muscle thickness]
+    frameworks: {examine: "Muscle Gain & Exercise"}
+    relatedConditions: [sarcopenia]
+    pinned: {type: FunctionalGoal, goalType: null}
+
+  - id: target:cardiometabolic-health
+    label: Cardiometabolic health
+    definition: Healthy blood glucose, lipids, blood pressure and vascular function; lower cardiometabolic risk.
+    includes: [glucose regulation, insulin sensitivity, blood lipids, blood pressure, vascular health]
+    excludes: [body composition (target:body-composition), treatment of diagnosed cardiovascular disease (Condition)]
+    parent: null
+    synonyms: [heart health, metabolic health, cardiovascular health, blood sugar, cholesterol, blood pressure]
+    exampleOutcomes: [major adverse cardiovascular events, systolic blood pressure, incident type 2 diabetes]
+    exampleBiomarkers: [ApoB, LDL-C, triglycerides, HbA1c, fasting insulin, blood pressure, hsCRP]
+    frameworks: {examine: "Cardiovascular Health; Diabetes & Blood Sugar", icf: "b410 Heart; b420 Blood pressure"}
+    relatedConditions: [type 2 diabetes, dyslipidemia, hypertension, metabolic syndrome, cardiovascular disease]
+    pinned: {type: FunctionalGoal, goalType: null}
+
+  - id: target:glycemic-control
+    label: Glycemic control
+    definition: Stable, healthy blood glucose and insulin sensitivity.
+    includes: [fasting glucose, postprandial glucose, glycemic variability, insulin sensitivity]
+    excludes: [lipids and blood pressure (parent target)]
+    parent: target:cardiometabolic-health
+    synonyms: [blood sugar control, glucose control, insulin sensitivity, glucose spikes]
+    exampleOutcomes: [HbA1c, CGM time in range, incident type 2 diabetes]
+    exampleBiomarkers: [HbA1c, fasting glucose, fasting insulin, HOMA-IR, CGM glycemic variability]
+    frameworks: {examine: "Diabetes & Blood Sugar"}
+    relatedConditions: [prediabetes, type 2 diabetes]
+    pinned: {type: FunctionalGoal, goalType: null}
+
+  - id: target:gut-health
+    label: Gut health
+    definition: Comfortable, regular digestion and a healthy gut environment.
+    includes: [digestive comfort, bowel regularity, bloating, gut microbiome composition]
+    excludes: [diagnosed GI disease (IBD, celiac: Condition)]
+    parent: null
+    synonyms: [digestion, gut health, microbiome, bloating, regularity]
+    exampleOutcomes: [stool frequency, Bristol stool form, GI symptom rating scale]
+    exampleBiomarkers: [fecal calprotectin, microbiome diversity index]
+    frameworks: {examine: "Gut Health", icf: "b515 Digestive; b525 Defecation"}
+    relatedConditions: [irritable bowel syndrome, inflammatory bowel disease]
+    pinned: {type: FunctionalGoal, goalType: null}
+
+  - id: target:immune-function
+    label: Immune function
+    definition: Resistance to and recovery from infection; appropriate (not excessive) inflammation.
+    includes: [infection frequency and duration, vaccine response, chronic low-grade inflammation]
+    excludes: [autoimmune disease treatment (Condition), allergy treatment (Condition)]
+    parent: null
+    synonyms: [immunity, immune support, inflammation, inflammaging, fewer colds]
+    exampleOutcomes: [upper respiratory infection incidence and duration, vaccine antibody titer]
+    exampleBiomarkers: [hsCRP, IL-6, white blood cell count]
+    frameworks: {examine: "Immunity & Infectious Disease", icf: "b435 Immunological"}
+    pinned: {type: FunctionalGoal, goalType: null}
+
+deferredTargets:
+  # Considered and left out of 0.1.0 to keep the set small; each can be added with a question id that needs it.
+  - {id: target:skin-and-hair, reason: "frequent in product marketing (Examine 'Skin, Hair, & Nails'); no essential question yet; product claims can use D6 claim text until promoted"}
+  - {id: target:sexual-and-hormonal-health, reason: "community demand (testosterone, libido); medicalisation risk; add with a question id and a population rule"}
+  - {id: target:joint-and-bone-health, reason: "Examine 'Joints & Bones'; currently reachable via target:strength and Conditions (osteoporosis)"}
+  - {id: target:pain, reason: "PROMIS core domain, but pain relief is mostly a Condition/symptom question, not a biohacking target"}
+  - {id: target:focus, reason: "kept inside target:brain-fitness via synonyms; split only if questions separate focus from memory"}
+  - {id: target:biological-aging, reason: "kept inside target:longevity; clocks are measures (D4), not a separate goal"}
+
+# ---------------------------------------------------------------------------------------------
+# 3. Polarity rule (directive 3.2: nothing is "good" or "bad" as a property of an entity)
+# ---------------------------------------------------------------------------------------------
+polarityRule:
+  statement: >-
+    Helping or hurting a target is never a property of the means (no `goodFor`, `benefits`, `risks`, `safe`,
+    `helpsSleep` field, tag or enum on a Product, Compound, Food, Intervention, Protocol or Device, and no typed
+    edge from a means to a Target). It is always either (a) an Assertion — one asserter, one located span on one
+    captured snapshot, an adjudication — whose predicate carries the direction of effect, whose object is the
+    Target node, and which is qualified by the population it applies to; or (b) an assessment (D10, or D3 for
+    study-level synthesis) that weighs located evidence and carries `effectDirection`, the Target, the
+    population and its method version. Harm uses exactly the same channel as benefit (WORSENS_TARGET), so
+    "what helps T" and "what hurts T" are one query with a different direction filter.
+  predicates:                         # closed list; values of Assertion.predicate (kernel field), owner D5
+    - {value: INTENDED_FOR_TARGET, direction: none, meaning: "the source states the means is for T (marketing category, protocol goal, label purpose) without asserting an effect"}
+    - {value: IMPROVES_TARGET, direction: helps, meaning: "the source states or reports that the means improves T"}
+    - {value: WORSENS_TARGET, direction: hurts, meaning: "the source states or reports that the means worsens T (harm, impairment, counter-effect)"}
+    - {value: NO_EFFECT_ON_TARGET, direction: none-found, meaning: "the source reports no effect on T (null result, disconfirmation); never inferred from absence"}
+    - {value: MIXED_EFFECT_ON_TARGET, direction: mixed, meaning: "the source reports opposite effects on T by dose, subgroup or measure"}
+  qualifierSyntax: >-
+    Kernel Assertion.qualifiers entries "<key>:<value>" (verification.v1 qualifiers that must survive retelling).
+    0.1.0's qualifier assertions (APPLIES_TO_POPULATION via QUALIFIED_BY) are withdrawn: the kernel has no
+    QUALIFIED_BY edge, and a string qualifier costs no node, edge or union.
+  polarityField: "Assertion.polarity is POSITIVE on these predicates; a denial is written as NO_EFFECT_ON_TARGET or as a SUPPORT Adjudication with a CONTRADICTED verdict (HAS_EVIDENCE role CONTRADICTS) against the original claim, never as a NEGATIVE copy of IMPROVES_TARGET."
+  assessmentDirection:
+    property: effectDirection
+    enum: EffectDirection             # kernel enum: BENEFIT | HARM | MIXED | NO_EFFECT | UNKNOWN (0.1.0 named pinned OutcomeDirection)
+    mapping: {IMPROVES_TARGET: BENEFIT, WORSENS_TARGET: HARM, NO_EFFECT_ON_TARGET: NO_EFFECT, MIXED_EFFECT_ON_TARGET: MIXED}
+    owner: K (Assessment type, kind EVIDENCE_SYNTHESIS / SAFETY_SIGNAL); D5 registers subkinds D5.target-effect, D5.safety-signal
+    shape: "(:Assessment {effectDirection})-[:ASSESSES]->(means) and -[:ASSESSES]->(:Target); inputs -[:DERIVED_FROM]->(:Assertion)"
+  requiredQualifiers:
+    population: >-
+      Mandatory "for whom": who the statement or evidence applies to. Written as one or more qualifier entries
+      `population:<code>` with a code from the D5 enum PopulationGroup (UNSPECIFIED, GENERAL_ADULTS, OLDER_ADULTS,
+      ADOLESCENTS, CHILDREN, INFANTS, PREGNANT, LACTATING, TRYING_TO_CONCEIVE, ATHLETES, PRE_SURGERY, IMMUNOSUPPRESSED,
+      ON_PRESCRIPTION_MEDICATION, OTHER) or `population:<uid>` naming a D3 StudyPopulation. Diseases present are D2
+      Conditions (USE_CONSTRAINED_IN object), not population codes. `population:UNSPECIFIED` is explicit, never a
+      null that reads as "everyone".
+    dose: "optional `dose:<min>-<max> <UCUM unit>/<period>` when the source states one (ranges kept as ranges; never midpoints)"
+    coExposure: "optional `coExposure:<uid>` when the effect is conditional on another means (antioxidants x exercise training)"
+    outcome: "optional `outcome:<D4 Metric | D4 Biomarker | D2 Outcome uid>` naming the measure the direction refers to (keeps MIXED explainable)"
+    basis: "Assertion.basisKind (kernel BasisKind: MANUFACTURER_CLAIM, EXPERT_OPINION, PERSONAL_EXPERIENCE, DIRECT_MEASUREMENT, CITED_FROM_PRIOR_WORK, ...)"
+  notAllowed:
+    - "a confidence or effect-size number on an edge between a means and a Target (directive 3.6)"
+    - "deriving WORSENS from a contraindication or interaction: those are their own D5 safety assertions, which may cite a target-effect assertion"
+    - "treating INTENDED_FOR_TARGET as evidence of effect"
+
+# ---------------------------------------------------------------------------------------------
+# 4. Canonical query: "what helps / hurts target T, by what evidence, for whom" (as of a time)
+# Rebased (0.2.0) on A1's kernel pattern (packets/K/09-reasoning.md, 04-schema-proposal.graphql): HAS_SUBJECT /
+# HAS_OBJECT / ASSERTED_BY / HAS_EVIDENCE / ASSESSES / DERIVED_FROM / WAS_GENERATED_BY. Full D5 versions with the
+# protocol and study branches: 03-retrieval-patterns.md sections Q-D5-01, Q-D5-02, Q-D5-14, Q-D5-15.
+# Parameters: $targetKey ('target:sleep'), $directions (['IMPROVES_TARGET'] helps | ['WORSENS_TARGET','MIXED_EFFECT_ON_TARGET']
+# hurts | add NO_EFFECT_ON_TARGET for disconfirmation), $pop (PopulationGroup code or null), $asOf (recorded-time
+# as-of), $validAt (valid-time point, optional).
+# ---------------------------------------------------------------------------------------------
+queryPattern:
+  id: QP-TARGET-01
+  answerKind: retrieved (assertion branch) + assessment (assessment branch); comparisons/rankings are computed (directive 3.5)
+  cypher: |
+    // 1. target node, including its children (hierarchy is a property, 2 levels)
+    MATCH (t:Target)
+    WHERE t.key = $targetKey OR t.parentKey = $targetKey
+    // 2. assertions whose object is the target and whose predicate carries the direction
+    MATCH (a:Assertion)-[:HAS_OBJECT]->(t)
+    WHERE a.predicate IN $directions
+      AND a.status IN ['ACCEPTED', 'DISPUTED']
+      AND a.recordedAt <= $asOf AND (a.recordedTo IS NULL OR a.recordedTo > $asOf)
+      AND ($validAt IS NULL OR ((a.validFrom IS NULL OR a.validFrom <= $validAt)
+                            AND (a.validTo IS NULL OR a.validTo > $validAt)))
+    MATCH (a)-[:HAS_SUBJECT]->(means)                  // product, compound, food, intervention, protocol, device
+    // 3. for whom: population qualifier entries (kernel Assertion.qualifiers)
+    WITH t, a, means, [q IN a.qualifiers WHERE q STARTS WITH 'population:' | substring(q, 11)] AS forWhom
+    WHERE $pop IS NULL OR $pop IN forWhom OR 'UNSPECIFIED' IN forWhom
+    // 4. by what evidence: asserter, located span, snapshot, adjudication, producing run
+    MATCH (a)-[:ASSERTED_BY]->(asserter)
+    MATCH (a)-[ev:HAS_EVIDENCE]->(loc:SourceLocator)<-[:HAS_LOCATOR]-(snap:SourceSnapshot)
+    OPTIONAL MATCH (adj:Adjudication)-[:ASSESSES]->(a)
+      WHERE adj.recordedAt <= $asOf AND (adj.recordedTo IS NULL OR adj.recordedTo > $asOf)
+    OPTIONAL MATCH (a)-[:WAS_GENERATED_BY]->(act:Activity)
+    // 5. weighed conclusions about the same means and target (kernel Assessment), current as of $asOf
+    OPTIONAL MATCH (ass:Assessment)-[:ASSESSES]->(means), (ass)-[:ASSESSES]->(t)
+      WHERE ass.recordedAt <= $asOf AND (ass.recordedTo IS NULL OR ass.recordedTo > $asOf)
+    RETURN t.key AS target,
+           labels(means)[0] AS meansType, means.uid AS meansUid, means.name AS means,
+           a.predicate AS direction, a.basisKind AS basis, a.uid AS assertionUid, forWhom,
+           asserter.uid AS asserterUid,
+           collect(DISTINCT {locator: loc.uid, role: ev.role, exact: loc.exact, snapshot: snap.uid,
+                             contentHash: snap.contentHash, retrievedAt: snap.retrievedAt}) AS evidence,
+           collect(DISTINCT {verdict: adj.verdict, kind: adj.adjudicationKind}) AS adjudications,
+           collect(DISTINCT {assessment: ass.uid, effectDirection: ass.effectDirection,
+                             methodVersion: ass.methodVersion}) AS assessments,
+           act.missionId AS missionId, act.runId AS runId
+    ORDER BY meansType, means
+  provenanceTrace: "every row carries assertionUid -> HAS_EVIDENCE locator (exact quote) -> snapshot (contentHash, retrievedAt) -> Adjudication verdict -> Activity (missionId, runId); the verifier re-selects the same locator (directive 3.8, 3.10)"
+  asOf: "recorded-time as-of on Assertion, Adjudication and Assessment (half-open intervals); optional valid-time point; no edge in the path needs its own episode (the Assertion carries valid and recorded time)"
+  protocolBranch: >-
+    Protocol content reaches T through the captured purpose of its steps (0.2.0 amendment):
+    (p:Protocol)-[he:HAS_EDITION]->(e)-[:HAS_STEP]->(s:ProtocolStep)-[:STEP_USES]->(means) WHERE t.key IN s.targetKeys,
+    with the HAS_EDITION episode current at $asOf; rows are labelled STEP_STATES_PURPOSE (stated purpose, no effect)
+    and cite the step's own locator (s.locatorUid).
+  studyBranch: >-
+    Study evidence without a per-result target assertion reaches T through the measures seam:
+    (t)-[:OPERATIONALIZED_BY]->(m:Metric|Biomarker|Outcome)<-[:MEASURES]-(od:OutcomeDefinition)<-[:RESULT_FOR]-(r:StudyResult)
+    with the direction from D3's result/assessment (edge names from the D3 SDL, 2026-10-08). Used to feed kernel assessments
+    (EVIDENCE_SYNTHESIS, subkind D5.target-effect), not to answer "helps" directly from a single result.
+  variants:
+    whatIsThisFor: |
+      // "what is this product / protocol / compound for" — reverse direction, same evidence trace
+      MATCH (a:Assertion)-[:HAS_SUBJECT]->(m {uid: $meansUid})
+      WHERE a.predicate IN ['INTENDED_FOR_TARGET','IMPROVES_TARGET','WORSENS_TARGET','NO_EFFECT_ON_TARGET','MIXED_EFFECT_ON_TARGET']
+        AND a.recordedAt <= $asOf AND (a.recordedTo IS NULL OR a.recordedTo > $asOf)
+      MATCH (a)-[:HAS_OBJECT]->(t:Target)
+      MATCH (a)-[:HAS_EVIDENCE]->(loc:SourceLocator)<-[:HAS_LOCATOR]-(snap:SourceSnapshot)
+      RETURN t.key, a.predicate, a.basisKind, [q IN a.qualifiers WHERE q STARTS WITH 'claimClass:'] AS claimClass, loc.exact, snap.contentHash
+    whatToAvoidForTarget: "QP-TARGET-01 with $directions = ['WORSENS_TARGET','MIXED_EFFECT_ON_TARGET'], joined (UNION) with D5 safety assertions (USE_CONSTRAINED_IN, INTERACTS_WITH, HAS_UPPER_LIMIT) on the means intended for T that RESOLVE_TO a UseConstraint whose scopePopulations or condition matches the asker (03-retrieval-patterns.md Q-D5-03)"
+    disconfirmation: "QP-TARGET-01 with $directions = ['NO_EFFECT_ON_TARGET','WORSENS_TARGET','MIXED_EFFECT_ON_TARGET'] on means that also carry IMPROVES_TARGET / INTENDED_FOR_TARGET for T, plus SUPPORT Adjudications with a CONTRADICTED verdict on the positive assertion (03-retrieval-patterns.md Q-D5-14)"
+  indexes:
+    - "range index :Target(key) unique; range :Target(parentKey)"
+    - "range index :Assertion(predicate, recordedAt) (kernel decides)"
+    - "fulltext TargetSearch on :Target(label, synonyms, definition) for entity linking of goal mentions"
+
+# ---------------------------------------------------------------------------------------------
+# 5. Seam rule: how anything declares what it is for (ONE mechanism: Assertion.predicate)
+# ---------------------------------------------------------------------------------------------
+seamRule:
+  chosen: Assertion.predicate
+  rule: >-
+    Means never point at a Target with a typed edge or a property. A product, compound or ingredient form, food,
+    intervention or protocol edition, device, or an organization's offering declares what it is for, or what it does
+    to a target, only through a kernel Assertion: subject = the means (kernel HAS_SUBJECT), object = the Target node
+    (kernel HAS_OBJECT), predicate from the closed list (INTENDED_FOR_TARGET, IMPROVES_TARGET, WORSENS_TARGET,
+    NO_EFFECT_ON_TARGET, MIXED_EFFECT_ON_TARGET), with one asserter, a locator, valid time and a mandatory
+    `population:` qualifier. Weighed conclusions are kernel Assessments that ASSESS the means and the Target and carry
+    effectDirection (kernel EffectDirection). Measures are different: a D4 Biomarker or Metric counts toward a target
+    through one curated structural edge Target-[OPERATIONALIZED_BY]->(Biomarker|Metric|Outcome) owned by D5; study
+    outcomes reach targets through D3 OutcomeDefinition -MEASURES-> D4 Metric/Biomarker or D2 Outcome.
+  exception:
+    what: "ProtocolStep.targetKeys: [String!] (D5-internal); also D13 Frontier.targetKeys and D10 DecisionCriterion.targetKeys (0.2.2: non-means records whose target keys are curated content, not effect claims)"
+    why: >-
+      A protocol step is not a means: it is captured, located, immutable edition content (stepKey + payloadHash, its
+      own SourceLocator). "For sleep" is part of what the protocol says about its own step, hashed into the edition
+      payload, so it needs no separate asserter or adjudication beyond the edition's attach Assertion. Settles the
+      research-stage conflict (step -> Target edge vs this rule) at zero relationship types; D13 uses the same device
+      (Frontier.targetKeys) and D10 uses it for the goals a criteria set serves (DecisionCriterion.targetKeys); neither
+      is a means, so neither is a "good for" tag. Effect statements about a step's means still go through the Assertion
+      channel. Disambiguation (0.2.2): a Target is a goal a person pursues (sleep); a D2 Outcome is a study-independent
+      endpoint concept (sleep quality as scored, all-cause mortality); the Target is OPERATIONALIZED_BY the Outcome.
+    notAllowed: "targetKeys on any means type (Product, ChemicalSubstance, IngredientMaterial, FoodItem, Intervention, Device): rejected below"
+  why:
+    - "Every 'for T' statement in the wild is a claim by someone (a label, a protocol author, a podcast host, a trial); an Assertion keeps the asserter, span and adjudication the directive requires (3.2, 3.9, 3.10)."
+    - "Zero relationship types and zero union members are spent in any consuming module; a typed FOR_TARGET edge from 6+ means types would be a union-wide any-entity edge the directive forbids (rule 1)."
+    - "Benefit, harm, null and mixed findings share one channel, so 'what helps' and 'what hurts' cannot drift apart."
+  rejected:
+    - {option: "typed edge Means-[:FOR_TARGET]->Target per consuming module", reason: "loses asserter/locator unless it is an asserted-edge projection; multiplies pairs across D1/D3/D5/D6/D12; would encode purpose as a fact of the entity"}
+    - {option: "property targetKeys: [String] on Product/Compound/Food", reason: "a property is a 'good for' tag on the means, exactly what directive 3.2 forbids; no provenance"}
+    - {option: "typed edge ProtocolStep-[:FOR_TARGET]->Target", reason: "costs a relationship type and a pair for what the step's own captured content already says; the property is filterable and hashed with the step"}
+    - {option: "derived read-only projection SERVES_TARGET", reason: "may be added later as a materialized projection with a method version if a latency question needs it; not now"}
+  consumerObligations:
+    - "list `targets: packets/D5/vocab-targets.yaml@0.2.2` (0.2.0 and 0.2.1 also accepted) under sharedVocabularies in 10-seams.yaml (0.1.0 consumers: ids unchanged; rebase QUALIFIED_BY / OutcomeDirection / D2.Outcome references)"
+    - "use only the five predicates above for goal statements (a Target as object); propose new ones to D5 in 11-open-questions.md. Not goal predicates: RECOMMENDS_AGAINST (D10, valid without a Target object) and REPORTS_ADVERSE_EXPERIENCE (adverse effects are CAUSES_ADVERSE_EFFECT with a D2 Condition object)"
+    - "write the population qualifier on every goal statement (`population:UNSPECIFIED` when the source names none)"
+    - "entity-link goal phrases in text to Target keys via synonyms; never mint a new Target node (D5 curates; new targets via a vocabulary version bump)"
+    - "D4: accept the incoming curated OPERATIONALIZED_BY seam from Target to Biomarker and Metric (owner D5); D2: the same into Outcome"
+    - "K / D10: target-effect assessments ASSESS both the means and the Target and carry effectDirection (kernel EffectDirection)"
+
+citations: "see _notes/vocab-targets-notes.md section 5"

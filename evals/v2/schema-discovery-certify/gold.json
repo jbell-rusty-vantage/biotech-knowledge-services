@@ -1,0 +1,1081 @@
+{
+  "derivedFrom": [
+    "nodeRegister",
+    "relationshipRegister",
+    "predicates",
+    "sdl",
+    "interfaces"
+  ],
+  "format": "bks-eval-gold.v1",
+  "gold": {
+    "SC-001": {
+      "answer": {
+        "enum": "IntakeScope",
+        "mustNotContain": [],
+        "values": [
+          "SUPPLEMENTAL_ONLY",
+          "TOTAL_INTAKE",
+          "NOT_STATED"
+        ]
+      },
+      "cardIds": [
+        "enum:IntakeScope"
+      ]
+    },
+    "SC-002": {
+      "answer": {
+        "predicate": "NUTRIENT_EXPRESSED_AS",
+        "rows": [
+          {
+            "kind": "relationship",
+            "objectTypes": [
+              "ChemicalSubstance"
+            ],
+            "registrar": "D1",
+            "subjectTypes": [
+              "Constituent"
+            ]
+          }
+        ]
+      },
+      "cardIds": [
+        "predicate:NUTRIENT_EXPRESSED_AS"
+      ]
+    },
+    "SC-003": {
+      "answer": {
+        "exists": false,
+        "name": "PatentLicense",
+        "replacementTypes": [
+          "Patent"
+        ]
+      },
+      "cardIds": [
+        "node:Patent"
+      ]
+    },
+    "SC-004": {
+      "answer": {
+        "enum": "ReadoutStage",
+        "mustNotContain": [],
+        "values": [
+          "TOPLINE",
+          "INTERIM",
+          "PRIMARY",
+          "FINAL",
+          "LONG_TERM_FOLLOW_UP"
+        ]
+      },
+      "cardIds": [
+        "enum:ReadoutStage"
+      ]
+    },
+    "SC-005": {
+      "answer": {
+        "enum": "ReportItemKind",
+        "mustNotContain": [],
+        "values": [
+          "SECTION",
+          "ROW"
+        ]
+      },
+      "cardIds": [
+        "enum:ReportItemKind"
+      ]
+    },
+    "SC-006": {
+      "answer": {
+        "hops": [
+          {
+            "class": "structural",
+            "from": "MechanismEvidenceContext",
+            "module": "D2",
+            "to": "StudyArm",
+            "traversal": "along-direction",
+            "type": "IN_STUDY_ARM"
+          },
+          {
+            "class": "structural",
+            "from": "StudyArm",
+            "module": "D3",
+            "to": "InterventionComponent",
+            "traversal": "along-direction",
+            "type": "HAS_COMPONENT"
+          }
+        ],
+        "noDirect": null
+      },
+      "cardIds": [
+        "relationship:IN_STUDY_ARM",
+        "relationship:HAS_COMPONENT"
+      ]
+    },
+    "SC-007": {
+      "answer": {
+        "hops": [
+          {
+            "class": "structural",
+            "from": "Metric",
+            "module": "D4",
+            "to": "Biomarker",
+            "traversal": "along-direction",
+            "type": "QUANTIFIES"
+          },
+          {
+            "class": "asserted",
+            "from": "Biomarker",
+            "module": "D4",
+            "to": "Mechanism",
+            "traversal": "along-direction",
+            "type": "REFLECTS_MECHANISM"
+          }
+        ],
+        "noDirect": null
+      },
+      "cardIds": [
+        "relationship:QUANTIFIES",
+        "relationship:REFLECTS_MECHANISM"
+      ]
+    },
+    "SC-008": {
+      "answer": {
+        "hops": [
+          {
+            "class": "structural",
+            "from": "StudyResult",
+            "module": "D3",
+            "to": "OutcomeDefinition",
+            "traversal": "along-direction",
+            "type": "RESULT_FOR"
+          },
+          {
+            "class": "asserted",
+            "from": "OutcomeDefinition",
+            "module": "D3",
+            "to": "Biomarker",
+            "traversal": "along-direction",
+            "type": "MEASURES"
+          }
+        ],
+        "noDirect": null
+      },
+      "cardIds": [
+        "relationship:RESULT_FOR",
+        "relationship:MEASURES"
+      ]
+    },
+    "SC-009": {
+      "answer": {
+        "exists": false,
+        "name": "TrialRegistration",
+        "replacementTypes": [
+          "Study"
+        ]
+      },
+      "cardIds": [
+        "node:Study"
+      ]
+    },
+    "SC-010": {
+      "answer": {
+        "module": "D3",
+        "type": "RegistrationVersion",
+        "uidToken": "registration-version"
+      },
+      "cardIds": [
+        "node:RegistrationVersion"
+      ]
+    },
+    "SC-011": {
+      "answer": {
+        "hops": [
+          {
+            "class": "structural",
+            "from": "Adjudication",
+            "module": "K",
+            "to": "Assertion",
+            "traversal": "along-direction",
+            "type": "ASSESSES"
+          },
+          {
+            "class": "structural",
+            "from": "Assertion",
+            "module": "D2",
+            "to": "MechanismEvidenceContext",
+            "traversal": "along-direction",
+            "type": "OBSERVED_IN_CONTEXT"
+          }
+        ],
+        "noDirect": null
+      },
+      "cardIds": [
+        "relationship:ASSESSES",
+        "relationship:OBSERVED_IN_CONTEXT"
+      ]
+    },
+    "SC-012": {
+      "answer": {
+        "enum": "EvidenceRole",
+        "mustNotContain": [],
+        "values": [
+          "SUPPORTS",
+          "CONTRADICTS",
+          "QUALIFIES",
+          "CONTEXT"
+        ]
+      },
+      "cardIds": [
+        "enum:EvidenceRole"
+      ]
+    },
+    "SC-013": {
+      "answer": {
+        "module": "D2",
+        "type": "Condition",
+        "uidToken": "condition"
+      },
+      "cardIds": [
+        "node:Condition"
+      ]
+    },
+    "SC-014": {
+      "answer": {
+        "predicate": "EVENT_CANCELLED",
+        "rows": [
+          {
+            "kind": "relationship",
+            "objectTypes": [],
+            "registrar": "D13",
+            "subjectTypes": []
+          }
+        ]
+      },
+      "cardIds": [
+        "predicate:EVENT_CANCELLED"
+      ]
+    },
+    "SC-015": {
+      "answer": {
+        "enum": "CaptureOutcome",
+        "mustNotContain": [],
+        "values": [
+          "PARTIAL",
+          "FAILED"
+        ]
+      },
+      "cardIds": [
+        "enum:CaptureOutcome"
+      ]
+    },
+    "SC-016": {
+      "answer": {
+        "predicate": "DEFINITION_CHANGED",
+        "rows": [
+          {
+            "kind": "literal",
+            "objectTypes": [],
+            "registrar": "D4",
+            "subjectTypes": [
+              "AlgorithmVersion",
+              "Metric"
+            ]
+          }
+        ]
+      },
+      "cardIds": [
+        "predicate:DEFINITION_CHANGED"
+      ]
+    },
+    "SC-017": {
+      "answer": {
+        "exists": false,
+        "name": "RegulatoryAgency",
+        "replacementTypes": [
+          "Organization"
+        ]
+      },
+      "cardIds": [
+        "node:Organization"
+      ]
+    },
+    "SC-018": {
+      "answer": {
+        "exists": false,
+        "name": "LegalEntity",
+        "replacementTypes": [
+          "Organization"
+        ]
+      },
+      "cardIds": [
+        "node:Organization"
+      ]
+    },
+    "SC-019": {
+      "answer": {
+        "hops": [
+          {
+            "class": "structural",
+            "from": "Association",
+            "module": "D10",
+            "to": "Assertion",
+            "traversal": "along-direction",
+            "type": "DERIVED_FROM"
+          },
+          {
+            "class": "structural",
+            "from": "Assertion",
+            "module": "D9",
+            "to": "MediaWork",
+            "traversal": "along-direction",
+            "type": "OCCURS_IN"
+          }
+        ],
+        "noDirect": null
+      },
+      "cardIds": [
+        "relationship:DERIVED_FROM",
+        "relationship:OCCURS_IN"
+      ]
+    },
+    "SC-020": {
+      "answer": {
+        "module": "D9",
+        "type": "Channel",
+        "uidToken": "channel"
+      },
+      "cardIds": [
+        "node:Channel"
+      ]
+    },
+    "SC-021": {
+      "answer": {
+        "exists": false,
+        "name": "Species",
+        "replacementTypes": [
+          "MechanismEvidenceContext"
+        ]
+      },
+      "cardIds": [
+        "node:MechanismEvidenceContext"
+      ]
+    },
+    "SC-022": {
+      "answer": {
+        "exists": false,
+        "name": "SourceDiscoveryRecord",
+        "replacementTypes": [
+          "CaptureAttempt"
+        ]
+      },
+      "cardIds": [
+        "node:CaptureAttempt"
+      ]
+    },
+    "SC-023": {
+      "answer": {
+        "exists": false,
+        "name": "Community",
+        "replacementTypes": [
+          "Channel"
+        ]
+      },
+      "cardIds": [
+        "node:Channel"
+      ]
+    },
+    "SC-024": {
+      "answer": {
+        "module": "D10",
+        "type": "Association",
+        "uidToken": "association"
+      },
+      "cardIds": [
+        "node:Association"
+      ]
+    },
+    "SC-025": {
+      "answer": {
+        "module": "K",
+        "type": "Assessment",
+        "uidToken": "assessment"
+      },
+      "cardIds": [
+        "node:Assessment"
+      ]
+    },
+    "SC-026": {
+      "answer": {
+        "module": "D7",
+        "type": "Brand",
+        "uidToken": "brand"
+      },
+      "cardIds": [
+        "node:Brand"
+      ]
+    },
+    "SC-027": {
+      "answer": {
+        "predicate": "REGISTRY_NOT_MAINTAINED_NOTE",
+        "rows": [
+          {
+            "kind": "literal",
+            "objectTypes": [],
+            "registrar": "D3",
+            "subjectTypes": [
+              "RegistrationVersion"
+            ]
+          }
+        ]
+      },
+      "cardIds": [
+        "predicate:REGISTRY_NOT_MAINTAINED_NOTE"
+      ]
+    },
+    "SC-028": {
+      "answer": {
+        "rows": [
+          {
+            "class": "asserted",
+            "from": [
+              "Product"
+            ],
+            "module": "D12",
+            "temporal": "episode",
+            "to": [
+              "FoodItem"
+            ]
+          }
+        ],
+        "type": "HAS_REFERENCE_FOOD"
+      },
+      "cardIds": [
+        "relationship:HAS_REFERENCE_FOOD"
+      ]
+    },
+    "SC-029": {
+      "answer": {
+        "module": "D5",
+        "type": "ProtocolStep",
+        "uidToken": "protocol-step"
+      },
+      "cardIds": [
+        "node:ProtocolStep"
+      ]
+    },
+    "SC-030": {
+      "answer": {
+        "module": "D11",
+        "type": "CaptureAttempt",
+        "uidToken": "capture-attempt"
+      },
+      "cardIds": [
+        "node:CaptureAttempt"
+      ]
+    },
+    "SC-031": {
+      "answer": {
+        "exists": false,
+        "name": "PanelDefinition",
+        "replacementTypes": [
+          "LabTest"
+        ]
+      },
+      "cardIds": [
+        "node:LabTest"
+      ]
+    },
+    "SC-032": {
+      "answer": {
+        "module": "D7",
+        "type": "Person",
+        "uidToken": "person"
+      },
+      "cardIds": [
+        "node:Person"
+      ]
+    },
+    "SC-033": {
+      "answer": {
+        "rows": [
+          {
+            "class": "asserted",
+            "from": [
+              "Product"
+            ],
+            "module": "D4",
+            "temporal": "recorded-only",
+            "to": [
+              "LabTest",
+              "Device"
+            ]
+          }
+        ],
+        "type": "DELIVERS"
+      },
+      "cardIds": [
+        "relationship:DELIVERS"
+      ]
+    },
+    "SC-034": {
+      "answer": {
+        "module": "D13",
+        "type": "Frontier",
+        "uidToken": "frontier"
+      },
+      "cardIds": [
+        "node:Frontier"
+      ]
+    },
+    "SC-035": {
+      "answer": {
+        "exists": false,
+        "name": "BotanicalTaxon",
+        "replacementTypes": [
+          "Taxon"
+        ]
+      },
+      "cardIds": [
+        "node:Taxon"
+      ]
+    },
+    "SC-036": {
+      "answer": {
+        "module": "D5",
+        "type": "Intervention",
+        "uidToken": "intervention"
+      },
+      "cardIds": [
+        "node:Intervention"
+      ]
+    },
+    "SC-037": {
+      "answer": {
+        "hops": [
+          {
+            "class": "asserted",
+            "from": "DietaryPattern",
+            "module": "D12",
+            "to": "FoodItem",
+            "traversal": "along-direction",
+            "type": "PATTERN_COMPONENT"
+          },
+          {
+            "class": "asserted",
+            "from": "FoodItem",
+            "module": "D12",
+            "to": "ChemicalSubstance",
+            "traversal": "along-direction",
+            "type": "FOOD_CONTAINS"
+          }
+        ],
+        "noDirect": null
+      },
+      "cardIds": [
+        "relationship:PATTERN_COMPONENT",
+        "relationship:FOOD_CONTAINS"
+      ]
+    },
+    "SC-038": {
+      "answer": {
+        "exists": false,
+        "name": "Procedure",
+        "replacementTypes": [
+          "Intervention"
+        ]
+      },
+      "cardIds": [
+        "node:Intervention"
+      ]
+    },
+    "SC-039": {
+      "answer": {
+        "hops": [
+          {
+            "class": "asserted",
+            "from": "Product",
+            "module": "D12",
+            "to": "FoodItem",
+            "traversal": "along-direction",
+            "type": "HAS_REFERENCE_FOOD"
+          },
+          {
+            "class": "asserted",
+            "from": "FoodItem",
+            "module": "D12",
+            "to": "Constituent",
+            "traversal": "along-direction",
+            "type": "FOOD_CONTAINS"
+          }
+        ],
+        "noDirect": null
+      },
+      "cardIds": [
+        "relationship:HAS_REFERENCE_FOOD",
+        "relationship:FOOD_CONTAINS"
+      ]
+    },
+    "SC-040": {
+      "answer": {
+        "module": "D1",
+        "type": "IngredientMaterial",
+        "uidToken": "material"
+      },
+      "cardIds": [
+        "node:IngredientMaterial"
+      ]
+    },
+    "SC-041": {
+      "answer": {
+        "module": "D4",
+        "type": "AssayVersion",
+        "uidToken": "assay-version"
+      },
+      "cardIds": [
+        "node:AssayVersion"
+      ]
+    },
+    "SC-042": {
+      "answer": {
+        "predicate": "CALCULATED_DAILY_MAX_INTAKE",
+        "rows": [
+          {
+            "kind": "computation",
+            "objectTypes": [
+              "ChemicalSubstance",
+              "Constituent",
+              "IngredientMaterial"
+            ],
+            "registrar": "D6",
+            "subjectTypes": [
+              "LabelVersion"
+            ]
+          }
+        ]
+      },
+      "cardIds": [
+        "predicate:CALCULATED_DAILY_MAX_INTAKE"
+      ]
+    },
+    "SC-043": {
+      "answer": {
+        "predicate": "MEASURED_DELIVERY_FRACTION",
+        "rows": [
+          {
+            "kind": "literal",
+            "objectTypes": [],
+            "registrar": "D3",
+            "subjectTypes": [
+              "InterventionComponent"
+            ]
+          }
+        ]
+      },
+      "cardIds": [
+        "predicate:MEASURED_DELIVERY_FRACTION"
+      ]
+    },
+    "SC-044": {
+      "answer": {
+        "predicate": "SALT_OR_SOLVATE_OF",
+        "rows": [
+          {
+            "kind": "relationship",
+            "objectTypes": [],
+            "registrar": "D1",
+            "subjectTypes": []
+          }
+        ]
+      },
+      "cardIds": [
+        "predicate:SALT_OR_SOLVATE_OF"
+      ]
+    },
+    "SC-045": {
+      "answer": {
+        "rows": [
+          {
+            "class": "asserted",
+            "from": [
+              "CertificationListing"
+            ],
+            "module": "D8",
+            "temporal": "episode",
+            "to": [
+              "Product",
+              "ProductVariant",
+              "Lot"
+            ]
+          }
+        ],
+        "type": "COVERS"
+      },
+      "cardIds": [
+        "relationship:COVERS"
+      ]
+    },
+    "SC-046": {
+      "answer": {
+        "rows": [
+          {
+            "class": "asserted",
+            "from": [
+              "DietaryPattern"
+            ],
+            "module": "D12",
+            "temporal": "recorded-only",
+            "to": [
+              "FoodItem",
+              "FoodCategory",
+              "Constituent"
+            ]
+          }
+        ],
+        "type": "PATTERN_COMPONENT"
+      },
+      "cardIds": [
+        "relationship:PATTERN_COMPONENT"
+      ]
+    },
+    "SC-047": {
+      "answer": {
+        "module": "D8",
+        "type": "CertificationListing",
+        "uidToken": "cert-listing"
+      },
+      "cardIds": [
+        "node:CertificationListing"
+      ]
+    },
+    "SC-048": {
+      "answer": {
+        "enum": "StakeBand",
+        "mustNotContain": [],
+        "values": [
+          "OVER_25_TO_50",
+          "OVER_50_TO_75",
+          "OVER_75",
+          "AT_LEAST_5",
+          "AT_LEAST_10",
+          "BELOW_DISCLOSURE_THRESHOLD",
+          "UNSTATED"
+        ]
+      },
+      "cardIds": [
+        "enum:StakeBand"
+      ]
+    },
+    "SC-049": {
+      "answer": {
+        "module": "D12",
+        "type": "FoodCategory",
+        "uidToken": "food-category"
+      },
+      "cardIds": [
+        "node:FoodCategory"
+      ]
+    },
+    "SC-050": {
+      "answer": {
+        "exists": false,
+        "name": "FormulationVersion",
+        "replacementTypes": [
+          "LabelVersion"
+        ]
+      },
+      "cardIds": [
+        "node:LabelVersion"
+      ]
+    },
+    "SC-051": {
+      "answer": {
+        "identityKeys": [
+          "uid"
+        ],
+        "type": "CaptureAttempt",
+        "uidToken": "capture-attempt"
+      },
+      "cardIds": [
+        "node:CaptureAttempt"
+      ]
+    },
+    "SC-052": {
+      "answer": {
+        "hops": [
+          {
+            "class": "asserted",
+            "from": "CertificationListing",
+            "module": "D8",
+            "to": "Product",
+            "traversal": "along-direction",
+            "type": "COVERS"
+          },
+          {
+            "class": "asserted",
+            "from": "Product",
+            "module": "D12",
+            "to": "FoodCategory",
+            "traversal": "along-direction",
+            "type": "IN_FOOD_CATEGORY"
+          }
+        ],
+        "noDirect": null
+      },
+      "cardIds": [
+        "relationship:COVERS",
+        "relationship:IN_FOOD_CATEGORY"
+      ]
+    },
+    "SC-053": {
+      "answer": {
+        "rows": [
+          {
+            "class": "structural",
+            "from": [
+              "ReportItem"
+            ],
+            "module": "D10",
+            "temporal": "recorded-only",
+            "to": [
+              "UseConstraint",
+              "Assessment"
+            ]
+          }
+        ],
+        "type": "BLOCKED_BY"
+      },
+      "cardIds": [
+        "relationship:BLOCKED_BY"
+      ]
+    },
+    "SC-054": {
+      "answer": {
+        "enum": "ChannelKind",
+        "mustNotContain": [],
+        "values": [
+          "SHOW",
+          "VIDEO_CHANNEL",
+          "NEWSLETTER",
+          "BLOG_OR_SITE",
+          "NEWS_OUTLET",
+          "ACCOUNT",
+          "FORUM",
+          "EVENT_SERIES"
+        ]
+      },
+      "cardIds": [
+        "enum:ChannelKind"
+      ]
+    },
+    "SC-055": {
+      "answer": {
+        "identityKeys": [
+          "ncbiTaxonId",
+          "primary identifier (UNIPROT for proteins, HGNC for human genes, NCBI_GENE / ENSEMBL_GENE otherwise)"
+        ],
+        "type": "MolecularEntity",
+        "uidToken": "molecular-entity"
+      },
+      "cardIds": [
+        "node:MolecularEntity"
+      ]
+    },
+    "SC-056": {
+      "answer": {
+        "module": "D13",
+        "type": "Event",
+        "uidToken": "event"
+      },
+      "cardIds": [
+        "node:Event"
+      ]
+    },
+    "SC-057": {
+      "answer": {
+        "predicate": "RECOMMENDS_USE",
+        "rows": [
+          {
+            "kind": "literal",
+            "objectTypes": [],
+            "registrar": "D9",
+            "subjectTypes": [
+              "ChemicalSubstance",
+              "Device",
+              "FoodItem",
+              "Product",
+              "Protocol"
+            ]
+          }
+        ]
+      },
+      "cardIds": [
+        "predicate:RECOMMENDS_USE"
+      ]
+    },
+    "SC-058": {
+      "answer": {
+        "hops": [
+          {
+            "class": "asserted",
+            "from": "Event",
+            "module": "D13",
+            "to": "Person",
+            "traversal": "along-direction",
+            "type": "INVOLVES"
+          },
+          {
+            "class": "asserted",
+            "from": "Person",
+            "module": "D9",
+            "to": "MediaWork",
+            "traversal": "along-direction",
+            "type": "APPEARS_IN"
+          }
+        ],
+        "noDirect": null
+      },
+      "cardIds": [
+        "relationship:INVOLVES",
+        "relationship:APPEARS_IN"
+      ]
+    },
+    "SC-059": {
+      "answer": {
+        "exists": false,
+        "name": "Specimen",
+        "replacementTypes": [
+          "AssayVersion"
+        ]
+      },
+      "cardIds": [
+        "node:AssayVersion"
+      ]
+    },
+    "SC-060": {
+      "answer": {
+        "module": "D10",
+        "type": "DecisionCriterion",
+        "uidToken": "decision-criterion"
+      },
+      "cardIds": [
+        "node:DecisionCriterion"
+      ]
+    },
+    "SC-061": {
+      "answer": {
+        "enum": "ConstraintLevel",
+        "mustNotContain": [],
+        "values": [
+          "CONTRAINDICATED",
+          "DO_NOT_EXCEED_DOSE",
+          "AVOID",
+          "NOT_RECOMMENDED",
+          "USE_WITH_CAUTION",
+          "MONITOR",
+          "MAINTAIN_CONSISTENT_INTAKE",
+          "CONSULT_CLINICIAN",
+          "ADJUST_DOSE",
+          "SEPARATE_ADMINISTRATION",
+          "DISCONTINUE_BEFORE"
+        ]
+      },
+      "cardIds": [
+        "enum:ConstraintLevel"
+      ]
+    },
+    "SC-062": {
+      "answer": {
+        "hops": [
+          {
+            "class": "asserted",
+            "from": "Award",
+            "module": "D7",
+            "to": "Person",
+            "traversal": "along-direction",
+            "type": "AWARDED_TO"
+          },
+          {
+            "class": "asserted",
+            "from": "Person",
+            "module": "D9",
+            "to": "MediaWork",
+            "traversal": "along-direction",
+            "type": "APPEARS_IN"
+          }
+        ],
+        "noDirect": null
+      },
+      "cardIds": [
+        "relationship:AWARDED_TO",
+        "relationship:APPEARS_IN"
+      ]
+    },
+    "SC-063": {
+      "answer": {
+        "module": "D6",
+        "type": "Offer",
+        "uidToken": "offer"
+      },
+      "cardIds": [
+        "node:Offer"
+      ]
+    },
+    "SC-064": {
+      "answer": {
+        "module": "D8",
+        "type": "Patent",
+        "uidToken": "patent"
+      },
+      "cardIds": [
+        "node:Patent"
+      ]
+    },
+    "SC-065": {
+      "answer": {
+        "exists": false,
+        "name": "QuantityDeclaration",
+        "replacementTypes": [
+          "LabelVersion"
+        ]
+      },
+      "cardIds": [
+        "node:LabelVersion"
+      ]
+    },
+    "SC-066": {
+      "answer": {
+        "module": "D2",
+        "type": "MechanismEvidenceContext",
+        "uidToken": "mech-context"
+      },
+      "cardIds": [
+        "node:MechanismEvidenceContext"
+      ]
+    },
+    "SC-067": {
+      "answer": {
+        "exists": false,
+        "name": "EventImpactAssessment",
+        "replacementTypes": [
+          "Assessment"
+        ]
+      },
+      "cardIds": [
+        "node:Assessment"
+      ]
+    },
+    "SC-068": {
+      "answer": {
+        "enum": "PrivacyClass",
+        "mustNotContain": [],
+        "values": [
+          "PUBLIC",
+          "INTERNAL"
+        ]
+      },
+      "cardIds": [
+        "enum:PrivacyClass"
+      ]
+    }
+  },
+  "suite": "schema-discovery-certify"
+}

@@ -1,0 +1,497 @@
+{
+  "bindings": [
+    "RELEASE_ID",
+    "SCHEMA_RELEASE_DIGEST",
+    "WORKSPACE_FINGERPRINT",
+    "QUERY_CATALOG_DIGEST",
+    "EXECUTOR_VERSION",
+    "SKILL_BUNDLE_VERSION",
+    "MIGRATION_RUN_ID",
+    "SEMANTIC_GENERATION_ID",
+    "FIXTURE_GRAPH_ID"
+  ],
+  "count": 68,
+  "format": "bks-eval-tasks.v1",
+  "frozenAt": "2026-10-11",
+  "goldFile": "gold-spec.json (never mounted for the agent)",
+  "inputs": "schema/program/final/** at BKS 431c8a7 (SDL sha256:c7cf1235...), INTERFACES.md v0",
+  "suite": "schema-discovery",
+  "tasks": [
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "exact",
+      "id": "SD-K-01",
+      "module": "K",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Give the uid token and the identity keys of the SourceLocator node type."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "exact",
+      "id": "SD-K-02",
+      "module": "K",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. What class is the HAS_EVIDENCE relationship from an Assertion, which node type does it point to, and which edge-property type does it carry?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "paraphrase",
+      "id": "SD-K-03",
+      "module": "K",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which node type records that some party stated a predicate about a subject, with its own status, validity interval and evidence links?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "paraphrase",
+      "id": "SD-K-04",
+      "module": "K",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which node type stands for the captured bytes of a page or file at retrieval time, identified by a content hash?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "negative",
+      "id": "SD-K-05",
+      "module": "K",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which node type stores a surface-form mention of an entity awaiting resolution? Name it, or say it does not exist and what replaces it."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "exact",
+      "id": "SD-D1-01",
+      "module": "D1",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. List the identity keys of ChemicalSubstance in priority order."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "paraphrase",
+      "id": "SD-D1-02",
+      "module": "D1",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which node type is an ingredient as supplied to a product maker, for example a botanical extract with plant part, extract ratio and solvent?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "paraphrase",
+      "id": "SD-D1-03",
+      "module": "D1",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which relationship says that a supplied ingredient material is a realization of a defined chemical? Give type, endpoints and class."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "negative",
+      "id": "SD-D1-04",
+      "module": "D1",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Is there a ChemicalForm node type in this release? If not, where does a chemical form live?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "exact",
+      "id": "SD-D2-01",
+      "module": "D2",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Give the uid token and identity keys of Mechanism."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "paraphrase",
+      "id": "SD-D2-02",
+      "module": "D2",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which node type mirrors a gene or protein record such as a UniProt or HGNC entry?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "paraphrase",
+      "id": "SD-D2-03",
+      "module": "D2",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which registered predicate states that a compound reduces the activity of a protein target by direct inhibition? Give its subject and object types."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "negative",
+      "id": "SD-D2-04",
+      "module": "D2",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which node type represents a biological pathway? If no dedicated type exists, say which type carries pathways."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "exact",
+      "id": "SD-D3-01",
+      "module": "D3",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. What are the identity keys of Study?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "paraphrase",
+      "id": "SD-D3-02",
+      "module": "D3",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which node type captures one dated version of a trial's registry record, so registry history can be compared?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "exact",
+      "id": "SD-D3-03",
+      "module": "D3",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Describe HAS_STUDY_ROLE: endpoints, class, edge-property type and temporal model."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "negative",
+      "id": "SD-D3-04",
+      "module": "D3",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Does a TrialRegistration node type exist? If not, what represents a registered trial?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "exact",
+      "id": "SD-D4-01",
+      "module": "D4",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Give the uid token and identity keys of Metric."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "paraphrase",
+      "id": "SD-D4-02",
+      "module": "D4",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which node type is one fixed realization of an epigenetic clock as a vendor implements it, possibly with an unknown version?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "paraphrase",
+      "id": "SD-D4-03",
+      "module": "D4",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which relationship says that a lab test reports a particular measurand? Give type, endpoints, class and temporal model."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "negative",
+      "id": "SD-D4-04",
+      "module": "D4",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Is TechnologyPlatform a node type in this release? If not, which types carry assay platforms and algorithms?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "exact",
+      "id": "SD-D5-01",
+      "module": "D5",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. What are the identity keys of ProtocolEdition and its uid token?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "paraphrase",
+      "id": "SD-D5-02",
+      "module": "D5",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which curated node type names a health goal such as better sleep or glycemic control that interventions aim at?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "exact",
+      "id": "SD-D5-03",
+      "module": "D5",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Is INTENDED_FOR_TARGET a relationship type or a predicate? Give its kind, subject types and object types."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "negative",
+      "id": "SD-D5-04",
+      "module": "D5",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which node type stores a lifestyle practice? If none, what carries it?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "exact",
+      "id": "SD-D6-01",
+      "module": "D6",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Give the identity keys of MerchantListing."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "paraphrase",
+      "id": "SD-D6-02",
+      "module": "D6",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which node type holds the printed facts-panel content of a package as of one version of its label?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "exact",
+      "id": "SD-D6-03",
+      "module": "D6",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Describe LISTING_FOR: endpoints, class and temporal model."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "negative",
+      "id": "SD-D6-04",
+      "module": "D6",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Where is a ProductSnapshot stored in this release? If the type is gone, name what carries product label history."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "paraphrase",
+      "id": "SD-D6-05",
+      "module": "D6",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which registered predicate says which organization hosts a merchant listing page?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "exact",
+      "id": "SD-D7-01",
+      "module": "D7",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. What are the identity keys of Person?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "paraphrase",
+      "id": "SD-D7-02",
+      "module": "D7",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which relationship records a person serving a company as founder, officer, employee or advisor, with a role kind on the edge?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "exact",
+      "id": "SD-D7-03",
+      "module": "D7",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. List the values of the OrgRoleKind enum."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "negative",
+      "id": "SD-D7-04",
+      "module": "D7",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Is LegalEntity a node type? If not, which type represents a legal entity?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "exact",
+      "id": "SD-D8-01",
+      "module": "D8",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Give the identity keys of LegalStatus."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "paraphrase",
+      "id": "SD-D8-02",
+      "module": "D8",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which node type represents an authority record such as an FDA warning letter, an inspection or a recall notice?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "exact",
+      "id": "SD-D8-03",
+      "module": "D8",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Describe STATUS_OF: endpoints, class and temporal model."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "negative",
+      "id": "SD-D8-04",
+      "module": "D8",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Is RegulatoryStatus a node type in this release? If not, what replaces it?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "exact",
+      "id": "SD-D9-01",
+      "module": "D9",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Give the identity keys of Chunk."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "paraphrase",
+      "id": "SD-D9-02",
+      "module": "D9",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which node type is a published work such as a podcast episode, a YouTube video or a newsletter issue?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "paraphrase",
+      "id": "SD-D9-03",
+      "module": "D9",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which structural relationship ties an assertion to the media work in which it was said?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "negative",
+      "id": "SD-D9-04",
+      "module": "D9",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Is Episode a node type in this release? If not, what represents a podcast episode?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "exact",
+      "id": "SD-D10-01",
+      "module": "D10",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Give the uid token and identity keys of Association."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "paraphrase",
+      "id": "SD-D10-02",
+      "module": "D10",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which node type is one line of a published ranking or answer report?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "exact",
+      "id": "SD-D10-03",
+      "module": "D10",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which relationship links a Report to the decision criteria it applied? Give endpoints and class."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "negative",
+      "id": "SD-D10-04",
+      "module": "D10",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Is AnswerRecord a node type in this release? If not, what replaces it?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "exact",
+      "id": "SD-D11-01",
+      "module": "D11",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Give the uid token of CaptureAttempt and its stored labels rule."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "paraphrase",
+      "id": "SD-D11-02",
+      "module": "D11",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which node type records one attempt to fetch source bytes, including failed attempts?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "exact",
+      "id": "SD-D11-03",
+      "module": "D11",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which module registers the predicate RECORD_LAST_UPDATED and what kind is it?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "negative",
+      "id": "SD-D11-04",
+      "module": "D11",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Is SourceDiscoveryRecord a node type in this release? If not, what is it called now?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "exact",
+      "id": "SD-D12-01",
+      "module": "D12",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Give the identity keys of FoodItem."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "paraphrase",
+      "id": "SD-D12-02",
+      "module": "D12",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which node type defines a dietary pattern such as a Mediterranean diet as a source defines it?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "exact",
+      "id": "SD-D12-03",
+      "module": "D12",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Describe FOOD_CONTAINS: endpoints, class and edge-property type."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "negative",
+      "id": "SD-D12-04",
+      "module": "D12",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Is FoodProduct a node type in this release? If not, which types carry foods and packaged products?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "exact",
+      "id": "SD-D13-01",
+      "module": "D13",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Give the identity keys of Event."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "paraphrase",
+      "id": "SD-D13-02",
+      "module": "D13",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which vocabulary node type groups events and studies by research area, for example senolytics?"
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "exact",
+      "id": "SD-D13-03",
+      "module": "D13",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Describe INVOLVES: endpoints, class and edge-property type."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "negative",
+      "id": "SD-D13-04",
+      "module": "D13",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Can an Event have eventStatus ANNOUNCED? List the allowed EventStatus values."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "cross-domain",
+      "id": "SD-X-01",
+      "module": "D6",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Trace the schema path from a supplement Product to the defined chemical its label declares. Give each relationship type and node type in order."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "cross-domain",
+      "id": "SD-X-02",
+      "module": "D4",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Trace the schema path from a LabTest to the Biomarker it ultimately measures."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "cross-domain",
+      "id": "SD-X-03",
+      "module": "K",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Trace from an Assertion to the Source whose capture supports it, naming every relationship and its direction."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "cross-domain",
+      "id": "SD-X-04",
+      "module": "D3",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Trace the schema path from a Study to a Biomarker that one of its outcomes measures."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "cross-domain",
+      "id": "SD-X-05",
+      "module": "D6",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Trace the schema path from a MerchantListing to the Organization that is the seller of record."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "cross-domain",
+      "id": "SD-X-06",
+      "module": "D13",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Trace the schema path from an Event to the Organization that issued the regulatory record documenting it."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "cross-domain",
+      "id": "SD-X-07",
+      "module": "D5",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Trace the schema path from a Protocol to whatever one of its steps uses."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "cross-domain",
+      "id": "SD-X-08",
+      "module": "D9",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which relationships connect a Chunk to the snapshot it was cut from and to the entities it mentions? Give class for each."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "cross-domain",
+      "id": "SD-X-09",
+      "module": "D7",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Which registered predicate says an Organization distributes a Product? Give its kind and endpoint types."
+    },
+    {
+      "answerShape": "answer.json {answer, citations[{cardId, releaseDigest}], hits[ranked cardIds, <=10]}",
+      "category": "cross-domain",
+      "id": "SD-X-10",
+      "module": "D4",
+      "prompt": "Release under test: ${RELEASE_ID} (schemaReleaseDigest ${SCHEMA_RELEASE_DIGEST}, workspace ${WORKSPACE_FINGERPRINT}). Cite every schema card you rely on with its release-bound card id. Is there a direct relationship from a Product to the Biomarker its test measures? If not, give the path."
+    }
+  ]
+}

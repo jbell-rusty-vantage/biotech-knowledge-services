@@ -1,0 +1,20 @@
+"""
+Kernel-internal. HAS_EVIDENCE qualifier, mirroring verification.v1 EvidenceEdge: `role` (how the located span
+bears on the record) and `origin` (declared by the producer, or found by the verifier). This is where support and
+contradiction live: always record → SourceLocator, never document → entity (00-DIRECTIVE 3.8). `authority` and
+`independence` copy two axes of the verifier's per-evidence SourceAuthorityVector (directness, freshness and
+applicability stay in the sealed bundle); `facet` is the verification.v1 metric evidence binding (null for
+non-metric records). All three are written only on an Adjudication's VERIFIER_FOUND edges by the adjudication ingest
+(an Assessment or Report may copy them onto its own edges); an Assertion's DECLARED edges never carry them, so a
+verification run never rewrites the extractor's evidence record. Readers take them from the current Adjudications
+of the assertion, on the spans the assertion declared (03 Q-K-15, Q-K-21).
+"""
+type EvidenceEdgeProperties @relationshipProperties {
+  role: EvidenceRole!
+  origin: EvidenceOrigin!
+  expectedSelectedContentDigest: String
+  authority: EvidenceAuthority
+  independence: EvidenceIndependence
+  facet: EvidenceFacet
+  lastWriterRunId: String
+}

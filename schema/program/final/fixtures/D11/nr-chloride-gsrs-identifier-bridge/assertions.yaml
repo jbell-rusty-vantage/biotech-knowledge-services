@@ -1,0 +1,180 @@
+# Assertions for fixture nr-chloride-gsrs-identifier-bridge (FIXTURES stage, A8, 2026-10-08) — identifier bridge + rejected mislink.
+# Kernel pattern (A1): identifiers are Identifier nodes {scheme, issuer, normalized value} attached by identifier.attach
+# (HAS_IDENTIFIER Assertion + IdentifierLinkProperties episode). A bridge between schemes is CO-ATTACHMENT of several identifiers
+# to one entity by one authority snapshot — never an identifier->identifier edge (05 deferred SAME_AS / BRIDGES_TO).
+# D1 ChemicalSubstance / HAS_ACTIVE_MOIETY (A2) are the seam types; the substances are the nodes of
+# final/fixtures/D1/nr-salt-moiety-us-canada (sameAs), which cites the same GSRS spans for version / formula / weight.
+# producedBy ids are FIXTURE ids (mission:ft-D11-fixtures / run:ft-D11-<fixture>), not live Mission Control ids.
+fixture: nr-chloride-gsrs-identifier-bridge
+producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-chloride-gsrs-identifier-bridge" }
+activities:
+  - { ref: act-ingest, activityKind: INGESTION, agent: agent-a8-fixtures, missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-chloride-gsrs-identifier-bridge", note: "GSRS x2, PubChem properties, Europe PMC annotations" }
+  - { ref: act-epmc-annotations, activityKind: INGESTION, agent: agent-epmc-textmining, methodVersion: "Europe PMC Annotations API, provider 'Europe PMC', type 'Chemicals' (version not exposed by the API)", missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-chloride-gsrs-identifier-bridge", note: "the external text-mining proposal is recorded as what it is: an agent's resolution proposal" }
+  - { ref: act-resolve, activityKind: VERIFICATION, agent: agent-identity-checker, methodVersion: "identity-check/v1 (candidate id must be co-attached to the entity by an authority snapshot: GSRS codes[] or PubChem InChIKey)", missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-chloride-gsrs-identifier-bridge" }
+
+nodes:
+  - { ref: sub-nrcl, module: D1, type: ChemicalSubstance, uid: "hu:substance:unii-8xm2xt8vwi", name: "NICOTINAMIDE RIBOSIDE CHLORIDE", sameAs: "final/fixtures/D1/nr-salt-moiety-us-canada#sub-nrcl" }
+  - { ref: sub-nr, module: D1, type: ChemicalSubstance, uid: "hu:substance:unii-0i8h2m0l7n", name: "NICOTINAMIDE RIBOSIDE", sameAs: "final/fixtures/D1/nr-salt-moiety-us-canada#sub-nr" }
+  - { ref: src-gsrs-8xm2, module: K, type: Source, name: "FDA GSRS substance 8XM2XT8VWI (view=full)", properties: { canonicalUri: "https://precision.fda.gov/ginas/app/api/v1/substances(8XM2XT8VWI)?view=full", sourceKind: API, genre: SUBSTANCE_REGISTRY_RECORD }, snapshots: [snap-gsrs-8xm2xt8vwi] }
+  - { ref: src-gsrs-0i8h, module: K, type: Source, name: "FDA GSRS substance 0I8H2M0L7N (view=full)", properties: { canonicalUri: "https://precision.fda.gov/ginas/app/api/v1/substances(0I8H2M0L7N)?view=full", sourceKind: API, genre: SUBSTANCE_REGISTRY_RECORD }, snapshots: [snap-gsrs-0i8h2m0l7n] }
+  - { ref: src-pubchem, module: K, type: Source, name: "PubChem PUG REST properties CID 439924, 90480033", properties: { canonicalUri: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/439924,90480033/property/MolecularFormula,InChIKey/JSON", sourceKind: API, genre: SUBSTANCE_REGISTRY_RECORD }, snapshots: [snap-pubchem-props] }
+  - { ref: src-epmc-ann, module: K, type: Source, name: "Europe PMC annotations PMC5876407", properties: { canonicalUri: "https://www.ebi.ac.uk/europepmc/annotations_api/annotationsByArticleIds?articleIds=PMC:5876407&format=JSON", sourceKind: API, genre: TEXT_MINING_OUTPUT }, snapshots: [snap-epmc-annotations-pmc5876407] }
+  - { ref: org-fda-srs, module: D7, type: Organization, name: "FDA Substance Registration System (GSRS)", sameAs: "final/fixtures/D1/nr-salt-moiety-us-canada#org-fda-srs" }
+  - { ref: org-pubchem, module: D7, type: Organization, name: "NCBI PubChem" }
+  - { ref: agent-a8-fixtures, module: K, type: Agent, name: "agent:a8-d11-fixtures", properties: { agentKind: AUTOMATED_AGENT } }
+  - { ref: agent-epmc-textmining, module: K, type: Agent, name: "Europe PMC text-mining pipeline (Chemicals annotator)", properties: { agentKind: TEXT_MINING_AGENT } }
+  - { ref: agent-identity-checker, module: K, type: Agent, name: "agent:identity-checker (identity-check/v1)", properties: { agentKind: AUTOMATED_AGENT } }
+  # R-09/R-27: no surface-form node. The surface form "nicotinamide riboside" is the SourceLocator l-jats-title-mention (its exact);
+  # the RESOLUTION Assessments r01/r02 cite it with HAS_EVIDENCE {role: CONTEXT}. A derived D9 Chunk -[:MENTIONS]-> edge is licensed only
+  # by the accepted r02 (derivedFromAssessmentUids); the Europe PMC annotation is part of the linking method, never an asserted link.
+
+assertions:
+  # ---------- salt record: UNII <-> CAS <-> CID <-> GRN <-> InChIKey, all co-attached by GSRS version 18 (bridge B07) ----------
+  - id: id01-unii
+    predicate: HAS_IDENTIFIER
+    assertionKind: FIELD
+    subject: { ref: sub-nrcl, type: ChemicalSubstance, module: D1 }
+    identifiers: [ { scheme: UNII, issuer: "FDA GSRS", value: "8XM2XT8VWI", normalizationRule: "upper case" } ]
+    asserter: { ref: org-fda-srs, type: Organization, module: D7 }
+    locators: [l-gsrs8-unii, l-gsrs8-version]
+    qualifiers: ["authority record version 18", "isPrimary true"]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-chloride-gsrs-identifier-bridge" }
+  - id: id02-cas
+    predicate: HAS_IDENTIFIER
+    assertionKind: FIELD
+    subject: { ref: sub-nrcl, type: ChemicalSubstance, module: D1 }
+    identifiers: [ { scheme: CAS_RN, issuer: "Chemical Abstracts Service (as recorded by FDA GSRS)", value: "23111-00-4", normalizationRule: "hyphenated; check digit 4 valid (identifier-bridges.yaml CAS_RN rule)" } ]
+    asserter: { ref: org-fda-srs, type: Organization, module: D7 }
+    locators: [l-gsrs8-cas, l-gsrs8-version]
+    qualifiers: ["GSRS code type PRIMARY", "CAS Common Chemistry not consulted: HTTP 401 (capture-failures-coverage#ca-06)"]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-chloride-gsrs-identifier-bridge" }
+  - id: id03-cid
+    predicate: HAS_IDENTIFIER
+    assertionKind: FIELD
+    subject: { ref: sub-nrcl, type: ChemicalSubstance, module: D1 }
+    identifiers: [ { scheme: PUBCHEM_CID, issuer: "NCBI PubChem (as recorded by FDA GSRS)", value: "90480033" } ]
+    asserter: { ref: org-fda-srs, type: Organization, module: D7 }
+    locators: [l-gsrs8-cid, l-gsrs8-version]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-chloride-gsrs-identifier-bridge" }
+  - id: id04-grn
+    predicate: HAS_IDENTIFIER
+    assertionKind: FIELD
+    subject: { ref: sub-nrcl, type: ChemicalSubstance, module: D1 }
+    identifiers: [ { scheme: "FDA_GRN (K register v2, status requested)", issuer: "FDA (GRAS Notification Program, as recorded by GSRS)", value: "635" } ]
+    asserter: { ref: org-fda-srs, type: Organization, module: D7 }
+    locators: [l-gsrs8-grn]
+    note: "the GRN number identifies a regulatory filing about the substance, not the substance; D8 may prefer a RegulatoryRecord edge (identifier-bridges.yaml kernelCode FDA_GRN, status requested in K v2; 11-open-questions)"
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-chloride-gsrs-identifier-bridge" }
+  - id: id05-inchikey
+    predicate: HAS_IDENTIFIER
+    assertionKind: FIELD
+    subject: { ref: sub-nrcl, type: ChemicalSubstance, module: D1 }
+    identifiers: [ { scheme: INCHIKEY, issuer: "InChI Trust algorithm (computed by FDA GSRS)", value: "YABIFCKURFRPPO-IVOJBTPCSA-N" } ]
+    asserter: { ref: org-fda-srs, type: Organization, module: D7 }
+    locators: [l-gsrs8-inchikey]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-chloride-gsrs-identifier-bridge" }
+  - id: id06-inchikey-pubchem
+    predicate: HAS_IDENTIFIER
+    assertionKind: FIELD
+    subject: { ref: sub-nrcl, type: ChemicalSubstance, module: D1 }
+    identifiers: [ { scheme: INCHIKEY, issuer: "InChI Trust algorithm (computed by PubChem)", value: "YABIFCKURFRPPO-IVOJBTPCSA-N" } ]
+    asserter: { ref: org-pubchem, type: Organization, module: D7 }
+    locators: [l-pubchem-90480033]
+    note: "independent corroboration of id03 + id05: PubChem CID 90480033 computes the same InChIKey GSRS records; the CID<->UNII bridge is therefore authority-asserted (GSRS) AND structure-confirmed (PubChem), not a synonym-string match (bridge B09 failure mode avoided)"
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-chloride-gsrs-identifier-bridge" }
+
+  # ---------- salt -> active moiety (bridge B08), Q-D11-09 ----------
+  - id: m01-has-active-moiety
+    predicate: HAS_ACTIVE_MOIETY
+    assertionKind: RELATIONSHIP
+    subject: { ref: sub-nrcl, type: ChemicalSubstance, module: D1 }
+    object: { ref: sub-nr, type: ChemicalSubstance, module: D1 }
+    asserter: { ref: org-fda-srs, type: Organization, module: D7 }
+    locators: [l-gsrs8-moiety-type, l-gsrs8-moiety-target]
+    speechAct: STATES
+    polarity: POSITIVE
+    basisKind: UNSTATED
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    edge: { type: HAS_ACTIVE_MOIETY, module: D1, properties: AssertedRecordedProperties, episode: "same edge as final/fixtures/D1/nr-salt-moiety-us-canada#a06-has-active-moiety (corroborates; no second episode); recorded time only on the edge (R-10/R-26), validity stays on the Assertion" }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-chloride-gsrs-identifier-bridge" }
+
+  # ---------- moiety record: its own identifier set (different CAS, CID; carries ChEBI) ----------
+  - id: id07-moiety-ids
+    predicate: HAS_IDENTIFIER
+    assertionKind: FIELD
+    subject: { ref: sub-nr, type: ChemicalSubstance, module: D1 }
+    identifiers: [ { scheme: UNII, issuer: "FDA GSRS", value: "0I8H2M0L7N" }, { scheme: CAS_RN, issuer: "Chemical Abstracts Service (as recorded by FDA GSRS)", value: "1341-23-7" }, { scheme: PUBCHEM_CID, issuer: "NCBI PubChem (as recorded by FDA GSRS)", value: "439924" }, { scheme: CHEBI, issuer: "EMBL-EBI (as recorded by FDA GSRS)", value: "CHEBI:15927", normalizationRule: "GSRS prints '15927'; kernel CHEBI pattern requires the 'CHEBI:' prefix" } ]
+    asserter: { ref: org-fda-srs, type: Organization, module: D7 }
+    locators: [l-gsrs0-unii, l-gsrs0-cas, l-gsrs0-cid, l-gsrs0-chebi, l-gsrs0-version]
+    note: "four identifier.attach writes (one Assertion + episode each), shown together for length. The salt and the moiety carry DIFFERENT CAS and CID: a name-only resolver that returns CID 439924 for 'nicotinamide riboside chloride' would silently lose the salt (bridge B10)"
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-chloride-gsrs-identifier-bridge" }
+  - id: id08-moiety-inchikey-pubchem
+    predicate: HAS_IDENTIFIER
+    assertionKind: FIELD
+    subject: { ref: sub-nr, type: ChemicalSubstance, module: D1 }
+    identifiers: [ { scheme: INCHIKEY, issuer: "InChI Trust algorithm (computed by PubChem)", value: "JLEBZPBDRKPWTD-TURQNECASA-O" } ]
+    asserter: { ref: org-pubchem, type: Organization, module: D7 }
+    locators: [l-pubchem-439924]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-chloride-gsrs-identifier-bridge" }
+
+assessments:
+  # ---------- the machine-produced link and its rejection (Q-D11-10, CQ-AX-14) ----------
+  - id: r01-epmc-proposal
+    assessmentKind: RESOLUTION
+    assessmentSubkind: "D11.text-mining-proposal"
+    about: []   # no ASSESSES edge: the proposed id CHEBI:80498 was never a node; the proposal is carried in facets (Q-D11-10)
+    facets: { proposedScheme: CHEBI, proposedValue: "CHEBI:80498", proposedLabel: "dihydrozeatin riboside", proposedBy: agent-epmc-textmining }
+    evidence: [ { locator: l-epmc-mislink, role: CONTEXT }, { locator: l-jats-title-mention, role: CONTEXT, note: "the surface-form span (R-09/R-27)" } ]
+    summary: "Europe PMC's Chemicals annotator tagged the title words 'nicotinamide riboside' with ChEBI_80498 (dihydrozeatin riboside). Recorded as the provider's proposal, not as an identifier."
+    methodVersion: "europepmc-annotations (provider 'Europe PMC', type Chemicals; API exposes no annotator version)"
+    status: SUPERSEDED
+    generatedBy: act-epmc-annotations
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-chloride-gsrs-identifier-bridge" }
+  - id: r02-identity-check
+    assessmentKind: RESOLUTION
+    assessmentSubkind: "D11.authority-identity-check"
+    about: [ { ref: sub-nr, type: ChemicalSubstance, module: D1 } ]   # the candidate entity (ASSESSES); the span is the CONTEXT locator below
+    supersedes: r01-epmc-proposal
+    inputs: [r01-epmc-proposal, id07-moiety-ids]
+    evidence:
+      - { locator: l-gsrs0-chebi, role: CONTRADICTS, note: "GSRS records CHEBI 15927 for NICOTINAMIDE RIBOSIDE, not 80498" }
+      - { locator: l-epmc-mislink, role: CONTEXT }
+      - { locator: l-jats-title-mention, role: CONTEXT, note: "the surface-form span 'nicotinamide riboside' (R-09/R-27; cation named generically; the trial material is the chloride - nr-trial-jats-unstructured#r01)" }
+    verdict: CONTRADICTED
+    resolvedTo: { ref: sub-nr, type: ChemicalSubstance, identifier: "UNII 0I8H2M0L7N / CHEBI:15927" }
+    score: 1.0
+    summary: "Rejected: CHEBI:80498 is not co-attached to any NR substance by an authority snapshot; GSRS 0I8H2M0L7N carries CHEBI 15927. The surface form resolves to NICOTINAMIDE RIBOSIDE (moiety); this assessment licenses the derived D9 Chunk -[:MENTIONS]-> sub-nr edge (derivedFromAssessmentUids), and no HAS_IDENTIFIER CHEBI:80498 is ever written."
+    methodVersion: "identity-check/v1"
+    status: ACCEPTED
+    generatedBy: act-resolve
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-chloride-gsrs-identifier-bridge" }
+
+bridgeCheck:   # identifier-bridges.yaml rows exercised; every bridge is co-attachment, no identifier->identifier edge exists
+  B07: "UNII 8XM2XT8VWI -> CAS 23111-00-4, PubChem 90480033, GRN 635, InChIKey YABIFCKURFRPPO-IVOJBTPCSA-N: id01..id05 (one authority, one snapshot, version 18)"
+  B08: "UNII salt -> UNII moiety: m01 (HAS_ACTIVE_MOIETY episode, GSRS /relationships/0)"
+  B09: "PubChem CID <-> InChIKey confirmed structurally: id06, id08 (not via synonym strings)"
+  B10: "free-text name -> ChEBI: hypothesis only; r01 proposal superseded by r02 (CONTRADICTED)"
+  cypher: |
+    // CQ-ID-04: which identifiers support the substance match, from which authority and which release
+    MATCH (s:ChemicalSubstance {uid: 'hu:substance:unii-8xm2xt8vwi'})-[h:HAS_IDENTIFIER]->(id:Identifier)
+    WHERE h.recordedTo IS NULL
+    MATCH (a:Assertion {uid: h.assertionUid})-[:ASSERTED_BY]->(auth)
+    MATCH (a)-[:HAS_EVIDENCE]->(loc:SourceLocator)<-[:HAS_LOCATOR]-(snap:SourceSnapshot)<-[:HAS_SNAPSHOT]-(src:Source)
+    RETURN id.scheme, id.value, id.issuer, auth.name, src.canonicalUri, snap.retrievedAt, snap.contentHash, a.status

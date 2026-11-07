@@ -1,0 +1,66 @@
+version: 1
+module: D11
+# Model stage, A8, 2026-10-08. One node type (1 / 8). The action space, the identifier-scheme register and the bridge
+# table are CONFIG (tooling/action-space.yaml, packets/K/identifier-schemes.yaml, identifier-bridges.yaml).
+nodes:
+  - name: CaptureAttempt
+    uidToken: capture-attempt
+    identityKeys: [uid]
+    identityRule: "uid = hu:capture-attempt:<sha256(runId of the generating Activity | toolId | requestDigest | attemptedAt)>; enforced by the kernel uid uniqueness constraint. runId is not a CaptureAttempt property; for an immutable attempt lastWriterRunId equals it (adversarial review: the earlier key list named generatingActivity.runId, which no constraint can see)"
+    identifierSchemes: []
+    whyNode: >-
+      It holds the one fact the kernel cannot: a request that FAILED or yielded only a PARTIAL capture, which leaves no
+      complete SourceSnapshot and no Assertion (the ICTRP timeout left no bytes at all). Questions: Q-D11-17 (D11, value 1,
+      harm: what failed in mission M's runs, Activity.missionId ← WAS_GENERATED_BY ← attempt, joined to the registry by
+      toolId for the questions left unanswerable) and K:CQ-AX-04 (owner K: value 2, neutral), where the attempt is what
+      tells "unknown: blocked" (FAILED / PARTIAL for the subject and tool) from "unknown: never queried" (no attempt, no
+      snapshot). "Not reported by the source" is NOT an attempt: an authoritative empty result is a COMPLETE kernel
+      SourceSnapshot plus the kernel FIELD_NOT_REPORTED Assertion (adversarial review dropped the EMPTY_RESULT and CAPTURED
+      outcomes, resultCount and the ToolActionKind enum). Making failed requests into Sources/Snapshots would turn every
+      search URL and error page into a Source. Also read by Q-D11-01 (recent failure kinds per tool), Q-D11-07 (optional
+      evidence for the registry-history floor; the floor itself is registry gap G1) and Q-D11-20 (rendition problems per
+      tool). Volume is bounded by failures, never by captures.
+    filterProperties: [toolId, outcome, failureKind, subjectUid, attemptedAt]
+    otherProperties: 9   # toolVersion, httpStatus, requestUri, requestDigest, queryText, responseHash, snapshotUid, retryAfterSeconds, errorText (+ Entity fields)
+    archetype: "Occurrence in substance (implements Entity only; not Subjectable: nothing is asserted about an attempt). Stored labels follow the kernel directive for domain types: [CaptureAttempt, Entity]"
+    mutations: { create: false, update: false, delete: false }   # executor-only writes (ADR 0003); immutable, a retry is a new attempt
+    labels: [CaptureAttempt, Entity]
+    relationshipFields: 0
+    lineage: "kernel WAS_GENERATED_BY → Activity (declared once on Activity.generated: [Entity])"
+    privacy: "requestUri, queryText and errorText never carry credentials (the executor strips api_key, key, token and email query parameters before hashing and storing). When a request names a person (e.g. an NPPES name search for Q-D11-16), queryText and the name inside requestUri / errorText are stored only as sha256:<hex> and privacyClass is INTERNAL (the kernel PrivacyClass has no stricter value). No other personal data."
+    fixture: 07-fixtures/capture-failures-coverage
+    populatedBy: [ctgov-record-history, firecrawl-cli, usda-fdc, cas-common-chemistry, who-ictrp, sec-edgar, regulations-gov-attachments, semantic-scholar, openalex, publisher-pages]   # every id is a row in 08 / an entry in tooling/action-space.yaml
+    populatedByNote: "observed producers so far (publisher-pages: fixtures-stage ca-aps-notice-curl). ncbi-eutils-pubmed's empty [si] search is no longer an attempt (kernel snapshot + FIELD_NOT_REPORTED). In production every adapter in tooling/action-space.yaml emits FAILED / PARTIAL attempts through the gap-G10 recorder."
+
+deferred:
+  - name: ToolCapability / SourceAccessProfile (one node per action-space entry)
+    reason: >-
+      The registry is versioned config read by the agent's tool layer (Q-D11-01, Q-D11-20). As a node it would be a
+      ~60-member low-cardinality vocabulary that every snapshot and attempt points at (the modeling skill's
+      "low-cardinality value as node" supernode anti-pattern) while no question traverses past it. The action-space id is
+      a property (SourceSnapshot.captureMethod prefix, CaptureAttempt.toolId). Promote only if a question must join tool
+      metadata inside one Cypher query at scale.
+  - name: IdentifierScheme
+    reason: "kernel decision: Identifier.scheme is a String code from packets/K/identifier-schemes.yaml; scheme metadata (pattern, normalization, authority, bridges) lives in that register and in identifier-bridges.yaml"
+  - name: IdentifierBridge
+    reason: "a bridge is never a stored identifier→identifier link (kernel rule); authority-asserted bridges are co-attachment of HAS_IDENTIFIER assertions on one entity, inferred ones are RESOLUTION / EQUIVALENCE Assessments"
+  - name: CaptureFailure as an Activity of its own
+    reason: "the kernel keeps one Activity per run (the lineage spine); one Activity per HTTP request would multiply lineage nodes and mix operational granularity into the spine; a CaptureAttempt generated by the run's Activity keeps the spine clean"
+  - name: TextMinedAnnotation (Europe PMC annotation as a node)
+    reason: "annotations are a derived MENTIONS projection with a method version, licensed by a RESOLUTION Assessment that cites the span (SourceLocator, role CONTEXT; the kernel has no Mention node); never evidence; observed mislinks (ChEBI dihydrozeatin riboside for NR) argue against storing them as facts"
+  - name: RegistryVersion (D11 copy)
+    reason: "a registry version is a kernel SourceSnapshot of the registry-record Source plus D3 RegistrationVersion state; diffs are computed at query time (Q-D11-07)"
+  - name: AuthorityRecord / AuthoritySnapshot
+    reason: "an authority record (GSRS, PubChem, GLEIF, NPPES) is a kernel Source + SourceSnapshot; authority per claim kind is a kernel Assessment SOURCE_AUTHORITY (content owned by D9)"
+  - name: ReadinessScore on Source
+    reason: "readiness is a property of a tool/route in the registry, not of an entity (00-DIRECTIVE 3.2: no good/bad on entities)"
+
+mergedInto:
+  - pinned: SourceDiscoveryRecord (W19)
+    into: D11.CaptureAttempt
+    note: "kept: outcome (DiscoveryOutcome BLOCKED/PARTIAL/ERROR → CaptureOutcome FAILED/PARTIAL + CaptureFailureKind), attemptedUri → requestUri, queryText, responseStatusCode → httpStatus, subjectUid, blockEvidence → errorText + responseHash/snapshotUid; dropped: FOUND (the snapshot is the record), NOT_FOUND and resultCount (an authoritative empty result is a COMPLETE kernel snapshot + FIELD_NOT_REPORTED Assertion), externalRunId/activityKind (the generating Activity carries them), subjectLabel (label of the uid), FOR_COVERAGE_REQUIREMENT and DISCOVERED_SOURCE edges (05 deferred)"
+  - pinned: SourceCoverageRequirement (W19)
+    into: CONFIG tooling/action-space.yaml (+ each packet's 02-questions.md `sources` column)
+    note: "requiredSourceKinds, maxSnapshotAgeDays, requireCompleteCapture, revisionHistoryRequired become registry/answer-policy configuration (D10 PolicyVersion when an answer policy cites them); A1 deferred it to D11 (packets/K/09-reasoning.md decisions table)"
+  - pinned: "Domain D11 'Seam closure' (pinned catalog numbering; 0 node types, RecommendableTarget union)"
+    into: "nothing (not a D11 concept: the pinned catalog's D11 is an assembly artifact; the union is replaced by the kernel Subjectable interface)"

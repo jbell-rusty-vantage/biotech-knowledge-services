@@ -1,0 +1,324 @@
+# Operational names, release biotech-schema-v2.0.2. Authored upstream (carried from biotech-schema-v2.0.1); class operational, not ontology.
+format: bks-operational-names.v1
+releaseId: biotech-schema-v2.0.2
+class: operational
+rule: "Release-known operational names: they are NOT v2 domain ontology and NOT in the SDL. Validators and the planner recognize them (so they are never reported as unknown names nor mistaken for v2 types); the consumer projection excludes them; no ordinary agent write capability exists for them (only the listed writers, under the KsWriteFence). Typed reads, GraphQL and catalog templates never match them."
+decisions:
+  - CUTOVER.md Compatibility decisions (lead, 2026-10-11)
+  - S8-migration-prep.md section 10 items 1 and 3
+  - S0-INVENTORY section 5 consequence 2
+labels:
+  - name: LegacyV0
+    kind: legacy-tag
+    appliesTo: every preserved legacy node (relabeled and tag-only)
+    writers:
+      - bks_migrator (scripts/migration, packages/kg-ops/src/migration)
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml policy.legacyPreservation
+  - name: LegacyV0_Biomarker
+    kind: legacy-relabel
+    legacyLabel: Biomarker
+    usedBy: legacy-map relabel (REMOVE n:<Label> SET n:LegacyV0_<Label>:LegacyV0)
+    writers:
+      - bks_migrator (scripts/migration, packages/kg-ops/src/migration)
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml policy.legacyPreservation.relabel.relabelLabels
+  - name: LegacyV0_Compound
+    kind: legacy-relabel
+    legacyLabel: Compound
+    usedBy: legacy-map relabel (REMOVE n:<Label> SET n:LegacyV0_<Label>:LegacyV0)
+    writers:
+      - bks_migrator (scripts/migration, packages/kg-ops/src/migration)
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml policy.legacyPreservation.relabel.relabelLabels
+  - name: LegacyV0_CompoundForm
+    kind: legacy-relabel
+    legacyLabel: CompoundForm
+    usedBy: legacy-map relabel (REMOVE n:<Label> SET n:LegacyV0_<Label>:LegacyV0)
+    writers:
+      - bks_migrator (scripts/migration, packages/kg-ops/src/migration)
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml policy.legacyPreservation.relabel.relabelLabels
+  - name: LegacyV0_Event
+    kind: legacy-relabel
+    legacyLabel: Event
+    usedBy: legacy-map relabel (REMOVE n:<Label> SET n:LegacyV0_<Label>:LegacyV0)
+    writers:
+      - bks_migrator (scripts/migration, packages/kg-ops/src/migration)
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml policy.legacyPreservation.relabel.relabelLabels
+  - name: LegacyV0_LabTest
+    kind: legacy-relabel
+    legacyLabel: LabTest
+    usedBy: legacy-map relabel (REMOVE n:<Label> SET n:LegacyV0_<Label>:LegacyV0)
+    writers:
+      - bks_migrator (scripts/migration, packages/kg-ops/src/migration)
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml policy.legacyPreservation.relabel.relabelLabels
+  - name: LegacyV0_Listing
+    kind: legacy-relabel
+    legacyLabel: Listing
+    usedBy: legacy-map relabel (REMOVE n:<Label> SET n:LegacyV0_<Label>:LegacyV0)
+    writers:
+      - bks_migrator (scripts/migration, packages/kg-ops/src/migration)
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml policy.legacyPreservation.relabel.relabelLabels
+  - name: LegacyV0_ListingSnapshot
+    kind: legacy-relabel
+    legacyLabel: ListingSnapshot
+    usedBy: legacy-map relabel (REMOVE n:<Label> SET n:LegacyV0_<Label>:LegacyV0)
+    writers:
+      - bks_migrator (scripts/migration, packages/kg-ops/src/migration)
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml policy.legacyPreservation.relabel.relabelLabels
+  - name: LegacyV0_Organization
+    kind: legacy-relabel
+    legacyLabel: Organization
+    usedBy: legacy-map relabel (REMOVE n:<Label> SET n:LegacyV0_<Label>:LegacyV0)
+    writers:
+      - bks_migrator (scripts/migration, packages/kg-ops/src/migration)
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml policy.legacyPreservation.relabel.relabelLabels
+  - name: LegacyV0_OrganizationSnapshot
+    kind: legacy-relabel
+    legacyLabel: OrganizationSnapshot
+    usedBy: legacy-map relabel (REMOVE n:<Label> SET n:LegacyV0_<Label>:LegacyV0)
+    writers:
+      - bks_migrator (scripts/migration, packages/kg-ops/src/migration)
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml policy.legacyPreservation.relabel.relabelLabels
+  - name: LegacyV0_PanelDefinition
+    kind: legacy-relabel
+    legacyLabel: PanelDefinition
+    usedBy: legacy-map relabel (REMOVE n:<Label> SET n:LegacyV0_<Label>:LegacyV0)
+    writers:
+      - bks_migrator (scripts/migration, packages/kg-ops/src/migration)
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml policy.legacyPreservation.relabel.relabelLabels
+  - name: LegacyV0_Person
+    kind: legacy-relabel
+    legacyLabel: Person
+    usedBy: legacy-map relabel (REMOVE n:<Label> SET n:LegacyV0_<Label>:LegacyV0)
+    writers:
+      - bks_migrator (scripts/migration, packages/kg-ops/src/migration)
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml policy.legacyPreservation.relabel.relabelLabels
+  - name: LegacyV0_PhysicalLocation
+    kind: legacy-relabel
+    legacyLabel: PhysicalLocation
+    usedBy: legacy-map relabel (REMOVE n:<Label> SET n:LegacyV0_<Label>:LegacyV0)
+    writers:
+      - bks_migrator (scripts/migration, packages/kg-ops/src/migration)
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml policy.legacyPreservation.relabel.relabelLabels
+  - name: LegacyV0_Product
+    kind: legacy-relabel
+    legacyLabel: Product
+    usedBy: legacy-map relabel (REMOVE n:<Label> SET n:LegacyV0_<Label>:LegacyV0)
+    writers:
+      - bks_migrator (scripts/migration, packages/kg-ops/src/migration)
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml policy.legacyPreservation.relabel.relabelLabels
+  - name: LegacyV0_ProductSnapshot
+    kind: legacy-relabel
+    legacyLabel: ProductSnapshot
+    usedBy: legacy-map relabel (REMOVE n:<Label> SET n:LegacyV0_<Label>:LegacyV0)
+    writers:
+      - bks_migrator (scripts/migration, packages/kg-ops/src/migration)
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml policy.legacyPreservation.relabel.relabelLabels
+  - name: LegacyV0_RegulatoryStatus
+    kind: legacy-relabel
+    legacyLabel: RegulatoryStatus
+    usedBy: legacy-map relabel (REMOVE n:<Label> SET n:LegacyV0_<Label>:LegacyV0)
+    writers:
+      - bks_migrator (scripts/migration, packages/kg-ops/src/migration)
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml policy.legacyPreservation.relabel.relabelLabels
+  - name: LegacyV0_Study
+    kind: legacy-relabel
+    legacyLabel: Study
+    usedBy: legacy-map relabel (REMOVE n:<Label> SET n:LegacyV0_<Label>:LegacyV0)
+    writers:
+      - bks_migrator (scripts/migration, packages/kg-ops/src/migration)
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml policy.legacyPreservation.relabel.relabelLabels
+  - name: LegacyV0_TechnologyPlatform
+    kind: legacy-relabel
+    legacyLabel: TechnologyPlatform
+    usedBy: legacy-map relabel (REMOVE n:<Label> SET n:LegacyV0_<Label>:LegacyV0)
+    writers:
+      - bks_migrator (scripts/migration, packages/kg-ops/src/migration)
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml policy.legacyPreservation.relabel.relabelLabels
+  - name: LegacyV0_Document
+    kind: legacy-relabel-reserved
+    legacyLabel: Document
+    usedBy: "reserved: legacy-map 1.0.0 keeps Document tag-only (original label kept + :LegacyV0); the name is registered so a future relabel or a reverse recipe is recognized"
+    writers:
+      - bks_migrator (scripts/migration, packages/kg-ops/src/migration)
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml policy.legacyPreservation.relabel.tagOnly
+  - name: LegacyV0_BellLabsSchemaDeploymentEvidence
+    kind: legacy-relabel-reserved
+    legacyLabel: BellLabsSchemaDeploymentEvidence
+    usedBy: "reserved: legacy-map 1.0.0 keeps BellLabsSchemaDeploymentEvidence tag-only (original label kept + :LegacyV0); the name is registered so a future relabel or a reverse recipe is recognized"
+    writers:
+      - bks_migrator (scripts/migration, packages/kg-ops/src/migration)
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml policy.legacyPreservation.relabel.tagOnly
+  - name: Document
+    kind: foreign-label
+    usedBy: shared Knowledge Services document lane (live document_* constraints); not a v2 label
+    writers:
+      - owner outside this release
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml policy.legacyPreservation.relabel.tagOnlyReason
+  - name: BellLabsSchemaDeploymentEvidence
+    kind: foreign-label
+    usedBy: deployment evidence node read by deployment tooling; not a v2 label
+    writers:
+      - owner outside this release
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml policy.legacyPreservation.relabel.tagOnlyReason
+  - name: KsWriteFence
+    kind: executor-marker
+    writers:
+      - native executor
+      - bks_migrator
+    projection: excluded
+    agentWrite: forbidden
+    source: INTERFACES.md section 6
+  - name: KsIntentMarker
+    kind: executor-marker
+    writers:
+      - native executor
+      - bks_migrator
+    projection: excluded
+    agentWrite: forbidden
+    source: INTERFACES.md section 6
+  - name: KsReleaseMarker
+    kind: executor-marker
+    writers:
+      - bks_migrator
+    projection: excluded
+    agentWrite: forbidden
+    source: INTERFACES.md sections 1 and 6
+  - name: KsRevocationFence
+    kind: executor-marker
+    writers:
+      - native executor
+    projection: excluded
+    agentWrite: forbidden
+    source: "S3-native-executor.md section 10 item 4 ({id: 'canonical', generation, updatedAt})"
+relationshipTypes:
+  - name: MIGRATED_FROM
+    class: operational
+    from: any v2 node created by the migration
+    to: LegacyV0
+    properties:
+      - migrationRunId
+      - legacyElementId
+      - legacyId
+      - legacyLabel
+      - legacyExportDigest
+      - mapVersion
+    writers:
+      - bks_migrator (scripts/migration, packages/kg-ops/src/migration)
+    projection: excluded
+    agentWrite: forbidden
+    typedReads: excluded
+    source: migration/legacy-map.yaml policy.legacyPreservation.migratedFrom
+properties:
+  - name: legacyLabels
+    "on": LegacyV0
+    type: "[String!]"
+    meaning: original legacy labels of the preserved node
+    writers:
+      - bks_migrator (scripts/migration, packages/kg-ops/src/migration)
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml policy.legacyPreservation.relabel.effect
+  - name: legacyExportDigest
+    "on": LegacyV0 | MIGRATED_FROM
+    type: String (sha256:...)
+    meaning: digest of the verified legacy export the migration ran from (rollback / accounting key)
+    writers:
+      - bks_migrator (scripts/migration, packages/kg-ops/src/migration)
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml policy.legacyPreservation
+qualifierFamilies:
+  - family: "legacy:"
+    members:
+      - legacy:recordedFrom=
+      - legacy:extractedAt=
+      - legacy:runId=
+    meaning: source-stated legacy system metadata carried on migrated Assertions; never a v2 clock or run id
+    writers:
+      - bks_migrator (scripts/migration, packages/kg-ops/src/migration)
+    projection: excluded
+    agentWrite: forbidden
+    source: migration/legacy-map.yaml (legacy:recordedFrom, legacy:runId; legacy:extractedAt for the legacy extraction time)
+markerShapes:
+  KsIntentMarker: "unique on markerKey (ks_intent_marker_key) = mk-<sha256(canonical{installationId, applicationId, tenantId, effectKey})> (S3 markerKeyOf); effectKey is the executor effect key or migration:<migrationRunId>:<batchId> for migration batches (indexed, ks_intent_marker_effect_key_lookup; no longer unique on its own); a migration batch is representable as markerKeyOf({installationId, applicationId: <migrator application id>, tenantId}, 'migration:<runId>:<batchId>'), so migrator markers share the executor's idempotence and must carry markerKey (Enterprise ks_intent_marker_key_exists); planRef = the plan ref, or the migrationRunId for migration batches (ks_intent_marker_plan_ref); persisted status applied|failed (applying is never committed; unresolved is a receipt outcome reconciled by lookup); also effectKey, scope, intentId, intentDigest, planDigest, attempts (JSON), receipt, receiptId, lastAttemptId, graphRevision"
+  KsRevocationFence: "exactly one node {id: 'canonical', generation, updatedAt} (ks_revocation_fence_id; Enterprise ks_revocation_fence_generation_exists); the local revocation fence of the admission witness"
+  KsReleaseMarker: "{releaseId (unique, ks_release_marker_release_id), schemaReleaseDigest, ddlDigest, installedAt (index ks_release_marker_installed), migrationRunId} written last by the migrator after DDL and migration checks; Enterprise existence constraints on releaseId, schemaReleaseDigest, ddlDigest, installedAt"
+  KsWriteFence: "exactly one node {id: 'canonical', graphRevision, lockSeq, locked, lastEffectKey, lastWriterRunId, updatedAt} (ks_write_fence_id; Enterprise ks_write_fence_lock_seq_exists); every canonical write, migration batches included, takes the lock first with SET f.lockSeq = f.lockSeq + 1; graphRevision advances only when graph effects commit; locked is the executor's lock flag"
+executorReconciliation:
+  rule: ddl/required.cypher of the release is the single DDL authority; kg ensure-operations should apply loadRelease().ddl.required (and .enterprise on Enterprise) instead of its own operationalDdl() list
+  source: packages/kg-ops/src/fence.ts operationalDdl() (S3)
+  adopted:
+    - s3: ks_write_fence_id
+      release: ks_write_fence_id
+      note: same name and definition
+    - s3: ks_revocation_fence_id
+      release: ks_revocation_fence_id
+      note: same name and definition (new in v2.0.1)
+    - s3: ks_intent_marker_key
+      release: ks_intent_marker_key
+      note: same name and definition (new in v2.0.1); the v2.0.0 uniqueness on effectKey (ks_intent_marker_effect_key) is replaced by the index ks_intent_marker_effect_key_lookup; ddl.json migrationCommands drops the old constraint on graphs that received v2.0.0 DDL
+    - s3: rel_uid_<lowercase type> (relationshipUid per asserted type)
+      release: rel_<TYPE>_uid
+      note: same definition under the release naming scheme (rel_<TYPE>_assertion / _writer / _uid)
+  notAdopted:
+    - s3: ks_release_marker_id
+      release: ks_release_marker_release_id
+      reason: equivalent uniqueness already defined under the release name since v2.0.0; a second name would fail as an equivalent constraint
+    - s3: identifier_scheme_issuer_value
+      release: identifier_key
+      reason: equivalent (scheme, issuer, value) uniqueness already defined (query-patterns D-1)
+    - s3: claim_proposition_hash (index)
+      release: claim_proposition_hash (uniqueness constraint)
+      reason: the release defines Claim.propositionHash as UNIQUE under the same name; its backing index serves the lookup; S3's CREATE INDEX of the same name conflicts and must be dropped from operationalDdl()
+    - s3: capture_attempt_subject
+      release: capture_subject
+      reason: equivalent index already defined (query-patterns D-1)
+    - s3: activity_run (index on externalRunSystem, runId)
+      release: activity_run (uniqueness constraint)
+      reason: the release enforces (externalRunSystem, runId) uniqueness (kernel P2, one Activity per run) under the same name; the backing index serves the lookup
+    - s3: uid_<lowercase label>
+      release: entity_uid + uid_<Label>
+      reason: equivalent per-label uid uniqueness already defined; release names are stable since v2.0.0

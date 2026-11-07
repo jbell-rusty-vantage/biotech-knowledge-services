@@ -1,0 +1,67 @@
+version: 1
+module: D9
+status: seed (model stage, A8, 2026-10-08); the brief asks for 50 register rows; 22 are seeded from captured sources, the rest are for the fixtures/check stages
+# Controlled values for kernel Source.genre (the kernel docstring points here) and the seed of the SOURCE_AUTHORITY register.
+# Authority is per claim kind, never a global trust score (Q-D9-14). Each register row becomes a kernel
+# Assessment {assessmentKind: SOURCE_AUTHORITY, assessmentSubkind: <claimKind>} ASSESSES the Source (or the Channel for all its works),
+# with methodVersion d9-source-authority/v1 and HAS_EVIDENCE to the span that justifies it when there is one.
+
+claimKinds:
+  WHAT_WAS_SAID: the words a named speaker said or wrote in a work
+  ROLES_DECLARED: roles, stakes, payments a person or channel declares
+  SPONSORSHIP: which party sponsored a work or segment
+  STUDY_RESULT: a result of a study (numbers, direction, adverse events)
+  WHAT_WAS_ADMINISTERED: protocol, arm, dose actually given in a study
+  PRODUCT_COMPOSITION: what a product contains per serving
+  REGULATORY_ACTION: an action by a regulator and its stated reasons
+  PERSONAL_EXPERIENCE: a first-person report of an outcome (anecdote)
+  CORRECTION: a publisher's correction of an earlier statement
+
+authorityLevels: [PRIMARY, SECONDARY, RETELLING, NOT_AUTHORITATIVE]
+
+genres:
+  - { genre: PODCAST_TRANSCRIPT_PAGE, sourceKind: WEB_PAGE, primaryFor: [WHAT_WAS_SAID, SPONSORSHIP], note: publisher transcript; check the page caveat (under human review) }
+  - { genre: PODCAST_EPISODE_PAGE, sourceKind: WEB_PAGE, primaryFor: [SPONSORSHIP, CORRECTION], note: show notes and chapters }
+  - { genre: PODCAST_RSS_ITEM, sourceKind: API, primaryFor: [SPONSORSHIP, CORRECTION], note: item description; enclosure ?updated= marks re-cuts }
+  - { genre: AUDIO_ENCLOSURE, sourceKind: AUDIO, primaryFor: [WHAT_WAS_SAID], note: needs ASR text; media-time locators }
+  - { genre: VIDEO_PAGE, sourceKind: VIDEO, primaryFor: [WHAT_WAS_SAID], note: captions may differ from the publisher transcript }
+  - { genre: CAPTION_TRACK, sourceKind: TRANSCRIPT, primaryFor: [], secondaryFor: [WHAT_WAS_SAID], note: auto captions are SECONDARY }
+  - { genre: NEWSLETTER_POST, sourceKind: WEB_PAGE, primaryFor: [WHAT_WAS_SAID], retellingFor: [STUDY_RESULT] }
+  - { genre: BLOG_ARTICLE, sourceKind: WEB_PAGE, primaryFor: [WHAT_WAS_SAID], retellingFor: [STUDY_RESULT] }
+  - { genre: SOCIAL_POST, sourceKind: WEB_PAGE, primaryFor: [WHAT_WAS_SAID, PERSONAL_EXPERIENCE] }
+  - { genre: FORUM_THREAD, sourceKind: WEB_PAGE, primaryFor: [PERSONAL_EXPERIENCE], note: pseudonymous asserters; anecdote, not evidence }
+  - { genre: SELF_DISCLOSURE_PAGE, sourceKind: WEB_PAGE, primaryFor: [ROLES_DECLARED], note: versioned in place; as-of answers need archive snapshots }
+  - { genre: PROTOCOL_PAGE, sourceKind: WEB_PAGE, primaryFor: [WHAT_WAS_SAID] }
+  - { genre: MARKETING_PAGE, sourceKind: WEB_PAGE, primaryFor: [], secondaryFor: [PRODUCT_COMPOSITION], note: MANUFACTURER_CLAIM basis }
+  - { genre: PRESS_RELEASE, sourceKind: WEB_PAGE, primaryFor: [], retellingFor: [STUDY_RESULT] }
+  - { genre: PEER_REVIEWED_PUBLICATION, sourceKind: PDF, primaryFor: [STUDY_RESULT, WHAT_WAS_ADMINISTERED, ROLES_DECLARED], note: D3 owns; COI statements are ROLES_DECLARED }
+  - { genre: TRIAL_REGISTRY_RECORD, sourceKind: REGISTRY, primaryFor: [WHAT_WAS_ADMINISTERED], note: D3 owns }
+  - { genre: REGULATOR_LETTER, sourceKind: PDF, primaryFor: [REGULATORY_ACTION], note: D8 owns; OCR text basis common }
+  - { genre: REGULATION_TEXT, sourceKind: API, primaryFor: [REGULATORY_ACTION] }
+  - { genre: PLATFORM_DIRECTORY_RECORD, sourceKind: API, primaryFor: [], note: iTunes / oEmbed metadata; identity only }
+  - { genre: WEB_ARCHIVE_COPY, sourceKind: WEB_PAGE, primaryFor: [ROLES_DECLARED, WHAT_WAS_SAID], note: authority of the archived original as of observedAt }
+
+register:
+  # first rows (sources captured in the research stage, 01-ecosystem.md S-keys); level per claim kind
+  - { source: S01 hubermanlab.com ep 52 page, genre: PODCAST_TRANSCRIPT_PAGE, WHAT_WAS_SAID: PRIMARY, SPONSORSHIP: PRIMARY }
+  - { source: S02 feeds.megaphone.fm/hubermanlab, genre: PODCAST_RSS_ITEM, SPONSORSHIP: PRIMARY }
+  - { source: S03 YouTube n9IxomBusuw, genre: VIDEO_PAGE, WHAT_WAS_SAID: SECONDARY }
+  - { source: S04 YouTube oEmbed, genre: PLATFORM_DIRECTORY_RECORD, WHAT_WAS_SAID: NOT_AUTHORITATIVE }
+  - { source: S05 Spotify episode page, genre: PLATFORM_DIRECTORY_RECORD, WHAT_WAS_SAID: NOT_AUTHORITATIVE }
+  - { source: S06 iTunes Search / Lookup, genre: PLATFORM_DIRECTORY_RECORD, WHAT_WAS_SAID: NOT_AUTHORITATIVE }
+  - { source: S07 Lifespan RSS, genre: PODCAST_RSS_ITEM, SPONSORSHIP: PRIMARY, CORRECTION: PRIMARY }
+  - { source: S08 Sinclair affiliations (current), genre: SELF_DISCLOSURE_PAGE, ROLES_DECLARED: PRIMARY }
+  - { source: S09 Sinclair affiliations (Wayback 2021-12-09), genre: WEB_ARCHIVE_COPY, ROLES_DECLARED: PRIMARY }
+  - { source: S11 nmn.com retelling, genre: BLOG_ARTICLE, WHAT_WAS_SAID: RETELLING }
+  - { source: S12 Topol Ground Truths post, genre: NEWSLETTER_POST, STUDY_RESULT: RETELLING }
+  - { source: S13 Crossref record (Nature 2026), genre: PLATFORM_DIRECTORY_RECORD, STUDY_RESULT: NOT_AUTHORITATIVE }
+  - { source: S14 peterattiamd.com RAPA-EX-01 article, genre: BLOG_ARTICLE, STUDY_RESULT: RETELLING, WHAT_WAS_SAID: PRIMARY }
+  - { source: S15 PubMed 41985884, genre: PEER_REVIEWED_PUBLICATION, STUDY_RESULT: SECONDARY }
+  - { source: S16 Europe PMC full text PMC13082878, genre: PEER_REVIEWED_PUBLICATION, STUDY_RESULT: PRIMARY, ROLES_DECLARED: PRIMARY }
+  - { source: S17 Blueprint protocol page, genre: PROTOCOL_PAGE, WHAT_WAS_SAID: PRIMARY }
+  - { source: S18 immortals.com, genre: MARKETING_PAGE, PRODUCT_COMPOSITION: SECONDARY }
+  - { source: S19 X post @bryan_johnson, genre: SOCIAL_POST, WHAT_WAS_SAID: PRIMARY, PERSONAL_EXPERIENCE: PRIMARY }
+  - { source: S20 FTC press release 2023-11, genre: PRESS_RELEASE, REGULATORY_ACTION: SECONDARY }
+  - { source: S21 FTC warning letter (Gans), genre: REGULATOR_LETTER, REGULATORY_ACTION: PRIMARY }
+  - { source: S22 16 CFR 255.5 (eCFR), genre: REGULATION_TEXT, REGULATORY_ACTION: PRIMARY }
+  - { source: S23 LongeCity thread 116358, genre: FORUM_THREAD, PERSONAL_EXPERIENCE: PRIMARY }

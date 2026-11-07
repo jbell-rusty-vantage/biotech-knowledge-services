@@ -1,0 +1,29 @@
+# Identifier resolution: (scheme, value) -> Identifier -> HAS_IDENTIFIER episodes -> identified subjects.
+# No root sort: with `sort: uid` + LIMIT the planner may walk the uid index in order and filter (scheme, value) per
+# row instead of seeking identifier_scheme_value; at most a handful of issuers share a (scheme, value).
+query IdentifierAssignmentsPage($scheme: String!, $value: String!) {
+  identifiers(where: { scheme: { eq: $scheme }, value: { eq: $value } }, limit: 5) {
+    uid
+    scheme
+    issuer
+    value
+    normalizationRule
+    validFrom
+    validTo
+    identifiesConnection(first: 10, sort: [{ node: { uid: ASC } }]) {
+      totalCount
+      edges {
+        properties {
+          isPrimary
+          validFrom
+          validTo
+          recordedFrom
+          recordedTo
+        }
+        node {
+          ...SubjectRef
+        }
+      }
+    }
+  }
+}

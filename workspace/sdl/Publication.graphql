@@ -1,0 +1,52 @@
+"""
+Purpose: one scholarly work or one version of it — journal article, preprint version, systematic review version,
+protocol or analysis plan, conference abstract, correction / retraction / expression-of-concern / withdrawal notice —
+the unit that reports on studies, states arms, outcomes and results, and is corrected, retracted or superseded per
+asserter (REVISES). Its renditions (PubMed record, PMC JATS, DOI landing page, PDF) are kernel Sources grouped by the
+kernel-meaning RENDITION_OF (Source -> Publication, asserted, recorded-only; R-43), never by a cross-type join through a
+shared Identifier (R-42); locators live on their snapshots. Absorbs pinned ProtocolVersion
+(publicationKind PROTOCOL / ANALYSIS_PLAN). Owner D3 (R-71; D9 MediaWork excludes scholarly works). Authors are
+predicate-only AUTHORED_BY Assertions → D7 Person | Organization (registered by D3, R-80).
+Identity rule: DOI (+ versionLabel for preprint versions and review updates such as CD007176.pub2), else PMID, else PMCID,
+else (venue, title, publishedAt).
+uid token: `publication`.
+Questions: CQ-EV-05, Q-D3-03, Q-D3-11, Q-D3-12, CQ-ST-07, Q-D3-13, Q-D3-14, Q-D3-16.
+"""
+type Publication implements Entity & Subjectable
+  @node(labels: ["Publication", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  "Title."
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  publicationKind: PublicationKind!
+  "Version label (v1…v4 for medRxiv, pub2 for Cochrane)."
+  versionLabel: String @filterable(byValue: false) @sortable(byValue: false)
+  publishedAt: DateTime
+  publishedAtPrecision: TimePrecision @filterable(byValue: false) @sortable(byValue: false)
+  "Journal or server name as printed: venue name only, no container node (R-71)."
+  venueName: String @filterable(byValue: false) @sortable(byValue: false)
+  citationText: String @filterable(byValue: false) @sortable(byValue: false)
+  "Read-only projection cache over incoming REVISES and kernel HAS_REVISION_STATUS Assertions (method publication-revision-status/v2), typed by the kernel SourceRevisionKind; null = none known (R-44). The single work-level cache; authority stays with those per-asserter Assertions. Filter to exclude retracted work."
+  revisionStatus: SourceRevisionKind
+  revisionStatusDerivedAt: DateTime @filterable(byValue: false) @sortable(byValue: false)
+  "Method version of the revisionStatus cache (directive rule 8), e.g. publication-revision-status/v2."
+  revisionStatusMethodVersion: String @filterable(byValue: false) @sortable(byValue: false)
+  """class: asserted; cardinality: many (none for most notices; several for pooled or secondary analyses; asserted by the paper, by the registry references module or by NLM DataBank links); questions: CQ-ST-07, CQ-ST-04, Q-D3-02, Q-D3-03, Q-D3-18."""
+  reportsOn: [Study!]!
+    @relationship(type: "REPORTS_ON", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (this identified notice or newer version revises that work; one episode per asserter — NLM, publisher via Crossref, Retraction Watch via Crossref, preprint server, BellLabs curation — with that asserter's revisionKind; reasons in Assertion.qualifiers; status-only flags are kernel HAS_REVISION_STATUS Assertions); questions: CQ-EV-05, Q-D3-03, Q-D3-11, Q-D3-12."""
+  revises: [Publication!]!
+    @relationship(type: "REVISES", direction: OUT, properties: "RevisionEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted (kernel meaning, R-43; recorded time only, so regrouping is a supersession, R-26); cardinality: many (kernel Source → this work; one Source per rendition endpoint: PubMed record, PMC JATS, DOI landing page, PDF); source family of evidence with no OCCURS_IN container (K Q-K-21, Report.distinctSourceFamilyCount) and the scholarly branch of the revision patterns (Source -RENDITION_OF-> Publication <-REVISES- notice, R-44); questions: Q-K-21, CQ-EV-05."""
+  renditions: [Source!]!
+    @relationship(type: "RENDITION_OF", direction: IN, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

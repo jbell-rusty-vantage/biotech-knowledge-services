@@ -1,0 +1,28 @@
+"""
+Purpose: a name under which products, services, clinics or media are presented ('Tru Niagen', 'InsideTracker', a clinic
+chain name) — kept apart from the legal entity that is accountable for it, because brand ≠ legal entity is the central
+identity confusion of this domain (CQ-EC-02, Q-D7-19). D6 points Product → Brand; D12 and D9 may point at it for food and
+media brands. Absorbs the pinned ConsumerBrand.
+Identity rule: (normalized brand name, brandKind, holder organization at first capture); a renamed brand is the same Brand
+with a NAME Assertion episode; a brand registered as a trademark keeps the trademark in D8.
+uid token: `brand` (hu:brand:<opaque>).
+Questions: CQ-EC-02, Q-D7-06, Q-D7-10, Q-D7-11, Q-D7-19, CQ-CL-05.
+"""
+type Brand implements Entity & Subjectable
+  @node(labels: ["Brand", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  brandKind: BrandKind!
+  description: String
+  """class: asserted; cardinality: many over time (one open owner episode expected; a licensed operator doing business under the brand is an episode whose authorizing Assertion carries the qualifier tieKind=OPERATOR_DBA); questions: Q-D7-19, Q-D7-10, CQ-EC-02, Q-D7-06, Q-D7-11."""
+  owners: [Organization!]!
+    @relationship(type: "OWNS_BRAND", direction: IN, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

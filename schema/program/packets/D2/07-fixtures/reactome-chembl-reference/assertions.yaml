@@ -1,0 +1,143 @@
+# Assertions and asserted reference edges for fixture reactome-chembl-reference (packet D2, fixtures stage, A3, 2026-10-08;
+# revised after the adversarial review, 2026-10-08).
+# Same conventions as ../nr-muscle-unstructured/assertions.yaml. Reference structure (PART_OF_MECHANISM, PARTICIPATES_IN)
+# is ASSERTED, recorded only (adversarial review: it was structural): each edge episode is authorized by one Assertion
+# per authority record and release (asserter Reactome / the curation Agent, predicate = the relationship type, locator
+# = the JSON_POINTER it was read from) and carries MechanismReferenceProperties (AssertedRecordedProperties fields +
+# referenceScheme, referenceRelease, participantRole). BellLabs hallmark mapping edges carry referenceScheme
+# BELLLABS_CURATED and are asserted by the curator agent (basis EXPERT_OPINION); their own locator would be the
+# versioned curation record, which this fixture does not capture (gap, 11-open-questions item 12); the hallmark
+# vocabulary itself cites the Lopez-Otin 2023 abstract (L-r-18, role CONTEXT).
+# Reactome's referenceEntities endpoint gives membership only, not the per-reaction role, so participantRole is MEMBER
+# throughout (readiness gap in 08-sources-and-tools.md).
+fixture: reactome-chembl-reference
+idNote: fixture-scoped ids (hu:<token>:fx-d2-...); mission/run ids are fixture ids, not Mission Control ids
+producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-reactome-chembl-reference" }
+
+entities:
+  # Mechanisms read from authorities
+  - { ref: m-reactome-196807, type: D2.Mechanism, uid: "hu:mechanism:fx-d2-reactome-r-hsa-196807", name: Nicotinate metabolism,
+      properties: { key: "reactome:R-HSA-196807", mechanismKind: PATHWAY, referenceScheme: REACTOME, referenceRelease: "R-HSA-196807.8" },
+      identifiers: [ { scheme: REACTOME, value: R-HSA-196807, evidence: L-r-01 } ] }
+  - { ref: m-reactome-196849, type: D2.Mechanism, uid: "hu:mechanism:fx-d2-reactome-r-hsa-196849", name: Metabolism of water-soluble vitamins and cofactors,
+      properties: { key: "reactome:R-HSA-196849", mechanismKind: PATHWAY, referenceScheme: REACTOME, referenceRelease: "R-HSA-196849.6" },
+      identifiers: [ { scheme: REACTOME, value: R-HSA-196849, evidence: L-r-03 } ] }
+  - { ref: m-reactome-196854, type: D2.Mechanism, uid: "hu:mechanism:fx-d2-reactome-r-hsa-196854", name: Metabolism of vitamins and cofactors,
+      properties: { key: "reactome:R-HSA-196854", mechanismKind: PATHWAY, referenceScheme: REACTOME, referenceRelease: "R-HSA-196854.8" },
+      identifiers: [ { scheme: REACTOME, value: R-HSA-196854, evidence: L-r-04 } ] }
+  - { ref: m-reactome-165159, type: D2.Mechanism, uid: "hu:mechanism:fx-d2-reactome-r-hsa-165159", name: MTOR signalling,
+      properties: { key: "reactome:R-HSA-165159", mechanismKind: PATHWAY, referenceScheme: REACTOME, referenceRelease: "R-HSA-165159.10" },
+      identifiers: [ { scheme: REACTOME, value: R-HSA-165159, evidence: L-r-10 } ] }
+  # BellLabs-curated concepts
+  - { ref: m-mito-respiration, type: D2.Mechanism, uid: "hu:mechanism:fx-d2-mitochondrial-respiration", name: mitochondrial respiration,
+      properties: { key: "bellabs:mitochondrial-respiration", mechanismKind: PROCESS, referenceScheme: BELLLABS_CURATED, referenceRelease: "fx-d2-curation-2026-10-08" } }
+  - { ref: m-hallmark-mito, type: D2.Mechanism, uid: "hu:mechanism:fx-d2-hallmark-mitochondrial-dysfunction", name: "mitochondrial dysfunction (hallmark of aging)",
+      properties: { key: "bellabs:hallmark-mitochondrial-dysfunction", mechanismKind: HALLMARK, referenceScheme: BELLLABS_CURATED, referenceRelease: "hallmarks-2023 (PMID 36599349)" }, evidence: [L-r-18] }
+  - { ref: m-hallmark-nutrient, type: D2.Mechanism, uid: "hu:mechanism:fx-d2-hallmark-deregulated-nutrient-sensing", name: "deregulated nutrient-sensing (hallmark of aging)",
+      properties: { key: "bellabs:hallmark-deregulated-nutrient-sensing", mechanismKind: HALLMARK, referenceScheme: BELLLABS_CURATED, referenceRelease: "hallmarks-2023 (PMID 36599349)" }, evidence: [L-r-18] }
+  - { ref: m-hallmark-senescence, type: D2.Mechanism, uid: "hu:mechanism:fx-d2-hallmark-cellular-senescence", name: "cellular senescence (hallmark of aging)",
+      properties: { key: "bellabs:hallmark-cellular-senescence", mechanismKind: HALLMARK, referenceScheme: BELLLABS_CURATED, referenceRelease: "hallmarks-2023 (PMID 36599349)" }, evidence: [L-r-18] }
+  - { ref: m-oxphos, type: D2.Mechanism, uid: "hu:mechanism:fx-d2-go-0006119", name: oxidative phosphorylation, note: "declared in ../nr-muscle-unstructured" }
+  - { ref: m-senescence, type: D2.Mechanism, uid: "hu:mechanism:fx-d2-go-0090398", name: cellular senescence, note: "declared in ../dq-senescence-biomarker-path" }
+  # Molecular entities (UniProt accessions as Reactome lists them)
+  - { ref: me-nampt, type: D2.MolecularEntity, uid: "hu:molecular-entity:fx-d2-nampt", name: NAMPT, properties: { entityKind: PROTEIN, geneSymbol: NAMPT, organism: HUMAN, ncbiTaxonId: "9606" }, identifiers: [ { scheme: UNIPROT, value: P43490, evidence: L-r-05 } ] }
+  - { ref: me-nmnat1, type: D2.MolecularEntity, uid: "hu:molecular-entity:fx-d2-nmnat1", name: NMNAT1, properties: { entityKind: PROTEIN, geneSymbol: NMNAT1, organism: HUMAN, ncbiTaxonId: "9606" }, identifiers: [ { scheme: UNIPROT, value: Q9HAN9, evidence: L-r-06 } ] }
+  - { ref: me-fkbp1a, type: D2.MolecularEntity, uid: "hu:molecular-entity:fx-d2-fkbp1a", name: FKBP1A, properties: { entityKind: PROTEIN, geneSymbol: FKBP1A, organism: HUMAN, ncbiTaxonId: "9606" },
+      identifiers: [ { scheme: UNIPROT, value: P62942, evidence: L-r-11 }, { scheme: CHEMBL, value: CHEMBL1902, evidence: L-r-16, note: "ChEMBL target id; kernel folds CHEMBL_TARGET into CHEMBL (check stage)" } ] }
+  - { ref: me-mtor, type: D2.MolecularEntity, uid: "hu:molecular-entity:fx-d2-mtor", name: MTOR, properties: { entityKind: PROTEIN, geneSymbol: MTOR, organism: HUMAN, ncbiTaxonId: "9606" }, identifiers: [ { scheme: UNIPROT, value: P42345, evidence: L-r-12 } ] }
+  # D1 substances (D1 owns identity; ChEBI ids as Reactome lists them, charge states)
+  - { ref: nad, type: D1.ChemicalSubstance, uid: "hu:chemical-substance:fx-d2-nad", name: "NAD+", note: "declared in ../nr-muscle-unstructured" }
+  - { ref: naad, type: D1.ChemicalSubstance, uid: "hu:chemical-substance:fx-d2-naad", name: "NAAD", note: "declared in ../nr-muscle-unstructured" }
+  - { ref: nr, type: D1.ChemicalSubstance, uid: "hu:chemical-substance:fx-d2-nicotinamide-riboside", name: nicotinamide riboside, note: "declared in ../nr-muscle-unstructured" }
+  - { ref: sirolimus, type: D1.ChemicalSubstance, uid: "hu:chemical-substance:fx-d2-sirolimus", name: sirolimus,
+      identifiers: [ { scheme: CHEMBL, value: CHEMBL413, note: "requested scheme; Reactome lists it as 'sirolimus [Guide to Pharmacology:6031]' (L-r-13)" } ] }
+  # Asserters
+  - { ref: org-reactome, type: D7.Organization, uid: "hu:organization:fx-d2-reactome", name: "Reactome (database version 97)" }
+  - { ref: org-chembl, type: D7.Organization, uid: "hu:organization:fx-d2-embl-ebi-chembl", name: "ChEMBL (EMBL-EBI), release ChEMBL_37 (2026-05-01)" }
+  - { ref: agent-d2-curator, type: K.Agent, uid: "hu:agent:fx-d2-hallmark-curator", name: "D2 hallmark-mapping curator (fixture agent A3)", properties: { agentKind: MANUAL_AGENT } }
+
+assertedEdges:
+  # Each entry: the edge (MechanismReferenceProperties) and its authorizing Assertion (kernel shape, predicate = edge type).
+  # Reactome hierarchy (hasEvent ancestors), read from the ancestors endpoint
+  - { type: PART_OF_MECHANISM, from: m-reactome-196807, to: m-reactome-196849, properties: { referenceScheme: REACTOME, referenceRelease: "R-HSA-196807.8" },
+      assertion: { id: A-r-ref-01, uid: "hu:assertion:fx-d2-r-ref-01", asserter: org-reactome, basisKind: CITED_FROM_PRIOR_WORK, polarity: POSITIVE, speechAct: STATES, status: ACCEPTED, evidence: [ { locator: L-r-03, role: SUPPORTS, origin: DECLARED } ] } }
+  - { type: PART_OF_MECHANISM, from: m-reactome-196849, to: m-reactome-196854, properties: { referenceScheme: REACTOME, referenceRelease: "R-HSA-196849.6" },
+      assertion: { id: A-r-ref-02, uid: "hu:assertion:fx-d2-r-ref-02", asserter: org-reactome, basisKind: CITED_FROM_PRIOR_WORK, polarity: POSITIVE, speechAct: STATES, status: ACCEPTED, evidence: [ { locator: L-r-04, role: SUPPORTS, origin: DECLARED } ] } }
+  # BellLabs curated mapping (hallmarks + curated process grouping); asserted by the curation agent
+  - { type: PART_OF_MECHANISM, from: m-oxphos, to: m-mito-respiration, properties: { referenceScheme: BELLLABS_CURATED, referenceRelease: "fx-d2-curation-2026-10-08" },
+      assertion: { id: A-r-ref-03, uid: "hu:assertion:fx-d2-r-ref-03", asserter: agent-d2-curator, basisKind: EXPERT_OPINION, polarity: POSITIVE, speechAct: STATES, status: ACCEPTED, evidence: [],
+        gap: "locator = JSON_POINTER into the versioned BellLabs curation record; not captured in this fixture (11-open-questions item 12)" } }
+  - { type: PART_OF_MECHANISM, from: m-mito-respiration, to: m-hallmark-mito, properties: { referenceScheme: BELLLABS_CURATED, referenceRelease: "fx-d2-curation-2026-10-08" },
+      assertion: { id: A-r-ref-04, uid: "hu:assertion:fx-d2-r-ref-04", asserter: agent-d2-curator, basisKind: EXPERT_OPINION, polarity: POSITIVE, speechAct: STATES, status: ACCEPTED, evidence: [ { locator: L-r-18, role: CONTEXT, origin: DECLARED } ],
+        gap: "L-r-18 names the hallmark, not the mapping; the mapping's own locator is the uncaptured curation record (11 item 12)" } }
+  - { type: PART_OF_MECHANISM, from: m-reactome-165159, to: m-hallmark-nutrient, properties: { referenceScheme: BELLLABS_CURATED, referenceRelease: "fx-d2-curation-2026-10-08" },
+      assertion: { id: A-r-ref-05, uid: "hu:assertion:fx-d2-r-ref-05", asserter: agent-d2-curator, basisKind: EXPERT_OPINION, polarity: POSITIVE, speechAct: STATES, status: ACCEPTED, evidence: [ { locator: L-r-18, role: CONTEXT, origin: DECLARED } ],
+        gap: "as A-r-ref-04" } }
+  - { type: PART_OF_MECHANISM, from: m-senescence, to: m-hallmark-senescence, properties: { referenceScheme: BELLLABS_CURATED, referenceRelease: "fx-d2-curation-2026-10-08" },
+      assertion: { id: A-r-ref-06, uid: "hu:assertion:fx-d2-r-ref-06", asserter: agent-d2-curator, basisKind: EXPERT_OPINION, polarity: POSITIVE, speechAct: STATES, status: ACCEPTED, evidence: [ { locator: L-r-18, role: CONTEXT, origin: DECLARED } ],
+        gap: "as A-r-ref-04" } }
+  # Nicotinate metabolism is deliberately left unmapped to a hallmark (no source in the captures states the mapping; Q-D2-12 expected answer).
+  # PARTICIPATES_IN, MolecularEntity -> Mechanism (declared OUT on MolecularEntity)
+  - { type: PARTICIPATES_IN, from: me-nampt, to: m-reactome-196807, properties: { referenceScheme: REACTOME, referenceRelease: "R-HSA-196807.8", participantRole: MEMBER },
+      assertion: { id: A-r-ref-07, uid: "hu:assertion:fx-d2-r-ref-07", asserter: org-reactome, basisKind: CITED_FROM_PRIOR_WORK, polarity: POSITIVE, speechAct: STATES, status: ACCEPTED, evidence: [ { locator: L-r-05, role: SUPPORTS, origin: DECLARED } ] } }
+  - { type: PARTICIPATES_IN, from: me-nmnat1, to: m-reactome-196807, properties: { referenceScheme: REACTOME, referenceRelease: "R-HSA-196807.8", participantRole: MEMBER },
+      assertion: { id: A-r-ref-08, uid: "hu:assertion:fx-d2-r-ref-08", asserter: org-reactome, basisKind: CITED_FROM_PRIOR_WORK, polarity: POSITIVE, speechAct: STATES, status: ACCEPTED, evidence: [ { locator: L-r-06, role: SUPPORTS, origin: DECLARED } ] } }
+  - { type: PARTICIPATES_IN, from: me-fkbp1a, to: m-reactome-165159, properties: { referenceScheme: REACTOME, referenceRelease: "R-HSA-165159.10", participantRole: MEMBER },
+      assertion: { id: A-r-ref-09, uid: "hu:assertion:fx-d2-r-ref-09", asserter: org-reactome, basisKind: CITED_FROM_PRIOR_WORK, polarity: POSITIVE, speechAct: STATES, status: ACCEPTED, evidence: [ { locator: L-r-11, role: SUPPORTS, origin: DECLARED } ] } }
+  - { type: PARTICIPATES_IN, from: me-mtor, to: m-reactome-165159, properties: { referenceScheme: REACTOME, referenceRelease: "R-HSA-165159.10", participantRole: MEMBER },
+      assertion: { id: A-r-ref-10, uid: "hu:assertion:fx-d2-r-ref-10", asserter: org-reactome, basisKind: CITED_FROM_PRIOR_WORK, polarity: POSITIVE, speechAct: STATES, status: ACCEPTED, evidence: [ { locator: L-r-12, role: SUPPORTS, origin: DECLARED } ] } }
+  # PARTICIPATES_IN, D1 ChemicalSubstance -> Mechanism (declared IN on Mechanism as metaboliteParticipants)
+  - { type: PARTICIPATES_IN, from: nad, to: m-reactome-196807, properties: { referenceScheme: REACTOME, referenceRelease: "R-HSA-196807.8", participantRole: MEMBER },
+      assertion: { id: A-r-ref-11, uid: "hu:assertion:fx-d2-r-ref-11", asserter: org-reactome, basisKind: CITED_FROM_PRIOR_WORK, polarity: POSITIVE, speechAct: STATES, status: ACCEPTED, evidence: [ { locator: L-r-07, role: SUPPORTS, origin: DECLARED } ] } }
+  - { type: PARTICIPATES_IN, from: naad, to: m-reactome-196807, properties: { referenceScheme: REACTOME, referenceRelease: "R-HSA-196807.8", participantRole: MEMBER },
+      assertion: { id: A-r-ref-12, uid: "hu:assertion:fx-d2-r-ref-12", asserter: org-reactome, basisKind: CITED_FROM_PRIOR_WORK, polarity: POSITIVE, speechAct: STATES, status: ACCEPTED, evidence: [ { locator: L-r-08, role: SUPPORTS, origin: DECLARED } ] } }
+  - { type: PARTICIPATES_IN, from: nr, to: m-reactome-196807, properties: { referenceScheme: REACTOME, referenceRelease: "R-HSA-196807.8", participantRole: MEMBER },
+      assertion: { id: A-r-ref-13, uid: "hu:assertion:fx-d2-r-ref-13", asserter: org-reactome, basisKind: CITED_FROM_PRIOR_WORK, polarity: POSITIVE, speechAct: STATES, status: ACCEPTED, evidence: [ { locator: L-r-09, role: SUPPORTS, origin: DECLARED } ] } }
+  - { type: PARTICIPATES_IN, from: sirolimus, to: m-reactome-165159, properties: { referenceScheme: REACTOME, referenceRelease: "R-HSA-165159.10", participantRole: MEMBER },
+      assertion: { id: A-r-ref-14, uid: "hu:assertion:fx-d2-r-ref-14", asserter: org-reactome, basisKind: CITED_FROM_PRIOR_WORK, polarity: POSITIVE, speechAct: STATES, status: ACCEPTED, evidence: [ { locator: L-r-13, role: SUPPORTS, origin: DECLARED } ] },
+      note: "reference membership only; it is never an input of AFFECTS_MECHANISM (method rule 1: inputs are mechanism-predicate Assertions)" }
+  # producedBy for every asserted edge and its Assertion: the fixture-level producedBy above (run:ft-D2-reactome-chembl-reference).
+
+assertions:
+  - id: A-r-01
+    uid: "hu:assertion:fx-d2-r-01"
+    assertionKind: RELATIONSHIP
+    claimType: CAUSAL
+    predicate: INHIBITS
+    subject: { ref: sirolimus, type: D1.ChemicalSubstance }
+    object: { ref: me-fkbp1a, type: D2.MolecularEntity }
+    polarity: POSITIVE
+    basisKind: CITED_FROM_PRIOR_WORK     # ChEMBL curation; its own reference is the DailyMed label section (L-r-17)
+    speechAct: STATES
+    asserter: { ref: org-chembl, type: D7.Organization }
+    evidence:
+      - { locator: L-r-14, role: SUPPORTS, origin: DECLARED }
+      - { locator: L-r-15, role: SUPPORTS, origin: DECLARED }
+      - { locator: L-r-16, role: SUPPORTS, origin: DECLARED }
+      - { locator: L-r-17, role: CONTEXT, origin: DECLARED }
+    context: null
+    qualifiers: ["mechanism_of_action 'FK506-binding protein 1A inhibitor'; action_type INHIBITOR; target CHEMBL1902"]
+    validTime: { validFrom: null, validTo: null, validFromBasis: UNKNOWN, statedAsOf: "2026-05-01T00:00:00Z", statedAsOfPrecision: DAY }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-reactome-chembl-reference" }
+
+adjudications:
+  - id: ADJ-r-01
+    uid: "hu:adjudication:fx-d2-r-01"
+    assesses: A-r-01
+    adjudicationKind: CAPTURE_FIDELITY
+    judgeKind: DETERMINISTIC
+    methodVersion: "d2-fixture-quote-reselect/v1 (JSON pointer resolved, value equal)"
+    verdict: DIRECTLY_SUPPORTED
+    policyOutcome: PASS
+    evidence: [ { locator: L-r-14, role: SUPPORTS, origin: DECLARED } ]
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-reactome-chembl-reference" }
+
+derivedEdges:
+  # Adversarial review: the sirolimus → FKBP1A (MolecularEntity) projection is gone (pair cut); FKBP1A is reached through A-r-01 and rolls up to MTOR signalling.
+  - type: AFFECTS_MECHANISM
+    from: sirolimus
+    to: m-reactome-165159
+    properties: { derivationRule: d2.affects-mechanism/v1, derivedFromAssertionUids: ["hu:assertion:fx-d2-r-01"], direction: DECREASES, bestBasis: CITED_FROM_PRIOR_WORK, highestSetting: null, humanMeasured: false, nContexts: 0, nHumanContexts: 0, nNoChangeContexts: 0, viaParticipant: true, score: 0.0 }
+    note: "Sign propagated through FKBP1A (role MEMBER) to the whole pathway. Correct here only by coincidence of wording; v1 has no role semantics for membership (11-open-questions item 21)."
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-projection" }

@@ -1,0 +1,12 @@
+# livertox-green-tea-extract-harm: questions answered
+
+Ids are from `../../02-questions.md`. Record ids refer to `assertions.yaml`, locator refs to `locators.yaml`.
+
+| question | expected answer from this fixture |
+| --- | --- |
+| Q-D10-07 | Green tea: LiverTox grades the monograph subject "Green Tea" with likelihood score A (`a-gt-likelihood-a`, `loc-gte-likelihood-a`, section GreenTea.Hepatotoxicity, monograph updated 2020-11-20); the most specific subject the evidence supports is green tea extract (`s-gte-harm`, effectDirection HARM, SUPPORTED_WITH_QUALIFICATION, ALT elevations 6.7% vs 0.7% `loc-gte-alt-trial`, with clinically apparent injury not observed in those studies `loc-gte-not-observed`; prevalence "undoubtedly low" relative to use `a-gte-prevalence-low`); the beverage is not graded as harmful (`a-gt-beverage-not-associated`, polarity NEGATIVE) with a small number of infusion cases noted (`a-gt-infusion-cases`). Ashwagandha: likelihood B (`a-ash-likelihood-b`, updated 2024-12-03). |
+| Q-D10-08 | Avoid-list rows for a liver-related target: green tea extract (all populations, likelihood A, BLOCKED in the draft green tea profile); ashwagandha for people with cirrhosis or advanced chronic liver disease (likelihood B, "its use should be avoided", BLOCKED in the draft ashwagandha profile). Green tea beverage: not on the list. |
+| CQ-RC-06 | Two BLOCKED rows with rank null: `i-gte-blocked` BLOCKED_BY `s-gte-harm` (Assessment; it cites `a-gt-likelihood-a`; no use constraint, because LiverTox states no avoidance for the extract); `i-ash-blocked-cirrhosis` BLOCKED_BY the D5 UseConstraint `uc-ash-cirrhosis` (kind CONDITION, resolved from `a-ash-avoid-cirrhosis`, USE_CONSTRAINED_IN, level AVOID) and `s-ash-harm` (Assessment). Trace: row → UseConstraint ← RESOLVES_TO_CONSTRAINT ← Assertion → HAS_EVIDENCE → `loc-ash-avoid-cirrhosis`. |
+| CQ-AX-24 | Harm strength of "green tea extract causes clinically apparent liver injury": `s-gte-harm` (D10.harm-causality, method bl-harm/livertox-likelihood-mirror@0) with the scheme value "LiverTox likelihood A" as an input assertion, scope: the extract. |
+
+Relationship types exercised: BLOCKED_BY (ReportItem → D5.UseConstraint; ReportItem → K.Assessment), HAS_ITEM (two draft PROFILE reports), ASSESSES (each row → exactly its option: green tea extract, green tea beverage, ashwagandha; the cirrhosis scope is on the UseConstraint), DERIVED_FROM (items → Assertions and Assessments).

@@ -1,0 +1,110 @@
+version: 1
+module: D2
+stage: model (Wave 2), A3, 2026-10-08; revised after the adversarial review (2026-10-08); synthesis S module editor 2026-10-08
+# Source: packets/D2/06-node-register.yaml (sha256 3bbb38e4…), edited by the S module editor 2026-10-08 per
+# final/decision-report.md and final/_work/rulings.yaml (modules.D2 + global). Every entry keeps the 01-PACKET-CONTRACT
+# fields and adds `module: D2`. Node types unchanged (5). Synthesis edits:
+#   R-42, R-70  Outcome identifierSchemes: LOINC dropped (LOINC belongs to D4 Metric only); whyNode: D5 TargetMeasure
+#         reaches Outcome and Condition.
+#   R-17  MechanismEvidenceContext stored label ["MechanismEvidenceContext"] (no Entity label; `labels` added).
+#   R-58  exposureBasis typed by D6 AmountBasis (D3 QuantityBasis retired).
+#   R-47  Mechanism whyNode: Q-D2-18 ranks D10 Association records, not the AFFECTS_MECHANISM projection.
+#   R-03  `mutations` read as { graphql: none, executor: [...] } (create/update/delete false = GraphQL operations off).
+# mutations: GraphQL mutations are off for every type (@mutation(operations: [])); the executor is the only writer (ADR 0003).
+# The `executor` key says what intents may do. Identifier scheme codes come from final/vocabularies/identifier-schemes.yaml
+# (source packets/K/identifier-schemes.yaml); requested new codes are marked (requested) and listed in 11-open-questions.md.
+nodes:
+  - name: Mechanism
+    module: D2
+    uidToken: mechanism
+    identityKeys: [key]
+    identifierSchemes: [REACTOME, GO, WIKIDATA, MESH, "WIKIPATHWAYS (requested)", "KEGG_PATHWAY (requested; licence-gated)"]
+    whyNode: >-
+      Hub of every mechanism question: Q-D2-02 and Q-D2-12 traverse the hierarchy (PART_OF_MECHANISM); Q-D2-11 joins
+      participants; Q-D2-03 traverses compound → mechanism → D4 biomarker; CQ-MX-05 and Q-D2-06 filter projections
+      into it and Q-D2-18 ranks D10 Association records about it (R-47); claim objects resolve to it (vector + fulltext). A property on a compound could not be
+      traversed from D4 or shared across modulators.
+    filterProperties: [key, mechanismKind, referenceScheme, referenceRelease, name]
+    otherProperties: 2   # description, synonyms (+ executor-set descriptionEmbedding, not in GraphQL)
+    archetype: vocabulary (curated, ~100–300 nodes; Reactome/GO mirrors added on demand)
+    mutations: { graphql: none, executor: [create, update] }
+
+  - name: MolecularEntity
+    module: D2
+    uidToken: molecular-entity
+    identityKeys: [ncbiTaxonId, "primary identifier (UNIPROT for proteins, HGNC for human genes, NCBI_GENE / ENSEMBL_GENE otherwise)"]
+    identifierSchemes: [UNIPROT, HGNC, NCBI_GENE, ENSEMBL_GENE, WIKIDATA, "CHEMBL (target ids; kernel v2 folded CHEMBL_TARGET into CHEMBL)"]
+    whyNode: >-
+      Q-D2-08 (curated MoA target, e.g. sirolimus INHIBITS FKBP1A, read as Assertions) and Q-D2-20 (gene manipulation →
+      lifespan) filter and join on it; Q-D2-11 lists it as a participant; the projection rule and Q-D2-19 (GDS over
+      INHIBITS/ACTIVATES/BINDS Assertions) roll substance → target → mechanism up through its PARTICIPATES_IN edges; D4
+      HAS_ANALYTE joins protein biomarkers (IL-6) to it.
+    filterProperties: [geneSymbol, entityKind, organism, ncbiTaxonId]
+    otherProperties: 2   # description, synonyms
+    archetype: reference entity (mirrors UniProt/HGNC; human default, orthologs only on demand)
+    mutations: { graphql: none, executor: [create, update] }
+
+  - name: MechanismEvidenceContext
+    module: D2
+    uidToken: mech-context
+    labels: [MechanismEvidenceContext]   # R-17: Entity label only on Subjectable implementers and Identifier
+    identityKeys: [contextKey]
+    identifierSchemes: []
+    whyNode: >-
+      Every "where, in what, at what exposure, and was it null" filter (CQ-MX-01/02/03, Q-D2-04, Q-D2-13, Q-D2-20) and
+      the joins to D1 exposures (CQ-MX-04, Q-D2-09) and D3 arms (Q-D2-06, Q-D2-27, and a registered group's dose of
+      record, D3 InterventionComponent) go through it; one context is shared
+      by several Assertions from the same exposure group and compartment, which is why it is a node and not properties
+      repeated on each Assertion (and it cannot be: domain fields on kernel Assertion are forbidden).
+    filterProperties: [setting, organism, ncbiTaxonId, compartmentKind, compartmentOntologyId, sexScope, geneticManipulation, exposureBasis, route]   # sexScope, route typed by D3 enums (SexScope, AdministrationRoute); exposureBasis by D6 AmountBasis (R-58)
+    otherProperties: 10  # contextKey, groupLabel, strainOrLine, ageDescriptor, sampleSize, compartmentLabel, exposureAmount, exposureUnitCode, exposureDurationIso, assayText
+    archetype: occurrence / qualifier payload (implements Entity only; stored label MechanismEvidenceContext only, R-17; immutable; a correction is a new node)
+    mutations: { graphql: none, executor: [create] }
+
+  - name: Condition
+    module: D2
+    uidToken: condition
+    identityKeys: ["MONDO identifier when present", key]
+    identifierSchemes: [MONDO, ICD10CM, HPO, SNOMEDCT, MESH, WIKIDATA, "ORPHANET (requested)", "OMIM (requested)", "EFO (requested; Open Targets disease ids)"]
+    whyNode: >-
+      Q-D2-14/-15 list conditions linked to mechanisms (objects of MECHANISM_OF / INCREASES_RISK_OF Assertions, and of
+      D10 Association records); Q-D2-06 joins D3 Study INVESTIGATES; cross-module scope node that D3 (Study
+      INVESTIGATES, OutcomeDefinition MEASURES), D5 (contraindication and CAUSES_ADVERSE_EFFECT objects, R-84; Target
+      OPERATIONALIZED_BY → Condition as a TargetMeasure member, R-70), D8 (HAS_APPROVED_INDICATION object, R-88) and D13
+      (EVENT_ABOUT predicate, frontier anchors) traverse to — the join must be one node per condition, not per-module
+      strings.
+    filterProperties: [key, conditionKind, name]   # isRare dropped in the adversarial review: no question filters on it
+    otherProperties: 2   # description, synonyms
+    archetype: vocabulary (MONDO-backed, loaded on demand)
+    mutations: { graphql: none, executor: [create, update] }
+
+  - name: Outcome
+    module: D2
+    uidToken: outcome
+    identityKeys: [key]
+    identifierSchemes: [WIKIDATA]   # LOINC dropped (R-42, R-70): LOINC belongs to D4 Metric only
+    whyNode: >-
+      Q-D2-26 traverses compound → mechanism → outcome (hop 2 over Assertions whose object is the Outcome); Q-D2-07 and
+      Q-D2-20 filter lifespan results through it; it is the target of D3 OutcomeDefinition MEASURES and of D5 Target
+      OPERATIONALIZED_BY (both declared by their owners; D5 union TargetMeasure = Biomarker | Metric | Outcome |
+      Condition, R-70). D3 OutcomeDefinition is what a study declares; Outcome is the concept it measures (R-70).
+      Without it, targets would map to thousands of study-specific OutcomeDefinitions.
+    filterProperties: [key, outcomeKind, name]
+    otherProperties: 2   # description, synonyms
+    archetype: vocabulary (curated, 50–150 nodes)
+    mutations: { graphql: none, executor: [create, update] }
+
+deferred:
+  - { name: Species, reason: "no question traverses through a species; ModelOrganism enum + ncbiTaxonId + strainOrLine on MechanismEvidenceContext and MolecularEntity cut IN_SPECIES, APPLIES_TO_SPECIES (×2), STUDIED_IN. Reverse if a question needs a taxonomic hierarchy beyond the enum's grouping (D1 Taxon could then serve both, 11-open-questions)." }
+  - { name: AnatomicalContext, reason: "filter and equality-join only (Q-D2-04 compartment match with D4 Metric.systemOntologyId); CompartmentKind enum + compartmentOntologyId (UBERON/CL/Cellosaurus) + compartmentLabel cut MEASURED_IN, ACTS_IN, MEASURED_IN_MATRIX, EXPRESSED_IN_CONTEXT." }
+  - { name: Organ, reason: "same as AnatomicalContext (CompartmentKind.ORGAN); cuts AFFECTS_ORGAN (×2) and EXPRESSED_IN." }
+  - { name: MechanismChain, reason: "OPEN-QUESTIONS item 7 stays deferred: an ordered chain is a query-time path (Q-D2-26) or a published Report; a source-asserted chain is a claim occurrence plus per-step Assertions." }
+  - { name: Hallmark, reason: "not a separate type: Mechanism{mechanismKind: HALLMARK}, 12 nodes seeded from Lopez-Otin 2023 (FC-12)." }
+  - { name: Association, reason: "not a D2 type: generic materialized associations are D10's Association records (ASSOCIATES → Subjectable); D2 keeps only the unscored AFFECTS_MECHANISM facet shortcut and Q-D2-18 ranks Associations (R-47 option b; closes 11-open-questions item 1)." }
+
+mergedInto:
+  - { type: Pathway, into: Mechanism, how: "mechanismKind PATHWAY + referenceScheme + referenceRelease; INVOLVES_PATHWAY → PART_OF_MECHANISM; PARTICIPATES_IN retargeted to Mechanism" }
+  - { type: RiskFactor, into: Condition, how: "conditionKind RISK_STATE (insulin resistance, obesity); behavioural exposures (smoking, inactivity) go to D5 Intervention/exposure; INCREASES_RISK_FOR / MEDIATES_RISK_THROUGH become predicates" }
+  - { type: Species, into: "MechanismEvidenceContext / MolecularEntity properties", how: "ModelOrganism enum + ncbiTaxonId + strainOrLine (also listed under deferred)" }
+  - { type: AnatomicalContext, into: "MechanismEvidenceContext properties", how: "CompartmentKind enum + compartmentOntologyId + compartmentLabel (also listed under deferred)" }
+  - { type: Organ, into: "MechanismEvidenceContext properties", how: "CompartmentKind.ORGAN (also listed under deferred)" }

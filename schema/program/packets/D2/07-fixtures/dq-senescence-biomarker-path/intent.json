@@ -1,0 +1,676 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v1",
+  "intentId": "ft-d2-dq-senescence-biomarker-path-2026-10-08",
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "a3-d2-fixtures",
+      "model": "claude-opus-5-5"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run:ft-D2-dq-senescence-biomarker-path",
+      "missionId": "mission:ft-D2-fixtures"
+    },
+    "activityKind": "EXTRACTION"
+  },
+  "onStale": "fail",
+  "sources": [
+    {
+      "ref": "s-ctgov-nct02848131",
+      "source": {
+        "canonicalUri": "https://clinicaltrials.gov/api/v2/studies/NCT02848131",
+        "title": "ClinicalTrials.gov v2 record NCT02848131",
+        "sourceKind": "REGISTRY"
+      },
+      "snapshot": {
+        "observedAt": "2026-10-08T21:42:08Z",
+        "retrievedAt": "2026-10-08T21:42:08Z",
+        "contentHash": "sha256:43a4e7a23925156c9a04dfd25f288943d23e180e4f0fe1918bbe5f7276b404d5",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "mimeType": "application/json",
+          "captureTool": "tool:ctgov-v2 (curl)"
+        }
+      },
+      "locators": [
+        {
+          "ref": "l-dq-08",
+          "selectorKind": "JSON_POINTER",
+          "quote": "Group 2: Dasatinib & Quercetin",
+          "properties": {
+            "jsonPointer": "/protocolSection/armsInterventionsModule/armGroups/1/label",
+            "valueDigest": "sha256:7103a8eafd189a6179cf8a39c363acc000d7021d2c46a8f86beceadf41a2b070",
+            "selectorDigest": "sha256:714b01316b040369e3d7348cbcffd49148aeb621aa7a0abeb64b2facb6023d76"
+          }
+        },
+        {
+          "ref": "l-dq-09",
+          "selectorKind": "JSON_POINTER",
+          "quote": "Dasatinib - take one 100 mg tablet by mouth once daily for 3 consecutive days.",
+          "properties": {
+            "jsonPointer": "/protocolSection/armsInterventionsModule/interventions/0/description",
+            "valueDigest": "sha256:b4fbb7481d08361127974d71e8327e0db2ad205d94ecbc7e5c5f4463ed64aea7",
+            "selectorDigest": "sha256:03608343ca157351c2253810e6182607fcbd7e841c76332c90a0d5989fd8083b"
+          }
+        },
+        {
+          "ref": "l-dq-10",
+          "selectorKind": "JSON_POINTER",
+          "quote": "Quercetin - take four 250 mg capsules daily (total 1000 mg daily) for 3 consecutive days.",
+          "properties": {
+            "jsonPointer": "/protocolSection/armsInterventionsModule/interventions/1/description",
+            "valueDigest": "sha256:c818a71fea917fae894ba9330953fbf3d7bd395caa529bea63d9c9c4a6686c8e",
+            "selectorDigest": "sha256:d84590cb395ffacf70c61c222cba6273005fc77b5ca59906b82ec1257cf75591"
+          }
+        },
+        {
+          "ref": "l-dq-11",
+          "selectorKind": "JSON_POINTER",
+          "quote": "Change in proportion of senescent cells (representing the total senescent cell burden) present",
+          "properties": {
+            "jsonPointer": "/protocolSection/outcomesModule/primaryOutcomes/0/measure",
+            "valueDigest": "sha256:0e8b75f797e75d3cc1a1f0f9b2632885f6b2db89abc71d4f7fe2e65e51602897",
+            "selectorDigest": "sha256:aa32e3d268edff2c829fab12f99376932c3d86268cfd1abce192abeaeecd9aa5"
+          }
+        }
+      ]
+    },
+    {
+      "ref": "s-epmc-pmc6796530",
+      "source": {
+        "canonicalUri": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6796530/fullTextXML",
+        "title": "Hickson et al. 2019 EBioMedicine 47:446 (PMID 31542391, PMCID PMC6796530, DOI 10.1016/j.ebiom.2019.08.069) JATS full text",
+        "sourceKind": "API"
+      },
+      "snapshot": {
+        "observedAt": "2026-10-08T21:42:08Z",
+        "retrievedAt": "2026-10-08T21:42:08Z",
+        "contentHash": "sha256:082579b077477d9807f52160acc1b39d64ab9f5571aead17aba7c1c613ed9fc8",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "mimeType": "application/xml",
+          "captureTool": "tool:europepmc-fulltext (curl)",
+          "derivedTextHash": "sha256:7461e06e6ebdcb181c2a1ae632596f8bc7788b2cde5c06f30627e9573bb00396",
+          "derivedTextRule": "jats-xml2txt/v1"
+        }
+      },
+      "locators": [
+        {
+          "ref": "l-dq-01",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "In an open label Phase 1 pilot study, we administered 3 days of oral D 100 mg and Q 1000 mg to subjects with diabetic kidney disease",
+          "quotePrefix": "escent cells in humans.\nMethods\n",
+          "quoteSuffix": " (N = 9; 68·7 ± 3·1 years old; 2",
+          "startOffset": 3263,
+          "endOffset": 3395,
+          "properties": {
+            "offsetBasis": "jats-xml2txt/v1",
+            "normalization": "nbsp-nnbsp-hyphen/v1",
+            "quoteHash": "sha256:29dd083b84e35c7f49b95845b2d29009a9f7e1c7294a3ba97b77a740308ef0ea",
+            "selectorDigest": "sha256:c66e55f1e67d79080add5e60f3ef7a93280aa9c236f11de0e92e74e72637f484"
+          }
+        },
+        {
+          "ref": "l-dq-02",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "D + Q reduced adipose tissue senescent cell burden within 11 days, with decreases in p16INK4A-and p21CIP1-expressing cells, cells with senescence-associated β-galactosidase activity, and adipocyte progenitors with limited replicative potential.",
+          "quotePrefix": " factors were assayed.\nFindings\n",
+          "quoteSuffix": " Adipose tissue macrophages, whi",
+          "startOffset": 3709,
+          "endOffset": 3953,
+          "properties": {
+            "offsetBasis": "jats-xml2txt/v1",
+            "normalization": "nbsp-nnbsp-hyphen/v1",
+            "quoteHash": "sha256:7c498282feea01c9282bc91187ed01a927d74a461f048b64639cbcabb63d9362",
+            "selectorDigest": "sha256:bd958f1e431859a6d0540e19e599d6a6377c91f84173dc3ef92f1e2fcecd54e1"
+          }
+        },
+        {
+          "ref": "l-dq-03",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "as indicated by decreases in cells with markers of senescence: p16INK4A-and p21CIP1-expressing cells, cells with senescence-associated β-galactosidase (SAβgal) activity",
+          "quotePrefix": "cent cell burden 11 days later, ",
+          "quoteSuffix": ", and adipocyte progenitors with",
+          "startOffset": 6500,
+          "endOffset": 6668,
+          "properties": {
+            "offsetBasis": "jats-xml2txt/v1",
+            "normalization": "none",
+            "quoteHash": "sha256:419c24fc33b2d76f2d35ab6e61b28a3b7802608e257fb5e0d9e7b0dc1bd68964",
+            "selectorDigest": "sha256:abaa30276b9650877d256cd9505056213d983276b99e84ea5145d26e7c49f27f"
+          }
+        },
+        {
+          "ref": "l-dq-04",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "immunohistochemically stained with CINtec Histology monoclonal mouse anti-human p16INK4A (clone E6H4; Roche Tissue Diagnostics, Indianapolis, IN)",
+          "quotePrefix": "tions were placed on slides and ",
+          "quoteSuffix": ", p21CIP1 (DCS-60·2; Cell Marque",
+          "startOffset": 19938,
+          "endOffset": 20083,
+          "properties": {
+            "offsetBasis": "jats-xml2txt/v1",
+            "normalization": "none",
+            "quoteHash": "sha256:4c925ea4ff342987b42f8742e2283f978e5b5a8a3aa4b806d8b11acb5b649351",
+            "selectorDigest": "sha256:7225b2a90b1750e9fbd1698b21da33a564c97b5ad06a45d8aba66d1aedc06b9e"
+          }
+        },
+        {
+          "ref": "l-dq-05",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "Skin epidermal p16INK4A+ and p21CIP1+ cells were reduced, as were circulating SASP factors, including IL-1α, IL-6, and MMPs-9 and −12.",
+          "quotePrefix": "like structures were decreased. ",
+          "quoteSuffix": "\nInterpretation\n“Hit-and-run” tr",
+          "startOffset": 4089,
+          "endOffset": 4223,
+          "properties": {
+            "offsetBasis": "jats-xml2txt/v1",
+            "normalization": "none",
+            "quoteHash": "sha256:9167eba339514ca58ff1ba6eb7527326ac42dc0a1c1013683f779e6830f91c3a",
+            "selectorDigest": "sha256:0d1c8ebc5bbfaa26ab5bad5ba785096e766b7632ab79303346e44fe2b160a2e8"
+          }
+        },
+        {
+          "ref": "l-dq-06",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "Adipose tissue, skin biopsies, and blood were collected before and 11 days after completing senolytic treatment.",
+          "quotePrefix": "eGFR:27·0 ± 2·1 mL/min/1·73m2). ",
+          "quoteSuffix": " Senescent cell and macrophage/L",
+          "startOffset": 3490,
+          "endOffset": 3602,
+          "properties": {
+            "offsetBasis": "jats-xml2txt/v1",
+            "normalization": "nbsp-nnbsp-hyphen/v1",
+            "quoteHash": "sha256:e0b8cbe1f67bc1c6385a7f4e1977d5ce9b8cde284ad35da4e9938ffb468ece76",
+            "selectorDigest": "sha256:af86f665e2b031cf5f532290ef5d3c8fc02fe458e5cf1019bf46c838b11a3401"
+          }
+        },
+        {
+          "ref": "l-dq-07",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "Abdominal subcutaneous adipose tissue (0·5–2 g) and attached skin were collected",
+          "quotePrefix": "d 2–5 cm inferior to the navel. ",
+          "quoteSuffix": " under sterile conditions throug",
+          "startOffset": 19229,
+          "endOffset": 19309,
+          "properties": {
+            "offsetBasis": "jats-xml2txt/v1",
+            "normalization": "nbsp-nnbsp-hyphen/v1",
+            "quoteHash": "sha256:77d5a9640200e90f9f2f75b393232757b5ada04b587ac343a6424e21f3bdde5f",
+            "selectorDigest": "sha256:8c3c22643d49ec59a381a9e20bb3e273d6bc6b6e22fd8edf572210f9d9a9f32b"
+          }
+        },
+        {
+          "ref": "l-dq-13",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "Adipose tissue and skin sampling and plasma collection",
+          "quotePrefix": "se lowering therapy alone).\n2.2.",
+          "quoteSuffix": "\nTo avoid sun-exposed areas of s",
+          "startOffset": 18884,
+          "endOffset": 18938,
+          "properties": {
+            "offsetBasis": "jats-xml2txt/v1",
+            "normalization": "none",
+            "quoteHash": "sha256:303dc9073150bcc8e543157e4ed4914fa78b134052f4922c4268fd7327aa506b",
+            "selectorDigest": "sha256:a7f65e3c07d207a5ee5e19e3cef438dc2c411bf5b2a8ba297edf565226160c89"
+          }
+        },
+        {
+          "ref": "l-dq-14",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "N = 9; 68·7 ± 3·1 years old; 2 female",
+          "quotePrefix": "s with diabetic kidney disease (",
+          "quoteSuffix": "; BMI:33·9 ± 2·3 kg/m2; eGFR:27·",
+          "startOffset": 3397,
+          "endOffset": 3434,
+          "properties": {
+            "offsetBasis": "jats-xml2txt/v1",
+            "normalization": "nbsp-nnbsp-hyphen/v1",
+            "quoteHash": "sha256:7b8bf89bcbc80574858e24e38a1c370c9ad862145980c898af9418a41cd518a2",
+            "selectorDigest": "sha256:a2b6cc5c1547485fd10c173479a7aa7be48c85686e517df98676b8f1f19c8e45"
+          }
+        }
+      ]
+    },
+    {
+      "ref": "s-quickgo-go0090398",
+      "source": {
+        "canonicalUri": "https://www.ebi.ac.uk/QuickGO/services/ontology/go/terms/GO:0090398/complete",
+        "title": "QuickGO GO:0090398 cellular senescence",
+        "sourceKind": "API"
+      },
+      "snapshot": {
+        "observedAt": "2026-10-08T21:42:08Z",
+        "retrievedAt": "2026-10-08T21:42:08Z",
+        "contentHash": "sha256:36579ec872f4feba012ce5a47e8b3f47a0d17b9850b4e5febbd67cc14b1ce881",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "mimeType": "application/json",
+          "captureTool": "tool:quickgo (curl)"
+        }
+      },
+      "locators": [
+        {
+          "ref": "l-dq-12",
+          "selectorKind": "JSON_POINTER",
+          "quote": "cellular senescence",
+          "properties": {
+            "jsonPointer": "/results/0/name",
+            "valueDigest": "sha256:46370afcaec772844e5f4db958553cbea721978aafd3d9dd0be50519ed7c7fb4",
+            "selectorDigest": "sha256:fec468a364657c31d7ad44b4db7619b37690c8c94fb95f7e69b82c4af21d6b30"
+          }
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "arm-dq",
+      "mode": "new",
+      "nodeType": "StudyArm",
+      "name": "NCT02848131 arm 'Group 2: Dasatinib & Quercetin'",
+      "uidSegment": "fx-d2-nct02848131-group-2-dq",
+      "properties": {},
+      "identifiers": [
+        {
+          "scheme": "NCT",
+          "issuer": "ClinicalTrials.gov",
+          "value": "NCT02848131"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "asserter-hickson2019",
+      "mode": "new",
+      "nodeType": "Person",
+      "name": "LaTonya J. Hickson (first author, for the author group of PMID 31542391)",
+      "uidSegment": "fx-d2-hickson-lj",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "b-p16-cells",
+      "mode": "new",
+      "nodeType": "Biomarker",
+      "name": "p16INK4A-expressing cell abundance",
+      "uidSegment": "fx-d2-p16ink4a-positive-cells",
+      "properties": {
+        "biomarkerKind": "CELL_POPULATION"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "b-sabgal-cells",
+      "mode": "new",
+      "nodeType": "Biomarker",
+      "name": "senescence-associated beta-galactosidase (SAbetagal)-positive cell abundance",
+      "uidSegment": "fx-d2-sa-beta-gal-positive-cells",
+      "properties": {
+        "biomarkerKind": "CELL_POPULATION"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "ctx-dq-adipose",
+      "mode": "new",
+      "nodeType": "MechanismEvidenceContext",
+      "name": "subjects with diabetic kidney disease, 3 days of oral D 100 mg and Q 1000 mg / abdominal subcutaneous adipose tissue biopsy",
+      "uidSegment": "fx-d2-hickson2019-dq-adipose",
+      "properties": {
+        "groupLabel": "subjects with diabetic kidney disease, 3 days of oral D 100 mg and Q 1000 mg",
+        "setting": "HUMAN_INTERVENTIONAL",
+        "organism": "HUMAN",
+        "ncbiTaxonId": "9606",
+        "sexScope": "ALL",
+        "ageDescriptor": "68·7 ± 3·1 years old",
+        "sampleSize": 9,
+        "compartmentKind": "TISSUE",
+        "compartmentOntologyId": "UBERON:0014455",
+        "compartmentLabel": "abdominal subcutaneous adipose tissue biopsy",
+        "geneticManipulation": "NONE",
+        "assayText": "IHC p16INK4A / p21CIP1; SAbetagal activity; adipocyte progenitor replicative potential; sampled 11 days after the last dose"
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "ctx-dq-plasma",
+      "mode": "new",
+      "nodeType": "MechanismEvidenceContext",
+      "name": "subjects with diabetic kidney disease, 3 days of oral D 100 mg and Q 1000 mg / plasma (circulating SASP factors)",
+      "uidSegment": "fx-d2-hickson2019-dq-plasma",
+      "properties": {
+        "groupLabel": "subjects with diabetic kidney disease, 3 days of oral D 100 mg and Q 1000 mg",
+        "setting": "HUMAN_INTERVENTIONAL",
+        "organism": "HUMAN",
+        "ncbiTaxonId": "9606",
+        "sexScope": "ALL",
+        "ageDescriptor": "68·7 ± 3·1 years old",
+        "sampleSize": 9,
+        "compartmentKind": "BODY_FLUID",
+        "compartmentOntologyId": "UBERON:0001969",
+        "compartmentLabel": "plasma (circulating SASP factors)",
+        "geneticManipulation": "NONE",
+        "assayText": "circulating SASP factor panel"
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "ctx-dq-skin",
+      "mode": "new",
+      "nodeType": "MechanismEvidenceContext",
+      "name": "subjects with diabetic kidney disease, 3 days of oral D 100 mg and Q 1000 mg / skin epidermis",
+      "uidSegment": "fx-d2-hickson2019-dq-skin",
+      "properties": {
+        "groupLabel": "subjects with diabetic kidney disease, 3 days of oral D 100 mg and Q 1000 mg",
+        "setting": "HUMAN_INTERVENTIONAL",
+        "organism": "HUMAN",
+        "ncbiTaxonId": "9606",
+        "sexScope": "ALL",
+        "ageDescriptor": "68·7 ± 3·1 years old",
+        "sampleSize": 9,
+        "compartmentKind": "TISSUE",
+        "compartmentOntologyId": "UBERON:0001003",
+        "compartmentLabel": "skin epidermis",
+        "geneticManipulation": "NONE",
+        "assayText": "IHC p16INK4A / p21CIP1"
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "dasatinib",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "dasatinib",
+      "uidSegment": "fx-d2-dasatinib",
+      "properties": {},
+      "identifiers": [
+        {
+          "scheme": "CHEMBL",
+          "issuer": "EMBL-EBI ChEMBL",
+          "value": "CHEMBL1421"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "dq",
+      "mode": "new",
+      "nodeType": "Intervention",
+      "name": "dasatinib 100 mg + quercetin 1000 mg, oral, 3 days (D+Q)",
+      "uidSegment": "fx-d2-dasatinib-quercetin-3d",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "m-senescence",
+      "mode": "new",
+      "nodeType": "Mechanism",
+      "name": "cellular senescence",
+      "uidSegment": "fx-d2-go-0090398",
+      "properties": {
+        "key": "go:GO:0090398",
+        "mechanismKind": "PROCESS",
+        "referenceScheme": "GO"
+      },
+      "identifiers": [
+        {
+          "scheme": "GO",
+          "issuer": "Gene Ontology Consortium",
+          "value": "GO:0090398"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "me-il6",
+      "mode": "new",
+      "nodeType": "MolecularEntity",
+      "name": "Interleukin-6",
+      "uidSegment": "fx-d2-il6",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "met-p16-adipose",
+      "mode": "new",
+      "nodeType": "Metric",
+      "name": "p16INK4A+ cells in abdominal subcutaneous adipose tissue (IHC)",
+      "uidSegment": "fx-d2-p16-cells-abdominal-sc-adipose-ihc",
+      "properties": {
+        "metricKind": "MEASURAND",
+        "defaultResultKind": "MEASURED",
+        "definitionSource": "PUBLICATION",
+        "definitionIssuerName": "Hickson et al. 2019",
+        "systemText": "abdominal subcutaneous adipose tissue",
+        "systemOntologyId": "UBERON:0014455",
+        "methodText": "immunohistochemistry, anti-p16INK4A clone E6H4"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "quercetin",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "quercetin",
+      "uidSegment": "fx-d2-quercetin",
+      "properties": {},
+      "identifiers": [
+        {
+          "scheme": "CHEMBL",
+          "issuer": "EMBL-EBI ChEMBL",
+          "value": "CHEMBL50"
+        }
+      ],
+      "onMatch": "use_existing"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "p-00-exposed_to",
+      "kind": "edge.structural",
+      "relationshipType": "EXPOSED_TO",
+      "fromRef": "ctx-dq-adipose",
+      "toRef": "dasatinib",
+      "properties": {
+        "exposureRole": "TESTED",
+        "orderIndex": 0
+      },
+      "evidence": [
+        "l-dq-01",
+        "l-dq-09"
+      ]
+    },
+    {
+      "proposalId": "p-01-exposed_to",
+      "kind": "edge.structural",
+      "relationshipType": "EXPOSED_TO",
+      "fromRef": "ctx-dq-adipose",
+      "toRef": "quercetin",
+      "properties": {
+        "exposureRole": "TESTED",
+        "orderIndex": 1
+      },
+      "evidence": [
+        "l-dq-01",
+        "l-dq-10"
+      ]
+    },
+    {
+      "proposalId": "p-02-exposed_to",
+      "kind": "edge.structural",
+      "relationshipType": "EXPOSED_TO",
+      "fromRef": "ctx-dq-skin",
+      "toRef": "dasatinib",
+      "properties": {
+        "exposureRole": "TESTED",
+        "orderIndex": 0
+      },
+      "evidence": [
+        "l-dq-01"
+      ]
+    },
+    {
+      "proposalId": "p-03-exposed_to",
+      "kind": "edge.structural",
+      "relationshipType": "EXPOSED_TO",
+      "fromRef": "ctx-dq-skin",
+      "toRef": "quercetin",
+      "properties": {
+        "exposureRole": "TESTED",
+        "orderIndex": 1
+      },
+      "evidence": [
+        "l-dq-01"
+      ]
+    },
+    {
+      "proposalId": "p-04-exposed_to",
+      "kind": "edge.structural",
+      "relationshipType": "EXPOSED_TO",
+      "fromRef": "ctx-dq-plasma",
+      "toRef": "dasatinib",
+      "properties": {
+        "exposureRole": "TESTED",
+        "orderIndex": 0
+      },
+      "evidence": [
+        "l-dq-01"
+      ]
+    },
+    {
+      "proposalId": "p-05-exposed_to",
+      "kind": "edge.structural",
+      "relationshipType": "EXPOSED_TO",
+      "fromRef": "ctx-dq-plasma",
+      "toRef": "quercetin",
+      "properties": {
+        "exposureRole": "TESTED",
+        "orderIndex": 1
+      },
+      "evidence": [
+        "l-dq-01"
+      ]
+    },
+    {
+      "proposalId": "p-06-in_study_arm",
+      "kind": "edge.structural",
+      "relationshipType": "IN_STUDY_ARM",
+      "fromRef": "ctx-dq-adipose",
+      "toRef": "arm-dq",
+      "properties": {},
+      "evidence": [
+        "l-dq-08"
+      ]
+    },
+    {
+      "proposalId": "p-07-in_study_arm",
+      "kind": "edge.structural",
+      "relationshipType": "IN_STUDY_ARM",
+      "fromRef": "ctx-dq-skin",
+      "toRef": "arm-dq",
+      "properties": {},
+      "evidence": [
+        "l-dq-08"
+      ]
+    },
+    {
+      "proposalId": "p-08-in_study_arm",
+      "kind": "edge.structural",
+      "relationshipType": "IN_STUDY_ARM",
+      "fromRef": "ctx-dq-plasma",
+      "toRef": "arm-dq",
+      "properties": {},
+      "evidence": [
+        "l-dq-08"
+      ]
+    },
+    {
+      "proposalId": "p-09-quantifies",
+      "kind": "edge.structural",
+      "relationshipType": "QUANTIFIES",
+      "fromRef": "met-p16-adipose",
+      "toRef": "b-p16-cells",
+      "properties": {},
+      "evidence": [
+        "l-dq-04"
+      ]
+    },
+    {
+      "proposalId": "p-a-dq-06",
+      "kind": "edge.assert",
+      "relationshipType": "REFLECTS_MECHANISM",
+      "fromRef": "b-p16-cells",
+      "toRef": "m-senescence",
+      "asserterRef": "asserter-hickson2019",
+      "evidence": [
+        "l-dq-03"
+      ],
+      "assertion": {
+        "polarity": "POSITIVE",
+        "basisKind": "CITED_FROM_PRIOR_WORK",
+        "speechAct": "STATES",
+        "validity": {
+          "validFrom": "2019-09-18T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "PUBLICATION_PROXY",
+          "validToBasis": "UNKNOWN"
+        }
+      }
+    },
+    {
+      "proposalId": "p-a-dq-07",
+      "kind": "edge.assert",
+      "relationshipType": "REFLECTS_MECHANISM",
+      "fromRef": "b-sabgal-cells",
+      "toRef": "m-senescence",
+      "asserterRef": "asserter-hickson2019",
+      "evidence": [
+        "l-dq-03"
+      ],
+      "assertion": {
+        "polarity": "POSITIVE",
+        "basisKind": "CITED_FROM_PRIOR_WORK",
+        "speechAct": "STATES",
+        "validity": {
+          "validFrom": "2019-09-18T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "PUBLICATION_PROXY",
+          "validToBasis": "UNKNOWN"
+        }
+      }
+    },
+    {
+      "proposalId": "p-node-dq",
+      "kind": "node.upsert",
+      "subjectRef": "dq",
+      "properties": {},
+      "evidence": [
+        "l-dq-02"
+      ]
+    },
+    {
+      "proposalId": "p-node-me-il6",
+      "kind": "node.upsert",
+      "subjectRef": "me-il6",
+      "properties": {},
+      "evidence": [
+        "l-dq-05"
+      ]
+    }
+  ],
+  "notes": "Contract gaps (intent v1, 2026-10-08): (G1) no proposal kind writes a predicate-only Assertion with an object node (subject-predicate-object, no typed edge); edge.assert would create a typed edge named after the predicate, which D2 registers as predicate-only. (G2) an Assertion created by a proposal cannot be the endpoint of another proposal, so OBSERVED_IN_CONTEXT (Assertion -> MechanismEvidenceContext) cannot be written in the same intent. (G3) no kernel Assessment / Adjudication proposals. (G4) D2 node types and properties are not in the pinned schema yet, so the planner would reject the node types until the merged schema is pinned. Not expressed here: HAS_ANALYTE b-il6->me-il6 (curated, no locator); A-dq-01 dq DECREASES_LEVEL_OF m-senescence (context ctx-dq-adipose); A-dq-02 dq DECREASES_LEVEL_OF b-p16-cells (context ctx-dq-adipose); A-dq-03 dq DECREASES_LEVEL_OF b-sabgal-cells (context ctx-dq-adipose); A-dq-04 dq DECREASES_LEVEL_OF b-p16-cells (context ctx-dq-skin); A-dq-05 dq DECREASES_LEVEL_OF me-il6 (context ctx-dq-plasma)"
+}

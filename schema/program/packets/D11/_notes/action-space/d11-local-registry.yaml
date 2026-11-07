@@ -1,0 +1,1065 @@
+# D11-LOCAL REGISTRY (input to build-action-space.mjs). Until the cross-packet pass (2026-10-08) this file was
+# tooling/action-space.yaml; it now holds only D11's own scored entries, gaps G1-G10 and the MCP recommendation.
+# The merged cross-packet registry is tooling/action-space.yaml, generated from this file, merge-spec.yaml and every
+# packet's 08 / tool-log / 05 / 02. Edit D11's own scores here, then re-run the generator.
+#
+# BellLabs bio-medical tooling action space — registry (PLAN 6.3 schema)
+# Packet D11, agent A8, first-tier scoring 2026-10-08 (Wave 1 research stage).
+#
+# Fields per entry (PLAN 6.3): id, domains, kind, provider, access, auth, rateLimits,
+#   identifiersEmitted, locatorKinds, readiness (0-3), gap, priority, owner.
+# Added fields (this registry): tier (1 = exercised by D11 itself; 2 = scored from a sibling
+#   packet's tool log, cross-packet pass pending), exercised (date · route · result), evidence
+#   (scratch capture name or packet tool-log row), notes.
+#
+# readiness: 0 blocked or licensed-out · 1 scrape only · 2 API without stable locators ·
+#            3 agent-ready (API, stable identifiers, re-selectable locators)
+# priority:  P0 blocks an essential (value-1) question now · P1 foundational · P2 expansion · P3 nice to have
+# locatorKinds use the published kernel SelectorKind vocabulary (verification.v1 selector kinds, A1 2026-10-08):
+#   TEXT_QUOTE, CHARACTER_POSITION, MULTI_FRAGMENT_TEXT, JSON_POINTER, HTML, PDF_TEXT, BOUNDING_BOX, TABLE,
+#   MEDIA_TIMECODE, REPOSITORY, DATASET, API_RECORD, WHOLE_SNAPSHOT. The full selector is stored as canonical JSON
+#   (SourceLocator.selectorJson). Model-stage mapping of the research-stage spellings: SECTION (JSON pointer) →
+#   JSON_POINTER; SECTION (HTML id / XML element / JATS sec@id / SPL section@ID) → HTML (DOM selector on the markup;
+#   verification.v1 has no separate XML kind, see 11-open-questions); PDF_PAGE → PDF_TEXT; IMAGE_REGION →
+#   BOUNDING_BOX; TEXT_POSITION → CHARACTER_POSITION; SECTION (field name / GraphQL path) → API_RECORD.
+# Capture failures observed for a tool are recorded in the graph as D11 CaptureAttempt nodes (toolId = entry id;
+#   outcome, failureKind); successful captures carry SourceSnapshot.captureMethod = "<entry id>/<tool version>".
+# owner: who builds the gap — "tooling" = the BellLabs tooling backlog fed by D11; a domain id = the
+#   packet that needs it most.
+# All facts below were observed on 2026-10-08 unless an evidence row says otherwise.
+
+version: 1
+registry: biotech-action-space
+scoredAt: 2026-10-08
+scoredBy: A8 (D11)
+modelStageUpdate: "2026-10-08 (A8): locatorKinds mapped to the kernel SelectorKind vocabulary; gap G10 (capture-attempt recorder) added; entry ids are the toolId / captureMethod prefix vocabulary for every module"
+fixturesStageUpdate: "2026-10-08 (A8): 20 requests for the five D11 fixtures (19 curl in scratch ft/D11/fresh-log.txt + 1 Firecrawl scrape): 15 byte-identical to the research captures, pmc-idconv differs only in echoed request/time fields, the Firecrawl rendition differs by one anchor id, 3 are new queries (openFDA by set_id, PubChem property subset, publisher page by curl); entry publisher-pages added (curl blocked by a Cloudflare challenge; Firecrawl rendition hashes unstable); openfda-drug-label exercised by set_id; ctgov-record-history and cas-common-chemistry re-checked (still 403 / 401). Fixture evidence: 07-fixtures/*"
+
+entries:
+
+  # ---------------------------------------------------------------- literature (D3, D2, D9, K)
+  - id: ncbi-eutils-pubmed
+    tier: 1
+    domains: [D3, D2, D5, K]
+    kind: [search, fetch]
+    provider: NCBI / NLM
+    access: api
+    auth: none (optional NCBI API key raises the cap)
+    rateLimits: "X-Ratelimit-Limit: 3 req/s without key (observed header)"
+    identifiersEmitted: [PMID, DOI, PMCID, "MeSH UI", "PublicationType UI", ISSN]
+    locatorKinds: ["HTML (XML element path, e.g. AbstractText)", "TEXT_QUOTE on abstract"]
+    readiness: 3
+    exercised: "2026-10-08 · curl esearch/efetch · ok; NCT02921659[si] search returned 0 although the paper names the trial"
+    evidence: [eutils-esearch-nr.json, eutils-esearch-nct.json, eutils-efetch-29599478.xml, eutils-efetch-12003802.xml, eutils-efetch-22833916.xml]
+    gap: "literature.get_record adapter that keeps raw MEDLINE XML as the snapshot, parses CommentsCorrections (RetractionIn/ErratumIn/ExpressionOfConcernIn) into integrity assertions, and does not trust DataBank for NCT links (use full text)."
+    priority: P0
+    owner: tooling
+  - id: pmc-idconv
+    tier: 1
+    domains: [K, D3]
+    kind: [resolve]
+    provider: NCBI PMC ID Converter API v1
+    access: api
+    auth: none (tool + email parameters)
+    rateLimits: unpublished; batch up to many ids per call
+    identifiersEmitted: [PMID, PMCID, DOI]
+    locatorKinds: [WHOLE_SNAPSHOT]
+    readiness: 3
+    exercised: "2026-10-08 · curl · ok (new host pmc.ncbi.nlm.nih.gov/tools/idconv/api/v1)"
+    evidence: [pmc-idconv.json]
+    gap: "none beyond caching; use as the PMID↔PMCID↔DOI authority bridge."
+    priority: P1
+    owner: tooling
+  - id: europepmc-rest
+    tier: 1
+    domains: [D3, D2, D9]
+    kind: [search, fetch]
+    provider: EMBL-EBI Europe PMC
+    access: api
+    auth: none
+    rateLimits: unpublished
+    identifiersEmitted: [PMID, PMCID, DOI, "grant ids", "ORCID (authorIdList)"]
+    locatorKinds: [WHOLE_SNAPSHOT]
+    readiness: 3
+    exercised: "2026-10-08 · curl search resultType=core · ok; isOpenAccess, license, grantsList returned; dbCrossReferenceList null"
+    evidence: [epmc-search-29599478.json]
+    gap: "none for metadata; licence field drives whether full text may be captured."
+    priority: P1
+    owner: tooling
+  - id: europepmc-fulltext-jats
+    tier: 1
+    domains: [D3, D2, D5, D9, K]
+    kind: [fetch, parse]
+    provider: EMBL-EBI Europe PMC (PMC OA subset)
+    access: api
+    auth: none
+    rateLimits: unpublished
+    identifiersEmitted: [PMCID, PMID, DOI, "NCT (ext-link-type pmc:clinical-trial)", "reference DOIs/PMIDs"]
+    locatorKinds: ["HTML (sec/@id, p/@id)", TEXT_QUOTE, "CHARACTER_POSITION (on a derived DocumentTextVersion)"]
+    readiness: 3
+    exercised: "2026-10-08 · curl fullTextXML PMC5876407 · ok, 142,126 bytes, sec ids Sec1..Sec24, p ids Par1..; NCT tagged 3×"
+    evidence: [epmc-fulltext-PMC5876407.xml]
+    gap: "JATS → DocumentTextVersion normalizer (NFC + whitespace folding of U+00A0/U+2009/U+202F, hyphen variants) so TEXT_QUOTE re-selection is stable; extractor for ext-link clinical-trial ids (NCT↔PMID bridge the PubMed record lacks). Only OA articles; non-OA needs publisher TDM."
+    priority: P0
+    owner: tooling
+  - id: europepmc-annotations
+    tier: 1
+    domains: [K, D1, D2]
+    kind: [parse, resolve]
+    provider: Europe PMC Annotations API (text-mining providers incl. Europe PMC, OntoGene, Open Targets)
+    access: api
+    auth: none
+    rateLimits: unpublished
+    identifiersEmitted: [ChEBI, RxNorm, EFO, GO, UniProt, NCT, "DOI (as tag URIs)"]
+    locatorKinds: ["TEXT_QUOTE (prefix/exact/postfix, section name)"]
+    readiness: 2
+    exercised: "2026-10-08 · curl annotationsByArticleIds PMC:5876407 · 341 annotations"
+    evidence: [epmc-annotations-PMC5876407.json]
+    gap: "Use only as candidate MENTIONS (derived, method-versioned). Observed mislinks: 'nicotinamide riboside' → ChEBI_80498 dihydrozeatin riboside; 'nicotinamide' (title) → RxNorm 7405 Niacinamide; postfix overlaps exact. A BellLabs linker with identifier-scheme checks must re-adjudicate before any HAS_IDENTIFIER assertion."
+    priority: P2
+    owner: K
+  - id: openalex
+    tier: 1
+    domains: [D3, D9, D7, D13]
+    kind: [search, resolve]
+    provider: OpenAlex (OurResearch)
+    access: api
+    auth: "none for a small daily budget; API key for more"
+    rateLimits: "metered: X-RateLimit-Limit 1000 credits, X-RateLimit-Limit-USD 0.1/day without key; list call cost 0.001 USD (observed headers)"
+    identifiersEmitted: ["OpenAlex W/A/I ids", DOI, PMID, PMCID, MAG, ORCID, ROR]
+    locatorKinds: [WHOLE_SNAPSHOT]
+    readiness: 2
+    exercised: "2026-10-08 · curl works/doi: and filter is_retracted:true · ok"
+    evidence: [openalex-doi.json, openalex-retracted-resveratrol.json]
+    gap: "Budget key before team runs; use for discovery and citation graph, never as the integrity authority (retraction flag is derived from upstream)."
+    priority: P2
+    owner: tooling
+  - id: crossref-rest
+    tier: 1
+    domains: [D3, D9, K]
+    kind: [resolve, verify]
+    provider: Crossref (incl. Retraction Watch data in update relations)
+    access: api
+    auth: "none; mailto parameter for the polite pool"
+    rateLimits: unpublished in response; polite pool by mailto
+    identifiersEmitted: [DOI, ISSN, "funder DOI", ORCID, "Retraction Watch record-id"]
+    locatorKinds: ["JSON_POINTER (e.g. /message/updated-by/0)"]
+    readiness: 3
+    exercised: "2026-10-08 · curl works/{doi} ×3 · updated-by with source retraction-watch observed"
+    evidence: [crossref-doi.json, crossref-retracted-das2002.json, crossref-retraction-notice.json]
+    gap: "literature.check_integrity: Crossref updated-by + PubMed CommentsCorrections, reconciled; deposits are publisher-optional (no clinical-trial-number, empty funder on the NR paper)."
+    priority: P0
+    owner: tooling
+  - id: unpaywall
+    tier: 1
+    domains: [D3, K]
+    kind: [resolve]
+    provider: Unpaywall (OurResearch)
+    access: api
+    auth: email parameter
+    rateLimits: unpublished
+    identifiersEmitted: [DOI, "OA location URLs", licence]
+    locatorKinds: [WHOLE_SNAPSHOT]
+    readiness: 2
+    exercised: "2026-10-08 · curl v2/{doi} · ok; fields evidence/updated now the literal string 'deprecated'"
+    evidence: [unpaywall-doi.json]
+    gap: "Lawful-capture gate before full-text acquisition; record licence on SourceSnapshot."
+    priority: P1
+    owner: tooling
+  - id: semantic-scholar
+    tier: 1
+    domains: [D3, D9]
+    kind: [search, resolve]
+    provider: Allen Institute for AI
+    access: api
+    auth: "API key (SEMANTIC_API_KEY in .env); unkeyed calls 429 under shared load"
+    rateLimits: "unkeyed: 429 observed on first call"
+    identifiersEmitted: ["S2 paperId", CorpusId, DOI, PMID, PMCID, MAG]
+    locatorKinds: [WHOLE_SNAPSHOT]
+    readiness: 2
+    exercised: "2026-10-08 · curl graph/v1/paper/PMID: · 200 with key, 429 without"
+    evidence: [s2-paper-pmid.json, s2-paper-nokey.json]
+    gap: "Optional discovery source; always use the key."
+    priority: P3
+    owner: tooling
+  - id: biorxiv-api
+    tier: 1
+    domains: [D3, D13, D9]
+    kind: [search, fetch, resolve]
+    provider: openRxiv (bioRxiv / medRxiv)
+    access: api
+    auth: none
+    rateLimits: unpublished
+    identifiersEmitted: ["preprint DOI", version, "published DOI"]
+    locatorKinds: ["HTML (JATS source XML)", PDF_TEXT]
+    readiness: 2
+    exercised: "2026-10-08 · curl pubs/biorxiv/10.1101/680462 + MCP get_preprint · published_doi present"
+    evidence: ["biorxiv-api-pubs.json; D3 tool-log (A4): published NA for PEARL despite journal version; duplicate 'version 1' rows"]
+    gap: "preprint→publication bridge is incomplete; reconcile with Crossref relation is-preprint-of and PubMed."
+    priority: P1
+    owner: D3
+
+  # ---------------------------------------------------------------- trials (D3, D13)
+  - id: ctgov-v2-api
+    tier: 1
+    domains: [D3, D13, D7, D5]
+    kind: [search, fetch]
+    provider: NLM ClinicalTrials.gov
+    access: api
+    auth: none
+    rateLimits: unpublished; dataTimestamp exposed at /api/v2/version
+    identifiersEmitted: [NCT, "org study id", "secondary ids (EudraCT, EU CT, ISRCTN when entered)", "PMID (referencesModule when entered)"]
+    locatorKinds: ["JSON_POINTER (protocolSection/resultsSection)"]
+    readiness: 3
+    exercised: "2026-10-08 · curl studies/NCT02921659, version · ok (apiVersion 2.0.5)"
+    evidence: [ctgov-NCT02921659.json, ctgov-version.json]
+    gap: "trials.get_record that snapshots each pull with dataTimestamp; JSON-pointer locators; secondary-id parser for EUCT/ISRCTN bridges."
+    priority: P0
+    owner: tooling
+  - id: ctgov-record-history
+    tier: 1
+    domains: [D3, D13, D10]
+    kind: [fetch]
+    provider: NLM ClinicalTrials.gov (website-internal /api/int)
+    access: scrape
+    auth: n/a
+    rateLimits: n/a
+    identifiersEmitted: [NCT, "version number"]
+    locatorKinds: []
+    readiness: 0
+    exercised: "2026-10-08 · curl (plain + browser UA), Firecrawl CLI and MCP (waitFor 8 s) · 403 everywhere"
+    evidence: [ctgov-history-NCT02921659.json, "fc-ctgov-history-NCT02921659.md; D3 tool-log (A4) five tools", "three proxy modes; D5 (A5)", "D13 (A7) same"]
+    gap: "No agent route to registry history. Build trials.observe_versions: poll v2 by lastUpdatePostDate and snapshot every change ourselves (history starts the day we start); ask NLM for access; consider browser-fallback only as a recorded exception."
+    priority: P0
+    owner: D3
+  - id: who-ictrp
+    tier: 1
+    domains: [D3]
+    kind: [fetch, resolve]
+    provider: WHO International Clinical Trials Registry Platform
+    access: scrape
+    auth: none for the HTML record page
+    rateLimits: unpublished
+    identifiersEmitted: ["Main ID (NCT/EUCTR/ISRCTN/...)", "secondary ids"]
+    locatorKinds: ["HTML (HTML element id, e.g. span#DataList3_ctl01_Label1)", TEXT_QUOTE]
+    readiness: 1
+    exercised: "2026-10-08 · curl Trial2.aspx?TrialID=NCT02921659 · ok; 'Prospective Registration: No'; 'Last refreshed on: 12 December 2016'"
+    evidence: [ictrp-trial.html]
+    gap: "Record pages are stale copies of source registries; useful for the prospective-registration flag and cross-registry ids. Bulk export needs WHO agreement."
+    priority: P2
+    owner: D3
+  - id: eu-ctis-public
+    tier: 1
+    domains: [D3, D13]
+    kind: [search, fetch]
+    provider: EMA Clinical Trials Information System
+    access: api
+    auth: none (portal backend, undocumented)
+    rateLimits: unpublished
+    identifiersEmitted: ["EU CT number (YYYY-NNNNNN-NN-NN)", sponsor, product]
+    locatorKinds: ["JSON_POINTER"]
+    readiness: 2
+    exercised: "2026-10-08 · curl POST ctis-public-api/search containAll rapamycin · 16 records"
+    evidence: [ctis-search.json]
+    gap: "Undocumented contract; wrap with schema check; EudraCT (pre-2023) records live elsewhere (EU CTR)."
+    priority: P2
+    owner: D3
+
+  # ---------------------------------------------------------------- substances (D1, D12, D8)
+  - id: pubchem-pug-rest
+    tier: 1
+    domains: [D1, D2, D12]
+    kind: [search, resolve]
+    provider: NCBI PubChem
+    access: api
+    auth: none
+    rateLimits: "X-Throttling-Control header; observed 'Service status: Black (160%)' (server overload) while requests succeeded"
+    identifiersEmitted: [CID, SID, InChIKey, InChI, SMILES, "CAS (as synonym string)", "UNII (as synonym string 'UNII-…')"]
+    locatorKinds: ["JSON_POINTER"]
+    readiness: 3
+    exercised: "2026-10-08 · curl name→cids, property, synonyms, xrefs RegistryID · ok; CanonicalSMILES returned as ConnectivitySMILES"
+    evidence: [pubchem-name-nr-cids.json, pubchem-name-nrcl-cids.json, pubchem-props-439924-90480033.json, "pubchem-synonyms-*.json", pubchem-xrefs-90480033.json]
+    gap: "substances.resolve: names resolve to the CID of the exact form (salt vs cation: CID 90480033 vs 439924); UNII/CAS come only as untyped synonyms → take them from GSRS; respect throttling header."
+    priority: P0
+    owner: tooling
+  - id: fda-gsrs
+    tier: 1
+    domains: [D1, D8, D12]
+    kind: [resolve, fetch]
+    provider: FDA / NCATS Global Substance Registration System (precision.fda.gov and gsrs.ncats.nih.gov)
+    access: api
+    auth: none
+    rateLimits: unpublished
+    identifiersEmitted: [UNII, CAS, "PubChem CID", NCIt, SMS_ID, "GRAS notice number", "InChIKey (structure._inchiKey)", "relationship ACTIVE MOIETY / PARENT->SALT/SOLVATE"]
+    locatorKinds: ["JSON_POINTER (codes[], relationships[])"]
+    readiness: 3
+    exercised: "2026-10-08 · curl substances(8XM2XT8VWI)?view=full on both hosts · identical version 18"
+    evidence: [gsrs-fda-8XM2XT8VWI.json, gsrs-search-8XM2XT8VWI.json]
+    gap: "Make GSRS the bridge authority for UNII↔CAS↔CID↔GRN and for salt/moiety relations (quantity basis). Record GSRS version on the SourceSnapshot."
+    priority: P0
+    owner: D1
+  - id: cas-common-chemistry
+    tier: 1
+    domains: [D1]
+    kind: [resolve]
+    provider: CAS (American Chemical Society)
+    access: api
+    auth: API key (request form)
+    rateLimits: n/a
+    identifiersEmitted: ["CAS RN"]
+    locatorKinds: []
+    readiness: 0
+    exercised: "2026-10-08 · curl detail?cas_rn=23111-00-4 · 401 Unauthorized"
+    evidence: ["cas-commonchem-23111-00-4.json; D1 tool-log (A2) same"]
+    gap: "Request key, or rely on GSRS codes (CAS RN is licensed data; store as identifier only)."
+    priority: P3
+    owner: D1
+  - id: ebi-ols4-chebi
+    tier: 1
+    domains: [D1, D2, D4]
+    kind: [resolve]
+    provider: EMBL-EBI Ontology Lookup Service
+    access: api
+    auth: none
+    rateLimits: unpublished
+    identifiersEmitted: [ChEBI, GO, EFO, MONDO, HP, "UBERON (any OLS ontology)"]
+    locatorKinds: [WHOLE_SNAPSHOT]
+    readiness: 3
+    exercised: "2026-10-08 · curl search ontology=chebi · CHEBI:15927, CHEBI:229274"
+    evidence: [ols4-chebi-nr.json]
+    gap: "Record ontology release on the snapshot."
+    priority: P2
+    owner: D2
+  - id: uniprot-rest
+    tier: 1
+    domains: [D2]
+    kind: [resolve, fetch]
+    provider: UniProt Consortium
+    access: api
+    auth: none
+    rateLimits: unpublished
+    identifiersEmitted: ["UniProtKB accession", "gene names", EC]
+    locatorKinds: ["JSON_POINTER"]
+    readiness: 3
+    exercised: "2026-10-08 · curl search gene:NAMPT human reviewed · P43490"
+    evidence: [uniprot-nampt.json]
+    gap: none
+    priority: P2
+    owner: D2
+  - id: nlm-rxnav
+    tier: 1
+    domains: [D1, D5, D8]
+    kind: [resolve]
+    provider: NLM RxNorm / RxNav
+    access: api
+    auth: none
+    rateLimits: "none in response headers; published limit not verified in this stage"
+    identifiersEmitted: [RxCUI, "UNII (property)", "NDC (via related endpoints)"]
+    locatorKinds: [WHOLE_SNAPSHOT]
+    readiness: 3
+    exercised: "2026-10-08 · curl rxcui.json?name=sirolimus → 35302; property UNII_CODE → W36ZG6FT64"
+    evidence: [rxnav-sirolimus.json, rxnav-rxclass-sirolimus.json]
+    gap: none for drugs; supplements are mostly absent from RxNorm.
+    priority: P2
+    owner: D5
+  - id: nih-dsld
+    tier: 1
+    domains: [D6, D1, D8, D5]
+    kind: [search, fetch]
+    provider: NIH Office of Dietary Supplements — Dietary Supplement Label Database (API v9)
+    access: api
+    auth: none
+    rateLimits: unpublished
+    identifiersEmitted: ["DSLD label id", "UPC/SKU (as printed)", "LanguaL codes", ingredientId, "UNII (field present, often null)", "contact ids"]
+    locatorKinds: ["JSON_POINTER (ingredientRows[], statements[])", "PDF_TEXT (label PDF)", "BOUNDING_BOX (label image)"]
+    readiness: 2
+    exercised: "2026-10-08 · curl search-filter + label/323170, label/295562 · ok"
+    evidence: [dsld-search-nr.json, dsld-search-truniagen.json, dsld-label-323170.json, dsld-label-295562.json]
+    gap: "Supplement Facts parser for the label PDF/image when JSON rows are incomplete; GTIN normalizer for upcSku ('8 50015 31111 6' → 00850015311116, check digit valid); read UNII from ingredientRows[].forms[] (branded row 'Niagen' has row-level uniiCode null, nested form NR chloride 8XM2XT8VWI) and record that the mass basis is unstated; label-version chain via labelRelationships."
+    priority: P0
+    owner: D6
+  - id: usda-fdc
+    tier: 1
+    domains: [D12, D6]
+    kind: [search, fetch]
+    provider: USDA ARS FoodData Central
+    access: api
+    auth: "api.data.gov key (free); DEMO_KEY is per-IP and shared"
+    rateLimits: "DEMO_KEY X-Ratelimit-Limit 10 (exhausted: 429 OVER_RATE_LIMIT)"
+    identifiersEmitted: [fdcId, "NDB number", "GTIN/UPC (Branded Foods)", "nutrient ids"]
+    locatorKinds: ["JSON_POINTER"]
+    readiness: 0
+    exercised: "2026-10-08 · curl foods/search DEMO_KEY ×3 · 429"
+    evidence: [fdc-search-sardines.json, fdc-search-branded-gtin.json, "fdc-search-branded-gtin-retry.json; D12 tool-log (A2) worked earlier; D6 tool-log (A6) 429"]
+    gap: "Register a data.gov key (readiness 3 with key); bulk CSV/JSON downloads as fallback."
+    priority: P0
+    owner: tooling
+
+  # ---------------------------------------------------------------- regulation, safety (D8, D5, D6)
+  - id: openfda-caers
+    tier: 1
+    domains: [D5, D6, D8]
+    kind: [search, fetch]
+    provider: FDA openFDA food/event (CFSAN Adverse Event Reporting System)
+    access: api
+    auth: none (key raises daily cap)
+    rateLimits: "no rate headers on response; a third-party README reports 1K/day without key (unverified, secondary)"
+    identifiersEmitted: [report_number, "product name_brand (free text)", industry_code, "MedDRA reaction terms"]
+    locatorKinds: ["JSON_POINTER"]
+    readiness: 2
+    exercised: "2026-10-08 · curl products.name_brand:\"niagen\" · 34 reports; meta.last_updated 2026-07-07"
+    evidence: [openfda-caers-nr.json]
+    gap: "Products are free-text brand strings (no GTIN, no UNII) → product resolution hypothesis; meta.disclaimer must travel with every answer (no causality, no incidence)."
+    priority: P1
+    owner: D5
+  - id: openfda-drug-label
+    tier: 1
+    domains: [D5, D8]
+    kind: [search, fetch]
+    provider: FDA openFDA drug/label (derived from SPL)
+    access: api
+    auth: none
+    rateLimits: as openFDA
+    identifiersEmitted: [set_id, "SPL id", version, UNII, RxCUI, "NDC (openfda block)"]
+    locatorKinds: ["API_RECORD (field name only)"]
+    readiness: 2
+    exercised: "2026-10-08 · curl openfda.generic_name:\"sirolimus\" · 22 labels with boxed_warning; fixtures stage: search=set_id:\"19880f51-badb-4846-a02a-592a210690ab\" · 1 record, version 11, effective_time 20240430, boxed_warning = FPI + highlights concatenated, no section id / LOINC code"
+    evidence: [openfda-drug-label-sirolimus.json]
+    gap: "Flattens SPL sections into strings and loses section ids/LOINC section codes; use for search, capture the SPL XML from DailyMed for locators."
+    priority: P2
+    owner: D5
+  - id: openfda-food-enforcement
+    tier: 1
+    domains: [D8, D6, D12]
+    kind: [search, fetch]
+    provider: FDA openFDA food/enforcement (Recall Enterprise System)
+    access: api
+    auth: none
+    rateLimits: as openFDA
+    identifiersEmitted: [recall_number, event_id, classification, "recalling_firm (free text)", "UPC (inside product_description free text)"]
+    locatorKinds: ["JSON_POINTER"]
+    readiness: 2
+    exercised: "2026-10-08 · curl supplement + undeclared · 87 records"
+    evidence: ["openfda-food-enf-supp.json; D12 tool-log (A2) firm-name mismatch WanaBana"]
+    gap: "Free-text UPC and firm names (observed 'UPC: PHF-C023', not a GTIN); openfda harmonization block empty for food → GTIN extractor + firm resolution."
+    priority: P1
+    owner: D8
+  - id: dailymed-spl
+    tier: 1
+    domains: [D5, D8]
+    kind: [search, fetch]
+    provider: NLM DailyMed web services v2
+    access: api
+    auth: none
+    rateLimits: unpublished
+    identifiersEmitted: ["SPL set id", "SPL version", "document id", NDC, UNII, "LOINC section codes"]
+    locatorKinds: ["HTML (section/@ID + LOINC code)", TEXT_QUOTE]
+    readiness: 3
+    exercised: "2026-10-08 · curl spls.json, {setid}/history.json, {setid}.xml · ok (v11, effectiveTime 20240430, published Jan 14 2026)"
+    evidence: [dailymed-spls-sirolimus.json, dailymed-history-19880f51.json, dailymed-spl-19880f51.xml]
+    gap: "Keep effectiveTime (valid time) apart from DailyMed publication date (observed time); one set id per labeler, so 'the sirolimus label' is 28 labels."
+    priority: P1
+    owner: D5
+  - id: regulations-gov-api
+    tier: 1
+    domains: [D8, D13]
+    kind: [search, fetch]
+    provider: GSA regulations.gov API v4
+    access: api
+    auth: api.data.gov key (DEMO_KEY works at low volume)
+    rateLimits: DEMO_KEY shared per IP
+    identifiersEmitted: ["document id (FDA-2022-S-0023-0069)", "docket id", objectId, trackingNbr]
+    locatorKinds: [WHOLE_SNAPSHOT]
+    readiness: 2
+    exercised: "2026-10-08 · curl documents/FDA-2022-S-0023-0069 · ok"
+    evidence: [regsgov-api-doc.json]
+    gap: "Metadata only; attachments need the next entry."
+    priority: P1
+    owner: D8
+  - id: regulations-gov-attachments
+    tier: 1
+    domains: [D8, D13]
+    kind: [fetch, parse]
+    provider: downloads.regulations.gov
+    access: scrape
+    auth: n/a
+    rateLimits: n/a
+    identifiersEmitted: ["document id"]
+    locatorKinds: [PDF_TEXT, TEXT_QUOTE]
+    readiness: 1
+    exercised: "2026-10-08 · curl 403; Firecrawl scrape (PDF) ok"
+    evidence: ["regsgov-FDA-2022-S-0023-0069.pdf (403 html)", "fc-regsgov-FDA-2022-S-0023-0069.md; D8 tool-log (A7) same 403"]
+    gap: "Capture the PDF bytes (not only Firecrawl markdown) for the snapshot hash; PDF text loses Greek letters (β) → page-image check for quotes."
+    priority: P1
+    owner: D8
+  - id: fda-web-pages
+    tier: 1
+    domains: [D8, D5]
+    kind: [fetch]
+    provider: fda.gov (warning letters, ingredient pages, constituent updates)
+    access: scrape
+    auth: none
+    rateLimits: unpublished
+    identifiersEmitted: ["letter reference numbers (MARCS-CMS)", "none stable"]
+    locatorKinds: [TEXT_QUOTE, HTML]
+    readiness: 1
+    exercised: "2026-10-08 · curl warning-letters landing page 200 (table is client-side DataTables)"
+    evidence: [fda-warning-letters.html]
+    gap: "Change-tracked scrape (Firecrawl monitor) of ingredient and letter pages; no API."
+    priority: P1
+    owner: D8
+
+  # ---------------------------------------------------------------- organizations, people, money (D7, D13)
+  - id: sec-edgar
+    tier: 1
+    domains: [D7, D13]
+    kind: [search, fetch]
+    provider: U.S. SEC EDGAR (data.sec.gov, www.sec.gov/files)
+    access: api
+    auth: "declared User-Agent identity required (403 without it)"
+    rateLimits: "SEC fair-access policy (numeric limit not verified in this stage); not in response headers"
+    identifiersEmitted: [CIK, ticker, "accession number", EIN, SIC, "form type", "8-K item numbers", "former names with dates"]
+    locatorKinds: ["HTML (iXBRL element / HTML anchor)", TEXT_QUOTE]
+    readiness: 3
+    exercised: "2026-10-08 · curl company_tickers.json (403 without identity, 200 with), submissions CIK0001386570 · ok"
+    evidence: [edgar-company-tickers.json, edgar-noidentity-test.json, edgar-submissions-1386570.json]
+    gap: "filings.get with identity header from secret store; `lei` field null for this issuer → CIK↔LEI via GLEIF name match is a hypothesis."
+    priority: P1
+    owner: D7
+  - id: gleif-lei
+    tier: 1
+    domains: [D7]
+    kind: [search, resolve]
+    provider: Global Legal Entity Identifier Foundation
+    access: api
+    auth: none
+    rateLimits: unpublished
+    identifiersEmitted: [LEI, "registration authority id + entity id", "legal name history"]
+    locatorKinds: ["JSON_POINTER"]
+    readiness: 3
+    exercised: "2026-10-08 · curl lei-records filter, fuzzycompletions, record 529900OPI7B8JPXCVS70 · LEI LAPSED, legal name 'Chromadex Corporation'"
+    evidence: [gleif-niagen.json, gleif-chromadex.json, gleif-529900OPI7B8JPXCVS70.json]
+    gap: "Record registration status with the identifier (a LAPSED LEI is still the entity's LEI but stale); no CIK in GLEIF."
+    priority: P2
+    owner: D7
+  - id: nppes-npi
+    tier: 1
+    domains: [D7, D9]
+    kind: [search, resolve]
+    provider: CMS NPPES NPI Registry (via claude.ai NPI MCP)
+    access: mcp
+    auth: none
+    rateLimits: "200 results/request, 1,200 max (MCP description)"
+    identifiersEmitted: [NPI, "NUCC taxonomy code", "state licence number (self-reported)"]
+    locatorKinds: ["JSON_POINTER"]
+    readiness: 3
+    exercised: "2026-10-08 · MCP npi_search exact first+last name of a public figure · 3 homonym records (Pharmacist ×2, Surgery ×1) (identity by name: 1); review: npi_search org name → npi_validate → npi_lookup 1881018208 (organisational) · found, status, dates, taxonomy, address (lookup by number: 3; tool-log row 54)"
+    evidence: ["MCP result not stored (person data)"]
+    gap: "Name → NPI is never identity; require a second key (state licence, practice address, ORCID-linked affiliation) and keep a ResolutionHypothesis. NPI data are self-reported (MCP caveat)."
+    priority: P2
+    owner: D7
+  - id: opencorporates
+    tier: 2
+    domains: [D7]
+    kind: [search, resolve]
+    provider: OpenCorporates
+    access: api
+    auth: paid / approved token
+    rateLimits: n/a
+    identifiersEmitted: ["jurisdiction + company number"]
+    locatorKinds: []
+    readiness: 0
+    exercised: "D7 tool-log (A6) row 25: 401 Invalid Api Token"
+    evidence: ["D7 tool-log (A6)"]
+    gap: "Licence decision; GLEIF + state registries as free fallback."
+    priority: P3
+    owner: D7
+
+  # ---------------------------------------------------------------- codes and measurement (D4, D2)
+  - id: icd10cm-pcs
+    tier: 1
+    domains: [D2, D3, D4]
+    kind: [resolve]
+    provider: CMS/CDC ICD-10-CM and ICD-10-PCS (via claude.ai ICD-10 MCP, FY2027 set)
+    access: mcp
+    auth: none
+    rateLimits: unpublished
+    identifiersEmitted: ["ICD-10-CM code", "ICD-10-PCS code", "fiscal-year validity"]
+    locatorKinds: [WHOLE_SNAPSHOT]
+    readiness: 3
+    exercised: "2026-10-08 · MCP search 'aging', lookup R54 as_of 2016-10-01 · history tracked only from FY2020"
+    evidence: ["MCP result"]
+    gap: "'Aging' (a CT.gov condition) has no ICD-10-CM concept; nearest R54 / R41.81 are not equivalent → map conditions to MONDO/EFO via OLS, keep ICD as billing-only scheme."
+    priority: P2
+    owner: D2
+  - id: loinc
+    tier: 1
+    domains: [D4]
+    kind: [resolve]
+    provider: Regenstrief LOINC (fhir.loinc.org) and NLM Clinical Tables mirror
+    access: api
+    auth: "LOINC account for FHIR server; none for NLM Clinical Tables"
+    rateLimits: unpublished
+    identifiersEmitted: ["LOINC code", "display name; UCUM example units in the full table"]
+    locatorKinds: [WHOLE_SNAPSHOT]
+    readiness: 2
+    exercised: "2026-10-08 · curl fhir.loinc.org $lookup → redirect to auth.loinc.org; clinicaltables loinc_items 'ferritin' → 5 codes"
+    evidence: [loinc-fhir.json, loinc-clinicaltables.json]
+    gap: "LOINC licence is free but requires account + attribution; NLM mirror gives abbreviated names only. Vendor test codes ↔ LOINC must be scraped from lab test menus."
+    priority: P1
+    owner: D4
+  - id: ucum
+    tier: 1
+    domains: [D4, D1, D12]
+    kind: [resolve, compute]
+    provider: NLM Clinical Tables UCUM / Regenstrief UCUM
+    access: api
+    auth: none
+    rateLimits: unpublished
+    identifiersEmitted: ["UCUM code"]
+    locatorKinds: [WHOLE_SNAPSHOT]
+    readiness: 2
+    exercised: "2026-10-08 · curl ucum search ng/mL · 2 codes; NLM display string typo 'nanogram per millliiter'"
+    evidence: [ucum-validate.json]
+    gap: "Unit normalization and conversion must be a BellLabs compute tool (deterministic, versioned), not a lookup."
+    priority: P1
+    owner: tooling
+  - id: fda-gudid
+    tier: 1
+    domains: [D4, D6]
+    kind: [resolve, fetch]
+    provider: NLM AccessGUDID
+    access: api
+    auth: none
+    rateLimits: unpublished
+    identifiersEmitted: ["UDI-DI (GS1 GTIN or HIBCC/ICCBBA)", "device record key", "version number"]
+    locatorKinds: ["JSON_POINTER"]
+    readiness: 3
+    exercised: "2026-10-08 · curl devices/lookup.json?di=08717648200274 · publicVersionNumber 5"
+    evidence: [gudid-search.json]
+    gap: none for medical devices; consumer wearables are often not in GUDID.
+    priority: P2
+    owner: D4
+
+  # ---------------------------------------------------------------- products and commerce (D6)
+  - id: brand-pages
+    tier: 1
+    domains: [D6, D9, D10]
+    kind: [fetch, parse]
+    provider: brand and merchant web pages (example truniagen.com)
+    access: scrape
+    auth: none
+    rateLimits: site-specific
+    identifiersEmitted: ["product handle/URL; GTIN only via Shopify <handle>.js (D6)"]
+    locatorKinds: [TEXT_QUOTE, "BOUNDING_BOX (Supplement Facts image)"]
+    readiness: 1
+    exercised: "2026-10-08 · tvly extract truniagen.com/products/tru-niagen-300mg · 35,789 chars; Supplement Facts only as image alt text"
+    evidence: ["tvly-extract-truniagen.md; D6 tool-log (A6) Shopify products.json / <handle>.js"]
+    gap: "Change-tracked capture (Firecrawl monitor) + Supplement Facts image parser; claims on the page become ClaimOccurrences."
+    priority: P0
+    owner: D6
+
+  # ---------------------------------------------------------------- general web and MCP layer
+  - id: tavily-cli
+    tier: 1
+    domains: [all]
+    kind: [search, fetch]
+    provider: Tavily (tvly 0.1.5)
+    access: api
+    auth: TAVILY_API_KEY
+    rateLimits: credit-metered
+    identifiersEmitted: [URL]
+    locatorKinds: ["TEXT_QUOTE (on extracted markdown)"]
+    readiness: 2
+    exercised: "2026-10-08 · search ×3, extract ×2 · ok after encoding workaround"
+    evidence: ["tvly-search-*.json", "tvly-extract-*.md"]
+    gap: "Windows console crash on non-cp1252 output (write to file + UTF-8); extracted markdown is a derived rendition, so the snapshot hash is of the extraction, not of the bytes served."
+    priority: P1
+    owner: tooling
+  - id: firecrawl-cli
+    tier: 1
+    domains: [all]
+    kind: [fetch, parse, search]
+    provider: Firecrawl (CLI 1.23.1 + MCP)
+    access: api
+    auth: FIRECRAWL_API_KEY
+    rateLimits: "5 concurrent jobs per team account; credit-metered"
+    identifiersEmitted: [URL, "scrape id"]
+    locatorKinds: [TEXT_QUOTE, "PDF_TEXT (with pdf parser)"]
+    readiness: 2
+    exercised: "2026-10-08 · scrape PDF (regulations.gov), HTML (journals.physiology.org), SPA (CT.gov history: blocked) · 3 calls; fixtures stage: a 4th scrape of the APS notice (--max-age 0, tool-log row 48); review: 1 MCP scrape for page metadata (row 55)"
+    evidence: ["fc-*.md"]
+    gap: "Fetches what curl cannot (bot-protected PDFs, publisher pages); keep raw bytes too (rawHtml / PDF) so the snapshot is not only a markdown derivative."
+    priority: P0
+    owner: tooling
+  - id: firecrawl-research-index
+    tier: 1
+    domains: [D3, D2]
+    kind: [search, resolve]
+    provider: Firecrawl research paper index (MCP firecrawl_research_*)
+    access: mcp
+    auth: Firecrawl account
+    rateLimits: credit-metered
+    identifiersEmitted: [paperId, DOI, PMID, PMCID, arXiv]
+    locatorKinds: []
+    readiness: 2
+    exercised: "2026-10-08 · inspect_paper ×2, search_papers k=8 · ok"
+    evidence: ["MCP results"]
+    gap: "Discovery only: truncated abstracts and no retraction status (retracted PMID 12003802 returned unflagged) → always re-check integrity with Crossref/PubMed."
+    priority: P2
+    owner: tooling
+  - id: mcp-pubmed
+    tier: 1
+    domains: [D3, D2]
+    kind: [search, fetch, resolve]
+    provider: claude.ai PubMed connector
+    access: mcp
+    auth: none
+    rateLimits: unpublished
+    identifiersEmitted: [PMID, PMCID, DOI, MeSH]
+    locatorKinds: []
+    readiness: 2
+    exercised: "2026-10-08 · convert_article_ids, get_article_metadata · ok"
+    evidence: ["MCP results; D2 tool-log (A3) superscripts stripped in abstracts"]
+    gap: "Not a faithful capture (normalized text, CommentsCorrections dropped). Adopt for discovery; wrap E-utilities for capture."
+    priority: P2
+    owner: tooling
+  - id: mcp-clinicaltrials
+    tier: 1
+    domains: [D3]
+    kind: [search, fetch]
+    provider: claude.ai Clinical Trials connector (ClinicalTrials.gov v2)
+    access: mcp
+    auth: none
+    rateLimits: unpublished
+    identifiersEmitted: [NCT]
+    locatorKinds: []
+    readiness: 2
+    exercised: "2026-10-08 · get_trial_details NCT02921659 · ok"
+    evidence: ["MCP result"]
+    gap: "Drops studyFirstSubmitDate and other status dates (retrospective registration invisible) and has no history. Adopt for discovery; capture via ctgov-v2-api."
+    priority: P2
+    owner: tooling
+  - id: mcp-biorxiv
+    tier: 1
+    domains: [D3, D13]
+    kind: [search, fetch]
+    provider: claude.ai bioRxiv connector
+    access: mcp
+    auth: none
+    rateLimits: unpublished
+    identifiersEmitted: ["preprint DOI", "published DOI"]
+    locatorKinds: []
+    readiness: 2
+    exercised: "2026-10-08 · get_preprint 10.1101/680462 · published_doi present, jatsxml URL"
+    evidence: ["MCP result"]
+    gap: "No keyword search (date/category only per MCP description)."
+    priority: P3
+    owner: tooling
+  - id: exa-mcp
+    tier: 1
+    domains: [all]
+    kind: [search, fetch]
+    provider: Exa
+    access: mcp
+    auth: EXA_API_KEY / connector
+    rateLimits: credit-metered
+    identifiersEmitted: [URL]
+    locatorKinds: ["TEXT_QUOTE (highlights are excerpts, not captures)"]
+    readiness: 2
+    exercised: "2026-10-08 · web_search_exa (case studies) · ok"
+    evidence: ["MCP result"]
+    gap: "Semantic discovery only."
+    priority: P3
+    owner: tooling
+
+  # ---------------------------------------------------------------- tier 2: scored from sibling packet tool logs (read 2026-10-08)
+  - id: ncbi-bookshelf-livertox
+    tier: 2
+    domains: [D5]
+    kind: [fetch]
+    provider: NCBI Bookshelf (LiverTox)
+    access: bulk
+    auth: none
+    rateLimits: n/a
+    identifiersEmitted: ["NBK id", "section ids"]
+    locatorKinds: ["HTML (nxml section id)", TEXT_QUOTE]
+    readiness: 2
+    exercised: "D10 tool-log (A1) rows 8–10; D5 tool-log (A5): HTML returns reCAPTCHA to curl/Firecrawl/Tavily; litarch bulk FTP tarball works (JATS nxml with section ids)"
+    evidence: ["D10 tool-log (A1)", "D5 tool-log (A5)"]
+    gap: "Use bulk FTP; HTML is not agent-reachable."
+    priority: P1
+    owner: D5
+  - id: nih-ods-api
+    tier: 2
+    domains: [D5, D1]
+    kind: [fetch]
+    provider: NIH ODS fact sheets API
+    access: api
+    auth: none
+    rateLimits: n/a
+    identifiersEmitted: ["fact sheet name"]
+    locatorKinds: [TEXT_QUOTE]
+    readiness: 1
+    exercised: "D5 tool-log (A5): curl 403 Cloudflare; Tavily extract of HTML works (D10 A1)"
+    evidence: ["D5 tool-log (A5)", "D10 tool-log (A1)"]
+    gap: "Scrape with change tracking."
+    priority: P2
+    owner: D5
+  - id: open-targets
+    tier: 2
+    domains: [D2]
+    kind: [search, fetch]
+    provider: Open Targets Platform GraphQL
+    access: api
+    auth: none
+    rateLimits: unpublished
+    identifiersEmitted: ["Ensembl gene", "EFO/MONDO", ChEMBL]
+    locatorKinds: ["API_RECORD (GraphQL path)"]
+    readiness: 3
+    exercised: "D2 tool-log (A3) T9: ok after retry; schema drift (maximumClinicalTrialPhase removed)"
+    evidence: ["D2 tool-log (A3)"]
+    gap: "Introspect schema before querying; pin release."
+    priority: P2
+    owner: D2
+  - id: efsa-journal-wiley
+    tier: 2
+    domains: [D5, D8, D12]
+    kind: [fetch]
+    provider: EFSA Journal (Wiley-hosted)
+    access: scrape
+    auth: n/a
+    rateLimits: n/a
+    identifiersEmitted: [DOI, "EFSA question number"]
+    locatorKinds: []
+    readiness: 0
+    exercised: "D10 tool-log (A1): Cloudflare 403 for Tavily, Firecrawl, curl"
+    evidence: ["D10 tool-log (A1)"]
+    gap: "Wiley TDM API or browser fallback (recorded exception)."
+    priority: P2
+    owner: D8
+  - id: health-canada-lnhpd
+    tier: 2
+    domains: [D8, D6]
+    kind: [fetch]
+    provider: Health Canada Licensed Natural Health Products Database
+    access: api
+    auth: none
+    rateLimits: unpublished
+    identifiersEmitted: [NPN, "licence id"]
+    locatorKinds: ["JSON_POINTER"]
+    readiness: 2
+    exercised: "D8 tool-log (A7) rows 26–27: API works; market status only on web page; NPN discoverable only via search engine"
+    evidence: ["D8 tool-log (A7)"]
+    gap: "Name→NPN search tool; scrape status page."
+    priority: P2
+    owner: D8
+  - id: uspto-tsdr
+    tier: 2
+    domains: [D8]
+    kind: [fetch]
+    provider: USPTO trademark status
+    access: api
+    auth: API key (registration)
+    rateLimits: n/a
+    identifiersEmitted: ["registration / serial number"]
+    locatorKinds: []
+    readiness: 0
+    exercised: "D8 tool-log (A7) row 44: 401"
+    evidence: ["D8 tool-log (A7)"]
+    gap: "Register key."
+    priority: P3
+    owner: D8
+  - id: fda-data-dashboard
+    tier: 2
+    domains: [D8]
+    kind: [fetch]
+    provider: FDA Data Dashboard (inspections, 483s)
+    access: api
+    auth: registered user + key
+    rateLimits: n/a
+    identifiersEmitted: ["FEI number"]
+    locatorKinds: []
+    readiness: 0
+    exercised: "D8 tool-log (A7) row 36: 401"
+    evidence: ["D8 tool-log (A7)"]
+    gap: "Register account."
+    priority: P2
+    owner: D8
+  - id: certification-databases
+    tier: 2
+    domains: [D8, D6]
+    kind: [fetch]
+    provider: Informed Sport / NSF / USP verified lists
+    access: scrape
+    auth: n/a
+    rateLimits: n/a
+    identifiersEmitted: ["certificate / listing ids"]
+    locatorKinds: [TEXT_QUOTE]
+    readiness: 0
+    exercised: "D8 tool-log (A7) row 42: Informed Sport 403 to curl"
+    evidence: ["D8 tool-log (A7)"]
+    gap: "Firecrawl with change tracking; certification claims on labels (DSLD 'Seals/Symbols') must be checked against these lists."
+    priority: P1
+    owner: D8
+  - id: reddit
+    tier: 2
+    domains: [D9]
+    kind: [search, fetch]
+    provider: Reddit
+    access: api
+    auth: OAuth app
+    rateLimits: n/a
+    identifiersEmitted: ["post id", "comment id"]
+    locatorKinds: [TEXT_QUOTE]
+    readiness: 0
+    exercised: "D1 (A2) rows 15–17, D9 (A8) row 16: 403; Firecrawl refuses the site"
+    evidence: ["D1 tool-log (A2)", "D9 tool-log (A8)"]
+    gap: "Official API app or no community lens from Reddit."
+    priority: P2
+    owner: D9
+  - id: altmetric
+    tier: 2
+    domains: [D9, D13]
+    kind: [fetch]
+    provider: Altmetric (Digital Science)
+    access: api
+    auth: API key required since 2025-11-10 (per D9 log)
+    rateLimits: n/a
+    identifiersEmitted: ["DOI → mention ids"]
+    locatorKinds: []
+    readiness: 0
+    exercised: "D9 tool-log (A8) row 20: 403"
+    evidence: ["D9 tool-log (A8)"]
+    gap: "Licence decision."
+    priority: P3
+    owner: D9
+  - id: crossref-event-data
+    tier: 2
+    domains: [D9]
+    kind: [fetch]
+    provider: Crossref Event Data
+    access: api
+    auth: n/a
+    rateLimits: n/a
+    identifiersEmitted: []
+    locatorKinds: []
+    readiness: 0
+    exercised: "D9 tool-log (A8) row 21: public API sunset 2026-04-23"
+    evidence: ["D9 tool-log (A8)"]
+    gap: "Retired; remove from plans."
+    priority: P3
+    owner: D9
+  - id: isrctn
+    tier: 2
+    domains: [D3]
+    kind: [fetch]
+    provider: ISRCTN registry
+    access: api
+    auth: none
+    rateLimits: unpublished
+    identifiersEmitted: [ISRCTN, "version counter"]
+    locatorKinds: ["HTML (XML)"]
+    readiness: 2
+    exercised: "D3 tool-log (A4): API XML works with version counter but no per-version content; web page via Firecrawl carries editorial notes"
+    evidence: ["D3 tool-log (A4)"]
+    gap: "Self-observed versions, as for CT.gov."
+    priority: P2
+    owner: D3
+  - id: licensed-out-sources
+    tier: 2
+    domains: [D1, D2, D5, D7]
+    kind: [fetch]
+    provider: "DrugBank, Natural Medicines, KEGG (commercial use), Crunchbase, Examine (paywalled content)"
+    access: manual
+    auth: commercial licence
+    rateLimits: n/a
+    identifiersEmitted: ["vendor ids"]
+    locatorKinds: []
+    readiness: 0
+    exercised: "not exercised by D11; D2 (A3) recorded KEGG licence page; D3 (A4) Examine paywall"
+    evidence: ["D2 tool-log (A3)", "D3 tool-log (A4)"]
+    gap: "Licence decisions for the owner; never store licensed content in the shared graph beyond identifiers and our own assertions with citations."
+    priority: P3
+    owner: owner
+
+  - id: publisher-pages
+    tier: 1
+    domains: [D3, D9, K]
+    kind: [fetch]
+    provider: "journal publisher web pages (here: American Physiological Society, journals.physiology.org, Atypon platform behind Cloudflare)"
+    access: scrape
+    auth: none (bot challenge for non-browser clients)
+    rateLimits: "Cloudflare managed challenge: curl gets HTTP 403 '<title>Just a moment...</title>'"
+    identifiersEmitted: [DOI]
+    locatorKinds: ["TEXT_QUOTE (on a tool rendition only)"]
+    readiness: 1
+    exercised: "2026-10-08 (fixtures stage) · curl GET notice page → 403 Cloudflare challenge (CaptureAttempt ca-aps-notice-curl); Firecrawl CLI scrape → markdown rendition, twice: identical length, hashes differ by one random anchor id (#afterNav-u17 vs #afterNav-k2s)"
+    evidence: [publisher-notice-curl.html, fc-retraction-notice.md, "07-fixtures/resveratrol-retraction-integrity"]
+    gap: "Notice and article pages are capturable only as tool renditions; prefer Crossref / MEDLINE XML for integrity facts (G2) and record the rendition with contentHashBasis NORMALIZED_TEXT. Rendition hashes are not stable across captures (navigation anchor ids): hash a boilerplate-stripped main-content projection or rely on quote re-selection. Rights (review, Firecrawl MCP metadata, tool-log row 55): the APS page declares tdm-reservation 1 with a TDM policy (https://journals.physiology.org/pb-assets/documents/policy/tdm-policy-1754645436457.json), robots noarchive/noindex and dc.Rights 'Copyright © 2012 the American Physiological Society': keep only short quotes in the graph and the packet; the full rendition stays in scratch."
+    priority: P1
+    owner: tooling
+
+# Gap list, prioritized by the questions each blocks: `blocks` = ids in 02-questions.md; `blocksOtherPackets` = "<packet>:<id>" declared in that packet's 02.
+gaps:
+  - id: G1
+    title: "Self-observed registry versions (CT.gov history blocked)"
+    blocks: [Q-D11-07]
+    blocksOtherPackets: ["D3:CQ-ST-08"]
+    entries: [ctgov-record-history, isrctn]
+    priority: P0
+  - id: G2
+    title: "Integrity checker (retraction, correction, expression of concern) reconciling Crossref updated-by and PubMed CommentsCorrections"
+    blocks: [Q-D11-04, Q-D11-05]
+    entries: [crossref-rest, ncbi-eutils-pubmed]
+    priority: P0
+  - id: G3
+    title: "Substance identity bridge with form awareness (GSRS as authority; PubChem for structure; moiety/salt relation for quantity basis)"
+    blocks: [CQ-ID-04, Q-D11-09, Q-D11-10]
+    entries: [fda-gsrs, pubchem-pug-rest, nih-dsld]
+    priority: P0
+  - id: G4
+    title: "JATS/SPL/JSON capture normalizer that produces re-selectable locators (section ids, JSON pointers, whitespace-normalized TEXT_QUOTE)"
+    blocks: [CQ-PV-02, Q-D11-02, Q-D11-03]
+    entries: [europepmc-fulltext-jats, dailymed-spl, ctgov-v2-api]
+    priority: P0
+  - id: G5
+    title: "GTIN normalizer and validator (UPC-A/EAN-13 → GTIN-14, check digit) applied to DSLD upcSku, openFDA free text, FDC gtinUpc, Shopify barcode"
+    blocks: [Q-D11-12, Q-D11-13]
+    entries: [nih-dsld, openfda-food-enforcement, usda-fdc, brand-pages]
+    priority: P1
+  - id: G6
+    title: "Keys and quotas for shared-IP team runs (data.gov for FDC/regulations.gov, OpenAlex, Semantic Scholar, NCBI key)"
+    blocks: [Q-D11-17]
+    entries: [usda-fdc, openalex, semantic-scholar, regulations-gov-api]
+    priority: P0
+  - id: G7
+    title: "Supplement Facts image/PDF parser (label panels as images on brand pages, DSLD PDFs)"
+    blocks: [Q-D11-12]
+    blocksOtherPackets: ["D6:CQ-ID-02"]
+    entries: [brand-pages, nih-dsld]
+    priority: P1
+  - id: G8
+    title: "Change-tracked capture for scrape-only regulatory and brand pages (FDA pages, regulations.gov PDFs, certification lists)"
+    blocks: [Q-D11-14]
+    blocksOtherPackets: ["D6:CQ-AX-06"]
+    entries: [fda-web-pages, regulations-gov-attachments, certification-databases, brand-pages]
+    priority: P1
+  - id: G9
+    title: "Person/organization identifier resolution as hypotheses (NPI homonyms, CIK↔LEI stale names)"
+    blocks: [Q-D11-15, Q-D11-16]
+    entries: [nppes-npi, sec-edgar, gleif-lei]
+    priority: P2
+  - id: G10
+    title: "Capture-attempt recorder (model stage, 2026-10-08): every tool adapter emits a D11 CaptureAttempt for FAILED (with failureKind) and PARTIAL requests, writes an authoritative empty result as a COMPLETE SourceSnapshot plus a kernel FIELD_NOT_REPORTED Assertion (adversarial review: no EMPTY_RESULT attempt), strips credential parameters from requestUri, detects soft failures (200 with an error or challenge page), and stamps SourceSnapshot.captureMethod = '<entry id>/<version>' on successes"
+    blocks: [Q-D11-17, CQ-AX-04, Q-D11-01, Q-D11-07]
+    entries: [all]
+    priority: P0
+
+# MCP adopt / wrap / replace recommendation (first pass)
+mcpRecommendation:
+  adopt_for_discovery_only: [mcp-pubmed, mcp-clinicaltrials, mcp-biorxiv, firecrawl-research-index, exa-mcp]
+  adopt_as_is: [icd10cm-pcs, nppes-npi]
+  wrap_with_capture_adapter: [ncbi-eutils-pubmed, europepmc-fulltext-jats, crossref-rest, ctgov-v2-api, dailymed-spl, fda-gsrs, pubchem-pug-rest, nih-dsld, sec-edgar]
+  build: ["ctgov-record-history (self-observed)", integrity-checker, gtin-normalizer, supplement-facts-parser, unit-normalizer]
+  rationale: "Connector outputs are normalized renditions without bytes, hashes or stable locators (observed: PubMed MCP drops CommentsCorrections, CT MCP drops submission dates, research index drops retraction status). They are fine for finding things and wrong for capturing evidence."

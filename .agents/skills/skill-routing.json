@@ -1,0 +1,849 @@
+{
+  "format": "bks-skill-routing.v1",
+  "status": "draft (S8); the lead binds skillBundleVersion and the release identities in S9",
+  "releaseId": {
+    "bind": "schema/pinned/PIN.json#/releaseId",
+    "observedAtBinding": "biotech-schema-v2.2.0"
+  },
+  "schemaReleaseDigest": {
+    "bind": "schema/pinned/PIN.json#/schemaReleaseDigest",
+    "observedAtBinding": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74"
+  },
+  "workspaceFingerprint": {
+    "bind": "workspace/manifest.json#/workspaceFingerprint",
+    "observedAtBinding": "sha256:b0772b5de8ac83f03f98950124ea27d1c5cc39002b5225d6b8e189d86bb520d2",
+    "note": "read at check time (changes after the workspace ranking round); skill-digests.mjs --check reports the current value"
+  },
+  "skillBundleVersion": "${SKILL_BUNDLE_VERSION}",
+  "vendor": {
+    "source": "https://github.com/neo4j-contrib/neo4j-skills",
+    "snapshot": "9005c19 (2026-10-07)",
+    "licence": "MIT (.agents/skills/_vendor-neo4j/LICENSE-neo4j-skills)",
+    "modified": false,
+    "digestAlgorithm": "sha256 over LC_ALL=C-sorted lines '<file sha256>  <relative path>' + newline (scripts/migration/skill-digests.mjs)"
+  },
+  "loadingRule": "load only the entry skill; load a dependency on demand and only after reading the route's overrides; never load all vendored skills into one agent",
+  "testedVersions": {
+    "neo4j": [
+      {
+        "version": "5.26.31",
+        "edition": "community",
+        "where": "local disposable (scripts/neo4j-test.sh; image neo4j:5.26-community sha256:c7d25c0e...)",
+        "role": "integration, restore rehearsal, migration dry run"
+      },
+      {
+        "version": "5.26.31",
+        "edition": "enterprise (evaluation licence)",
+        "where": "local disposable bks-neo4j-ent-eval (image neo4j:5.26-enterprise sha256:02d30e0a...)",
+        "role": "role/constraint parity, restore rehearsal, migration dry run"
+      },
+      {
+        "version": "5.27-aura",
+        "edition": "enterprise",
+        "where": "production Aura instance (READ-only in S8)",
+        "role": "target; export only"
+      }
+    ],
+    "cypher": {
+      "baseline": "5",
+      "prefix": "CYPHER 5 (accepted on 5.26.31 and 5.27-aura)",
+      "forbidden": "CYPHER 25",
+      "note": "Aura offers Cypher 5 and 25; the release baseline is 5 until upgrade qualification (TL-03)"
+    },
+    "apoc": {
+      "local": "5.26.31 (core plugin)",
+      "aura": "2026.09.0 (162 procedures)",
+      "policy": "core read helpers only on the service path; apoc.export/import/periodic are operator-only"
+    },
+    "gds": {
+      "aura": "installed (454 gds.* procedures; gds.version() answers: Aura Graph Analytics is versionless.)",
+      "local": "absent",
+      "admitted": false,
+      "policy": "OD-22: capability-gated; not admitted in biotech-schema-v2.0.0"
+    }
+  },
+  "overrides": [
+    {
+      "id": "OV-CYPHER-VERSION",
+      "appliesTo": [
+        "neo4j-cypher-skill",
+        "neo4j-getting-started-skill",
+        "neo4j-vector-index-skill",
+        "neo4j-import-skill",
+        "neo4j-query-tuning-skill",
+        "neo4j-genai-plugin-skill",
+        "neo4j-graphrag-skill",
+        "neo4j-migration-skill",
+        "neo4j-document-import-skill",
+        "neo4j-spark-skill"
+      ],
+      "vendorSays": "write CYPHER 25 as the first token; Neo4j >= 2025.01 safe baseline",
+      "releaseRule": "Cypher 5 only (optional CYPHER 5 prefix); never CYPHER 25; features newer than 5.26 (LET, FINISH, FILTER, INSERT, SEARCH, DISJOINT BY) are unavailable until upgrade qualification",
+      "authority": "TEAM-PROTOCOL; DECISIONS TL-03; AGENT-SKILLS section 1"
+    },
+    {
+      "id": "OV-SCHEMA-SOURCE",
+      "appliesTo": [
+        "neo4j-cypher-skill",
+        "neo4j-modeling-skill",
+        "neo4j-getting-started-skill"
+      ],
+      "vendorSays": "a <db-name>-schema.json anywhere in the project is read directly and live inspection is skipped; otherwise db.schema.* introspection",
+      "releaseRule": "schema authority is the release-bound biotech-schema-context.v1 from the pinned workspace (biotech-schema-explore); db.schema.* and SHOW INDEXES diagnose deployment drift only and never change ontology authority",
+      "authority": "AGENT-SKILLS section 1"
+    },
+    {
+      "id": "OV-GENERIC-WRITES",
+      "appliesTo": [
+        "neo4j-cypher-skill",
+        "neo4j-import-skill",
+        "neo4j-getting-started-skill",
+        "neo4j-spring-data-skill",
+        "neo4j-document-import-skill",
+        "neo4j-graphrag-skill",
+        "neo4j-kafka-skill",
+        "neo4j-spark-skill"
+      ],
+      "vendorSays": "MERGE/CREATE/SET/DELETE/DETACH DELETE/LOAD CSV examples",
+      "releaseRule": "generic MERGE does not encode Biotech identity, evidence or episode semantics; DELETE examples are not ingestion procedures. Canonical writes go typed intent -> compiled plan -> apply (biotech-kg-ingest); data migration goes through biotech-graph-ops scripts; legacy data is never deleted",
+      "authority": "AGENT-SKILLS section 1; KICKOFF non-negotiables"
+    },
+    {
+      "id": "OV-ELEMENT-ID",
+      "appliesTo": [
+        "neo4j-cypher-skill",
+        "neo4j-driver-javascript-skill",
+        "neo4j-kafka-skill",
+        "neo4j-migration-skill",
+        "neo4j-modeling-skill",
+        "neo4j-query-tuning-skill"
+      ],
+      "vendorSays": "elementId()/id() used to address nodes",
+      "releaseRule": "elementId() is not durable identity (it changes across restore and store copies; observed in the S8 restore rehearsal). Domain identity is uid; legacy rows use their durable legacy key",
+      "authority": "AGENT-SKILLS section 1; S8 restore evidence"
+    },
+    {
+      "id": "OV-GDS-WRITEBACK",
+      "appliesTo": [
+        "neo4j-gds-skill",
+        "neo4j-aura-graph-analytics-skill",
+        "neo4j-snowflake-graph-analytics-skill",
+        "neo4j-getting-started-skill"
+      ],
+      "vendorSays": "gds.<algo>.write / AGA write-back persists results to the database",
+      "releaseRule": "write-back is not a fact writer (AGA writes in concurrent batches, one transaction per batch). Stream or mutate in-projection, seal an artifact, publish only through an admitted derived-projection intent. Not admitted in this release",
+      "authority": "AGENT-SKILLS section 2 biotech-graph-analyze; OD-22"
+    },
+    {
+      "id": "OV-READ-ROUTING",
+      "appliesTo": [
+        "neo4j-driver-javascript-skill",
+        "neo4j-driver-python-skill",
+        "neo4j-cypher-skill",
+        "neo4j-mcp-skill"
+      ],
+      "vendorSays": "READ access mode / executeRead for read-only work",
+      "releaseRule": "READ routing is not enforcement; read-only authority comes from the database principal (bks_reader) plus executor checks",
+      "authority": "AGENT-SKILLS section 3"
+    },
+    {
+      "id": "OV-CONFIRM-WRITES",
+      "appliesTo": [
+        "neo4j-cypher-skill",
+        "neo4j-getting-started-skill",
+        "neo4j-security-skill"
+      ],
+      "vendorSays": "confirm with the user before every write",
+      "releaseRule": "does not add an approval gate to a previously authorized admitted workflow; admission and authority are enforced by the executor and principal",
+      "authority": "AGENT-SKILLS section 1"
+    },
+    {
+      "id": "OV-VECTOR-SEARCH",
+      "appliesTo": [
+        "neo4j-vector-index-skill",
+        "neo4j-graphrag-skill",
+        "neo4j-genai-plugin-skill"
+      ],
+      "vendorSays": "SEARCH clause / ai.text.* / db.index.vector.* for retrieval",
+      "releaseRule": "native data vectors are disabled in this release (OD-44 profile recorded, not served); SEARCH needs >= 2026.01 and is unavailable on 5.26/5.27; schema semantic search uses OpenAI Vector Stores, never a Neo4j vector skill",
+      "authority": "OD-44; TL-03; OPTIONAL-CAPABILITIES.md"
+    },
+    {
+      "id": "OV-OPERATOR-ONLY",
+      "appliesTo": [
+        "neo4j-aura-provisioning-skill",
+        "neo4j-security-skill",
+        "neo4j-cli-tools-skill",
+        "neo4j-import-skill"
+      ],
+      "vendorSays": "provision instances, create users/roles, run neo4j-admin, bulk import",
+      "releaseRule": "operator capability with separate credentials (bks_migrator / admin); never loaded into research or ingestion agents; no Aura API client credentials exist in this environment, so console snapshots and provisioning are operator actions",
+      "authority": "AGENT-SKILLS section 2; S0 section 3"
+    }
+  ],
+  "routes": [
+    {
+      "id": "schema.navigate",
+      "entrySkill": "biotech-schema-explore",
+      "trigger": "select types, identity, predicates, relationships, evidence paths or a read/write strategy from task context",
+      "nonTriggers": [
+        "live graph data reads",
+        "ontology edits"
+      ],
+      "role": "knowledge agent",
+      "requiredCapabilities": [
+        "schema.search",
+        "schema.get",
+        "schema.slice"
+      ],
+      "dependencies": [
+        {
+          "skill": "neo4j-modeling-skill",
+          "path": ".agents/skills/neo4j-modeling-skill/",
+          "load": "on-demand",
+          "why": "only when interpreting difficult schema meaning"
+        }
+      ],
+      "overrides": [
+        "OV-SCHEMA-SOURCE"
+      ],
+      "boundary": "pinned workspace; no graph access",
+      "examples": [
+        ".agents/skills/biotech-schema-explore/SKILL.md"
+      ],
+      "evaluations": [
+        "evals/v2/schema-discovery/tasks.json"
+      ]
+    },
+    {
+      "id": "read.familiar",
+      "entrySkill": "biotech-kg-query",
+      "trigger": "resolve identities, read a card/neighbourhood/assertion/evidence/history with a typed operation or audited template",
+      "nonTriggers": [
+        "capture",
+        "canonical writes",
+        "graph-global analytics"
+      ],
+      "role": "knowledge agent",
+      "requiredCapabilities": [
+        "read.typed",
+        "read.templates"
+      ],
+      "dependencies": [
+        {
+          "skill": "neo4j-cypher-skill",
+          "path": ".agents/skills/neo4j-cypher-skill/",
+          "load": "on-demand",
+          "why": "on demand to understand a template",
+          "sections": [
+            "references/syntax-traps.md"
+          ]
+        }
+      ],
+      "overrides": [
+        "OV-CYPHER-VERSION",
+        "OV-ELEMENT-ID",
+        "OV-READ-ROUTING"
+      ],
+      "boundary": "typed/template native read",
+      "examples": [
+        ".agents/skills/biotech-kg-query/examples/examples.json"
+      ],
+      "evaluations": [
+        "evals/v2/native-read/tasks.json"
+      ]
+    },
+    {
+      "id": "read.advanced",
+      "entrySkill": "biotech-kg-query",
+      "trigger": "new path/aggregation question not covered by a template",
+      "nonTriggers": [
+        "writes",
+        "procedures outside the read allowlist"
+      ],
+      "role": "knowledge agent",
+      "requiredCapabilities": [
+        "read.cypher"
+      ],
+      "dependencies": [
+        {
+          "skill": "neo4j-cypher-skill",
+          "path": ".agents/skills/neo4j-cypher-skill/",
+          "load": "on-demand",
+          "why": "draft one parameterized Cypher 5 read"
+        },
+        {
+          "skill": "neo4j-query-tuning-skill",
+          "path": ".agents/skills/neo4j-query-tuning-skill/",
+          "load": "on-demand",
+          "why": "only when EXPLAIN/PROFILE shows the budget is at risk"
+        }
+      ],
+      "overrides": [
+        "OV-CYPHER-VERSION",
+        "OV-SCHEMA-SOURCE",
+        "OV-ELEMENT-ID",
+        "OV-READ-ROUTING",
+        "OV-GENERIC-WRITES"
+      ],
+      "boundary": "parameterized bounded biotech-cypher-read-intent.v1 artifact",
+      "examples": [
+        ".agents/skills/biotech-kg-query/examples/examples.json"
+      ],
+      "evaluations": [
+        "evals/v2/native-read/tasks.json"
+      ]
+    },
+    {
+      "id": "write.canonical",
+      "entrySkill": "biotech-kg-ingest",
+      "trigger": "record source-supported facts, corrections, versions, claims or evidence",
+      "nonTriggers": [
+        "arbitrary graph mutation",
+        "schema DDL",
+        "publication"
+      ],
+      "role": "knowledge agent",
+      "requiredCapabilities": [
+        "plan",
+        "apply",
+        "receipt.get"
+      ],
+      "dependencies": [
+        {
+          "skill": "neo4j-cypher-skill",
+          "path": ".agents/skills/neo4j-cypher-skill/",
+          "load": "on-demand",
+          "why": "read the compiled plan statements"
+        },
+        {
+          "skill": "neo4j-import-skill",
+          "path": ".agents/skills/neo4j-import-skill/",
+          "load": "on-demand",
+          "why": "engineering design of a bulk adapter only (not loaded for ordinary ingestion)"
+        }
+      ],
+      "overrides": [
+        "OV-CYPHER-VERSION",
+        "OV-GENERIC-WRITES",
+        "OV-ELEMENT-ID",
+        "OV-CONFIRM-WRITES"
+      ],
+      "boundary": "typed proposals -> trusted compiled plan -> apply under fence and marker",
+      "examples": [
+        ".agents/skills/biotech-kg-ingest/examples/examples.json"
+      ],
+      "evaluations": [
+        "evals/v2/write-recovery/tasks.json"
+      ]
+    },
+    {
+      "id": "analytics.graph",
+      "entrySkill": "biotech-graph-analyze",
+      "trigger": "graph-global similarity, communities, centrality, topology, frontier ranking, candidate discovery",
+      "nonTriggers": [
+        "routine evidence reads",
+        "fact writes"
+      ],
+      "role": "analytical agent (gated)",
+      "requiredCapabilities": [
+        "analytics"
+      ],
+      "capabilityState": "unavailable in biotech-schema-v2.0.0 (describe: analytics.available=false)",
+      "dependencies": [
+        {
+          "skill": "neo4j-gds-skill",
+          "path": ".agents/skills/neo4j-gds-skill/",
+          "load": "on-demand",
+          "why": "embedded GDS on the Aura instance (installed, not admitted)"
+        },
+        {
+          "skill": "neo4j-aura-graph-analytics-skill",
+          "path": ".agents/skills/neo4j-aura-graph-analytics-skill/",
+          "load": "on-demand",
+          "why": "serverless AGA sessions (not admitted)"
+        }
+      ],
+      "overrides": [
+        "OV-GDS-WRITEBACK",
+        "OV-CYPHER-VERSION",
+        "OV-ELEMENT-ID"
+      ],
+      "boundary": "bounded projection/job -> artifact -> admitted derived projection",
+      "examples": [
+        ".agents/skills/biotech-graph-analyze/SKILL.md"
+      ],
+      "evaluations": [
+        "evals/v2/write-recovery/tasks.json (WR-26, WR-27, WR-28)"
+      ]
+    },
+    {
+      "id": "engineering.graphql",
+      "entrySkill": "biotech-graphql-maintain",
+      "entrySkillStatus": "planned (S6 owns; absent at authoring, so --check reports it until S6 lands it)",
+      "trigger": "consumer projection, client generation, operation bounds, query-plan inspection",
+      "nonTriggers": [
+        "agent reads",
+        "writes"
+      ],
+      "role": "engineering",
+      "requiredCapabilities": [],
+      "dependencies": [
+        {
+          "skill": "neo4j-graphql-skill",
+          "path": ".agents/skills/neo4j-graphql-skill/",
+          "load": "on-demand",
+          "why": "@neo4j/graphql 7.x behaviour"
+        },
+        {
+          "skill": "neo4j-driver-javascript-skill",
+          "path": ".agents/skills/neo4j-driver-javascript-skill/",
+          "load": "on-demand",
+          "why": "driver 6.x lifecycle"
+        },
+        {
+          "skill": "neo4j-query-tuning-skill",
+          "path": ".agents/skills/neo4j-query-tuning-skill/",
+          "load": "on-demand",
+          "why": "generated Cypher plans"
+        }
+      ],
+      "overrides": [
+        "OV-CYPHER-VERSION",
+        "OV-READ-ROUTING"
+      ],
+      "boundary": "engineering and consumer benchmark lane",
+      "examples": [],
+      "evaluations": []
+    },
+    {
+      "id": "operations.graph",
+      "entrySkill": "biotech-graph-ops",
+      "trigger": "export/backup, restore rehearsal, migration plan/dry run/apply, DDL install, role/principal setup, index state",
+      "nonTriggers": [
+        "research ingestion",
+        "ordinary reads"
+      ],
+      "role": "operator (separate credentials)",
+      "requiredCapabilities": [
+        "operator"
+      ],
+      "dependencies": [
+        {
+          "skill": "neo4j-cli-tools-skill",
+          "path": ".agents/skills/neo4j-cli-tools-skill/",
+          "load": "on-demand",
+          "why": "cypher-shell / neo4j-admin / docker"
+        },
+        {
+          "skill": "neo4j-security-skill",
+          "path": ".agents/skills/neo4j-security-skill/",
+          "load": "on-demand",
+          "why": "Enterprise RBAC for bks_reader / bks_writer / bks_migrator"
+        },
+        {
+          "skill": "neo4j-import-skill",
+          "path": ".agents/skills/neo4j-import-skill/",
+          "load": "on-demand",
+          "why": "bulk restore/import mechanics"
+        },
+        {
+          "skill": "neo4j-driver-javascript-skill",
+          "path": ".agents/skills/neo4j-driver-javascript-skill/",
+          "load": "on-demand",
+          "why": "driver behaviour of the migration scripts"
+        },
+        {
+          "skill": "neo4j-migration-skill",
+          "path": ".agents/skills/neo4j-migration-skill/",
+          "load": "on-demand",
+          "why": "driver/Cypher version upgrades only (not data migration)"
+        },
+        {
+          "skill": "neo4j-aura-provisioning-skill",
+          "path": ".agents/skills/neo4j-aura-provisioning-skill/",
+          "load": "on-demand",
+          "why": "operator reference; no Aura API credentials here"
+        },
+        {
+          "skill": "neo4j-vector-index-skill",
+          "path": ".agents/skills/neo4j-vector-index-skill/",
+          "load": "on-demand",
+          "why": "inventory of legacy vector indexes only"
+        }
+      ],
+      "overrides": [
+        "OV-OPERATOR-ONLY",
+        "OV-CYPHER-VERSION",
+        "OV-GENERIC-WRITES",
+        "OV-ELEMENT-ID"
+      ],
+      "boundary": "operator capability with separate credentials; export READ-only on production",
+      "examples": [
+        ".agents/skills/biotech-graph-ops/SKILL.md"
+      ],
+      "evaluations": [
+        "evals/v2/write-recovery/tasks.json (WR-29, WR-30)"
+      ]
+    },
+    {
+      "id": "hosting.api",
+      "entrySkill": "fly-ops",
+      "trigger": "GraphQL/executor hosting on Fly",
+      "nonTriggers": [
+        "graph data work"
+      ],
+      "role": "operator",
+      "requiredCapabilities": [],
+      "dependencies": [],
+      "overrides": [],
+      "boundary": "bash scripts/fly.sh only",
+      "examples": [
+        ".agents/skills/fly-ops/SKILL.md"
+      ],
+      "evaluations": []
+    },
+    {
+      "id": "retrieval.schema-semantic",
+      "entrySkill": "biotech-schema-explore",
+      "trigger": "unfamiliar phrasing for schema discovery (semantic route)",
+      "nonTriggers": [
+        "data retrieval"
+      ],
+      "role": "knowledge agent",
+      "requiredCapabilities": [
+        "schema.search:semantic"
+      ],
+      "dependencies": [],
+      "overrides": [
+        "OV-VECTOR-SEARCH"
+      ],
+      "boundary": "OpenAI Vector Store adapter + local pin rehydration; no Neo4j vector skill",
+      "examples": [],
+      "evaluations": [
+        "evals/v2/schema-discovery/tasks.json"
+      ]
+    },
+    {
+      "id": "retrieval.native-vectors",
+      "entrySkill": "biotech-kg-query",
+      "trigger": "chunk/data vector retrieval or GraphRAG over the graph",
+      "nonTriggers": [],
+      "role": "knowledge agent (gated)",
+      "requiredCapabilities": [
+        "retrieve"
+      ],
+      "capabilityState": "unavailable in biotech-schema-v2.0.0 (describe: retrieve.available=false; OD-44 profile recorded, not served)",
+      "dependencies": [
+        {
+          "skill": "neo4j-vector-index-skill",
+          "path": ".agents/skills/neo4j-vector-index-skill/",
+          "load": "on-demand",
+          "why": "only after separate qualification"
+        },
+        {
+          "skill": "neo4j-graphrag-skill",
+          "path": ".agents/skills/neo4j-graphrag-skill/",
+          "load": "on-demand",
+          "why": "only after separate qualification"
+        }
+      ],
+      "overrides": [
+        "OV-VECTOR-SEARCH",
+        "OV-CYPHER-VERSION"
+      ],
+      "boundary": "separately qualified corpus/index profile",
+      "examples": [],
+      "evaluations": []
+    },
+    {
+      "id": "baseline.raw-cypher",
+      "entrySkill": "biotech-cypher-baseline",
+      "trigger": "isolated evaluation profile only (disposable raw-write comparison)",
+      "nonTriggers": [
+        "any production work"
+      ],
+      "role": "evaluation",
+      "requiredCapabilities": [],
+      "dependencies": [
+        {
+          "skill": "neo4j-cypher-skill",
+          "path": ".agents/skills/neo4j-cypher-skill/",
+          "load": "on-demand",
+          "why": "baseline arm of the paired skill evaluation"
+        }
+      ],
+      "overrides": [
+        "OV-CYPHER-VERSION"
+      ],
+      "boundary": "disposable graph only",
+      "examples": [],
+      "evaluations": [
+        "evals/v2/protocol.md (arm C)"
+      ]
+    }
+  ],
+  "dependencySkills": {
+    "neo4j-agent-memory-skill": {
+      "digest": "sha256:a7f213b8a5f569b219ccdc261dcad49c953540cafa62017bcde0f2d7462b2dac",
+      "files": 2,
+      "vendorVersion": "1.0.7",
+      "decision": "not-loaded",
+      "routes": []
+    },
+    "neo4j-aura-agent-skill": {
+      "digest": "sha256:50e0283fa890db84d0b84ae99a2989cc5a6b3ba52c96d15068b2dc743d6aadc5",
+      "files": 10,
+      "vendorVersion": "1.0.4",
+      "decision": "not-loaded",
+      "routes": []
+    },
+    "neo4j-aura-graph-analytics-skill": {
+      "digest": "sha256:2d862df472fecca93462b639a6626a73c66338ed690501df3052be1e71c753c5",
+      "files": 4,
+      "vendorVersion": "1.0.11",
+      "decision": "keep-for-role",
+      "routes": [
+        "analytics.graph"
+      ]
+    },
+    "neo4j-aura-provisioning-skill": {
+      "digest": "sha256:089c36dde795cf06f94951ddd39e95936db682d5fdb18a498a6c9efa21bdfc2c",
+      "files": 6,
+      "vendorVersion": "1.0.5",
+      "decision": "keep-for-role",
+      "routes": [
+        "operations.graph"
+      ]
+    },
+    "neo4j-cli-tools-skill": {
+      "digest": "sha256:e95686f372ffd611cacdbfa03d8f72d3682a6fa0ca18d6cf9cbc34195565d959",
+      "files": 6,
+      "vendorVersion": "1.0.15",
+      "decision": "keep-for-role",
+      "routes": [
+        "operations.graph"
+      ]
+    },
+    "neo4j-cypher-skill": {
+      "digest": "sha256:d5cd4ea3454d0db62b3a6666ea3f04ce0e3f74df7879c1269da0e2f1daf8c2b2",
+      "files": 13,
+      "vendorVersion": "1.0.27",
+      "decision": "keep-for-role",
+      "routes": [
+        "read.familiar",
+        "read.advanced",
+        "write.canonical",
+        "baseline.raw-cypher"
+      ]
+    },
+    "neo4j-document-import-skill": {
+      "digest": "sha256:bbc48933ae7dc087cad71dbfd820bb25691800a6b1b2667d0497476408a5c103",
+      "files": 3,
+      "vendorVersion": "1.0.6",
+      "decision": "not-loaded",
+      "routes": []
+    },
+    "neo4j-driver-dotnet-skill": {
+      "digest": "sha256:7e9f73aad03395fc552554dfcaa2c3f0c4e94f39e2e70fd2c6ec8089e188fbcd",
+      "files": 5,
+      "vendorVersion": "1.0.7",
+      "decision": "not-loaded",
+      "routes": []
+    },
+    "neo4j-driver-go-skill": {
+      "digest": "sha256:7128a2c8c3ffbf6043f5a2dc4b21e85abf1fa388f2ecaca8c494615e23cff584",
+      "files": 4,
+      "vendorVersion": "1.0.7",
+      "decision": "not-loaded",
+      "routes": []
+    },
+    "neo4j-driver-java-skill": {
+      "digest": "sha256:1c5c13290d4451772aa830718a98bc5d6d1653957c39b228ae5f2f84263cefc3",
+      "files": 5,
+      "vendorVersion": "1.0.12",
+      "decision": "not-loaded",
+      "routes": []
+    },
+    "neo4j-driver-javascript-skill": {
+      "digest": "sha256:202a6bf6f58cc7a2d5cc1c59252b1b34fb65033f2ced1728ab3e8c8d476bf1cc",
+      "files": 6,
+      "vendorVersion": "1.0.6",
+      "decision": "keep-for-role",
+      "routes": [
+        "engineering.graphql",
+        "operations.graph"
+      ]
+    },
+    "neo4j-driver-python-skill": {
+      "digest": "sha256:735230f86c53e7261fa5182b6510c151f23ed6414a9e01df21c51f0dbf190764",
+      "files": 6,
+      "vendorVersion": "1.0.9",
+      "decision": "not-loaded",
+      "routes": []
+    },
+    "neo4j-gds-skill": {
+      "digest": "sha256:d248098ec595b31d36d821f183fda8a8ca7f6816b43d7295948d0d2174e49ed8",
+      "files": 4,
+      "vendorVersion": "1.0.18",
+      "decision": "keep-for-role",
+      "routes": [
+        "analytics.graph"
+      ]
+    },
+    "neo4j-genai-plugin-skill": {
+      "digest": "sha256:dd4fb927c7fa1cf9d044b04a8f971c1bb3126f33303da548f627e22b0ee42afa",
+      "files": 3,
+      "vendorVersion": "1.0.7",
+      "decision": "not-loaded",
+      "routes": []
+    },
+    "neo4j-getting-started-skill": {
+      "digest": "sha256:693130d1f46178bfb696470bf30ba831e3d3a420da32fe1acb1587ae1648b256",
+      "files": 18,
+      "vendorVersion": "1.0.6",
+      "decision": "not-loaded",
+      "routes": []
+    },
+    "neo4j-graphql-skill": {
+      "digest": "sha256:0fe045ea602357adf8eb6a05f664e74bafbb2a0992c9612a9afc8c1384abb5e6",
+      "files": 3,
+      "vendorVersion": "1.0.5",
+      "decision": "keep-for-role",
+      "routes": [
+        "engineering.graphql"
+      ]
+    },
+    "neo4j-graphrag-skill": {
+      "digest": "sha256:094563f7109b666b48f1bf4515bca4a61fe25f4b2018ddbb3cf29cdb09c6a34b",
+      "files": 7,
+      "vendorVersion": "1.1.1",
+      "decision": "keep-for-role",
+      "routes": [
+        "retrieval.native-vectors"
+      ]
+    },
+    "neo4j-import-skill": {
+      "digest": "sha256:2446957c33297bf093bf86aba8e4df3b1df2b35c125b49b8a02146b2ab63cad0",
+      "files": 5,
+      "vendorVersion": "1.0.11",
+      "decision": "keep-for-role",
+      "routes": [
+        "write.canonical",
+        "operations.graph"
+      ]
+    },
+    "neo4j-kafka-skill": {
+      "digest": "sha256:e3e5cc131f53d2e1415685d960cc6541673a4b0932897012aaf2a7a67f3ab9aa",
+      "files": 4,
+      "vendorVersion": "1.0.4",
+      "decision": "not-loaded",
+      "routes": []
+    },
+    "neo4j-mcp-skill": {
+      "digest": "sha256:d1323338796a34fa59b4d668a8f69e2a909030ba445ada102c1babcf2aa957c2",
+      "files": 2,
+      "vendorVersion": "1.0.2",
+      "decision": "not-loaded",
+      "routes": []
+    },
+    "neo4j-migration-skill": {
+      "digest": "sha256:66b46c5bd29d5a04262479d9145d9542d98c2ad620acf487b22d45448dea94fd",
+      "files": 9,
+      "vendorVersion": "1.0.11",
+      "decision": "keep-for-role",
+      "routes": [
+        "operations.graph"
+      ]
+    },
+    "neo4j-modeling-skill": {
+      "digest": "sha256:f1baf754cac30ca1470d7e99ed6532155d996962db801aad52552ba0e01e257f",
+      "files": 2,
+      "vendorVersion": "1.0.7",
+      "decision": "keep-for-role",
+      "routes": [
+        "schema.navigate"
+      ]
+    },
+    "neo4j-nvl-skill": {
+      "digest": "sha256:aa5590a63b21a3d852ddf2b1956ac4a344d79a2941b07fe8b5daf3d54c6bdcbb",
+      "files": 4,
+      "vendorVersion": "2.0.0",
+      "decision": "not-loaded",
+      "routes": []
+    },
+    "neo4j-query-tuning-skill": {
+      "digest": "sha256:ba506b8947a4919c681d75cb63fa1ad9240f39a5388e6312942bfbddc526c738",
+      "files": 4,
+      "vendorVersion": "1.0.7",
+      "decision": "keep-for-role",
+      "routes": [
+        "read.advanced",
+        "engineering.graphql"
+      ]
+    },
+    "neo4j-security-skill": {
+      "digest": "sha256:aec1b4aa22d7cc72d46e1932850e564a4b6c440a92bae451b3c4896b75ad6c4a",
+      "files": 3,
+      "vendorVersion": "1.0.11",
+      "decision": "keep-for-role",
+      "routes": [
+        "operations.graph"
+      ]
+    },
+    "neo4j-snowflake-graph-analytics-skill": {
+      "digest": "sha256:a2561271c5621af58a8a233e8c04a384eb87f157abd33e7bacd7508ebf5751a0",
+      "files": 3,
+      "vendorVersion": "1.2.0",
+      "decision": "not-loaded",
+      "routes": []
+    },
+    "neo4j-spark-skill": {
+      "digest": "sha256:89c35a6608d1a658d1b9ee3ecfb683da8e7e8056c6d9bf3c0edc3472e652b84f",
+      "files": 4,
+      "vendorVersion": "1.0.3",
+      "decision": "not-loaded",
+      "routes": []
+    },
+    "neo4j-spring-data-skill": {
+      "digest": "sha256:6ff1aca189d38e60c94d1a4fe67be835505b5cdfb0df4175d3b7bf30d720be25",
+      "files": 3,
+      "vendorVersion": "1.0.5",
+      "decision": "not-loaded",
+      "routes": []
+    },
+    "neo4j-vector-index-skill": {
+      "digest": "sha256:3ff85581f2f40b52a90c4b284fa826301dddc06a5f42278e57747903908c0080",
+      "files": 3,
+      "vendorVersion": "1.0.16",
+      "decision": "keep-for-role",
+      "routes": [
+        "operations.graph",
+        "retrieval.native-vectors"
+      ]
+    }
+  },
+  "checks": {
+    "digests": "node scripts/migration/skill-digests.mjs --check",
+    "review": "docs/plans/schema-v2-service-release/SKILL-REVIEW.md"
+  },
+  "bindingRule": "identities are JSON pointers into the pinned release and the generated workspace, resolved at check/run time; never literals",
+  "changeLog": [
+    {
+      "at": "2026-10-12",
+      "change": "S4 P-8: read.familiar and read.advanced examples -> biotech-kg-query/examples/examples.json; read.familiar requires read.templates"
+    },
+    {
+      "at": "2026-10-12",
+      "change": "S8 (executor-role request): write.canonical examples -> biotech-kg-ingest/examples/examples.json (ingest skill v2 examples)"
+    },
+    {
+      "at": "2026-10-12",
+      "change": "S8: observedAtBinding snapshot refreshed after the skill evaluations and the executor changes: releaseId: biotech-schema-v2.0.1 -> biotech-schema-v2.0.2; schemaReleaseDigest: sha256:c0dd7837df029695e26f00d99f482483fb715e1cbcd4c4c4b1d8e3d31d6d3b06 -> sha256:5fffb593c8ca94b289b768ac0a0b02df5739cb338b7a04ec88173589708c5a42; workspaceFingerprint: sha256:f2fbe6c75c75140348622fc6b9d74e56e3986fe10cfc88dad6c7a18db55f509e -> sha256:a33cc35acfaec701549c2f84635d4cb0796d03ebc9f90d0633e4a8e14b11c941; bindings still resolve at check time"
+    },
+    {
+      "at": "2026-10-25",
+      "change": "Sprint V SV-17: observedAtBinding snapshot refreshed to the v2.2.0 pin: releaseId: biotech-schema-v2.0.2 -> biotech-schema-v2.2.0; schemaReleaseDigest: sha256:5fffb593c8ca94b289b768ac0a0b02df5739cb338b7a04ec88173589708c5a42 -> sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74; workspaceFingerprint: sha256:a33cc35acfaec701549c2f84635d4cb0796d03ebc9f90d0633e4a8e14b11c941 -> sha256:b0772b5de8ac83f03f98950124ea27d1c5cc39002b5225d6b8e189d86bb520d2; ingest skill examples/manifest release pins and the proposal-matrix header follow"
+    }
+  ]
+}

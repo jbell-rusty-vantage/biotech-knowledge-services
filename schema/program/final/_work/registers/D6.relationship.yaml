@@ -1,0 +1,345 @@
+version: 1
+module: D6
+# Source: packets/D6/05-relationship-register.yaml (sha256 d81ff877…), edited by the S module editor for D6 on 2026-10-08
+# per final/decision-report.md and final/_work/rulings.yaml (global + modules.D6). Every entry keeps the
+# 01-PACKET-CONTRACT fields and adds `module: D6`; `fixture` points at final/fixtures/D6/<folder>. Synthesis edits:
+#   R-10  HAS_LABEL_VERSION: edgeProperties StateEpisodeProperties -> AssertedEdgeProperties; register field
+#         `exclusive: true` (the executor enforces non-overlapping episodes per relationship type).
+#   R-30  DECLARES_COMPONENT: ComponentLineProperties no longer carries declaredNameVerbatim, formVerbatim,
+#         statementVerbatim (locator exact text + qualifiers declaredName:, form:, statement:).
+#   R-58, R-88  AmountBasis (one program-wide enum, owner D6) and ACTIVE_INGREDIENT line role on DECLARES_COMPONENT.
+#   R-67  NAMES_RESPONSIBLE_PARTY stays typed (OQ-D6-29 closed).  R-87  one Assertion per declared line (OQ-D6-30 closed).
+#   R-52  predicateOnly entries carry `registrar: D6`; OFFERS_INTERVENTION (sole registrar; D7.Organization subject added)
+#         and SUCCEEDED_BY (registrar; D7 Organization -> Organization pair added). Removed from predicateOnly and listed
+#         under `registeredElsewhere`: INTENDED_FOR_TARGET (D5, R-52), MANUFACTURES (D7, R-68), MANUFACTURER_STATEMENT ->
+#         MANUFACTURER_UNNAMED (D7, R-68), PREPARED_WITH -> HAS_RECIPE_INGREDIENT (D12, R-62).
+#   R-73  SAMPLE_POSITIVE_OUTBREAK_STRAIN -> SAMPLE_TESTED_POSITIVE_FOR (registrar D8).  R-52  SOURCED_FROM_COUNTRY
+#         registered by D1.  R-68  SUPPLIES_MATERIAL registered by D7.
+#   R-74  LISTING_PACKAGE_SIZES | LISTING_LOT_SCOPE: the request to widen D8 unions with Package is declined (OQ-D6-13).
+#   R-08  CQ-PF-03 in D6 rows is CQ-PF-03b.  R-94  an image is a D9 MediaWork, not a MediaAsset.
+#   R-03  nestedOperations unchanged: intra-module structural [CREATE, CONNECT]; asserted [CONNECT].
+# Not applied here (not in modules.D6): R-39 populatedBy rewrite to action-space ids. Alias resolution measured against
+# packets/D11/tooling/action-space.yaml for the integrator: tool:nih-dsld-api -> nih-dsld, tool:firecrawl-scrape ->
+# firecrawl-cli, tool:shopify-storefront-json -> shopify-storefront-json, tool:wayback-cdx -> internet-archive-wayback,
+# tool:openfda-enforcement -> openfda-food-enforcement, tool:sec-edgar -> sec-edgar, tool:economist-bigmac-data ->
+# economist-bigmac-data, tool:open-food-facts-api -> open-food-facts, tool:usda-fdc-api -> usda-fdc.
+#
+# Packet header (A6 model stage, 2026-10-08; adversarial-review stage 2026-10-08), kept:
+# D6 — relationship register (model stage, A6, 2026-10-08; adversarial-review stage 2026-10-08: DECLARES_COMPONENT asserted,
+# index prices off Offer, predicate registry collisions resolved — 09-reasoning.md "Adversarial-review changes")
+# One entry per relationship type declared in 04-schema-proposal.graphql. Kernel edges (HAS_SUBJECT, HAS_OBJECT,
+# ASSERTED_BY, HAS_IDENTIFIER, MENTIONS, ASSESSES, WAS_GENERATED_BY, DERIVED_FROM, HAS_EVIDENCE) are not D6 types.
+# populatedBy ids (stable; the fixtures stage lists them in 08-sources-and-tools.md):
+#   tool:nih-dsld-api            NIH ODS DSLD API v9 (label JSON; curl)
+#   tool:firecrawl-scrape        Firecrawl CLI scrape (Amazon, iHerb, brand pages, McDonald's, FDA pages, NSF, camelcamelcamel)
+#   tool:shopify-storefront-json Shopify storefront /products/<handle>.js (barcode, variants, selling plans)
+#   tool:wayback-cdx             Internet Archive CDX + raw captures (curl --compressed)
+#   tool:openfda-enforcement     openFDA food/drug enforcement API
+#   tool:sec-edgar               SEC EDGAR submissions + filing documents (User-Agent from EDGAR_IDENTITY)
+#   tool:economist-bigmac-data   The Economist big-mac-data GitHub raw CSV + README (MARKET_REFERENCE_PRICE assertions only; no edge)
+#   tool:open-food-facts-api     Open Food Facts API v2 product-by-barcode
+#   tool:usda-fdc-api            USDA FoodData Central (needs a data.gov key; readiness 0 today)
+# temporal: episode = valid time declared + recorded time (AssertedEdgeProperties; exclusive: true on versioned-state
+#           attachments, R-10);
+#           recorded-only = no valid time tracked (structural edges, StructuralEdgeProperties; or asserted edges whose
+#           valid time no question reads, kernel AssertedRecordedProperties (A1 M10, check stage 2026-10-08) — see
+#           09-reasoning.md "Bitemporal decision per edge").
+relationships:
+  - type: HAS_VARIANT
+    module: D6
+    class: structural
+    from: D6.Product
+    to: D6.ProductVariant
+    edgeProperties: StructuralEdgeProperties
+    cardinality: one_or_more
+    temporal: recorded-only
+    questions: [CQ-AX-25, Q-D6-16, Q-D6-02]
+    pattern: "03-retrieval-patterns.md#cq-ax-25"
+    populatedBy: [nih-dsld, shopify-storefront-json, firecrawl-cli]
+    fixture: final/fixtures/D6/label-versions-truniagen-dsld
+    nestedOperations: [CREATE, CONNECT]
+    aggregate: false
+    rationale: >-
+      The product line (where brand, marketing and target claims attach) and the variant (where a study administers,
+      a lot belongs and a reformulation is compared) are different identities; every ranking and avoidance question
+      traverses product → variant → package. Identity-defining, so structural; no valid time (a variant does not
+      move between products).
+
+  - type: HAS_PACKAGE
+    module: D6
+    class: structural
+    from: D6.ProductVariant
+    to: D6.Package
+    edgeProperties: StructuralEdgeProperties
+    cardinality: one_or_more
+    temporal: recorded-only
+    questions: [Q-D6-02, Q-D6-04, CQ-ID-02]
+    pattern: "03-retrieval-patterns.md#q-d6-02"
+    populatedBy: [nih-dsld, shopify-storefront-json, firecrawl-cli]
+    fixture: final/fixtures/D6/label-versions-truniagen-dsld
+    nestedOperations: [CREATE, CONNECT]
+    aggregate: false
+    rationale: >-
+      Price per dose divides by the package's unit count; recalls, lots and GTINs scope to packages (30 vs 90
+      count, kit SKU). Identity-defining (package identity includes the variant), so structural, recorded-only.
+
+  - type: HAS_LABEL_VERSION
+    module: D6
+    class: asserted
+    from: D6.Package
+    to: D6.LabelVersion
+    edgeProperties: AssertedEdgeProperties
+    exclusive: true
+    exclusiveNote: >-
+      R-10 sets exclusive: true (StateEpisodeProperties retired). The packet had declared this type NON-EXCLUSIVE: several
+      open episodes coexist, one per asserting source (brand, DSLD, crowd database) and per attested version, and readers
+      group by LabelVersion (packet 03 Q-D6-01; adversarial-review fix M14). R-22 keeps one episode per (from, to, type,
+      asserter). Whether the executor's non-overlap check runs per (package, type) or per (package, type, asserter) is not
+      fixed by R-10; the D6 fixtures are consistent with the per-asserter reading (one asserter, NIH ODS, closes V09.2
+      before V12.3 opens on the 30-count package). Owner/integrator confirms the scope.
+    cardinality: many episodes; exclusive (R-10, scope per exclusiveNote); one episode per (package, label version, asserter) (R-22); readers group by LabelVersion (Q-D6-01)
+    temporal: episode
+    questions: [Q-D6-01, CQ-ID-02, CQ-ID-05, CQ-AX-25, Q-D6-09, Q-D6-10, Q-D6-11, Q-D6-12]
+    pattern: "03-retrieval-patterns.md#q-d6-01"
+    populatedBy: [nih-dsld, firecrawl-cli, internet-archive-wayback, open-food-facts]
+    fixture: final/fixtures/D6/label-versions-truniagen-dsld
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      The state attachment that answers "what did the label say at V" and "what changed". FC-1: two label versions
+      (V09.2, V12.3) on one UPC; historical captures arrive late (Wayback), so valid time must be declared separately
+      from recorded time. Replaces the pinned LABEL_FOR, DECLARES_FORMULATION and HAS_FORMULATION_VERSION: composition
+      time is label time. Synthesis: AssertedEdgeProperties + exclusive: true replace StateEpisodeProperties (R-10); the
+      deciding question Q-D6-01 (v1) is answered unchanged.
+
+  - type: DECLARES_COMPONENT
+    module: D6
+    class: asserted
+    from: D6.LabelVersion
+    to: [D1.IngredientMaterial, D1.Constituent, D12.FoodItem]
+    edgeProperties: ComponentLineProperties
+    cardinality: many (one per declared panel line, each authorized by its own Assertion; nested lines via parentOrderIndex)
+    temporal: recorded-only
+    questions: [CQ-AX-25, CQ-PF-01, Q-D6-02, Q-D6-08, Q-D6-09, Q-D6-11, Q-D6-12, Q-D6-21]
+    pattern: "03-retrieval-patterns.md#cq-ax-25"
+    populatedBy: [nih-dsld, firecrawl-cli, open-food-facts]
+    fixture: final/fixtures/D6/label-versions-truniagen-dsld
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      The only path from a sold thing to what it declares it contains (compound joins, price per dose, blend-only
+      dosing, nutrient %DV filters, recalled-ingredient exposure). Asserted, not structural (adversarial-review stage):
+      each line resolves a printed row to another module's record, which is an attributable judgment exactly like
+      NAMES_RESPONSIBLE_PARTY; with its own Assertion (predicate DECLARES_COMPONENT, subject LabelVersion, object the
+      target, asserter the transcribing source, the panel-row locator) a line can be adjudicated, a D1 merge/split closes
+      the old line by recordedTo instead of rewriting it (nothing deleted), and D1's CALCULATED amounts
+      (MOIETY_EQUIVALENT_AMOUNT, NUTRIENT_EQUIVALENT_AMOUNT, PER_MAX_DAILY_DOSE_AMOUNT) cite the line's Assertion in
+      DERIVED_FROM — the form D1's fixtures already write (OQ-D1-24, OQ-D6-24). Edge properties: ComponentLineProperties
+      = kernel AssertedRecordedProperties verbatim + the line qualifiers (order, parent, role, amount, unit, referent,
+      D1 massBasis, basis, %DV) the questions filter on; recorded time only because the HAS_LABEL_VERSION episode carries
+      valid time. Synthesis: the row as printed, the form statement and a per-component statement are the authorizing
+      Assertion's locator exact text and qualifiers declaredName:, form:, statement: (R-30; M11 verbatim rule);
+      amountBasis is the program-wide AmountBasis owned by D6 (R-58); lineRole ACTIVE_INGREDIENT covers drug panels
+      (R-88); one Assertion per line is confirmed program-wide, never both forms (R-87, OQ-D6-30 closed). Cost: one Assertion per line (~5–30 per label) instead of none; no
+      new input types (the edge-property type already existed). Union of 3 (D1 material, D1 nutrient/constituent, D12
+      food item) = 3 pairs. Absorbs IngredientComponent, LabelDeclaration, QuantityDeclaration, USES_MATERIAL,
+      DECLARATION_IDENTIFIES_MATERIAL, HAS_INGREDIENT_COMPONENT, NESTED_COMPONENT. Other fixtures exercising it:
+      prepared-food-bigmac-mcdonalds (FoodItem, Constituent with %DV), proprietary-blend-ag1 (BLEND_MEMBER, NOT_DECLARED).
+
+  - type: NAMES_RESPONSIBLE_PARTY
+    module: D6
+    class: asserted
+    from: D6.LabelVersion
+    to: D7.Organization
+    edgeProperties: AssertedRecordedProperties
+    cardinality: zero_or_one
+    temporal: recorded-only
+    questions: [Q-D6-16, Q-D6-04]
+    pattern: "03-retrieval-patterns.md#q-d6-16"
+    populatedBy: [nih-dsld, firecrawl-cli]
+    fixture: final/fixtures/D6/label-versions-truniagen-dsld
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      The label's named responsible party ('Distributed by ChromaDex', 'Manufactured for ...') is the accountability
+      link for recalls and company claims and is distinct from brand owner and seller (Q-D6-16 roles). Resolution of
+      the printed name to a D7 Organization is attributable, so asserted; recorded time only (kernel
+      AssertedRecordedProperties, switched from AssertedEdgeProperties-with-null-bounds in the check stage) because the
+      label version's own HAS_LABEL_VERSION episode carries the time. Role is LabelVersion.responsiblePartyRole.
+      Synthesis: stays typed (R-67, OQ-D6-29 closed); a label's distributor is this edge, non-label distributor
+      statements are the D7 predicate DISTRIBUTES (R-68).
+
+  - type: BRANDED_AS
+    module: D6
+    class: asserted
+    from: D6.Product
+    to: D7.Brand
+    edgeProperties: AssertedEdgeProperties
+    cardinality: zero_or_one open episode
+    temporal: episode
+    questions: [Q-D6-16, Q-D6-20, Q-D6-11, Q-D6-12]
+    pattern: "03-retrieval-patterns.md#q-d6-16"
+    populatedBy: [nih-dsld, shopify-storefront-json, firecrawl-cli, sec-edgar]
+    fixture: final/fixtures/D6/prepared-food-bigmac-mcdonalds
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Products reach the organizations behind them through the brand (D7 owns Brand and OWNS_BRAND with its own
+      episodes: Tru Niagen brand under ChromaDex → Niagen Bioscience). This is how a prepared food reaches its named
+      organization (Big Mac → McDonald's brand → McDonald's Corporation). Replaces the pinned Organization-side
+      marketsProducts/BRAND_OF; episode because products move between brands (acquisitions, relaunches).
+
+  - type: LISTING_FOR
+    module: D6
+    class: asserted
+    from: D6.MerchantListing
+    to: D6.Package
+    edgeProperties: AssertedEdgeProperties
+    cardinality: zero_or_one open episode
+    temporal: episode
+    questions: [CQ-CM-02, Q-D6-05, Q-D6-15, Q-D6-19, Q-D6-02, Q-D6-21]
+    pattern: "03-retrieval-patterns.md#cq-cm-02"
+    populatedBy: [firecrawl-cli, shopify-storefront-json, internet-archive-wayback]
+    fixture: final/fixtures/D6/retailer-reformulation-claim-iherb
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Joins the commerce side to the product side (offers → package → label → composition). Hosts repoint and merge
+      items (FC-2: iHerb 120467 discontinued, 162274 successor; Amazon parent families), so the link has valid time.
+      Only accepted matches become edges; proposed or disputed matches are kernel Assessments (EQUIVALENCE,
+      D6.listing-to-package). Replaces LISTS_PRODUCT (legacy) and the 5-member ListingTarget union.
+
+  - type: HAS_OFFER
+    module: D6
+    class: structural
+    from: D6.MerchantListing
+    to: D6.Offer
+    edgeProperties: StructuralEdgeProperties
+    cardinality: many
+    temporal: recorded-only
+    questions: [CQ-CM-01, CQ-CM-02, Q-D6-02, Q-D6-13]
+    pattern: "03-retrieval-patterns.md#cq-cm-01"
+    populatedBy: [firecrawl-cli, shopify-storefront-json]
+    fixture: final/fixtures/D6/offer-roles-price-kinds-truniagen
+    nestedOperations: [CREATE, CONNECT]
+    aggregate: false
+    rationale: >-
+      A listing carries several offers (buy box vs other sellers, one-time vs subscribe); offer identity includes the
+      listing, so structural. Offer time is read from its price/availability Assertions.
+
+  - type: SELLER_OF_RECORD
+    module: D6
+    class: asserted
+    from: D6.Offer
+    to: D7.Organization
+    edgeProperties: AssertedEdgeProperties
+    cardinality: zero_or_one open episode
+    temporal: episode
+    questions: [CQ-CM-01, Q-D6-06, Q-D6-16, Q-D6-20]
+    pattern: "03-retrieval-patterns.md#cq-cm-01"
+    populatedBy: [firecrawl-cli, shopify-storefront-json]
+    fixture: final/fixtures/D6/offer-roles-price-kinds-truniagen
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      "Hosting, listing and fulfilment never imply seller of record" (W15). The seller account → organization
+      resolution is attributable and changes over time (seller accounts change hands), so asserted with an episode.
+      Declared on Offer pointing at D7 Organization, no inverse field on Organization (agreed with D7's split map).
+
+# Predicates that stay Assertion.predicate values (no typed relationship), with the question that would promote each.
+predicateOnly:
+  - { predicate: "OFFER_PRICE_ONE_TIME | OFFER_PRICE_SUBSCRIPTION | OFFER_PRICE_COUPON_ADJUSTED | OFFER_PRICE_LIST | OFFER_PRICE_PER_UNIT | OFFER_PRICE_BUNDLE | OFFER_PRICE_TRACKER_LOW | OFFER_PRICE_TRACKER_HIGH", registrar: D6, use: "typed-literal price on an Offer (valueNumber, unitCode = iso4217:<CODE>, validFrom = observed instant with precision, asserter = merchant or tracker, one locator); a tracker's aggregate over third-party sellers has the MerchantListing as subject with qualifier sellerClass=THIRD_PARTY_NEW (no Offer without a seller proposition); replaces the PriceObservation node and HAS_PRICE_OBSERVATION", promoteWhen: "CQ-CM-03 / Q-D6-02 need per-observation properties the Assertion cannot carry (unit-price basis + quantity typed, FX-normalized amount), or price-assertion scans exceed the latency budget at > 10^6 rows — then promote PriceObservation (node) + HAS_PRICE_OBSERVATION" }
+  - { predicate: MARKET_REFERENCE_PRICE, registrar: D6, use: "typed-literal reference price published by an index or survey with no seller (The Economist's US Big Mac price): subject the Product, ProductVariant or Package it prices (Big Mac: the US SERVED_PORTION Package), asserter the publisher, validFrom the stated date; replaces the OfferKind MARKET_REFERENCE offer (adversarial-review stage)", promoteWhen: "never as an edge; Q-D6-13 reads it by subject at any of the three levels" }
+  - { predicate: OFFER_AVAILABILITY, registrar: D6, use: "valueString from ObservedAvailability (IN_STOCK … DISCONTINUED_AS_DISPLAYED)", promoteWhen: "CQ-CM-05 needs availability filters across offers at volume (then an Offer.availabilityAsDisplayed cache property, not an edge)" }
+  - { predicate: OFFER_SUBSCRIPTION_TERMS, registrar: D6, use: "valueString of terms as displayed per capture (Q-D6-17)", promoteWhen: "Q-D6-17 rises to value 1 and needs plan-level filters (then SubscriptionPlan node)" }
+  - { predicate: CONTAINS_PACKAGE, registrar: D6, use: "kit/multipack Package → component Package, qualifier quantity (Q-D6-14)", promoteWhen: "Q-D6-14 rises to value ≤ 2 or recall scope must traverse kit → components (then typed structural edge with quantity)" }
+  - { predicate: HOSTED_BY, registrar: D6, use: "MerchantListing → Organization (host operator) when the hostDomain → organization mapping is in doubt", promoteWhen: "Q-D6-20 or an investor question traverses host organization → parent group (then typed asserted edge)" }
+  - { predicate: FULFILLED_BY, registrar: D6, use: "Offer → Organization when a named third-party fulfiller matters (Offer.fulfillmentKind covers SELLER/HOST)", promoteWhen: "CQ-CM-01 needs fulfiller traversal beyond the host (3PL counterfeit or commingling questions)" }
+  - { predicate: SOLD_THROUGH_CHANNEL, registrar: D6, use: "Product or Organization → Organization (marketplace/retailer) as stated by a filing, recall or agency page (FC-5, FC-6)", promoteWhen: "Q-D6-20 / Q-D6-06 need stated-channel traversal at volume beside observed offers" }
+  - { predicate: AUTHORIZES_CHANNEL, registrar: D6, use: "Brand owner → channel statement ('does not authorize any third-party sellers', FC-5)", promoteWhen: "Q-D6-06 becomes value 1" }
+  - { predicate: RETAILER_DISCONTINUED, registrar: D6, use: "MerchantListing or Package, asserter = host (iHerb 'Discontinued Item')", promoteWhen: "Q-D6-19 filters discontinued products across hosts at volume (then a listing cache property)" }
+  - { predicate: SUCCEEDED_BY, registrar: D6, subjects: [D6.Product, D6.Package, D6.MerchantListing, D7.Organization], objects: [D6.Product, D6.Package, D6.MerchantListing, D7.Organization], pairs: ["D6 type -> successor of the same type", "D7.Organization -> D7.Organization (D7 contribution, R-52)"], use: "Product/Package/MerchantListing → successor (FC-2 '…available now'); D7 adds Organization → successor Organization (R-52)", promoteWhen: "Q-D6-19 needs successor chains of length > 1" }
+  - { predicate: RETAILER_REFORMULATION_STATEMENT, registrar: D6, use: "listing-scoped claim occurrence ('New formulation available now'), adjudicated against label versions (CQ-PF-02)", promoteWhen: "never as an edge; it is a claim" }
+  - { predicate: BEARS_SEAL, registrar: D6, use: "LabelVersion → certifier Organization or D8 CertificationListing (seals are also LabelVersion.seals)", promoteWhen: "CQ-PF-03b needs seal → certification-listing traversal at volume" }
+  - { predicate: CALCULATED_DAILY_MAX_INTAKE, registrar: D6, use: "CALCULATED assertion (derivationRule d6-max-daily-intake/v1): maxDailyServings × line amount, inputs DERIVED_FROM (Q-D6-09)", promoteWhen: "never as an edge" }
+  - { predicate: OFF_MARKET, registrar: D6, use: "registry off-market status of a label/product (DSLD offMarket = 1), subject LabelVersion or Product, asserter NIH ODS (Q-D6-19)", promoteWhen: "never as an edge (a registry status)" }
+  - { predicate: OFFERS_INTERVENTION, registrar: D6, subjects: [D6.Offer, "D6.Product (productKind SERVICE)", D7.Organization], objects: [D5.Intervention], use: "subject an Offer (or a D6 Product of kind SERVICE, or a D7 Organization such as a clinic operator, R-52), object a D5 Intervention: what a sold service (clinic programme, telehealth plan, lab-test service) delivers (answers D5 OQ-D5-20; D5 Q-D5-17, D7 Q-D7-10)", promoteWhen: "Q-D5-17 or Q-D7-10 becomes value 1 and needs GraphQL traversal (then Offer.intervention → D5.Intervention, asserted, declared on the D6 side)" }
+  # added in the fixtures stage (A6, 2026-10-08): predicates the fixtures needed; none is promoted to a typed edge
+  - { predicate: PRICE_SERIES_METHOD_CHANGE, registrar: D6, use: "valueString, subject = the same entity the series' price assertions have as subject (Offer, MerchantListing, Package, ProductVariant or Product), asserter = the series publisher; Q-D6-13 joins it by subject + asserter; validFrom = change month (Economist July 2022 on the US served-portion Package; prepared-food-bigmac-mcdonalds d09)", promoteWhen: "Q-D6-13 needs method-version filters across many series (then a methodVersion qualifier on the price assertions, not an edge)" }
+  - { predicate: PRICE_SCOPE_STATEMENT, registrar: D6, use: "listing-scoped statement limiting what a price means ('McDelivery prices may be higher than at restaurants.')", promoteWhen: "never as an edge" }
+  - { predicate: "LISTING_PACKAGE_SIZES | LISTING_LOT_SCOPE", registrar: D6, use: "D8 CertificationListing scope as printed (NSF 'Package Size 30, 60, 90', 'Lot # All'), recorded as literals for CQ-PF-03b; R-74 declined widening the D8 unions with Package (OQ-D6-13 closed): package scope stays verbatim plus D6.recall-scope / D6.certification-scope Assessments", promoteWhen: "a package-scoped recall fixture or a value-1 question that needs package-level coverage traversal (R-74 trigger)" }
+  - { predicate: "PRODUCT_SAFETY_STATEMENT | RETAINED_SAMPLE_TEST_RESULT", registrar: D6, use: "claim occurrences (assertionKind CLAIM) about safety or test results made on product pages or recall notices; adjudicated by the verifier", promoteWhen: "never as an edge (claims)" }
+  - { predicate: STOREFRONT_CATALOG_ITEM_COUNT, registrar: D6, use: "count of items a DTC storefront exposes (0 = catalog emptied), asserter = the store operator", promoteWhen: "never as an edge" }
+  - { predicate: CALCULATED_SERVING_MASS_TOTAL, registrar: D6, use: "COMPUTATION: servingSizeValue x servingsPerContainer, compared with declared net contents (AG1 360 g vs 350 g)", promoteWhen: "never as an edge" }
+# Predicates D6 fixtures, patterns or seams use that another module registers (R-52 registrar rule). Listed so the
+# predicate registry (final/vocabularies/predicates.yaml) and the D6 fixture re-key can be checked; D6 registers none.
+registeredElsewhere:
+  - { predicate: INTENDED_FOR_TARGET, alsoFamily: [IMPROVES_TARGET, WORSENS_TARGET, NO_EFFECT_ON_TARGET, MIXED_EFFECT_ON_TARGET], registrar: D5, ruling: R-52, d6Use: "subject D6.Product, object D5.Target (vocab targets 0.2.2); Q-D6-03, Q-D6-22" }
+  - { predicate: MANUFACTURES, registrar: D7, ruling: R-68, d6Use: "subject D7.Organization, object D6.Product (named manufacturer); fixture recall-moringa-mogo" }
+  - { predicate: MANUFACTURER_UNNAMED, registrar: D7, ruling: R-68, aliases: [MANUFACTURER_STATEMENT], qualifiers: ["manufacturingKind="], d6Use: "unnamed manufacturer in a filing ('third-party, FDA-registered contract manufacturers'); fixture filing-channels-niagen-10k re-keys MANUFACTURER_STATEMENT" }
+  - { predicate: SUPPLIES_MATERIAL, registrar: D7, ruling: R-68, qualifiers: ["exclusivity=SOLE|NON_EXCLUSIVE|UNSTATED", "buyer="], d6Use: "replaces D6's former SOLE_SUPPLIER_OF with exclusivity=SOLE; fixture filing-channels-niagen-10k f08" }
+  - { predicate: HAS_RECIPE_INGREDIENT, registrar: D12, ruling: R-62, aliases: [PREPARED_WITH], d6Use: "subject D6.Product (prepared food), object D12.FoodItem; fixture prepared-food-bigmac-mcdonalds re-keys PREPARED_WITH" }
+  - { predicate: SAMPLE_TESTED_POSITIVE_FOR, registrar: D8, ruling: R-73, aliases: [SAMPLE_POSITIVE_OUTBREAK_STRAIN], d6Use: "subject D6.Product (or D8.Lot), object D1.Taxon; fixture recall-moringa-mogo e14, e15, e19 re-key" }
+  - { predicate: SOURCED_FROM_COUNTRY, registrar: D1, ruling: R-52, d6Use: "material origin, subject D1.IngredientMaterial; fixture recall-moringa-mogo e17 keeps the name (R-52 confirm)" }
+  - { predicate: DISTRIBUTES, registrar: D7, ruling: R-68, d6Use: "non-label distributor statements only; a label's distributor is NAMES_RESPONSIBLE_PARTY" }
+
+# Relationships considered and cut (pinned W04/W15 types touching D6 and research-stage candidates).
+deferred:
+  - { type: HAS_PRICE_OBSERVATION, reason: "PriceObservation became a typed-literal Assertion on the Offer (predicate family OFFER_PRICE_*); see predicateOnly" }
+  - { type: HAS_FORMULATION_VERSION, reason: "FormulationVersion absorbed into LabelVersion; composition time = HAS_LABEL_VERSION episode" }
+  - { type: DECLARES_FORMULATION, reason: "same: no separate formulation node" }
+  - { type: LABEL_FOR, reason: "renamed and redirected as HAS_LABEL_VERSION (Package → LabelVersion, AssertedEdgeProperties + exclusive: true, R-10)" }
+  - { type: HAS_PACKAGE_CONFIGURATION, reason: "renamed HAS_PACKAGE" }
+  - { type: HAS_INGREDIENT_COMPONENT, reason: "IngredientComponent became DECLARES_COMPONENT edge properties" }
+  - { type: NESTED_COMPONENT, reason: "parentOrderIndex on ComponentLineProperties" }
+  - { type: USES_MATERIAL, reason: "merged into DECLARES_COMPONENT (target D1 IngredientMaterial)" }
+  - { type: DECLARATION_IDENTIFIES_MATERIAL, reason: "merged into DECLARES_COMPONENT" }
+  - { type: HAS_DECLARATION, reason: "LabelDeclaration rows are component lines or LabelVersion text properties" }
+  - { type: HAS_QUANTITY_DECLARATION, reason: "amount fields on ComponentLineProperties" }
+  - { type: USES_SERVING_DEFINITION, reason: "serving fields on LabelVersion" }
+  - { type: REGION_HAS_DECLARATION, reason: "label regions are kernel SourceLocator BOUNDING_BOX selectors (an image is a D9 MediaWork, R-94)" }
+  - { type: CONTAINS, reason: "derived shortcut product → compound; CQ-AX-25 is answered by the two-hop path label → material → (D1) substance; no stored shortcut" }
+  - { type: CONTAINS_COMPOUND_FORM, reason: "same as CONTAINS" }
+  - { type: COMPONENT_PRODUCT, reason: "kit components are predicate-only CONTAINS_PACKAGE (Q-D6-14 value 3)" }
+  - { type: HAS_BUNDLE_COMPONENT, reason: "Bundle/BundleComponent absorbed into Package.packageKind + CONTAINS_PACKAGE predicate" }
+  - { type: HAS_STATE, reason: "ProductSnapshot compatibility type dropped (R1); label state is LabelVersion" }
+  - { type: USES_SUBSCRIPTION_PLAN, reason: "SubscriptionPlan → Offer.purchaseMode, subscriptionTermsVerbatim, subscriptionApp + OFFER_SUBSCRIPTION_TERMS predicate" }
+  - { type: FULFILLS_OFFER, reason: "Offer.fulfillmentKind + fulfillerNameAsDisplayed; FULFILLED_BY predicate-only" }
+  - { type: HOSTS_LISTING, reason: "MerchantListing.hostDomain; HOSTED_BY predicate-only" }
+  - { type: LISTS_OFFER, reason: "the party that placed the offer is the seller of record in every captured case; no question separates them" }
+  - { type: LISTS, reason: "generic; replaced by HAS_OFFER / LISTING_FOR" }
+  - { type: LISTS_PRODUCT, reason: "legacy live edge; replaced by LISTING_FOR (migration: map to the Package of the listed variant)" }
+  - { type: OFFERS, reason: "pinned Organization → Offer duplicate of SELLER_OF_RECORD" }
+  - { type: SELLS_PRODUCT, reason: "derived: SELLER_OF_RECORD ← Offer ← HAS_OFFER ← listing → LISTING_FOR → package ← variant ← product; computed at query time" }
+  - { type: AVAILABLE_IN, reason: "store-level availability; no question" }
+  - { type: MATCHES_COMMERCE_ITEM, reason: "CommerceMatch → kernel Assessment ASSESSES (EQUIVALENCE, subkind D6.listing-to-package / D6.identifier-equivalence / D6.recall-scope)" }
+  - { type: ASSESSED_BY, reason: "kernel ASSESSES from the Assessment side" }
+  - { type: SUPERSEDES, reason: "kernel supersedesUid on Assertion/Assessment" }
+  - { type: SUPPORTED_BY, reason: "00-DIRECTIVE 3.8: support is kernel HAS_EVIDENCE record → SourceLocator" }
+  - { type: SUPPORTED_BY_CHUNK, reason: "same (3.8)" }
+  - { type: SUPPORTED_BY_DOCUMENT, reason: "same (3.8)" }
+  - { type: WAS_GENERATED_BY, reason: "kernel lineage" }
+  - { type: HAS_IDENTIFIER, reason: "kernel identifier pattern (schemes in 06-node-register.yaml)" }
+  - { type: INVENTORY_INSTANCE_OF, reason: "InventoryItem dropped: no public source exposes merchant inventory records" }
+  - { type: UNIT_FROM_LOT, reason: "IndividualUnit dropped; a tested unit's lot is D8 (Lot, QualityResult)" }
+  - { type: SAMPLE_FROM, reason: "D8 test samples" }
+  - { type: AFFILIATE_FOR_OFFER, reason: "AffiliateLink → D9 (tracked link inside a page/episode); D9 keeps it predicate-only LINKS_TO_OFFER (MediaWork → D6 Offer | MerchantListing)" }
+  - { type: LINKS_TO, reason: "same (D9)" }
+  - { type: MANUFACTURES, reason: "predicate-only, registered by D7 (R-68)" }
+  - { type: CONTRACTS_MANUFACTURING, reason: "predicate-only CONTRACT_MANUFACTURES_FOR, registered by D7 (R-68)" }
+  - { type: CERTIFIED_UNDER, reason: "D8 CertificationListing COVERS → Product / ProductVariant (D8 declares; Package declined, R-74)" }
+  - { type: HAS_REGULATORY_STATUS, reason: "D8 LegalStatus STATUS_OF → Product (D8 declares)" }
+  - { type: FOLLOWS_PATHWAY, reason: "D8" }
+  - { type: HAS_SAFETY_SIGNAL, reason: "kernel Assessment SAFETY_SIGNAL ASSESSES product (D5/D10)" }
+  - { type: CLASSIFIED_AS, reason: "Product.productKind enum" }
+  - { type: IMPLEMENTS_PANEL, reason: "D4 (diagnostic test service semantics)" }
+  - { type: IMPLEMENTS_PLATFORM, reason: "D4" }
+  - { type: DELIVERS_LABTEST, reason: "D4" }
+  - { type: RUNS_ON_DEVICE, reason: "D4" }
+  - { type: EMBODIES_MODEL, reason: "D4/D8 device semantics" }
+  - { type: LISTS_PROCEDURE, reason: "D5 offerings; a clinic program sold online is a Product of kind SERVICE here, and what it delivers is predicate-only OFFERS_INTERVENTION → D5 Intervention (OQ-D5-20 answered, OQ-D6-25)" }
+  - { type: FULFILLED_BY, reason: "research-stage candidate FULFILLS_OFFER; cut to Offer.fulfillmentKind" }
+  - { type: HOSTED_BY, reason: "research-stage candidate HOSTS_LISTING; cut to MerchantListing.hostDomain" }
+  - { type: DISTRIBUTES_PRODUCT, reason: "label 'Distributed by' is NAMES_RESPONSIBLE_PARTY + responsiblePartyRole; filing channel statements are SOLD_THROUGH_CHANNEL predicates; other distributor statements are the D7 predicate DISTRIBUTES (R-68)" }
+  - { type: ENDORSES_PRODUCT, reason: "endorsement/recommendation is a kernel claim occurrence (speechAct RECOMMENDS), 00-DIRECTIVE 3.9; predicate RECOMMENDS_USE, registered by D9 (R-83)" }
+  - { type: RECOMMENDS, reason: "D10 derived projection only" }

@@ -1,0 +1,14 @@
+{
+  "format": "bks-skill-example.v1",
+  "id": "per-serving-label-content",
+  "kind": "positive",
+  "task": "What does the current label of this package declare per serving, and since when?",
+  "lesson": "Exact question id first; label content is a LabelVersion attached by an exclusive HAS_LABEL_VERSION episode; per-serving lines are asserted DECLARES_COMPONENT edges, each authorized by its own Assertion.",
+  "steps": [
+    { "argv": ["search", "label per serving amount", "--json"], "expect": { "exit": 0, "json": [{ "path": "hits.*.id", "includes": "node:LabelVersion" }, { "path": "mode", "equals": "lexical" }] } },
+    { "argv": ["pattern", "--question", "Q-D6-01", "--json"], "expect": { "exit": 0, "json": [{ "path": "status", "equals": "supported" }, { "path": "templates.*.id", "includes": "D6/Q-D6-01#1" }, { "path": "templates.0.language", "equals": "CYPHER_5" }] } },
+    { "argv": ["get", "rel:HAS_LABEL_VERSION", "--section", "temporal rule"], "expect": { "exit": 0, "stdoutIncludes": ["episode", "TM-01"] } },
+    { "argv": ["get", "rel:DECLARES_COMPONENT", "--section", "authorization and evidence"], "expect": { "exit": 0, "stdoutIncludes": ["r.assertionUid", "HAS_EVIDENCE"] } },
+    { "argv": ["neighbors", "node:LabelVersion", "--direction", "out", "--json"], "expect": { "exit": 0, "json": [{ "path": "arcs.*.type", "includes": "DECLARES_COMPONENT" }, { "path": "instanceClaim", "equals": false }] } }
+  ]
+}

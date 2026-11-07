@@ -1,0 +1,43 @@
+"""
+Purpose: who was eligible, enrolled, randomized or analyzed, as one source states it: size, sex and age bounds, healthy
+volunteers, species and strain for preclinical work (NCBI Taxonomy id as a string, so no taxon seam), eligibility and
+enrichment criteria text. Named by D5 target-effect Assertions through the kernel qualifier string `population:<uid>`
+(D5 vocab-targets.yaml 0.2.0; a string join, no edge), and assessed by the population dimension of applicability
+assessments. Replaces three pinned edges (eligible, enrolled, analyzed cohort).
+Identity rule: (study, sourceFamily, populationKind, analysisSet, payloadHash); sourceFamily as for StudyArm.
+uid token: `study-population`.
+Questions: Q-D3-17, Q-D3-06, CQ-EV-04, Q-D3-04.
+"""
+type StudyPopulation implements Entity & Subjectable
+  @node(labels: ["StudyPopulation", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  populationKind: StudyPopulationKind!
+  analysisSet: AnalysisSetKind
+  size: Int
+  sizeText: String @filterable(byValue: false) @sortable(byValue: false)
+  sexScope: SexScope
+  minAgeYears: Float
+  maxAgeYears: Float
+  ageText: String @filterable(byValue: false) @sortable(byValue: false)
+  healthyVolunteers: Boolean
+  "NCBI Taxonomy id (9606 human, 10090 mouse)."
+  ncbiTaxonId: String
+  "Strain or line (UM-HET3, C57BL/6J)."
+  strainOrLine: String
+  eligibilityCriteriaText: String @filterable(byValue: false) @sortable(byValue: false)
+  "Enrichment as stated (e.g. 'highest tertile of p16 expression')."
+  enrichmentText: String @filterable(byValue: false) @sortable(byValue: false)
+  payloadHash: String! @filterable(byValue: false) @sortable(byValue: false)
+  """class: asserted; cardinality: one_or_more; questions: Q-D3-17, Q-D3-11."""
+  statedIn: [StatingRecord!]!
+    @relationship(type: "STATED_IN", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

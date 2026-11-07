@@ -1,0 +1,1324 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v2",
+  "intentId": "ft-d12-predimed-2026-10-08",
+  "pins": {
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+    "policyVersion": "bks-admission-policy/v1"
+  },
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "a2-d12-fixtures-stage",
+      "model": "claude-opus-5-5"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run:ft-D12-predimed-retraction-disconfirmation",
+      "missionId": "mission:ft-D12-fixtures"
+    },
+    "activityKind": "INGESTION"
+  },
+  "basis": {
+    "creationOnly": {
+      "reason": "FU-03 v2 fixture round: replay of a packet fixture into a graph without a prior custody snapshot",
+      "expectAbsent": [],
+      "expectPresent": []
+    }
+  },
+  "defaults": {
+    "privacyClass": "PUBLIC"
+  },
+  "sources": [
+    {
+      "ref": "snap-predimed",
+      "source": {
+        "canonicalUri": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=23432189,29897866&retmode=xml",
+        "title": "PubMed XML — PMID 23432189 (retracted) and 29897866 (corrected and republished)",
+        "sourceKind": "API",
+        "genre": "BIBLIOGRAPHIC_RECORD"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T20:55:00Z",
+        "observedAt": "2026-10-08T20:55:00Z",
+        "contentHash": "sha256:29d54857a3360ca03356e68e434f90d2bf587f7e015618858d5dab0133bc77a3",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "curl NCBI E-utilities efetch db=pubmed",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/xml",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "loc-p13-pubtype",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "<PublicationType UI=\"D016441\">Retracted Publication</PublicationType>",
+            "prefix": "Non-U.S. Gov't</PublicationType>",
+            "suffix": "</PublicationTypeList><ArticleDa",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 6221,
+              "end": 6290
+            },
+            "section": "PMID 23432189 PublicationTypeList",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "<PublicationType UI=\"D016441\">Retracted Publication</PublicationType>",
+          "prefix": "Non-U.S. Gov't</PublicationType>",
+          "suffix": "</PublicationTypeList><ArticleDa",
+          "quoteHash": "sha256:f84461dbc57722842da1bcf27a0321917c009fff6d04702c363b833d8dd8a677",
+          "startOffset": 6221,
+          "endOffset": 6290
+        },
+        {
+          "ref": "loc-p13-retraction-in",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "<CommentsCorrections RefType=\"RetractionIn\"><RefSource>N Engl J Med. 2018 Jun 21;378(25):2441-2442. doi: 10.1056/NEJMc1806491.</RefSource><PMID Version=\"1\">29897867</PMID>",
+            "prefix": "866</PMID></CommentsCorrections>",
+            "suffix": "</CommentsCorrections></Comments",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 10193,
+              "end": 10364
+            },
+            "section": "PMID 23432189 CommentsCorrectionsList",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "<CommentsCorrections RefType=\"RetractionIn\"><RefSource>N Engl J Med. 2018 Jun 21;378(25):2441-2442. doi: 10.1056/NEJMc1806491.</RefSource><PMID Version=\"1\">29897867</PMID>",
+          "prefix": "866</PMID></CommentsCorrections>",
+          "suffix": "</CommentsCorrections></Comments",
+          "quoteHash": "sha256:05e5324f27218c2244a7f6e1179a832049ac2f62e957a2d7d0904fea1860d9e9",
+          "startOffset": 10193,
+          "endOffset": 10364
+        },
+        {
+          "ref": "loc-p13-epub",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "<ArticleDate DateType=\"Electronic\"><Year>2013</Year><Month>02</Month><Day>25</Day></ArticleDate>",
+            "prefix": "ationType></PublicationTypeList>",
+            "suffix": "</Article><MedlineJournalInfo><C",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 6312,
+              "end": 6408
+            },
+            "section": "PMID 23432189 Article",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "<ArticleDate DateType=\"Electronic\"><Year>2013</Year><Month>02</Month><Day>25</Day></ArticleDate>",
+          "prefix": "ationType></PublicationTypeList>",
+          "suffix": "</Article><MedlineJournalInfo><C",
+          "quoteHash": "sha256:99386280fa85315bfd2d38b2586e452cd4466b481133ffb2e05aed60c9b2cde7",
+          "startOffset": 6312,
+          "endOffset": 6408
+        },
+        {
+          "ref": "loc-p13-conclusion",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "a Mediterranean diet supplemented with extra-virgin olive oil or nuts reduced the incidence of major cardiovascular events",
+            "prefix": "ns at high cardiovascular risk, ",
+            "suffix": ". (Funded by the Spanish governm",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 3019,
+              "end": 3141
+            },
+            "section": "PMID 23432189 abstract CONCLUSIONS",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "a Mediterranean diet supplemented with extra-virgin olive oil or nuts reduced the incidence of major cardiovascular events",
+          "prefix": "ns at high cardiovascular risk, ",
+          "suffix": ". (Funded by the Spanish governm",
+          "quoteHash": "sha256:6beb598003ab3d805068df053de3ef63f367daf90f33f817da41bb64168b9320",
+          "startOffset": 3019,
+          "endOffset": 3141
+        },
+        {
+          "ref": "loc-p13-hr",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "The multivariable-adjusted hazard ratios were 0.70 (95% confidence interval [CI], 0.54 to 0.92)",
+            "prefix": "t occurred in 288 participants. ",
+            "suffix": " and 0.72 (95% CI, 0.54 to 0.96)",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 2543,
+              "end": 2638
+            },
+            "section": "PMID 23432189 abstract RESULTS",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "The multivariable-adjusted hazard ratios were 0.70 (95% confidence interval [CI], 0.54 to 0.92)",
+          "prefix": "t occurred in 288 participants. ",
+          "suffix": " and 0.72 (95% CI, 0.54 to 0.96)",
+          "quoteHash": "sha256:588da0c5eace5890518d57186628d7afa90159e9e62fecd06b911cf5c0f4ca77",
+          "startOffset": 2543,
+          "endOffset": 2638
+        },
+        {
+          "ref": "loc-p18-arms",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "a Mediterranean diet supplemented with extra-virgin olive oil, a Mediterranean diet supplemented with mixed nuts, or a control diet (advice to reduce dietary fat)",
+            "prefix": "ollment, to one of three diets: ",
+            "suffix": ". Participants received quarterl",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 42053,
+              "end": 42215
+            },
+            "section": "PMID 29897866 abstract METHODS",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "a Mediterranean diet supplemented with extra-virgin olive oil, a Mediterranean diet supplemented with mixed nuts, or a control diet (advice to reduce dietary fat)",
+          "prefix": "ollment, to one of three diets: ",
+          "suffix": ". Participants received quarterl",
+          "quoteHash": "sha256:a9a72bcc2321ccb02422c1452718f540a4e16312a1c6f650f8fc6fdef1acbdef",
+          "startOffset": 42053,
+          "endOffset": 42215
+        },
+        {
+          "ref": "loc-p18-provision",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "free provision of extra-virgin olive oil, mixed nuts, or small nonfood gifts",
+            "prefix": " depending on group assignment, ",
+            "suffix": ". The primary end point was a ma",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 42306,
+              "end": 42382
+            },
+            "section": "PMID 29897866 abstract METHODS",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "free provision of extra-virgin olive oil, mixed nuts, or small nonfood gifts",
+          "prefix": " depending on group assignment, ",
+          "suffix": ". The primary end point was a ma",
+          "quoteHash": "sha256:6261523bd10fda9ea6579ca72a5a0ae11c9afaa094a608eca55fb6bba3b226a0",
+          "startOffset": 42306,
+          "endOffset": 42382
+        },
+        {
+          "ref": "loc-p18-withdrawn",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "We have withdrawn our previously published report and now report revised effect estimates based on analyses that do not rely exclusively on the assumption that all the participants were randomly assigned.",
+            "prefix": "ization tables at another site. ",
+            "suffix": "</AbstractText><AbstractText Lab",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 42973,
+              "end": 43177
+            },
+            "section": "PMID 29897866 abstract METHODS",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "We have withdrawn our previously published report and now report revised effect estimates based on analyses that do not rely exclusively on the assumption that all the participants were randomly assigned.",
+          "prefix": "ization tables at another site. ",
+          "suffix": "</AbstractText><AbstractText Lab",
+          "quoteHash": "sha256:7adf83329d1e3b3fceaf62b358b06cb9a5c5fb207f13503c83fdf529bdaab044",
+          "startOffset": 42973,
+          "endOffset": 43177
+        },
+        {
+          "ref": "loc-p18-hr",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "the hazard ratio was 0.69 (95% confidence interval [CI], 0.53 to 0.91) for a Mediterranean diet with extra-virgin olive oil",
+            "prefix": "eristics and propensity scores, ",
+            "suffix": " and 0.72 (95% CI, 0.54 to 0.95)",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 43617,
+              "end": 43740
+            },
+            "section": "PMID 29897866 abstract RESULTS",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "the hazard ratio was 0.69 (95% confidence interval [CI], 0.53 to 0.91) for a Mediterranean diet with extra-virgin olive oil",
+          "prefix": "eristics and propensity scores, ",
+          "suffix": " and 0.72 (95% CI, 0.54 to 0.95)",
+          "quoteHash": "sha256:56a272808dcdcb132be7a2af6919333c5cf3b2a10386d6201bbbf7b512324897",
+          "startOffset": 43617,
+          "endOffset": 43740
+        },
+        {
+          "ref": "loc-p18-conclusion",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "the incidence of major cardiovascular events was lower among those assigned to a Mediterranean diet supplemented with extra-virgin olive oil or nuts than among those assigned to a reduced-fat diet",
+            "prefix": "ns at high cardiovascular risk, ",
+            "suffix": ". (Funded by Instituto de Salud ",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 44104,
+              "end": 44300
+            },
+            "section": "PMID 29897866 abstract CONCLUSIONS",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "the incidence of major cardiovascular events was lower among those assigned to a Mediterranean diet supplemented with extra-virgin olive oil or nuts than among those assigned to a reduced-fat diet",
+          "prefix": "ns at high cardiovascular risk, ",
+          "suffix": ". (Funded by Instituto de Salud ",
+          "quoteHash": "sha256:1bac73ed212555d82efabe59989a9df785b134442b9e4f2e68fac4a458e4eca6",
+          "startOffset": 44104,
+          "endOffset": 44300
+        },
+        {
+          "ref": "loc-p18-pubtype",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "<PublicationType UI=\"D016439\">Corrected and Republished Article</PublicationType>",
+            "prefix": "ournal Article</PublicationType>",
+            "suffix": "</PublicationTypeList><ArticleDa",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 107340,
+              "end": 107421
+            },
+            "section": "PMID 29897866 PublicationTypeList",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "<PublicationType UI=\"D016439\">Corrected and Republished Article</PublicationType>",
+          "prefix": "ournal Article</PublicationType>",
+          "suffix": "</PublicationTypeList><ArticleDa",
+          "quoteHash": "sha256:f54139902b5d334828d30e40a5baffdd893aa0c341d10990308b6fce81fd69eb",
+          "startOffset": 107340,
+          "endOffset": 107421
+        },
+        {
+          "ref": "loc-p18-epub",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "<ArticleDate DateType=\"Electronic\"><Year>2018</Year><Month>06</Month><Day>13</Day></ArticleDate>",
+            "prefix": "ationType></PublicationTypeList>",
+            "suffix": "</Article><MedlineJournalInfo><C",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 107443,
+              "end": 107539
+            },
+            "section": "PMID 29897866 Article",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "<ArticleDate DateType=\"Electronic\"><Year>2018</Year><Month>06</Month><Day>13</Day></ArticleDate>",
+          "prefix": "ationType></PublicationTypeList>",
+          "suffix": "</Article><MedlineJournalInfo><C",
+          "quoteHash": "sha256:6ab328da6faca68206b96f24491df06b4c33a8d514b7395395934171f117f0bb",
+          "startOffset": 107443,
+          "endOffset": 107539
+        }
+      ]
+    },
+    {
+      "ref": "snap-predimed-notice",
+      "source": {
+        "canonicalUri": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=29897867&retmode=xml",
+        "title": "PubMed XML — PMID 29897867 (Retraction and Republication notice, NEJM 2018)",
+        "sourceKind": "API",
+        "genre": "BIBLIOGRAPHIC_RECORD"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-09T01:50:03Z",
+        "observedAt": "2026-10-09T01:50:03Z",
+        "contentHash": "sha256:9c63f4492be4ed8b9f221c249cb9ca063dd2c9688ce0dc861f524ebc591fa50e",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "curl NCBI E-utilities efetch db=pubmed",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/xml",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "loc-notice-title",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "<ArticleTitle>Retraction and Republication: Primary Prevention of Cardiovascular Disease with a Mediterranean Diet. N Engl J Med 2013;368:1279-90.</ArticleTitle>",
+            "prefix": " Med</ISOAbbreviation></Journal>",
+            "suffix": "<Pagination><StartPage>2441</Sta",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 719,
+              "end": 880
+            },
+            "section": "PMID 29897867 Article",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "<ArticleTitle>Retraction and Republication: Primary Prevention of Cardiovascular Disease with a Mediterranean Diet. N Engl J Med 2013;368:1279-90.</ArticleTitle>",
+          "prefix": " Med</ISOAbbreviation></Journal>",
+          "suffix": "<Pagination><StartPage>2441</Sta",
+          "quoteHash": "sha256:50802f93d9157b5465231f49a55b9dd2aa43af0d28899244b93dbd8951ddbaf2",
+          "startOffset": 719,
+          "endOffset": 880
+        },
+        {
+          "ref": "loc-notice-pubtype",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "<PublicationType UI=\"D016440\">Retraction Notice</PublicationType>",
+            "prefix": "ournal Article</PublicationType>",
+            "suffix": "</PublicationTypeList><ArticleDa",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 5313,
+              "end": 5378
+            },
+            "section": "PMID 29897867 PublicationTypeList",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "<PublicationType UI=\"D016440\">Retraction Notice</PublicationType>",
+          "prefix": "ournal Article</PublicationType>",
+          "suffix": "</PublicationTypeList><ArticleDa",
+          "quoteHash": "sha256:00814de8b3cdf1a5e8646379a670af25c5e559b5e14455ff57d378a661e4f490",
+          "startOffset": 5313,
+          "endOffset": 5378
+        },
+        {
+          "ref": "loc-notice-epub",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "<ArticleDate DateType=\"Electronic\"><Year>2018</Year><Month>06</Month><Day>13</Day></ArticleDate>",
+            "prefix": "ationType></PublicationTypeList>",
+            "suffix": "</Article><MedlineJournalInfo><C",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 5400,
+              "end": 5496
+            },
+            "section": "PMID 29897867 Article",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "<ArticleDate DateType=\"Electronic\"><Year>2018</Year><Month>06</Month><Day>13</Day></ArticleDate>",
+          "prefix": "ationType></PublicationTypeList>",
+          "suffix": "</Article><MedlineJournalInfo><C",
+          "quoteHash": "sha256:6ab328da6faca68206b96f24491df06b4c33a8d514b7395395934171f117f0bb",
+          "startOffset": 5400,
+          "endOffset": 5496
+        },
+        {
+          "ref": "loc-notice-issue",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "<PubDate><Year>2018</Year><Month>Jun</Month><Day>21</Day></PubDate>",
+            "prefix": "me>378</Volume><Issue>25</Issue>",
+            "suffix": "</JournalIssue><Title>The New En",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 530,
+              "end": 597
+            },
+            "section": "PMID 29897867 JournalIssue (print issue date)",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "<PubDate><Year>2018</Year><Month>Jun</Month><Day>21</Day></PubDate>",
+          "prefix": "me>378</Volume><Issue>25</Issue>",
+          "suffix": "</JournalIssue><Title>The New En",
+          "quoteHash": "sha256:ffbf1e2abc9ad87f9e4039254bc918cbbb12a8d2ad6a2fbf8b44229a823e350f",
+          "startOffset": 530,
+          "endOffset": 597
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "nlm",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "U.S. National Library of Medicine (PubMed)",
+      "uidSegment": "nlm",
+      "properties": {
+        "entityKind": "UNSPECIFIED"
+      },
+      "identifiers": [
+        {
+          "scheme": "WEB_DOMAIN",
+          "issuer": "DNS",
+          "value": "nlm.nih.gov"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "nejm",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "The New England Journal of Medicine",
+      "uidSegment": "nejm",
+      "properties": {
+        "entityKind": "UNSPECIFIED"
+      },
+      "identifiers": [
+        {
+          "scheme": "WEB_DOMAIN",
+          "issuer": "DNS",
+          "value": "nejm.org"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "src-2013",
+      "mode": "new",
+      "nodeType": "Source",
+      "name": "PubMed record of PMID 23432189 (NEJM 2013)",
+      "uidSegment": "pubmed-23432189",
+      "properties": {
+        "canonicalUri": "https://pubmed.ncbi.nlm.nih.gov/23432189/",
+        "sourceKind": "WEB_PAGE"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "src-2018",
+      "mode": "new",
+      "nodeType": "Source",
+      "name": "PubMed record of PMID 29897866 (NEJM 2018)",
+      "uidSegment": "pubmed-29897866",
+      "properties": {
+        "canonicalUri": "https://pubmed.ncbi.nlm.nih.gov/29897866/",
+        "sourceKind": "WEB_PAGE"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "pub-2013",
+      "mode": "new",
+      "nodeType": "Publication",
+      "name": "Primary prevention of cardiovascular disease with a Mediterranean diet (NEJM 2013)",
+      "uidSegment": "pmid-23432189",
+      "properties": {
+        "publicationKind": "ARTICLE",
+        "venueName": "N Engl J Med",
+        "revisionStatus": "RETRACTION"
+      },
+      "identifiers": [
+        {
+          "scheme": "PMID",
+          "issuer": "NLM",
+          "value": "23432189"
+        },
+        {
+          "scheme": "DOI",
+          "issuer": "Crossref",
+          "value": "10.1056/NEJMoa1200303"
+        }
+      ],
+      "onMatch": "review"
+    },
+    {
+      "ref": "pub-2018",
+      "mode": "new",
+      "nodeType": "Publication",
+      "name": "Primary Prevention of Cardiovascular Disease with a Mediterranean Diet Supplemented with Extra-Virgin Olive Oil or Nuts (NEJM 2018)",
+      "uidSegment": "pmid-29897866",
+      "properties": {
+        "publicationKind": "ARTICLE",
+        "venueName": "N Engl J Med"
+      },
+      "identifiers": [
+        {
+          "scheme": "PMID",
+          "issuer": "NLM",
+          "value": "29897866"
+        },
+        {
+          "scheme": "DOI",
+          "issuer": "Crossref",
+          "value": "10.1056/NEJMoa1800389"
+        }
+      ],
+      "onMatch": "review"
+    },
+    {
+      "ref": "pub-notice",
+      "mode": "new",
+      "nodeType": "Publication",
+      "name": "Retraction and Republication notice (NEJM 2018;378(25):2441-2442)",
+      "uidSegment": "pmid-29897867",
+      "properties": {
+        "publicationKind": "RETRACTION_NOTICE",
+        "venueName": "N Engl J Med"
+      },
+      "identifiers": [
+        {
+          "scheme": "PMID",
+          "issuer": "NLM",
+          "value": "29897867"
+        },
+        {
+          "scheme": "DOI",
+          "issuer": "Crossref",
+          "value": "10.1056/NEJMc1806491"
+        }
+      ],
+      "onMatch": "review"
+    },
+    {
+      "ref": "src-notice",
+      "mode": "new",
+      "nodeType": "Source",
+      "name": "PubMed record of PMID 29897867 (retraction notice)",
+      "uidSegment": "pubmed-29897867",
+      "properties": {
+        "canonicalUri": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=29897867&retmode=xml",
+        "sourceKind": "API"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "agent-curation",
+      "mode": "new",
+      "nodeType": "Agent",
+      "name": "D12 curation agent (fixture)",
+      "uidSegment": "d12-curation-agent",
+      "properties": {
+        "agentKind": "AUTOMATED_AGENT"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "evoo-arm",
+      "mode": "new",
+      "nodeType": "DietaryPattern",
+      "name": "PREDIMED Mediterranean diet supplemented with extra-virgin olive oil",
+      "uidSegment": "predimed-meddiet-evoo",
+      "properties": {
+        "definedBySourceUid": "hu:source:pubmed-29897866",
+        "patternKey": "meddiet-evoo-arm",
+        "version": "",
+        "definedBy": "PREDIMED (Estruch et al., NEJM 2018, arms as stated in the abstract)",
+        "patternKind": "COMPOSITION",
+        "definitionScope": "TRIAL_ARM"
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "nuts-arm",
+      "mode": "new",
+      "nodeType": "DietaryPattern",
+      "name": "PREDIMED Mediterranean diet supplemented with mixed nuts",
+      "uidSegment": "predimed-meddiet-nuts",
+      "properties": {
+        "definedBySourceUid": "hu:source:pubmed-29897866",
+        "patternKey": "meddiet-nuts-arm",
+        "version": "",
+        "definedBy": "PREDIMED (Estruch et al., NEJM 2018, arms as stated in the abstract)",
+        "patternKind": "COMPOSITION",
+        "definitionScope": "TRIAL_ARM"
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "control-arm",
+      "mode": "new",
+      "nodeType": "DietaryPattern",
+      "name": "PREDIMED control diet (advice to reduce dietary fat)",
+      "uidSegment": "predimed-control-reduced-fat",
+      "properties": {
+        "definedBySourceUid": "hu:source:pubmed-29897866",
+        "patternKey": "control-reduced-fat-arm",
+        "version": "",
+        "definedBy": "PREDIMED (Estruch et al., NEJM 2018, arms as stated in the abstract)",
+        "patternKind": "COMPOSITION",
+        "definitionScope": "TRIAL_ARM"
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "evoo",
+      "mode": "new",
+      "nodeType": "FoodItem",
+      "name": "extra-virgin olive oil",
+      "uidSegment": "curated-extra-virgin-olive-oil",
+      "properties": {
+        "descriptionVerbatim": "extra-virgin olive oil",
+        "definingSystem": "CURATED",
+        "preparationMethod": "NOT_STATED",
+        "variantKind": "BASE",
+        "synonyms": [
+          "EVOO"
+        ]
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "nuts",
+      "mode": "new",
+      "nodeType": "FoodItem",
+      "name": "mixed nuts",
+      "uidSegment": "curated-mixed-nuts",
+      "properties": {
+        "descriptionVerbatim": "mixed nuts",
+        "definingSystem": "CURATED",
+        "preparationMethod": "NOT_STATED",
+        "variantKind": "BASE"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "total-fat",
+      "mode": "new",
+      "nodeType": "Constituent",
+      "name": "total fat (dietary fat)",
+      "uidSegment": "total-fat",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "target-cm",
+      "mode": "resolved",
+      "uid": "hu:target:cardiometabolic-health",
+      "nodeType": "Target"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "p01-evoo",
+      "rationale": "role EMPHASIZES. intent v1 gap: edge.assert carries neither edge-property values (D12 FoodContentProperties statementKind/quantity/unitCode/amountBasis) nor valueNumber/unitCode/valueString/qualifiers on the authorizing Assertion (AssertionCore), so the amount and its qualifiers ride only in this rationale and in assertions.yaml (OQ-D12-23). R-15: asserter = the multi-author Publication (was first author Ramón Estruch).",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "PATTERN_COMPONENT",
+      "fromRef": "evoo-arm",
+      "toRef": "evoo",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "qualifiers": [],
+        "validity": {},
+        "uidSegment": "ft-d12-pred-01"
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "loc-p18-arms",
+        "loc-p18-provision"
+      ],
+      "asserterRef": "pub-2018",
+      "hold": {
+        "reason": "FU-03 v1 semantics not mechanically mappable: role EMPHASIZES. intent v1 gap: edge.assert carries neither edge-property values (D12 FoodContentProperties statementKind/quantity/unitCode/amountBasis) nor valueNumber/unitCode/valueString/qualifiers on the authorizing Assertion (AssertionCore), so the amount and its qualifiers ride only in this rationale and in assertions.yaml (OQ-D12-23). R-15: asserter = the multi-author Publication (was first author Ramón Estruch)."
+      }
+    },
+    {
+      "proposalId": "p02-nuts",
+      "rationale": "role EMPHASIZES. intent v1 gap: edge.assert carries neither edge-property values (D12 FoodContentProperties statementKind/quantity/unitCode/amountBasis) nor valueNumber/unitCode/valueString/qualifiers on the authorizing Assertion (AssertionCore), so the amount and its qualifiers ride only in this rationale and in assertions.yaml (OQ-D12-23). R-15: asserter = the multi-author Publication (was first author Ramón Estruch).",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "PATTERN_COMPONENT",
+      "fromRef": "nuts-arm",
+      "toRef": "nuts",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "qualifiers": [],
+        "validity": {},
+        "uidSegment": "ft-d12-pred-02"
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "loc-p18-arms",
+        "loc-p18-provision"
+      ],
+      "asserterRef": "pub-2018",
+      "hold": {
+        "reason": "FU-03 v1 semantics not mechanically mappable: role EMPHASIZES. intent v1 gap: edge.assert carries neither edge-property values (D12 FoodContentProperties statementKind/quantity/unitCode/amountBasis) nor valueNumber/unitCode/valueString/qualifiers on the authorizing Assertion (AssertionCore), so the amount and its qualifiers ride only in this rationale and in assertions.yaml (OQ-D12-23). R-15: asserter = the multi-author Publication (was first author Ramón Estruch)."
+      }
+    },
+    {
+      "proposalId": "p03-control-fat",
+      "rationale": "role LIMITS. intent v1 gap: edge.assert carries neither edge-property values (D12 FoodContentProperties statementKind/quantity/unitCode/amountBasis) nor valueNumber/unitCode/valueString/qualifiers on the authorizing Assertion (AssertionCore), so the amount and its qualifiers ride only in this rationale and in assertions.yaml (OQ-D12-23). R-15: asserter = the multi-author Publication (was first author Ramón Estruch).",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "PATTERN_COMPONENT",
+      "fromRef": "control-arm",
+      "toRef": "total-fat",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "qualifiers": [],
+        "validity": {},
+        "uidSegment": "ft-d12-pred-03"
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "loc-p18-arms"
+      ],
+      "asserterRef": "pub-2018",
+      "hold": {
+        "reason": "FU-03 v1 semantics not mechanically mappable: role LIMITS. intent v1 gap: edge.assert carries neither edge-property values (D12 FoodContentProperties statementKind/quantity/unitCode/amountBasis) nor valueNumber/unitCode/valueString/qualifiers on the authorizing Assertion (AssertionCore), so the amount and its qualifiers ride only in this rationale and in assertions.yaml (OQ-D12-23). R-15: asserter = the multi-author Publication (was first author Ramón Estruch)."
+      }
+    },
+    {
+      "proposalId": "p04-claim-2013",
+      "rationale": "claim occurrence (assertionKind CLAIM, claimType CAUSAL) OCCURRENCE_OF hu:claim:meddiet-evoo-or-nuts-lowers-major-cardiovascular-events. intent v1 gap: no assertionKind/claimType/occurrenceOf fields. intent v1 gap: no proposal kind binds an object node to a predicate-only Assertion (assertion.literal has no objectRef); the object uid is carried in valueString (OQ-D12-23). R-15: asserter = the multi-author Publication (was first author Ramón Estruch).",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "evoo-arm",
+      "assertion": {
+        "assertionKind": "CLAIM",
+        "claimType": "CAUSAL",
+        "occurrenceOf": {
+          "claimUid": "hu:claim:meddiet-evoo-or-nuts-lowers-major-cardiovascular-events."
+        },
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "DIRECT_MEASUREMENT",
+        "qualifiers": [],
+        "validity": {
+          "validFrom": "2013-02-25T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "PUBLICATION_PROXY"
+        },
+        "uidSegment": "ft-d12-pred-04",
+        "predicate": "IMPROVES_TARGET"
+      },
+      "value": {
+        "valueString": "hu:target:cardiometabolic-health"
+      },
+      "evidence": [
+        "loc-p13-conclusion",
+        "loc-p13-hr"
+      ],
+      "asserterRef": "pub-2013",
+      "hold": {
+        "reason": "FU-03 round v2 SEMANTIC: PREDICATE_KIND_MISMATCH: IMPROVES_TARGET is a relationship predicate; this proposal kind needs literal | field | computation"
+      }
+    },
+    {
+      "proposalId": "p05-status-2013",
+      "rationale": "D3 REVISES (R-44): the retraction notice PMID 29897867 revises the 2013 article, asserted by PubMed (RetractionIn on the 2013 record); qualifiers issueDate:2018-06-21 (print issue), retractionIn:PMID:29897867; validFrom = the notice's electronic date (PUBLICATION_PROXY). Was a kernel status-flag literal on the Source; the revising work is identified, so no status-flag Assertion is also written for the same (asserter, notice).",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "REVISES",
+      "fromRef": "pub-notice",
+      "toRef": "pub-2013",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "qualifiers": [],
+        "validity": {
+          "validFrom": "2018-06-13T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "PUBLICATION_PROXY"
+        },
+        "uidSegment": "ft-d12-pred-05"
+      },
+      "edgeProperties": {
+        "revisionKind": "RETRACTION"
+      },
+      "evidence": [
+        "loc-p13-pubtype",
+        "loc-p13-retraction-in",
+        "loc-notice-epub"
+      ],
+      "asserterRef": "nlm"
+    },
+    {
+      "proposalId": "p05b-status-2013-nejm",
+      "rationale": "D3 REVISES (R-44): the notice 'Retraction and Republication' (PMID 29897867) revises the 2013 article, asserted by the publisher; qualifiers issueDate:2018-06-21, republishedAs:PMID:29897866. Was a kernel status-flag literal on the Source; the revising work is identified, so no status-flag Assertion is also written for the same (asserter, notice).",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "REVISES",
+      "fromRef": "pub-notice",
+      "toRef": "pub-2013",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "qualifiers": [],
+        "validity": {
+          "validFrom": "2018-06-13T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE"
+        },
+        "uidSegment": "ft-d12-pred-05b"
+      },
+      "edgeProperties": {
+        "revisionKind": "RETRACTION"
+      },
+      "evidence": [
+        "loc-notice-title",
+        "loc-notice-pubtype",
+        "loc-notice-epub",
+        "loc-notice-issue"
+      ],
+      "asserterRef": "nejm"
+    },
+    {
+      "proposalId": "p06-status-2018",
+      "rationale": "D3 REVISES (R-44): the 2018 article (PublicationType 'Corrected and Republished Article') revises the 2013 article, asserted by PubMed; qualifier republishedFrom:PMID:23432189. Was a kernel status-flag literal on the Source; the revising work is identified, so no status-flag Assertion is also written for the same (asserter, notice).",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "REVISES",
+      "fromRef": "pub-2018",
+      "toRef": "pub-2013",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "qualifiers": [],
+        "validity": {
+          "validFrom": "2018-06-13T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE"
+        },
+        "uidSegment": "ft-d12-pred-06"
+      },
+      "edgeProperties": {
+        "revisionKind": "CORRECTED_AND_REPUBLISHED"
+      },
+      "evidence": [
+        "loc-p18-pubtype",
+        "loc-p18-withdrawn"
+      ],
+      "asserterRef": "nlm"
+    },
+    {
+      "proposalId": "p07-claim-2018",
+      "rationale": "claim occurrence (claimType COMPARATIVE) of the same Claim; wording downgraded from 'reduced' to 'was lower among those assigned'. intent v1 gap: no proposal kind binds an object node to a predicate-only Assertion (assertion.literal has no objectRef); the object uid is carried in valueString (OQ-D12-23). R-15: asserter = the multi-author Publication (was first author Ramón Estruch).",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "evoo-arm",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "DIRECT_MEASUREMENT",
+        "qualifiers": [],
+        "validity": {
+          "validFrom": "2018-06-13T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "PUBLICATION_PROXY"
+        },
+        "uidSegment": "ft-d12-pred-07",
+        "predicate": "IMPROVES_TARGET"
+      },
+      "value": {
+        "valueString": "hu:target:cardiometabolic-health"
+      },
+      "evidence": [
+        "loc-p18-conclusion",
+        "loc-p18-hr",
+        "loc-p18-withdrawn"
+      ],
+      "asserterRef": "pub-2018",
+      "hold": {
+        "reason": "FU-03 round v2 SEMANTIC: PREDICATE_KIND_MISMATCH: IMPROVES_TARGET is a relationship predicate; this proposal kind needs literal | field | computation"
+      }
+    },
+    {
+      "proposalId": "p08-rendition-2013",
+      "rationale": "R-43 / R-26: the PubMed record (kernel Source) is a rendition of the work, asserted with recorded time only (AssertedRecordedProperties); evidence is a CONTEXT locator inside the record (qualifier renditionRule; intent v1 carries no evidence role or qualifiers).",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "RENDITION_OF",
+      "fromRef": "src-2013",
+      "toRef": "pub-2013",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "CURATOR_CLASSIFICATION",
+        "qualifiers": [
+          "r43R26Verbatim:the PubMed record (kernel Source) is a rendition of the work, asserted with recorded time only (AssertedRecordedProperties)"
+        ],
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        },
+        "uidSegment": "ft-d12-pred-08"
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "loc-p13-pubtype"
+      ],
+      "asserterRef": "agent-curation",
+      "hold": {
+        "reason": "FU-03 round v2 SEMANTIC: INVALID_ASSERTION: QUALIFIER_UNREGISTERED: \"r43R26Verbatim:the PubMed record (kernel\" has no registered prefix in vocabularies/qualifiers.yaml (the executor refuses unregistered prefixes)"
+      }
+    },
+    {
+      "proposalId": "p09-rendition-2018",
+      "rationale": "R-43 / R-26: the PubMed record (kernel Source) is a rendition of the work, asserted with recorded time only (AssertedRecordedProperties); evidence is a CONTEXT locator inside the record (qualifier renditionRule; intent v1 carries no evidence role or qualifiers).",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "RENDITION_OF",
+      "fromRef": "src-2018",
+      "toRef": "pub-2018",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "CURATOR_CLASSIFICATION",
+        "qualifiers": [
+          "r43R26Verbatim:the PubMed record (kernel Source) is a rendition of the work, asserted with recorded time only (AssertedRecordedProperties)"
+        ],
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        },
+        "uidSegment": "ft-d12-pred-09"
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "loc-p18-pubtype"
+      ],
+      "asserterRef": "agent-curation",
+      "hold": {
+        "reason": "FU-03 round v2 SEMANTIC: INVALID_ASSERTION: QUALIFIER_UNREGISTERED: \"r43R26Verbatim:the PubMed record (kernel\" has no registered prefix in vocabularies/qualifiers.yaml (the executor refuses unregistered prefixes)"
+      }
+    },
+    {
+      "proposalId": "p10-rendition-notice",
+      "rationale": "R-43 / R-26: the PubMed record (kernel Source) is a rendition of the work, asserted with recorded time only (AssertedRecordedProperties); evidence is a CONTEXT locator inside the record (qualifier renditionRule; intent v1 carries no evidence role or qualifiers).",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "RENDITION_OF",
+      "fromRef": "src-notice",
+      "toRef": "pub-notice",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "CURATOR_CLASSIFICATION",
+        "qualifiers": [
+          "r43R26Verbatim:the PubMed record (kernel Source) is a rendition of the work, asserted with recorded time only (AssertedRecordedProperties)"
+        ],
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        },
+        "uidSegment": "ft-d12-pred-10"
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "loc-notice-title"
+      ],
+      "asserterRef": "agent-curation",
+      "hold": {
+        "reason": "FU-03 round v2 SEMANTIC: INVALID_ASSERTION: QUALIFIER_UNREGISTERED: \"r43R26Verbatim:the PubMed record (kernel\" has no registered prefix in vocabularies/qualifiers.yaml (the executor refuses unregistered prefixes)"
+      }
+    }
+  ],
+  "notes": "Fixture intent for packet D12 (predimed-retraction-disconfirmation), fixture stage A2 2026-10-08, regenerated in the adversarial-review pass (scripts4/gen_intents.mjs). runId/missionId are FIXTURE ids, not real Mission Control runs. Validated against IngestionIntent (packages/contracts); not planned or applied against a database. Node types from other modules (Product, Brand, LabelVersion, QualityResult, Study, Person, Organization, ChemicalSubstance, Constituent, Target) are seam types; uidSegments match assertions.yaml. Gaps of intent v1 found while writing it are stated in proposal rationales (OQ-D12-23). Close-out FU-03 (S, 2026-10-09): R-44 status rows are D3 REVISES edge.assert (notice -> 2013 by NLM and NEJM; 2018 -> 2013 by NLM); R-15 claim and pattern rows asserted by the Publications; R-42 PMID/DOI moved from the Sources to the Publications; R-43 RENDITION_OF Source -> Publication asserted by the curation agent. intent v1 gaps unchanged: no assertionKind/claimType/occurrenceOf, no qualifiers or evidence roles.",
+  "provenance": {
+    "derivedFrom": {
+      "schemaVersion": "biotech-knowledge-intent.v1",
+      "path": "schema/program/final/fixtures/D12/predimed-retraction-disconfirmation/intent.json",
+      "rawBytesDigest": "sha256:f4604e7123b6e23f5a4f687393c1d73c71bec2679b06754676382360802bcc63"
+    },
+    "migrator": "bks-migrate-intent-v1/1",
+    "edits": [
+      {
+        "at": "onStale",
+        "rule": "strict-stale",
+        "from": "fail",
+        "to": null,
+        "note": "production onStale removed; stale state is a new plan"
+      },
+      {
+        "at": "sources[0].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl NCBI E-utilities efetch db=pubmed",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[0].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:20623af7dd30a4407ce2ee4deb767ff53d688f98387e0881199b3e2a9703fc0b",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[1].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:40b2017f6a1ac55c644f30fcbf2fc0e8ac4fa3826dff326e84c9c11d7f682ad0",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[2].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[2].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:b7536d25a24d714e4bb5a630d2f64e1dc89bf32c87aac0bca9194c9c3656521f",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[3].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[3].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:f488b89022deff8e2deb8dc503246a2838fdf563bd414ee832bfc00977c39dd8",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[4].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[4].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:e9e13a1eea78da14e5d5658f312179cb22001f1fb12ab266ed04da1b7d881dc7",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[5].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[5].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:3f4bece09d76c2c15c62abfe62c0511adaa6fc022eaf79e555c18557a74e055f",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[6].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[6].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:338022ab87fc616dfe825a7fb3f8f8f945bc800de165eb28c40664bae0e3167f",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[7].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[7].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:dc37f97affbacd0864677c65623e09a384304b93f000fbb29f0bd0d90675af3f",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[8].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[8].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:a49d55bf2d20d4c71734f2bf1bdb0f0b5e2d75940e921b91d7d0b42c698d4a9b",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[9].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[9].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:24691a18e6c3ff39d3accf4b6611b9bc1560c9e630bc6b3c9c003c471e803946",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[10].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[10].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:ac4f45ce2680c4fb48c2eac9c9752205d5729221a07204c89496df77344fd971",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[11].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[11].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:60030975ceb10b3df1e345d68081c0c2bf075a8d2279e1b76e0a5612bfd62759",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[1].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl NCBI E-utilities efetch db=pubmed",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[1].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[1].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:5b3d97db56da4286b41cbde6e70b4d9a0881ce04828d01ffa07dc80552e6bae0",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[1].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[1].locators[1].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:4bb17cf0be786b5047f1dd9f83fa75502f21b12f80c87aff3b258006222e42a2",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[1].locators[2].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[1].locators[2].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:6dfdb663872330f6799a8df5e67efcbcc81b4a5c1e96c7f23a2efdf3f1765dab",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[1].locators[3].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[1].locators[3].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:d837aa474d0d48b1c7307f00d43d2a5d3e1265b3a5ce7b524d99c21125a305cb",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "proposals[3].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "claim occurrence (assertionKind CLAIM, claimType CAUSAL) OCCURRENCE_OF hu:claim:meddiet-evoo-or-nuts-lowers-major-cardiovascular-events. intent v1 gap: no asser"
+      },
+      {
+        "at": "proposals[7].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "claim occurrence (claimType COMPARATIVE) of the same Claim; wording downgraded from 'reduced' to 'was lower among those assigned'. intent v1 gap: no proposal ki"
+      },
+      {
+        "at": "proposals[8].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "R-43 / R-26: the PubMed record (kernel Source) is a rendition of the work, asserted with recorded time only (AssertedRecordedProperties); evidence is a CONTEXT "
+      },
+      {
+        "at": "proposals[9].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "R-43 / R-26: the PubMed record (kernel Source) is a rendition of the work, asserted with recorded time only (AssertedRecordedProperties); evidence is a CONTEXT "
+      },
+      {
+        "at": "proposals[10].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "R-43 / R-26: the PubMed record (kernel Source) is a rendition of the work, asserted with recorded time only (AssertedRecordedProperties); evidence is a CONTEXT "
+      },
+      {
+        "at": "subjects[nlm].properties.entityKind",
+        "rule": "schema-unknown-marker",
+        "from": null,
+        "to": "UNSPECIFIED",
+        "note": "not stated by the fixture source; OrganizationEntityKind.UNSPECIFIED is the release's explicit unknown member (OD-24 / OD-25), not a sourced fact"
+      },
+      {
+        "at": "subjects[nejm].properties.entityKind",
+        "rule": "schema-unknown-marker",
+        "from": null,
+        "to": "UNSPECIFIED",
+        "note": "not stated by the fixture source; OrganizationEntityKind.UNSPECIFIED is the release's explicit unknown member (OD-24 / OD-25), not a sourced fact"
+      }
+    ]
+  }
+}

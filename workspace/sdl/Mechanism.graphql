@@ -1,0 +1,44 @@
+"""
+Purpose: a curated mechanism concept — hallmark of aging, biological process, curated pathway record or molecular
+function (mechanismKind) — the vocabulary every mechanism claim resolves to and the hub of the compound → mechanism →
+biomarker → test path. Pathway and Hallmark are kinds of Mechanism, not separate types.
+Identity rule: `key` — `<scheme>:<unversioned authority id>` for authority records (reactome:R-HSA-196807,
+go:GO:0090398), `bellabs:<slug>` for curated concepts (bellabs:hallmark-cellular-senescence); the authority id is
+also attached as a kernel Identifier (REACTOME, GO). The version seen lives in `referenceRelease`, never in the key.
+uid token: `mechanism` (hu:mechanism:<opaque>).
+Questions: CQ-MX-01, CQ-MX-05, Q-D2-01, Q-D2-02, Q-D2-03, Q-D2-06, Q-D2-10, Q-D2-11, Q-D2-12, Q-D2-14, Q-D2-15, Q-D2-18, Q-D2-19, Q-D2-26.
+"""
+type Mechanism implements Entity & Subjectable
+  @node(labels: ["Mechanism", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Stable vocabulary key (identity); never reused."
+  key: String
+  mechanismKind: MechanismKind
+  referenceScheme: MechanismReferenceScheme
+  "Authority release currently loaded for this record (e.g. R-HSA-196807.8)."
+  referenceRelease: String
+  description: String
+  "Alternative names; feed the fulltext index mechanism_text (name, description, synonyms) used for entity linking."
+  synonyms: [String!]
+  """class: asserted; cardinality: many (reference hierarchy: Reactome hasEvent, GO is_a/part_of, BellLabs hallmark mapping; one Assertion per authority record and release, recorded time only); questions: Q-D2-02, Q-D2-12."""
+  partOf: [Mechanism!]!
+    @relationship(type: "PART_OF_MECHANISM", direction: OUT, properties: "MechanismReferenceProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (D1 small-molecule participants: NAD+, NAAD, NMN in Reactome participant lists; stored (ChemicalSubstance)-[:PARTICIPATES_IN]->(Mechanism); one Assertion per authority record and release); questions: Q-D2-11, Q-D2-03."""
+  metaboliteParticipants: [ChemicalSubstance!]!
+    @relationship(type: "PARTICIPATES_IN", direction: IN, properties: "MechanismReferenceProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: derived; cardinality: many (projection d2.affects-mechanism/v1 over mechanism Assertions and their contexts, molecular-target and metabolite objects rolled up through PARTICIPATES_IN; stored (ChemicalSubstance|Intervention)-[:AFFECTS_MECHANISM]->(Mechanism); regenerable; unscored facet shortcut, score null, R-47); questions: CQ-MX-05, Q-D2-02, Q-D2-03, Q-D2-06, Q-D2-26."""
+  affectedBy: [MechanismModulator!]!
+    @relationship(type: "AFFECTS_MECHANISM", direction: IN, properties: "MechanismProjectionProperties", nestedOperations: [], aggregate: false)
+    @settable(onCreate: false, onUpdate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

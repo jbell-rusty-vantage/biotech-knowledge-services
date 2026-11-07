@@ -1,0 +1,93 @@
+"""
+Purpose: the in-graph skeleton of a published artifact (PLAN 6.1): evidence report (the outcome of an evidence
+mission, with the verification.v1 verdict on the claim it tried to disqualify), published answer (absorbs
+AnswerRecord), comparison report, profile, recommendation. The body lives in the store (`bodyUri`, `bodyDigest`);
+the graph holds the minimum citation set: every Assertion and Assessment the content rests on (DERIVED_FROM),
+every SourceLocator it quotes (HAS_EVIDENCE), what it is about (ASSESSES), and the composing Activity, which names
+the PolicyVersion and the sealed bundle. Insert-only; a revision is a new Report naming `supersedesUid`. Minimum
+citation set to publish: bodyDigest; ASSESSES → what it is about (the Claim for an evidence report); DERIVED_FROM →
+every Assertion and Assessment a report sentence rests on (the sealed ledger's citations resolve to these); HAS_EVIDENCE
+→ every SourceLocator it quotes; WAS_GENERATED_BY → the composing Activity (EVIDENCE_MISSION, ANSWER, or PROJECTION
+for a PROFILE) carrying policyVersion and bundleDigest; citationCompleteness recorded. ASSESSES is required for an
+EVIDENCE_REPORT (its Claim) and a COMPARISON (the compared entities); a PROFILE about the graph itself (D11
+identifier coverage) has none. Report sentences stay in the ledger (ledgerDigest).
+Identity rule: (reportKind, bodyDigest). uid token: `report`. Questions: Q-K-04, Q-K-06, Q-K-08, Q-K-11, Q-K-17,
+Q-K-20, Q-K-21, Q-K-23, Q-K-25, Q-K-26.
+"""
+type Report implements Entity
+  @node(labels: ["Report", "InformationArtifact"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  "Title."
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  reportKind: ReportKind!
+  "D10 skeleton name and version (e.g. d10.compound-profile@1, d10.frontier-brief@1); refines reportKind without new enum values."
+  skeletonKey: String
+  status: AssessmentStatus!
+  "EVIDENCE_REPORT: the verification.v1 lattice verdict on the Claim it ASSESSES (the exact proposition: that Claim's propositionHash), after the mission tried to disqualify it."
+  verdict: SemanticVerdict
+  "EVIDENCE_REPORT: verification.v1 world-correctness of the judged Claim (orthogonal to verdict; no aggregate erases either)."
+  worldCorrectness: PropertyStatus
+  policyOutcome: PolicyOutcome
+  "PolicyVersion id the publication was admitted under (node in D10 if promoted)."
+  policyVersion: String!
+  "sha256:<hex> of the registered report bytes (verification-report-ledger.v1 reportArtifact)."
+  bodyDigest: String!
+  bodyUri: String
+  "sha256:<hex> of the verification report ledger and of the sealed audit bundle."
+  ledgerDigest: String
+  bundleDigest: String
+  "verification.v1 report-wide metrics: claimWeightedCitationCompleteness, citationCorrectness (nullable in v1)."
+  citationCompleteness: Float
+  citationCorrectness: Float
+  "verification.v1 reportWide independentSourceFamilyCount / distinctSourceFamilyCount (independence of the cited evidence). Source family = the evidence's OCCURS_IN work, else its Source's RENDITION_OF work (D9 MediaWork or D3 Publication), else the Source (R-43)."
+  independentSourceFamilyCount: Int
+  distinctSourceFamilyCount: Int
+  "Count of verification.v1 reportWide.unsupportedHighSeverityAssertionIds (a publication gate input)."
+  unsupportedHighSeverityCount: Int
+  "ANSWER: digest of the read intent (query shape) that produced it, for replay."
+  queryDigest: String
+  "Immutable reference to the Knowledge Services report revision (ReportRevision) this Report materializes (R-SV10)."
+  reportRevisionRef: String
+  "Report contract of that revision, e.g. research-report.v2 (R-SV10)."
+  reportSchema: String
+  "Versioned report-kind reference of the revision (R-SV10); refines reportKind without new enum values."
+  reportKindRef: String
+  "sha256:<hex> of the structured report body the rendered body (bodyDigest) was compiled from (R-SV10)."
+  structuredBodyDigest: String
+  "Report revision this one supersedes (R-SV10); the graph-level revision link stays supersedesUid."
+  supersedesReportRevisionRef: String
+  "Custody kind of bodyUri (e.g. supabase-knowledge-artifacts, content-addressed and immutable; OD-14) (R-SV10)."
+  custodyKind: String
+  publishedAt: DateTime
+  recordedAt: DateTime!
+  "Written once when a revision (a new Report naming supersedesUid) or a withdrawal replaces this one."
+  recordedTo: DateTime
+  supersedesUid: String
+  """class: structural; cardinality: zero_or_more (exactly one Claim for EVIDENCE_REPORT; one_or_more for COMPARISON; zero for a PROFILE about the graph); questions: Q-K-08, Q-K-11."""
+  about: [Subjectable!]!
+    @relationship(type: "ASSESSES", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: one_or_more (minimum citation set); questions: Q-K-06, Q-K-17."""
+  citesAssertions: [Assertion!]!
+    @relationship(type: "DERIVED_FROM", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: many; questions: Q-K-06, Q-K-17."""
+  citesAssessments: [Assessment!]!
+    @relationship(type: "DERIVED_FROM", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: many (every quoted span); questions: Q-K-17, Q-K-20."""
+  evidence: [SourceLocator!]!
+    @relationship(type: "HAS_EVIDENCE", direction: OUT, properties: "EvidenceEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: exactly_one (the composing Activity: EVIDENCE_MISSION, ANSWER, or PROJECTION for a PROFILE); questions: Q-K-04, Q-K-08."""
+  generatedBy: [Activity!]!
+    @relationship(type: "WAS_GENERATED_BY", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

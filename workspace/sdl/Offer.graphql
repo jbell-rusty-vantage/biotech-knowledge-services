@@ -1,0 +1,41 @@
+"""
+Purpose: one party's commercial proposition for one listing's item in one market and purchase mode — the subject of
+every price and availability Assertion (OFFER_PRICE_<KIND>, OFFER_AVAILABILITY), the holder of the seller-of-record role,
+and the thing a tracked affiliate link (D9) points at. A reference price with no seller behind it (an index, a tracker's
+aggregate over third-party sellers) is not an Offer: it is an Assertion on the Package/Variant/Product
+(MARKET_REFERENCE_PRICE) or on the MerchantListing (tracker aggregate, qualifier sellerClass=THIRD_PARTY_NEW).
+Identity rule: (listing uid, seller account id as displayed or 'host', purchaseMode, jurisdiction, condition).
+uid token: `offer` (hu:offer:<opaque>).
+Questions: CQ-CM-01, CQ-CM-02, CQ-CM-03, CQ-CM-05, CQ-AX-06, Q-D6-02, Q-D6-06, Q-D6-13, Q-D6-17, CQ-CM-04.
+"""
+type Offer implements Entity & Subjectable
+  @node(labels: ["Offer", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  purchaseMode: PurchaseMode!
+  "ISO 3166 market."
+  jurisdiction: String
+  "Seller account id as displayed (Amazon 'A1W0QC6JE0QLDF'); also attached as a kernel Identifier."
+  sellerAccountIdVerbatim: String
+  sellerNameAsDisplayed: String
+  fulfillmentKind: FulfillmentKind
+  fulfillerNameAsDisplayed: String
+  "Subscription terms as displayed (absorbs SubscriptionPlan); term changes over time are Assertions (OFFER_SUBSCRIPTION_TERMS)."
+  subscriptionTermsVerbatim: String
+  "Platform app administering the plan ('ordergroove-subscribe-and-save')."
+  subscriptionApp: String
+  "Observation cache (executor-maintained, read-only semantics) from the price/availability Assertions: CQ-AX-06, CQ-CM-05."
+  firstObservedAt: DateTime
+  lastObservedAt: DateTime
+  """class: asserted; cardinality: zero_or_one open episode; questions: CQ-CM-01, Q-D6-06, Q-D6-16, Q-D6-20."""
+  sellerOfRecord: [Organization!]!
+    @relationship(type: "SELLER_OF_RECORD", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

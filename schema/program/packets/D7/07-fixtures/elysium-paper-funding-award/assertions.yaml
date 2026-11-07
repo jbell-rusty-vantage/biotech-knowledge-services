@@ -1,0 +1,237 @@
+# assertions.yaml — fixture elysium-paper-funding-award (D7, fixtures stage, A6, 2026-10-08)
+#
+# Funding and competing interests in one paper (CQ-EC-04: funder money vs author employment vs author financial support
+# vs patent are four distinct tie kinds), plus an NIH RePORTER project record for Award → AWARDED_BY → funder and
+# AWARDED_TO → Organization and → Person. Kernel shape as in the sinclair fixture; locators in ./locators.yaml (JATS
+# offsets index the raw XML; RePORTER locators are JSON pointers with the raw text span). producedBy ids are
+# FIXTURE-SCOPED (not Mission Control ids). AWARDED_BY is an asserted, recorded-only edge (kernel AssertedRecordedProperties,
+# adversarial-review stage; it was structural): the funder is read from a span and can be contested, so each episode has
+# its authorizing Assertion; the Award's identity is its award number plus the issuer as printed (kernel Identifier
+# AWARD_NUMBER / NIH_PROJECT), never the funder Organization uid. The paper's preclinical study is a D3 Study (seam) that
+# points at the three awards through D3 HAS_STUDY_ROLE {roleKind FUNDING_AWARD} (e-12..e-14), the hop Q-D7-05 traverses.
+fixture: elysium-paper-funding-award
+producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-elysium-paper-funding-award" }
+
+entities:
+  - { uid: "hu:org:elysium-health-inc", type: Organization, name: "Elysium Health Inc.", entityKind: LEGAL_ENTITY, organizationKind: SUPPLEMENT_OR_CONSUMER_HEALTH, note: "affiliation aff3 'Elysium Health Inc., New York, NYC 10004, USA'; shared with fixture sinclair-self-disclosure-unstructured" }
+  - { uid: "hu:org:generalitat-valenciana", type: Organization, name: "Generalitat Valenciana", entityKind: PUBLIC_BODY, organizationKind: GOVERNMENT_OR_REGULATOR, jurisdiction: "ES-VC" }
+  - { uid: "hu:org:university-of-valencia", type: Organization, name: "University of Valencia", entityKind: LEGAL_ENTITY, organizationKind: ACADEMIC_OR_RESEARCH_INSTITUTE, jurisdiction: "ES" }
+  - { uid: "hu:org:national-institute-on-aging", type: Organization, name: "National Institute on Aging", entityKind: PUBLIC_BODY, organizationKind: GOVERNMENT_OR_REGULATOR, jurisdiction: "US", note: "NIH institute (RePORTER agency_ic_admin code AG, abbreviation NIA)" }
+  - { uid: "hu:org:harvard-medical-school", type: Organization, name: "Harvard Medical School", entityKind: DIVISION_OR_UNIT, organizationKind: ACADEMIC_OR_RESEARCH_INSTITUTE, identifiers: [{ scheme: UEI, issuer: "US GSA SAM.gov", value: "JDLVAVGYJQ21", requested: true }], note: "RePORTER org_name 'HARVARD MEDICAL SCHOOL'; UEI is a requested identifier scheme (06-node-register)" }
+  - { uid: "hu:person:jose-m-estrela", type: Person, name: "Jose M. Estrela", publicActorBasis: [AUTHOR_OR_INVESTIGATOR], privacyClass: PUBLIC }
+  - { uid: "hu:person:ryan-w-dellinger", type: Person, name: "Ryan W. Dellinger", publicActorBasis: [AUTHOR_OR_INVESTIGATOR], privacyClass: PUBLIC }
+  - { uid: "hu:person:david-a-sinclair-nih-6484112", type: Person, name: "David A. Sinclair", publicActorBasis: [AUTHOR_OR_INVESTIGATOR], privacyClass: PUBLIC, identifiers: [{ scheme: NIH_PROFILE_ID, issuer: "NIH RePORTER", value: "6484112", requested: true }], note: "RePORTER contact PI 'DAVID A. SINCLAIR' (HMS). Written as its own Person candidate: linking it to hu:person:david-a-sinclair (fixture 1) is the RESOLUTION as-res-pi below (same name + the self-disclosure page is hosted by HMS), never a name merge" }
+  - { uid: "hu:award:elysium-otr2017-18255inves", type: Award, name: "OTR2017-18255INVES", instrument: GRANT, awardNumberVerbatim: "OTR2017-18255INVES", identifiers: [{ scheme: AWARD_NUMBER, issuer: "University of Valencia (Spain) and Elysium Health Inc. (USA) (as printed; which of the two issued the number is not stated)", value: "OTR2017-18255INVES", requested: true }], note: "the paper calls the support 'grants'; title, amount and period not stated" }
+  - { uid: "hu:award:elysium-otr2018-19337inves", type: Award, name: "OTR2018-19337INVES", instrument: GRANT, awardNumberVerbatim: "OTR2018-19337INVES", identifiers: [{ scheme: AWARD_NUMBER, issuer: "University of Valencia (Spain) and Elysium Health Inc. (USA) (as printed)", value: "OTR2018-19337INVES", requested: true }] }
+  - { uid: "hu:study:pmid-38241160-nr-pt-ibudilast-als-mice", type: Study, module: D3, seam: true, name: "Nicotinamide riboside, pterostilbene and ibudilast in ALS mice (preclinical study reported in PMID 38241160)", studyKind: PRECLINICAL_IN_VIVO, note: "D3 Study (identity rule for unregistered studies: first reporting publication + studyKind + design label); written here only as the seam endpoint of HAS_STUDY_ROLE FUNDING_AWARD" }
+  - { uid: "hu:award:gva-aico-2021-245", type: Award, name: "AICO/2021/245", instrument: GRANT, awardNumberVerbatim: "AICO/2021/245", identifiers: [{ scheme: AWARD_NUMBER, issuer: "Generalitat Valenciana (Spain) (as printed)", value: "AICO/2021/245", requested: true }] }
+  - { uid: "hu:award:nih-r01ag082737", type: Award, name: "Using cellular co-biosis and age programmable mice to derive a global interaction map of aging hallmarks", instrument: GRANT, awardNumberVerbatim: "R01AG082737", programName: "R01", startDate: "2023-09-15T00:00:00Z", endDate: "2028-05-31T00:00:00Z", datePrecision: DAY, amount: null, currency: "USD", identifiers: [{ scheme: NIH_PROJECT, issuer: NIH, value: "R01AG082737", requested: true }], note: "project period from RePORTER; Award.amount stays null because RePORTER gives per-fiscal-year amounts, not a total (FY2026 amount is literal Assertion e-11)" }
+
+assertions:
+  # ---- the paper's funding section: two funders, three award numbers (Award + AWARDED_BY, asserted recorded-only)
+  - id: e-01
+    predicate: AWARDED_BY
+    edgeClass: asserted   # kernel AssertedRecordedProperties (recorded-only); was structural before the adversarial review
+    assertionKind: RELATIONSHIP
+    asserter: { source: "PMC10903100 authors (funding statement)" }
+    subject: { uid: "hu:award:elysium-otr2017-18255inves", type: Award }
+    object: { uid: "hu:org:elysium-health-inc", type: Organization }
+    edge: { type: AWARDED_BY, properties: {} }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["the sentence names 'the University of Valencia (Spain) and Elysium Health Inc. (USA)' before the two OTR numbers; which of the two issued the numbers is not stated (an 'OTR' prefix is not interpreted). Funder = Elysium Health Inc. as the paying party is this fixture's reading; the University-of-Valencia reading is the alternative recorded here", "a contested funder is a second AWARDED_BY episode (its own Assertion) plus a RESOLUTION Assessment, never a second Award node: the Award's identity is the number and its issuer as printed, not the funder uid"]
+    evidence: [{ locator: loc-jats-funding, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-elysium-paper-funding-award" }
+  - id: e-02
+    predicate: AWARDED_BY
+    edgeClass: asserted   # kernel AssertedRecordedProperties (recorded-only); was structural before the adversarial review
+    assertionKind: RELATIONSHIP
+    asserter: { source: "PMC10903100 authors (funding statement)" }
+    subject: { uid: "hu:award:elysium-otr2018-19337inves", type: Award }
+    object: { uid: "hu:org:elysium-health-inc", type: Organization }
+    edge: { type: AWARDED_BY, properties: {} }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["same reading as e-01"]
+    evidence: [{ locator: loc-jats-funding, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-elysium-paper-funding-award" }
+  - id: e-03
+    predicate: AWARDED_BY
+    edgeClass: asserted   # kernel AssertedRecordedProperties (recorded-only); was structural before the adversarial review
+    assertionKind: RELATIONSHIP
+    asserter: { source: "PMC10903100 authors (funding statement)" }
+    subject: { uid: "hu:award:gva-aico-2021-245", type: Award }
+    object: { uid: "hu:org:generalitat-valenciana", type: Organization }
+    edge: { type: AWARDED_BY, properties: {} }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    polarity: POSITIVE
+    speechAct: STATES
+    evidence: [{ locator: loc-jats-funding, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-elysium-paper-funding-award" }
+  - id: e-04
+    predicate: AWARD_ACKNOWLEDGED_BY
+    predicateClass: seam   # D3 declares Study → Award (HAS_STUDY_ROLE roleKind FUNDING_AWARD, 10-seams.yaml); here an Assertion with the paper's Source as object
+    assertionKind: FIELD
+    asserter: { uid: "hu:person:jose-m-estrela", type: Person, note: "corresponding/declaring author stands in for the author group; the statement is the paper's" }
+    subject: { uid: "hu:award:elysium-otr2017-18255inves", type: Award }
+    object: { source: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC10903100/fullTextXML", identifiers: { PMID: "38241160", PMCID: "PMC10903100", DOI: "10.1016/j.neurot.2023.10.011" } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["the same span acknowledges OTR2018-19337INVES and AICO/2021/245 (same shape, not repeated)"]
+    evidence: [{ locator: loc-jats-funding, role: SUPPORTS, origin: DECLARED }, { locator: loc-jats-title, role: CONTEXT, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-elysium-paper-funding-award" }
+
+  # ---- declaration of competing interest: three more tie kinds, kept apart from the funding statement
+  - id: e-05
+    predicate: RECEIVES_VALUE_FROM
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:person:jose-m-estrela", type: Person }
+    subject: { uid: "hu:person:jose-m-estrela", type: Person }
+    object: { uid: "hu:org:elysium-health-inc", type: Organization }
+    edge: { type: RECEIVES_VALUE_FROM, properties: { valueKind: RESEARCH_FUNDING } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2023-12-19T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["'reports financial support was provided by' (declaration-tool wording); RESEARCH_FUNDING is this fixture's reading — the span does not say what the support paid for", "validObservedAt = journal publication date 2023-12-19 (JATS pub-date)"]
+    evidence: [{ locator: loc-jats-estrela-support, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-elysium-paper-funding-award" }
+  - id: e-06
+    predicate: HOLDS_ROLE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:person:ryan-w-dellinger", type: Person }
+    subject: { uid: "hu:person:ryan-w-dellinger", type: Person }
+    object: { uid: "hu:org:elysium-health-inc", type: Organization }
+    edge: { type: HOLDS_ROLE, properties: { roleKind: EMPLOYEE, roleTitleVerbatim: "employment" } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2023-12-19T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["the affiliation list also gives 'Elysium Health Inc., New York' (aff3): employer = affiliation here, which is not the case for the funder (CQ-EC-04)"]
+    evidence: [{ locator: loc-jats-dellinger-employment, role: SUPPORTS, origin: DECLARED }, { locator: loc-jats-aff-elysium, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-elysium-paper-funding-award" }
+  - id: e-07
+    predicate: INVENTOR_ON_PATENT_ASSIGNED_TO
+    predicateClass: predicateOnly   # 05 predicateOnly (D8 owns Patent)
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:person:jose-m-estrela", type: Person }
+    subject: { uid: "hu:person:jose-m-estrela", type: Person }
+    object: { uid: "hu:org:elysium-health-inc", type: Organization }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["patent number as printed: '#US2022/0160745A1'", "the span says 'issued'; the kind code A1 denotes a published application — grant status is a D8 check (disconfirmation hook), not asserted here"]
+    evidence: [{ locator: loc-jats-estrela-patent, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-elysium-paper-funding-award" }
+
+  # ---- NIH RePORTER: Award → funder, recipient institution, contact PI (AWARDED_TO → Organization and → Person)
+  - id: e-08
+    predicate: AWARDED_BY
+    edgeClass: asserted   # kernel AssertedRecordedProperties (recorded-only); was structural before the adversarial review
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:national-institute-on-aging", type: Organization, note: "NIH RePORTER publishes NIH's own award record" }
+    subject: { uid: "hu:award:nih-r01ag082737", type: Award }
+    object: { uid: "hu:org:national-institute-on-aging", type: Organization }
+    edge: { type: AWARDED_BY, properties: {} }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    polarity: POSITIVE
+    speechAct: STATES
+    evidence: [{ locator: loc-nih-ic, role: SUPPORTS, origin: DECLARED }, { locator: loc-nih-core, role: SUPPORTS, origin: DECLARED }, { locator: loc-nih-title, role: CONTEXT, origin: DECLARED }, { locator: loc-nih-start, role: CONTEXT, origin: DECLARED }, { locator: loc-nih-end, role: CONTEXT, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-elysium-paper-funding-award" }
+  - id: e-09
+    predicate: AWARDED_TO
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:national-institute-on-aging", type: Organization }
+    subject: { uid: "hu:award:nih-r01ag082737", type: Award }
+    object: { uid: "hu:org:harvard-medical-school", type: Organization }
+    edge: { type: AWARDED_TO, properties: {} }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["recorded-only: the award period is the Award's own clock (2023-09-15 to 2028-05-31)", "record = fiscal-year 2026 row 5R01AG082737-04"]
+    evidence: [{ locator: loc-nih-org, role: SUPPORTS, origin: DECLARED }, { locator: loc-nih-org-uei, role: SUPPORTS, origin: DECLARED }, { locator: loc-nih-project-num, role: CONTEXT, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-elysium-paper-funding-award" }
+  - id: e-10
+    predicate: AWARDED_TO
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:national-institute-on-aging", type: Organization }
+    subject: { uid: "hu:award:nih-r01ag082737", type: Award }
+    object: { uid: "hu:person:david-a-sinclair-nih-6484112", type: Person }
+    edge: { type: AWARDED_TO, properties: {} }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["contact principal investigator (is_contact_pi true in the record); PI vs co-PI is this qualifier, not an edge property"]
+    evidence: [{ locator: loc-nih-pi, role: SUPPORTS, origin: DECLARED }, { locator: loc-nih-pi-profile, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-elysium-paper-funding-award" }
+  - id: e-11
+    predicate: AWARD_AMOUNT_FISCAL_YEAR
+    predicateClass: predicateOnly
+    assertionKind: METRIC
+    asserter: { uid: "hu:org:national-institute-on-aging", type: Organization }
+    subject: { uid: "hu:award:nih-r01ag082737", type: Award }
+    object: { literal: { valueNumber: 435509, unitCode: "[USD]" } }
+    validTime: { validFrom: "2026-06-01T00:00:00Z", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: "2027-05-31T00:00:00Z", validToPrecision: DAY, validToBasis: STATED_BY_SOURCE }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["fiscal year 2026, budget period 2026-06-01 to 2027-05-31 as printed in the same record", "not the award total"]
+    evidence: [{ locator: loc-nih-amount-fy2026, role: SUPPORTS, origin: DECLARED }, { locator: loc-nih-budget-start, role: SUPPORTS, origin: DECLARED }, { locator: loc-nih-budget-end, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-elysium-paper-funding-award" }
+
+  # ---- the paper's study -> its awards (D3 seam: Study.roles, HAS_STUDY_ROLE {roleKind FUNDING_AWARD}, union StudyParty)
+  - id: e-12
+    predicate: HAS_STUDY_ROLE
+    predicateClass: seam   # D3 declares Study.roles -> StudyParty (Organization | Person | Award); StudyRoleEdgeProperties.roleKind FUNDING_AWARD
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:person:jose-m-estrela", type: Person, note: "declaring author stands in for the author group (as e-04)" }
+    subject: { uid: "hu:study:pmid-38241160-nr-pt-ibudilast-als-mice", type: Study, module: D3 }
+    object: { uid: "hu:award:elysium-otr2017-18255inves", type: Award }
+    edge: { type: HAS_STUDY_ROLE, module: D3, properties: { roleKind: FUNDING_AWARD } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["roleText:'This research was supported by grants from ...' (OTR2017-18255INVES)"]
+    evidence: [{ locator: loc-jats-funding, role: SUPPORTS, origin: DECLARED }, { locator: loc-jats-title, role: CONTEXT, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-elysium-paper-funding-award" }
+  - id: e-13
+    predicate: HAS_STUDY_ROLE
+    predicateClass: seam   # D3 declares Study.roles -> StudyParty (Organization | Person | Award); StudyRoleEdgeProperties.roleKind FUNDING_AWARD
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:person:jose-m-estrela", type: Person, note: "declaring author stands in for the author group (as e-04)" }
+    subject: { uid: "hu:study:pmid-38241160-nr-pt-ibudilast-als-mice", type: Study, module: D3 }
+    object: { uid: "hu:award:elysium-otr2018-19337inves", type: Award }
+    edge: { type: HAS_STUDY_ROLE, module: D3, properties: { roleKind: FUNDING_AWARD } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["roleText:'This research was supported by grants from ...' (OTR2018-19337INVES)"]
+    evidence: [{ locator: loc-jats-funding, role: SUPPORTS, origin: DECLARED }, { locator: loc-jats-title, role: CONTEXT, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-elysium-paper-funding-award" }
+  - id: e-14
+    predicate: HAS_STUDY_ROLE
+    predicateClass: seam   # D3 declares Study.roles -> StudyParty (Organization | Person | Award); StudyRoleEdgeProperties.roleKind FUNDING_AWARD
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:person:jose-m-estrela", type: Person, note: "declaring author stands in for the author group (as e-04)" }
+    subject: { uid: "hu:study:pmid-38241160-nr-pt-ibudilast-als-mice", type: Study, module: D3 }
+    object: { uid: "hu:award:gva-aico-2021-245", type: Award }
+    edge: { type: HAS_STUDY_ROLE, module: D3, properties: { roleKind: FUNDING_AWARD } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["roleText:'This research was supported by grants from ...' (AICO/2021/245)"]
+    evidence: [{ locator: loc-jats-funding, role: SUPPORTS, origin: DECLARED }, { locator: loc-jats-title, role: CONTEXT, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-elysium-paper-funding-award" }
+
+assessments:
+  - id: as-res-pi
+    assessmentKind: RESOLUTION
+    assessmentSubkind: "D7.person-resolution"
+    status: PROPOSED
+    methodVersion: "fixture-expected/1"
+    about: [{ uid: "hu:person:david-a-sinclair-nih-6484112", type: Person }, { uid: "hu:person:david-a-sinclair", type: Person }]
+    hypothesis: "The RePORTER contact PI 'DAVID A. SINCLAIR' (Harvard Medical School, profile 6484112) is the Person of the HMS-hosted affiliations page (fixture sinclair-self-disclosure-unstructured)."
+    basis: ["same full name with middle initial", "institution Harvard Medical School; the self-disclosure page is on sinclair.hms.harvard.edu"]
+    score: null
+    evidence: [{ locator: loc-nih-pi, role: SUPPORTS }, { locator: loc-nih-org, role: SUPPORTS }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-elysium-paper-funding-award" }

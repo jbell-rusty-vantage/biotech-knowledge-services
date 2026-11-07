@@ -1,0 +1,11 @@
+{
+  "format": "bks-skill-example.v1",
+  "id": "wrong-pin",
+  "kind": "negative",
+  "task": "An intent or a cached slice cites a schemaReleaseDigest that is not the mounted workspace's.",
+  "lesson": "Stop: a different digest is a different schema. Commands refuse with BKS_RELEASE_MISMATCH (exit 3); re-read the manifest and rebuild the context against the bound release.",
+  "steps": [
+    { "argv": ["manifest", "--expect-release", "sha256:0000000000000000000000000000000000000000000000000000000000000000"], "expect": { "exit": 3 } },
+    { "argv": ["doctor", "--json", "--expect-release", "sha256:0000000000000000000000000000000000000000000000000000000000000000"], "expect": { "exit": 3, "json": [{ "path": "ok", "equals": false }, { "path": "checks.*.id", "includes": "expected-release" }] } }
+  ]
+}

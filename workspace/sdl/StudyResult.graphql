@@ -1,0 +1,76 @@
+"""
+Purpose: one reported number set for one outcome definition, one arm set, one analysis set, as one source states it
+(registry results module row, paper table cell, abstract sentence, pooled review estimate). Two sources reporting the
+same estimate are two nodes (registry 'Full Range' vs paper interquartile range for one median; n analyzed 28 vs 30), so
+disagreement is visible and nothing is overwritten. Absorbs pinned AdverseEventResult (resultKind ADVERSE_EVENT_COUNT,
+seriousness, participants affected / at risk, collection method). The STATED_IN Assertion's locators trace every number
+(Q-D3-13). Filter properties per 02-questions.md: analysisKind, comparisonKind, statisticalConclusion, direction,
+resultKind, sampleSize, analysisPopulation, dispersionKind (new), subgroupLabel (new), seriousness, collectionMethod,
+participantsAffected;
+range comparisons on estimate / intervalLower / intervalUpper only for pooled results (Q-D3-11) and thresholds (CQ-ST-10).
+Identity rule: (outcome definition, arm set, analysisPopulation, subgroupLabel, timepoint, resultKind, sourceFamily,
+payloadHash); sourceFamily as for StudyArm, so a later registry version restating identical numbers adds a STATED_IN
+episode instead of a node.
+uid token: `study-result`.
+Questions: CQ-ST-05, CQ-ST-06, CQ-EV-03, Q-D3-01, Q-D3-04, Q-D3-05, Q-D3-06, Q-D3-11, Q-D3-13, Q-D3-15, CQ-ST-10.
+"""
+type StudyResult implements Entity & Subjectable
+  @node(labels: ["StudyResult", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  resultKind: StudyResultKind!
+  analysisKind: AnalysisKind!
+  comparisonKind: ComparisonKind!
+  statisticalConclusion: StatisticalConclusion!
+  "Direction of the point estimate (EstimateDirection: neutral, never benefit / harm)."
+  direction: EstimateDirection
+  analysisPopulation: AnalysisSetKind
+  sampleSize: Int
+  estimate: Float
+  estimateQualifier: EstimateQualifier @filterable(byValue: false) @sortable(byValue: false)
+  "UCUM unit of estimate and interval."
+  unitCode: String
+  dispersionKind: DispersionKind
+  "SD or SE value when dispersionKind is STANDARD_DEVIATION or STANDARD_ERROR."
+  dispersionValue: Float @filterable(byValue: false) @sortable(byValue: false)
+  "Bounds of a CI, IQR or full range (pinned ciLower / ciUpper)."
+  intervalLower: Float
+  intervalUpper: Float
+  "Confidence level of a CI (0.95)."
+  ciLevel: Float @filterable(byValue: false) @sortable(byValue: false)
+  pValue: Float @filterable(byValue: false) @sortable(byValue: false)
+  "p as printed ('<0.001', '0.611')."
+  pValueText: String @filterable(byValue: false) @sortable(byValue: false)
+  multiplicityAdjusted: Boolean @filterable(byValue: false) @sortable(byValue: false)
+  "Subgroup the result is restricted to, as stated ('female', 'site: UM', 'highest p16 tertile'); null = the whole analysis population (replaces pinned HAS_ANALYZED_COHORT for sex-, site- and enrichment-limited results)."
+  subgroupLabel: String
+  "armKey of the reference arm of a BETWEEN_ARM comparison."
+  comparatorArmKey: String @filterable(byValue: false) @sortable(byValue: false)
+  timepointText: String @filterable(byValue: false) @sortable(byValue: false)
+  "Verbatim result sentence or cell text."
+  resultText: String @filterable(byValue: false) @sortable(byValue: false)
+  seriousness: AeSeriousness
+  participantsAffected: Int
+  participantsAtRisk: Int @filterable(byValue: false) @sortable(byValue: false)
+  eventCount: Int @filterable(byValue: false) @sortable(byValue: false)
+  collectionMethod: AeCollectionMethod
+  """class: structural; cardinality: exactly_one; nestedOperations [CONNECT] by design: binds an OutcomeDefinition that HAS_OUTCOME already created (deviation from rule 3 recorded in 09-reasoning.md); questions: CQ-ST-05, Q-D3-04, Q-D3-05, CQ-ST-06."""
+  outcome: [OutcomeDefinition!]!
+    @relationship(type: "RESULT_FOR", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: one_or_more (one arm for descriptive and within-arm results, two or more for comparisons; the reference arm is comparatorArmKey); nestedOperations [CONNECT] by design: binds arms HAS_ARM already created; questions: CQ-ST-06, Q-D3-01, Q-D3-04."""
+  arms: [StudyArm!]!
+    @relationship(type: "RESULT_FOR_ARM", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: one_or_more (each record of the result's source family that states these numbers, usually one; its Assertion cites one locator per number); questions: Q-D3-13, Q-D3-15, CQ-ST-06."""
+  statedIn: [StatingRecord!]!
+    @relationship(type: "STATED_IN", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

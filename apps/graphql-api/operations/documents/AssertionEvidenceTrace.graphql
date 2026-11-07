@@ -1,0 +1,60 @@
+# Paginated evidence trace: assertion -> HAS_EVIDENCE -> SourceLocator -> SourceSnapshot -> Source.
+query AssertionEvidenceTrace($uid: String!, $first: Int = 10, $after: String) {
+  assertions(where: { uid: { eq: $uid } }, limit: 1) {
+    uid
+    predicate
+    assertionKind
+    claimType
+    status
+    polarity
+    speechAct
+    basisKind
+    proposition
+    qualifiers
+    valueString
+    valueNumber
+    valueBoolean
+    unitCode
+    validFrom
+    validTo
+    recordedAt
+    recordedTo
+    subject(limit: 1) {
+      ...SubjectRef
+    }
+    object(limit: 1) {
+      ...SubjectRef
+    }
+    assertedBy(limit: 1) {
+      ...SubjectRef
+    }
+    evidenceConnection(first: $first, after: $after, sort: [{ node: { uid: ASC } }]) {
+      totalCount
+      pageInfo {
+        ...PageInfoFields
+      }
+      edges {
+        cursor
+        properties {
+          role
+          origin
+          expectedSelectedContentDigest
+          authority
+          independence
+          facet
+        }
+        node {
+          ...EvidenceLocator
+        }
+      }
+    }
+    adjudications(limit: 5, sort: [{ recordedAt: DESC }]) {
+      uid
+      adjudicationKind
+      verdict
+      mechanicalStatus
+      policyOutcome
+      recordedAt
+    }
+  }
+}

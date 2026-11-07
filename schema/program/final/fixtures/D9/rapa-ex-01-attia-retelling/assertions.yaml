@@ -1,0 +1,165 @@
+# rapa-ex-01-attia-retelling — assertions (fixtures stage, A8, 2026-10-08)
+# Close-out 2026-10-09 (FU-03, structural only; sources, locators and quoted values unchanged): R-43 RENDITION_OF asserted by the BellLabs curation agent; R-30 roleTitleVerbatim -> roleText: qualifier; R-15 retelling occurrences asserted by the three-byline MediaWork w-art, author competing-interest rows by the named Person.
+# Disconfirmation case: a negative trial (RAPA-EX-01; PMID 41985884, PMCID PMC13082878, DOI 10.1002/jcsm.70274,
+# registration ACTRN12624000790549) and a prominent retelling that accepts the numbers but contests the implication.
+# The trial reports the grip-strength difference twice: -1.13 kg in the abstract (j1) and -1.19 kg in the results
+# (j2), both with 95% CI -3.52 to 1.18 and p = 0.344. The retelling's -1.19 matches the results span, so fidelity is
+# assessed against a located span, never against "the paper". Locator refs are ids in ./locators.yaml.
+# producedBy ids are FIXTURE ids, not Mission Control ids.
+producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-rapa-ex-01-attia-retelling" }
+
+nodes:
+  - { ref: ch-attia, type: D9.Channel, name: "Peter Attia MD (peterattiamd.com)", channelKind: BLOG_OR_SITE, platform: WEB, homeUrl: "https://peterattiamd.com/" }
+  - { ref: w-art, type: D9.MediaWork, name: "Disappointing results from the first rapamycin-plus-exercise trial", workKind: ARTICLE, publishedAt: "2026-05-02", publishedAtPrecision: DAY, canonicalUrl: "https://peterattiamd.com/rapamycin-plus-exercise-trial", evidence: [a5] }
+  - { ref: src-art, type: K.Source, canonicalUri: "https://peterattiamd.com/rapamycin-plus-exercise-trial", sourceKind: WEB_PAGE, snapshot: "locators.yaml#attia" }
+  - { ref: src-jats, type: K.Source, canonicalUri: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13082878/fullTextXML", sourceKind: API, snapshot: "locators.yaml#jats" }
+  - { ref: pub-rapaex, type: D3.Publication, name: "Exercise and Weekly Sirolimus (Rapamycin) in Older Adults: RAPA-EX-01 Randomised, Double-Blind, Placebo-Controlled Trial", identifiers: [{ scheme: PMID, value: "41985884" }, { scheme: PMCID, value: "PMC13082878" }, { scheme: DOI, value: "10.1002/jcsm.70274" }], identifierSource: "PubMed MCP get_article_metadata, 2026-10-08" }
+  - { ref: res-grip, type: D3.StudyResult, name: "RAPA-EX-01 grip strength, adjusted mean difference sirolimus - placebo, week 13" }
+  - { ref: res-hba1c, type: D3.StudyResult, name: "RAPA-EX-01 HbA1c change, sirolimus vs placebo" }
+  - { ref: cs-rapamycin, type: D1.ChemicalSubstance, name: "sirolimus (rapamycin)" }
+  - { ref: p-attia, type: D7.Person, name: "Peter Attia" }
+  - { ref: p-yeater, type: D7.Person, name: "Taylor Yeater" }
+  - { ref: p-rae, type: D7.Person, name: "Michael Rae" }
+  - { ref: p-kaeberlein, type: D7.Person, name: "Matt Kaeberlein" }
+  - { ref: p-stanfield, type: D7.Person, name: "Brad Stanfield" }
+  - { ref: org-optispan, type: D7.Organization, name: "Optispan Inc." }
+  - { ref: org-microvitamin, type: D7.Organization, name: "MicroVitamin" }
+
+assertions:
+  # ---------------- structural ----------------
+  - { id: s-pub, class: structural, relationship: PUBLISHES, from: ch-attia, to: w-art, evidence: [a5], producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-rapa-ex-01-attia-retelling" } }
+  - { id: s-ren, class: asserted, relationship: RENDITION_OF, asserter: "K.Agent bks-curation (BellLabs curation agent)", subject: src-art, object: w-art, speechAct: STATES, basisKind: CURATOR_CLASSIFICATION, edgePropertiesType: AssertedRecordedProperties, qualifiers: ["renditionBasis:the article page is the only rendition of the work minted from this capture"], validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN, note: "recorded-time only (AssertedRecordedProperties, R-43); regrouping is a supersession (R-26)" }, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-rapa-ex-01-attia-retelling" } }
+  - { id: s-occ, class: structural, relationship: OCCURS_IN, from: [ret-conclusion, ret-grip, ret-safety, ret-stance], to: w-art, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-rapa-ex-01-attia-retelling" } }
+
+  # ---------------- APPEARS_IN (byline: three authors) ----------------
+  - { id: a-app-attia, class: asserted, relationship: APPEARS_IN, asserter: "D9 Channel ch-attia (site byline)", subject: p-attia, object: w-art, edgeProperties: { appearanceRole: AUTHOR }, qualifiers: ["credited-name:Peter Attia"], evidence: [{ locator: a6, role: SUPPORTS }], validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-rapa-ex-01-attia-retelling" } }
+  - { id: a-app-yeater, class: asserted, relationship: APPEARS_IN, asserter: "D9 Channel ch-attia (site byline)", subject: p-yeater, object: w-art, edgeProperties: { appearanceRole: AUTHOR }, qualifiers: ["credited-name:Taylor Yeater"], evidence: [{ locator: a6, role: SUPPORTS }], validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-rapa-ex-01-attia-retelling" } }
+  - { id: a-app-rae, class: asserted, relationship: APPEARS_IN, asserter: "D9 Channel ch-attia (site byline)", subject: p-rae, object: w-art, edgeProperties: { appearanceRole: AUTHOR }, qualifiers: ["credited-name:Michael Rae"], evidence: [{ locator: a6, role: SUPPORTS }], validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-rapa-ex-01-attia-retelling" } }
+
+  # ---------------- the original's located spans (kernel Assertions written by D3 extraction; METRIC kind) ----------------
+  - id: orig-abs
+    class: assertion
+    assertionKind: METRIC
+    asserter: pub-rapaex
+    predicate: ADJUSTED_MEAN_DIFFERENCE
+    subject: res-grip
+    valueNumber: -1.13
+    unitCode: kg
+    qualifiers: ["ci95:-3.52..1.18", "p:0.344", "section:ABSTRACT", "comparison:sirolimus-minus-placebo"]
+    evidence: [{ locator: j1, role: SUPPORTS }]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-rapa-ex-01-attia-retelling" }
+  - id: orig-res
+    class: assertion
+    assertionKind: METRIC
+    asserter: pub-rapaex
+    predicate: ADJUSTED_MEAN_DIFFERENCE
+    subject: res-grip
+    valueNumber: -1.19
+    unitCode: kg
+    qualifiers: ["ci95:-3.52..1.18", "p:0.344", "section:RESULTS", "comparison:sirolimus-minus-placebo"]
+    evidence: [{ locator: j2, role: SUPPORTS }]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    note: "orig-abs and orig-res disagree inside one source (same CI and p); D3 records both, a QUALITY assessment flags the inconsistency"
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-rapa-ex-01-attia-retelling" }
+  - { id: orig-hba1c, class: assertion, assertionKind: METRIC, asserter: pub-rapaex, predicate: CHANGE_DIFFERENCE, subject: res-hba1c, valueNumber: 1.74, unitCode: "mmol/mol", qualifiers: ["p:0.030", "section:RESULTS", "inAbstract:false"], evidence: [{ locator: j3, role: SUPPORTS }], validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-rapa-ex-01-attia-retelling" } }
+  - { id: orig-pneumonia, class: assertion, assertionKind: CLAIM, asserter: pub-rapaex, speechAct: STATES, predicate: SERIOUS_ADVERSE_EVENT_REPORTED, subject: cs-rapamycin, valueString: "pneumonia (one, possibly drug-related)", qualifiers: ["section:ABSTRACT"], evidence: [{ locator: j4, role: SUPPORTS }], validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-rapa-ex-01-attia-retelling" } }
+
+  # ---------------- the retelling's occurrences (kernel claim occurrences in w-art) ----------------
+  - id: ret-grip
+    class: claim-occurrence
+    asserter: w-art
+    asserterBasis: "R-15 (close-out 2026-10-09): a multi-author work is the asserter of what it states in its own voice; the article carries a three-author byline (a6: Peter Attia, Taylor Yeater, Michael Rae), so the asserter is the MediaWork w-art, never the first of several or the site owner. The authors stay reachable through the APPEARS_IN AUTHOR rows."
+    speechAct: STATES
+    basisKind: CITED_FROM_PRIOR_WORK
+    predicate: ADJUSTED_MEAN_DIFFERENCE
+    subject: res-grip
+    valueNumber: -1.19
+    unitCode: kg
+    qualifiers: ["p:0.344", "direction:favours placebo", "retellingLinkBasis:EXPLICIT_CITATION (reference 1, a7)"]
+    derivedFrom: [orig-res]       # NOT orig-abs: the retold number matches the results span
+    container: w-art
+    evidence: [{ locator: a2, role: SUPPORTS }, { locator: a7, role: CONTEXT }]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-rapa-ex-01-attia-retelling" }
+  - id: ret-safety
+    class: claim-occurrence
+    asserter: w-art                # R-15: the three-byline MediaWork, see ret-grip
+    speechAct: STATES
+    basisKind: CITED_FROM_PRIOR_WORK
+    predicate: SAFETY_FINDING_REPORTED
+    subject: cs-rapamycin
+    valueString: "statistically significant but very small increase in HbA1c; one case of pneumonia"
+    qualifiers: ["retellingLinkBasis:EXPLICIT_CITATION"]
+    derivedFrom: [orig-hba1c, orig-pneumonia]
+    container: w-art
+    evidence: [{ locator: a3, role: SUPPORTS }]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-rapa-ex-01-attia-retelling" }
+  - id: ret-conclusion
+    class: claim-occurrence
+    asserter: w-art                # R-15: the three-byline MediaWork, see ret-grip
+    speechAct: STATES
+    basisKind: CITED_FROM_PRIOR_WORK
+    predicate: REPORTS_CONCLUSION
+    subject: cs-rapamycin
+    valueString: "did not enhance functional gains from training; may have modestly blunted them"
+    qualifiers: ["stance:ACCEPTS"]
+    derivedFrom: [orig-abs]
+    container: w-art
+    evidence: [{ locator: a1, role: SUPPORTS }]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-rapa-ex-01-attia-retelling" }
+  - id: ret-stance
+    class: claim-occurrence
+    asserter: w-art                # R-15: the three-byline MediaWork, see ret-grip
+    speechAct: STATES
+    basisKind: EXPERT_OPINION
+    predicate: INTERPRETS_RESULT
+    subject: cs-rapamycin
+    valueString: "interesting but quite limited; not a death knell for rapamycin"
+    qualifiers: ["stance:QUALIFIES (accepts the numbers, contests the implication)"]
+    derivedFrom: [ret-conclusion]
+    container: w-art
+    evidence: [{ locator: a4, role: SUPPORTS }, { locator: a8, role: SUPPORTS }]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-rapa-ex-01-attia-retelling" }
+
+  # ---------------- RETELLING_FIDELITY assessment (kernel Assessment; interim shape K-1/K-3/K-4) ----------------
+  - id: rf-grip
+    class: assessment
+    assessmentKind: RETELLING_FIDELITY
+    status: PROPOSED
+    methodVersion: "fixture-manual/v0 (span-match numeric equality)"
+    about: "Claim of orig-res (interim: ASSESSES the Claim; K-3 requests ASSESSES -> Assertion)"
+    derivedFrom: [ret-grip, orig-res, orig-abs]
+    verdict: DIRECTLY_SUPPORTED
+    facets: ["retelling=ret-grip", "original=orig-res", "matchedSpan=j2 (RESULTS)", "amountChanged=false vs RESULTS", "amountChanged=true vs ABSTRACT (-1.19 vs -1.13)", "linkBasis=EXPLICIT_CITATION", "lostQualification=ci95 omitted (p kept)"]
+    evidence: [{ locator: a2, role: SUPPORTS }, { locator: j2, role: SUPPORTS }, { locator: j1, role: CONTEXT }]
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-rapa-ex-01-attia-retelling" }
+  - id: rf-safety
+    class: assessment
+    assessmentKind: RETELLING_FIDELITY
+    status: PROPOSED
+    methodVersion: "fixture-manual/v0"
+    about: "Claim of orig-hba1c"
+    derivedFrom: [ret-safety, orig-hba1c, orig-pneumonia]
+    verdict: SUPPORTED_WITH_QUALIFICATION
+    facets: ["safetyFindingAddedVsAbstract=HbA1c (results only, j3)", "safetyFindingKept=pneumonia (abstract, j4)", "amountChanged=dropped (+1.74 mmol/mol not retold)"]
+    evidence: [{ locator: a3, role: SUPPORTS }, { locator: j3, role: SUPPORTS }, { locator: j4, role: SUPPORTS }]
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-rapa-ex-01-attia-retelling" }
+
+  # ---------------- author interests stated in the paper (D7 episodes; Q-D9-13 researcher-influencer seam) ----------------
+  - { id: d7-mk-ceo, class: asserted, relationship: "D7 HOLDS_ROLE", asserter: p-kaeberlein, asserterBasis: "R-15: a competing-interest statement about one author stays asserted by the named Person (identity via res-initials)", subject: p-kaeberlein, object: org-optispan, edgeProperties: { roleKind: EXECUTIVE_OFFICER }, qualifiers: ["roleText:'Chief Executive Officer'"], evidence: [{ locator: j5, role: SUPPORTS }], validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN, note: "current at publication (April 2026)" }, resolution: res-initials, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-rapa-ex-01-attia-retelling" } }
+  - { id: d7-mk-equity, class: asserted, relationship: "D7 HOLDS_STAKE", asserter: p-kaeberlein, asserterBasis: "R-15: a competing-interest statement about one author stays asserted by the named Person (identity via res-initials)", subject: p-kaeberlein, object: org-optispan, edgeProperties: { stakeKind: EQUITY }, evidence: [{ locator: j5, role: SUPPORTS }], validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }, resolution: res-initials, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-rapa-ex-01-attia-retelling" } }
+  - { id: d7-bs-founder, class: asserted, relationship: "D7 HOLDS_ROLE", asserter: p-stanfield, asserterBasis: "R-15: a competing-interest statement about one author stays asserted by the named Person (identity via res-initials)", subject: p-stanfield, object: org-microvitamin, edgeProperties: { roleKind: FOUNDER }, evidence: [{ locator: j6, role: SUPPORTS }], validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }, resolution: res-initials, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-rapa-ex-01-attia-retelling" } }
+  - { id: d7-bs-adrevenue, class: asserted, relationship: "D7 RECEIVES_VALUE_FROM", asserter: p-stanfield, asserterBasis: "R-15: a competing-interest statement about one author stays asserted by the named Person (identity via res-initials)", subject: p-stanfield, object: "D9 Channel (his YouTube channel; not identified in the paper)", edgeProperties: { valueKind: UNSPECIFIED_PAYMENT, valueBucket: "advertising revenue from his YouTube channel" }, evidence: [{ locator: j6, role: SUPPORTS }], note: "target is a channel, not a D7 Organization: D7 seam open (11-open-questions)", producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-rapa-ex-01-attia-retelling" } }
+  - id: res-initials
+    class: assessment
+    assessmentKind: RESOLUTION
+    status: PROPOSED
+    methodVersion: "fixture-manual/v0 (unique initials within the author list)"
+    about: [p-kaeberlein, p-stanfield]
+    summary: "M.K. -> Matt Kaeberlein (only author with initials M.K.; PubMed affiliation 'Optispan Inc., Seattle'); B.S. -> Brad Stanfield (only author with initials B.S.). Author list from PubMed get_article_metadata and the article's reference 1 (a7)."
+    evidence: [{ locator: a7, role: CONTEXT }, { locator: j5, role: CONTEXT }, { locator: j6, role: CONTEXT }]
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-rapa-ex-01-attia-retelling" }

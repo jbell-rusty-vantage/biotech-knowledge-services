@@ -1,0 +1,369 @@
+# Assertions and derived records for fixture mg-rankings-criteria-comparison (D10, fixtures stage, A1, 2026-10-08).
+# Kind: other (comparison / ranking, directive 3.5). Two third-party rankings (Labdoor, U.S. News) captured as RANKS_OPTION
+# assertions by their producers; their method statements as USES_RANKING_CRITERION assertions about the rankers' own
+# DecisionCriterion records; label facts from NIH DSLD; form evidence from NIH ODS and Examine; and a BellLabs COMPARISON
+# report draft whose rows apply a fixture-illustrative criteria set bl:compare:mg-forms-for-sleep@1 (NOT a BellLabs policy).
+# Conventions: see the header of ../mg-bisglycinate-rct-unstructured/assertions.yaml.
+# Composed-body sentence counts exclude nothing here: SCOPE carries the framing sentences and counts them as uncited.
+
+fixture: mg-rankings-criteria-comparison
+producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" }   # fixture ids
+
+entities:
+  - { ref: e-mg, type: D1.ChemicalSubstance, uid: hu:chemical-substance:fx-magnesium, name: magnesium }
+  - { ref: e-form-oxide, type: D1.IngredientMaterial, uid: hu:ingredient-material:fx-magnesium-oxide, name: magnesium oxide }
+  - { ref: e-form-chloride, type: D1.IngredientMaterial, uid: hu:ingredient-material:fx-magnesium-chloride, name: magnesium chloride }
+  - { ref: e-target-sleep, type: D5.Target, uid: "hu:target:sleep", key: "target:sleep", name: sleep, note: "D5 shared vocabulary key; resolved, not minted by D10 (close-out FU-03)" }
+  - { ref: p-mag-ox, type: D6.Product, uid: hu:product:fx-mag-ox, name: "Mag-Ox (U.S. News sample product: Mag-Ox Magnesium Oxide)" }
+  - { ref: p-slow-mag, type: D6.Product, uid: hu:product:fx-slow-mag-tablets, name: "Slow-Mag Tablets (DSLD 173951); U.S. News sample product 'Slow-Mag Magnesium Muscle Support'", note: "same-product resolution between the U.S. News sample name and the DSLD label is a D6 RESOLUTION/EQUIVALENCE assessment not made here" }
+  - { ref: p-nature-made-250, type: D6.Product, uid: hu:product:fx-nature-made-magnesium-250, name: "Nature Made Magnesium 250 mg (DSLD 271329, UPC 0 31604 01269 4)" }
+  - { ref: p-natures-bounty-500, type: D6.Product, uid: hu:product:fx-natures-bounty-magnesium-500, name: "Nature's Bounty Magnesium 500 mg (DSLD 242510, UPC 0 74312 53086 9)" }
+  - { ref: p-legion, type: D6.Product, uid: hu:product:fx-legion-sucrosomial-magnesium, name: "Legion Sucrosomial Magnesium" }
+  - { ref: p-mighty-kids, type: D6.Product, uid: hu:product:fx-mighty-kids-liposomal-magnesium, name: "Mighty Kids Liposomal Magnesium (Age 1+)" }
+  - { ref: o-labdoor, type: D7.Organization, uid: hu:organization:fx-labdoor, name: Labdoor }
+  - { ref: o-usnews, type: D7.Organization, uid: hu:organization:fx-us-news, name: "U.S. News & World Report (survey run with The Harris Poll)" }
+  - { ref: o-ods, type: D7.Organization, uid: hu:organization:fx-nih-ods, name: "NIH Office of Dietary Supplements" }
+  - { ref: o-examine, type: D7.Organization, uid: hu:organization:fx-examine, name: Examine.com }
+  - { ref: o-purdue, type: D7.Organization, uid: hu:organization:fx-purdue-products, name: "Purdue Products L.P. (DSLD brandName for Slow-Mag)" }
+  - { ref: o-nature-made, type: D7.Organization, uid: hu:organization:fx-nature-made, name: "Nature Made (brand)" }
+  - { ref: o-natures-bounty, type: D7.Organization, uid: hu:organization:fx-natures-bounty, name: "Nature's Bounty (brand)" }
+  - { ref: o-belllabs, type: D7.Organization, uid: hu:organization:fx-belllabs, name: BellLabs }
+  - { ref: var-slowmag, type: D6.ProductVariant, uid: hu:product-variant:fx-slow-mag-tablets-tablet, name: "Slow-Mag Tablets, tablet", properties: { dosageForm: TABLET }, note: "serving unit Tablet(s) (loc-dsld-slowmag-serving)" }
+  - { ref: pkg-slowmag, type: D6.Package, uid: hu:package:fx-slow-mag-tablets-60-dsld-173951, name: "Slow-Mag Tablets, 60 Tablet(s) (DSLD 173951)", properties: { packageKind: CONTAINER, unitCount: 60, unitNoun: "Tablet(s)" }, note: "DSLD netContents of snap-dsld-173951: loc-dsld-slowmag-net-contents (close-out fix 2026-10-09; was read from the snapshot bytes with no locator)" }
+  - ref: lv-slowmag
+    type: D6.LabelVersion
+    uid: hu:label-version:fx-dsld-173951
+    name: "Slow-Mag Tablets - US Supplement Facts (DSLD 173951, 302598-0F)"
+    properties: { panelKind: "SUPPLEMENT_FACTS", labelVersionCode: "302598-0F", contentDigest: "sha256:ab3e2f3c074ec2cf12d0ba65308ebace5f2e75623236a2c1642832bee1a28dca", compositionDigest: "sha256:371ebc3f44032f2cd3845da9d97ea56f14c8f76b1c75cbd1e4bcf25c1d6ce59b", servingSizeValue: 2, servingSizeUnit: "Tablet(s)", servingsPerContainer: 30, minDailyServings: 1, maxDailyServings: 2, firstObservedAt: "2026-10-08T21:39:08Z", lastObservedAt: "2026-10-08T21:39:08Z" }
+    note: "close-out FU-03 (predicates.yaml DECLARES_INGREDIENT_FORM / LABEL_* fixtureEdit): the DSLD label read as a D6 LabelVersion. contentDigest = the snapshot sha256; compositionDigest = sha256 of the canonical transcribed line 'Magnesium||143|mg|PER_SERVING|NUTRIENT_EQUIVALENT' (only the magnesium line is transcribed); serving fields from loc-dsld-slowmag-serving; labelVersionCode (DSLD productVersionCode): loc-dsld-slowmag-version-code; servingsPerContainer: loc-dsld-slowmag-servings-per-container; entryDate: loc-dsld-slowmag-entry-date (close-out fix 2026-10-09; these were read from the snapshot bytes with no locator)"
+  - { ref: var-nm250, type: D6.ProductVariant, uid: hu:product-variant:fx-nature-made-magnesium-250-tablet, name: "Nature Made Magnesium 250 mg, tablet", properties: { dosageForm: TABLET }, note: "serving unit Tablet(s) (loc-dsld-nm250-serving)" }
+  - { ref: pkg-nm250, type: D6.Package, uid: hu:package:fx-nature-made-magnesium-250-100-dsld-271329, name: "Nature Made Magnesium 250 mg, 100 Tablet(s) (DSLD 271329, UPC 0 31604 01269 4)", properties: { packageKind: CONTAINER, unitCount: 100, unitNoun: "Tablet(s)" }, note: "DSLD netContents of snap-dsld-271329: loc-dsld-nm250-net-contents, loc-dsld-nm250-upc (close-out fix 2026-10-09; was read from the snapshot bytes with no locator)" }
+  - ref: lv-nm250
+    type: D6.LabelVersion
+    uid: hu:label-version:fx-dsld-271329
+    name: "Nature Made Magnesium 250 mg - US Supplement Facts (DSLD 271329)"
+    properties: { panelKind: "SUPPLEMENT_FACTS", labelVersionCode: "List No. 1269 L600 Cat. A806 5A004", contentDigest: "sha256:9b1e143d6be5a3290bd272cd8029e9fabc60f0d61e1e59975acebe8948ba382f", compositionDigest: "sha256:507f386c25890a8939ba718e3ed3267bdcc042e65fab4d5d03e6133a90116d69", servingSizeValue: 1, servingSizeUnit: "Tablet(s)", servingsPerContainer: 100, minDailyServings: 1, maxDailyServings: 1, firstObservedAt: "2026-10-08T21:39:08Z", lastObservedAt: "2026-10-08T21:39:08Z" }
+    note: "close-out FU-03 (predicates.yaml DECLARES_INGREDIENT_FORM / LABEL_* fixtureEdit): the DSLD label read as a D6 LabelVersion. contentDigest = the snapshot sha256; compositionDigest = sha256 of the canonical transcribed line 'Magnesium|Magnesium Oxide|250|mg|PER_SERVING|NUTRIENT_EQUIVALENT' (only the magnesium line is transcribed); serving fields from loc-dsld-nm250-serving; labelVersionCode (DSLD productVersionCode): loc-dsld-nm250-version-code; servingsPerContainer: loc-dsld-nm250-servings-per-container; entryDate: loc-dsld-nm250-entry-date (close-out fix 2026-10-09; these were read from the snapshot bytes with no locator)"
+  - { ref: var-nb500, type: D6.ProductVariant, uid: hu:product-variant:fx-natures-bounty-magnesium-500-tablet, name: "Nature's Bounty Magnesium 500 mg, coated tablet", properties: { dosageForm: TABLET }, note: "serving unit Tablet(s) (loc-dsld-nb500-serving)" }
+  - { ref: pkg-nb500, type: D6.Package, uid: hu:package:fx-natures-bounty-magnesium-500-200-dsld-242510, name: "Nature's Bounty Magnesium 500 mg, 200 Coated Tablet(s) (DSLD 242510, UPC 0 74312 53086 9)", properties: { packageKind: CONTAINER, unitCount: 200, unitNoun: "Coated Tablet(s)" }, note: "DSLD netContents of snap-dsld-242510: loc-dsld-nb500-net-contents, loc-dsld-nb500-upc (close-out fix 2026-10-09; was read from the snapshot bytes with no locator)" }
+  - ref: lv-nb500
+    type: D6.LabelVersion
+    uid: hu:label-version:fx-dsld-242510
+    name: "Nature's Bounty Magnesium 500 mg - US Supplement Facts (DSLD 242510)"
+    properties: { panelKind: "SUPPLEMENT_FACTS", labelVersionCode: "Prod. No. 53086 B76008 05D Label No. 10812", contentDigest: "sha256:561e4123cd58da3eb26f38e12a4dbc99ecf09a2c0376dddf71271c3171937e6f", compositionDigest: "sha256:5bb9253d123b739c0246e99d6f6e57563fe4f87c913d7c86d4b41f00b629fff6", servingSizeValue: 1, servingSizeUnit: "Tablet(s)", minDailyServings: 1, maxDailyServings: 1, firstObservedAt: "2026-10-08T21:39:08Z", lastObservedAt: "2026-10-08T21:39:08Z" }
+    note: "close-out FU-03 (predicates.yaml DECLARES_INGREDIENT_FORM / LABEL_* fixtureEdit): the DSLD label read as a D6 LabelVersion. contentDigest = the snapshot sha256; compositionDigest = sha256 of the canonical transcribed line 'Magnesium|Magnesium Oxide|500|mg|PER_SERVING|NUTRIENT_EQUIVALENT' (only the magnesium line is transcribed); serving fields from loc-dsld-nb500-serving; labelVersionCode (DSLD productVersionCode): loc-dsld-nb500-version-code; entryDate: loc-dsld-nb500-entry-date (close-out fix 2026-10-09; these were read from the snapshot bytes with no locator)"
+  - { ref: g-a1, type: K.Agent, uid: hu:agent:fx-d10-a1, name: "A1 fixtures-stage agent (computes CALCULATED assertions)" }
+
+crossFixture:
+  - { id: a-fda-350-condition, uid: hu:assertion:fx-d10-fda-350mg-condition, defined: "../fda-qhc-magnesium-disconfirmation/assertions.yaml#a-350-condition", locator: "../fda-qhc-magnesium-disconfirmation/locators.yaml#loc-350mg-condition" }
+
+decisionCriteria:   # D10.DecisionCriterion (identity: criterionKey + version); USES_CRITERION targets below
+  - id: crit-ld-label-accuracy-1
+    uid: hu:decision-criterion:fx-labdoor-label-accuracy-1
+    criterionKey: "labdoor:label-accuracy"
+    version: "1"
+    criteriaSetKey: "labdoor:score"
+    criteriaSetVersion: "unversioned (as published)"
+    criterionKind: SCORE
+    direction: HIGHER_IS_BETTER
+    weight: null                          # Labdoor publishes no weights on the captured page
+    definition: "Label Accuracy as scored before Labdoor began applying FDA rounding rules (before 2017); other details of this version were not captured"
+    publisherUid: hu:organization:fx-labdoor
+    validFrom: null
+    validTo: "2017-01-01"                 # YEAR precision: "In 2017, we began applying FDA rounding rules to scoring."
+    recordedAt: "2026-10-08T22:00:00Z"
+  - id: crit-ld-label-accuracy-2
+    uid: hu:decision-criterion:fx-labdoor-label-accuracy-2
+    criterionKey: "labdoor:label-accuracy"
+    version: "2"
+    criteriaSetKey: "labdoor:score"
+    criteriaSetVersion: "unversioned (as published)"
+    criterionKind: SCORE
+    direction: HIGHER_IS_BETTER
+    weight: null
+    definition: "Measured active-ingredient levels vs label claims; underage penalized twice as heavily as overage; FDA rounding rules applied (from 2017)"
+    publisherUid: hu:organization:fx-labdoor
+    validFrom: "2017-01-01"               # YEAR precision
+    validTo: null
+    supersedesUid: hu:decision-criterion:fx-labdoor-label-accuracy-1   # R-23 checked (close-out FU-03): same publisher/asserter (Labdoor) as version 1, so the link stands
+    recordedAt: "2026-10-08T22:00:00Z"
+  - id: crit-ld-projected-efficacy-1
+    uid: hu:decision-criterion:fx-labdoor-projected-efficacy-1
+    criterionKey: "labdoor:projected-efficacy"
+    version: "1"
+    criteriaSetKey: "labdoor:score"
+    criteriaSetVersion: "unversioned (as published)"
+    criterionKind: SCORE
+    direction: HIGHER_IS_BETTER
+    weight: null
+    definition: "Based on a product's active ingredients, their levels, and their specific biochemical properties (Labdoor)"
+    publisherUid: hu:organization:fx-labdoor
+    recordedAt: "2026-10-08T22:00:00Z"
+    note: "the captured method page also lists Product Purity, Nutritional Value and Ingredient Safety; not recorded as criteria in this fixture"
+  - id: crit-usn-survey
+    uid: hu:decision-criterion:fx-usnews-pharmacist-survey-2026-2027
+    criterionKey: "usnews:pharmacist-survey-recommendation"
+    version: "2026-2027"
+    criteriaSetKey: "usnews:otc-pharmacists-picks"
+    criteriaSetVersion: "2026-2027"
+    criterionKind: SCORE
+    direction: HIGHER_IS_BETTER
+    weight: 1.0                           # single criterion
+    definition: "Rank by a survey of 357 pharmacists for 'supporting nerve function and reducing physical tension' (U.S. News with The Harris Poll)"
+    targetKeys: []                        # the survey's goal is not a sleep target; no D5 key asserted
+    publisherUid: hu:organization:fx-us-news
+    validFrom: "2026-05-11"
+    recordedAt: "2026-10-08T22:00:00Z"
+  - id: crit-bl-absorption-1
+    uid: hu:decision-criterion:fx-bl-absorption-1
+    criterionKey: "bl:mg-sleep:form-absorption-evidence"
+    version: "1"
+    criteriaSetKey: "bl:compare:mg-forms-for-sleep"
+    criteriaSetVersion: "1"
+    criterionKind: SCORE
+    direction: HIGHER_IS_BETTER
+    weight: 1.0
+    evaluationOrder: 2
+    definition: "Absorption evidence for the declared magnesium form (FIXTURE-ILLUSTRATIVE, not a BellLabs policy)"
+    rule: "1 if the declared form has a HIGHER_BIOAVAILABILITY_THAN-oxide Assertion by a government or evidence-database source and no 'poor absorption' Assertion; 0 if a CHARACTERIZES_ABSORPTION 'extremely poor' Assertion exists; null otherwise"
+    inputPredicates: [DECLARES_COMPONENT, HIGHER_BIOAVAILABILITY_THAN, CHARACTERIZES_ABSORPTION]   # close-out FU-03: the declared form is the D6 DECLARES_COMPONENT line (was DECLARES_INGREDIENT_FORM)
+    targetKeys: ["target:sleep"]
+    publisherUid: hu:organization:fx-belllabs
+    recordedAt: "2026-10-08T22:00:00Z"
+  - id: crit-bl-ul-block-1
+    uid: hu:decision-criterion:fx-bl-ul-block-1
+    criterionKey: "bl:mg:block-above-supplemental-ul"
+    version: "1"
+    criteriaSetKey: "bl:compare:mg-forms-for-sleep"
+    criteriaSetVersion: "1"
+    criterionKind: BLOCK
+    direction: NOT_ORDERED
+    weight: null
+    evaluationOrder: 1
+    definition: "Block an option whose supplemental magnesium per maximum daily serving exceeds 350 mg (adult supplemental UL; FDA claim condition) (FIXTURE-ILLUSTRATIVE)"
+    rule: "BLOCKED if PER_MAX_DAILY_DOSE_AMOUNT (object magnesium) on the option's label version > 350 mg/d; NOT_EVALUATED if it is unknown"
+    inputPredicates: [PER_MAX_DAILY_DOSE_AMOUNT, HAS_UPPER_LIMIT, HAS_CLAIM_CONDITION]   # HAS_UPPER_LIMIT: D5 predicate (was UPPER_LIMIT_FOR_POPULATION); close-out FU-03: PER_MAX_DAILY_DOSE_AMOUNT (was MAX_DAILY_SUPPLEMENTAL_AMOUNT), HAS_CLAIM_CONDITION (was CONDITIONS_CLAIM_USE_ON_MAX_AMOUNT, R-93)
+    valueUnitCode: "mg/d"
+    targetKeys: ["target:sleep"]
+    publisherUid: hu:organization:fx-belllabs
+    recordedAt: "2026-10-08T22:00:00Z"
+
+assertions:
+  # ---- third-party ranking rows (RANKS_OPTION; asserter = the ranker) ----
+  - { id: a-usn-row1, uid: hu:assertion:fx-d10-usn-rank-1-mag-ox, assertionKind: FIELD, predicate: RANKS_OPTION, subject: { ref: p-mag-ox, type: D6.Product }, value: { valueNumber: 1, valueString: "#1, Score 100; sample product Mag-Ox Magnesium Oxide: Magnesium Oxide 482.6 mg providing 241.3 mg elemental Magnesium" }, asserter: { ref: o-usnews, type: D7.Organization }, locators: [loc-usn-row1, loc-usn-date], speechAct: STATES, qualifiers: ["list: Best Magnesium Supplements", "criterion: hu:decision-criterion:fx-usnews-pharmacist-survey-2026-2027"], validTime: { validFrom: "2026-05-11", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+  - { id: a-usn-row2, uid: hu:assertion:fx-d10-usn-rank-2-slow-mag, assertionKind: FIELD, predicate: RANKS_OPTION, subject: { ref: p-slow-mag, type: D6.Product }, value: { valueNumber: 2, valueString: "#2, Score 84; Slow-Mag Magnesium Muscle Support: Magnesium chloride (143 mg) and Calcium carbonate (238 mg)" }, asserter: { ref: o-usnews, type: D7.Organization }, locators: [loc-usn-row2, loc-usn-date], speechAct: STATES, validTime: { validFrom: "2026-05-11", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+  - { id: a-usn-row3, uid: hu:assertion:fx-d10-usn-rank-3-nature-made, assertionKind: FIELD, predicate: RANKS_OPTION, subject: { ref: p-nature-made-250, type: D6.Product }, value: { valueNumber: 3, valueString: "#3, Score 54; Nature Made Magnesium Oxide Tablets: Magnesium 250 mg" }, asserter: { ref: o-usnews, type: D7.Organization }, locators: [loc-usn-row3, loc-usn-date], speechAct: STATES, validTime: { validFrom: "2026-05-11", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+  - { id: a-usn-row4, uid: hu:assertion:fx-d10-usn-rank-4-natures-bounty, assertionKind: FIELD, predicate: RANKS_OPTION, subject: { ref: p-natures-bounty-500, type: D6.Product }, value: { valueNumber: 4, valueString: "#4, Score 19; Nature's Bounty Magnesium Tablets: Magnesium 500 mg" }, asserter: { ref: o-usnews, type: D7.Organization }, locators: [loc-usn-row4, loc-usn-row4-product, loc-usn-date], speechAct: STATES, validTime: { validFrom: "2026-05-11", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+  - { id: a-ld-row-legion, uid: hu:assertion:fx-d10-labdoor-pos-1-legion, assertionKind: FIELD, predicate: RANKS_OPTION, subject: { ref: p-legion, type: D6.Product }, value: { valueNumber: 1, valueString: "list position 1 under 'Sort by: RANKING'; grade A+; certification badge shown" }, asserter: { ref: o-labdoor, type: D7.Organization }, locators: [loc-ld-row-legion, loc-ld-heading], speechAct: STATES, validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, validTo: null, statedAsOf: "2026-10-08" }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+  - { id: a-ld-row-mighty-kids, uid: hu:assertion:fx-d10-labdoor-upcoming-mighty-kids, assertionKind: FIELD, predicate: RANKS_OPTION, subject: { ref: p-mighty-kids, type: D6.Product }, value: { valueString: "grade X, status Upcoming (listed without a score)" }, asserter: { ref: o-labdoor, type: D7.Organization }, locators: [loc-ld-row-mighty-kids-upcoming], speechAct: STATES, validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, validTo: null, statedAsOf: "2026-10-08" }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+
+  # close-out FU-03 re-keys in this block and the next: STATES_METHOD_MAY_CHANGE -> STATES_METHOD_CAVEAT (alias);
+  # DISCLOSES_AFFILIATE_COMMISSION -> DISCLOSES_INTEREST (alias, D9; subject the discloser, the commission text stays valueString).
+  # ---- rankers' method statements (USES_RANKING_CRITERION; subject = the ranker's DecisionCriterion record) ----
+  - { id: a-usn-method, uid: hu:assertion:fx-d10-usn-method-survey, assertionKind: FIELD, predicate: USES_RANKING_CRITERION, subject: { ref: crit-usn-survey, type: D10.DecisionCriterion }, value: { valueString: "We surveyed 357 pharmacists to rank the Best Magnesium Supplements" }, asserter: { ref: o-usnews, type: D7.Organization }, locators: [loc-usn-method], speechAct: STATES, validTime: { validFrom: "2026-05-11", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+  - { id: a-ld-label-accuracy-method, uid: hu:assertion:fx-d10-labdoor-method-label-accuracy, assertionKind: FIELD, predicate: USES_RANKING_CRITERION, subject: { ref: crit-ld-label-accuracy-2, type: D10.DecisionCriterion }, value: { valueString: "underage penalized twice as heavily as overage; FDA rounding rules since 2017" }, asserter: { ref: o-labdoor, type: D7.Organization }, locators: [loc-ld-underage-penalty, loc-ld-rounding-2017], speechAct: STATES, validTime: { validFrom: "2017-01-01", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: null }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+  - { id: a-ld-projected-efficacy-method, uid: hu:assertion:fx-d10-labdoor-method-projected-efficacy, assertionKind: FIELD, predicate: USES_RANKING_CRITERION, subject: { ref: crit-ld-projected-efficacy-1, type: D10.DecisionCriterion }, value: { valueString: "based on active ingredients, their levels, and their specific biochemical properties" }, asserter: { ref: o-labdoor, type: D7.Organization }, locators: [loc-ld-projected-efficacy], speechAct: STATES, validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, validTo: null, statedAsOf: "2026-10-08" }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+  - { id: a-ld-right-to-update, uid: hu:assertion:fx-d10-labdoor-may-change-method, assertionKind: CLAIM, claimType: METHODOLOGICAL, predicate: STATES_METHOD_CAVEAT, subject: { ref: o-labdoor, type: D7.Organization }, value: { valueString: "retains the right to update scoring algorithms, product data, and rankings at any time" }, asserter: { ref: o-labdoor, type: D7.Organization }, locators: [loc-ld-right-to-update], speechAct: STATES, validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, validTo: null, statedAsOf: "2026-10-08" }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+  - { id: a-usn-no-endorse, uid: hu:assertion:fx-d10-usn-disclaims-endorsement, assertionKind: CLAIM, claimType: OTHER, predicate: DISCLAIMS_ENDORSEMENT, subject: { ref: o-usnews, type: D7.Organization }, value: { valueString: "does not recommend or endorse any health products listed here" }, asserter: { ref: o-usnews, type: D7.Organization }, locators: [loc-usn-no-endorse], speechAct: DENIES, validTime: { validFrom: "2026-05-11", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+  - { id: a-usn-commission, uid: hu:assertion:fx-d10-usn-affiliate-commission, assertionKind: FIELD, predicate: DISCLOSES_INTEREST, subject: { ref: o-usnews, type: D7.Organization }, value: { valueString: "may earn a commission when readers buy through its links" }, asserter: { ref: o-usnews, type: D7.Organization }, locators: [loc-usn-commission], speechAct: STATES, qualifiers: ["interestKind: affiliate commission", "no object: the page names no counterparty Organization"], validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, validTo: null, statedAsOf: "2026-10-08" }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+
+  # ---- label facts (asserter = the label's brand owner; captured through NIH DSLD) ----
+  # close-out FU-03: each DSLD label read is a D6 LabelVersion (Package -HAS_LABEL_VERSION-> by NIH ODS, the DSLD curator);
+  # the declared form and amount are one typed DECLARES_COMPONENT line (ComponentLineProperties; was DECLARES_INGREDIENT_FORM +
+  # LABEL_DECLARED_AMOUNT, both retired: the a-dsld-*-mg assertions are merged into the a-dsld-*-form lines, their locators kept);
+  # the serving directions are LabelVersion fields with maxDailyServings under the FIELD predicate MAX_DAILY_SERVINGS (was
+  # LABEL_SERVING_DIRECTIONS); verbatim names move to qualifiers declaredName: / form: (R-30).
+  - { id: a-dsld-slowmag-label-version, uid: hu:assertion:fx-d10-dsld-173951-has-label-version, assertionKind: RELATIONSHIP, predicate: HAS_LABEL_VERSION, subject: { ref: pkg-slowmag, type: D6.Package }, object: { ref: lv-slowmag, type: D6.LabelVersion }, asserter: { ref: o-ods, type: D7.Organization }, locators: [loc-dsld-slowmag-serving, loc-dsld-slowmag-mg, loc-dsld-slowmag-version-code, loc-dsld-slowmag-servings-per-container, loc-dsld-slowmag-entry-date], basisKind: CURATOR_CLASSIFICATION, speechAct: STATES, qualifiers: ["validFrom = DSLD entryDate 2018-03-23 (publication proxy, loc-dsld-slowmag-entry-date); end not stated", "relayedBy:NIH ODS DSLD 173951"], validTime: { validFrom: "2018-03-23", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+  - { id: a-dsld-slowmag-form, uid: hu:assertion:fx-d10-dsld-173951-form-chloride, assertionKind: RELATIONSHIP, predicate: DECLARES_COMPONENT, subject: { ref: lv-slowmag, type: D6.LabelVersion }, object: { ref: e-form-chloride, type: D1.IngredientMaterial }, asserter: { ref: o-purdue, type: D7.Organization }, locators: [loc-dsld-slowmag-mg, loc-dsld-slowmag-chloride-claim, loc-usn-row2], basisKind: MANUFACTURER_CLAIM, speechAct: STATES, edgeProperties: { orderIndex: 1, lineRole: "DIETARY_INGREDIENT", amount: 143, unitCode: "mg", amountReferent: "AS_NUTRIENT", massBasis: "NUTRIENT_EQUIVALENT", amountBasis: "PER_SERVING", dailyValuePercent: 36 }, qualifiers: ["declaredName:Magnesium", "the DSLD Magnesium row declares no form; the chloride form is read from the label statement (loc-dsld-slowmag-chloride-claim)", "label statement: 'Magnesium chloride for increased absorption versus magnesium oxide' (a manufacturer claim; not used as absorption evidence)", "relayedBy:NIH ODS DSLD 173951"], validTime: { validFrom: "2018-03-23", validFromPrecision: DAY, validFromBasis: OBSERVATION_ONLY, validTo: null, note: "DSLD entryDate" }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+  - { id: a-dsld-slowmag-serving, uid: hu:assertion:fx-d10-dsld-173951-serving, assertionKind: FIELD, predicate: MAX_DAILY_SERVINGS, subject: { ref: lv-slowmag, type: D6.LabelVersion }, value: { valueNumber: 2, unitCode: "{serving}/d" }, asserter: { ref: o-purdue, type: D7.Organization }, locators: [loc-dsld-slowmag-serving], basisKind: MANUFACTURER_CLAIM, speechAct: STATES, qualifiers: ["serving 2 Tablet(s); 1 to 2 servings per day (DSLD servingSizes/0: minDailyServings 1, maxDailyServings 2)"], validTime: { validFrom: "2018-03-23", validFromPrecision: DAY, validFromBasis: OBSERVATION_ONLY, validTo: null }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+  - { id: a-dsld-nm250-label-version, uid: hu:assertion:fx-d10-dsld-271329-has-label-version, assertionKind: RELATIONSHIP, predicate: HAS_LABEL_VERSION, subject: { ref: pkg-nm250, type: D6.Package }, object: { ref: lv-nm250, type: D6.LabelVersion }, asserter: { ref: o-ods, type: D7.Organization }, locators: [loc-dsld-nm250-serving, loc-dsld-nm250-mg, loc-dsld-nm250-version-code, loc-dsld-nm250-servings-per-container, loc-dsld-nm250-entry-date], basisKind: CURATOR_CLASSIFICATION, speechAct: STATES, qualifiers: ["validFrom = DSLD entryDate 2022-08-23 (publication proxy, loc-dsld-nm250-entry-date); end not stated", "relayedBy:NIH ODS DSLD 271329"], validTime: { validFrom: "2022-08-23", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+  - { id: a-dsld-nm250-form, uid: hu:assertion:fx-d10-dsld-271329-form-oxide, assertionKind: RELATIONSHIP, predicate: DECLARES_COMPONENT, subject: { ref: lv-nm250, type: D6.LabelVersion }, object: { ref: e-form-oxide, type: D1.IngredientMaterial }, asserter: { ref: o-nature-made, type: D7.Organization }, locators: [loc-dsld-nm250-mg, loc-dsld-nm250-form], basisKind: MANUFACTURER_CLAIM, speechAct: STATES, edgeProperties: { orderIndex: 0, lineRole: "DIETARY_INGREDIENT", amount: 250, unitCode: "mg", amountReferent: "AS_NUTRIENT", massBasis: "NUTRIENT_EQUIVALENT", amountBasis: "PER_SERVING", dailyValuePercent: 60 }, qualifiers: ["declaredName:Magnesium", "form:Magnesium Oxide", "relayedBy:NIH ODS DSLD 271329"], validTime: { validFrom: "2022-08-23", validFromPrecision: DAY, validFromBasis: OBSERVATION_ONLY, validTo: null, note: "DSLD entryDate" }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+  - { id: a-dsld-nm250-serving, uid: hu:assertion:fx-d10-dsld-271329-serving, assertionKind: FIELD, predicate: MAX_DAILY_SERVINGS, subject: { ref: lv-nm250, type: D6.LabelVersion }, value: { valueNumber: 1, unitCode: "{serving}/d" }, asserter: { ref: o-nature-made, type: D7.Organization }, locators: [loc-dsld-nm250-serving], basisKind: MANUFACTURER_CLAIM, speechAct: STATES, qualifiers: ["serving 1 Tablet(s); 1 serving per day (DSLD servingSizes/0: minDailyServings 1, maxDailyServings 1)"], validTime: { validFrom: "2022-08-23", validFromPrecision: DAY, validFromBasis: OBSERVATION_ONLY, validTo: null }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+  - { id: a-dsld-nb500-label-version, uid: hu:assertion:fx-d10-dsld-242510-has-label-version, assertionKind: RELATIONSHIP, predicate: HAS_LABEL_VERSION, subject: { ref: pkg-nb500, type: D6.Package }, object: { ref: lv-nb500, type: D6.LabelVersion }, asserter: { ref: o-ods, type: D7.Organization }, locators: [loc-dsld-nb500-serving, loc-dsld-nb500-mg, loc-dsld-nb500-version-code, loc-dsld-nb500-entry-date], basisKind: CURATOR_CLASSIFICATION, speechAct: STATES, qualifiers: ["validFrom = DSLD entryDate 2021-04-22 (publication proxy, loc-dsld-nb500-entry-date); end not stated", "relayedBy:NIH ODS DSLD 242510"], validTime: { validFrom: "2021-04-22", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+  - { id: a-dsld-nb500-form, uid: hu:assertion:fx-d10-dsld-242510-form-oxide, assertionKind: RELATIONSHIP, predicate: DECLARES_COMPONENT, subject: { ref: lv-nb500, type: D6.LabelVersion }, object: { ref: e-form-oxide, type: D1.IngredientMaterial }, asserter: { ref: o-natures-bounty, type: D7.Organization }, locators: [loc-dsld-nb500-mg, loc-dsld-nb500-form], basisKind: MANUFACTURER_CLAIM, speechAct: STATES, edgeProperties: { orderIndex: 0, lineRole: "DIETARY_INGREDIENT", amount: 500, unitCode: "mg", amountReferent: "AS_NUTRIENT", massBasis: "NUTRIENT_EQUIVALENT", amountBasis: "PER_SERVING", dailyValuePercent: 119 }, qualifiers: ["declaredName:Magnesium", "form:as Magnesium Oxide", "relayedBy:NIH ODS DSLD 242510"], validTime: { validFrom: "2021-04-22", validFromPrecision: DAY, validFromBasis: OBSERVATION_ONLY, validTo: null, note: "DSLD entryDate" }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+  - { id: a-dsld-nb500-serving, uid: hu:assertion:fx-d10-dsld-242510-serving, assertionKind: FIELD, predicate: MAX_DAILY_SERVINGS, subject: { ref: lv-nb500, type: D6.LabelVersion }, value: { valueNumber: 1, unitCode: "{serving}/d" }, asserter: { ref: o-natures-bounty, type: D7.Organization }, locators: [loc-dsld-nb500-serving], basisKind: MANUFACTURER_CLAIM, speechAct: STATES, qualifiers: ["serving 1 Tablet(s); 1 serving per day (DSLD servingSizes/0: minDailyServings 1, maxDailyServings 1)"], validTime: { validFrom: "2021-04-22", validFromPrecision: DAY, validFromBasis: OBSERVATION_ONLY, validTo: null }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+
+  # ---- CALCULATED inputs of the BLOCK criterion (asserter = the computing agent; DERIVED_FROM the label facts) ----
+  # close-out FU-03: re-keyed to PER_MAX_DAILY_DOSE_AMOUNT (D1, rule:daily-max.v1; was MAX_DAILY_SUPPLEMENTAL_AMOUNT, alias),
+  # subject the LabelVersion, object magnesium (the line amount is AS_NUTRIENT, elemental magnesium).
+  - { id: a-calc-slowmag-max-daily, uid: hu:assertion:fx-d10-calc-173951-max-daily, assertionKind: COMPUTATION, predicate: PER_MAX_DAILY_DOSE_AMOUNT, subject: { ref: lv-slowmag, type: D6.LabelVersion }, object: { ref: e-mg, type: D1.ChemicalSubstance }, value: { valueNumber: 286, unitCode: "mg/d" }, asserter: { ref: g-a1, type: K.Agent }, basisKind: CALCULATED, derivationRule: "rule:daily-max.v1", qualifiers: ["amount per serving x maxDailyServings = 143 mg x 2", "massBasis NUTRIENT_EQUIVALENT (elemental magnesium)"], derivedFrom: [a-dsld-slowmag-form, a-dsld-slowmag-serving], locators: [loc-dsld-slowmag-mg, loc-dsld-slowmag-serving], validTime: { validFrom: "2018-03-23", validFromPrecision: DAY, validFromBasis: INFERRED, validTo: null }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+  - { id: a-calc-nm250-max-daily, uid: hu:assertion:fx-d10-calc-271329-max-daily, assertionKind: COMPUTATION, predicate: PER_MAX_DAILY_DOSE_AMOUNT, subject: { ref: lv-nm250, type: D6.LabelVersion }, object: { ref: e-mg, type: D1.ChemicalSubstance }, value: { valueNumber: 250, unitCode: "mg/d" }, asserter: { ref: g-a1, type: K.Agent }, basisKind: CALCULATED, derivationRule: "rule:daily-max.v1", qualifiers: ["250 mg x 1", "massBasis NUTRIENT_EQUIVALENT (elemental magnesium)"], derivedFrom: [a-dsld-nm250-form, a-dsld-nm250-serving], locators: [loc-dsld-nm250-mg, loc-dsld-nm250-serving], validTime: { validFrom: "2022-08-23", validFromPrecision: DAY, validFromBasis: INFERRED, validTo: null }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+  - { id: a-calc-nb500-max-daily, uid: hu:assertion:fx-d10-calc-242510-max-daily, assertionKind: COMPUTATION, predicate: PER_MAX_DAILY_DOSE_AMOUNT, subject: { ref: lv-nb500, type: D6.LabelVersion }, object: { ref: e-mg, type: D1.ChemicalSubstance }, value: { valueNumber: 500, unitCode: "mg/d" }, asserter: { ref: g-a1, type: K.Agent }, basisKind: CALCULATED, derivationRule: "rule:daily-max.v1", qualifiers: ["500 mg x 1", "massBasis NUTRIENT_EQUIVALENT (elemental magnesium)"], derivedFrom: [a-dsld-nb500-form, a-dsld-nb500-serving], locators: [loc-dsld-nb500-mg, loc-dsld-nb500-serving], validTime: { validFrom: "2021-04-22", validFromPrecision: DAY, validFromBasis: INFERRED, validTo: null }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+
+  # ---- form evidence and upper limit ----
+  - { id: a-ods-forms, uid: hu:assertion:fx-d10-ods-chloride-higher-bioavailability, assertionKind: RELATIONSHIP, predicate: HIGHER_BIOAVAILABILITY_THAN, subject: { ref: e-form-chloride, type: D1.IngredientMaterial }, object: { ref: e-form-oxide, type: D1.IngredientMaterial }, asserter: { ref: o-ods, type: D7.Organization }, locators: [loc-ods-forms], speechAct: STATES, qualifiers: ["the same sentence also names the aspartate, citrate and lactate forms, and magnesium sulfate on the lower side", "'tend to have higher bioavailability'"], validTime: { validFrom: "2026-01-06", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, note: "fact sheet 'Updated January 6, 2026' per research capture" }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+  - { id: a-ex-oxide-poor, uid: hu:assertion:fx-d10-examine-oxide-poor-absorption, assertionKind: FIELD, predicate: CHARACTERIZES_ABSORPTION, subject: { ref: e-form-oxide, type: D1.IngredientMaterial }, value: { valueString: "extremely poor absorption; not recommended for increasing magnesium levels" }, asserter: { ref: o-examine, type: D7.Organization }, locators: [loc-ex-oxide-poor, loc-ex-updated], speechAct: STATES, qualifiers: ["also says the same of magnesium carbonate"], validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, validTo: null, statedAsOf: "2026-09-30" }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+  - { id: a-ods-ul, uid: hu:assertion:fx-d10-ods-ul-supplemental-mg-adults, assertionKind: FIELD, predicate: HAS_UPPER_LIMIT, subject: { ref: e-mg, type: D1.ChemicalSubstance }, value: { valueNumber: 350, unitCode: "mg", valueString: "DO_NOT_EXCEED_DOSE" }, asserter: { ref: o-ods, type: D7.Organization }, locators: [loc-ods-ul], speechAct: STATES, qualifiers: ["Tolerable Upper Intake Level for supplemental magnesium, adults: 350 mg (verbatim in loc-ods-ul)", "population:GENERAL_ADULTS", "intakeScope:SUPPLEMENTAL_ONLY", "limitKind:UL", "65 to 350 mg for children and adolescents by age", "the quoted span states no time unit; a UL is a daily intake level"], validTime: { validFrom: "2026-01-06", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null }, status: ACCEPTED, producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" } }
+
+useConstraints:   # D5.UseConstraint records (owner D5; derived by D5's use-constraint-key/v1 resolution, RESOLVES_TO_CONSTRAINT); BLOCKED_BY targets
+  - id: uc-mg-supplemental-ul
+    uid: hu:use-constraint:fx-magnesium-supplemental-above-350mg-adults
+    type: D5.UseConstraint
+    constraintKind: DOSE_LIMIT
+    identityKey: "use-constraint-key/v1|HAS_UPPER_LIMIT|subject=hu:chemical-substance:fx-magnesium|scope=|populations=GENERAL_ADULTS|dose=GT 350 mg PER_DAY SUPPLEMENTAL_ONLY|route=|jurisdiction="
+    identityKeyHash: "sha256:d70bb64c341dee914a42674c75a94f11a5caa137984194f59288e4fb755e2e5c"
+    identityKeyVersion: "use-constraint-key/v1 (fixture rendering; D5 owns the canonical form)"
+    scopePopulations: [GENERAL_ADULTS]
+    doseComparator: GT
+    doseValue: 350
+    doseUnit: mg
+    dosePeriod: PER_DAY
+    intakeScope: SUPPLEMENTAL_ONLY
+    summary: "supplemental magnesium above 350 mg per day in adults (the D5 SDL's own DOSE_LIMIT example)"
+    resolvedFrom: [a-ods-ul]                   # RESOLVES_TO_CONSTRAINT (D5, derived); the FDA claim condition is cited, not resolved (a claim-use condition, not a use concern)
+
+reports:
+  - id: r-comparison
+    uid: hu:report:fx-d10-mg-comparison-draft-1
+    type: K.Report
+    reportKind: COMPARISON
+    skeleton: "d10.product-comparison@1"
+    name: "Magnesium supplements compared under bl:compare:mg-forms-for-sleep@1 (fixture draft, not published)"
+    status: PROPOSED
+    policyVersion: "policy:bl-publish@fixture"
+    queryDigest: null                      # no read intent was executed; the candidate set rule is stated in the body (SCOPE)
+    bodyFile: composed-body.txt
+    bodyDigest: "sha256:62ec1da9a41eea77344d87b3f06848254d7e91b29f57827488992e04fcbe441c"
+    citationCompleteness: 0.538            # 7 of 13 body sentences cite (5 SCOPE framing + 1 INTERESTS sentence uncited)
+    about: [{ ref: e-target-sleep, type: D5.Target }, { ref: e-mg, type: D1.ChemicalSubstance }]
+    usesCriteria: [crit-bl-absorption-1, crit-bl-ul-block-1]          # USES_CRITERION (Report -> DecisionCriterion, declared on DecisionCriterion.usedByReports)
+    citesAssertions: [a-calc-slowmag-max-daily, a-calc-nm250-max-daily, a-calc-nb500-max-daily, a-dsld-slowmag-form, a-dsld-nm250-form, a-dsld-nb500-form, a-ods-forms, a-ex-oxide-poor, a-ods-ul, a-fda-350-condition, a-usn-row1, a-ld-row-legion, a-usn-method, a-usn-commission, a-usn-no-endorse]
+    evidence: [loc-ods-forms, loc-ex-oxide-poor, loc-ods-ul, loc-usn-method, loc-usn-commission, loc-usn-no-endorse]
+    recordedAt: "2026-10-08T22:00:00Z"
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-mg-rankings-criteria-comparison" }
+
+reportItems:
+  - { id: i-scope, uid: hu:report-item:fx-d10-mg-comparison-draft-1-scope, report: r-comparison, orderIndex: 1, itemKind: SECTION, sectionKind: SCOPE, itemKey: "sec:scope", about: [{ ref: e-target-sleep, type: D5.Target }], bodyStartOffset: 0, bodyEndOffset: 556, uncitedSentenceCount: 5, citationCompleteness: 0.0, recordedAt: "2026-10-08T22:00:00Z" }
+  - { id: i-criteria, uid: hu:report-item:fx-d10-mg-comparison-draft-1-criteria, report: r-comparison, orderIndex: 2, itemKind: SECTION, sectionKind: CRITERIA, itemKey: "sec:criteria", about: [], bodyStartOffset: 558, bodyEndOffset: 775, uncitedSentenceCount: 0, citationCompleteness: 1.0, recordedAt: "2026-10-08T22:00:00Z", note: "cites the criteria through the Report's USES_CRITERION edges" }
+  - { id: i-options, uid: hu:report-item:fx-d10-mg-comparison-draft-1-options, report: r-comparison, orderIndex: 3, itemKind: SECTION, sectionKind: OPTIONS, itemKey: "sec:options", about: [{ ref: e-mg, type: D1.ChemicalSubstance }], bodyStartOffset: 777, bodyEndOffset: 1899, uncitedSentenceCount: 0, citationCompleteness: 1.0, recordedAt: "2026-10-08T22:00:00Z" }
+  - id: i-row-slow-mag
+    uid: hu:report-item:fx-d10-mg-comparison-draft-1-row-slow-mag
+    report: r-comparison
+    orderIndex: 4
+    itemKind: ROW
+    sectionKind: OPTIONS
+    itemKey: "row:options/slow-mag"
+    parentItemKey: "sec:options"
+    name: "Slow-Mag Tablets"
+    disposition: SELECTED
+    rank: 1
+    cellValues:
+      - "hu:decision-criterion:fx-bl-ul-block-1=286 mg/d (not blocked)|hu:assertion:fx-d10-calc-173951-max-daily"
+      - "hu:decision-criterion:fx-bl-absorption-1=1|hu:assertion:fx-d10-ods-chloride-higher-bioavailability"
+    about: [{ ref: p-slow-mag, type: D6.Product }]                                  # ASSESSES the option
+    citesAssertions: [a-calc-slowmag-max-daily, a-dsld-slowmag-form, a-ods-forms]   # DERIVED_FROM
+    bodyStartOffset: 789
+    bodyEndOffset: 1018
+    uncitedSentenceCount: 0
+    citationCompleteness: 1.0
+    recordedAt: "2026-10-08T22:00:00Z"
+  - id: i-row-nature-made
+    uid: hu:report-item:fx-d10-mg-comparison-draft-1-row-nature-made-250
+    report: r-comparison
+    orderIndex: 5
+    itemKind: ROW
+    sectionKind: OPTIONS
+    itemKey: "row:options/nature-made-250"
+    parentItemKey: "sec:options"
+    name: "Nature Made Magnesium 250 mg"
+    disposition: ALTERNATIVE
+    rank: 2
+    reason: "oxide form: 'extremely poor absorption' (Examine); oxide below chloride, citrate, aspartate, lactate in bioavailability (ODS)"
+    cellValues:
+      - "hu:decision-criterion:fx-bl-ul-block-1=250 mg/d (not blocked)|hu:assertion:fx-d10-calc-271329-max-daily"
+      - "hu:decision-criterion:fx-bl-absorption-1=0|hu:assertion:fx-d10-examine-oxide-poor-absorption"
+    about: [{ ref: p-nature-made-250, type: D6.Product }]
+    citesAssertions: [a-calc-nm250-max-daily, a-dsld-nm250-form, a-ex-oxide-poor]
+    bodyStartOffset: 1020
+    bodyEndOffset: 1237
+    uncitedSentenceCount: 0
+    citationCompleteness: 1.0
+    recordedAt: "2026-10-08T22:00:00Z"
+  - id: i-row-natures-bounty
+    uid: hu:report-item:fx-d10-mg-comparison-draft-1-row-natures-bounty-500
+    report: r-comparison
+    orderIndex: 6
+    itemKind: ROW
+    sectionKind: OPTIONS
+    itemKey: "row:options/natures-bounty-500"
+    parentItemKey: "sec:options"
+    name: "Nature's Bounty Magnesium 500 mg"
+    disposition: BLOCKED
+    rank: null
+    reason: "500 mg supplemental magnesium per maximum daily serving > 350 mg (bl:mg:block-above-supplemental-ul@1)"
+    cellValues:
+      - "hu:decision-criterion:fx-bl-ul-block-1=500 mg/d (BLOCKED)|hu:assertion:fx-d10-calc-242510-max-daily"
+      - "hu:decision-criterion:fx-bl-absorption-1=0|hu:assertion:fx-d10-examine-oxide-poor-absorption"
+    about: [{ ref: p-natures-bounty-500, type: D6.Product }]
+    citesAssertions: [a-calc-nb500-max-daily, a-dsld-nb500-form, a-ods-ul, a-fda-350-condition, a-ex-oxide-poor]   # DERIVED_FROM (a-fda-350-condition is cross-fixture)
+    blockedBy: [uc-mg-supplemental-ul]                                  # BLOCKED_BY -> D5.UseConstraint (resolved from a-ods-ul)
+    bodyStartOffset: 1239
+    bodyEndOffset: 1590
+    uncitedSentenceCount: 0
+    citationCompleteness: 1.0
+    recordedAt: "2026-10-08T22:00:00Z"
+  - id: i-row-mag-ox
+    uid: hu:report-item:fx-d10-mg-comparison-draft-1-row-mag-ox
+    report: r-comparison
+    orderIndex: 7
+    itemKind: ROW
+    sectionKind: OPTIONS
+    itemKey: "row:options/mag-ox"
+    parentItemKey: "sec:options"
+    name: "Mag-Ox"
+    disposition: NOT_EVALUATED
+    rank: null
+    reason: "no label record with a maximum daily serving captured; the BLOCK criterion cannot be evaluated"
+    missingFactKeys: [max-daily-supplemental-mg, label-record]
+    cellValues: ["hu:decision-criterion:fx-bl-ul-block-1=unknown|", "hu:decision-criterion:fx-bl-absorption-1=0|hu:assertion:fx-d10-examine-oxide-poor-absorption"]
+    about: [{ ref: p-mag-ox, type: D6.Product }]
+    citesAssertions: [a-usn-row1, a-ex-oxide-poor]
+    bodyStartOffset: 1592
+    bodyEndOffset: 1788
+    uncitedSentenceCount: 0
+    citationCompleteness: 1.0
+    recordedAt: "2026-10-08T22:00:00Z"
+  - id: i-row-legion
+    uid: hu:report-item:fx-d10-mg-comparison-draft-1-row-legion
+    report: r-comparison
+    orderIndex: 8
+    itemKind: ROW
+    sectionKind: OPTIONS
+    itemKey: "row:options/legion-sucrosomial"
+    parentItemKey: "sec:options"
+    name: "Legion Sucrosomial Magnesium"
+    disposition: NOT_EVALUATED
+    rank: null
+    reason: "no amount, form or serving record captured (Labdoor's A+ grade is a third-party score, not a BellLabs input)"
+    missingFactKeys: [declared-form, declared-amount, max-daily-servings]
+    cellValues: ["hu:decision-criterion:fx-bl-ul-block-1=unknown|", "hu:decision-criterion:fx-bl-absorption-1=unknown|"]
+    about: [{ ref: p-legion, type: D6.Product }]
+    citesAssertions: [a-ld-row-legion]
+    bodyStartOffset: 1790
+    bodyEndOffset: 1899
+    uncitedSentenceCount: 0
+    citationCompleteness: 1.0
+    recordedAt: "2026-10-08T22:00:00Z"
+  - { id: i-interests, uid: hu:report-item:fx-d10-mg-comparison-draft-1-interests, report: r-comparison, orderIndex: 9, itemKind: SECTION, sectionKind: INTERESTS, itemKey: "sec:interests", about: [{ ref: o-usnews, type: D7.Organization }, { ref: o-labdoor, type: D7.Organization }], citesAssertions: [a-usn-method, a-usn-no-endorse, a-usn-commission], bodyStartOffset: 1901, bodyEndOffset: 2177, uncitedSentenceCount: 1, citationCompleteness: 0.5, recordedAt: "2026-10-08T22:00:00Z", note: "uncited: 'Labdoor shows certification badges beside its grades.' (the badge is an image; no D7 interest assertion captured)" }
+
+computedRanking:   # Q-D10-01 (retrieved): the same rows computed at query time, labelled "not published"
+  criteriaSet: "bl:compare:mg-forms-for-sleep@1"
+  evaluation: "BLOCK first (evaluationOrder 1), then SCORE (absorption); unknown BLOCK input -> NOT_EVALUATED"
+  result: ["1 Slow-Mag Tablets (SELECTED)", "2 Nature Made Magnesium 250 mg (ALTERNATIVE)", "BLOCKED Nature's Bounty Magnesium 500 mg", "NOT_EVALUATED Mag-Ox", "NOT_EVALUATED Legion Sucrosomial Magnesium"]
+
+structural:   # close-out FU-03: D6 product hierarchy for the three DSLD labels (parts of one capture; product-comparison convention)
+  - { type: HAS_VARIANT, edgeClass: structural, from: { ref: p-slow-mag, type: D6.Product }, to: { ref: var-slowmag, type: D6.ProductVariant } }
+  - { type: HAS_PACKAGE, edgeClass: structural, from: { ref: var-slowmag, type: D6.ProductVariant }, to: { ref: pkg-slowmag, type: D6.Package } }
+  - { type: HAS_VARIANT, edgeClass: structural, from: { ref: p-nature-made-250, type: D6.Product }, to: { ref: var-nm250, type: D6.ProductVariant } }
+  - { type: HAS_PACKAGE, edgeClass: structural, from: { ref: var-nm250, type: D6.ProductVariant }, to: { ref: pkg-nm250, type: D6.Package } }
+  - { type: HAS_VARIANT, edgeClass: structural, from: { ref: p-natures-bounty-500, type: D6.Product }, to: { ref: var-nb500, type: D6.ProductVariant } }
+  - { type: HAS_PACKAGE, edgeClass: structural, from: { ref: var-nb500, type: D6.ProductVariant }, to: { ref: pkg-nb500, type: D6.Package } }
+
+edgesExercised:
+  - { type: HAS_LABEL_VERSION, from: [pkg-slowmag, pkg-nm250, pkg-nb500], to: [lv-slowmag, lv-nm250, lv-nb500], note: "authorized by a-dsld-*-label-version (close-out FU-03)" }
+  - { type: DECLARES_COMPONENT, from: [lv-slowmag, lv-nm250, lv-nb500], to: [e-form-chloride, e-form-oxide], note: "authorized by a-dsld-*-form; ComponentLineProperties (close-out FU-03)" }
+  - { type: USES_CRITERION, from: r-comparison, to: [crit-bl-absorption-1, crit-bl-ul-block-1] }
+  - { type: HAS_ITEM, from: r-comparison, to: [i-scope, i-criteria, i-options, i-row-slow-mag, i-row-nature-made, i-row-natures-bounty, i-row-mag-ox, i-row-legion, i-interests] }
+  - { type: ASSESSES, from: [i-row-slow-mag, i-row-nature-made, i-row-natures-bounty, i-row-mag-ox, i-row-legion], to: "each row's option (D6.Product)" }
+  - { type: DERIVED_FROM, pair: "ReportItem -> Assertion", from: i-row-slow-mag, to: [a-calc-slowmag-max-daily, a-dsld-slowmag-form, a-ods-forms] }
+  - { type: BLOCKED_BY, pair: "ReportItem -> D5.UseConstraint", from: i-row-natures-bounty, to: [uc-mg-supplemental-ul] }

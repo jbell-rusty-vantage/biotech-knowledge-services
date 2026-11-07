@@ -1,0 +1,75 @@
+"""
+Purpose: one section or one option row of a published kernel Report (comparison, profile, protocol review, evidence
+report, published answer). It exists because questions filter and traverse below the report level: which rows were
+BLOCKED and by which use constraint or assessment (CQ-RC-06), which option was rejected and why (CQ-RC-01), which row or section of a
+report cites an input that has since been superseded (Q-D10-13, CQ-AX-11), and which sections carry uncited
+sentences (CQ-AX-01, Q-D10-14). The Report keeps the kernel minimum citation set; each item cites the subset its own
+content rests on, so one row can be re-checked without parsing the body. Sentences stay in the sealed report ledger;
+an item points into the body with offsets. Insert-only with its Report: a revision is a new Report with new items.
+Row rule: a ROW ASSESSES exactly one entity, its option; the target, population or other context of a row is on the
+enclosing SECTION's or the Report's ASSESSES, and a blocking scope is the UseConstraint's (report-skeletons.md rule 9).
+Identity rule: (report uid, itemKey). uid token: `report-item` (hu:report-item:<opaque>).
+Questions: CQ-AX-01, CQ-AX-11, CQ-RC-01, CQ-RC-02, CQ-RC-03, CQ-RC-06, CQ-RC-07, Q-D10-02, Q-D10-08, Q-D10-13,
+Q-D10-14, Q-D10-16.
+"""
+type ReportItem implements Entity
+  @node(labels: ["ReportItem", "InformationArtifact"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  "Heading of the section, or display label of the option row."
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  itemKind: ReportItemKind!
+  sectionKind: ReportSectionKind
+  "Stable key inside the report (e.g. sec:evidence-against, row:mg-bisglycinate); with the report uid, identity."
+  itemKey: String!
+  "itemKey of the enclosing section for a row (rows live inside an OPTIONS, HARMS_AND_AVOIDANCE or PROTOCOL_STEP section)."
+  parentItemKey: String
+  "ROW only."
+  disposition: OptionDisposition
+  "ROW only; null when BLOCKED or NOT_EVALUATED. Rank under the report's criteria set, never a property of the option."
+  rank: Int
+  "ROW only: one entry per criterion cell, '<criterion uid>=<value>[ <unit>]|<assertion or assessment uid>,…'."
+  cellValues: [String!]
+  "Rejection or blocking reason as published."
+  reason: String
+  "Fact keys the method needed and could not find for this item (CQ-RC-03)."
+  missingFactKeys: [String!]
+  "Character offsets of the item in the registered report body (bodyDigest), so ledger sentences resolve to items."
+  bodyStartOffset: Int
+  bodyEndOffset: Int
+  "verification.v1 claim-weighted citation completeness over the sentences in this item's span."
+  citationCompleteness: Float
+  "Sentences in the span with no ledger citation (CQ-AX-01)."
+  uncitedSentenceCount: Int
+  recordedAt: DateTime!
+  """class: structural (inverse; stored Report → ReportItem, orderIndex = position; written with its Report by report.publish, so the item side only CONNECTs); cardinality: exactly_one; questions: CQ-AX-01, CQ-RC-01, Q-D10-02, Q-D10-14."""
+  report: [Report!]!
+    @relationship(type: "HAS_ITEM", direction: IN, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural (kernel ASSESSES, kernel meaning "is about"); cardinality: exactly_one for a ROW (its option: product, form, compound, protocol step), one_or_more for a SECTION (the entities and context the section is about); questions: CQ-RC-01, CQ-RC-06, Q-D10-02, Q-D10-16."""
+  about: [Subjectable!]!
+    @relationship(type: "ASSESSES", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural (kernel DERIVED_FROM); cardinality: many (every Assertion the item's sentences or cells rest on); questions: CQ-AX-01, CQ-AX-11, CQ-RC-02, Q-D10-13."""
+  citesAssertions: [Assertion!]!
+    @relationship(type: "DERIVED_FROM", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural (kernel DERIVED_FROM); cardinality: many (verdicts, harm and strength assessments the item cites); questions: CQ-AX-11, CQ-RC-02, Q-D10-13, Q-D10-16."""
+  citesAssessments: [Assessment!]!
+    @relationship(type: "DERIVED_FROM", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: one_or_more when disposition is BLOCKED (with blockedByAssessments), else none (the D5 UseConstraint, the shared identity of a scoped use concern such as an upper limit, a contraindication or an interaction, that blocks the option; trace: UseConstraint <- RESOLVES_TO_CONSTRAINT <- Assertion -> HAS_EVIDENCE -> locator; the row also cites the resolving Assertion with DERIVED_FROM); questions: CQ-RC-06, Q-D10-08."""
+  blockedBy: [UseConstraint!]!
+    @relationship(type: "BLOCKED_BY", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: many (a D5 interaction-risk or a D10 harm-causality Assessment that blocks the option when no use constraint states the concern); questions: CQ-RC-06, Q-D10-08."""
+  blockedByAssessments: [Assessment!]!
+    @relationship(type: "BLOCKED_BY", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

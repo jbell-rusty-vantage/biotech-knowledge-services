@@ -1,0 +1,1386 @@
+# Fixture consumer-panel-and-blood-clock - assertions (fixtures stage, A3, 2026-10-08).
+# producedBy ids are FIXTURE ids (mission:ft-D4-fixtures / run:ft-D4-<fixture>), not real Mission Control runs.
+# Types: D4 types from 04-schema-proposal.graphql; kernel types (Assertion, Claim, Assessment, Agent, SourceLocator) from
+# packets/K/04-schema-proposal.graphql; other modules' types through the seams in 10-seams.yaml.
+# edgeClass: asserted = AssertedEdgeProperties episode authorized by this Assertion (assertionUid on the edge);
+# structural = StructuralEdgeProperties edge written by edge.structural, the row's locator cites the captured record;
+# literal / field = kernel Assertion with a typed value (predicate-only or a node property), no edge.
+fixture: consumer-panel-and-blood-clock
+producedBy:
+  missionId: mission:ft-D4-fixtures
+  runId: run:ft-D4-consumer-panel-and-blood-clock
+entities:
+- ref: labtest-labcorp-005009
+  type: LabTest
+  module: D4
+  uid: hu:lab-test:labcorp-005009
+  name: Labcorp Complete Blood Count (CBC) With Differential, Reflex to Peripheral Smear Review (005009)
+  props:
+    testKind: PANEL
+    collectionModes:
+    - VENIPUNCTURE
+  identifiers:
+  - scheme: LAB_TEST_CODE
+    issuer: Labcorp
+    value: 005009
+  - scheme: LOINC
+    issuer: Regenstrief Institute
+    value: 57021-8
+  onMatch: use_existing
+  note: order LOINC 57021-8 identifies the panel order (Labcorp LOINC map)
+- ref: labtest-labcorp-rdw
+  type: LabTest
+  module: D4
+  uid: hu:lab-test:labcorp-result-105007
+  name: Labcorp RDW (result code 105007, component of 005009)
+  props:
+    testKind: SINGLE
+  identifiers:
+  - scheme: LAB_TEST_CODE
+    issuer: Labcorp (result code)
+    value: '105007'
+  onMatch: use_existing
+- ref: labtest-labcorp-mch
+  type: LabTest
+  module: D4
+  uid: hu:lab-test:labcorp-result-015073
+  name: Labcorp MCH (result code 015073, component of 005009)
+  props:
+    testKind: SINGLE
+  identifiers:
+  - scheme: LAB_TEST_CODE
+    issuer: Labcorp (result code)
+    value: '015073'
+  onMatch: use_existing
+- ref: labtest-labcorp-mchc
+  type: LabTest
+  module: D4
+  uid: hu:lab-test:labcorp-result-015081
+  name: Labcorp MCHC (result code 015081, component of 005009)
+  props:
+    testKind: SINGLE
+  identifiers:
+  - scheme: LAB_TEST_CODE
+    issuer: Labcorp (result code)
+    value: 015081
+  onMatch: use_existing
+- ref: labtest-labcorp-lymph-pct
+  type: LabTest
+  module: D4
+  uid: hu:lab-test:labcorp-result-015123
+  name: Labcorp Lymphs (result code 015123, component of 005009)
+  props:
+    testKind: SINGLE
+  identifiers:
+  - scheme: LAB_TEST_CODE
+    issuer: Labcorp (result code)
+    value: '015123'
+  onMatch: use_existing
+- ref: labtest-labcorp-lymph-abs
+  type: LabTest
+  module: D4
+  uid: hu:lab-test:labcorp-result-015917
+  name: Labcorp Lymphs (Absolute) (result code 015917, component of 005009)
+  props:
+    testKind: SINGLE
+  identifiers:
+  - scheme: LAB_TEST_CODE
+    issuer: Labcorp (result code)
+    value: 015917
+  onMatch: use_existing
+- ref: labtest-labcorp-rbc
+  type: LabTest
+  module: D4
+  uid: hu:lab-test:labcorp-result-005033
+  name: Labcorp RBC (result code 005033, component of 005009)
+  props:
+    testKind: SINGLE
+  identifiers:
+  - scheme: LAB_TEST_CODE
+    issuer: Labcorp (result code)
+    value: '005033'
+  onMatch: use_existing
+- ref: labtest-labcorp-hct
+  type: LabTest
+  module: D4
+  uid: hu:lab-test:labcorp-result-005058
+  name: Labcorp Hematocrit (result code 005058, component of 005009)
+  props:
+    testKind: SINGLE
+  identifiers:
+  - scheme: LAB_TEST_CODE
+    issuer: Labcorp (result code)
+    value: 005058
+  onMatch: use_existing
+- ref: metric-loinc-788-0
+  type: Metric
+  module: D4
+  uid: hu:metric:loinc-788-0
+  name: Erythrocyte distribution width (RDW), Labcorp result 105007
+  props:
+    metricKind: MEASURAND
+    defaultResultKind: MEASURED
+    definitionSource: LOINC
+    definitionIssuerName: LOINC (Regenstrief Institute)
+    systemText: Bld
+    scale: QUANTITATIVE
+  identifiers:
+  - scheme: LOINC
+    issuer: Regenstrief Institute
+    value: 788-0
+  onMatch: use_existing
+- ref: metric-loinc-785-6
+  type: Metric
+  module: D4
+  uid: hu:metric:loinc-785-6
+  name: Mean corpuscular hemoglobin (MCH), Labcorp result 015073
+  props:
+    metricKind: MEASURAND
+    defaultResultKind: MEASURED
+    definitionSource: LOINC
+    definitionIssuerName: LOINC (Regenstrief Institute)
+    systemText: Bld
+    scale: QUANTITATIVE
+  identifiers:
+  - scheme: LOINC
+    issuer: Regenstrief Institute
+    value: 785-6
+  onMatch: use_existing
+- ref: metric-loinc-786-4
+  type: Metric
+  module: D4
+  uid: hu:metric:loinc-786-4
+  name: Mean corpuscular hemoglobin concentration (MCHC), Labcorp result 015081
+  props:
+    metricKind: MEASURAND
+    defaultResultKind: MEASURED
+    definitionSource: LOINC
+    definitionIssuerName: LOINC (Regenstrief Institute)
+    systemText: Bld
+    scale: QUANTITATIVE
+  identifiers:
+  - scheme: LOINC
+    issuer: Regenstrief Institute
+    value: 786-4
+  onMatch: use_existing
+- ref: metric-loinc-736-9
+  type: Metric
+  module: D4
+  uid: hu:metric:loinc-736-9
+  name: Lymphocytes percent of leukocytes, Labcorp result 015123
+  props:
+    metricKind: MEASURAND
+    defaultResultKind: MEASURED
+    definitionSource: LOINC
+    definitionIssuerName: LOINC (Regenstrief Institute)
+    systemText: Bld
+    scale: QUANTITATIVE
+  identifiers:
+  - scheme: LOINC
+    issuer: Regenstrief Institute
+    value: 736-9
+  onMatch: use_existing
+- ref: metric-loinc-731-0
+  type: Metric
+  module: D4
+  uid: hu:metric:loinc-731-0
+  name: Lymphocytes absolute count, Labcorp result 015917
+  props:
+    metricKind: MEASURAND
+    defaultResultKind: MEASURED
+    definitionSource: LOINC
+    definitionIssuerName: LOINC (Regenstrief Institute)
+    systemText: Bld
+    scale: QUANTITATIVE
+  identifiers:
+  - scheme: LOINC
+    issuer: Regenstrief Institute
+    value: 731-0
+  onMatch: use_existing
+- ref: metric-loinc-789-8
+  type: Metric
+  module: D4
+  uid: hu:metric:loinc-789-8
+  name: Erythrocytes count (RBC), Labcorp result 005033
+  props:
+    metricKind: MEASURAND
+    defaultResultKind: MEASURED
+    definitionSource: LOINC
+    definitionIssuerName: LOINC (Regenstrief Institute)
+    systemText: Bld
+    scale: QUANTITATIVE
+  identifiers:
+  - scheme: LOINC
+    issuer: Regenstrief Institute
+    value: 789-8
+  onMatch: use_existing
+- ref: metric-loinc-4544-3
+  type: Metric
+  module: D4
+  uid: hu:metric:loinc-4544-3
+  name: Hematocrit, Labcorp result 005058
+  props:
+    metricKind: MEASURAND
+    defaultResultKind: MEASURED
+    definitionSource: LOINC
+    definitionIssuerName: LOINC (Regenstrief Institute)
+    systemText: Bld
+    scale: QUANTITATIVE
+  identifiers:
+  - scheme: LOINC
+    issuer: Regenstrief Institute
+    value: 4544-3
+  onMatch: use_existing
+- ref: metric-it-glucose
+  type: Metric
+  module: D4
+  uid: hu:metric:insidetracker-innerage-input-glucose
+  name: 'InnerAge input: Glucose'
+  props:
+    metricKind: MODEL_FEATURE
+    defaultResultKind: MEASURED
+    definitionSource: VENDOR
+    definitionIssuerName: InsideTracker
+    notReported:
+    - UNIT
+    - METRIC_METHOD
+    - MEASURAND_SYSTEM
+  onMatch: review
+- ref: metric-it-hba1c
+  type: Metric
+  module: D4
+  uid: hu:metric:insidetracker-innerage-input-hba1c
+  name: 'InnerAge input: Hemoglobin A1c'
+  props:
+    metricKind: MODEL_FEATURE
+    defaultResultKind: MEASURED
+    definitionSource: VENDOR
+    definitionIssuerName: InsideTracker
+    notReported:
+    - UNIT
+    - METRIC_METHOD
+    - MEASURAND_SYSTEM
+  onMatch: review
+- ref: metric-it-rdw
+  type: Metric
+  module: D4
+  uid: hu:metric:insidetracker-innerage-input-rdw
+  name: 'InnerAge input: RDW (females)'
+  props:
+    metricKind: MODEL_FEATURE
+    defaultResultKind: MEASURED
+    definitionSource: VENDOR
+    definitionIssuerName: InsideTracker
+    notReported:
+    - UNIT
+    - METRIC_METHOD
+    - MEASURAND_SYSTEM
+  onMatch: review
+- ref: metric-it-mch
+  type: Metric
+  module: D4
+  uid: hu:metric:insidetracker-innerage-input-mch
+  name: 'InnerAge input: MCH (males)'
+  props:
+    metricKind: MODEL_FEATURE
+    defaultResultKind: MEASURED
+    definitionSource: VENDOR
+    definitionIssuerName: InsideTracker
+    notReported:
+    - UNIT
+    - METRIC_METHOD
+    - MEASURAND_SYSTEM
+  onMatch: review
+- ref: metric-it-mchc
+  type: Metric
+  module: D4
+  uid: hu:metric:insidetracker-innerage-input-mchc
+  name: 'InnerAge input: MCHC (males)'
+  props:
+    metricKind: MODEL_FEATURE
+    defaultResultKind: MEASURED
+    definitionSource: VENDOR
+    definitionIssuerName: InsideTracker
+    notReported:
+    - UNIT
+    - METRIC_METHOD
+    - MEASURAND_SYSTEM
+  onMatch: review
+- ref: metric-it-lymph-pct
+  type: Metric
+  module: D4
+  uid: hu:metric:insidetracker-innerage-input-lymph-pct
+  name: 'InnerAge input: Lymphocytes percent of WBC (males)'
+  props:
+    metricKind: MODEL_FEATURE
+    defaultResultKind: MEASURED
+    definitionSource: VENDOR
+    definitionIssuerName: InsideTracker
+    notReported:
+    - UNIT
+    - METRIC_METHOD
+    - MEASURAND_SYSTEM
+  onMatch: review
+- ref: metric-it-lymph-abs
+  type: Metric
+  module: D4
+  uid: hu:metric:insidetracker-innerage-input-lymph-abs
+  name: 'InnerAge input: Lymphocyte count (females)'
+  props:
+    metricKind: MODEL_FEATURE
+    defaultResultKind: MEASURED
+    definitionSource: VENDOR
+    definitionIssuerName: InsideTracker
+    notReported:
+    - UNIT
+    - METRIC_METHOD
+    - MEASURAND_SYSTEM
+  onMatch: review
+- ref: metric-it-rbc
+  type: Metric
+  module: D4
+  uid: hu:metric:insidetracker-innerage-input-rbc
+  name: 'InnerAge input: RBC count (males)'
+  props:
+    metricKind: MODEL_FEATURE
+    defaultResultKind: MEASURED
+    definitionSource: VENDOR
+    definitionIssuerName: InsideTracker
+    notReported:
+    - UNIT
+    - METRIC_METHOD
+    - MEASURAND_SYSTEM
+  onMatch: review
+- ref: metric-it-hct
+  type: Metric
+  module: D4
+  uid: hu:metric:insidetracker-innerage-input-hct
+  name: 'InnerAge input: Hematocrit (males)'
+  props:
+    metricKind: MODEL_FEATURE
+    defaultResultKind: MEASURED
+    definitionSource: VENDOR
+    definitionIssuerName: InsideTracker
+    notReported:
+    - UNIT
+    - METRIC_METHOD
+    - MEASURAND_SYSTEM
+  onMatch: review
+- ref: av-innerage-2
+  type: AlgorithmVersion
+  module: D4
+  uid: hu:algorithm-version:insidetracker-innerage-2.0
+  name: InsideTracker InnerAge 2.0
+  props:
+    algorithmFamily: InnerAge
+    familyKey: innerage
+    algorithmKind: BLOOD_CHEMISTRY_CLOCK
+    realization: VENDOR_IMPLEMENTATION
+    versionLabel: '2.0'
+    versionBasis: VENDOR_VERSION_STRING
+    outputKind: AGE_ESTIMATE
+    trainingPopulationText: scientific research and InsideTracker internal customer database (as stated)
+    notReported:
+    - RELIABILITY
+    - INPUT_FEATURES
+  onMatch: use_existing
+  note: 'INPUT_FEATURES in notReported: the full 17/13 input list is not enumerated per sex in one place; the blog lists inputs with sex qualifiers (9 sampled here)'
+- ref: metric-innerage
+  type: Metric
+  module: D4
+  uid: hu:metric:insidetracker-innerage-years
+  name: InnerAge (biological age estimate, years)
+  props:
+    metricKind: ALGORITHM_OUTPUT
+    defaultResultKind: INFERRED
+    definitionSource: VENDOR
+    definitionIssuerName: InsideTracker
+    canonicalUnitCode: a
+    searchText: InnerAge biological age InsideTracker
+  onMatch: review
+- ref: labtest-innerage
+  type: LabTest
+  module: D4
+  uid: hu:lab-test:insidetracker-innerage-2.0
+  name: InsideTracker InnerAge 2.0 (blood test + analysis)
+  props:
+    testKind: ALGORITHM_REPORT
+    orderChannel: DIRECT_TO_CONSUMER
+    collectionModes:
+    - VENIPUNCTURE
+    notReported:
+    - PERFORMING_LAB
+  onMatch: use_existing
+- ref: product-innerage
+  type: Product
+  module: D6
+  uid: hu:product:insidetracker-innerage-2.0
+  name: InnerAge 2.0 ($249, InsideTracker store)
+  onMatch: use_existing
+- ref: org-labcorp
+  type: Organization
+  module: D7
+  uid: hu:org:labcorp
+  name: Laboratory Corporation of America Holdings (Labcorp)
+  onMatch: use_existing
+- ref: org-insidetracker
+  type: Organization
+  module: D7
+  uid: hu:org:insidetracker
+  name: InsideTracker
+  onMatch: use_existing
+- ref: agent-curation
+  type: Agent
+  module: K
+  uid: hu:agent:bks-curation-d4
+  name: BellLabs D4 curation agent
+  props:
+    agentKind: AUTOMATED_AGENT
+  onMatch: use_existing
+- ref: claim-innerage-retest-3-6-months
+  type: Claim
+  module: K
+  uid: hu:claim:innerage-retest-in-3-6-months-tracks-aging
+  name: Retesting InnerAge in 3-6 months tracks how you are aging on the inside
+  props:
+    proposition: Retesting InnerAge 2.0 after 3-6 months lets a person track changes in their biological age.
+    claimType: RECOMMENDATION
+  onMatch: use_existing
+  note: added in the adversarial-review pass so the recommendation g28 is a kernel claim occurrence (OCCURRENCE_OF)
+assertions:
+- id: g01
+  uid: hu:assertion:ft-d4-panel-g01
+  edgeClass: asserted
+  predicate: INCLUDES_TEST
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: labtest-labcorp-005009
+    type: LabTest
+  object:
+    ref: labtest-labcorp-rdw
+    type: LabTest
+  asserter:
+    ref: org-labcorp
+    type: Organization
+  locators:
+  - p-rdw
+  speechAct: STATES
+  polarity: POSITIVE
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:43:00-04:00'
+    statedAsOfPrecision: INSTANT
+  orderIndex: 0
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g02
+  uid: hu:assertion:ft-d4-panel-g02
+  edgeClass: asserted
+  predicate: INCLUDES_TEST
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: labtest-labcorp-005009
+    type: LabTest
+  object:
+    ref: labtest-labcorp-mch
+    type: LabTest
+  asserter:
+    ref: org-labcorp
+    type: Organization
+  locators:
+  - p-mch
+  speechAct: STATES
+  polarity: POSITIVE
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:43:00-04:00'
+    statedAsOfPrecision: INSTANT
+  orderIndex: 1
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g03
+  uid: hu:assertion:ft-d4-panel-g03
+  edgeClass: asserted
+  predicate: INCLUDES_TEST
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: labtest-labcorp-005009
+    type: LabTest
+  object:
+    ref: labtest-labcorp-mchc
+    type: LabTest
+  asserter:
+    ref: org-labcorp
+    type: Organization
+  locators:
+  - p-mchc
+  speechAct: STATES
+  polarity: POSITIVE
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:43:00-04:00'
+    statedAsOfPrecision: INSTANT
+  orderIndex: 2
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g04
+  uid: hu:assertion:ft-d4-panel-g04
+  edgeClass: asserted
+  predicate: INCLUDES_TEST
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: labtest-labcorp-005009
+    type: LabTest
+  object:
+    ref: labtest-labcorp-lymph-pct
+    type: LabTest
+  asserter:
+    ref: org-labcorp
+    type: Organization
+  locators:
+  - p-lymph-pct
+  speechAct: STATES
+  polarity: POSITIVE
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:43:00-04:00'
+    statedAsOfPrecision: INSTANT
+  orderIndex: 3
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g05
+  uid: hu:assertion:ft-d4-panel-g05
+  edgeClass: asserted
+  predicate: INCLUDES_TEST
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: labtest-labcorp-005009
+    type: LabTest
+  object:
+    ref: labtest-labcorp-lymph-abs
+    type: LabTest
+  asserter:
+    ref: org-labcorp
+    type: Organization
+  locators:
+  - p-lymph-abs
+  speechAct: STATES
+  polarity: POSITIVE
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:43:00-04:00'
+    statedAsOfPrecision: INSTANT
+  orderIndex: 4
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g06
+  uid: hu:assertion:ft-d4-panel-g06
+  edgeClass: asserted
+  predicate: INCLUDES_TEST
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: labtest-labcorp-005009
+    type: LabTest
+  object:
+    ref: labtest-labcorp-rbc
+    type: LabTest
+  asserter:
+    ref: org-labcorp
+    type: Organization
+  locators:
+  - p-rbc
+  speechAct: STATES
+  polarity: POSITIVE
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:43:00-04:00'
+    statedAsOfPrecision: INSTANT
+  orderIndex: 5
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g07
+  uid: hu:assertion:ft-d4-panel-g07
+  edgeClass: asserted
+  predicate: INCLUDES_TEST
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: labtest-labcorp-005009
+    type: LabTest
+  object:
+    ref: labtest-labcorp-hct
+    type: LabTest
+  asserter:
+    ref: org-labcorp
+    type: Organization
+  locators:
+  - p-hct
+  speechAct: STATES
+  polarity: POSITIVE
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:43:00-04:00'
+    statedAsOfPrecision: INSTANT
+  orderIndex: 6
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g08
+  uid: hu:assertion:ft-d4-panel-g08
+  edgeClass: asserted
+  predicate: MEASURES_METRIC
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: labtest-labcorp-rdw
+    type: LabTest
+  object:
+    ref: metric-loinc-788-0
+    type: Metric
+  asserter:
+    ref: org-labcorp
+    type: Organization
+  locators:
+  - p-rdw
+  speechAct: STATES
+  polarity: POSITIVE
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:43:00-04:00'
+    statedAsOfPrecision: INSTANT
+  qualifiers:
+  - 'unit as reported: %'
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g09
+  uid: hu:assertion:ft-d4-panel-g09
+  edgeClass: asserted
+  predicate: MEASURES_METRIC
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: labtest-labcorp-mch
+    type: LabTest
+  object:
+    ref: metric-loinc-785-6
+    type: Metric
+  asserter:
+    ref: org-labcorp
+    type: Organization
+  locators:
+  - p-mch
+  speechAct: STATES
+  polarity: POSITIVE
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:43:00-04:00'
+    statedAsOfPrecision: INSTANT
+  qualifiers:
+  - 'unit as reported: pg'
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g10
+  uid: hu:assertion:ft-d4-panel-g10
+  edgeClass: asserted
+  predicate: MEASURES_METRIC
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: labtest-labcorp-mchc
+    type: LabTest
+  object:
+    ref: metric-loinc-786-4
+    type: Metric
+  asserter:
+    ref: org-labcorp
+    type: Organization
+  locators:
+  - p-mchc
+  speechAct: STATES
+  polarity: POSITIVE
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:43:00-04:00'
+    statedAsOfPrecision: INSTANT
+  qualifiers:
+  - 'unit as reported: g/dL'
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g11
+  uid: hu:assertion:ft-d4-panel-g11
+  edgeClass: asserted
+  predicate: MEASURES_METRIC
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: labtest-labcorp-lymph-pct
+    type: LabTest
+  object:
+    ref: metric-loinc-736-9
+    type: Metric
+  asserter:
+    ref: org-labcorp
+    type: Organization
+  locators:
+  - p-lymph-pct
+  speechAct: STATES
+  polarity: POSITIVE
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:43:00-04:00'
+    statedAsOfPrecision: INSTANT
+  qualifiers:
+  - 'unit as reported: %'
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g12
+  uid: hu:assertion:ft-d4-panel-g12
+  edgeClass: asserted
+  predicate: MEASURES_METRIC
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: labtest-labcorp-lymph-abs
+    type: LabTest
+  object:
+    ref: metric-loinc-731-0
+    type: Metric
+  asserter:
+    ref: org-labcorp
+    type: Organization
+  locators:
+  - p-lymph-abs
+  speechAct: STATES
+  polarity: POSITIVE
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:43:00-04:00'
+    statedAsOfPrecision: INSTANT
+  qualifiers:
+  - 'unit as reported: x10E3/uL'
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g13
+  uid: hu:assertion:ft-d4-panel-g13
+  edgeClass: asserted
+  predicate: MEASURES_METRIC
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: labtest-labcorp-rbc
+    type: LabTest
+  object:
+    ref: metric-loinc-789-8
+    type: Metric
+  asserter:
+    ref: org-labcorp
+    type: Organization
+  locators:
+  - p-rbc
+  speechAct: STATES
+  polarity: POSITIVE
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:43:00-04:00'
+    statedAsOfPrecision: INSTANT
+  qualifiers:
+  - 'unit as reported: x10E6/uL'
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g14
+  uid: hu:assertion:ft-d4-panel-g14
+  edgeClass: asserted
+  predicate: MEASURES_METRIC
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: labtest-labcorp-hct
+    type: LabTest
+  object:
+    ref: metric-loinc-4544-3
+    type: Metric
+  asserter:
+    ref: org-labcorp
+    type: Organization
+  locators:
+  - p-hct
+  speechAct: STATES
+  polarity: POSITIVE
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:43:00-04:00'
+    statedAsOfPrecision: INSTANT
+  qualifiers:
+  - 'unit as reported: %'
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g15
+  uid: hu:assertion:ft-d4-panel-g15
+  edgeClass: structural
+  predicate: REQUIRES_INPUT_METRIC
+  subject:
+    ref: av-innerage-2
+    type: AlgorithmVersion
+  object:
+    ref: metric-it-glucose
+    type: Metric
+  asserter:
+    ref: org-insidetracker
+    type: Organization
+  locators:
+  - ii-glucose
+  - ia-count
+  orderIndex: 0
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g16
+  uid: hu:assertion:ft-d4-panel-g16
+  edgeClass: structural
+  predicate: REQUIRES_INPUT_METRIC
+  subject:
+    ref: av-innerage-2
+    type: AlgorithmVersion
+  object:
+    ref: metric-it-hba1c
+    type: Metric
+  asserter:
+    ref: org-insidetracker
+    type: Organization
+  locators:
+  - ii-hba1c
+  - ia-count
+  orderIndex: 1
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g17
+  uid: hu:assertion:ft-d4-panel-g17
+  edgeClass: structural
+  predicate: REQUIRES_INPUT_METRIC
+  subject:
+    ref: av-innerage-2
+    type: AlgorithmVersion
+  object:
+    ref: metric-it-rdw
+    type: Metric
+  asserter:
+    ref: org-insidetracker
+    type: Organization
+  locators:
+  - ii-rdw
+  - ia-count
+  orderIndex: 2
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g18
+  uid: hu:assertion:ft-d4-panel-g18
+  edgeClass: structural
+  predicate: REQUIRES_INPUT_METRIC
+  subject:
+    ref: av-innerage-2
+    type: AlgorithmVersion
+  object:
+    ref: metric-it-mch
+    type: Metric
+  asserter:
+    ref: org-insidetracker
+    type: Organization
+  locators:
+  - ii-mch
+  - ia-count
+  orderIndex: 3
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g19
+  uid: hu:assertion:ft-d4-panel-g19
+  edgeClass: structural
+  predicate: REQUIRES_INPUT_METRIC
+  subject:
+    ref: av-innerage-2
+    type: AlgorithmVersion
+  object:
+    ref: metric-it-mchc
+    type: Metric
+  asserter:
+    ref: org-insidetracker
+    type: Organization
+  locators:
+  - ii-mchc
+  - ia-count
+  orderIndex: 4
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g20
+  uid: hu:assertion:ft-d4-panel-g20
+  edgeClass: structural
+  predicate: REQUIRES_INPUT_METRIC
+  subject:
+    ref: av-innerage-2
+    type: AlgorithmVersion
+  object:
+    ref: metric-it-lymph-pct
+    type: Metric
+  asserter:
+    ref: org-insidetracker
+    type: Organization
+  locators:
+  - ii-lymph-pct
+  - ia-count
+  orderIndex: 5
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g21
+  uid: hu:assertion:ft-d4-panel-g21
+  edgeClass: structural
+  predicate: REQUIRES_INPUT_METRIC
+  subject:
+    ref: av-innerage-2
+    type: AlgorithmVersion
+  object:
+    ref: metric-it-lymph-abs
+    type: Metric
+  asserter:
+    ref: org-insidetracker
+    type: Organization
+  locators:
+  - ii-lymph-pct
+  - ia-count
+  orderIndex: 6
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g22
+  uid: hu:assertion:ft-d4-panel-g22
+  edgeClass: structural
+  predicate: REQUIRES_INPUT_METRIC
+  subject:
+    ref: av-innerage-2
+    type: AlgorithmVersion
+  object:
+    ref: metric-it-rbc
+    type: Metric
+  asserter:
+    ref: org-insidetracker
+    type: Organization
+  locators:
+  - ii-rbc
+  - ia-count
+  orderIndex: 7
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g23
+  uid: hu:assertion:ft-d4-panel-g23
+  edgeClass: structural
+  predicate: REQUIRES_INPUT_METRIC
+  subject:
+    ref: av-innerage-2
+    type: AlgorithmVersion
+  object:
+    ref: metric-it-hct
+    type: Metric
+  asserter:
+    ref: org-insidetracker
+    type: Organization
+  locators:
+  - ii-hct
+  - ia-count
+  orderIndex: 8
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g24
+  uid: hu:assertion:ft-d4-panel-g24
+  edgeClass: structural
+  predicate: OUTPUTS_METRIC
+  subject:
+    ref: av-innerage-2
+    type: AlgorithmVersion
+  object:
+    ref: metric-innerage
+    type: Metric
+  asserter:
+    ref: org-insidetracker
+    type: Organization
+  locators:
+  - ia-calc
+  - ia-years
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g25
+  uid: hu:assertion:ft-d4-panel-g25
+  edgeClass: asserted
+  predicate: PERFORMED_WITH_VERSION
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: labtest-innerage
+    type: LabTest
+  object:
+    ref: av-innerage-2
+    type: AlgorithmVersion
+  objectField: LabTest.algorithmVersions
+  asserter:
+    ref: org-insidetracker
+    type: Organization
+  locators:
+  - st-analyzes
+  speechAct: STATES
+  polarity: POSITIVE
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:43:00-04:00'
+    statedAsOfPrecision: INSTANT
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g26
+  uid: hu:assertion:ft-d4-panel-g26
+  edgeClass: asserted
+  predicate: DELIVERS
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: product-innerage
+    type: Product
+  object:
+    ref: labtest-innerage
+    type: LabTest
+  objectField: LabTest.products (direction IN)
+  asserter:
+    ref: org-insidetracker
+    type: Organization
+  locators:
+  - st-price
+  - st-analyzes
+  speechAct: STATES
+  polarity: POSITIVE
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:43:00-04:00'
+    statedAsOfPrecision: INSTANT
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g27
+  uid: hu:assertion:ft-d4-panel-g27
+  edgeClass: literal
+  predicate: REPORTS_INPUT_SET
+  assertionKind: FIELD
+  subject:
+    ref: av-innerage-2
+    type: AlgorithmVersion
+  value:
+    valueString: 17 inputs for males, 13 for females; inputs may change as data evolve
+  asserter:
+    ref: org-insidetracker
+    type: Organization
+  locators:
+  - ia-count
+  - ia-evolve
+  - st-analyzes
+  speechAct: STATES
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:43:00-04:00'
+    statedAsOfPrecision: INSTANT
+  note: not a single inputFeatureCount (sex-specific); "may change" -> a changed input set is a new AlgorithmVersion
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: g28
+  uid: hu:assertion:ft-d4-panel-g28
+  edgeClass: literal
+  predicate: RECOMMENDS_RETEST_INTERVAL
+  assertionKind: CLAIM
+  claimType: RECOMMENDATION
+  subject:
+    ref: labtest-innerage
+    type: LabTest
+  occurrenceOf:
+    ref: claim-innerage-retest-3-6-months
+    type: Claim
+  value:
+    valueString: P3M/P6M (3-6 months)
+  asserter:
+    ref: org-insidetracker
+    type: Organization
+  locators:
+  - st-retest
+  speechAct: RECOMMENDS
+  polarity: POSITIVE
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:43:00-04:00'
+    statedAsOfPrecision: INSTANT
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+assessments:
+- id: s01
+  uid: hu:assessment:ft-d4-panel-s01
+  assessmentKind: RESOLUTION
+  assessmentSubkind: D4.measurement-name-resolution
+  conclusionCode: CANDIDATE
+  status: PROPOSED
+  methodVersion: 'd4-name-resolution/0.1 (fixture: exact analyte-name match)'
+  about:
+  - hu:metric:insidetracker-innerage-input-rdw
+  - hu:metric:loinc-788-0
+  inputAssertions:
+  - g17
+  - g08
+  evidence:
+  - locator: ii-rdw
+    role: CONTEXT
+  - locator: p-rdw
+    role: CONTEXT
+  - locator: ia-evolve
+    role: QUALIFIES
+  summary: 'InnerAge input: RDW (females) -> candidate LOINC 788-0 (Labcorp 005009 component) by exact analyte name; the vendor states no unit, method or LOINC code:
+    CANDIDATE, not identity.'
+  questions:
+  - Q-D4-03
+  - Q-D4-22
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: s02
+  uid: hu:assessment:ft-d4-panel-s02
+  assessmentKind: RESOLUTION
+  assessmentSubkind: D4.measurement-name-resolution
+  conclusionCode: CANDIDATE
+  status: PROPOSED
+  methodVersion: 'd4-name-resolution/0.1 (fixture: exact analyte-name match)'
+  about:
+  - hu:metric:insidetracker-innerage-input-mch
+  - hu:metric:loinc-785-6
+  inputAssertions:
+  - g18
+  - g09
+  evidence:
+  - locator: ii-mch
+    role: CONTEXT
+  - locator: p-mch
+    role: CONTEXT
+  - locator: ia-evolve
+    role: QUALIFIES
+  summary: 'InnerAge input: MCH (males) -> candidate LOINC 785-6 (Labcorp 005009 component) by exact analyte name; the vendor states no unit, method or LOINC code:
+    CANDIDATE, not identity.'
+  questions:
+  - Q-D4-03
+  - Q-D4-22
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: s03
+  uid: hu:assessment:ft-d4-panel-s03
+  assessmentKind: RESOLUTION
+  assessmentSubkind: D4.measurement-name-resolution
+  conclusionCode: CANDIDATE
+  status: PROPOSED
+  methodVersion: 'd4-name-resolution/0.1 (fixture: exact analyte-name match)'
+  about:
+  - hu:metric:insidetracker-innerage-input-mchc
+  - hu:metric:loinc-786-4
+  inputAssertions:
+  - g19
+  - g10
+  evidence:
+  - locator: ii-mchc
+    role: CONTEXT
+  - locator: p-mchc
+    role: CONTEXT
+  - locator: ia-evolve
+    role: QUALIFIES
+  summary: 'InnerAge input: MCHC (males) -> candidate LOINC 786-4 (Labcorp 005009 component) by exact analyte name; the vendor states no unit, method or LOINC code:
+    CANDIDATE, not identity.'
+  questions:
+  - Q-D4-03
+  - Q-D4-22
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: s04
+  uid: hu:assessment:ft-d4-panel-s04
+  assessmentKind: RESOLUTION
+  assessmentSubkind: D4.measurement-name-resolution
+  conclusionCode: CANDIDATE
+  status: PROPOSED
+  methodVersion: 'd4-name-resolution/0.1 (fixture: exact analyte-name match)'
+  about:
+  - hu:metric:insidetracker-innerage-input-lymph-pct
+  - hu:metric:loinc-736-9
+  inputAssertions:
+  - g20
+  - g11
+  evidence:
+  - locator: ii-lymph-pct
+    role: CONTEXT
+  - locator: p-lymph-pct
+    role: CONTEXT
+  - locator: ia-evolve
+    role: QUALIFIES
+  summary: 'Vendor input line "Lymphocytes (percent of WBC for men, count for women)" -> InnerAge input: Lymphocytes percent of WBC (males) -> candidate LOINC 736-9
+    by name; the same vendor line maps to a different Metric for the other sex; unit/method not stated: CANDIDATE, not identity.'
+  questions:
+  - Q-D4-03
+  - Q-D4-22
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: s05
+  uid: hu:assessment:ft-d4-panel-s05
+  assessmentKind: RESOLUTION
+  assessmentSubkind: D4.measurement-name-resolution
+  conclusionCode: CANDIDATE
+  status: PROPOSED
+  methodVersion: 'd4-name-resolution/0.1 (fixture: exact analyte-name match)'
+  about:
+  - hu:metric:insidetracker-innerage-input-lymph-abs
+  - hu:metric:loinc-731-0
+  inputAssertions:
+  - g21
+  - g12
+  evidence:
+  - locator: ii-lymph-pct
+    role: CONTEXT
+  - locator: p-lymph-abs
+    role: CONTEXT
+  - locator: ia-evolve
+    role: QUALIFIES
+  summary: 'Vendor input line "Lymphocytes (percent of WBC for men, count for women)" -> InnerAge input: Lymphocyte count (females) -> candidate LOINC 731-0 by name;
+    the same vendor line maps to a different Metric for the other sex; unit/method not stated: CANDIDATE, not identity.'
+  questions:
+  - Q-D4-03
+  - Q-D4-22
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: s06
+  uid: hu:assessment:ft-d4-panel-s06
+  assessmentKind: RESOLUTION
+  assessmentSubkind: D4.measurement-name-resolution
+  conclusionCode: CANDIDATE
+  status: PROPOSED
+  methodVersion: 'd4-name-resolution/0.1 (fixture: exact analyte-name match)'
+  about:
+  - hu:metric:insidetracker-innerage-input-rbc
+  - hu:metric:loinc-789-8
+  inputAssertions:
+  - g22
+  - g13
+  evidence:
+  - locator: ii-rbc
+    role: CONTEXT
+  - locator: p-rbc
+    role: CONTEXT
+  - locator: ia-evolve
+    role: QUALIFIES
+  summary: 'InnerAge input: RBC count (males) -> candidate LOINC 789-8 (Labcorp 005009 component) by exact analyte name; the vendor states no unit, method or LOINC
+    code: CANDIDATE, not identity.'
+  questions:
+  - Q-D4-03
+  - Q-D4-22
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: s07
+  uid: hu:assessment:ft-d4-panel-s07
+  assessmentKind: RESOLUTION
+  assessmentSubkind: D4.measurement-name-resolution
+  conclusionCode: CANDIDATE
+  status: PROPOSED
+  methodVersion: 'd4-name-resolution/0.1 (fixture: exact analyte-name match)'
+  about:
+  - hu:metric:insidetracker-innerage-input-hct
+  - hu:metric:loinc-4544-3
+  inputAssertions:
+  - g23
+  - g14
+  evidence:
+  - locator: ii-hct
+    role: CONTEXT
+  - locator: p-hct
+    role: CONTEXT
+  - locator: ia-evolve
+    role: QUALIFIES
+  summary: 'InnerAge input: Hematocrit (males) -> candidate LOINC 4544-3 (Labcorp 005009 component) by exact analyte name; the vendor states no unit, method or LOINC
+    code: CANDIDATE, not identity.'
+  questions:
+  - Q-D4-03
+  - Q-D4-22
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock
+- id: s08
+  uid: hu:assessment:ft-d4-panel-s08
+  assessmentKind: RESOLUTION
+  assessmentSubkind: D4.measurement-name-resolution
+  conclusionCode: CANDIDATE
+  status: PROPOSED
+  methodVersion: 'd4-name-resolution/0.1 (fixture: exact analyte-name match)'
+  about:
+  - hu:metric:insidetracker-innerage-input-hba1c
+  - hu:metric:loinc-4548-4
+  inputAssertions:
+  - g16
+  evidence:
+  - locator: ii-hba1c
+    role: CONTEXT
+  - locator: ia-evolve
+    role: QUALIFIES
+  summary: 'Vendor input "Hemoglobin A1c" -> candidate LOINC 4548-4 (the Metric of ../hba1c-two-labs-interference) by exact analyte name; the vendor states no unit
+    (NGSP % or IFCC mmol/mol), method or lab: CANDIDATE, not identity. Through this pair the HbF interference SAFETY_SIGNAL of that fixture (s02) reaches InnerAge
+    2.0 (Q-D4-26).'
+  questions:
+  - Q-D4-22
+  - Q-D4-26
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-consumer-panel-and-blood-clock

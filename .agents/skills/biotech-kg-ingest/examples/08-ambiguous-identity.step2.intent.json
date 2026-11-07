@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v2",
+  "intentId": "skill-ambiguous-2",
+  "pins": {
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+    "policyVersion": "bks-admission-policy/v1"
+  },
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "biotech-kg-ingest-examples",
+      "model": "example"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run-skill-ambiguous-2",
+      "missionId": "mission-skill-ambiguous",
+      "operationId": "op-skill-ambiguous-2"
+    },
+    "activityKind": "INGESTION"
+  },
+  "basis": {
+    "creationOnly": {
+      "reason": "biotech-kg-ingest example ambiguous: first capture of synthetic example entities"
+    }
+  },
+  "sources": [
+    {
+      "ref": "news",
+      "source": {
+        "canonicalUri": "https://examples.bks.test/ambiguous/news",
+        "sourceKind": "WEB_PAGE"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-07T09:00:00Z",
+        "observedAt": "2026-10-07T09:00:00Z",
+        "contentHash": "sha256:0300a500735e80d51cb58f5ad7878774943e04c4732e62dad72fa0de458c5f0b",
+        "contentHashBasis": "SYNTHETIC_FIXTURE",
+        "captureMethod": "bks-example/1",
+        "captureCompleteness": "COMPLETE"
+      },
+      "locators": [
+        {
+          "ref": "l2",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "raw-capture/v1",
+            "type": "TextQuoteSelector",
+            "exact": "Example Nutrition announced a recall",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 5,
+              "end": 41
+            }
+          },
+          "exact": "Example Nutrition announced a recall",
+          "startOffset": 5,
+          "endOffset": 41
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "org",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "Example Nutrition",
+      "uidSegment": "skill-ambiguous-us",
+      "properties": {
+        "entityKind": "UNSPECIFIED"
+      },
+      "onMatch": "review"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "legal-us",
+      "kind": "assertion.literal",
+      "subjectRef": "org",
+      "asserterRef": "org",
+      "evidence": [
+        "l2"
+      ],
+      "assertion": {
+        "predicate": "LEGAL_NAME",
+        "validity": {}
+      },
+      "value": {
+        "valueString": "Example Nutrition Inc."
+      }
+    }
+  ]
+}

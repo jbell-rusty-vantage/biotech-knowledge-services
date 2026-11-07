@@ -1,0 +1,45 @@
+{
+  "format": "bks-skill-manifest.v1",
+  "skill": "biotech-kg-ingest",
+  "version": "2.0.0",
+  "entry": "SKILL.md",
+  "requires": {
+    "surfaces": {
+      "http": ["GET /describe", "POST /kg/plan", "POST /kg/apply", "GET /kg/receipt?effectKey=", "POST /kg/verify-effects"],
+      "mcp": ["describe", "kg_plan", "kg_apply", "kg_receipt", "kg_verify_effects"],
+      "developmentOnly": ["POST /kg/admit", "kg_admit (BKS_LOCAL_DEV=1 with a signing key; production witnesses come from the admission service)"],
+      "capabilities": ["plan", "apply", "receipt.get", "verifyEffects"]
+    },
+    "contracts": {
+      "intent": "biotech-knowledge-intent.v2",
+      "plan": "biotech-knowledge-plan.v2",
+      "apply": "biotech-knowledge-apply.v2",
+      "receipt": "biotech-knowledge-receipt.v2",
+      "witness": "bks-apply-witness.v1",
+      "effectVerification": "bks-effect-verification.v1",
+      "canonicalJson": "bks-canonical-json.v2",
+      "snapshot": "bks-custody-snapshot.v1",
+      "sealedVerification": "bks-sealed-verification.v1",
+      "legacyIntent": "biotech-knowledge-intent.v1 (migration only: bks kg migrate-v1)"
+    },
+    "planOutcomes": ["applicable", "partial", "held", "rejected", "noop"],
+    "release": { "releaseId": "biotech-schema-v2.2.0", "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74", "rule": "pins.schemaReleaseDigest must equal the executor's pinned release; the service enforces it" },
+    "cypher": { "baseline": "5", "forbidden": "CYPHER 25" }
+  },
+  "references": [
+    "references/proposal-matrix.md",
+    "references/intent-v2-fields.md",
+    "references/evidence-custody.md",
+    "references/plan-receipt-guide.md",
+    "references/recovery-cookbook.md",
+    "references/error-codes.md",
+    "references/vendor-overlay.md"
+  ],
+  "examples": {
+    "file": "examples/examples.json",
+    "intents": "examples/*.intent.json",
+    "runner": "apps/executor/src/skill-examples.integration.test.ts (BKS_INTEGRATION=1, fresh disposable Neo4j; executor HTTP path)"
+  },
+  "dependencies": { "onDemand": ["neo4j-cypher-skill (read compiled statements only)", "neo4j-import-skill (bulk adapter design only)"], "overridesFirst": ["OV-CYPHER-VERSION", "OV-GENERIC-WRITES", "OV-ELEMENT-ID", "OV-CONFIRM-WRITES"] },
+  "limits": { "proposalsPerIntent": 500, "statementsPerPlan": 6000, "sources": 200, "subjects": 1000, "applyBudgetMs": 30000, "witnessLifetimeSeconds": 60, "verifyPageSize": 500 }
+}

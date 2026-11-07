@@ -1,0 +1,70 @@
+# Locators for fixture capture-failures-coverage (FIXTURES stage, A8, 2026-10-08).
+# Only the empty PubMed [si] search (former ca-08; a capture, not an attempt) is a kernel SourceSnapshot, so it is the only one with SourceLocators.
+# FAILED attempts keep no snapshot (D11 CaptureAttempt.responseHash + errorText only); their bytes are quoted under
+# responseEvidence to verify errorText and responseHash - they are NOT graph locators. The ICTRP timeout (ca-07) received
+# 0 bytes and has no evidence entry. Offsets: code points, end exclusive.
+snapshots:
+  - ref: "snap-pubmed-si-nct02921659"
+    canonicalUri: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=NCT02921659%5Bsi%5D&retmode=json"
+    title: "PubMed esearch NCT02921659[si] - count 0 (same snapshot as nr-trial-jats-unstructured#snap-pubmed-si-nct02921659)"
+    tool: "ncbi-eutils-pubmed"
+    captureMethod: "ncbi-eutils-pubmed/curl-8"
+    mimeType: "application/json"
+    contentHash: "sha256:d6564b024587c2a0c3aac5fd24b0ae9091255596d9aeb019f5ab1a0c2bcad7ad"
+    contentHashBasis: "RAW_BYTES"
+    bytes: 341
+    retrievedAt: "2026-10-08T21:54:49Z"
+    captureFile: "fresh/eutils-esearch-nct.json"
+    captureCompleteness: "COMPLETE"
+    researchCapture: "raw/eutils-esearch-nct.json at 2026-10-08T21:07:24Z (former attempt ca-08, now a snapshot only), identical sha256"
+locators:
+  - id: "l-esearch-count0"
+    snapshot: "snap-pubmed-si-nct02921659"
+    selectorKind: "JSON_POINTER"
+    jsonPointer: "/esearchresult/count"
+    pointerValue: "0"
+    pointerVerified: true
+    exact: "\"count\":\"0\""
+    prefix: "ersion\":\"0.3\"},\"esearchresult\":{"
+    suffix: ",\"retmax\":\"0\",\"retstart\":\"0\",\"id"
+    startOffset: 62
+    endOffset: 73
+    offsetBasis: "CODE_POINT"
+    quoteHash: "sha256:b54baa7820ed51e5ddd535ba7696a0c536c3ef8a24a4c9c755bdb8c1082233fd"
+    occurrencesInSnapshot: 1
+    verified: "2026-10-08 re-selected from the fresh capture (contentHash equal to the snapshot's)"
+  - id: "l-esearch-notfound"
+    snapshot: "snap-pubmed-si-nct02921659"
+    selectorKind: "JSON_POINTER"
+    jsonPointer: "/esearchresult/errorlist/phrasesnotfound/0"
+    pointerValue: "NCT02921659"
+    pointerVerified: true
+    exact: "\"errorlist\":{\"phrasesnotfound\":[\"NCT02921659\"]"
+    prefix: "ytranslation\":\"NCT02921659[si]\","
+    suffix: ",\"fieldsnotfound\":[]},\"warningli"
+    startOffset: 171
+    endOffset: 217
+    offsetBasis: "CODE_POINT"
+    quoteHash: "sha256:eeb05b629e0866642d5bf7271c49c1604a45d77e57e023b85d8955ea7ca178b6"
+    occurrencesInSnapshot: 1
+    verified: "2026-10-08 re-selected from the fresh capture (contentHash equal to the snapshot's)"
+  - id: "l-esearch-nomsg"
+    snapshot: "snap-pubmed-si-nct02921659"
+    selectorKind: "JSON_POINTER"
+    jsonPointer: "/esearchresult/warninglist/outputmessages/0"
+    pointerValue: "No items found."
+    pointerVerified: true
+    exact: "\"outputmessages\":[\"No items found.\"]"
+    prefix: "\":[],\"quotedphrasesnotfound\":[],"
+    suffix: "}}}\n"
+    startOffset: 301
+    endOffset: 337
+    offsetBasis: "CODE_POINT"
+    quoteHash: "sha256:2040f39735f8bf673ff63ceaeb70fca407330c0630e6d1ac704a2f99b2320d1c"
+    occurrencesInSnapshot: 1
+    verified: "2026-10-08 re-selected from the fresh capture (contentHash equal to the snapshot's)"
+responseEvidence:
+  - { id: e-ctgov-403, file: "raw/ctgov-history-NCT02921659.json", httpStatus: 403, contentHash: "sha256:c996c0469ef05ff6fdd1f7cefbc3f7e109bb21969de42fcf591498a828a7ad5f", bytes: 134, exact: "<title>403</title>403 Forbidden", startOffset: 103, endOffset: 134, note: "identical bytes for ca-01, ca-02, ca-03 (raw/ctgov-history-NCT02921659-browserUA.json, raw/ctgov-history-v1.json) and for the re-check at 2026-10-08T21:55:28Z (fresh/)" }
+  - { id: e-firecrawl-403, file: "raw/fc-ctgov-history-NCT02921659.md", httpStatus: 200, contentHash: "sha256:c5dfbf2b7c6dd5abb49c19e25f632c5a9eab4e42940c08b354061cfa3a861c2d", bytes: 52166, exact: "<title>403</title>403 Forbidden", startOffset: 48048, endOffset: 48079, note: "Firecrawl returned success with the site glossary and the embedded 403 page (tool rendition)" }
+  - { id: e-fdc-429, file: "raw/fdc-search-branded-gtin.json", httpStatus: 429, contentHash: "sha256:836fe5c63ad5d27c15026438cd6bbd91c5bdf45eff2625c89aa429f44c7ed576", bytes: 178, exact: "\"code\": \"OVER_RATE_LIMIT\"", startOffset: 19, endOffset: 44, note: "response header Retry-After: 10184; X-Ratelimit-Limit: 10; X-Ratelimit-Remaining: 0" }
+  - { id: e-cas-401, file: "raw/cas-commonchem-23111-00-4.json", httpStatus: 401, contentHash: "sha256:3e7db788e384631f8a9f299d1797e6f8af6d16d643a1c91f9e83ae15212de45c", bytes: 26, exact: "{\"message\":\"Unauthorized\"}", startOffset: 0, endOffset: 26, note: "re-check at 2026-10-08T21:55:28Z: identical bytes" }

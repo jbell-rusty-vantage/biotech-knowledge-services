@@ -1,0 +1,881 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v1",
+  "intentId": "ft-d4-nrnad-2026-10-08",
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "ft-d4-fixtures-agent-a3",
+      "model": "claude-opus-5-5"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run:ft-D4-nr-nad-compound-to-test",
+      "missionId": "mission:ft-D4-fixtures"
+    },
+    "activityKind": "EXTRACTION"
+  },
+  "onStale": "fail",
+  "sources": [
+    {
+      "ref": "snap-martens",
+      "source": {
+        "canonicalUri": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC5876407/fullTextXML",
+        "title": "Martens et al. 2018, Chronic nicotinamide riboside supplementation is well-tolerated and elevates NAD+ in healthy middle-aged and older adults, Nat Commun 9:1286 (Europe PMC JATS XML; PMID 29599478; DOI 10.1038/s41467-018-03421-7)",
+        "sourceKind": "API",
+        "properties": {
+          "genre": "PEER_REVIEWED_PUBLICATION"
+        }
+      },
+      "snapshot": {
+        "observedAt": "2026-10-08T17:39:00-04:00",
+        "retrievedAt": "2026-10-08T17:39:00-04:00",
+        "contentHash": "sha256:dd620181966f862df7030f4bb7b09811befd90e8e67c2b94fc90f9c212664794",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "captureMethod": "curl Europe PMC REST fullTextXML (no key)",
+          "mimeType": "application/xml",
+          "derivedTextHash": "sha256:e954d92dafeffbeeb10f8468b6ff22925020af4f36afb8773798ae57646ad702",
+          "derivedTextRule": "python: re.sub(r'\\s+', ' ', html.unescape(re.sub(r'<[^>]+>', ' ', xml_utf8))) (tags -> space, entities unescaped, whitespace runs -> one space, no strip)"
+        }
+      },
+      "locators": [
+        {
+          "ref": "m1-pbmc-nad",
+          "uid": "hu:locator:ft-d4-nrnad-m1-pbmc-nad",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "Oral NR supplementation effectively elevated levels of NAD + in PBMCs by ~60% compared with placebo (mean change = 6.2 pmol per mg protein; one-sided 95% CI (0.074, ∞)).",
+          "startOffset": 15148,
+          "endOffset": 15317,
+          "section": "Results",
+          "quotePrefix": " as previously established 34 . ",
+          "quoteSuffix": " The mean level of NADP + also i",
+          "properties": {
+            "selectorJson": "{\"end\": 15317, \"offsetBasis\": \"Unicode code points of the derived text (see derivedText.rule) of the XML snapshot\", \"start\": 15148, \"type\": \"TextPositionSelector\"}"
+          }
+        },
+        {
+          "ref": "m2-compartment",
+          "uid": "hu:locator:ft-d4-nrnad-m2-compartment",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "measurable in circulating peripheral blood mononuclear cells (PBMCs), but undetectable in plasma and urine",
+          "startOffset": 14950,
+          "endOffset": 15056,
+          "section": "Results",
+          "quotePrefix": " have recently been shown to be ",
+          "quoteSuffix": " 26 , we assessed the NAD + meta",
+          "properties": {
+            "selectorJson": "{\"end\": 15056, \"offsetBasis\": \"Unicode code points of the derived text (see derivedText.rule) of the XML snapshot\", \"start\": 14950, \"type\": \"TextPositionSelector\"}"
+          }
+        },
+        {
+          "ref": "m3-naad-marker",
+          "uid": "hu:locator:ft-d4-nrnad-m3-naad-marker",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "NAAD is a highly sensitive and reliable biomarker of increased NAD + metabolism and a product of NR utilization in humans",
+          "startOffset": 15710,
+          "endOffset": 15831,
+          "section": "Results",
+          "quotePrefix": "nfirming a previous report that ",
+          "quoteSuffix": " 26 . NR also elevated the mean ",
+          "properties": {
+            "selectorJson": "{\"end\": 15831, \"offsetBasis\": \"Unicode code points of the derived text (see derivedText.rule) of the XML snapshot\", \"start\": 15710, \"type\": \"TextPositionSelector\"}"
+          }
+        },
+        {
+          "ref": "m4-stimulates",
+          "uid": "hu:locator:ft-d4-nrnad-m4-stimulates",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "chronic supplementation with the NAD + precursor vitamin, nicotinamide riboside (NR), is well tolerated and effectively stimulates NAD + metabolism in healthy middle-aged and older adults",
+          "startOffset": 2471,
+          "endOffset": 2658,
+          "section": "Abstract",
+          "quotePrefix": ", crossover clinical trial that ",
+          "quoteSuffix": ". Our results also provide initi",
+          "properties": {
+            "selectorJson": "{\"end\": 2658, \"offsetBasis\": \"Unicode code points of the derived text (see derivedText.rule) of the XML snapshot\", \"start\": 2471, \"type\": \"TextPositionSelector\"}"
+          }
+        },
+        {
+          "ref": "m5-pbmc-method",
+          "uid": "hu:locator:ft-d4-nrnad-m5-pbmc-method",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "we assessed the NAD + metabolome in circulating PBMCs, as previously established 34",
+          "startOffset": 15062,
+          "endOffset": 15145,
+          "section": "Results",
+          "quotePrefix": "ctable in plasma and urine 26 , ",
+          "quoteSuffix": " . Oral NR supplementation effec",
+          "properties": {
+            "selectorJson": "{\"end\": 15145, \"offsetBasis\": \"Unicode code points of the derived text (see derivedText.rule) of the XML snapshot\", \"start\": 15062, \"type\": \"TextPositionSelector\"}"
+          }
+        },
+        {
+          "ref": "m6-lcms-ref",
+          "uid": "hu:locator:ft-d4-nrnad-m6-lcms-ref",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "Targeted, LCMS-based metabolomics for quantitative measurement of NAD+ metabolites",
+          "startOffset": 62545,
+          "endOffset": 62627,
+          "section": "References (34)",
+          "quotePrefix": "76803 34. Trammell SA Brenner C ",
+          "quoteSuffix": " Comput. Struct. Biotechnol. J. ",
+          "properties": {
+            "selectorJson": "{\"end\": 62627, \"offsetBasis\": \"Unicode code points of the derived text (see derivedText.rule) of the XML snapshot\", \"start\": 62545, \"type\": \"TextPositionSelector\"}"
+          }
+        },
+        {
+          "ref": "m7-nct",
+          "uid": "hu:locator:ft-d4-nrnad-m7-nct",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "registered on clinicaltrials.gov under the identifier NCT02921659",
+          "startOffset": 9476,
+          "endOffset": 9541,
+          "section": "Methods",
+          "quotePrefix": "ented for this study, which was ",
+          "quoteSuffix": " and conducted between March 201",
+          "properties": {
+            "selectorJson": "{\"end\": 9541, \"offsetBasis\": \"Unicode code points of the derived text (see derivedText.rule) of the XML snapshot\", \"start\": 9476, \"type\": \"TextPositionSelector\"}"
+          }
+        },
+        {
+          "ref": "m8-naad",
+          "uid": "hu:locator:ft-d4-nrnad-m8-naad",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "NR also elevated levels of nicotinic acid adenine dinucleotide (NAAD) nearly fivefold above the placebo condition",
+          "startOffset": 15503,
+          "endOffset": 15616,
+          "section": "Results",
+          "quotePrefix": "(Fig. 2 and Table 3 ). Of note, ",
+          "quoteSuffix": " (mean change = 1.1 pmol per mg ",
+          "properties": {
+            "selectorJson": "{\"end\": 15616, \"offsetBasis\": \"Unicode code points of the derived text (see derivedText.rule) of the XML snapshot\", \"start\": 15503, \"type\": \"TextPositionSelector\"}"
+          }
+        }
+      ]
+    },
+    {
+      "ref": "snap-ctgov",
+      "source": {
+        "canonicalUri": "https://clinicaltrials.gov/api/v2/studies/NCT02921659?fields=protocolSection.identificationModule,protocolSection.outcomesModule",
+        "title": "ClinicalTrials.gov API v2 - NCT02921659 (identification and outcomes modules)",
+        "sourceKind": "REGISTRY",
+        "properties": {
+          "genre": "TRIAL_REGISTRY_RECORD"
+        }
+      },
+      "snapshot": {
+        "observedAt": "2026-10-08T17:39:00-04:00",
+        "retrievedAt": "2026-10-08T17:39:00-04:00",
+        "contentHash": "sha256:b723914eeecf73f7f217f05bcebed23b6996f16dfabaad66943bc132a41a4a5c",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "captureMethod": "curl ClinicalTrials.gov API v2 (fields filter)",
+          "mimeType": "application/json"
+        }
+      },
+      "locators": [
+        {
+          "ref": "ct1-primary",
+          "uid": "hu:locator:ft-d4-nrnad-ct1-primary",
+          "selectorKind": "JSON_POINTER",
+          "quote": "Incidence of treatment emergent adverse events",
+          "startOffset": 0,
+          "endOffset": 46,
+          "quotePrefix": "",
+          "quoteSuffix": "",
+          "properties": {
+            "selectorJson": "{\"pointer\": \"/protocolSection/outcomesModule/primaryOutcomes/0/measure\", \"refinedBy\": {\"end\": 46, \"offsetBasis\": \"Unicode code points of the decoded JSON string value at pointer\", \"start\": 0, \"type\": \"TextPositionSelector\"}, \"type\": \"JsonPointerSelector\"}"
+          }
+        },
+        {
+          "ref": "ct2-secondary",
+          "uid": "hu:locator:ft-d4-nrnad-ct2-secondary",
+          "selectorKind": "JSON_POINTER",
+          "quote": "Systemic markers of oxidative stress and inflammation",
+          "startOffset": 0,
+          "endOffset": 53,
+          "quotePrefix": "",
+          "quoteSuffix": "",
+          "properties": {
+            "selectorJson": "{\"pointer\": \"/protocolSection/outcomesModule/secondaryOutcomes/4/measure\", \"refinedBy\": {\"end\": 53, \"offsetBasis\": \"Unicode code points of the decoded JSON string value at pointer\", \"start\": 0, \"type\": \"TextPositionSelector\"}, \"type\": \"JsonPointerSelector\"}"
+          }
+        }
+      ]
+    },
+    {
+      "ref": "snap-jinfiniti",
+      "source": {
+        "canonicalUri": "https://www.jinfiniti.com/product/intracellular-nad-test",
+        "title": "Jinfiniti - Intracellular NAD® Test: At-Home NAD+ Test Kit (product page)",
+        "sourceKind": "WEB_PAGE",
+        "properties": {
+          "genre": "PRODUCT_PAGE"
+        }
+      },
+      "snapshot": {
+        "observedAt": "2026-10-08T17:40:00-04:00",
+        "retrievedAt": "2026-10-08T17:40:00-04:00",
+        "contentHash": "sha256:405e28c0e82b77d68ea124b1ec5cb9d3984a80ebb026248fbb0c471bf88832f4",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "captureMethod": "Firecrawl CLI 1.23.1 scrape --only-main-content --max-age 0 (found with Tavily CLI search in the research stage)",
+          "mimeType": "text/markdown"
+        }
+      },
+      "locators": [
+        {
+          "ref": "j1-rbc",
+          "uid": "hu:locator:ft-d4-nrnad-j1-rbc",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "This test measures NAD+ intracellularly, meaning inside your red blood cells.",
+          "startOffset": 21098,
+          "endOffset": 21175,
+          "section": "FAQ",
+          "quotePrefix": " the liquid part of your blood. ",
+          "quoteSuffix": " That’s where NAD+ is actually u",
+          "properties": {
+            "selectorJson": "{\"end\": 21175, \"offsetBasis\": \"Unicode code points of the UTF-8 Firecrawl markdown capture\", \"start\": 21098, \"type\": \"TextPositionSelector\"}"
+          }
+        },
+        {
+          "ref": "j2-not-serum",
+          "uid": "hu:locator:ft-d4-nrnad-j2-not-serum",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "Most NAD+ tests measure NAD in serum or plasma — the liquid part of your blood.",
+          "startOffset": 21018,
+          "endOffset": 21097,
+          "section": "FAQ",
+          "quotePrefix": "oduct/intracellular-nad-test/)\n\n",
+          "quoteSuffix": " This test measures NAD+ intrace",
+          "properties": {
+            "selectorJson": "{\"end\": 21097, \"offsetBasis\": \"Unicode code points of the UTF-8 Firecrawl markdown capture\", \"start\": 21018, \"type\": \"TextPositionSelector\"}"
+          }
+        },
+        {
+          "ref": "j3-unit",
+          "uid": "hu:locator:ft-d4-nrnad-j3-unit",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "Personalized results with your NAD+ level in μM",
+          "startOffset": 7479,
+          "endOffset": 7526,
+          "quotePrefix": "tracellular NAD+ measurement\n\n- ",
+          "quoteSuffix": "\n\n- Dosing recommendations based",
+          "properties": {
+            "selectorJson": "{\"end\": 7526, \"offsetBasis\": \"Unicode code points of the UTF-8 Firecrawl markdown capture\", \"start\": 7479, \"type\": \"TextPositionSelector\"}"
+          }
+        },
+        {
+          "ref": "j4-clia",
+          "uid": "hu:locator:ft-d4-nrnad-j4-clia",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "CLIA-certified intracellular NAD+ measurement",
+          "startOffset": 7430,
+          "endOffset": 7475,
+          "quotePrefix": " finger-prick collection kit\n\n- ",
+          "quoteSuffix": "\n\n- Personalized results with yo",
+          "properties": {
+            "selectorJson": "{\"end\": 7475, \"offsetBasis\": \"Unicode code points of the UTF-8 Firecrawl markdown capture\", \"start\": 7430, \"type\": \"TextPositionSelector\"}"
+          }
+        },
+        {
+          "ref": "j5-fingerprick",
+          "uid": "hu:locator:ft-d4-nrnad-j5-fingerprick",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "At-home finger-prick collection kit",
+          "startOffset": 7391,
+          "endOffset": 7426,
+          "quotePrefix": "ct/intracellular-nad-test/#)\n\n- ",
+          "quoteSuffix": "\n\n- CLIA-certified intracellular",
+          "properties": {
+            "selectorJson": "{\"end\": 7426, \"offsetBasis\": \"Unicode code points of the UTF-8 Firecrawl markdown capture\", \"start\": 7391, \"type\": \"TextPositionSelector\"}"
+          }
+        },
+        {
+          "ref": "j6-optimal",
+          "uid": "hu:locator:ft-d4-nrnad-j6-optimal",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "optimal range (40–100 μM)",
+          "startOffset": 22369,
+          "endOffset": 22394,
+          "section": "FAQ: dosing guidance",
+          "quotePrefix": "our level falls relative to the ",
+          "quoteSuffix": ". If you’re already supplementin",
+          "properties": {
+            "selectorJson": "{\"end\": 22394, \"offsetBasis\": \"Unicode code points of the UTF-8 Firecrawl markdown capture\", \"start\": 22369, \"type\": \"TextPositionSelector\"}"
+          }
+        },
+        {
+          "ref": "j7-price",
+          "uid": "hu:locator:ft-d4-nrnad-j7-price",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "Intracellular NAD® TestFrom $198.00",
+          "startOffset": 7262,
+          "endOffset": 7297,
+          "quotePrefix": "nfiniti.com/?add-to-cart=3043)\n\n",
+          "quoteSuffix": "Add To Cart\n\n[What’s Included](h",
+          "properties": {
+            "selectorJson": "{\"end\": 7297, \"offsetBasis\": \"Unicode code points of the UTF-8 Firecrawl markdown capture\", \"start\": 7262, \"type\": \"TextPositionSelector\"}"
+          }
+        },
+        {
+          "ref": "j8-membership",
+          "uid": "hu:locator:ft-d4-nrnad-j8-membership",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "The NAD Membership includes Intracellular NAD® Test and Vitality↑® NAD+ Booster shipped quarterly",
+          "startOffset": 23005,
+          "endOffset": 23102,
+          "section": "FAQ",
+          "quotePrefix": "/intracellular-nad-test/)\n\nYes. ",
+          "quoteSuffix": " — designed to establish your ba",
+          "properties": {
+            "selectorJson": "{\"end\": 23102, \"offsetBasis\": \"Unicode code points of the UTF-8 Firecrawl markdown capture\", \"start\": 23005, \"type\": \"TextPositionSelector\"}"
+          }
+        },
+        {
+          "ref": "j9-set-ranges",
+          "uid": "hu:locator:ft-d4-nrnad-j9-set-ranges",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "Jinfiniti pioneered NAD testing, established the reference ranges and guidelines and generated most of the NAD data relevant to consumers.",
+          "startOffset": 4305,
+          "endOffset": 4443,
+          "quotePrefix": "an all other vendors combined.\n\n",
+          "quoteSuffix": " The test was developed by Profe",
+          "properties": {
+            "selectorJson": "{\"end\": 4443, \"offsetBasis\": \"Unicode code points of the UTF-8 Firecrawl markdown capture\", \"start\": 4305, \"type\": \"TextPositionSelector\"}"
+          }
+        },
+        {
+          "ref": "j10-own-booster",
+          "uid": "hu:locator:ft-d4-nrnad-j10-own-booster",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "Jinfiniti’s clinical data — conducted on our own Vitality↑® NAD+ Booster — found that 85% of participants reached optimal NAD+ levels (40–100 μM) within 4 weeks when dosing was guided by testing.",
+          "startOffset": 11972,
+          "endOffset": 12167,
+          "quotePrefix": "tracellular-nad-test/#buy-now)\n\n",
+          "quoteSuffix": " That result is not achievable w",
+          "properties": {
+            "selectorJson": "{\"end\": 12167, \"offsetBasis\": \"Unicode code points of the UTF-8 Firecrawl markdown capture\", \"start\": 11972, \"type\": \"TextPositionSelector\"}"
+          }
+        },
+        {
+          "ref": "j11-cv",
+          "uid": "hu:locator:ft-d4-nrnad-j11-cv",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "A simple finger prick test with high accuracy (3.1% CV)",
+          "startOffset": 4081,
+          "endOffset": 4136,
+          "quotePrefix": "ls — where it actually matters. ",
+          "quoteSuffix": " and reproducibility, trusted by",
+          "properties": {
+            "selectorJson": "{\"end\": 4136, \"offsetBasis\": \"Unicode code points of the UTF-8 Firecrawl markdown capture\", \"start\": 4081, \"type\": \"TextPositionSelector\"}"
+          }
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "substance-nr",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "Nicotinamide riboside",
+      "uidSegment": "nicotinamide-riboside",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "substance-nad",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "NAD+ (nicotinamide adenine dinucleotide, oxidized)",
+      "uidSegment": "nad-plus",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "substance-naad",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "Nicotinic acid adenine dinucleotide (NAAD)",
+      "uidSegment": "naad",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "mechanism-nicotinate",
+      "mode": "new",
+      "nodeType": "Mechanism",
+      "name": "Nicotinate metabolism (Reactome R-HSA-196807)",
+      "uidSegment": "reactome-r-hsa-196807",
+      "properties": {},
+      "identifiers": [
+        {
+          "scheme": "REACTOME",
+          "issuer": "Reactome",
+          "value": "R-HSA-196807"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "biomarker-nad",
+      "mode": "new",
+      "nodeType": "Biomarker",
+      "name": "NAD+ level (cellular)",
+      "uidSegment": "nad-plus-level",
+      "properties": {
+        "biomarkerKind": "METABOLITE",
+        "searchText": "NAD+, NAD, nicotinamide adenine dinucleotide level"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "biomarker-naad",
+      "mode": "new",
+      "nodeType": "Biomarker",
+      "name": "NAAD level",
+      "uidSegment": "naad-level",
+      "properties": {
+        "biomarkerKind": "METABOLITE",
+        "searchText": "NAAD, nicotinic acid adenine dinucleotide"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "metric-nad-pbmc",
+      "mode": "new",
+      "nodeType": "Metric",
+      "name": "NAD+ in PBMCs (pmol per mg protein), Martens 2018",
+      "uidSegment": "nad-plus-in-pbmc-pmol-per-mg-protein",
+      "properties": {
+        "metricKind": "MEASURAND",
+        "defaultResultKind": "MEASURED",
+        "definitionSource": "PUBLICATION",
+        "definitionIssuerName": "Martens et al. 2018",
+        "systemText": "PBMC",
+        "methodText": "targeted LC-MS metabolomics (cited ref 34), normalized to total protein",
+        "canonicalUnitCode": "pmol/mg{protein}",
+        "scale": "QUANTITATIVE",
+        "notReported": [
+          "MEASURAND_SYSTEM"
+        ],
+        "searchText": "NAD+ PBMC peripheral blood mononuclear cells pmol/mg protein"
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "metric-nad-rbc",
+      "mode": "new",
+      "nodeType": "Metric",
+      "name": "Intracellular NAD+ in red blood cells (μM), Jinfiniti",
+      "uidSegment": "nad-plus-in-rbc-umol-jinfiniti",
+      "properties": {
+        "metricKind": "MEASURAND",
+        "defaultResultKind": "MEASURED",
+        "definitionSource": "VENDOR",
+        "definitionIssuerName": "Jinfiniti",
+        "systemText": "RBC (finger-prick capillary blood)",
+        "canonicalUnitCode": "umol/L",
+        "scale": "QUANTITATIVE",
+        "notReported": [
+          "METRIC_METHOD"
+        ],
+        "searchText": "NAD+ intracellular red blood cells uM NAD test"
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "labtest-jinfiniti",
+      "mode": "new",
+      "nodeType": "LabTest",
+      "name": "Jinfiniti Intracellular NAD® Test",
+      "uidSegment": "jinfiniti-intracellular-nad-test",
+      "properties": {
+        "testKind": "SINGLE",
+        "orderChannel": "DIRECT_TO_CONSUMER",
+        "collectionModes": [
+          "CAPILLARY_FINGERPRICK"
+        ],
+        "notReported": [
+          "PERFORMING_LAB"
+        ]
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "av-jinfiniti",
+      "mode": "new",
+      "nodeType": "AssayVersion",
+      "name": "Jinfiniti intracellular NAD+ assay as observed on the vendor page 2026-10-08",
+      "uidSegment": "jinfiniti-icnad-observed-2026-10-08",
+      "properties": {
+        "methodText": "CLIA-certified intracellular NAD+ measurement (method not named)",
+        "specimenKinds": [
+          "CAPILLARY_BLOOD",
+          "RED_BLOOD_CELLS"
+        ],
+        "reportedUnitCode": "umol/L",
+        "notReported": [
+          "METHOD_PRINCIPLE",
+          "INSTRUMENT_MODEL",
+          "REAGENT_KIT",
+          "SOFTWARE_VERSION",
+          "CALIBRATION_TRACEABILITY",
+          "PERFORMING_LAB"
+        ]
+      },
+      "identifiers": [],
+      "onMatch": "create_anyway"
+    },
+    {
+      "ref": "ri-jinfiniti-optimal",
+      "mode": "new",
+      "nodeType": "ReferenceIntervalVersion",
+      "name": "Jinfiniti \"optimal\" NAD+ 40–100 μM",
+      "uidSegment": "jinfiniti-nad-optimal-40-100-umol",
+      "properties": {
+        "intervalKind": "VENDOR_TARGET",
+        "derivation": "VENDOR_DEFINED",
+        "intervalText": "optimal range (40–100 μM)",
+        "lowerBound": 40,
+        "upperBound": 100,
+        "unitCode": "umol/L",
+        "sex": "NOT_REPORTED",
+        "notReported": [
+          "INTERVAL_PARTITION",
+          "EFFECTIVE_DATE"
+        ]
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "product-jinfiniti-test",
+      "mode": "new",
+      "nodeType": "Product",
+      "name": "Jinfiniti Intracellular NAD® Test (kit)",
+      "uidSegment": "jinfiniti-intracellular-nad-test-kit",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "product-jinfiniti-membership",
+      "mode": "new",
+      "nodeType": "Product",
+      "name": "Jinfiniti NAD Membership (test + Vitality↑ NAD+ Booster, quarterly)",
+      "uidSegment": "jinfiniti-nad-membership",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "org-jinfiniti",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "Jinfiniti Precision Medicine",
+      "uidSegment": "jinfiniti",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "pub-martens-2018",
+      "mode": "new",
+      "nodeType": "Publication",
+      "name": "Chronic nicotinamide riboside supplementation is well-tolerated and elevates NAD+ in healthy middle-aged and older adults",
+      "uidSegment": "pmid-29599478",
+      "properties": {
+        "publicationKind": "ARTICLE",
+        "venueName": "Nat Commun",
+        "citationText": "Martens CR et al., 'Chronic nicotinamide riboside supplementation is well-tolerated and elevates NAD+ in healthy middle-aged and older adults', Nat Commun 2018;9:1286"
+      },
+      "identifiers": [
+        {
+          "scheme": "PMID",
+          "issuer": "NLM",
+          "value": "29599478"
+        },
+        {
+          "scheme": "PMCID",
+          "issuer": "NLM",
+          "value": "PMC5876407"
+        },
+        {
+          "scheme": "DOI",
+          "issuer": "Crossref",
+          "value": "10.1038/s41467-018-03421-7"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "agent-curation",
+      "mode": "new",
+      "nodeType": "Agent",
+      "name": "BellLabs D4 curation agent",
+      "uidSegment": "bks-curation-d4",
+      "properties": {
+        "agentKind": "AUTOMATED_AGENT"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "p01-e01",
+      "kind": "edge.structural",
+      "relationshipType": "HAS_ANALYTE",
+      "fromRef": "biomarker-nad",
+      "toRef": "substance-nad",
+      "evidence": [
+        "m1-pbmc-nad"
+      ],
+      "properties": {},
+      "rationale": "curated: the referent of NAD+ level is the substance NAD+"
+    },
+    {
+      "proposalId": "p02-e02",
+      "kind": "edge.structural",
+      "relationshipType": "HAS_ANALYTE",
+      "fromRef": "biomarker-naad",
+      "toRef": "substance-naad",
+      "evidence": [
+        "m8-naad"
+      ],
+      "properties": {}
+    },
+    {
+      "proposalId": "p03-e03",
+      "kind": "edge.assert",
+      "relationshipType": "REFLECTS_MECHANISM",
+      "fromRef": "biomarker-naad",
+      "toRef": "mechanism-nicotinate",
+      "evidence": [
+        "m3-naad-marker"
+      ],
+      "assertion": {
+        "polarity": "POSITIVE",
+        "basisKind": "CITED_FROM_PRIOR_WORK",
+        "speechAct": "STATES",
+        "validity": {
+          "validFromBasis": "UNKNOWN",
+          "statedAsOf": "2018-03-29T00:00:00Z",
+          "statedAsOfPrecision": "DAY"
+        }
+      },
+      "asserterRef": "pub-martens-2018"
+    },
+    {
+      "proposalId": "p04-e04",
+      "kind": "edge.assert",
+      "relationshipType": "REFLECTS_MECHANISM",
+      "fromRef": "biomarker-nad",
+      "toRef": "mechanism-nicotinate",
+      "evidence": [
+        "m4-stimulates",
+        "m1-pbmc-nad"
+      ],
+      "assertion": {
+        "polarity": "POSITIVE",
+        "basisKind": "INFERRED_FROM_MEASUREMENT",
+        "speechAct": "STATES",
+        "validity": {
+          "validFromBasis": "UNKNOWN",
+          "statedAsOf": "2018-03-29T00:00:00Z",
+          "statedAsOfPrecision": "DAY"
+        }
+      },
+      "asserterRef": "pub-martens-2018"
+    },
+    {
+      "proposalId": "p05-e05",
+      "kind": "edge.structural",
+      "relationshipType": "QUANTIFIES",
+      "fromRef": "metric-nad-pbmc",
+      "toRef": "biomarker-nad",
+      "evidence": [
+        "m1-pbmc-nad",
+        "m5-pbmc-method"
+      ],
+      "properties": {}
+    },
+    {
+      "proposalId": "p06-e06",
+      "kind": "edge.structural",
+      "relationshipType": "QUANTIFIES",
+      "fromRef": "metric-nad-rbc",
+      "toRef": "biomarker-nad",
+      "evidence": [
+        "j1-rbc",
+        "j3-unit"
+      ],
+      "properties": {}
+    },
+    {
+      "proposalId": "p07-e07",
+      "kind": "edge.assert",
+      "relationshipType": "MEASURES_METRIC",
+      "fromRef": "labtest-jinfiniti",
+      "toRef": "metric-nad-rbc",
+      "evidence": [
+        "j1-rbc",
+        "j3-unit",
+        "j5-fingerprick"
+      ],
+      "assertion": {
+        "polarity": "POSITIVE",
+        "basisKind": "MANUFACTURER_CLAIM",
+        "speechAct": "STATES",
+        "validity": {
+          "validFromBasis": "OBSERVATION_ONLY",
+          "statedAsOf": "2026-10-08T17:40:00-04:00",
+          "statedAsOfPrecision": "INSTANT"
+        }
+      },
+      "asserterRef": "org-jinfiniti"
+    },
+    {
+      "proposalId": "p08-e08",
+      "kind": "edge.assert",
+      "relationshipType": "PERFORMED_WITH_VERSION",
+      "fromRef": "labtest-jinfiniti",
+      "toRef": "av-jinfiniti",
+      "evidence": [
+        "j4-clia",
+        "j11-cv"
+      ],
+      "assertion": {
+        "polarity": "POSITIVE",
+        "basisKind": "MANUFACTURER_CLAIM",
+        "speechAct": "STATES",
+        "validity": {
+          "validFromBasis": "OBSERVATION_ONLY",
+          "statedAsOf": "2026-10-08T17:40:00-04:00",
+          "statedAsOfPrecision": "INSTANT"
+        }
+      },
+      "asserterRef": "org-jinfiniti"
+    },
+    {
+      "proposalId": "p09-e09",
+      "kind": "edge.structural",
+      "relationshipType": "INTERVAL_FOR",
+      "fromRef": "ri-jinfiniti-optimal",
+      "toRef": "av-jinfiniti",
+      "evidence": [
+        "j6-optimal"
+      ],
+      "properties": {}
+    },
+    {
+      "proposalId": "p10-e10",
+      "kind": "edge.structural",
+      "relationshipType": "INTERVAL_FOR",
+      "fromRef": "ri-jinfiniti-optimal",
+      "toRef": "metric-nad-rbc",
+      "evidence": [
+        "j6-optimal",
+        "j10-own-booster"
+      ],
+      "properties": {}
+    },
+    {
+      "proposalId": "p11-e11",
+      "kind": "edge.assert",
+      "relationshipType": "DELIVERS",
+      "fromRef": "product-jinfiniti-test",
+      "toRef": "labtest-jinfiniti",
+      "evidence": [
+        "j7-price"
+      ],
+      "assertion": {
+        "polarity": "POSITIVE",
+        "basisKind": "MANUFACTURER_CLAIM",
+        "speechAct": "STATES",
+        "validity": {
+          "validFromBasis": "OBSERVATION_ONLY",
+          "statedAsOf": "2026-10-08T17:40:00-04:00",
+          "statedAsOfPrecision": "INSTANT"
+        }
+      },
+      "asserterRef": "org-jinfiniti"
+    },
+    {
+      "proposalId": "p12-e12",
+      "kind": "edge.assert",
+      "relationshipType": "DELIVERS",
+      "fromRef": "product-jinfiniti-membership",
+      "toRef": "labtest-jinfiniti",
+      "evidence": [
+        "j8-membership"
+      ],
+      "assertion": {
+        "polarity": "POSITIVE",
+        "basisKind": "MANUFACTURER_CLAIM",
+        "speechAct": "STATES",
+        "validity": {
+          "validFromBasis": "OBSERVATION_ONLY",
+          "statedAsOf": "2026-10-08T17:40:00-04:00",
+          "statedAsOfPrecision": "INSTANT"
+        }
+      },
+      "asserterRef": "org-jinfiniti"
+    },
+    {
+      "proposalId": "p13-e13",
+      "kind": "assertion.literal",
+      "subjectRef": "ri-jinfiniti-optimal",
+      "predicate": "SETS_REFERENCE_RANGE",
+      "evidence": [
+        "j9-set-ranges",
+        "j6-optimal"
+      ],
+      "assertion": {
+        "polarity": "POSITIVE",
+        "basisKind": "MANUFACTURER_CLAIM",
+        "speechAct": "STATES",
+        "validity": {
+          "validFromBasis": "OBSERVATION_ONLY",
+          "statedAsOf": "2026-10-08T17:40:00-04:00",
+          "statedAsOfPrecision": "INSTANT"
+        }
+      },
+      "valueString": "issuer: Jinfiniti (\"established the reference ranges and guidelines\")",
+      "asserterRef": "org-jinfiniti"
+    },
+    {
+      "proposalId": "p14-e14",
+      "kind": "assertion.literal",
+      "subjectRef": "av-jinfiniti",
+      "predicate": "FIELD_NOT_REPORTED",
+      "evidence": [
+        "j4-clia"
+      ],
+      "assertion": {
+        "basisKind": "DIRECT_MEASUREMENT",
+        "speechAct": "STATES",
+        "validity": {
+          "validFromBasis": "OBSERVATION_ONLY",
+          "statedAsOf": "2026-10-08T17:40:00-04:00",
+          "statedAsOfPrecision": "INSTANT"
+        }
+      },
+      "valueString": "METHOD_PRINCIPLE, INSTRUMENT_MODEL, PERFORMING_LAB",
+      "asserterRef": "agent-curation"
+    }
+  ],
+  "notes": "Fixture intent (fixture ids). Cross-module subjects (D1 substances, D2 mechanism, D6 products, D7 organizations) use onMatch use_existing; the NR -> mechanism hop is written by the D2 fixture, not here. Assessments s01/s02 are outside intent v1. Identifier scheme REACTOME must exist in the kernel register (D2 request)."
+}

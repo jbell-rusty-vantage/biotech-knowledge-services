@@ -1,0 +1,424 @@
+# Fixture clock-noise-vs-retest-advice - assertions (fixtures stage, A3, 2026-10-08).
+# producedBy ids are FIXTURE ids (mission:ft-D4-fixtures / run:ft-D4-<fixture>), not real Mission Control runs.
+# Types: D4 types from 04-schema-proposal.graphql; kernel types (Assertion, Claim, Assessment, Agent, SourceLocator) from
+# final/schema/kernel.graphql; other modules' types through the seams in 10-seams.yaml.
+# edgeClass: asserted = AssertedEdgeProperties episode authorized by this Assertion (assertionUid on the edge);
+# structural = StructuralEdgeProperties edge written by edge.structural, the row's locator cites the captured record;
+# literal / field = kernel Assertion with a typed value (predicate-only or a node property), no edge.
+fixture: clock-noise-vs-retest-advice
+producedBy:
+  missionId: mission:ft-D4-fixtures
+  runId: run:ft-D4-clock-noise-vs-retest-advice
+entities:
+- ref: labtest-truage
+  type: LabTest
+  module: D4
+  uid: hu:lab-test:trudiagnostic-truage
+  name: TruDiagnostic TruAge (epigenetic age test)
+  props:
+    testKind: ALGORITHM_REPORT
+    orderChannel: DIRECT_TO_CONSUMER
+    notReported:
+    - PERFORMING_LAB
+    - SOFTWARE_VERSION
+  onMatch: use_existing
+- ref: av-truage-dunedinpace
+  type: AlgorithmVersion
+  module: D4
+  uid: hu:algorithm-version:dunedinpace-trudiagnostic-unversioned
+  name: DunedinPACE™ as implemented in TruDiagnostic TruAge (version not stated)
+  props:
+    algorithmFamily: DunedinPACE
+    familyKey: dunedinpace
+    algorithmKind: EPIGENETIC_CLOCK
+    realization: VENDOR_IMPLEMENTATION
+    versionBasis: UNKNOWN
+    outputKind: PACE
+    notReported:
+    - VERSION_LABEL
+    - INPUT_PLATFORM
+    - RELIABILITY
+    - SOFTWARE_VERSION
+  onMatch: review
+- ref: av-dunedinpace
+  type: AlgorithmVersion
+  module: D4
+  mode: resolved
+  uid: hu:algorithm-version:dunedinpace-belsky-2022
+  definedIn: ../dunedinpace-paper-unstructured
+- ref: av-horvath1
+  type: AlgorithmVersion
+  module: D4
+  uid: hu:algorithm-version:horvath-2013-multi-tissue
+  name: Horvath1 multi-tissue clock (publication version)
+  props:
+    algorithmFamily: Horvath multi-tissue clock
+    familyKey: horvath1
+    algorithmKind: EPIGENETIC_CLOCK
+    realization: PUBLICATION_REFERENCE
+    versionBasis: PUBLICATION_VERSION
+    outputKind: AGE_ESTIMATE
+  onMatch: use_existing
+- ref: av-grimage
+  type: AlgorithmVersion
+  module: D4
+  uid: hu:algorithm-version:grimage-publication
+  name: GrimAge (publication version, as evaluated by Higgins-Chen 2022)
+  props:
+    algorithmFamily: GrimAge
+    familyKey: grimage
+    algorithmKind: EPIGENETIC_CLOCK
+    realization: PUBLICATION_REFERENCE
+    versionBasis: PUBLICATION_VERSION
+    outputKind: AGE_ESTIMATE
+  onMatch: use_existing
+- ref: av-elysium-index
+  type: AlgorithmVersion
+  module: D4
+  uid: hu:algorithm-version:elysium-index-unversioned
+  name: Elysium Index (vendor algorithm, version not stated)
+  props:
+    algorithmFamily: Index
+    familyKey: elysium-index
+    algorithmKind: EPIGENETIC_CLOCK
+    realization: VENDOR_IMPLEMENTATION
+    versionBasis: UNKNOWN
+    outputKind: AGE_ESTIMATE
+    notReported:
+    - VERSION_LABEL
+  onMatch: review
+- ref: org-trudiagnostic
+  type: Organization
+  module: D7
+  uid: hu:org:trudiagnostic
+  name: TruDiagnostic
+  onMatch: use_existing
+- ref: org-elysium
+  type: Organization
+  module: D7
+  uid: hu:org:elysium-health
+  name: Elysium Health
+  onMatch: use_existing
+- ref: agent-curation
+  type: Agent
+  module: K
+  uid: hu:agent:bks-curation-d4
+  name: BellLabs D4 curation agent
+  props:
+    agentKind: AUTOMATED_AGENT
+  onMatch: use_existing
+- ref: claim-truage-retest-3-months
+  type: Claim
+  module: K
+  uid: hu:claim:truage-retest-every-3-months-tracks-progress
+  name: Retesting TruAge every 3 months tracks progress in the rate of aging
+  props:
+    proposition: Retesting the TruAge DunedinPACE score every 3 months lets a person track changes in their rate of aging caused by lifestyle interventions.
+    claimType: RECOMMENDATION
+  onMatch: use_existing
+  note: added in the adversarial-review pass so the recommendation b03 is a kernel claim occurrence (OCCURRENCE_OF) that vetting and evidence missions can reach
+- ref: claim-elysium-index-replicate-agreement
+  type: Claim
+  module: K
+  uid: hu:claim:elysium-index-replicates-agree-within-1.5-years
+  name: Elysium Index agrees across technical replicates within 0-1.5 years and is the most precise published epigenetic age measure
+  props:
+    proposition: Elysium Index is the most precise and reliable published epigenetic age measure, with technical replicates agreeing within zero to 1.5 years.
+    claimType: COMPARATIVE
+  onMatch: use_existing
+  note: added in the adversarial-review pass (occurrence b06)
+- ref: pub-higgins-chen-2022
+  type: Publication
+  module: D3
+  uid: hu:publication:pmid-36277076
+  name: 'A computational solution for bolstering reliability of epigenetic clocks: implications for clinical trials and longitudinal tracking'
+  props:
+    publicationKind: ARTICLE
+    venueName: 'Nature Aging'
+    citationText: 'Higgins-Chen AT et al., ''A computational solution for bolstering reliability of epigenetic clocks: implications for clinical trials and longitudinal tracking'', Nature Aging 2022'
+  identifiers:
+  - {scheme: PMID, issuer: NLM, value: '36277076'}
+  - {scheme: PMCID, issuer: NLM, value: PMC9586209}
+  - {scheme: DOI, issuer: Crossref, value: 10.1038/s43587-022-00248-2}
+  note: R-15 (closeout FU-03) - the D3 Publication is the asserter of what the multi-author paper states (replaces the first-author Person asserter of the fixtures stage). Title, venue and identifiers are those printed in source.md (snapshot title / Citation); no identifier span exists in locators.yaml, so the identifiers carry no evidence locator here.
+  onMatch: use_existing
+assertions:
+- id: b01
+  uid: hu:assertion:ft-d4-noise-b01
+  edgeClass: asserted
+  predicate: PERFORMED_WITH_VERSION
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: labtest-truage
+    type: LabTest
+  object:
+    ref: av-truage-dunedinpace
+    type: AlgorithmVersion
+  objectField: LabTest.algorithmVersions
+  asserter:
+    ref: org-trudiagnostic
+    type: Organization
+  locators:
+  - t1-licensed
+  - t3-report-list
+  speechAct: STATES
+  polarity: POSITIVE
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:40:00-04:00'
+    statedAsOfPrecision: INSTANT
+  qualifiers:
+  - episode open as observed 2026-10-08; start date not stated by the vendor
+  rationale: The TruAge Pace of Aging report is computed with the vendor implementation of DunedinPACE.
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-clock-noise-vs-retest-advice
+- id: b02
+  uid: hu:assertion:ft-d4-noise-b02
+  edgeClass: asserted
+  predicate: DERIVED_FROM_ALGORITHM_VERSION
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: av-truage-dunedinpace
+    type: AlgorithmVersion
+  object:
+    ref: av-dunedinpace
+    type: AlgorithmVersion
+  asserter:
+    ref: org-trudiagnostic
+    type: Organization
+  locators:
+  - t1-licensed
+  - t2-dunedin-study
+  speechAct: STATES
+  polarity: POSITIVE
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:40:00-04:00'
+    statedAsOfPrecision: INSTANT
+  qualifiers:
+  - vendor names the algorithm as exclusively licensed and from the Dunedin Study; cites no publication, version or array
+  - derivation, not equivalence (see assessment s02)
+  rationale: Vendor implementation -> publication version; asserted only from the vendor text.
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-clock-noise-vs-retest-advice
+- id: b03
+  uid: hu:assertion:ft-d4-noise-b03
+  edgeClass: literal
+  predicate: RECOMMENDS_RETEST_INTERVAL
+  assertionKind: CLAIM
+  claimType: RECOMMENDATION
+  subject:
+    ref: labtest-truage
+    type: LabTest
+  occurrenceOf:
+    ref: claim-truage-retest-3-months
+    type: Claim
+  value:
+    valueString: P3M
+  asserter:
+    ref: org-trudiagnostic
+    type: Organization
+  locators:
+  - r1-retest
+  - r2-change
+  speechAct: RECOMMENDS
+  polarity: POSITIVE
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:40:00-04:00'
+    statedAsOfPrecision: INSTANT
+  note: subject = the LabTest, asserter = the Organization (05 predicateOnly updated in the fixtures stage)
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-clock-noise-vs-retest-advice
+- id: b04
+  uid: hu:assertion:ft-d4-noise-b04
+  edgeClass: literal
+  predicate: REPORTS_RELIABILITY
+  assertionKind: METRIC
+  subject:
+    ref: av-horvath1
+    type: AlgorithmVersion
+  value:
+    valueNumber: 1.8
+    unitCode: a
+    valueString: median deviation between technical replicates 1.8 years; maximum 4.8 years
+  asserter:
+    ref: pub-higgins-chen-2022
+    type: Publication
+  locators:
+  - h2-horvath1
+  - h1-noise
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  validTime:
+    validFrom: null
+    validFromBasis: UNKNOWN
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-clock-noise-vs-retest-advice
+- id: b05
+  uid: hu:assertion:ft-d4-noise-b05
+  edgeClass: literal
+  predicate: REPORTS_RELIABILITY
+  assertionKind: METRIC
+  subject:
+    ref: av-grimage
+    type: AlgorithmVersion
+  value:
+    valueNumber: 0.989
+    unitCode: '1'
+    valueString: ICC = 0.989 across technical replicates
+  asserter:
+    ref: pub-higgins-chen-2022
+    type: Publication
+  locators:
+  - h4-grimage
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  validTime:
+    validFrom: null
+    validFromBasis: UNKNOWN
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-clock-noise-vs-retest-advice
+- id: b06
+  uid: hu:assertion:ft-d4-noise-b06
+  edgeClass: literal
+  predicate: REPORTS_RELIABILITY
+  assertionKind: CLAIM
+  claimType: COMPARATIVE
+  subject:
+    ref: av-elysium-index
+    type: AlgorithmVersion
+  occurrenceOf:
+    ref: claim-elysium-index-replicate-agreement
+    type: Claim
+  value:
+    valueString: agreement across technical replicates within zero to 1.5 years (vendor claim)
+  asserter:
+    ref: org-elysium
+    type: Organization
+  locators:
+  - e2-index-claim
+  - e1-nine-years
+  speechAct: STATES
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:40:00-04:00'
+    statedAsOfPrecision: INSTANT
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-clock-noise-vs-retest-advice
+- id: b07
+  uid: hu:assertion:ft-d4-noise-b07
+  edgeClass: literal
+  predicate: FIELD_NOT_REPORTED
+  assertionKind: FIELD
+  subject:
+    ref: av-truage-dunedinpace
+    type: AlgorithmVersion
+  value:
+    valueString: VERSION_LABEL, INPUT_PLATFORM, RELIABILITY
+  asserter:
+    ref: agent-curation
+    type: Agent
+  locators:
+  - r0-whole
+  - t4-sites
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:40:00-04:00'
+    statedAsOfPrecision: INSTANT
+  note: 'kernel convention FIELD_NOT_REPORTED (accepted from D4 11-open-questions #16); site count is stated (1,000,000+), the array product is not'
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-clock-noise-vs-retest-advice
+assessments:
+- id: s01
+  uid: hu:assessment:ft-d4-noise-s01
+  assessmentKind: QUALITY
+  assessmentSubkind: D4.change-detectability
+  conclusionCode: NO_RELIABILITY_SOURCE
+  status: PROPOSED
+  methodVersion: d4-change-detectability/0.1 (fixture)
+  about:
+  - hu:algorithm-version:dunedinpace-trudiagnostic-unversioned
+  - hu:lab-test:trudiagnostic-truage
+  inputAssertions:
+  - b01
+  - b02
+  - b03
+  - b04
+  - b05
+  - b06
+  - b07
+  - ../dunedinpace-paper-unstructured#a06
+  evidence:
+  - locator: r1-retest
+    role: CONTEXT
+  - locator: r4-window
+    role: CONTEXT
+  - locator: h1-noise
+    role: QUALIFIES
+  - locator: h2-horvath1
+    role: QUALIFIES
+  - locator: h3-other-clocks
+    role: QUALIFIES
+  - locator: r0-whole
+    role: CONTEXT
+  evidenceRoleNote: 'h1-h3 are QUALIFIES, not CONTRADICTS (adversarial review): Higgins-Chen 2022 measures replicate noise of other CpG clocks and never evaluates
+    DunedinPACE (the BioC capture contains no "Dunedin"); the h3 sentence follows "Focusing additional analyses on 6 clocks". Class-level noise qualifies the vendor
+    advice; it does not disconfirm it.'
+  effectDirection: UNKNOWN
+  evidenceCutoffAt: '2026-10-08T17:45:00-04:00'
+  summary: 'The vendor advises retesting every 3 months to track change and notes that the pace score is "*Based on the last 2-3 months", but publishes no replicate
+    or reliability data for its DunedinPACE™ pipeline (version, array and lab not stated). The publication version reports test-retest ICC 0.96 on 450k replicates
+    (points toward reliability); other CpG clocks show replicate deviations of years (class-level context, not DunedinPACE). Whether a 3-month change exceeds technical
+    noise for this pipeline is not established: a reliability gap, not a disconfirmation.'
+  questions:
+  - CQ-DX-05
+  - Q-D4-05
+  - Q-D4-15
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-clock-noise-vs-retest-advice
+- id: s02
+  uid: hu:assessment:ft-d4-noise-s02
+  assessmentKind: EQUIVALENCE
+  assessmentSubkind: D4.algorithm-equivalence
+  conclusionCode: UNRESOLVED
+  status: PROPOSED
+  methodVersion: d4-algorithm-equivalence/0.1 (fixture)
+  about:
+  - hu:algorithm-version:dunedinpace-trudiagnostic-unversioned
+  - hu:algorithm-version:dunedinpace-belsky-2022
+  inputAssertions:
+  - b02
+  - b07
+  evidence:
+  - locator: t1-licensed
+    role: CONTEXT
+  - locator: t2-dunedin-study
+    role: CONTEXT
+  summary: Vendor implementation names the publication algorithm (licensed) but states no version, array or reproducibility against the reference code; same numbers
+    not established.
+  questions:
+  - Q-D4-06
+  - Q-D4-20
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-clock-noise-vs-retest-advice

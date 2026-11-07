@@ -1,0 +1,51 @@
+# Release source configuration (read by scripts/release/generate.mjs).
+# Authored in biotech-knowledge-services schema/source/biotech-schema-v2.2.0 (Sprint V SV-11, R-SV11; parent v2.1.0, R-SV10).
+format: bks-release-source.v1
+releaseId: biotech-schema-v2.2.0
+version: 2.2.0
+createdAt: "2026-10-25T00:00:00.000Z"
+description: "Minor release of biotech-schema-v2.1.0 (Sprint V SV-11, R-SV11): ReportKind STUDY_APPRAISAL (the second Knowledge Services report kind), nullable useDecisionDigest on kernel Activity and Assessment (exact use-decision record digest for official-read revalidation), and two operational KsIntentMarker lookup indexes (dispatchId, markerDigest) for the Knowledge Services dispatch outbox consumer. PostgreSQL (Knowledge Services common component) still owns runs, decisions and the outbox; the graph holds immutable references. No label or relationship type change."
+parentRelease:
+  releaseId: biotech-schema-v2.1.0
+  schemaDigest: sha256:fe5c5992655fb31f7bde175538d3f9b361e3cfa06b2a4921b55f36bcacd41b97
+  contentTreeDigest: sha256:0fb2b531a950948d42df357aaea72c105a40f11179216aff29e755bb5dad1a87
+  schemaReleaseDigest: sha256:29e118247d725ad4f416911173eb2363488bc97cedebe5e93843eb53a4e661a7
+releaseNotes:
+  - "kernel ReportKind: STUDY_APPRAISAL added (Knowledge Services K08 report kinds evidence_report and study_appraisal; reportKindRef still refines the kind). Additive enum value; readers that switch exhaustively over ReportKind must accept it"
+  - "kernel Activity and Assessment: useDecisionDigest (nullable) next to useDecisionRef; official reads compare it with the PostgreSQL authority's use_decision.digest"
+  - "registers/node-register.yaml: otherProperties counts and notes for Activity and Assessment; no new filter property, relationship or index on domain labels"
+  - "rules/operational-names.yaml: KsIntentMarker gains the dispatch admission fields (dispatchId, markerDigest, payloadDigest, useDecisionRef, useDecisionDigest, revocationEpoch, boundEffectDigest, appliedAt, markerSchemaVersion) and the declared operational DDL entries ks_intent_marker_dispatch_id and ks_intent_marker_marker_digest (RANGE indexes); uniqueness stays on ks_intent_marker_key because one dispatch names one effect key (outbox primary key) and dispatch ids are unique per tenant only"
+  - "query-catalog/explain.json: EXPLAIN evidence inherited unchanged from biotech-schema-v2.1.0 (no query source changed, every template statement digest still matches); no new live-database EXPLAIN was run for v2.2.0"
+catalogCapabilityGates:
+  OD-44: vectors.native
+catalogPatch: query-catalog/sources/s4/catalog-patch.json
+questionStatus: query-catalog/sources/s4/question-status.json
+excludedFromFrozenDigestSet: {}
+provenance:
+  sourceRepository: biotech-knowledge-services
+  sourcePath: schema/source/biotech-schema-v2.2.0
+  bksCommit: 3ea014882b13a6b45f7bf7c6b70052cba2ebe9b5
+  bksCommitRule: "base commit of biotech-knowledge-services when this source tree was authored (fixed here so generation stays deterministic); the tree was uncommitted at creation, so the release identity is the content-tree digest (sourceRevision.dirtySnapshotDigest)"
+  initializedFrom:
+    releaseId: biotech-schema-v2.1.0
+    path: schema/source/biotech-schema-v2.1.0
+    schemaReleaseDigest: sha256:29e118247d725ad4f416911173eb2363488bc97cedebe5e93843eb53a4e661a7
+decisionLedger:
+  source: biotech-knowledge-services schema/source/biotech-schema-v2.2.0/decisions/DECISIONS.md
+  input: "v2.0.2 decisions/DECISIONS.md (160-entry v2 closeout ledger) plus the appended release decisions R-SV10 and R-SV11"
+additionalInputs:
+  legacyMap:
+    path: schema/program/final/migration/legacy-map.yaml
+    sha256: a78218f983379eaefd25bf1ed8952b41f01af693b6d4f0ac1267b3f84568f32b
+    author: S8 (migration / qualification)
+    note: "carried from v2.0.2 (migration/legacy-map.yaml, hosted verbatim); its target block still names an earlier release and a ${SCHEMA_RELEASE_DIGEST} placeholder: the binding authority is this release.json"
+  s4CatalogPatch:
+    source: docs/plans/schema-v2-service-release/reports/S4-catalog-patch.json
+    path: query-catalog/sources/s4/catalog-patch.json
+    sha256: ce344c25afce43559acdb8b00e7e24d5dd752395069aff5833a626f51f7bb95c
+    author: S4 (native reads)
+  s4QuestionStatus:
+    source: docs/plans/schema-v2-service-release/reports/S4-question-status.json
+    path: query-catalog/sources/s4/question-status.json
+    sha256: 83e72d55c6e9668e57b8a25a75daf09b6fa89684b6a5a9cf63e17207961613bd
+    author: S4 (native reads)

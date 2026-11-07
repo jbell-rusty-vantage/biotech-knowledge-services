@@ -1,0 +1,129 @@
+"""
+Purpose: one attributable proposition (verification.v1 Assertion): exactly one subject, exactly one object or one
+typed literal, exactly one asserter, at least one located span (HAS_EVIDENCE role SUPPORTS origin DECLARED). It
+authorizes every asserted edge (AssertedEdgeProperties.assertionUid). A claim occurrence is an Assertion with
+`assertionKind: CLAIM` (stored with the `Assertion` label only, no extra label; F-05) and one OCCURRENCE_OF edge to its Claim; a
+recommendation is a claim occurrence with `speechAct: RECOMMENDS` (00-DIRECTIVE 3.9). Bitemporal: valid time
+declared (validFrom/validTo, half-open), recorded time service-assigned (recordedAt; recordedTo written once on
+supersession; the successor names it in `supersedesUid`, same asserter only, R-23). `status` is capture fidelity,
+never truth. An Assertion that authorizes a typed edge has assertionKind RELATIONSHIP; only propositions entering the
+Claim lifecycle are CLAIM; a node property read as a fact is written under a FIELD Assertion (registered field
+predicate) and the node value is a cache (R-14, R-19).
+Asserter (R-15, R-16): the issuer the document presents; a multi-author work (D3 Publication, D9 MediaWork) for what
+it states in its own voice; else the Source's publisher Organization with qualifier `asserterBasis:PUBLISHER_DEFAULT`;
+the BellLabs Agent only for BellLabs statements; an inferred speaker with `asserterBasis:INFERRED` plus a RESOLUTION
+Assessment citing the span.
+Kernel predicate conventions, registered once by K in the release registry vocabularies/predicates.yaml (R-52; values of `predicate`,
+no typed relationship): RATES_CLAIM (a third party's verdict on a Claim: subject the Claim, valueString the rating
+text, qualifier `scale=<...>`, asserter the rater, optional HAS_OBJECT the rating instrument record; never our
+Assessment; its lattice mapping is a versioned D10 query-time rule, R-31), HAS_REVISION_STATUS (subject a Source,
+valueString a SourceRevisionKind value, one Assertion per authority; only for non-scholarly Sources and for status
+flags with no identified notice; an identified notice or new version is D3 REVISES, never both for one asserter and
+notice, R-44), FIELD_NOT_REPORTED (subject the entity the field would describe, valueString the field the source was
+read for, locator the section read or WHOLE_SNAPSHOT), CORRECTS (a correction occurrence, plus DERIVED_FROM the
+corrected occurrence, R-20), CITES_AS_SUPPORT, HAS_CREDENTIAL, and HAS_IDENTIFIER (the authorization of each
+HAS_IDENTIFIER episode, written by identifier.attach). A qualification is HAS_EVIDENCE {role QUALIFIES} plus qualifier
+prefixes (R-20).
+A retelling (an occurrence restating someone else's finding) has `basisKind: CITED_FROM_PRIOR_WORK` and DERIVED_FROM
+the primary occurrence. A measured null is a positive statement of no change (`polarity: POSITIVE` with a
+NO_CHANGE / NO_EFFECT predicate and `basisKind: DIRECT_MEASUREMENT`); NEGATIVE is a denial, never "not reported".
+Identity rule: (subject, predicate, object or literal, asserter, locator set, validity) per intent; uid token:
+`assertion`. Questions: Q-K-01, Q-K-02, Q-K-06, Q-K-07, Q-K-09, Q-K-10, Q-K-11, Q-K-15, Q-K-16, Q-K-20, Q-K-21,
+Q-K-22, Q-K-27, Q-K-30, CQ-TM-02.
+"""
+type Assertion implements Entity
+  @node(labels: ["Assertion"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Registered predicate (release vocabularies/predicates.yaml, status registered; an alias-of name is re-keyed to its target before ingest, a retired or unknown name is rejected, R-52, MD-X-02); equals the edge type for an asserted edge."
+  predicate: String!
+  assertionKind: AssertionKind!
+  "Required when assertionKind is CLAIM (verification.v1 rule)."
+  claimType: ClaimType
+  status: AssertionStatus!
+  polarity: Polarity
+  speechAct: SpeechAct
+  basisKind: BasisKind
+  "Natural-language proposition (verification.v1 proposition) when the record is not a typed literal."
+  proposition: String
+  "verification.v1 qualifiers (population, dose, condition) that must survive any retelling; registered prefixes such as `segment:<KIND>` (D9 segment of a media work: SPONSOR_READ, EDITORIAL, ...), `population:<code>`, `rendition:<source uid>`, `target:<key>` (a D5 Target key, R-83), `comparatorArm:<arm uid>` and `comparator:<QuantityComparator>` (MD-D12-02), `asserterBasis:PUBLISHER_DEFAULT|INFERRED` (R-16), `sourceRecordRemovedAt:<date>` (the source's own record time, R-24). The name, separator and value grammar of every registered qualifier is the release qualifier registry vocabularies/qualifiers.yaml (bks-qualifier-grammar.v1); an unregistered qualifier name is rejected by the executor."
+  qualifiers: [String!]
+  valueString: String
+  valueNumber: Float
+  valueBoolean: Boolean
+  "UCUM unit of valueNumber, or an ISO 4217 currency written `iso4217:<CODE>` for a price."
+  unitCode: String
+  validFrom: DateTime
+  validTo: DateTime
+  validFromPrecision: TimePrecision
+  validToPrecision: TimePrecision
+  validFromBasis: ValidTimeBasis
+  validToBasis: ValidTimeBasis
+  "Date at which the source states the fact held when it gives no bounds (validFromBasis OBSERVATION_ONLY keeps validFrom null)."
+  validObservedAt: DateTime
+  "Precision of validObservedAt (R-24)."
+  validObservedAtPrecision: TimePrecision
+  "Service-assigned commit time (recorded-time start); never before the cited snapshot's retrievedAt."
+  recordedAt: DateTime!
+  "Written once on supersession."
+  recordedTo: DateTime
+  "sha256:<hex> over the canonical immutable content."
+  contentHash: String
+  "uid of the Assertion this one supersedes (newer → older); same asserter only (R-23)."
+  supersedesUid: String
+  "Named rule for a CALCULATED assertion or an INFERRED bound."
+  derivationRule: String
+  "Extraction dimension of confidence; interpretable only with the generating Activity's methodVersion."
+  extractionConfidence: Float
+  "verification.v1 riskClass (low|medium|high|critical) when the producer declared one."
+  riskClass: String
+  "verification.v1 assertionId when the verifier saw this record."
+  verificationAssertionId: String
+  "Immutable reference to the Knowledge Services AssertionVersion this record materializes (R-SV10); the version store is PostgreSQL, not the graph."
+  assertionVersionRef: String
+  "Logical assertion id shared by every version of the same proposition (Knowledge Services AssertionVersion.logicalId, R-SV10)."
+  logicalAssertionId: String
+  "sha256:<hex> of the selected support set (conjunctive required premises and their evidence fragments) the use decision bound (R-SV10)."
+  supportSetDigest: String
+  "sha256:<hex> over the canonical JSON of the profile-specific qualifiers of the AssertionVersion (R-SV10). The graph does not model profile qualifier schemas; a qualifier change is a new digest and invalidates reuse."
+  qualifiersDigest: String
+  """class: structural; cardinality: exactly_one; questions: Q-K-01, Q-K-02, Q-K-05."""
+  subject: [Subjectable!]!
+    @relationship(type: "HAS_SUBJECT", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: zero_or_one (exclusive with the literal values); questions: Q-K-01, Q-K-02."""
+  object: [Subjectable!]!
+    @relationship(type: "HAS_OBJECT", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: exactly_one (D7 Person or Organization, K Agent, a D3 Publication or D9 MediaWork for a multi-author work's own voice (R-15), or a D9 Channel with channelKind ACCOUNT when no person is identified; validated by the executor, P20); questions: Q-K-01, Q-K-09, Q-K-15."""
+  assertedBy: [Subjectable!]!
+    @relationship(type: "ASSERTED_BY", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: one_or_more (role SUPPORTS, origin DECLARED); questions: Q-K-01, Q-K-10, Q-K-20."""
+  evidence: [SourceLocator!]!
+    @relationship(type: "HAS_EVIDENCE", direction: OUT, properties: "EvidenceEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: exactly_one; questions: Q-K-03, Q-K-04, Q-K-07."""
+  generatedBy: [Activity!]!
+    @relationship(type: "WAS_GENERATED_BY", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: many (inputs of a CALCULATED assertion, or the primary occurrence a retelling restates); questions: Q-K-06, Q-K-18, Q-K-21, Q-K-30."""
+  derivedFrom: [Assertion!]!
+    @relationship(type: "DERIVED_FROM", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: zero_or_one (assertionKind CLAIM only); questions: Q-K-08, Q-K-09, Q-K-11."""
+  occurrenceOf: [Claim!]!
+    @relationship(type: "OCCURRENCE_OF", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural (inverse); cardinality: many; questions: Q-K-01, Q-K-16."""
+  adjudications: [Adjudication!]!
+    @relationship(type: "ASSESSES", direction: IN, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

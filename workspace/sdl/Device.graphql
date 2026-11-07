@@ -1,0 +1,33 @@
+"""
+Purpose: a device or instrument MODEL as its maker designates it, in its role as a measuring instrument (Oura Ring
+Gen3, WHOOP MG, Dexcom G7, FreeStyle Libre 3 sensor, Roche cobas c513, Illumina iScan). Software states attach by
+RUNS_ON_DEVICE episodes; the purchasable item is a D6 Product (DELIVERS); clearances, recalls and adverse-event
+records are D8 records about that Product (D8 CONCERNS / STATUS_OF -> Product), reached from here through DELIVERS. Absorbs pinned ToolOrInstrument, Modality, Sensor and TechnologyPlatform as enums.
+Identity rule: (maker, model designation, generation); UDI-DI / 510(k) numbers attach through the kernel
+(schemes UDI_DI, FDA_510K requested). uid token: `device`.
+Questions: CQ-DX-09, Q-D4-07, Q-D4-08, Q-D4-09, Q-D4-10, Q-D4-17, Q-D4-18, Q-D4-24.
+"""
+type Device implements Entity & Subjectable
+  @node(labels: ["Device", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  deviceKind: DeviceKind!
+  sensingModalities: [SensingModality!]
+  "Model family as written (Oura Ring, WHOOP, FreeStyle Libre)."
+  deviceFamily: String
+  generationLabel: String
+  "Maker as written on the source (identity of the Organization is a D6/D7 join)."
+  makerName: String
+  notReported: [MeasurementField!]
+  """class: asserted; cardinality: many (stored Product → Device; the D6 Product that is or contains this model); questions: Q-D4-08, Q-D4-09, Q-D4-10, Q-D4-18, Q-D4-24."""
+  products: [Product!]!
+    @relationship(type: "DELIVERS", direction: IN, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

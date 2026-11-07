@@ -1,0 +1,44 @@
+"""
+Purpose: how one laboratory ran one measurement procedure — performing lab (exactly one), method principle,
+instrument model, reagent kit, software version, specimen types, calibration traceability, reported unit — each
+field null and listed in `notReported` when the source is silent. The unit a comparability judgment
+(kernel Assessment, subkind D4.comparability) is about; absorbs pinned MeasurementMethod, Specimen and
+ReferenceSystem as properties and the instrument as text.
+Identity rule: payloadHash over the identity fields plus the performing lab uid; when any identity field is
+NOT_REPORTED the capture's snapshot digest joins the hash, so two NOT_REPORTED versions never merge.
+uid token: `assay-version`.
+Questions: CQ-DX-01, CQ-DX-03, CQ-DX-06, CQ-AX-21, Q-D4-02, Q-D4-11, Q-D4-19, Q-D4-23.
+"""
+type AssayVersion implements Entity & Subjectable
+  @node(labels: ["AssayVersion", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  methodPrinciple: MethodPrinciple
+  "Method as written (e.g. 'Turbidimetric Inhibition Immunoassay', 'Roche Tina Quant')."
+  methodText: String
+  instrumentModelText: String
+  "Reagent kit / package insert as written (e.g. 'Tina-quant Hemoglobin A1c Gen.3')."
+  reagentKitText: String
+  softwareVersion: String
+  platform: MeasurementPlatform
+  specimenKinds: [SpecimenKind!]
+  "UBERON / CL ids of the specimen compartment(s); equality with Metric.systemOntologyId and D2 contexts."
+  specimenOntologyIds: [String!]
+  calibrationTraceability: CalibrationTraceability
+  "UCUM code of the unit the lab reports."
+  reportedUnitCode: String
+  notReported: [MeasurementField!]
+  "sha256:<hex> identity digest (see Identity rule)."
+  payloadHash: String!
+  """class: asserted (R-26: links two independently identified records; recorded time only); cardinality: exactly_one (part of the version's identity: two labs = two assay versions; a curator inference of the performing organization uses basisKind CURATOR_CLASSIFICATION); questions: CQ-DX-01, CQ-DX-03, Q-D4-04."""
+  performingLab: [Organization!]!
+    @relationship(type: "PERFORMED_BY_LAB", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

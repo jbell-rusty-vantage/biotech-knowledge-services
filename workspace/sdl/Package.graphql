@@ -1,0 +1,37 @@
+"""
+Purpose: a sellable package configuration of one variant — container of N units or net quantity, multipack, kit, bundle,
+or one served portion of a prepared food. The unit price-per-dose arithmetic divides by (Q-D6-02), recalls and lots scope
+to (D8 seam, Q-D6-04/-05), listings resolve to (LISTING_FOR), GTINs identify (kernel HAS_IDENTIFIER with episodes,
+Q-D6-15) and labels attach to over time (HAS_LABEL_VERSION). Absorbs PackageConfiguration, Bundle, BundleComponent.
+Identity rule: (variant uid, packageKind, unitCount, netQuantityValue + netQuantityUnit); a GTIN change with the same
+count and quantity is the same Package with a new identifier episode (FC-2); a net-contents change (AG1 360 g → 350 g) is a
+new Package.
+uid token: `package` (hu:package:<opaque>).
+Questions: Q-D6-01, Q-D6-02, Q-D6-04, Q-D6-05, Q-D6-14, Q-D6-15, CQ-CM-02, CQ-ID-02, CQ-ID-05.
+"""
+type Package implements Entity & Subjectable
+  @node(labels: ["Package", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  packageKind: PackageKind!
+  "Count of dosage units or served items (30 capsules; 1 sandwich); denominator of price per unit and per dose."
+  unitCount: Int
+  "Unit noun as printed ('Vegetarian Capsules', 'sandwich')."
+  unitNoun: String
+  netQuantityValue: Float
+  "UCUM unit of netQuantityValue (g, mL)."
+  netQuantityUnit: String
+  "Kits and multipacks: component summary as printed ('2 x 90 capsules'); component edges are predicate-only CONTAINS_PACKAGE."
+  componentSummary: String
+  """class: asserted; cardinality: many episodes; register exclusive: true (R-10: StateEpisodeProperties retired, the executor enforces non-overlap per relationship type); one episode per (package, label version, asserter) (R-22); questions: Q-D6-01, CQ-ID-02, CQ-ID-05, CQ-AX-25, Q-D6-09, Q-D6-10, Q-D6-11, Q-D6-12."""
+  labelVersions: [LabelVersion!]!
+    @relationship(type: "HAS_LABEL_VERSION", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

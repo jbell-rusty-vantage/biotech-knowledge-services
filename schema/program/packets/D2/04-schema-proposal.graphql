@@ -1,0 +1,438 @@
+# ---- fragment D2 ----
+# Module D2 — mechanisms and the biology of aging. Model stage (Wave 2), agent A3, 2026-10-08; revised after the
+# adversarial review (2026-10-08): INFLUENCES_OUTCOME and the ChemicalSubstance → MolecularEntity AFFECTS_MECHANISM pair
+# cut, reference edges rebased on AssertedRecordedProperties, context route/dose enums replaced by D3's.
+# Kernel pattern: packets/K/09-reasoning.md (A1, published 2026-10-08); template packets/K/domain-template.graphql.
+# Kernel types are referenced, never re-declared. Every node: implements Entity (& Subjectable for entity types),
+# lists the 7 Entity fields verbatim, @query(aggregate: false) @mutation(operations: []).
+# Every @relationship: aggregate: false, nestedOperations declared, @filterable(byValue: true, byAggregate: false).
+# Derived relationships: nestedOperations: [] and @settable(onCreate: false, onUpdate: false).
+#
+# What D2 does NOT declare (the kernel does, once): Assertion subject/object/assertedBy (mechanism claims are
+# kernel Assertions whose subject is a compound/intervention and whose object is a Mechanism, MolecularEntity,
+# D1 metabolite, Outcome or Condition), identifiers (UNIPROT, HGNC, NCBI_GENE, ENSEMBL_GENE, REACTOME, GO, MONDO,
+# HPO, ICD10CM, SNOMEDCT, MESH, WIKIDATA through Identifier.identifies), mentions, lineage.
+# Seam targets (other modules): D1 ChemicalSubstance, D1 IngredientMaterial, D3 StudyArm, D5 Intervention (10-seams `seams`).
+# Property types from elsewhere (10-seams `sharedVocabularies`): kernel BasisKind and AssertedRecordedProperties; D3 enums
+# SexScope, AdministrationRoute, QuantityBasis on MechanismEvidenceContext.
+# Owned elsewhere, consumed here: D4 Biomarker -[:REFLECTS_MECHANISM]-> Mechanism and Biomarker -[:HAS_ANALYTE]->
+# MolecularEntity (declared by D4); D3 OutcomeDefinition -[:MEASURES]-> Outcome | Condition; D3 Study -[:INVESTIGATES]->
+# Condition; D5 Target -[:OPERATIONALIZED_BY]-> Outcome (declared by D5, union TargetMeasure, D5 check stage);
+# D10 Association -[:ASSOCIATES]-> Mechanism | Outcome | Condition (declared by D10 against kernel Subjectable).
+
+# =====================================================================================================
+# Enums (controlled vocabularies; no good/bad values anywhere — 00-DIRECTIVE 3.2)
+# =====================================================================================================
+
+"What kind of mechanism concept a Mechanism node is. Hallmarks and curated pathway records are kinds, not types."
+enum MechanismKind {
+  "One of the twelve hallmarks of aging (Lopez-Otin 2023), BellLabs-curated."
+  HALLMARK
+  "A biological process (GO biological process scope, e.g. cellular senescence, macroautophagy)."
+  PROCESS
+  "A curated pathway record (Reactome, WikiPathways, KEGG) with its own participant list."
+  PATHWAY
+  "A molecular function or activity (e.g. sirtuin protein deacylation, complex I NADH dehydrogenase activity)."
+  MOLECULAR_FUNCTION
+}
+
+"Authority whose record a Mechanism mirrors; BELLLABS_CURATED for concepts with no single authority record."
+enum MechanismReferenceScheme {
+  REACTOME
+  GO
+  WIKIPATHWAYS
+  KEGG
+  BELLLABS_CURATED
+}
+
+"Role of a participant in a mechanism, as the reference authority states it (absorbs the pinned RegulatorySign)."
+enum ParticipantRole {
+  MEMBER
+  CATALYST
+  INPUT
+  OUTPUT
+  POSITIVE_REGULATOR
+  NEGATIVE_REGULATOR
+}
+
+"Kind of molecular entity. Endogenous small molecules (NAD+, NAAD) are not here: they are D1 ChemicalSubstances."
+enum MolecularEntityKind {
+  GENE
+  PROTEIN
+  PROTEIN_COMPLEX
+  PROTEIN_FAMILY
+  NCRNA
+}
+
+"Organism class of an evidence context or molecular entity (replaces the pinned Species node; exact taxon in ncbiTaxonId)."
+enum ModelOrganism {
+  HUMAN
+  NONHUMAN_PRIMATE
+  MOUSE
+  RAT
+  DOG
+  OTHER_MAMMAL
+  ZEBRAFISH
+  FLY
+  WORM
+  YEAST
+  OTHER
+  "Cell-free or in-silico contexts with no organism."
+  NOT_APPLICABLE
+}
+
+"Experimental setting of a mechanism evidence context (round 0003 rule: measured where, in what)."
+enum MechanismSetting {
+  IN_SILICO
+  IN_VITRO_CELL_FREE
+  IN_VITRO_CELL
+  EX_VIVO
+  IN_VIVO_NONMAMMAL
+  IN_VIVO_MAMMAL
+  HUMAN_OBSERVATIONAL
+  HUMAN_INTERVENTIONAL
+}
+
+"Kind of compartment measured (replaces the pinned AnatomicalContext and Organ nodes; exact term in compartmentOntologyId)."
+enum CompartmentKind {
+  WHOLE_ORGANISM
+  ORGAN
+  TISSUE
+  CELL_TYPE
+  CELL_LINE
+  "Blood, plasma, serum, urine, CSF: the specimen matrix a D4 Metric also names."
+  BODY_FLUID
+  SUBCELLULAR
+  CELL_FREE
+  NOT_REPORTED
+}
+
+# SexScope, AdministrationRoute and QuantityBasis are D3's enums (D3 owns population and dose descriptors); D2 consumes
+# them on MechanismEvidenceContext (10-seams sharedVocabularies). Check stage: D2's own SexScope collided with D3's.
+# Adversarial review: D2's ContextRoute and MechanismExposureBasis duplicated D3's AdministrationRoute and QuantityBasis
+# with incompatible values and were deleted; D2 asks D3 to add IN_MEDIUM and INTRAPERITONEAL (route) and
+# MEDIUM_CONCENTRATION (basis) for in-vitro and rodent contexts (11-open-questions item 30).
+
+"Genetic manipulation that defines the context when a gene, not a compound, is the exposure (Q-D2-20)."
+enum GeneticManipulation {
+  NONE
+  LOSS_OF_FUNCTION
+  KNOCKDOWN
+  GAIN_OF_FUNCTION
+  VARIANT_CARRIER
+}
+
+"Role of an exposure attached to a context: the tested agent, a background co-exposure (e.g. exercise training), or the comparator."
+enum ExposureRole {
+  TESTED
+  BACKGROUND
+  COMPARATOR
+}
+
+"Kind of Condition (absorbs the pinned RiskFactor as RISK_STATE)."
+enum ConditionKind {
+  DISEASE
+  SYNDROME
+  PHENOTYPE
+  RISK_STATE
+}
+
+"Kind of Outcome concept (study-independent endpoint concept; study-specific measures are D3 OutcomeDefinitions)."
+enum OutcomeKind {
+  SURVIVAL
+  CLINICAL_EVENT
+  FUNCTIONAL_PERFORMANCE
+  PATIENT_REPORTED
+  PHYSIOLOGICAL_STATE
+  COMPOSITE
+}
+
+"Direction summarized by a mechanism projection over its input Assertions. Direction of change, never benefit or harm."
+enum MechanismDirection {
+  INCREASES
+  DECREASES
+  NO_CHANGE
+  MIXED
+}
+
+# =====================================================================================================
+# Edge-property types (D2-owned; each lists the kernel type's fields verbatim first, then D2 fields)
+# =====================================================================================================
+
+"""
+Asserted reference statement (PART_OF_MECHANISM, PARTICIPATES_IN), recorded time only: one relationship per
+recorded-time episode, authorized by exactly one Assertion per authority record and release (asserter = the authority
+or, for BELLLABS_CURATED, the curation Agent; locator = JSON_POINTER into the authority record or the curation record).
+The kernel AssertedRecordedProperties fields come first, verbatim (K rule M11). `referenceRelease` is the authority
+release the authorizing Assertion read (e.g. Reactome stIdVersion R-HSA-196807.8, GO release date, GenAge build 21);
+when a new release no longer states the edge, its episode is closed (`recordedTo`), never deleted.
+Questions: Q-D2-11, Q-D2-02, Q-D2-12.
+"""
+type MechanismReferenceProperties @relationshipProperties {
+  relationshipUid: String!
+  assertionUid: String!
+  recordedFrom: DateTime!
+  recordedTo: DateTime
+  lastWriterRunId: String
+  referenceScheme: MechanismReferenceScheme
+  referenceRelease: String
+  participantRole: ParticipantRole
+}
+
+"""
+Structural exposure attachment (EXPOSED_TO), recorded time only. Kernel StructuralEdgeProperties fields first,
+then the exposure role. Questions: CQ-MX-02, CQ-MX-04, Q-D2-09.
+"""
+type ExposureRoleProperties @relationshipProperties {
+  orderIndex: Int
+  lastWriterRunId: String
+  exposureRole: ExposureRole!
+}
+
+"""
+Derived mechanism projection (AFFECTS_MECHANISM), recorded time only, read-only, regenerable by a PROJECTION Activity.
+Kernel DerivedEdgeProperties fields first, verbatim (derivationRule names method + version, e.g.
+`d2.affects-mechanism/v1`; derivedFromAssertionUids lists every input Assertion). The summary fields are computed from
+the input Assertions and their MechanismEvidenceContexts and exist because questions filter on them (Q-D2-02 direction
+and highest setting; CQ-MX-05 best basis; Q-D2-06 human yes/no). `score` is the method's own support score, never a
+truth value. A superset of DerivedEdgeProperties, a base K's M11 list does not name yet: requested from K, conflict with
+D10 recorded (11-open-questions item 1). Questions: CQ-MX-05, Q-D2-02, Q-D2-03, Q-D2-06, Q-D2-18.
+"""
+type MechanismProjectionProperties @relationshipProperties {
+  projectionOfAssertionUid: String
+  derivationRule: String
+  derivedFromAssertionUids: [String!]
+  derivedFromAssessmentUids: [String!]
+  score: Float
+  derivedAt: DateTime
+  lastWriterRunId: String
+  direction: MechanismDirection
+  "Strongest kernel BasisKind among the inputs (DIRECT_MEASUREMENT > INFERRED_FROM_MEASUREMENT > CITED_FROM_PRIOR_WORK > ... > HYPOTHESIS)."
+  bestBasis: BasisKind
+  highestSetting: MechanismSetting
+  humanMeasured: Boolean
+  nContexts: Int
+  nHumanContexts: Int
+  nNoChangeContexts: Int
+  "True when the input assertions name a MolecularEntity or D1 metabolite that PARTICIPATES_IN the mechanism, not the mechanism itself."
+  viaParticipant: Boolean
+}
+
+# =====================================================================================================
+# Unions (all ≤ 3 members; MechanismInfluenceTarget was cut with INFLUENCES_OUTCOME in the adversarial review)
+# =====================================================================================================
+
+"Who can be projected as affecting a mechanism: a D1 substance (rolled up to active moiety) or a D5 non-substance intervention."
+union MechanismModulator = ChemicalSubstance | Intervention
+
+"What an evidence context's group was exposed to."
+union ContextExposure = ChemicalSubstance | IngredientMaterial | Intervention
+
+# =====================================================================================================
+# Node types
+# =====================================================================================================
+
+"""
+Purpose: a curated mechanism concept — hallmark of aging, biological process, curated pathway record or molecular
+function (mechanismKind) — the vocabulary every mechanism claim resolves to and the hub of the compound → mechanism →
+biomarker → test path. Pathway and Hallmark are kinds of Mechanism, not separate types.
+Identity rule: `key` — `<scheme>:<unversioned authority id>` for authority records (reactome:R-HSA-196807,
+go:GO:0090398), `bellabs:<slug>` for curated concepts (bellabs:hallmark-cellular-senescence); the authority id is
+also attached as a kernel Identifier (REACTOME, GO). The version seen lives in `referenceRelease`, never in the key.
+uid token: `mechanism` (hu:mechanism:<opaque>).
+Questions: CQ-MX-01, CQ-MX-05, Q-D2-01, Q-D2-02, Q-D2-03, Q-D2-06, Q-D2-10, Q-D2-11, Q-D2-12, Q-D2-14, Q-D2-15, Q-D2-18, Q-D2-19, Q-D2-26.
+"""
+type Mechanism implements Entity & Subjectable
+  @node(labels: ["Mechanism", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Stable vocabulary key (identity); never reused."
+  key: String
+  mechanismKind: MechanismKind
+  referenceScheme: MechanismReferenceScheme
+  "Authority release currently loaded for this record (e.g. R-HSA-196807.8)."
+  referenceRelease: String
+  description: String
+  "Alternative names; feed the fulltext index mechanism_text (name, description, synonyms) used for entity linking."
+  synonyms: [String!]
+  """class: asserted; cardinality: many (reference hierarchy: Reactome hasEvent, GO is_a/part_of, BellLabs hallmark mapping; one Assertion per authority record and release, recorded time only); questions: Q-D2-02, Q-D2-12."""
+  partOf: [Mechanism!]!
+    @relationship(type: "PART_OF_MECHANISM", direction: OUT, properties: "MechanismReferenceProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (D1 small-molecule participants: NAD+, NAAD, NMN in Reactome participant lists; stored (ChemicalSubstance)-[:PARTICIPATES_IN]->(Mechanism); one Assertion per authority record and release); questions: Q-D2-11, Q-D2-03."""
+  metaboliteParticipants: [ChemicalSubstance!]!
+    @relationship(type: "PARTICIPATES_IN", direction: IN, properties: "MechanismReferenceProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: derived; cardinality: many (projection d2.affects-mechanism/v1 over mechanism Assertions and their contexts, molecular-target and metabolite objects rolled up through PARTICIPATES_IN; stored (ChemicalSubstance|Intervention)-[:AFFECTS_MECHANISM]->(Mechanism); regenerable); questions: CQ-MX-05, Q-D2-02, Q-D2-03, Q-D2-06, Q-D2-18, Q-D2-26."""
+  affectedBy: [MechanismModulator!]!
+    @relationship(type: "AFFECTS_MECHANISM", direction: IN, properties: "MechanismProjectionProperties", nestedOperations: [], aggregate: false)
+    @settable(onCreate: false, onUpdate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+"""
+Purpose: a gene, protein, protein complex, protein family or non-coding RNA that is a curated participant in a
+mechanism or the object of a compound's molecular-target Assertion (ChEMBL: sirolimus INHIBITS FKBP1A), so that
+"compound → molecular target → pathway" is an Assertion hop plus PARTICIPATES_IN, without a MechanismChain node. Default organism human; orthologs are separate nodes
+only when a question needs them (Q-D2-20 model-organism genes).
+Identity rule: (organism ncbiTaxonId, primary identifier) — UniProt accession for proteins, HGNC id for human genes
+(NCBI Gene / Ensembl otherwise); identifiers attach through the kernel (UNIPROT, HGNC, NCBI_GENE, ENSEMBL_GENE).
+uid token: `molecular-entity` (hu:molecular-entity:<opaque>).
+Questions: Q-D2-08, Q-D2-11, Q-D2-19, Q-D2-20, Q-D2-03.
+"""
+type MolecularEntity implements Entity & Subjectable
+  @node(labels: ["MolecularEntity", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  entityKind: MolecularEntityKind
+  "Official symbol (HGNC for human), e.g. SIRT1, MTOR, FKBP1A."
+  geneSymbol: String
+  organism: ModelOrganism
+  "NCBI Taxonomy id as a string (9606 human, 10090 mouse)."
+  ncbiTaxonId: String
+  description: String
+  synonyms: [String!]
+  """class: asserted; cardinality: many (Reactome participants, GO annotations, GenAge; one Assertion per authority record and release, MechanismReferenceProperties with role and release); questions: Q-D2-11, Q-D2-02, Q-D2-03, Q-D2-19."""
+  participatesIn: [Mechanism!]!
+    @relationship(type: "PARTICIPATES_IN", direction: OUT, properties: "MechanismReferenceProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+"""
+Purpose: the per-context qualifier of mechanism findings (round 0003 M3): one exposure group measured in one
+compartment of one organism in one setting. Every mechanism Assertion that reports an observation points at exactly
+one context (OBSERVED_IN_CONTEXT), so "where, in what, at what exposure was this step measured — and was it null"
+(CQ-MX-01..03) is a filter on this node, and compound → mechanism edges exist only as projections over these
+records. Species, anatomical context and organ are properties here (ModelOrganism + ncbiTaxonId, CompartmentKind +
+compartmentOntologyId), not nodes. Payload record: implements Entity only.
+Exposure fields (exposureAmount, exposureUnitCode, exposureBasis, route, exposureDurationIso) are filled only for
+contexts with no IN_STUDY_ARM (unregistered preclinical, in-vitro and non-trial human groups). For a registered group
+the dose of record is D3's InterventionComponent (StudyArm -HAS_COMPONENT-> InterventionComponent -ADMINISTERS->
+material), which also carries per-component amounts for combinations; patterns coalesce the two (03 shared fragment DOSE).
+Identity rule: `contextKey` = sha256 over (source snapshot uid, verbatim groupLabel, setting, compartmentOntologyId or
+compartmentLabel, and for unregistered contexts exposureAmount + exposureUnitCode + exposureBasis); immutable — a
+corrected context is a new node.
+uid token: `mech-context` (hu:mech-context:<opaque>).
+Questions: CQ-MX-01, CQ-MX-02, CQ-MX-03, CQ-MX-04, CQ-MX-06, Q-D2-04, Q-D2-09, Q-D2-13, Q-D2-20, Q-D2-22, Q-D2-26, Q-D2-27.
+"""
+type MechanismEvidenceContext implements Entity
+  @node(labels: ["MechanismEvidenceContext", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  contextKey: String
+  "Verbatim group label from the source (e.g. 'NR 1 g/day, vastus lateralis biopsy')."
+  groupLabel: String
+  setting: MechanismSetting
+  organism: ModelOrganism
+  ncbiTaxonId: String
+  "Strain, line or cell line as the source names it (UM-HET3, C57BL/6JRj, HEK293)."
+  strainOrLine: String
+  "Sex composition of the measured group (D3 enum SexScope: ALL | FEMALE | MALE | NOT_REPORTED)."
+  sexScope: SexScope
+  "Verbatim age description (e.g. '75 ± 5 y', '8 months at start')."
+  ageDescriptor: String
+  sampleSize: Int
+  compartmentKind: CompartmentKind
+  "UBERON / CL / Cellosaurus id; equality with D4 Metric.systemOntologyId is the cross-domain compartment check (Q-D2-04)."
+  compartmentOntologyId: String
+  compartmentLabel: String
+  geneticManipulation: GeneticManipulation
+  "Unregistered contexts only (registered groups: D3 InterventionComponent.quantity)."
+  exposureAmount: Float
+  "UCUM unit of exposureAmount."
+  exposureUnitCode: String
+  "D3 enum QuantityBasis (PER_DAY, PER_KG_BODY_WEIGHT_PER_DAY, PER_KG_DIET, SINGLE_DOSE …); never inferred across bases."
+  exposureBasis: QuantityBasis
+  "D3 enum AdministrationRoute."
+  route: AdministrationRoute
+  "ISO 8601 duration (P21D, P12W)."
+  exposureDurationIso: String
+  "Verbatim assay / method text (western blot pan-acetylation, LC-MS/MS targeted metabolomics) until a question needs a D4 AssayVersion edge."
+  assayText: String
+  """class: structural; cardinality: one_or_more per context, zero_or_one context per Assertion (stored (Assertion)-[:OBSERVED_IN_CONTEXT]->(MechanismEvidenceContext); D2 mechanism Assertions only, never D5 adverse-effect records); questions: CQ-MX-01, CQ-MX-02, CQ-MX-03, Q-D2-04, Q-D2-13, Q-D2-26."""
+  assertions: [Assertion!]!
+    @relationship(type: "OBSERVED_IN_CONTEXT", direction: IN, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: one_or_more (exactly one TESTED exposure unless geneticManipulation is set; BACKGROUND and COMPARATOR optional); questions: CQ-MX-02, CQ-MX-04, Q-D2-09, Q-D2-04."""
+  exposures: [ContextExposure!]!
+    @relationship(type: "EXPOSED_TO", direction: OUT, properties: "ExposureRoleProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: zero_or_more (the trial arm(s) the group belongs to; a paper may pool registry arms, fixture metformin-exercise-harm; a registered group's dose of record is read through it); questions: CQ-MX-02, Q-D2-06, Q-D2-27, Q-D2-04."""
+  studyArm: [StudyArm!]!
+    @relationship(type: "IN_STUDY_ARM", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+"""
+Purpose: a disease, syndrome, phenotype or risk state (conditionKind) that mechanisms are linked to and that other
+modules scope by: D3 studies investigate it, D5 contraindications and adverse effects name it, D4 biomarkers indicate
+it, D13 frontiers anchor on it. Absorbs the pinned RiskFactor (RISK_STATE: insulin resistance, obesity); behavioural
+exposures (smoking, inactivity) are D5 Interventions/exposures.
+Identity rule: MONDO id when one exists (kernel Identifier MONDO, plus ICD10CM, HPO, SNOMEDCT, MESH bridges), else
+curated `key` bellabs:<slug>. uid token: `condition` (hu:condition:<opaque>).
+Questions: Q-D2-14, Q-D2-15, Q-D2-06.
+"""
+type Condition implements Entity & Subjectable
+  @node(labels: ["Condition", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  key: String
+  conditionKind: ConditionKind
+  description: String
+  synonyms: [String!]
+}
+
+"""
+Purpose: a study-independent endpoint concept (lifespan, all-cause mortality, handgrip strength, VO2max, sleep
+quality) — the join point where D3 OutcomeDefinitions (MEASURES), D5 Targets (OPERATIONALIZED_BY, declared by D5) and
+D2 mechanism → outcome Assertions meet, so "which mechanism steps between compound C and outcome O were measured in
+humans" (Q-D2-26) and "what helps target T by what evidence" (D5) traverse one node instead of per-study strings.
+Biological proxies (NAD+, HbA1c, p16) are D4 Biomarkers, not Outcomes.
+Identity rule: curated `key` bellabs:outcome:<slug>; small curated vocabulary (target 50–150 nodes).
+uid token: `outcome` (hu:outcome:<opaque>).
+Questions: Q-D2-07, Q-D2-14, Q-D2-20, Q-D2-26.
+"""
+type Outcome implements Entity & Subjectable
+  @node(labels: ["Outcome", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  key: String
+  outcomeKind: OutcomeKind
+  description: String
+  synonyms: [String!]
+}

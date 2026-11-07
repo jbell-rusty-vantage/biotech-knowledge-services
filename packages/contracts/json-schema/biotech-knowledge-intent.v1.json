@@ -1,0 +1,1572 @@
+{
+  "$id": "https://belllabs.dev/contracts/biotech-knowledge-intent.v1.json",
+  "title": "biotech-knowledge-intent.v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "biotech-knowledge-intent.v1"
+    },
+    "intentId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+    },
+    "context": {
+      "type": "object",
+      "properties": {
+        "actor": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "agent",
+                "human",
+                "service"
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "model": {
+              "type": "string",
+              "maxLength": 200
+            }
+          },
+          "required": [
+            "kind",
+            "id"
+          ],
+          "additionalProperties": false
+        },
+        "run": {
+          "type": "object",
+          "properties": {
+            "system": {
+              "default": "mission-control",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 60
+            },
+            "runId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "missionId": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "activationId": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "attempt": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "runId"
+          ],
+          "additionalProperties": false
+        },
+        "correlationId": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "activityKind": {
+          "default": "EXTRACTION",
+          "type": "string",
+          "maxLength": 40
+        }
+      },
+      "required": [
+        "actor",
+        "run"
+      ],
+      "additionalProperties": false
+    },
+    "schemaDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "inputSnapshot": {
+      "type": "object",
+      "properties": {
+        "snapshotId": {
+          "type": "string"
+        },
+        "snapshotDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "snapshotId",
+        "snapshotDigest"
+      ],
+      "additionalProperties": false
+    },
+    "preconditions": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "uid": {
+            "type": "string",
+            "pattern": "^hu:[a-z0-9-]+:[A-Za-z0-9][A-Za-z0-9._\\-/]*$"
+          },
+          "expectedUpdatedAt": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "uid",
+          "expectedUpdatedAt"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "onStale": {
+      "default": "fail",
+      "type": "string",
+      "enum": [
+        "fail",
+        "proceed"
+      ]
+    },
+    "defaults": {
+      "default": {
+        "privacyClass": "PUBLIC",
+        "maturity": "PROVISIONAL",
+        "schemaVersion": "0.2.0"
+      },
+      "type": "object",
+      "properties": {
+        "privacyClass": {
+          "default": "PUBLIC",
+          "type": "string",
+          "enum": [
+            "PUBLIC",
+            "INTERNAL"
+          ]
+        },
+        "maturity": {
+          "default": "PROVISIONAL",
+          "type": "string",
+          "maxLength": 20
+        },
+        "schemaVersion": {
+          "default": "0.2.0",
+          "type": "string",
+          "maxLength": 20
+        }
+      },
+      "additionalProperties": false
+    },
+    "sources": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ref": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+          },
+          "source": {
+            "type": "object",
+            "properties": {
+              "uid": {
+                "type": "string",
+                "pattern": "^hu:[a-z0-9-]+:[A-Za-z0-9][A-Za-z0-9._\\-/]*$"
+              },
+              "canonicalUri": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "title": {
+                "type": "string",
+                "maxLength": 600
+              },
+              "sourceKind": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              },
+              "properties": {
+                "default": {},
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "pattern": "^[a-z][A-Za-z0-9]*$"
+                },
+                "additionalProperties": {
+                  "$ref": "#/$defs/__schema0"
+                }
+              }
+            },
+            "required": [
+              "canonicalUri",
+              "sourceKind"
+            ],
+            "additionalProperties": false
+          },
+          "snapshot": {
+            "type": "object",
+            "properties": {
+              "uid": {
+                "type": "string",
+                "pattern": "^hu:[a-z0-9-]+:[A-Za-z0-9][A-Za-z0-9._\\-/]*$"
+              },
+              "observedAt": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+              },
+              "retrievedAt": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+              },
+              "contentHash": {
+                "type": "string",
+                "maxLength": 200
+              },
+              "contentHashBasis": {
+                "type": "string",
+                "maxLength": 40
+              },
+              "captureCompleteness": {
+                "type": "string",
+                "maxLength": 40
+              },
+              "jurisdiction": {
+                "type": "string",
+                "maxLength": 10
+              },
+              "properties": {
+                "default": {},
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "pattern": "^[a-z][A-Za-z0-9]*$"
+                },
+                "additionalProperties": {
+                  "$ref": "#/$defs/__schema0"
+                }
+              }
+            },
+            "required": [
+              "observedAt"
+            ],
+            "additionalProperties": false
+          },
+          "locators": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "ref": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+                },
+                "uid": {
+                  "type": "string",
+                  "pattern": "^hu:[a-z0-9-]+:[A-Za-z0-9][A-Za-z0-9._\\-/]*$"
+                },
+                "selectorKind": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                },
+                "uri": {
+                  "type": "string",
+                  "maxLength": 2000
+                },
+                "section": {
+                  "type": "string",
+                  "maxLength": 400
+                },
+                "page": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "quote": {
+                  "type": "string",
+                  "maxLength": 4000
+                },
+                "quotePrefix": {
+                  "type": "string",
+                  "maxLength": 400
+                },
+                "quoteSuffix": {
+                  "type": "string",
+                  "maxLength": 400
+                },
+                "startOffset": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "endOffset": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "mediaStartSeconds": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "mediaEndSeconds": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "properties": {
+                  "default": {},
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "pattern": "^[a-z][A-Za-z0-9]*$"
+                  },
+                  "additionalProperties": {
+                    "$ref": "#/$defs/__schema0"
+                  }
+                }
+              },
+              "required": [
+                "ref",
+                "selectorKind"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "ref",
+          "source"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "subjects": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "ref": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              },
+              "mode": {
+                "type": "string",
+                "const": "resolved"
+              },
+              "uid": {
+                "type": "string",
+                "pattern": "^hu:[a-z0-9-]+:[A-Za-z0-9][A-Za-z0-9._\\-/]*$"
+              },
+              "nodeType": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Za-z0-9]*$"
+              }
+            },
+            "required": [
+              "ref",
+              "mode",
+              "uid",
+              "nodeType"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "ref": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              },
+              "mode": {
+                "type": "string",
+                "const": "new"
+              },
+              "nodeType": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Za-z0-9]*$"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 600
+              },
+              "uidSegment": {
+                "type": "string",
+                "maxLength": 200,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._\\-/]*$"
+              },
+              "properties": {
+                "default": {},
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "pattern": "^[a-z][A-Za-z0-9]*$"
+                },
+                "additionalProperties": {
+                  "$ref": "#/$defs/__schema0"
+                }
+              },
+              "identifiers": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "scheme": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 60
+                    },
+                    "issuer": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    },
+                    "value": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 400
+                    },
+                    "normalizationRule": {
+                      "type": "string",
+                      "maxLength": 120
+                    }
+                  },
+                  "required": [
+                    "scheme",
+                    "issuer",
+                    "value"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "onMatch": {
+                "default": "review",
+                "type": "string",
+                "enum": [
+                  "review",
+                  "use_existing",
+                  "fail",
+                  "create_anyway"
+                ]
+              }
+            },
+            "required": [
+              "ref",
+              "mode",
+              "nodeType",
+              "name"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "proposals": {
+      "minItems": 1,
+      "maxItems": 200,
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "proposalId": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              },
+              "rationale": {
+                "type": "string",
+                "maxLength": 2000
+              },
+              "evidence": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^hu:[a-z0-9-]+:[A-Za-z0-9][A-Za-z0-9._\\-/]*$"
+                    }
+                  ]
+                }
+              },
+              "dependsOn": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+                }
+              },
+              "kind": {
+                "type": "string",
+                "const": "node.upsert"
+              },
+              "subjectRef": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              },
+              "properties": {
+                "default": {},
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "pattern": "^[a-z][A-Za-z0-9]*$"
+                },
+                "additionalProperties": {
+                  "$ref": "#/$defs/__schema0"
+                }
+              }
+            },
+            "required": [
+              "proposalId",
+              "kind",
+              "subjectRef"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "proposalId": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              },
+              "rationale": {
+                "type": "string",
+                "maxLength": 2000
+              },
+              "evidence": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^hu:[a-z0-9-]+:[A-Za-z0-9][A-Za-z0-9._\\-/]*$"
+                    }
+                  ]
+                }
+              },
+              "dependsOn": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+                }
+              },
+              "kind": {
+                "type": "string",
+                "const": "identifier.attach"
+              },
+              "subjectRef": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              },
+              "identifier": {
+                "type": "object",
+                "properties": {
+                  "scheme": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 60
+                  },
+                  "issuer": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "value": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 400
+                  },
+                  "normalizationRule": {
+                    "type": "string",
+                    "maxLength": 120
+                  }
+                },
+                "required": [
+                  "scheme",
+                  "issuer",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "proposalId",
+              "kind",
+              "subjectRef",
+              "identifier"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "proposalId": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              },
+              "rationale": {
+                "type": "string",
+                "maxLength": 2000
+              },
+              "evidence": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^hu:[a-z0-9-]+:[A-Za-z0-9][A-Za-z0-9._\\-/]*$"
+                    }
+                  ]
+                }
+              },
+              "dependsOn": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+                }
+              },
+              "kind": {
+                "type": "string",
+                "const": "edge.assert"
+              },
+              "relationshipType": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Z0-9_]*$"
+              },
+              "fromRef": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              },
+              "toRef": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              },
+              "assertion": {
+                "default": {
+                  "validity": {}
+                },
+                "type": "object",
+                "properties": {
+                  "predicate": {
+                    "type": "string",
+                    "maxLength": 120
+                  },
+                  "polarity": {
+                    "type": "string",
+                    "maxLength": 40
+                  },
+                  "basisKind": {
+                    "type": "string",
+                    "maxLength": 60
+                  },
+                  "predicateClass": {
+                    "type": "string",
+                    "maxLength": 40
+                  },
+                  "assertionBasis": {
+                    "type": "string",
+                    "maxLength": 60
+                  },
+                  "speechAct": {
+                    "type": "string",
+                    "maxLength": 40
+                  },
+                  "extractionMethod": {
+                    "type": "string",
+                    "maxLength": 200
+                  },
+                  "extractionConfidence": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "jurisdiction": {
+                    "type": "string",
+                    "maxLength": 10
+                  },
+                  "statedTense": {
+                    "type": "string",
+                    "maxLength": 20
+                  },
+                  "segmentKind": {
+                    "type": "string",
+                    "maxLength": 40
+                  },
+                  "validity": {
+                    "default": {},
+                    "type": "object",
+                    "properties": {
+                      "validFrom": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "date-time",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "validTo": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "date-time",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "validFromPrecision": {
+                        "type": "string",
+                        "enum": [
+                          "INSTANT",
+                          "DAY",
+                          "MONTH",
+                          "QUARTER",
+                          "YEAR",
+                          "DECADE"
+                        ]
+                      },
+                      "validToPrecision": {
+                        "type": "string",
+                        "enum": [
+                          "INSTANT",
+                          "DAY",
+                          "MONTH",
+                          "QUARTER",
+                          "YEAR",
+                          "DECADE"
+                        ]
+                      },
+                      "validFromBasis": {
+                        "type": "string",
+                        "enum": [
+                          "STATED_BY_SOURCE",
+                          "PUBLICATION_PROXY",
+                          "OBSERVATION_ONLY",
+                          "INFERRED",
+                          "UNKNOWN"
+                        ]
+                      },
+                      "validToBasis": {
+                        "type": "string",
+                        "enum": [
+                          "STATED_BY_SOURCE",
+                          "PUBLICATION_PROXY",
+                          "OBSERVATION_ONLY",
+                          "INFERRED",
+                          "UNKNOWN"
+                        ]
+                      },
+                      "statedAsOf": {
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                      },
+                      "statedAsOfPrecision": {
+                        "type": "string",
+                        "enum": [
+                          "INSTANT",
+                          "DAY",
+                          "MONTH",
+                          "QUARTER",
+                          "YEAR",
+                          "DECADE"
+                        ]
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "uidSegment": {
+                    "type": "string",
+                    "maxLength": 200
+                  }
+                },
+                "additionalProperties": false
+              },
+              "edgeProperties": {
+                "default": {},
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "pattern": "^[a-z][A-Za-z0-9]*$"
+                },
+                "additionalProperties": {
+                  "$ref": "#/$defs/__schema0"
+                }
+              },
+              "asserterRef": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              }
+            },
+            "required": [
+              "proposalId",
+              "kind",
+              "relationshipType",
+              "fromRef",
+              "toRef"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "proposalId": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              },
+              "rationale": {
+                "type": "string",
+                "maxLength": 2000
+              },
+              "evidence": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^hu:[a-z0-9-]+:[A-Za-z0-9][A-Za-z0-9._\\-/]*$"
+                    }
+                  ]
+                }
+              },
+              "dependsOn": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+                }
+              },
+              "kind": {
+                "type": "string",
+                "const": "edge.structural"
+              },
+              "relationshipType": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Z0-9_]*$"
+              },
+              "fromRef": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              },
+              "toRef": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              },
+              "properties": {
+                "default": {},
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "pattern": "^[a-z][A-Za-z0-9]*$"
+                },
+                "additionalProperties": {
+                  "$ref": "#/$defs/__schema0"
+                }
+              }
+            },
+            "required": [
+              "proposalId",
+              "kind",
+              "relationshipType",
+              "fromRef",
+              "toRef"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "proposalId": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              },
+              "rationale": {
+                "type": "string",
+                "maxLength": 2000
+              },
+              "evidence": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^hu:[a-z0-9-]+:[A-Za-z0-9][A-Za-z0-9._\\-/]*$"
+                    }
+                  ]
+                }
+              },
+              "dependsOn": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+                }
+              },
+              "kind": {
+                "type": "string",
+                "const": "assertion.literal"
+              },
+              "subjectRef": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              },
+              "predicate": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "valueString": {
+                "type": "string",
+                "maxLength": 4000
+              },
+              "valueNumber": {
+                "type": "number"
+              },
+              "valueBoolean": {
+                "type": "boolean"
+              },
+              "unitCode": {
+                "type": "string",
+                "maxLength": 40
+              },
+              "quantityBasis": {
+                "type": "string",
+                "maxLength": 60
+              },
+              "massBasis": {
+                "type": "string",
+                "maxLength": 40
+              },
+              "amountReferent": {
+                "type": "string",
+                "maxLength": 60
+              },
+              "assertion": {
+                "default": {
+                  "validity": {}
+                },
+                "type": "object",
+                "properties": {
+                  "predicate": {
+                    "type": "string",
+                    "maxLength": 120
+                  },
+                  "polarity": {
+                    "type": "string",
+                    "maxLength": 40
+                  },
+                  "basisKind": {
+                    "type": "string",
+                    "maxLength": 60
+                  },
+                  "predicateClass": {
+                    "type": "string",
+                    "maxLength": 40
+                  },
+                  "assertionBasis": {
+                    "type": "string",
+                    "maxLength": 60
+                  },
+                  "speechAct": {
+                    "type": "string",
+                    "maxLength": 40
+                  },
+                  "extractionMethod": {
+                    "type": "string",
+                    "maxLength": 200
+                  },
+                  "extractionConfidence": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "jurisdiction": {
+                    "type": "string",
+                    "maxLength": 10
+                  },
+                  "statedTense": {
+                    "type": "string",
+                    "maxLength": 20
+                  },
+                  "segmentKind": {
+                    "type": "string",
+                    "maxLength": 40
+                  },
+                  "validity": {
+                    "default": {},
+                    "type": "object",
+                    "properties": {
+                      "validFrom": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "date-time",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "validTo": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "date-time",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "validFromPrecision": {
+                        "type": "string",
+                        "enum": [
+                          "INSTANT",
+                          "DAY",
+                          "MONTH",
+                          "QUARTER",
+                          "YEAR",
+                          "DECADE"
+                        ]
+                      },
+                      "validToPrecision": {
+                        "type": "string",
+                        "enum": [
+                          "INSTANT",
+                          "DAY",
+                          "MONTH",
+                          "QUARTER",
+                          "YEAR",
+                          "DECADE"
+                        ]
+                      },
+                      "validFromBasis": {
+                        "type": "string",
+                        "enum": [
+                          "STATED_BY_SOURCE",
+                          "PUBLICATION_PROXY",
+                          "OBSERVATION_ONLY",
+                          "INFERRED",
+                          "UNKNOWN"
+                        ]
+                      },
+                      "validToBasis": {
+                        "type": "string",
+                        "enum": [
+                          "STATED_BY_SOURCE",
+                          "PUBLICATION_PROXY",
+                          "OBSERVATION_ONLY",
+                          "INFERRED",
+                          "UNKNOWN"
+                        ]
+                      },
+                      "statedAsOf": {
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                      },
+                      "statedAsOfPrecision": {
+                        "type": "string",
+                        "enum": [
+                          "INSTANT",
+                          "DAY",
+                          "MONTH",
+                          "QUARTER",
+                          "YEAR",
+                          "DECADE"
+                        ]
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "uidSegment": {
+                    "type": "string",
+                    "maxLength": 200
+                  }
+                },
+                "additionalProperties": false
+              },
+              "asserterRef": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              }
+            },
+            "required": [
+              "proposalId",
+              "kind",
+              "subjectRef",
+              "predicate"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "proposalId": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              },
+              "rationale": {
+                "type": "string",
+                "maxLength": 2000
+              },
+              "evidence": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^hu:[a-z0-9-]+:[A-Za-z0-9][A-Za-z0-9._\\-/]*$"
+                    }
+                  ]
+                }
+              },
+              "dependsOn": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+                }
+              },
+              "kind": {
+                "type": "string",
+                "const": "state.attach"
+              },
+              "subjectRef": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              },
+              "stateRef": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              },
+              "relationshipType": {
+                "default": "HAS_STATE",
+                "type": "string",
+                "pattern": "^[A-Z][A-Z0-9_]*$"
+              },
+              "assertion": {
+                "default": {
+                  "validity": {}
+                },
+                "type": "object",
+                "properties": {
+                  "predicate": {
+                    "type": "string",
+                    "maxLength": 120
+                  },
+                  "polarity": {
+                    "type": "string",
+                    "maxLength": 40
+                  },
+                  "basisKind": {
+                    "type": "string",
+                    "maxLength": 60
+                  },
+                  "predicateClass": {
+                    "type": "string",
+                    "maxLength": 40
+                  },
+                  "assertionBasis": {
+                    "type": "string",
+                    "maxLength": 60
+                  },
+                  "speechAct": {
+                    "type": "string",
+                    "maxLength": 40
+                  },
+                  "extractionMethod": {
+                    "type": "string",
+                    "maxLength": 200
+                  },
+                  "extractionConfidence": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "jurisdiction": {
+                    "type": "string",
+                    "maxLength": 10
+                  },
+                  "statedTense": {
+                    "type": "string",
+                    "maxLength": 20
+                  },
+                  "segmentKind": {
+                    "type": "string",
+                    "maxLength": 40
+                  },
+                  "validity": {
+                    "default": {},
+                    "type": "object",
+                    "properties": {
+                      "validFrom": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "date-time",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "validTo": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "date-time",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "validFromPrecision": {
+                        "type": "string",
+                        "enum": [
+                          "INSTANT",
+                          "DAY",
+                          "MONTH",
+                          "QUARTER",
+                          "YEAR",
+                          "DECADE"
+                        ]
+                      },
+                      "validToPrecision": {
+                        "type": "string",
+                        "enum": [
+                          "INSTANT",
+                          "DAY",
+                          "MONTH",
+                          "QUARTER",
+                          "YEAR",
+                          "DECADE"
+                        ]
+                      },
+                      "validFromBasis": {
+                        "type": "string",
+                        "enum": [
+                          "STATED_BY_SOURCE",
+                          "PUBLICATION_PROXY",
+                          "OBSERVATION_ONLY",
+                          "INFERRED",
+                          "UNKNOWN"
+                        ]
+                      },
+                      "validToBasis": {
+                        "type": "string",
+                        "enum": [
+                          "STATED_BY_SOURCE",
+                          "PUBLICATION_PROXY",
+                          "OBSERVATION_ONLY",
+                          "INFERRED",
+                          "UNKNOWN"
+                        ]
+                      },
+                      "statedAsOf": {
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                      },
+                      "statedAsOfPrecision": {
+                        "type": "string",
+                        "enum": [
+                          "INSTANT",
+                          "DAY",
+                          "MONTH",
+                          "QUARTER",
+                          "YEAR",
+                          "DECADE"
+                        ]
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "uidSegment": {
+                    "type": "string",
+                    "maxLength": 200
+                  }
+                },
+                "additionalProperties": false
+              },
+              "edgeProperties": {
+                "default": {},
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "pattern": "^[a-z][A-Za-z0-9]*$"
+                },
+                "additionalProperties": {
+                  "$ref": "#/$defs/__schema0"
+                }
+              }
+            },
+            "required": [
+              "proposalId",
+              "kind",
+              "subjectRef",
+              "stateRef"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "proposalId": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              },
+              "rationale": {
+                "type": "string",
+                "maxLength": 2000
+              },
+              "evidence": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^hu:[a-z0-9-]+:[A-Za-z0-9][A-Za-z0-9._\\-/]*$"
+                    }
+                  ]
+                }
+              },
+              "dependsOn": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+                }
+              },
+              "kind": {
+                "type": "string",
+                "const": "edge.close"
+              },
+              "relationshipUid": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 600
+              }
+            },
+            "required": [
+              "proposalId",
+              "kind",
+              "relationshipUid",
+              "reason"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "proposalId": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              },
+              "rationale": {
+                "type": "string",
+                "maxLength": 2000
+              },
+              "evidence": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^hu:[a-z0-9-]+:[A-Za-z0-9][A-Za-z0-9._\\-/]*$"
+                    }
+                  ]
+                }
+              },
+              "dependsOn": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+                }
+              },
+              "kind": {
+                "type": "string",
+                "const": "mention.stage"
+              },
+              "locatorRef": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^hu:[a-z0-9-]+:[A-Za-z0-9][A-Za-z0-9._\\-/]*$"
+                  }
+                ]
+              },
+              "surfaceForm": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 600
+              },
+              "candidateNodeType": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Za-z0-9]*$"
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 600
+              },
+              "context": {
+                "type": "string",
+                "maxLength": 2000
+              }
+            },
+            "required": [
+              "proposalId",
+              "kind",
+              "locatorRef",
+              "surfaceForm",
+              "reason"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 4000
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "intentId",
+    "context",
+    "proposals"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "__schema0": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema0"
+          }
+        },
+        {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/__schema0"
+          }
+        }
+      ]
+    }
+  }
+}

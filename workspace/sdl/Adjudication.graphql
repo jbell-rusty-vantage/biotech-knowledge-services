@@ -1,0 +1,61 @@
+"""
+Purpose: one verification.v1 judgment about one Assertion, immutable (a re-review is a new node naming
+`supersedesUid`). CAPTURE_FIDELITY judges the record against its declared span and feeds Assertion.status through
+the verdict mapping; SUPPORT judges whether located evidence supports the proposition and never changes status.
+The judge's evidence (supporting, contradicting, qualifying, context fragments) is HAS_EVIDENCE with a role. The
+five orthogonal properties are stored separately; no aggregate erases a component. The verification run is the
+generating Activity (activityKind VERIFICATION, bundleDigest), not a node of its own.
+Identity rule: verification.v1 judgmentId when present, else (assertion, kind, methodVersion, recordedAt).
+uid token: `adjudication`. Questions: Q-K-01, Q-K-08, Q-K-11, Q-K-16.
+"""
+type Adjudication implements Entity
+  @node(labels: ["Adjudication", "EvidenceAssessment"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  adjudicationKind: AdjudicationKind!
+  verdict: SemanticVerdict!
+  "Deterministic stage result (passed | failed | review_required)."
+  mechanicalStatus: String
+  policyOutcome: PolicyOutcome
+  judgeKind: JudgeKind!
+  "verification.v1 graderVersion; the method that makes the verdict interpretable."
+  methodVersion: String!
+  evidenceSupport: PropertyStatus
+  worldCorrectness: PropertyStatus
+  attributionFaithfulness: PropertyStatus
+  sourceAuthority: PropertyStatus
+  provenanceIntegrity: PropertyStatus
+  "Facets of the claim the evidence did not support."
+  unsupportedFacets: [String!]
+  calibratedProbability: Float
+  "verification.v1 publicRationale."
+  rationale: String
+  "Human decision on a held result. Only AFFIRM with decisionProvenance HUMAN_ORIGIN moves a held Assertion to ACCEPTED; DEFER changes nothing."
+  decision: AdjudicationDecision
+  "HUMAN_ORIGIN | SYNTHETIC_ENGINEERING (verification.v1 decision provenance); synthetic decisions never change Assertion.status."
+  decisionProvenance: String
+  "verification.v1 judgmentId."
+  judgmentId: String
+  recordedAt: DateTime!
+  recordedTo: DateTime
+  supersedesUid: String
+  """class: structural; cardinality: one_or_more; questions: Q-K-01, Q-K-16."""
+  evaluates: [Assertion!]!
+    @relationship(type: "ASSESSES", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: many (role and origin per fragment); questions: Q-K-01, Q-K-11."""
+  evidence: [SourceLocator!]!
+    @relationship(type: "HAS_EVIDENCE", direction: OUT, properties: "EvidenceEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: exactly_one (the VERIFICATION Activity); questions: Q-K-03, Q-K-08."""
+  generatedBy: [Activity!]!
+    @relationship(type: "WAS_GENERATED_BY", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

@@ -1,0 +1,31 @@
+"""
+Asserted, bitemporal episode of MATERIAL_CONTAINS: the eleven AssertedEdgeProperties fields verbatim (executor-set,
+copied from the one authorizing Assertion; half-open valid interval; nothing deleted) plus the four qualifiers Q-D1-11
+filters on ("preparations of taxon T standardized to at least X % of marker M": statementKind = STANDARDIZATION_CLAIM,
+comparator in GTE/GT/EQ/APPROX, quantity >= X, unitCode = '%'). The same number is the Assertion's valueNumber/unitCode
+(copied by the executor). QUALITATIVE_PROVIDES statements carry no quantity (non-inference rule: "provides" never implies
+an amount); a BETWEEN statement keeps quantity null and its bounds in the Assertion qualifier "range:<low>-<high>";
+content basis (w/w, v/v) and mass basis are Assertion qualifiers ("contentBasis:MASS_FRACTION_W_W"). D12
+FoodContentProperties uses the same statementKind / quantity / unitCode names.
+"""
+type ContentEdgeProperties @relationshipProperties {
+  relationshipUid: String!
+  assertionUid: String!
+  validFrom: DateTime
+  validTo: DateTime
+  validFromPrecision: TimePrecision
+  validToPrecision: TimePrecision
+  validFromBasis: ValidTimeBasis!
+  validToBasis: ValidTimeBasis!
+  recordedFrom: DateTime!
+  recordedTo: DateTime
+  lastWriterRunId: String
+  "Filter: Q-D1-11 (STANDARDIZATION_CLAIM), CQ-ID-03 / Q-D1-13 (declared vs measured vs qualitative)."
+  statementKind: ContentStatementKind!
+  "Point value for EQ, APPROX, GTE, GT, LTE, LT; null for BETWEEN and QUALITATIVE_PROVIDES (filter: Q-D1-11 quantity >= X)."
+  quantity: Float
+  "Filter: Q-D1-11 (a minimum or point claim satisfies 'at least X'; LT/LTE limits never do)."
+  comparator: QuantityComparator
+  "UCUM unit ('%', 'mg/g', '{CFU}/g'); null only for QUALITATIVE_PROVIDES (filter: Q-D1-11 unitCode = '%')."
+  unitCode: String
+}

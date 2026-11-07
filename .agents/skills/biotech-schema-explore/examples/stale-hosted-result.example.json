@@ -1,0 +1,12 @@
+{
+  "format": "bks-skill-example.v1",
+  "id": "stale-hosted-result",
+  "kind": "negative",
+  "task": "A hosted (semantic) search returned hits from an older index generation.",
+  "lesson": "Hosted hits are candidates only. Validate each card id and digest against the local workspace; reject stale or unknown hits and never act on them. Semantic-only search without a bound generation reports `unavailable`, never an empty result; hybrid degrades to lexical-only and says so.",
+  "steps": [
+    { "argv": ["rehydrate", "--hits", "{EXAMPLES}/stale-hits.json"], "expect": { "exit": 1, "json": [{ "path": "rejected.*.reason", "includes": "stale-digest" }, { "path": "rejected.*.reason", "includes": "unknown-card" }] } },
+    { "argv": ["search", "label version", "--mode", "semantic", "--json"], "expect": { "exit": 4, "json": [{ "path": "status", "equals": "unavailable" }, { "path": "hits", "equals": [] }] } },
+    { "argv": ["search", "label version", "--mode", "hybrid", "--json"], "expect": { "exit": 0, "json": [{ "path": "status", "equals": "degraded" }, { "path": "mode", "equals": "lexical-only" }, { "path": "hits.*.id", "includes": "node:LabelVersion" }] } }
+  ]
+}

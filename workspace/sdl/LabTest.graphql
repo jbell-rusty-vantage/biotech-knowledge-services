@@ -1,0 +1,49 @@
+"""
+Purpose: the orderable or purchasable test as a laboratory or vendor offers it (Labcorp 001453 'Hemoglobin (Hb) A1c',
+Quest 496, Jinfiniti Intracellular NAD test, TruAge report). Panels are LabTests of kind PANEL that INCLUDE other
+LabTests (absorbs pinned PanelDefinition; composition changes are episodes). What it measures (MEASURES_METRIC) and
+how (PERFORMED_WITH_VERSION) change over time and are therefore episodes; price and offers are D6.
+Identity rule: (issuer, issuer's test code) via the kernel Identifier (scheme LAB_TEST_CODE, requested); else
+(issuer, verbatim test name). uid token: `lab-test`.
+Questions: CQ-DX-01, Q-D4-01, Q-D4-03, Q-D4-04, Q-D4-12, Q-D4-13, Q-D4-18, Q-D4-19, Q-D4-23, Q-D4-24, Q-D4-25.
+"""
+type LabTest implements Entity & Subjectable
+  @node(labels: ["LabTest", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  testKind: LabTestKind!
+  orderChannel: OrderChannel
+  collectionModes: [CollectionMode!]
+  "Specimen requirements as written (tube, volume, container)."
+  specimenText: String
+  "Patient preparation, stability and rejection criteria as written (Q-D4-19)."
+  preAnalyticalText: String
+  notReported: [MeasurementField!]
+  """class: asserted; cardinality: one_or_more (episode: labs remap result codes to LOINC); questions: CQ-DX-01, Q-D4-01, Q-D4-03, Q-D4-17, Q-D4-25."""
+  metrics: [Metric!]!
+    @relationship(type: "MEASURES_METRIC", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (episode: a method or instrument change closes one and opens the next; several open when regional labs differ); questions: CQ-DX-01, CQ-DX-03, Q-D4-01, Q-D4-02, Q-D4-11, Q-D4-23."""
+  assayVersions: [AssayVersion!]!
+    @relationship(type: "PERFORMED_WITH_VERSION", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (episode: a report's algorithm implementation changes); questions: CQ-DX-02, CQ-DX-04, Q-D4-04, Q-D4-06, Q-D4-20, Q-D4-23."""
+  algorithmVersions: [AlgorithmVersion!]!
+    @relationship(type: "PERFORMED_WITH_VERSION", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (PANEL only; episode = panel composition version); questions: Q-D4-03, Q-D4-25."""
+  components: [LabTest!]!
+    @relationship(type: "INCLUDES_TEST", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (stored Product → LabTest; D6 Product is the purchasable item that delivers this test); questions: Q-D4-01, Q-D4-10, Q-D4-13, Q-D4-18, Q-D4-24."""
+  products: [Product!]!
+    @relationship(type: "DELIVERS", direction: IN, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

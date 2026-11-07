@@ -1,0 +1,57 @@
+# Claim view: the claim, a page of its occurrences (assertions), its assessments and the reports about it.
+query ClaimView($uid: String!, $first: Int = 10) {
+  claims(where: { uid: { eq: $uid } }, limit: 1) {
+    uid
+    proposition
+    propositionHash
+    claimType
+    lifecycleState
+    latestVerdict
+    discourseFirstHandCount
+    discourseRetellingCount
+    discourseRecutCount
+    discourseIndependentCount
+    discourseFirstOccurrenceAt
+    discourseMethodVersion
+    discourseDerivedAt
+    occurrencesConnection(first: $first, sort: [{ node: { recordedAt: DESC } }, { node: { uid: ASC } }]) {
+      totalCount
+      edges {
+        node {
+          uid
+          predicate
+          status
+          polarity
+          speechAct
+          recordedAt
+          assertedBy(limit: 1) {
+            ...SubjectRef
+          }
+        }
+      }
+    }
+    assessments(limit: 10, sort: [{ recordedAt: DESC }]) {
+      uid
+      assessmentKind
+      assessmentSubkind
+      status
+      verdict
+      certainty
+      grade
+      summary
+      recordedAt
+    }
+    reports(limit: 10, sort: [{ publishedAt: DESC }]) {
+      uid
+      reportKind
+      status
+      verdict
+      policyOutcome
+      publishedAt
+      citationCompleteness
+      citationCorrectness
+      independentSourceFamilyCount
+      distinctSourceFamilyCount
+    }
+  }
+}

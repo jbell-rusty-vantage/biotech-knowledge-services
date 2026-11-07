@@ -1,0 +1,207 @@
+version: 1
+module: D3
+# Source: packets/D3/06-node-register.yaml (sha256 7d1a102b…), edited by the S module editor for D3 2026-10-08 per
+# final/decision-report.md and final/_work/rulings.yaml (modules.D3, global). Every entry keeps the 01-PACKET-CONTRACT
+# fields and adds `module: D3`. Synthesis edits: InterventionComponent.quantityBasis typed by D6 AmountBasis (R-58);
+# Publication.revisionStatus typed by kernel SourceRevisionKind, null = none known (R-44); Publication whyNode: its
+# renditions are grouped by the kernel-meaning RENDITION_OF (R-43), not by a shared-Identifier join (R-42). Node types
+# unchanged (8). `mutations` is read as { graphql: none, executor: ... } (R-03): every type is @mutation(operations: [])
+# and the executor is the only writer.
+# Model stage, A4, 2026-10-08. 8 node types (budget 8). filterProperties are exactly the properties a question in
+# 02-questions.md filters or sorts on; every other property carries @filterable(byValue: false) @sortable(byValue: false)
+# in 04-schema-proposal.graphql, so the SDL itself encodes this register (measured −38.8 KB in the printed schema).
+# The seven Entity fields (id, uid, name, privacyClass, lastWriterRunId, createdAt, updatedAt) are not counted.
+# mutations: all false — every type is @mutation(operations: []); the executor is the only writer (ADR 0003).
+# Adversarial-review stage (2026-10-08): identity keys use a stable source family instead of a growing stating-record set;
+# RegistrationVersion labelled Entity; StudyPopulation kept with a measured cost comparison; projection caches carry a
+# method version; assessment subkinds use the kernel's typed slots (09-reasoning.md "Assessment vocabularies").
+nodes:
+  - name: Study
+    module: D3
+    uidToken: study
+    identityKeys: [registry identifier (NCT | ISRCTN | EUCT | EUDRACT | requested ACTRN, CHICTR, DRKS, CTRI, JRCT) via kernel Identifier, "else (first reporting publication DOI|PMID, studyKind, normalized design label)"]
+    identifierSchemes: [NCT, ISRCTN, EUCT, EUDRACT]
+    whyNode: >-
+      Every D3 question starts at or joins through the study: arms, outcomes, results, registry history, papers,
+      sponsor (CQ-ST-01, CQ-ST-04, CQ-ST-07, Q-D3-02, Q-D3-09, Q-D3-10); it is the unit two registrations and many
+      papers share (ASPREE: NCT01038583 = ISRCTN83772183, three NEJM papers) and the D13 frontier attachment.
+    filterProperties:
+      - { name: studyKind, questions: [Q-D3-04, Q-D3-06, CQ-ST-07, CQ-EV-03] }
+      - { name: phase, questions: [Q-D3-10], note: "projection cache of latest RegistrationVersion" }
+      - { name: overallStatus, questions: [Q-D3-02, Q-D3-10, Q-D3-18], note: "projection cache" }
+      - { name: primaryCompletionDate, questions: [Q-D3-02, Q-D3-10], note: "projection cache" }
+      - { name: resultsPosted, questions: [Q-D3-02], note: "projection cache" }
+    otherProperties: 5
+    projection: { method: study-registry-projection/v1, fields: [phase, overallStatus, primaryCompletionDate, primaryCompletionDateType, resultsPosted], provenance: [projectionOfRegistrationVersionUid, projectionMethodVersion, projectionDerivedAt], writer: PROJECTION Activity, readOnly: true }
+    archetype: Entity
+    mutations: { create: false, update: false, delete: false }
+  - name: RegistrationVersion
+    module: D3
+    uidToken: registration-version
+    identityKeys: [registry, registrationId, "versionNumber when the registry numbers versions, else (versionDate, populatingMode, payloadHash)"]
+    identifierSchemes: []
+    whyNode: >-
+      Registry history questions traverse versions in valid-time order and compare their content (CQ-ST-04 outcome
+      switching, CQ-ST-08 as-of status and enrollment, Q-D3-16 registered-but-unreported, Q-D3-02 results reset,
+      Q-D3-18 early stop); it is the stating record for registry-side arms, outcomes and results (STATED_IN). Two
+      populating modes (OBSERVED capture, RECONSTRUCTED from dated history prose).
+    filterProperties:
+      - { name: registry, questions: [CQ-ST-08, CQ-ST-04] }
+      - { name: registrationId, questions: [CQ-ST-08] }
+      - { name: versionNumber, questions: [CQ-ST-04] }
+      - { name: versionDate, questions: [CQ-ST-04, CQ-ST-08, Q-D3-16] }
+      - { name: populatingMode, questions: [CQ-ST-08, CQ-ST-04] }
+      - { name: overallStatus, questions: [CQ-ST-08, Q-D3-18, Q-D3-10] }
+      - { name: enrollmentCount, questions: [CQ-ST-08] }
+      - { name: enrollmentCountType, questions: [CQ-ST-08] }
+      - { name: primaryCompletionDate, questions: [Q-D3-02, Q-D3-10] }
+      - { name: primaryCompletionDateType, questions: [Q-D3-10] }
+      - { name: resultsPosted, questions: [Q-D3-02, CQ-ST-08] }
+    otherProperties: 26
+    archetype: Entity
+    note: "labels [RegistrationVersion, Entity] like D4 AssayVersion and D6 LabelVersion (the pinned VersionedState archetype label is dropped); field facts are one locator per field on the HAS_REGISTRATION_VERSION attach Assertion (no per-field predicates); studyTypeVerbatim added (Q-D3-15, CQ-ST-08)"
+    mutations: { create: false, update: false, delete: false }
+  - name: StudyArm
+    module: D3
+    uidToken: study-arm
+    identityKeys: [study, "sourceFamily (registry + registrationId | the work's DOI, else PMID)", armKey, payloadHash]
+    identifierSchemes: []
+    whyNode: >-
+      Results and adverse events are per arm, and arms differ by source (NCT04313634 registry has a fisetin arm with a
+      serious adverse event; the paper reports two arms): Q-D3-01 is a set difference over arms per stating record;
+      CQ-ST-01 and CQ-ST-06 read arm by arm.
+    filterProperties:
+      - { name: armType, questions: [CQ-ST-06, Q-D3-04] }
+      - { name: armKey, questions: [Q-D3-01, Q-D3-15] }
+    otherProperties: 3
+    archetype: Entity
+    mutations: { create: false, update: false, delete: false }
+  - name: InterventionComponent
+    module: D3
+    uidToken: intervention-component
+    identityKeys: [arm, materialTextVerbatim (normalized), componentRole, payloadHash]
+    identifierSchemes: []
+    whyNode: >-
+      CQ-ST-01/CQ-ST-02 (value 1) need the dose of each administered thing and its resolved material; kernel
+      edge-property types carry no dose fields, and assertions hang on the component (measured delivery, dose
+      equivalence, material provider). Q-D3-07 filters human components by dose range.
+    filterProperties:
+      - { name: componentRole, questions: [CQ-ST-01, Q-D3-04] }
+      - { name: quantity, questions: [Q-D3-07, CQ-EV-04] }
+      - { name: unitCode, questions: [Q-D3-07, CQ-EV-04] }
+      - { name: quantityBasis, questions: [Q-D3-07, CQ-EV-04, Q-D3-06], note: "typed by D6 AmountBasis (R-58; QuantityBasis removed)" }
+      - { name: route, questions: [CQ-EV-04] }
+    otherProperties: 10
+    archetype: Entity
+    mutations: { create: false, update: false, delete: false }
+  - name: StudyPopulation
+    module: D3
+    uidToken: study-population
+    identityKeys: [study, "sourceFamily (as StudyArm)", populationKind, analysisSet, payloadHash]
+    identifierSchemes: []
+    whyNode: >-
+      Q-D3-17 (value 2: who was eligible, enrolled, randomized, analyzed, who was excluded) needs several population
+      records per study and per source (dq-bone fixture: registry ELIGIBLE FEMALE >=60 and ENROLLED 74 vs paper
+      RANDOMIZED 60 aged 60-90 and ELIGIBLE p16-enriched; ASPREE: three), which flat Study or RegistrationVersion
+      fields cannot hold without choosing one source or one kind (paper-stated populations have no RegistrationVersion);
+      Q-D3-04 / Q-D3-06 (value 1) filter species, sex and age per source; the population dimension of applicability
+      assessments (CQ-EV-04) needs a Subjectable target for ASSESSES, and D5 target-effect Assertions name it by the
+      qualifier string population:<uid> (D5 vocab-targets 0.2.0; a string join, no edge). Measured (adversarial-review
+      stage, current kernel b2c2b1b0): removing the type, HAS_POPULATION and its two STATED_IN pairs and folding six
+      population fields onto Study saves 16,574 B, 358 lines and 12 input types of the printed schema (586,256 ->
+      569,682 B) and 1 node / 3 pairs; kept because the fold loses the per-kind, per-source records the three
+      questions read.
+    filterProperties:
+      - { name: populationKind, questions: [Q-D3-17] }
+      - { name: analysisSet, questions: [Q-D3-17, Q-D3-15] }
+      - { name: size, questions: [Q-D3-17, Q-D3-04] }
+      - { name: sexScope, questions: [Q-D3-06, Q-D3-17, CQ-EV-04] }
+      - { name: minAgeYears, questions: [Q-D3-17, CQ-EV-04] }
+      - { name: maxAgeYears, questions: [Q-D3-17, CQ-EV-04] }
+      - { name: healthyVolunteers, questions: [Q-D3-17, Q-D3-05] }
+      - { name: ncbiTaxonId, questions: [Q-D3-06, Q-D3-04] }
+      - { name: strainOrLine, questions: [Q-D3-06] }
+    otherProperties: 5
+    archetype: Entity
+    mutations: { create: false, update: false, delete: false }
+  - name: OutcomeDefinition
+    module: D3
+    uidToken: outcome-definition
+    identityKeys: [study, outcomeKey (normalized measure + timepoint), priority]
+    note: "shared across sources (the exception to the per-source rule): one node per (study, outcomeKey, priority); each declaring registry version or publication is a STATED_IN episode"
+    identifierSchemes: []
+    whyNode: >-
+      Questions filter on declared priority, measure kind and timepoint (CQ-ST-04, CQ-ST-05, Q-D3-04, Q-D3-05,
+      Q-D3-16) and traverse it to shared measure concepts (MEASURES) and from there to D5 Targets; outcome switching is
+      a group-by on outcomeKey over STATED_IN episodes.
+    filterProperties:
+      - { name: priority, questions: [CQ-ST-04, CQ-ST-05, Q-D3-04, Q-D3-16] }
+      - { name: measureKind, questions: [Q-D3-04, Q-D3-05, CQ-ST-03, CQ-ST-06] }
+      - { name: timepoint, questions: [CQ-ST-04, Q-D3-16] }
+      - { name: outcomeKey, questions: [CQ-ST-04, Q-D3-16, Q-D3-15] }
+    otherProperties: 1
+    archetype: Entity
+    mutations: { create: false, update: false, delete: false }
+  - name: StudyResult
+    module: D3
+    uidToken: study-result
+    identityKeys: [outcome definition, arm set, analysisPopulation, subgroupLabel, timepoint, resultKind, "sourceFamily (as StudyArm)", payloadHash]
+    identifierSchemes: []
+    whyNode: >-
+      The unit every evidence number is cited from (Q-D3-13) and the main filter surface of the domain (CQ-ST-05 null
+      primary vs favorable secondary, Q-D3-04 ranking, Q-D3-05 harms, CQ-ST-06 adverse events, Q-D3-15 registry vs
+      paper disagreement); one node per stating source so nothing is overwritten.
+    filterProperties:
+      - { name: analysisKind, questions: [CQ-ST-05, Q-D3-04, Q-D3-05] }
+      - { name: comparisonKind, questions: [CQ-ST-05] }
+      - { name: statisticalConclusion, questions: [CQ-ST-05, CQ-EV-03, Q-D3-04, Q-D3-05, Q-D3-06], note: "neutral: SIGNIFICANT / NOT_SIGNIFICANT / NOT_TESTED / NOT_REPORTED (directive 3.2)" }
+      - { name: direction, questions: [CQ-EV-03, Q-D3-04, Q-D3-05, Q-D3-06], note: "EstimateDirection (INCREASED / DECREASED / NO_CHANGE / MIXED / UNKNOWN); harm is read by the Q-D3-05 event-risk rule or a D3.result-interpretation Assessment" }
+      - { name: resultKind, questions: [Q-D3-05, Q-D3-15, CQ-ST-06] }
+      - { name: sampleSize, questions: [Q-D3-04, Q-D3-15], note: "sort key for ranking" }
+      - { name: analysisPopulation, questions: [Q-D3-15] }
+      - { name: dispersionKind, questions: [Q-D3-15], note: "new: registry FULL_RANGE vs paper INTERQUARTILE_RANGE for one median" }
+      - { name: subgroupLabel, questions: [Q-D3-06, CQ-ST-05, Q-D3-04, Q-D3-15], note: "new: sex-, site- or enrichment-limited results; replaces pinned HAS_ANALYZED_COHORT" }
+      - { name: estimate, questions: [Q-D3-11, CQ-ST-10], note: "range comparison for pooled results and thresholds only" }
+      - { name: intervalLower, questions: [Q-D3-11], note: "pinned ciLower" }
+      - { name: intervalUpper, questions: [Q-D3-11], note: "pinned ciUpper" }
+      - { name: unitCode, questions: [CQ-ST-10] }
+      - { name: seriousness, questions: [CQ-ST-06] }
+      - { name: participantsAffected, questions: [CQ-ST-06] }
+      - { name: collectionMethod, questions: [CQ-ST-06] }
+    otherProperties: 11
+    archetype: Entity
+    mutations: { create: false, update: false, delete: false }
+  - name: Publication
+    module: D3
+    uidToken: publication
+    identityKeys: [DOI (+ versionLabel for preprint versions and review updates), "else PMID", "else PMCID", "else (venueName, title, publishedAt)"]
+    identifierSchemes: [DOI, PMID, PMCID, OPENALEX]
+    whyNode: >-
+      Corrections, retractions and versions are relations between works, per asserter (CQ-EV-05 value 1, Q-D3-03,
+      Q-D3-11, Q-D3-12), and a work has several kernel Sources (PubMed, PMC, DOI landing, PDF) that need one identity,
+      grouped by the kernel-meaning RENDITION_OF Source -> Publication (R-43; source family for Q-K-21);
+      it is the stating record for paper-side arms, outcomes and results and reports on studies (CQ-ST-07).
+    filterProperties:
+      - { name: publicationKind, questions: [CQ-EV-05, Q-D3-11, Q-D3-12, Q-D3-02] }
+      - { name: publishedAt, questions: [CQ-ST-09, Q-D3-12, Q-D3-02] }
+      - { name: revisionStatus, questions: [CQ-EV-05, Q-D3-04, Q-D3-03], note: "read-only projection cache over REVISES and kernel HAS_REVISION_STATUS (method in revisionStatusMethodVersion, e.g. publication-revision-status/v2), typed by kernel SourceRevisionKind, null = none known; the single work-level cache (R-44, R-45); exclude-retracted filter" }
+    otherProperties: 6
+    archetype: Entity
+    mutations: { create: false, update: false, delete: false }
+deferred:
+  - { name: Dataset, reason: "independence counting (CQ-ST-07) works through REPORTS_ON to a cohort Study (UK Biobank, a trial's IPD) plus predicate-only SHARES_PARTICIPANTS_WITH; a Dataset node would cost a type and two relationships for one value-1 question already answered as a lower bound. Promote if data-access questions (Vivli/YODA access level) become value 1." }
+  - { name: UseContextProfile, reason: "W10; the use context of an applicability assessment is the assessed D6 ProductVariant / D5 Intervention or Protocol plus assessment fields; a free-standing profile has no question that traverses it (11-open-questions, kernel/D10)" }
+  - { name: ApplicabilityDimension, reason: "W10; one child kernel Assessment per dimension (kind APPLICABILITY, subkind D3.applicability.dimension, facet dimension=<dose|population|material|outcome|duration|setting>, conclusionCode per-dimension verdict) that the parent DERIVES_FROM (09-reasoning.md Assessment vocabularies)" }
+mergedInto:
+  - { name: TrialRegistration, into: "Study (kernel Identifier per registration) + RegistrationVersion.registry / registrationId", reason: "no question needs the registration as its own hop; two registrations of one trial are two identifiers" }
+  - { name: ProtocolVersion, into: "Publication (publicationKind PROTOCOL / ANALYSIS_PLAN; versions chain by REVISES)", reason: "a protocol or SAP is a document with versions (Farr 2024 ships protocol + SAP as supplement)" }
+  - { name: StudyIntervention, into: "StudyArm (arm-level facts) + InterventionComponent (route, dosageForm, schedule, duration, registry intervention type)", reason: "1:1 with arm in every instance read" }
+  - { name: AdverseEventResult, into: "StudyResult (resultKind ADVERSE_EVENT_COUNT; seriousness, participantsAffected/AtRisk, eventCount, collectionMethod) with an OutcomeDefinition of measureKind ADVERSE_EVENT per event term", reason: "same identity pattern; pinned already labelled it :StudyResult" }
+  - { name: Dataset, into: "Study (kind OBSERVATIONAL_COHORT) + REPORTS_ON", reason: "see deferred" }
+  - { name: EvidenceApplicability, into: "K.Assessment (assessmentKind APPLICABILITY, ASSESSES study evidence + use-side entity)", reason: "kernel ownership map: assessments are kernel Assessment nodes; D3 owns the kind's questions" }
+  - { name: ApplicabilityDimension, into: "K.Assessment (child, subkind D3.applicability.dimension, facets dimension=<...>, missing=<fact>; conclusionCode)", reason: "kernel Assessment pattern with the typed slots (M9)" }
+  - { name: UseContextProfile, into: "deferred (assessed entity + assessment fields)", reason: "see deferred" }
+  - { name: EndpointClassification, into: "K.Assessment (kind OTHER, subkind D3.endpoint-classification, ASSESSES OutcomeDefinition; conclusionCode = endpoint class, facets bestCategory=<BEST category>, contextOfUse=<code>)", reason: "who classified, under which BEST category, is an assessment with supersession; kernel M9 typed slots" }
+  - { name: ResultInterpretation, into: "K.Assessment (kind OTHER, subkind D3.result-interpretation, ASSESSES StudyResult; effectDirection + conclusionCode; threshold source = HAS_EVIDENCE role CONTEXT)", reason: "kernel Assessment pattern; benefit / harm lives here, never on the StudyResult (directive 3.2)" }
+  - { name: EvidenceSynthesis, into: "K.Assessment (assessmentKind EVIDENCE_SYNTHESIS, ASSESSES Claim, DERIVED_FROM the StudyResults' STATED_IN Assertions)", reason: "kernel Assessment pattern" }
+  - { name: EvidenceStrengthAssessment, into: "K.Assessment (assessmentKind QUALITY, subkind D3.evidence-strength; gradeScheme + grade + certainty)", reason: "kernel Assessment pattern with the typed grading slots (M9); CQ-AX-24 forbids a stored strength attribute" }

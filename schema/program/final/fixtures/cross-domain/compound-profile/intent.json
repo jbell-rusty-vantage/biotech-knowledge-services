@@ -1,0 +1,4385 @@
+{
+ "schemaVersion": "biotech-knowledge-intent.v1",
+ "intentId": "ft-s-xfx-compound-profile",
+ "context": {
+  "actor": {
+   "kind": "agent",
+   "id": "s-xfx-compound",
+   "model": "claude-opus-5-5"
+  },
+  "run": {
+   "system": "mission-control",
+   "runId": "run:ft-S-xfx-compound-ingest",
+   "missionId": "mission:ft-S-xfx-fixtures"
+  },
+  "activityKind": "INGESTION"
+ },
+ "schemaDigest": "sha256:d233930272c7aaa75d9aac21103e83448bd96a79d1106c4749fb807f257dd705",
+ "onStale": "fail",
+ "sources": [
+  {
+   "ref": "snap-gsrs-8xm2xt8vwi",
+   "source": {
+    "canonicalUri": "https://gsrs.ncats.nih.gov/api/v1/substances(8XM2XT8VWI)?view=full",
+    "title": "FDA GSRS substance NICOTINAMIDE RIBOSIDE CHLORIDE (UNII 8XM2XT8VWI), full view",
+    "sourceKind": "API",
+    "properties": {
+     "tool": "tool:gsrs-api"
+    }
+   },
+   "snapshot": {
+    "observedAt": "2026-10-09T04:16:57Z",
+    "retrievedAt": "2026-10-09T04:16:57Z",
+    "contentHash": "sha256:1a3167f256ef0426c33d505f49e91c523392046d0edcbec97c9d36c976eab58b",
+    "contentHashBasis": "RAW_BYTES",
+    "captureCompleteness": "COMPLETE",
+    "properties": {
+     "captureMethod": "curl/8 -sS -L (tool:gsrs-api)",
+     "mimeType": "application/json",
+     "bytes": 16358
+    }
+   },
+   "locators": [
+    {
+     "ref": "l-gsrs-nrcl-version",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"status\":\"approved\",\"version\":\"18\"",
+     "quotePrefix": "TE\",\"substanceClass\":\"chemical\",",
+     "quoteSuffix": ",\"approvedBy\":\"FDA_SRS\",\"names\":",
+     "startOffset": 244,
+     "endOffset": 278,
+     "properties": {
+      "quoteHash": "sha256:22b412e5c1672853727c58b42a04b5fe72996e5494c4b29afbd2d423f1fe930c",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/version"
+     }
+    },
+    {
+     "ref": "l-gsrs-nrcl-name",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"_name\":\"NICOTINAMIDE RIBOSIDE CHLORIDE\"",
+     "quotePrefix": ",\"references\":[],\"access\":[]}}],",
+     "quoteSuffix": ",\"_approvalIDDisplay\":\"8XM2XT8VW",
+     "startOffset": 16168,
+     "endOffset": 16208,
+     "properties": {
+      "quoteHash": "sha256:8819dcd035cfe09c9c46e6358515ccfe109cd1845a233ae53a4a58ce75b299fa",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/_name"
+     }
+    },
+    {
+     "ref": "l-gsrs-nrcl-unii",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"codeSystem\":\"FDA UNII\",\"code\":\"8XM2XT8VWI\"",
+     "quotePrefix": "69-d9eb-4793-8bf1-b558a93adc66\",",
+     "quoteSuffix": ",\"type\":\"PRIMARY\",\"_isClassifica",
+     "startOffset": 3940,
+     "endOffset": 3983,
+     "properties": {
+      "quoteHash": "sha256:bc89a61737b4b73afe09109ccf913adfd88b058d71581ec5231398afa3068732",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/codes/{FDA UNII}/code"
+     }
+    },
+    {
+     "ref": "l-gsrs-nrcl-cas",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"codeSystem\":\"CAS\",\"code\":\"23111-00-4\"",
+     "quotePrefix": "6f-5b7e-4418-91c0-4730ff4bf7fe\",",
+     "quoteSuffix": ",\"type\":\"PRIMARY\",\"url\":\"https:/",
+     "startOffset": 3566,
+     "endOffset": 3604,
+     "properties": {
+      "quoteHash": "sha256:44d8b45f58f92eefc31aaedbc7979f99ff25d1e1929b505f6e9270e042f0f6a3",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/codes/{CAS}/code"
+     }
+    },
+    {
+     "ref": "l-gsrs-nrcl-pubchem",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"codeSystem\":\"PUBCHEM\",\"code\":\"90480033\"",
+     "quotePrefix": "55-1861-64d3-c892-4602c561ca1f\",",
+     "quoteSuffix": ",\"type\":\"PRIMARY\",\"url\":\"https:/",
+     "startOffset": 3196,
+     "endOffset": 3236,
+     "properties": {
+      "quoteHash": "sha256:253be8184d4eff824df5490d9bee95d791af19a0bcf863e3212caaa7f7a145e5",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/codes/{PUBCHEM}/code"
+     }
+    },
+    {
+     "ref": "l-gsrs-nrcl-moiety",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"type\":\"ACTIVE MOIETY\"",
+     "quotePrefix": "a3-7ad6-49b2-9d99-008a5622d393\",",
+     "quoteSuffix": ",\"references\":[],\"access\":[]},{\"",
+     "startOffset": 6147,
+     "endOffset": 6169,
+     "properties": {
+      "quoteHash": "sha256:4355fb49d0fc716fcb9a5fc1f316b6f6f6df38a2503bfdaff6f9a5f959040630",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/relationships/0/type"
+     }
+    },
+    {
+     "ref": "l-gsrs-nrcl-mw",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"charge\":0,\"mwt\":290.7006",
+     "quotePrefix": "\"definedStereo\":4,\"ezCenters\":0,",
+     "quoteSuffix": ",\"count\":1,\"createdBy\":\"ADMIN\",\"",
+     "startOffset": 11849,
+     "endOffset": 11874,
+     "properties": {
+      "quoteHash": "sha256:848609fe185e35b18ea30b1a232519ea0bdad4a887597e3c07b2bd279f373b48",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/structure/mwt"
+     }
+    },
+    {
+     "ref": "l-gsrs-nrcl-formula",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"formula\":\"C11H15N2O5.Cl\"",
+     "quotePrefix": "([C@@H](CO)O2)O)O)C(=O)N.[Cl-]\",",
+     "quoteSuffix": ",\"opticalActivity\":\"UNSPECIFIED\"",
+     "startOffset": 11719,
+     "endOffset": 11744,
+     "properties": {
+      "quoteHash": "sha256:20867c8468a975694295848c0f0c5f2580eb89b005a5819e361b5ff8bc37a198",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/structure/formula"
+     }
+    }
+   ]
+  },
+  {
+   "ref": "snap-gsrs-0i8h2m0l7n",
+   "source": {
+    "canonicalUri": "https://gsrs.ncats.nih.gov/api/v1/substances(0I8H2M0L7N)?view=full",
+    "title": "FDA GSRS substance NICOTINAMIDE RIBOSIDE (UNII 0I8H2M0L7N), full view",
+    "sourceKind": "API",
+    "properties": {
+     "tool": "tool:gsrs-api"
+    }
+   },
+   "snapshot": {
+    "observedAt": "2026-10-09T04:16:58Z",
+    "retrievedAt": "2026-10-09T04:16:58Z",
+    "contentHash": "sha256:3316792f5779d6e2a6c179ae2d5956d662250736e9c35a209f678ed434a8a9ad",
+    "contentHashBasis": "RAW_BYTES",
+    "captureCompleteness": "COMPLETE",
+    "properties": {
+     "captureMethod": "curl/8 -sS -L (tool:gsrs-api)",
+     "mimeType": "application/json",
+     "bytes": 19145
+    }
+   },
+   "locators": [
+    {
+     "ref": "l-gsrs-nr-version",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"status\":\"approved\",\"version\":\"24\"",
+     "quotePrefix": "TE\",\"substanceClass\":\"chemical\",",
+     "quoteSuffix": ",\"approvedBy\":\"FDA_SRS\",\"names\":",
+     "startOffset": 244,
+     "endOffset": 278,
+     "properties": {
+      "quoteHash": "sha256:488eba8faf80f933b4abfeff409dada9e636756021f81aea84721d3fa3a8ddb7",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/version"
+     }
+    },
+    {
+     "ref": "l-gsrs-nr-unii",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"codeSystem\":\"FDA UNII\",\"code\":\"0I8H2M0L7N\"",
+     "quotePrefix": "c5-57bb-47fc-a257-8b344c6b6782\",",
+     "quoteSuffix": ",\"type\":\"PRIMARY\",\"_isClassifica",
+     "startOffset": 5136,
+     "endOffset": 5179,
+     "properties": {
+      "quoteHash": "sha256:a99a08edf9fd276fd8f42101705134d12b18bbf46d1d6bbcc52dfa70819cb2ca",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/codes/{FDA UNII}/code"
+     }
+    },
+    {
+     "ref": "l-gsrs-nr-cas",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"codeSystem\":\"CAS\",\"code\":\"1341-23-7\"",
+     "quotePrefix": "f5-af45-42ca-927d-6cddb7c83308\",",
+     "quoteSuffix": ",\"type\":\"PRIMARY\",\"url\":\"https:/",
+     "startOffset": 3032,
+     "endOffset": 3069,
+     "properties": {
+      "quoteHash": "sha256:3e475abbc003a726d5bfc7ff72b0cc2bdfc288b0e7905046e4a056ae36387b53",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/codes/{CAS}/code"
+     }
+    },
+    {
+     "ref": "l-gsrs-nr-pubchem",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"codeSystem\":\"PUBCHEM\",\"code\":\"439924\"",
+     "quotePrefix": "0b-ea48-f065-b410-d24e89c565d8\",",
+     "quoteSuffix": ",\"type\":\"PRIMARY\",\"url\":\"https:/",
+     "startOffset": 4412,
+     "endOffset": 4450,
+     "properties": {
+      "quoteHash": "sha256:5b79cb684db22ce65a1ee0cbacf3a8b88b726bbea27d8d56a1e7baddb2827ebc",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/codes/{PUBCHEM}/code"
+     }
+    },
+    {
+     "ref": "l-gsrs-nr-chebi",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"codeSystem\":\"CHEBI\",\"code\":\"15927\"",
+     "quotePrefix": "35-5001-4e6a-7e35-a4e064363c31\",",
+     "quoteSuffix": ",\"type\":\"PRIMARY\",\"url\":\"https:/",
+     "startOffset": 5412,
+     "endOffset": 5447,
+     "properties": {
+      "quoteHash": "sha256:51b565396c489c5fbd51f1ab08b950de702f318b63c4e451722581530c58b49b",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/codes/{CHEBI}/code"
+     }
+    },
+    {
+     "ref": "l-gsrs-nr-drugbank",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"codeSystem\":\"DRUG BANK\",\"code\":\"DB14933\"",
+     "quotePrefix": "d4-9a3b-e65b-281e-4263b2ed5b2e\",",
+     "quoteSuffix": ",\"type\":\"PRIMARY\",\"url\":\"https:/",
+     "startOffset": 4778,
+     "endOffset": 4819,
+     "properties": {
+      "quoteHash": "sha256:98984c3548c3206bd50f7c69622df6e78a4d1fdfbd5f72a4ec4d3d919cdc4e85",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/codes/{DRUG BANK}/code"
+     }
+    },
+    {
+     "ref": "l-gsrs-nr-mw",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"charge\":1,\"mwt\":255.2476",
+     "quotePrefix": "\"definedStereo\":4,\"ezCenters\":0,",
+     "quoteSuffix": ",\"count\":1,\"createdBy\":\"ADMIN\",\"",
+     "startOffset": 15658,
+     "endOffset": 15683,
+     "properties": {
+      "quoteHash": "sha256:71a587e25003ca63d0f1b3abf210c2707f7529be8ae8a988c7003afc187d3568",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/structure/mwt"
+     }
+    }
+   ]
+  },
+  {
+   "ref": "snap-epmc-pmc6611812",
+   "source": {
+    "canonicalUri": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6611812/fullTextXML",
+    "title": "Conze, Brenner, Kruger 2019 Sci Rep 9:9772, JATS full text (PMID 31278280, PMC6611812, DOI 10.1038/s41598-019-46120-z)",
+    "sourceKind": "API",
+    "properties": {
+     "tool": "tool:europepmc-rest"
+    }
+   },
+   "snapshot": {
+    "observedAt": "2026-10-09T04:17:00Z",
+    "retrievedAt": "2026-10-09T04:17:00Z",
+    "contentHash": "sha256:ae7b5a420c48282b6604bd3c6e22ac818dcd0fc5a9fbaba0d45abf62e34661d2",
+    "contentHashBasis": "RAW_BYTES",
+    "captureCompleteness": "COMPLETE",
+    "properties": {
+     "captureMethod": "curl/8 -sS -L (tool:europepmc-rest)",
+     "mimeType": "application/xml",
+     "bytes": 146708
+    }
+   },
+   "locators": [
+    {
+     "ref": "l-cz-pmid",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "<article-id pub-id-type=\"pmid\">31278280</article-id><article-id pub-id-type=\"doi\">10.1038/s41598-019-46120-z</article-id>",
+     "quotePrefix": "e=\"pmcaiid\">6611812</article-id>",
+     "quoteSuffix": "<article-id pub-id-type=\"publish",
+     "startOffset": 1083,
+     "endOffset": 1204,
+     "properties": {
+      "quoteHash": "sha256:6c2760dd25f75e7e842db37fe16481c6ca0fa235359c98c7684764af105b0dea",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "front matter article ids"
+    },
+    {
+     "ref": "l-cz-gras",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "A crystal form of NR chloride termed NIAGEN is generally recognized as safe (GRAS) for use in foods",
+     "quotePrefix": "sup>+</sup>) precursor vitamin. ",
+     "quoteSuffix": " and the subject of two New Diet",
+     "startOffset": 5731,
+     "endOffset": 5830,
+     "properties": {
+      "quoteHash": "sha256:112ea19790db1fdc49082211892799e53c6c20c61a2772f15405f75aa22ce598",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Abstract"
+    },
+    {
+     "ref": "l-cz-abstract-result",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "Consumption of 100, 300 and 1000 mg NR dose-dependently and significantly increased whole blood NAD<sup>+</sup> (i.e., 22%, 51% and 142%) and other NAD<sup>+</sup> metabolites within 2 weeks.",
+     "quotePrefix": "d clinical trial was conducted. ",
+     "quoteSuffix": " The increases were maintained t",
+     "startOffset": 6140,
+     "endOffset": 6331,
+     "properties": {
+      "quoteHash": "sha256:9b6eeb36ca5e491ee659ac1a2822b24df68d0105fdcce44eb4cfd81c6e317fd4",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Abstract"
+    },
+    {
+     "ref": "l-cz-abstract-safety",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "There were no reports of flushing and no significant differences in adverse events between the NR and placebo-treated groups or between groups at different NR doses.",
+     "quotePrefix": "out the remainder of the study. ",
+     "quoteSuffix": " NR also did not elevate low den",
+     "startOffset": 6401,
+     "endOffset": 6566,
+     "properties": {
+      "quoteHash": "sha256:efdd622e3037675143a18565ae9725152de654ccb8585ee47b88b3ce53399d8b",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Abstract"
+    },
+    {
+     "ref": "l-cz-secondary-objective",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "the difference and rate of increase in other NR metabolites levels in blood between placebo and NIAGEN (100 mg, 300 mg, and 1000 mg) after 8 weeks of supplementation",
+     "quotePrefix": "ter 8 weeks of supplementation, ",
+     "quoteSuffix": ", the difference and rate of inc",
+     "startOffset": 25181,
+     "endOffset": 25346,
+     "properties": {
+      "quoteHash": "sha256:2747ebcfcc85ad1d8a25da0f82b534ef35c432b96d658064462f3dbf48a6ae7e",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Methods > Study design (secondary objectives)"
+    },
+    {
+     "ref": "l-cz-groups",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "treatment groups (Placebo, 100 mg, 300 mg, or 1000 mg NIAGEN per day; n = 35/group)",
+     "quotePrefix": " were randomized to one of four ",
+     "quoteSuffix": ". Over the course of the 56-day ",
+     "startOffset": 37273,
+     "endOffset": 37356,
+     "properties": {
+      "quoteHash": "sha256:01a78be26a939b7177024db13c792047c76b4626cf1b098b2b3aa450173c7ff0",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Results > Compliance and completion (n per group); searched from the start of the file, see note"
+    },
+    {
+     "ref": "l-cz-capsule",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "The NR capsule consisted of 100 mg or 250 mg of NR chloride (99% purity) as the active ingredient and microcrystalline cellulose and vegetarian capsule as non-active ingredients.",
+     "quotePrefix": "during the 8-week intervention. ",
+     "quoteSuffix": " The placebo capsule consisted o",
+     "startOffset": 28769,
+     "endOffset": 28947,
+     "properties": {
+      "quoteHash": "sha256:393e564005db71317d2f1f65162ec8390b728d417e30c95c15039d2c1046555e",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Methods > Study product"
+    },
+    {
+     "ref": "l-cz-arms",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "The 4 capsules amounted to a single dose of either placebo (a total of 4 placebo capsules) or 100 mg NR (1 capsule containing 100 mg NR and three placebo capsules), 300 mg NR (3 capsules containing 100 mg NR and 1 capsule containing placebo) or 1000 mg NR (4 capsules containing 250 mg NR).",
+     "quotePrefix": "ir randomization visit (Day 1). ",
+     "quoteSuffix": " Participants were instructed to",
+     "startOffset": 29785,
+     "endOffset": 30075,
+     "properties": {
+      "quoteHash": "sha256:a09157b574fd9aee53d0a562cc4379e2ebbd71caeb535e8e55948b25cbd2c2b5",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Methods > Study product"
+    },
+    {
+     "ref": "l-cz-mention-nrcl",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "NR chloride",
+     "quotePrefix": "onsisted of 100 mg or 250 mg of ",
+     "quoteSuffix": " (99% purity) as the active ingr",
+     "startOffset": 28817,
+     "endOffset": 28828,
+     "properties": {
+      "quoteHash": "sha256:04069d193bd280adcb3f6c6c24f302565764f2e9c4ec22c4eacbac3bd261189a",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Methods > Study product; mention span (surface form), not evidence for a proposition"
+    },
+    {
+     "ref": "l-cz-registry",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "registered on clinicaltrials.org on March 18, 2016 as NCT0271593",
+     "quotePrefix": "Aurora, Ontario). The study was ",
+     "quoteSuffix": " and posted to the WHO Internati",
+     "startOffset": 22841,
+     "endOffset": 22905,
+     "properties": {
+      "quoteHash": "sha256:4aefe1b074ee7f6de378a17cd6ed7f914bc464236f67f6707fee8d09d0043111",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Methods > Study design"
+    },
+    {
+     "ref": "l-cz-period",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "The first potential participant was screened on March 1, 2016 and the last participant’s last visit was on March 17, 2017.",
+     "quotePrefix": "b1\" ref-type=\"table\">1</xref>). ",
+     "quoteSuffix": " The trial was ended after the l",
+     "startOffset": 36701,
+     "endOffset": 36823,
+     "properties": {
+      "quoteHash": "sha256:e241f6630e01ede25ed8f9b84c402433e1a2d2cbe52f464a98a05858299e71f0",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Results > Compliance and completion"
+    },
+    {
+     "ref": "l-cz-significance",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "In contrast, daily doses of 300 mg and 1000 mg NIAGEN significantly (p &lt; 0.05) increased NAD<sup>+</sup> within seven days relative to baseline and placebo (Fig. <xref rid=\"Fig3\" ref-type=\"fig\">3A</xref>) and were sustained for the remainder of the study.",
+     "quotePrefix": "mentation period (p &lt; 0.05). ",
+     "quoteSuffix": " Blood NAD<sup>+</sup> levels in",
+     "startOffset": 47977,
+     "endOffset": 48235,
+     "properties": {
+      "quoteHash": "sha256:8f048dc1242e325a545b1d229f34082bef9161431764b508781d321c524ddaac",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Results > Blood NAD+ (Par26)"
+    },
+    {
+     "ref": "l-cz-day14",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "At day 14, the blood NAD<sup>+</sup> levels of the 100 mg, 300 mg and 1000 mg participants were increased by 22 ± 9%, 51 ± 7% and 142 ± 14% with respect to their baseline blood NAD<sup>+</sup> levels.",
+     "quotePrefix": "M2\" ref-type=\"media\">4</xref>). ",
+     "quoteSuffix": " At day 56, the blood NAD<sup>+<",
+     "startOffset": 48667,
+     "endOffset": 48867,
+     "properties": {
+      "quoteHash": "sha256:43df66508846b7b362dc30e242b20bf539aecd36ca2f136f8b20f371f5da2893",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Results > Blood NAD+ (Par26)"
+    },
+    {
+     "ref": "l-cz-sem",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "Error bars represent standard error of the mean.",
+     "quotePrefix": " differences relative to Day 0. ",
+     "quoteSuffix": " Only data from participants who",
+     "startOffset": 50059,
+     "endOffset": 50107,
+     "properties": {
+      "quoteHash": "sha256:f8d4e7b28bda380f7a7fce57efdbab10c90d37c11f3ee8d6ac5713fd99683a95",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Figure 3 caption"
+    },
+    {
+     "ref": "l-cz-ae-count",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "Ninety-five AEs were reported by 61 participants",
+     "quotePrefix": "administration site conditions. ",
+     "quoteSuffix": " (Table <xref rid=\"Tab2\" ref-typ",
+     "startOffset": 53791,
+     "endOffset": 53839,
+     "properties": {
+      "quoteHash": "sha256:736d90afe7cbd1f2230f211bea4d14e3cf41d674b31f5ae370a1bcdc17673d9a",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Results > AEs (Par28)"
+    },
+    {
+     "ref": "l-cz-ae-serious",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "There were no serious AEs or reports of flushing. Moreover, the type, incidence and severity of the AEs were similar across the different groups.",
+     "quotePrefix": "b2\" ref-type=\"table\">2</xref>). ",
+     "quoteSuffix": "<table-wrap id=\"Tab2\" position=\"",
+     "startOffset": 53892,
+     "endOffset": 54037,
+     "properties": {
+      "quoteHash": "sha256:d8589814bc5568a70b6e85e0fe8955168c46f016967cb1f5d18a00aa7ffc41d3",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Results > AEs (Par28)"
+    },
+    {
+     "ref": "l-cz-coi",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "Claire Kruger and Dietrich Conze are employees of ChromaDex. Charles Brenner is the inventor of intellectual property licensed by ChromaDex and serves as their chief scientific adviser. ChromaDex funded the study.",
+     "quotePrefix": "Interests</title><p id=\"Par39\"> ",
+     "quoteSuffix": "</p></notes><ref-list id=\"Bib1\">",
+     "startOffset": 101868,
+     "endOffset": 102081,
+     "properties": {
+      "quoteHash": "sha256:b0bd3b7c148843552650de06d606268e182550489589152b7569667a55a52e7c",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Competing Interests"
+    },
+    {
+     "ref": "l-cz-pmcid",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "<article-id pub-id-type=\"pmcid\">PMC6611812</article-id>",
+     "quotePrefix": "er></journal-meta><article-meta>",
+     "quoteSuffix": "<article-id pub-id-type=\"pmcid-v",
+     "startOffset": 860,
+     "endOffset": 915,
+     "properties": {
+      "quoteHash": "sha256:ddb2b2bd3ba5204a8108d4a5e42dce34942f87f205efa7f5146667bbb871d8eb",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "front matter"
+    },
+    {
+     "ref": "l-cz-epub",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "<pub-date pub-type=\"epub\"><day>5</day><month>7</month><year>2019</year></pub-date>",
+     "quotePrefix": "ed States </aff></contrib-group>",
+     "quoteSuffix": "<pub-date pub-type=\"collection\">",
+     "startOffset": 3086,
+     "endOffset": 3168,
+     "properties": {
+      "quoteHash": "sha256:97733ba1fe29ab84028e55e1e69b5a026618286e1089dc5d2ff330d11818c8fc",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "front matter"
+    },
+    {
+     "ref": "l-cz-brenner-orcid",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "<contrib-id contrib-id-type=\"orcid\" authenticated=\"false\">http://orcid.org/0000-0002-4955-3226</contrib-id><name name-style=\"western\"><surname>Brenner</surname>",
+     "quotePrefix": "rib-type=\"author\" corresp=\"yes\">",
+     "quoteSuffix": "<given-names initials=\"C\">Charle",
+     "startOffset": 1961,
+     "endOffset": 2121,
+     "properties": {
+      "quoteHash": "sha256:49ce04687b19164adc73bd9a58f589c60fd8eb6ba867c18c2d57f25a1640d2ed",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "author list (ORCID inside Brenner's contrib)"
+    },
+    {
+     "ref": "l-cz-56day",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "Over the course of the 56-day supplementation period",
+     "quotePrefix": " NIAGEN per day; n = 35/group). ",
+     "quoteSuffix": ", one subject withdrew from the ",
+     "startOffset": 37358,
+     "endOffset": 37410,
+     "properties": {
+      "quoteHash": "sha256:ab15cf3a43f8b51a4a5622fdc7ecc79e4403318cfb6ba35d3b06f34580cc15f9",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Results > Compliance and completion"
+    },
+    {
+     "ref": "l-cz-safety-objective",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "the difference in the incidence of adverse events between the placebo- and NIAGEN-treated groups",
+     "quotePrefix": " and NIAGEN-treated groups, and ",
+     "quoteSuffix": ". The effect of NIAGEN on plasma",
+     "startOffset": 26308,
+     "endOffset": 26404,
+     "properties": {
+      "quoteHash": "sha256:102120d5f03606df4a95f50ae09a0b821817a1ce56bf1cbc58e8e27c1d7e1ef8",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Methods > Study design (safety objectives)"
+    },
+    {
+     "ref": "l-cz-tab2",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "Adverse Events and Number of Participants Experiencing at Least One Adverse Event in the ITT Population Separated by Organ Class Category.",
+     "quotePrefix": "abel>Table 2</label><caption><p>",
+     "quoteSuffix": "</p></caption><table frame=\"hsid",
+     "startOffset": 54133,
+     "endOffset": 54271,
+     "properties": {
+      "quoteHash": "sha256:0d6281db571903b64768b1b7fa266650f5bb68395a11f098ce59fe28df008d62",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Table 2 caption"
+    },
+    {
+     "ref": "l-cz-population",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "overweight, but otherwise healthy men and women",
+     "quotePrefix": "oral availability and safety in ",
+     "quoteSuffix": ", an 8-week randomized, double-b",
+     "startOffset": 6006,
+     "endOffset": 6053,
+     "properties": {
+      "quoteHash": "sha256:69d760002dce0f284f834e85374ff28f284f1ab32ef49a2969b82aa4529bbad7",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Abstract"
+    }
+   ]
+  },
+  {
+   "ref": "snap-ctgov-nct02712593",
+   "source": {
+    "canonicalUri": "https://clinicaltrials.gov/api/v2/studies/NCT02712593",
+    "title": "ClinicalTrials.gov API v2 record NCT02712593",
+    "sourceKind": "REGISTRY",
+    "properties": {
+     "tool": "tool:ctgov-api-v2"
+    }
+   },
+   "snapshot": {
+    "observedAt": "2026-10-09T04:17:00Z",
+    "retrievedAt": "2026-10-09T04:17:00Z",
+    "contentHash": "sha256:b4f637f2a707990d2b651a3c926982fdbc2e78a02be6ac5488f7d4c0ab1ffdaf",
+    "contentHashBasis": "RAW_BYTES",
+    "captureCompleteness": "COMPLETE",
+    "properties": {
+     "captureMethod": "curl/8 -sS -L (tool:ctgov-api-v2)",
+     "mimeType": "application/json",
+     "bytes": 8747
+    }
+   },
+   "locators": [
+    {
+     "ref": "l-ct1-nct",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"nctId\":\"NCT02712593\"",
+     "quotePrefix": "ction\":{\"identificationModule\":{",
+     "quoteSuffix": ",\"orgStudyIdInfo\":{\"id\":\"15NRHC\"",
+     "startOffset": 44,
+     "endOffset": 65,
+     "properties": {
+      "quoteHash": "sha256:d456ca8c822e5ce6bed37aad57fad0fc5f8c84d80318c3c88526027a271a37c9",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/protocolSection/identificationModule/nctId"
+     }
+    },
+    {
+     "ref": "l-ct1-lead",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"leadSponsor\":{\"name\":\"KGK Science Inc.\",\"class\":\"INDUSTRY\"}",
+     "quotePrefix": "nsibleParty\":{\"type\":\"SPONSOR\"},",
+     "quoteSuffix": ",\"collaborators\":[{\"name\":\"Chrom",
+     "startOffset": 1065,
+     "endOffset": 1125,
+     "properties": {
+      "quoteHash": "sha256:5b6fd5fc676c594aeabb6eac1b62c0c743727101016b7a71cead55b7d40aedfe",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/protocolSection/sponsorCollaboratorsModule/leadSponsor/name"
+     }
+    },
+    {
+     "ref": "l-ct1-collab",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"collaborators\":[{\"name\":\"ChromaDex, Inc.\",\"class\":\"INDUSTRY\"}]",
+     "quotePrefix": "ience Inc.\",\"class\":\"INDUSTRY\"},",
+     "quoteSuffix": "},\"oversightModule\":{\"oversightH",
+     "startOffset": 1126,
+     "endOffset": 1189,
+     "properties": {
+      "quoteHash": "sha256:80fc0290b75a5d783c5f61a3aa1b9e66ac0f9c02882e806f8338e93275b32e1c",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/protocolSection/sponsorCollaboratorsModule/collaborators/0/name"
+     }
+    },
+    {
+     "ref": "l-ct1-enrollment",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"enrollmentInfo\":{\"count\":140,\"type\":\"ACTUAL\"}",
+     "quotePrefix": "TIGATOR\",\"OUTCOMES_ASSESSOR\"]}},",
+     "quoteSuffix": "},\"armsInterventionsModule\":{\"ar",
+     "startOffset": 2136,
+     "endOffset": 2182,
+     "properties": {
+      "quoteHash": "sha256:612452c82442cf4b4914ab07f22188b3301276d78364841ad87b2bd08b8ada7f",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/protocolSection/designModule/enrollmentInfo/count"
+     }
+    },
+    {
+     "ref": "l-ct1-arm1000",
+     "selectorKind": "JSON_POINTER",
+     "quote": "{\"label\":\"Niagen™ 1000\",\"type\":\"EXPERIMENTAL\"",
+     "quotePrefix": "tary Supplement: Niagen™ 300\"]},",
+     "quoteSuffix": ",\"interventionNames\":[\"Dietary S",
+     "startOffset": 2428,
+     "endOffset": 2473,
+     "properties": {
+      "quoteHash": "sha256:96e87a9018f8570bd1830c316260a0d890419d101e6de2a22eb85b4ec3509418",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/protocolSection/armsInterventionsModule/armGroups/2/label"
+     }
+    },
+    {
+     "ref": "l-ct1-armplacebo",
+     "selectorKind": "JSON_POINTER",
+     "quote": "{\"label\":\"Placebo\",\"type\":\"EXPERIMENTAL\"",
+     "quotePrefix": "ary Supplement: Niagen™ 1000\"]},",
+     "quoteSuffix": ",\"interventionNames\":[\"Other: Pl",
+     "startOffset": 2532,
+     "endOffset": 2572,
+     "properties": {
+      "quoteHash": "sha256:cdd5a73967b369f407d230b21c6379c4c836209d47079dbe92bdfda2ebf7fdc6",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/protocolSection/armsInterventionsModule/armGroups/3/label"
+     }
+    },
+    {
+     "ref": "l-ct1-int1000",
+     "selectorKind": "JSON_POINTER",
+     "quote": "{\"type\":\"DIETARY_SUPPLEMENT\",\"name\":\"Niagen™ 1000\"",
+     "quotePrefix": "rmGroupLabels\":[\"Niagen™ 300\"]},",
+     "quoteSuffix": ",\"armGroupLabels\":[\"Niagen™ 1000",
+     "startOffset": 2799,
+     "endOffset": 2849,
+     "properties": {
+      "quoteHash": "sha256:45f447a8bfe77c327a3a6222fb69287ef9c76d459268d791dd1213775cf227d2",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/protocolSection/armsInterventionsModule/interventions/2/name"
+     }
+    },
+    {
+     "ref": "l-ct1-secondary",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"secondaryOutcomes\":[{\"measure\":\"Blood Nicotinamide Riboside Metabolites\",\"description\":\"Change in levels\",\"timeFrame\":\"8 weeks: from baseline to end of study\"}",
+     "quotePrefix": "rom baseline to end of study\"}],",
+     "quoteSuffix": ",{\"measure\":\"Urinary Nicotinamid",
+     "startOffset": 3115,
+     "endOffset": 3275,
+     "properties": {
+      "quoteHash": "sha256:18ad4c2873ec5e9c33908f0827fac5fe67db8a92c16498c2d227aaebf48fd43f",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/protocolSection/outcomesModule/secondaryOutcomes/0/measure"
+     }
+    },
+    {
+     "ref": "l-ct1-firstpost",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"studyFirstPostDateStruct\":{\"date\":\"2016-03-18\",\"type\":\"ESTIMATED\"}",
+     "quotePrefix": "FirstSubmitQcDate\":\"2016-03-14\",",
+     "quoteSuffix": ",\"lastUpdateSubmitDate\":\"2018-04",
+     "startOffset": 827,
+     "endOffset": 894,
+     "properties": {
+      "quoteHash": "sha256:bdfdf599a45c8e6bb635881f5538742569007601e0cc2e7f3f5407a0d2d6ad47",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/protocolSection/statusModule/studyFirstPostDateStruct/date"
+     }
+    },
+    {
+     "ref": "l-ct1-start",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"startDateStruct\":{\"date\":\"2016-03-21\",\"type\":\"ACTUAL\"}",
+     "quotePrefix": "fo\":{\"hasExpandedAccess\":false},",
+     "quoteSuffix": ",\"primaryCompletionDateStruct\":{",
+     "startOffset": 571,
+     "endOffset": 626,
+     "properties": {
+      "quoteHash": "sha256:a875cb2c076735a2e2cb80c86fe017ee4c675b2042d7b333653d60fecc7b806a",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/protocolSection/statusModule/startDateStruct/date"
+     }
+    },
+    {
+     "ref": "l-ct1-pcd",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"primaryCompletionDateStruct\":{\"date\":\"2017-03-17\",\"type\":\"ACTUAL\"}",
+     "quotePrefix": "\":\"2016-03-21\",\"type\":\"ACTUAL\"},",
+     "quoteSuffix": ",\"completionDateStruct\":{\"date\":",
+     "startOffset": 627,
+     "endOffset": 694,
+     "properties": {
+      "quoteHash": "sha256:0dde742d19cbcc2390969ad59d3adf3837652b076057658f3008713951d9d67a",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/protocolSection/statusModule/primaryCompletionDateStruct/date"
+     }
+    },
+    {
+     "ref": "l-ct1-status",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"overallStatus\":\"COMPLETED\"",
+     "quotePrefix": "{\"statusVerifiedDate\":\"2018-04\",",
+     "quoteSuffix": ",\"expandedAccessInfo\":{\"hasExpan",
+     "startOffset": 494,
+     "endOffset": 521,
+     "properties": {
+      "quoteHash": "sha256:a6496fb05ad3336257f00ac106c8a185a80fb9c17924dcd8ada9a2c75022c418",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/protocolSection/statusModule/overallStatus"
+     }
+    },
+    {
+     "ref": "l-ct1-lastupdate",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"lastUpdatePostDateStruct\":{\"date\":\"2018-04-11\",\"type\":\"ACTUAL\"}",
+     "quotePrefix": "tUpdateSubmitDate\":\"2018-04-10\",",
+     "quoteSuffix": "},\"sponsorCollaboratorsModule\":{",
+     "startOffset": 931,
+     "endOffset": 995,
+     "properties": {
+      "quoteHash": "sha256:64125c6cae5fa65947f55a1b1e2c04795f5258b32d871170efdfcab08824d889",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/protocolSection/statusModule/lastUpdatePostDateStruct/date"
+     }
+    },
+    {
+     "ref": "l-ct1-hasresults",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"hasResults\":false",
+     "quotePrefix": "{\"versionHolder\":\"2026-10-08\"}},",
+     "quoteSuffix": "}",
+     "startOffset": 8677,
+     "endOffset": 8695,
+     "properties": {
+      "quoteHash": "sha256:faa6e92cc5810eee4a056744d953662b137469fb1c93ae06f7f7fc1e035ee76f",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/hasResults"
+     }
+    },
+    {
+     "ref": "l-ct1-arm100",
+     "selectorKind": "JSON_POINTER",
+     "quote": "{\"label\":\"Niagen™ 100\",\"type\":\"EXPERIMENTAL\"",
+     "quotePrefix": "erventionsModule\":{\"armGroups\":[",
+     "quoteSuffix": ",\"interventionNames\":[\"Dietary S",
+     "startOffset": 2224,
+     "endOffset": 2268,
+     "properties": {
+      "quoteHash": "sha256:e78d694a8e93800b8dab09ba1b1bccf48e23d566fc2cbecd69c6b8e26a74e2d5",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/protocolSection/armsInterventionsModule/armGroups/0/label"
+     }
+    },
+    {
+     "ref": "l-ct1-arm300",
+     "selectorKind": "JSON_POINTER",
+     "quote": "{\"label\":\"Niagen™ 300\",\"type\":\"EXPERIMENTAL\"",
+     "quotePrefix": "tary Supplement: Niagen™ 100\"]},",
+     "quoteSuffix": ",\"interventionNames\":[\"Dietary S",
+     "startOffset": 2326,
+     "endOffset": 2370,
+     "properties": {
+      "quoteHash": "sha256:47215196ee733d8dda95e0dcb65191898700a2bdcab6defb8c6ba7862e74caab",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/protocolSection/armsInterventionsModule/armGroups/1/label"
+     }
+    },
+    {
+     "ref": "l-ct1-phase",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"phases\":[\"PHASE2\"]",
+     "quotePrefix": "\":{\"studyType\":\"INTERVENTIONAL\",",
+     "quoteSuffix": ",\"designInfo\":{\"allocation\":\"RAN",
+     "startOffset": 1902,
+     "endOffset": 1921,
+     "properties": {
+      "quoteHash": "sha256:7d280e2f6730f3877500795cde0be5ab7ada2eea606ce355f931efdb01d07cbb",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/protocolSection/designModule/phases/0"
+     }
+    }
+   ]
+  },
+  {
+   "ref": "snap-ctgov-nct0271593",
+   "source": {
+    "canonicalUri": "https://clinicaltrials.gov/api/v2/studies/NCT0271593",
+    "title": "ClinicalTrials.gov API v2 response for the id printed in Conze 2019, NCT0271593 (HTTP 404)",
+    "sourceKind": "REGISTRY",
+    "properties": {
+     "tool": "tool:ctgov-api-v2"
+    }
+   },
+   "snapshot": {
+    "observedAt": "2026-10-09T04:20:28Z",
+    "retrievedAt": "2026-10-09T04:20:28Z",
+    "contentHash": "sha256:9707cbeb19b1c589560a481b948ce6a043990896f5c6402c517123bc0cbef04e",
+    "contentHashBasis": "RAW_BYTES",
+    "captureCompleteness": "COMPLETE",
+    "properties": {
+     "captureMethod": "curl/8 -sS -L (tool:ctgov-api-v2)",
+     "mimeType": "text/plain",
+     "bytes": 31
+    }
+   },
+   "locators": [
+    {
+     "ref": "l-ct0-404",
+     "selectorKind": "WHOLE_SNAPSHOT",
+     "quote": "NCT number NCT0271593 not found",
+     "quotePrefix": "",
+     "quoteSuffix": "",
+     "startOffset": 0,
+     "endOffset": 31,
+     "properties": {
+      "quoteHash": "sha256:9707cbeb19b1c589560a481b948ce6a043990896f5c6402c517123bc0cbef04e",
+      "offsetBasis": "CODE_POINT"
+     }
+    }
+   ]
+  },
+  {
+   "ref": "snap-epmc-pmc6702140",
+   "source": {
+    "canonicalUri": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6702140/fullTextXML",
+    "title": "Elhassan et al. 2019 Cell Rep 28(7):1717, JATS full text (PMID 31412242, PMC6702140, DOI 10.1016/j.celrep.2019.07.043)",
+    "sourceKind": "API",
+    "properties": {
+     "tool": "tool:europepmc-rest"
+    }
+   },
+   "snapshot": {
+    "observedAt": "2026-10-09T04:17:02Z",
+    "retrievedAt": "2026-10-09T04:17:02Z",
+    "contentHash": "sha256:fb1c0ad79ed4a06783c98d48dd51e7ec0a9640f71d8233626bdbd7c245820a03",
+    "contentHashBasis": "RAW_BYTES",
+    "captureCompleteness": "COMPLETE",
+    "properties": {
+     "captureMethod": "curl/8 -sS -L (tool:europepmc-rest)",
+     "mimeType": "application/xml",
+     "bytes": 189550
+    }
+   },
+   "locators": [
+    {
+     "ref": "l-el-pmid",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "<article-id pub-id-type=\"pmid\">31412242</article-id><article-id pub-id-type=\"doi\">10.1016/j.celrep.2019.07.043</article-id>",
+     "quotePrefix": "e=\"pmcaiid\">6702140</article-id>",
+     "quoteSuffix": "<article-id pub-id-type=\"publish",
+     "startOffset": 1264,
+     "endOffset": 1387,
+     "properties": {
+      "quoteHash": "sha256:ddf00e5c00d7ae42d41f55fa45440b034fef3b73e9e49a2496cf83bd5ac6598f",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "front matter article ids"
+    },
+    {
+     "ref": "l-el-design",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "We supplemented 12 aged men with 1 g NR per day for 21 days in a placebo-controlled, randomized, double-blind, crossover trial.",
+     "quotePrefix": "le mitochondrial bioenergetics. ",
+     "quoteSuffix": " Targeted metabolomics showed th",
+     "startOffset": 10421,
+     "endOffset": 10548,
+     "properties": {
+      "quoteHash": "sha256:84a9dad6c06c0625ef6e5a584a2b97eac033bb6beff43ebdfae14327d9cd2a7f",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Summary"
+    },
+    {
+     "ref": "l-el-material",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "NR chloride (Niagen) and a placebo were provided as 250-mg capsules (ChromaDex)",
+     "quotePrefix": "tary-material\">Table S1</xref>. ",
+     "quoteSuffix": ", and subjects were instructed t",
+     "startOffset": 20509,
+     "endOffset": 20588,
+     "properties": {
+      "quoteHash": "sha256:f90916a2f6e098d7cab7e5803f25dcd0de3bdc3c79837ea112b960e3288162a6",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Results (study design paragraph)"
+    },
+    {
+     "ref": "l-el-naad",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "we found that oral NR resulted in a 2-fold increase in muscle NAAD (NR 0.73 pmol/mg versus placebo 0.35 pmol/mg; p = 0.004), without an increase in NAD<sup>+</sup> (NR 210 pmol/mg versus 197 pmol/mg; p = 0.22)",
+     "quotePrefix": "Trammell et al., 2016a</xref>), ",
+     "quoteSuffix": ". NR supplementation did not aff",
+     "startOffset": 23267,
+     "endOffset": 23476,
+     "properties": {
+      "quoteHash": "sha256:8f631855ca894530f93e7ec34cf899bc3cc40811e5180c2d8fc55f66f814fe5f",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Results > muscle NAD+ metabolome"
+    },
+    {
+     "ref": "l-el-acetyl",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "we performed western blotting to assess pan-acetylation status, but again did not detect NR-mediated changes to muscle protein acetylation",
+     "quotePrefix": "ted deacetylation activity, and ",
+     "quoteSuffix": " (<xref rid=\"fig3\" ref-type=\"fig",
+     "startOffset": 37469,
+     "endOffset": 37607,
+     "properties": {
+      "quoteHash": "sha256:5af2e3dddb98fb4ff2ff3c422efc690cfadd4ce88a65fbd69c72f06bc66e1d87",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Results > mitochondrial bioenergetics"
+    },
+    {
+     "ref": "l-el-biopsy",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "Resting vastus lateralis muscle biopsies were obtained from 12 men",
+     "quotePrefix": "e biopsies</title><p id=\"p0215\">",
+     "quoteSuffix": " by a single investigator (Y.SE)",
+     "startOffset": 84881,
+     "endOffset": 84947,
+     "properties": {
+      "quoteHash": "sha256:6f37344dcf70538d621db8590e244199b1aa850c1a395274c90ee71c2c6e43a8",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "STAR Methods > Muscle biopsies"
+    },
+    {
+     "ref": "l-el-coi",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "C.B. is the inventor of patents licensed by ChromaDex, owns stock in ChromaDex, and serves as an adviser to ChromaDex and Cytokinetics.",
+     "quotePrefix": " Interests</title><p id=\"p0310\">",
+     "quoteSuffix": " The remaining authors declare n",
+     "startOffset": 188493,
+     "endOffset": 188628,
+     "properties": {
+      "quoteHash": "sha256:05d9f9536ae39ee275e92378ea9e304ffda18e641e7b348166370d0291cbba63",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "Declaration of Interests"
+    },
+    {
+     "ref": "l-el-brenner",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "<surname>Brenner</surname><given-names initials=\"C\">Charles</given-names>",
+     "quotePrefix": "hor\"><name name-style=\"western\">",
+     "quoteSuffix": "</name><xref rid=\"aff4\" ref-type",
+     "startOffset": 5805,
+     "endOffset": 5878,
+     "properties": {
+      "quoteHash": "sha256:38be90ff365f29de79d1a22fdbc524bb370b9c8ef469c7ff5e529823278c141d",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "author list (the 'C.B.' of the Declaration of Interests)"
+    },
+    {
+     "ref": "l-el-nct",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "(Identifier: <ext-link xmlns:xlink=\"http://www.w3.org/1999/xlink\" ext-link-type=\"pmc:clinical-trial\" xlink:href=\"NCT02950441\">NCT02950441</ext-link>)",
+     "quotePrefix": "w.clinicaltrials.gov</ext-link> ",
+     "quoteSuffix": ".The study was undertaken accord",
+     "startOffset": 81020,
+     "endOffset": 81169,
+     "properties": {
+      "quoteHash": "sha256:ca57cddb580abbc33bd25f165770cd5dc0e389a03654f89106fd9af5c44c3475",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "STAR Methods > trial registration"
+    },
+    {
+     "ref": "l-el-pmcid",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "<article-id pub-id-type=\"pmcid\">PMC6702140</article-id>",
+     "quotePrefix": "up></journal-meta><article-meta>",
+     "quoteSuffix": "<article-id pub-id-type=\"pmcid-v",
+     "startOffset": 1041,
+     "endOffset": 1096,
+     "properties": {
+      "quoteHash": "sha256:408ae8afd4788b3c78bebc640c01b9e4fa00c7a698c3c77c62f45ab8d5c7e9df",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "front matter"
+    },
+    {
+     "ref": "l-el-epub",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "<pub-date pub-type=\"epub\"><day>13</day><month>8</month><year>2019</year></pub-date>",
+     "quotePrefix": "nth><year>2019</year></pub-date>",
+     "quoteSuffix": "<volume>28</volume><issue>7</iss",
+     "startOffset": 8192,
+     "endOffset": 8275,
+     "properties": {
+      "quoteHash": "sha256:214cdf6d5843c1dd7afc7e5ed7e5169cb39946738be4bf3773f37c17a9532ab9",
+      "offsetBasis": "CODE_POINT"
+     },
+     "section": "front matter"
+    }
+   ]
+  },
+  {
+   "ref": "snap-ctgov-nct02950441",
+   "source": {
+    "canonicalUri": "https://clinicaltrials.gov/api/v2/studies/NCT02950441",
+    "title": "ClinicalTrials.gov API v2 record NCT02950441 (NADMet)",
+    "sourceKind": "REGISTRY",
+    "properties": {
+     "tool": "tool:ctgov-api-v2"
+    }
+   },
+   "snapshot": {
+    "observedAt": "2026-10-09T04:17:02Z",
+    "retrievedAt": "2026-10-09T04:17:02Z",
+    "contentHash": "sha256:79e06200c9ddbe0d461add746395259ea3995ddfee7f16bf235ee5b2c17fdf48",
+    "contentHashBasis": "RAW_BYTES",
+    "captureCompleteness": "COMPLETE",
+    "properties": {
+     "captureMethod": "curl/8 -sS -L (tool:ctgov-api-v2)",
+     "mimeType": "application/json",
+     "bytes": 6822
+    }
+   },
+   "locators": [
+    {
+     "ref": "l-ct2-nct",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"nctId\":\"NCT02950441\"",
+     "quotePrefix": "ction\":{\"identificationModule\":{",
+     "quoteSuffix": ",\"orgStudyIdInfo\":{\"id\":\"RG_15-1",
+     "startOffset": 44,
+     "endOffset": 65,
+     "properties": {
+      "quoteHash": "sha256:f65d78f7c83a9cbcddbb898f844041fafaca56333412f6d89e40326f9d0ef5a9",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/protocolSection/identificationModule/nctId"
+     }
+    },
+    {
+     "ref": "l-ct2-armnr",
+     "selectorKind": "JSON_POINTER",
+     "quote": "{\"label\":\"Nicotinamide Riboside\",\"type\":\"EXPERIMENTAL\",\"description\":\"1000mg (2x250mg tablets twice daily)\"",
+     "quotePrefix": "erventionsModule\":{\"armGroups\":[",
+     "quoteSuffix": ",\"interventionNames\":[\"Dietary S",
+     "startOffset": 2946,
+     "endOffset": 3053,
+     "properties": {
+      "quoteHash": "sha256:afed287808b1ec8fe12b91485a6949ea9b092f592e692dbae658212f068466d9",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/protocolSection/armsInterventionsModule/armGroups/0/description"
+     }
+    },
+    {
+     "ref": "l-ct2-status",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"overallStatus\":\"UNKNOWN\",\"lastKnownStatus\":\"RECRUITING\"",
+     "quotePrefix": "{\"statusVerifiedDate\":\"2016-10\",",
+     "quoteSuffix": ",\"expandedAccessInfo\":{\"hasExpan",
+     "startOffset": 430,
+     "endOffset": 486,
+     "properties": {
+      "quoteHash": "sha256:94d826dbfd03fd82de5f7dd1adfc0a8e342af8b16704f486b24b985757a7e5ec",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/protocolSection/statusModule/overallStatus"
+     }
+    },
+    {
+     "ref": "l-ct2-lead",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"leadSponsor\":{\"name\":\"University of Birmingham\",\"class\":\"OTHER\"}",
+     "quotePrefix": "nsibleParty\":{\"type\":\"SPONSOR\"},",
+     "quoteSuffix": "},\"oversightModule\":{\"oversightH",
+     "startOffset": 1014,
+     "endOffset": 1079,
+     "properties": {
+      "quoteHash": "sha256:5852808f79b47ecad3a447a367a1c775768e5ac338808f669fe9981636025753",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/protocolSection/sponsorCollaboratorsModule/leadSponsor/name"
+     }
+    },
+    {
+     "ref": "l-ct2-lastupdate",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"lastUpdatePostDateStruct\":{\"date\":\"2017-06-07\",\"type\":\"ACTUAL\"}",
+     "quotePrefix": "tUpdateSubmitDate\":\"2017-06-05\",",
+     "quoteSuffix": "},\"sponsorCollaboratorsModule\":{",
+     "startOffset": 880,
+     "endOffset": 944,
+     "properties": {
+      "quoteHash": "sha256:9d47e98244116add0d68dd1f8c2ee9affd5748f8b6e668cb58da986bdc101412",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/protocolSection/statusModule/lastUpdatePostDateStruct/date"
+     }
+    },
+    {
+     "ref": "l-ct2-phase",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"phases\":[\"PHASE2\"]",
+     "quotePrefix": "\":{\"studyType\":\"INTERVENTIONAL\",",
+     "quoteSuffix": ",\"designInfo\":{\"allocation\":\"RAN",
+     "startOffset": 2617,
+     "endOffset": 2636,
+     "properties": {
+      "quoteHash": "sha256:7d280e2f6730f3877500795cde0be5ab7ada2eea606ce355f931efdb01d07cbb",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/protocolSection/designModule/phases/0"
+     }
+    },
+    {
+     "ref": "l-ct2-design",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"allocation\":\"RANDOMIZED\",\"interventionModel\":\"CROSSOVER\"",
+     "quotePrefix": "hases\":[\"PHASE2\"],\"designInfo\":{",
+     "quoteSuffix": ",\"primaryPurpose\":\"TREATMENT\",\"m",
+     "startOffset": 2651,
+     "endOffset": 2708,
+     "properties": {
+      "quoteHash": "sha256:ce657e6cf555b337094bec0c5b26f574480d66a4f3d58fc0a4cf928291e95d91",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/protocolSection/designModule/designInfo/allocation"
+     }
+    }
+   ]
+  },
+  {
+   "ref": "snap-dsld-323170",
+   "source": {
+    "canonicalUri": "https://api.ods.od.nih.gov/dsld/v9/label/323170",
+    "title": "NIH ODS DSLD label 323170 'Tru Niagen 300 mg' (V12.3), API v9 JSON",
+    "sourceKind": "API",
+    "properties": {
+     "tool": "tool:nih-dsld-api"
+    }
+   },
+   "snapshot": {
+    "observedAt": "2026-10-09T04:17:03Z",
+    "retrievedAt": "2026-10-09T04:17:03Z",
+    "contentHash": "sha256:d90025929a353034c6c549b41eb1558e7673ce3eba2a0109ca48fed9830c003d",
+    "contentHashBasis": "RAW_BYTES",
+    "captureCompleteness": "COMPLETE",
+    "properties": {
+     "captureMethod": "curl/8 -sS -L (tool:nih-dsld-api)",
+     "mimeType": "application/json",
+     "bytes": 4452
+    }
+   },
+   "locators": [
+    {
+     "ref": "l-dsld-id",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"id\":323170,\"nhanesId\"",
+     "quotePrefix": "2025-04-24/data/label_395.json\",",
+     "quoteSuffix": ":\"\",\"bundleName\":\"\",\"fullName\":\"",
+     "startOffset": 47,
+     "endOffset": 69,
+     "properties": {
+      "quoteHash": "sha256:e2dc9530c218beef483c70483dd6ffbec5db8089ad409a710fd5d8148d6e674f",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/id"
+     }
+    },
+    {
+     "ref": "l-dsld-name",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"fullName\":\"Tru Niagen 300 mg\",\"brandName\":\"ChromaDex\"",
+     "quotePrefix": "0,\"nhanesId\":\"\",\"bundleName\":\"\",",
+     "quoteSuffix": ",\"brandIpSymbol\":\"®\",\"upcSku\":\"8",
+     "startOffset": 89,
+     "endOffset": 143,
+     "properties": {
+      "quoteHash": "sha256:b0a43760d1bcee464c8f7cf0fd5ba3cbcf6ed9bab1958055680ef84d00e1fee8",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/fullName"
+     }
+    },
+    {
+     "ref": "l-dsld-upc",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"upcSku\":\"8 50015 31111 6\"",
+     "quotePrefix": "\"ChromaDex\",\"brandIpSymbol\":\"®\",",
+     "quoteSuffix": ",\"productVersionCode\":\"V12.3\",\"p",
+     "startOffset": 164,
+     "endOffset": 190,
+     "properties": {
+      "quoteHash": "sha256:5318fed213a615b4516fc222e54b6dcff751e952b9fdeee0e99575f67292d01d",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/upcSku"
+     }
+    },
+    {
+     "ref": "l-dsld-version",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"productVersionCode\":\"V12.3\"",
+     "quotePrefix": ":\"®\",\"upcSku\":\"8 50015 31111 6\",",
+     "quoteSuffix": ",\"pdf\":\"323170_document.pdf\",\"th",
+     "startOffset": 191,
+     "endOffset": 219,
+     "properties": {
+      "quoteHash": "sha256:2d8e22d2409761b90bd66ec5dbedad3dd249a68005553b7b730034387db3b108",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/productVersionCode"
+     }
+    },
+    {
+     "ref": "l-dsld-net",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"display\":\"30 Vegetarian Capsule(s)\"",
+     "quotePrefix": ",\"unit\":\"Vegetarian Capsule(s)\",",
+     "quoteSuffix": "}],\"physicalState\":{\"langualCode",
+     "startOffset": 1022,
+     "endOffset": 1058,
+     "properties": {
+      "quoteHash": "sha256:f963de3459899cd92a103f914c1d5f9a6f0a250ca95f9e90a023ae99e453c5e9",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/netContents/0/display"
+     }
+    },
+    {
+     "ref": "l-dsld-serving",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"minDailyServings\":1,\"maxDailyServings\":3,\"unit\":\"Vegetarian Capsule(s)\"",
+     "quotePrefix": "\"minQuantity\":1,\"maxQuantity\":1,",
+     "quoteSuffix": ",\"notes\":\"\",\"inSFB\":true}],\"targ",
+     "startOffset": 1195,
+     "endOffset": 1267,
+     "properties": {
+      "quoteHash": "sha256:00c0a2be1bad8fde0974025bb70b36e5a3607a3851e419d68eb8faba7e0a42d1",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/servingSizes/0/maxDailyServings"
+     }
+    },
+    {
+     "ref": "l-dsld-directions",
+     "selectorKind": "JSON_POINTER",
+     "quote": "Suggested use: Adults take one capsule 1-3 times daily as needed or as recommended by your healthcare professional.",
+     "quotePrefix": "nded/Usage/Directions\",\"notes\":\"",
+     "quoteSuffix": "\"},{\"type\":\"Storage\",\"notes\":\"St",
+     "startOffset": 1497,
+     "endOffset": 1612,
+     "properties": {
+      "quoteHash": "sha256:8a434dda6b1a8a4b6d03b82146ecb2abc373d5b49ade45b4d66d96c58bd96046",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/statements/0/notes"
+     }
+    },
+    {
+     "ref": "l-dsld-row-qty",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"operator\":\"=\",\"quantity\":300,\"unit\":\"mg\"",
+     "quotePrefix": "rder\":1,\"servingSizeQuantity\":1,",
+     "quoteSuffix": ",\"dailyValueTargetGroup\":[{\"name",
+     "startOffset": 3286,
+     "endOffset": 3327,
+     "properties": {
+      "quoteHash": "sha256:5a2513e76f2905cb35917aea10a8e9e1883cc813c467d3d4b82d51e0e3e942cd",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/ingredientRows/0/quantity/0/quantity"
+     }
+    },
+    {
+     "ref": "l-dsld-row-name",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"name\":\"Niagen\",\"category\":\"vitamin\",\"ingredientGroup\":\"Vitamin B3 (Nicotinamide riboside)\",\"uniiCode\":null",
+     "quotePrefix": "n Capsule(s)\"}],\"nestedRows\":[],",
+     "quoteSuffix": ",\"alternateNames\":[],\"forms\":[{\"",
+     "startOffset": 3540,
+     "endOffset": 3647,
+     "properties": {
+      "quoteHash": "sha256:e7c63adedb9784fa2dbb417402e3e234d0553d72f2868159868614eb67cc379b",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/ingredientRows/0/name"
+     }
+    },
+    {
+     "ref": "l-dsld-row-form",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"name\":\"Nicotinamide Riboside Chloride\",\"category\":\"vitamin\",\"ingredientGroup\":\"Niacin\",\"uniiCode\":\"8XM2XT8VWI\"",
+     "quotePrefix": "46,\"prefix\":null,\"percent\":null,",
+     "quoteSuffix": "}]}],\"otheringredients\":{\"text\":",
+     "startOffset": 3739,
+     "endOffset": 3850,
+     "properties": {
+      "quoteHash": "sha256:3ab2094d64f65f8968c4d4780e3928c8a7f6b5a4116f07ce6f43eec919c5f6c1",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/ingredientRows/0/forms/0/name"
+     }
+    },
+    {
+     "ref": "l-dsld-contact",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"text\":\"Distributed by\",\"types\":[\"Distributor\"]",
+     "quotePrefix": ",\"contacts\":[{\"contactId\":27508,",
+     "quoteSuffix": ",\"contactDetails\":{\"src\":\"01-raw",
+     "startOffset": 612,
+     "endOffset": 659,
+     "properties": {
+      "quoteHash": "sha256:9e65261d580c6db002055677b1de5f332f33153e51de5359eddf1c199213fc87",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/contacts/0/text"
+     }
+    },
+    {
+     "ref": "l-dsld-contact-name",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"name\":\"ChromaDex, Inc\",\"streetAddress\"",
+     "quotePrefix": "data/contact_6.json\",\"id\":27508,",
+     "quoteSuffix": ":\"10900 Wilshire Blvd., Suite 60",
+     "startOffset": 735,
+     "endOffset": 774,
+     "properties": {
+      "quoteHash": "sha256:c74f8a97418ba1ac1f43092fa286ec75adaad01d6e7d4fe618f4fe40e12ae04f",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/contacts/0/contactDetails/name"
+     }
+    },
+    {
+     "ref": "l-dsld-entered",
+     "selectorKind": "JSON_POINTER",
+     "quote": "{\"date\":\"2025-04-24\",\"type\":\"Date entered into DSLD\"}",
+     "quotePrefix": "Structure/Function\"}],\"events\":[",
+     "quoteSuffix": "],\"userGroups\":[{\"dailyValueTarg",
+     "startOffset": 2915,
+     "endOffset": 2968,
+     "properties": {
+      "quoteHash": "sha256:b77516655f6dd705bb96454167dadcb00a8ceacc20850daae1b8284ebd8fa114",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/events/0/date"
+     }
+    },
+    {
+     "ref": "l-dsld-form",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"physicalState\":{\"langualCode\":\"E0159\",\"langualCodeDescription\":\"Capsule\"}",
+     "quotePrefix": "y\":\"30 Vegetarian Capsule(s)\"}],",
+     "quoteSuffix": ",\"servingSizes\":[{\"order\":1,\"min",
+     "startOffset": 1061,
+     "endOffset": 1135,
+     "properties": {
+      "quoteHash": "sha256:84ce4aea35ac89d123e3c7026c188b2a3479ecfe521338c921c85102f18a7dd9",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/physicalState/langualCodeDescription"
+     }
+    }
+   ]
+  },
+  {
+   "ref": "snap-quickgo-go0006476",
+   "source": {
+    "canonicalUri": "https://www.ebi.ac.uk/QuickGO/services/ontology/go/terms/GO:0006476",
+    "title": "QuickGO term GO:0006476",
+    "sourceKind": "API",
+    "properties": {
+     "tool": "tool:quickgo-api"
+    }
+   },
+   "snapshot": {
+    "observedAt": "2026-10-09T04:20:29Z",
+    "retrievedAt": "2026-10-09T04:20:29Z",
+    "contentHash": "sha256:211c7658247aad552093bdf79dabdb185ac9c67eba96a09b658de8baf84415cc",
+    "contentHashBasis": "RAW_BYTES",
+    "captureCompleteness": "COMPLETE",
+    "properties": {
+     "captureMethod": "curl/8 -sS -L (tool:quickgo-api)",
+     "mimeType": "application/json",
+     "bytes": 603
+    }
+   },
+   "locators": [
+    {
+     "ref": "l-go-0006476",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"id\":\"GO:0006476\",\"isObsolete\":false,\"name\":\"protein deacetylation\"",
+     "quotePrefix": "{\"numberOfHits\":1,\"results\":[{",
+     "quoteSuffix": ",\"definition\":{\"text\":\"The remov",
+     "startOffset": 30,
+     "endOffset": 97,
+     "properties": {
+      "quoteHash": "sha256:ef5073b773eea3e26a124da70767e7b0407a3b4b1b70f28427eba276cc20b995",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/results/0/name"
+     }
+    }
+   ]
+  },
+  {
+   "ref": "snap-ols-chebi-15846",
+   "source": {
+    "canonicalUri": "https://www.ebi.ac.uk/ols4/api/ontologies/chebi/terms?obo_id=CHEBI:15846",
+    "title": "EBI OLS4 ChEBI term CHEBI:15846",
+    "sourceKind": "API",
+    "properties": {
+     "tool": "tool:ebi-ols4"
+    }
+   },
+   "snapshot": {
+    "observedAt": "2026-10-09T04:20:30Z",
+    "retrievedAt": "2026-10-09T04:20:30Z",
+    "contentHash": "sha256:cd764d214432cb22a109642d1b5e34e6f472785e7cabdc930ccc9835aba12353",
+    "contentHashBasis": "RAW_BYTES",
+    "captureCompleteness": "COMPLETE",
+    "properties": {
+     "captureMethod": "curl/8 -sS -L (tool:ebi-ols4)",
+     "mimeType": "application/json",
+     "bytes": 9115
+    }
+   },
+   "locators": [
+    {
+     "ref": "l-chebi-15846",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"obo_id\" : \"CHEBI:15846\"",
+     "quotePrefix": "rt_form\" : \"CHEBI_15846\",\n      ",
+     "quoteSuffix": ",\n      \"in_subset\" : [ \"3_STAR\"",
+     "startOffset": 2253,
+     "endOffset": 2277,
+     "properties": {
+      "quoteHash": "sha256:9d3eed57f82effb0c0123eee241d0b36b96dcf0f7e2ea2fdc2606cbe5319a4d5",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/_embedded/terms/0/obo_id"
+     }
+    },
+    {
+     "ref": "l-chebi-15846-label",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"label\" : \"NAD(+)\"",
+     "quotePrefix": "(O)[C@H]2O)c1\" ]\n      },\n      ",
+     "quoteSuffix": ",\n      \"ontology_name\" : \"chebi",
+     "startOffset": 1902,
+     "endOffset": 1920,
+     "properties": {
+      "quoteHash": "sha256:ca2227b8b5fcdd31659fbd8fd84d7e38b1c82ed154a9820b9ddd7636185e28b3",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/_embedded/terms/0/label"
+     }
+    }
+   ]
+  },
+  {
+   "ref": "snap-ols-uberon-0001379",
+   "source": {
+    "canonicalUri": "https://www.ebi.ac.uk/ols4/api/ontologies/uberon/terms?obo_id=UBERON:0001379",
+    "title": "EBI OLS4 UBERON term UBERON:0001379",
+    "sourceKind": "API",
+    "properties": {
+     "tool": "tool:ebi-ols4"
+    }
+   },
+   "snapshot": {
+    "observedAt": "2026-10-09T04:58:16Z",
+    "retrievedAt": "2026-10-09T04:58:16Z",
+    "contentHash": "sha256:dbbd73a9f8762f0a59f9b2ecce50cccf1f4299c71042fd394b4217c4b3539dbf",
+    "contentHashBasis": "RAW_BYTES",
+    "captureCompleteness": "COMPLETE",
+    "properties": {
+     "captureMethod": "curl/8 -sS -L (tool:ebi-ols4)",
+     "mimeType": "application/json",
+     "bytes": 7121
+    }
+   },
+   "locators": [
+    {
+     "ref": "l-uberon-0001379",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"obo_id\" : \"UBERON:0001379\"",
+     "quotePrefix": "form\" : \"UBERON_0001379\",\n      ",
+     "quoteSuffix": ",\n      \"in_subset\" : [ \"efo_sli",
+     "startOffset": 2015,
+     "endOffset": 2042,
+     "properties": {
+      "quoteHash": "sha256:cb0d5a6289020cf9dcd0e589f88085c8f2b46af759e817cea51ed9872b1db61a",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/_embedded/terms/0/obo_id"
+     }
+    },
+    {
+     "ref": "l-uberon-0001379-label",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"label\" : \"vastus lateralis\"",
+     "quotePrefix": "BERON:0001379\" ]\n      },\n      ",
+     "quoteSuffix": ",\n      \"ontology_name\" : \"ubero",
+     "startOffset": 1648,
+     "endOffset": 1676,
+     "properties": {
+      "quoteHash": "sha256:c1c58bd8f8f75bca1eb521c5d3c11066cbecfc8d3bd8a2b17f46b701c9aefb95",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/_embedded/terms/0/label"
+     }
+    }
+   ]
+  },
+  {
+   "ref": "snap-ols-uberon-0000178",
+   "source": {
+    "canonicalUri": "https://www.ebi.ac.uk/ols4/api/ontologies/uberon/terms?obo_id=UBERON:0000178",
+    "title": "EBI OLS4 UBERON term UBERON:0000178",
+    "sourceKind": "API",
+    "properties": {
+     "tool": "tool:ebi-ols4"
+    }
+   },
+   "snapshot": {
+    "observedAt": "2026-10-09T04:58:17Z",
+    "retrievedAt": "2026-10-09T04:58:17Z",
+    "contentHash": "sha256:e6a51f559811919b854cc6f88e7490e3ac7dd7d2148c0d6628386f151605252d",
+    "contentHashBasis": "RAW_BYTES",
+    "captureCompleteness": "COMPLETE",
+    "properties": {
+     "captureMethod": "curl/8 -sS -L (tool:ebi-ols4)",
+     "mimeType": "application/json",
+     "bytes": 10596
+    }
+   },
+   "locators": [
+    {
+     "ref": "l-uberon-0000178",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"obo_id\" : \"UBERON:0000178\"",
+     "quotePrefix": "form\" : \"UBERON_0000178\",\n      ",
+     "quoteSuffix": ",\n      \"in_subset\" : [ \"efo_sli",
+     "startOffset": 2227,
+     "endOffset": 2254,
+     "properties": {
+      "quoteHash": "sha256:459b67f441a7f044f09d0cb72f68436c003a90732ccca1b15ae079b84320560f",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/_embedded/terms/0/obo_id"
+     }
+    },
+    {
+     "ref": "l-uberon-0000178-label",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"label\" : \"blood\"",
+     "quotePrefix": "BERON:0000178\" ]\n      },\n      ",
+     "quoteSuffix": ",\n      \"ontology_name\" : \"ubero",
+     "startOffset": 1872,
+     "endOffset": 1889,
+     "properties": {
+      "quoteHash": "sha256:d0c37caae074ace6e72587508d020aca85ded361191fb7bfe29bc58d91888408",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/_embedded/terms/0/label"
+     }
+    }
+   ]
+  },
+  {
+   "ref": "snap-ols-chebi-18304",
+   "source": {
+    "canonicalUri": "https://www.ebi.ac.uk/ols4/api/ontologies/chebi/terms?obo_id=CHEBI:18304",
+    "title": "EBI OLS4 ChEBI term CHEBI:18304",
+    "sourceKind": "API",
+    "properties": {
+     "tool": "tool:ebi-ols4"
+    }
+   },
+   "snapshot": {
+    "observedAt": "2026-10-09T04:20:30Z",
+    "retrievedAt": "2026-10-09T04:20:30Z",
+    "contentHash": "sha256:e6c08e08954519be0e1373b8409da14543f04afec3bb30e81b1c15340d356cae",
+    "contentHashBasis": "RAW_BYTES",
+    "captureCompleteness": "COMPLETE",
+    "properties": {
+     "captureMethod": "curl/8 -sS -L (tool:ebi-ols4)",
+     "mimeType": "application/json",
+     "bytes": 7789
+    }
+   },
+   "locators": [
+    {
+     "ref": "l-chebi-18304",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"obo_id\" : \"CHEBI:18304\"",
+     "quotePrefix": "rt_form\" : \"CHEBI_18304\",\n      ",
+     "quoteSuffix": ",\n      \"in_subset\" : [ \"3_STAR\"",
+     "startOffset": 1947,
+     "endOffset": 1971,
+     "properties": {
+      "quoteHash": "sha256:4acfbfe41302a768ad61e7d342a854cdea41f1b16f1f8201fd55525e541135eb",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/_embedded/terms/0/obo_id"
+     }
+    },
+    {
+     "ref": "l-chebi-18304-label",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"label\" : \"deamido-NAD(+)\"",
+     "quotePrefix": "@H](O)[C@H]1O\" ]\n      },\n      ",
+     "quoteSuffix": ",\n      \"ontology_name\" : \"chebi",
+     "startOffset": 1588,
+     "endOffset": 1614,
+     "properties": {
+      "quoteHash": "sha256:4a61dd26a76b91b446f066b991a3a36dab952e59b0f85ad6974a13126cf9b9d2",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/_embedded/terms/0/label"
+     }
+    },
+    {
+     "ref": "l-chebi-18304-naad",
+     "selectorKind": "JSON_POINTER",
+     "quote": "\"Deamino-NAD+\", \"NAAD\"",
+     "quotePrefix": " \"Deamido-NAD\", \"Deamido-NAD+\", ",
+     "quoteSuffix": ", \"NaAD\", \"adenosine 5'-{3-[1-(3",
+     "startOffset": 198,
+     "endOffset": 220,
+     "properties": {
+      "quoteHash": "sha256:614655e732fb4463ca36ec0c4e147cda88dbae45d708408ebdf3aa5e29c9269d",
+      "offsetBasis": "CODE_POINT",
+      "jsonPointer": "/_embedded/terms/0/synonyms/3"
+     }
+    }
+   ]
+  }
+ ],
+ "subjects": [
+  {
+   "ref": "agent-s-xfx",
+   "mode": "new",
+   "nodeType": "Agent",
+   "name": "agent:s-xfx-compound (claude-opus-5-5, S cross-domain fixture builder)",
+   "uidSegment": "xfx-cp-agent-s-xfx",
+   "properties": {
+    "agentKind": "AUTOMATED_AGENT",
+    "model": "claude-opus-5-5",
+    "toolVersion": "build_locators.py + build_fixture.py (scratch synth/xfx-compound)"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "org-fda",
+   "mode": "new",
+   "nodeType": "Organization",
+   "name": "U.S. Food and Drug Administration (Global Substance Registration System)",
+   "uidSegment": "xfx-cp-org-fda",
+   "properties": {
+    "entityKind": "PUBLIC_BODY",
+    "organizationKind": "GOVERNMENT_OR_REGULATOR"
+   },
+   "identifiers": [],
+   "onMatch": "use_existing"
+  },
+  {
+   "ref": "org-nih-ods",
+   "mode": "new",
+   "nodeType": "Organization",
+   "name": "NIH Office of Dietary Supplements (Dietary Supplement Label Database)",
+   "uidSegment": "xfx-cp-org-nih-ods",
+   "properties": {
+    "entityKind": "PUBLIC_BODY",
+    "organizationKind": "GOVERNMENT_OR_REGULATOR"
+   },
+   "identifiers": [],
+   "onMatch": "use_existing"
+  },
+  {
+   "ref": "org-embl-ebi",
+   "mode": "new",
+   "nodeType": "Organization",
+   "name": "EMBL-EBI (ChEBI, QuickGO, OLS)",
+   "uidSegment": "xfx-cp-org-embl-ebi",
+   "properties": {
+    "entityKind": "PUBLIC_BODY",
+    "organizationKind": "ACADEMIC_OR_RESEARCH_INSTITUTE"
+   },
+   "identifiers": [],
+   "onMatch": "use_existing"
+  },
+  {
+   "ref": "org-kgk",
+   "mode": "new",
+   "nodeType": "Organization",
+   "name": "KGK Science Inc.",
+   "uidSegment": "xfx-cp-org-kgk",
+   "properties": {
+    "entityKind": "LEGAL_ENTITY",
+    "organizationKind": "CONTRACT_SERVICE_PROVIDER"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "org-uob",
+   "mode": "new",
+   "nodeType": "Organization",
+   "name": "University of Birmingham",
+   "uidSegment": "xfx-cp-org-uob",
+   "properties": {
+    "entityKind": "LEGAL_ENTITY",
+    "organizationKind": "ACADEMIC_OR_RESEARCH_INSTITUTE"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "org-chromadex",
+   "mode": "new",
+   "nodeType": "Organization",
+   "name": "ChromaDex, Inc.",
+   "uidSegment": "xfx-cp-org-chromadex",
+   "properties": {
+    "entityKind": "LEGAL_ENTITY",
+    "organizationKind": "SUPPLEMENT_OR_CONSUMER_HEALTH"
+   },
+   "identifiers": [],
+   "onMatch": "use_existing"
+  },
+  {
+   "ref": "person-brenner",
+   "mode": "new",
+   "nodeType": "Person",
+   "name": "Charles Brenner",
+   "uidSegment": "xfx-cp-person-brenner",
+   "properties": {
+    "publicActorBasis": [
+     "AUTHOR_OR_INVESTIGATOR"
+    ]
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "sub-nrcl",
+   "mode": "new",
+   "nodeType": "ChemicalSubstance",
+   "name": "NICOTINAMIDE RIBOSIDE CHLORIDE",
+   "uidSegment": "xfx-cp-sub-nrcl",
+   "properties": {
+    "substanceClass": "CHEMICAL",
+    "molecularFormula": "C11H15N2O5.Cl",
+    "molecularWeight": 290.7006,
+    "charge": 0
+   },
+   "identifiers": [],
+   "onMatch": "use_existing"
+  },
+  {
+   "ref": "sub-nr",
+   "mode": "new",
+   "nodeType": "ChemicalSubstance",
+   "name": "NICOTINAMIDE RIBOSIDE",
+   "uidSegment": "xfx-cp-sub-nr",
+   "properties": {
+    "substanceClass": "CHEMICAL",
+    "molecularWeight": 255.2476,
+    "charge": 1
+   },
+   "identifiers": [],
+   "onMatch": "use_existing"
+  },
+  {
+   "ref": "sub-nad",
+   "mode": "new",
+   "nodeType": "ChemicalSubstance",
+   "name": "NAD(+)",
+   "uidSegment": "xfx-cp-sub-nad",
+   "properties": {
+    "substanceClass": "CHEMICAL"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "sub-naad",
+   "mode": "new",
+   "nodeType": "ChemicalSubstance",
+   "name": "deamido-NAD(+) (NAAD)",
+   "uidSegment": "xfx-cp-sub-naad",
+   "properties": {
+    "substanceClass": "CHEMICAL"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "mat-niagen",
+   "mode": "new",
+   "nodeType": "IngredientMaterial",
+   "name": "NIAGEN (crystalline nicotinamide riboside chloride)",
+   "uidSegment": "xfx-cp-mat-niagen",
+   "properties": {
+    "materialKind": "CHEMICALLY_DEFINED",
+    "brandName": "Niagen",
+    "physicalForm": "CRYSTAL_FORM"
+   },
+   "identifiers": [],
+   "onMatch": "use_existing"
+  },
+  {
+   "ref": "mech-deacetylation",
+   "mode": "new",
+   "nodeType": "Mechanism",
+   "name": "protein deacetylation",
+   "uidSegment": "xfx-cp-mech-deacetylation",
+   "properties": {
+    "key": "go:GO:0006476",
+    "mechanismKind": "PROCESS",
+    "referenceScheme": "GO",
+    "synonyms": [
+     "sirtuin-mediated deacetylation"
+    ]
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "ctx-el-muscle",
+   "mode": "new",
+   "nodeType": "MechanismEvidenceContext",
+   "name": "Elhassan 2019: 12 aged men, NR 1 g/day for 21 days, vastus lateralis biopsy",
+   "uidSegment": "xfx-cp-ctx-el-muscle",
+   "properties": {
+    "groupLabel": "12 aged men with 1 g NR per day for 21 days",
+    "setting": "HUMAN_INTERVENTIONAL",
+    "organism": "HUMAN",
+    "ncbiTaxonId": "9606",
+    "sexScope": "MALE",
+    "ageDescriptor": "aged men",
+    "sampleSize": 12,
+    "compartmentKind": "TISSUE",
+    "compartmentOntologyId": "UBERON:0001379",
+    "compartmentLabel": "vastus lateralis muscle biopsy",
+    "geneticManipulation": "NONE",
+    "assayText": "targeted LC-MS/MS NAD+ metabolome; western blot pan-acetylation"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "ctx-cz-blood",
+   "mode": "new",
+   "nodeType": "MechanismEvidenceContext",
+   "name": "Conze 2019: overweight adults, NIAGEN 1000 mg/day arm, whole blood",
+   "uidSegment": "xfx-cp-ctx-cz-blood",
+   "properties": {
+    "groupLabel": "1000 mg NIAGEN per day arm",
+    "setting": "HUMAN_INTERVENTIONAL",
+    "organism": "HUMAN",
+    "ncbiTaxonId": "9606",
+    "compartmentKind": "BODY_FLUID",
+    "compartmentOntologyId": "UBERON:0000178",
+    "compartmentLabel": "whole blood",
+    "geneticManipulation": "NONE"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "pub-conze",
+   "mode": "new",
+   "nodeType": "Publication",
+   "name": "Conze D, Brenner C, Kruger CL. Safety and Metabolism of Long-term Administration of NIAGEN (Nicotinamide Riboside Chloride) ... Sci Rep 2019;9:9772",
+   "uidSegment": "xfx-cp-pub-conze",
+   "properties": {
+    "publicationKind": "ARTICLE",
+    "publishedAt": "2019-07-05T00:00:00Z",
+    "publishedAtPrecision": "DAY"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "study-cz",
+   "mode": "new",
+   "nodeType": "Study",
+   "name": "A Study Investigating the Effects of Niagen in Healthy Adults (NCT02712593)",
+   "uidSegment": "xfx-cp-study-cz",
+   "properties": {
+    "studyKind": "INTERVENTIONAL_RANDOMIZED",
+    "phase": [
+     "PHASE_2"
+    ],
+    "overallStatus": "COMPLETED",
+    "primaryCompletionDate": "2017-03-17T00:00:00Z",
+    "primaryCompletionDateType": "ACTUAL",
+    "resultsPosted": false,
+    "projectionOfRegistrationVersionUid": "hu:registration-version:xfx-cp-rv-ct1",
+    "projectionMethodVersion": "xfx-builder/1 (registry fields copied from rv-ct1)",
+    "projectionDerivedAt": "2026-10-09T05:01:14Z"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "rv-ct1",
+   "mode": "new",
+   "nodeType": "RegistrationVersion",
+   "name": "NCT02712593 as observed 2026-10-09 (last update posted 2018-04-11)",
+   "uidSegment": "xfx-cp-rv-ct1",
+   "properties": {
+    "registry": "CTGOV",
+    "registrationId": "NCT02712593",
+    "versionDate": "2018-04-11T00:00:00Z",
+    "versionDatePrecision": "DAY",
+    "populatingMode": "OBSERVED",
+    "payloadHash": "sha256:b4f637f2a707990d2b651a3c926982fdbc2e78a02be6ac5488f7d4c0ab1ffdaf",
+    "overallStatus": "COMPLETED",
+    "enrollmentCount": 140,
+    "enrollmentCountType": "ACTUAL",
+    "startDate": "2016-03-21T00:00:00Z",
+    "startDateType": "ACTUAL",
+    "primaryCompletionDate": "2017-03-17T00:00:00Z",
+    "primaryCompletionDatePrecision": "DAY",
+    "primaryCompletionDateType": "ACTUAL",
+    "resultsPosted": false,
+    "phase": [
+     "PHASE_2"
+    ],
+    "sponsorNameVerbatim": "KGK Science Inc.",
+    "collaboratorNamesVerbatim": [
+     "ChromaDex, Inc."
+    ],
+    "interventionNamesVerbatim": [
+     "Niagen™ 100",
+     "Niagen™ 300",
+     "Niagen™ 1000",
+     "Placebo"
+    ]
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "arm-cz-100",
+   "mode": "new",
+   "nodeType": "StudyArm",
+   "name": "NCT02712593 arm 'Niagen™ 100'",
+   "uidSegment": "xfx-cp-arm-cz-100",
+   "properties": {
+    "armType": "EXPERIMENTAL",
+    "armKey": "Niagen™ 100",
+    "plannedSize": 35,
+    "payloadHash": "sha256:e78d694a8e93800b8dab09ba1b1bccf48e23d566fc2cbecd69c6b8e26a74e2d5"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "arm-cz-300",
+   "mode": "new",
+   "nodeType": "StudyArm",
+   "name": "NCT02712593 arm 'Niagen™ 300'",
+   "uidSegment": "xfx-cp-arm-cz-300",
+   "properties": {
+    "armType": "EXPERIMENTAL",
+    "armKey": "Niagen™ 300",
+    "plannedSize": 35,
+    "payloadHash": "sha256:47215196ee733d8dda95e0dcb65191898700a2bdcab6defb8c6ba7862e74caab"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "arm-cz-1000",
+   "mode": "new",
+   "nodeType": "StudyArm",
+   "name": "NCT02712593 arm 'Niagen™ 1000'",
+   "uidSegment": "xfx-cp-arm-cz-1000",
+   "properties": {
+    "armType": "EXPERIMENTAL",
+    "armKey": "Niagen™ 1000",
+    "plannedSize": 35,
+    "payloadHash": "sha256:96e87a9018f8570bd1830c316260a0d890419d101e6de2a22eb85b4ec3509418"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "arm-cz-placebo",
+   "mode": "new",
+   "nodeType": "StudyArm",
+   "name": "NCT02712593 arm 'Placebo'",
+   "uidSegment": "xfx-cp-arm-cz-placebo",
+   "properties": {
+    "armType": "EXPERIMENTAL",
+    "armKey": "Placebo",
+    "plannedSize": 35,
+    "payloadHash": "sha256:cdd5a73967b369f407d230b21c6379c4c836209d47079dbe92bdfda2ebf7fdc6"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "ic-cz-1000",
+   "mode": "new",
+   "nodeType": "InterventionComponent",
+   "name": "NCT02712593 1000 mg arm: NIAGEN component",
+   "uidSegment": "xfx-cp-ic-cz-1000",
+   "properties": {
+    "componentRole": "ACTIVE",
+    "materialTextVerbatim": "1000 mg NR (4 capsules containing 250 mg NR)",
+    "interventionTypeVerbatim": "DIETARY_SUPPLEMENT",
+    "quantity": 1000,
+    "unitCode": "mg",
+    "quantityBasis": "PER_DAY",
+    "massBasis": "UNSPECIFIED",
+    "dosageForm": "capsule",
+    "durationIso": "P56D",
+    "verbatimDoseText": "1000 mg NR (4 capsules containing 250 mg NR)",
+    "payloadHash": "sha256:07bd95005eb903888982d43b3b438427bc68dfc43a0e856c7e93a44d052ccd1f"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "ic-cz-100",
+   "mode": "new",
+   "nodeType": "InterventionComponent",
+   "name": "NCT02712593 arm 100: component (unresolved in this fixture)",
+   "uidSegment": "xfx-cp-ic-cz-100",
+   "properties": {
+    "componentRole": "ACTIVE",
+    "materialTextVerbatim": "100 mg NR (1 capsule containing 100 mg NR and three placebo capsules)",
+    "payloadHash": "sha256:20208fdbdda965c2e7a9dd6c8b1251ad7f358f4262b44328acf036cbb61d70af"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "ic-cz-300",
+   "mode": "new",
+   "nodeType": "InterventionComponent",
+   "name": "NCT02712593 arm 300: component (unresolved in this fixture)",
+   "uidSegment": "xfx-cp-ic-cz-300",
+   "properties": {
+    "componentRole": "ACTIVE",
+    "materialTextVerbatim": "300 mg NR (3 capsules containing 100 mg NR and 1 capsule containing placebo)",
+    "payloadHash": "sha256:e172d580345d503f85d1c914cc5c3842c274a81c87e097a6770b4d7381dd53ab"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "ic-cz-placebo",
+   "mode": "new",
+   "nodeType": "InterventionComponent",
+   "name": "NCT02712593 arm placebo: component (unresolved in this fixture)",
+   "uidSegment": "xfx-cp-ic-cz-placebo",
+   "properties": {
+    "componentRole": "PLACEBO",
+    "materialTextVerbatim": "placebo (a total of 4 placebo capsules)",
+    "payloadHash": "sha256:02d9af44df4fbae254cf82320966802a0b0b3d53245d6cdcaf77b5e63feabb7b"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "od-cz-blood-nad",
+   "mode": "new",
+   "nodeType": "OutcomeDefinition",
+   "name": "Whole blood NAD+ change from baseline (paper, secondary objective)",
+   "uidSegment": "xfx-cp-od-cz-blood-nad",
+   "properties": {
+    "outcomeKey": "whole-blood-nad-change",
+    "priority": "SECONDARY",
+    "measureKind": "BIOMARKER",
+    "timepoint": "day 14",
+    "description": "whole blood NAD+ relative to baseline (paper Results, Figure 3A); secondary objective 'other NR metabolites levels in blood'"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "od-ct1-blood",
+   "mode": "new",
+   "nodeType": "OutcomeDefinition",
+   "name": "Blood Nicotinamide Riboside Metabolites (registry secondary outcome)",
+   "uidSegment": "xfx-cp-od-ct1-blood",
+   "properties": {
+    "outcomeKey": "blood-nr-metabolites",
+    "priority": "SECONDARY",
+    "measureKind": "BIOMARKER",
+    "timepoint": "8 weeks: from baseline to end of study",
+    "description": "Change in levels"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "od-cz-ae",
+   "mode": "new",
+   "nodeType": "OutcomeDefinition",
+   "name": "Incidence of adverse events (paper safety objective)",
+   "uidSegment": "xfx-cp-od-cz-ae",
+   "properties": {
+    "outcomeKey": "adverse-events",
+    "priority": "SAFETY",
+    "measureKind": "ADVERSE_EVENT",
+    "description": "the difference in the incidence of adverse events between the placebo- and NIAGEN-treated groups"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "sr-cz-nad-d14",
+   "mode": "new",
+   "nodeType": "StudyResult",
+   "name": "Whole blood NAD+ at day 14, 1000 mg NIAGEN arm, % change from baseline",
+   "uidSegment": "xfx-cp-sr-cz-nad-d14",
+   "properties": {
+    "resultKind": "PERCENT_CHANGE",
+    "analysisKind": "SECONDARY_PRESPECIFIED",
+    "comparisonKind": "WITHIN_ARM_CHANGE",
+    "statisticalConclusion": "SIGNIFICANT",
+    "direction": "INCREASED",
+    "estimate": 142,
+    "estimateQualifier": "AS_REPORTED",
+    "unitCode": "%",
+    "dispersionKind": "STANDARD_ERROR",
+    "dispersionValue": 14,
+    "timepointText": "day 14",
+    "resultText": "142 ± 14% with respect to baseline blood NAD+"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "sr-cz-ae-any",
+   "mode": "new",
+   "nodeType": "StudyResult",
+   "name": "Adverse events, all arms (ITT): 95 AEs in 61 participants",
+   "uidSegment": "xfx-cp-sr-cz-ae-any",
+   "properties": {
+    "resultKind": "ADVERSE_EVENT_COUNT",
+    "analysisKind": "SAFETY",
+    "comparisonKind": "ARM_DESCRIPTIVE",
+    "statisticalConclusion": "NOT_TESTED",
+    "analysisPopulation": "INTENTION_TO_TREAT",
+    "seriousness": "ANY",
+    "eventCount": 95,
+    "participantsAffected": 61,
+    "collectionMethod": "NOT_DESCRIBED",
+    "resultText": "Ninety-five AEs were reported by 61 participants"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "sr-cz-ae-serious",
+   "mode": "new",
+   "nodeType": "StudyResult",
+   "name": "Serious adverse events, all arms (ITT): none",
+   "uidSegment": "xfx-cp-sr-cz-ae-serious",
+   "properties": {
+    "resultKind": "ADVERSE_EVENT_COUNT",
+    "analysisKind": "SAFETY",
+    "comparisonKind": "ARM_DESCRIPTIVE",
+    "statisticalConclusion": "NOT_TESTED",
+    "analysisPopulation": "INTENTION_TO_TREAT",
+    "seriousness": "SERIOUS",
+    "eventCount": 0,
+    "collectionMethod": "NOT_DESCRIBED",
+    "resultText": "There were no serious AEs or reports of flushing."
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "pub-elhassan",
+   "mode": "new",
+   "nodeType": "Publication",
+   "name": "Elhassan YS et al. Nicotinamide Riboside Augments the Aged Human Skeletal Muscle NAD+ Metabolome and Induces Transcriptomic and Anti-inflammatory Signatures. Cell Rep 2019;28(7):1717",
+   "uidSegment": "xfx-cp-pub-elhassan",
+   "properties": {
+    "publicationKind": "ARTICLE",
+    "publishedAt": "2019-08-13T00:00:00Z",
+    "publishedAtPrecision": "DAY"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "study-el",
+   "mode": "new",
+   "nodeType": "Study",
+   "name": "Nicotinamide Adenine Dinucleotide and Skeletal Muscle Metabolic Phenotype (NADMet, NCT02950441)",
+   "uidSegment": "xfx-cp-study-el",
+   "properties": {
+    "studyKind": "INTERVENTIONAL_RANDOMIZED",
+    "acronym": "NADMet",
+    "phase": [
+     "PHASE_2"
+    ],
+    "overallStatus": "UNKNOWN",
+    "projectionOfRegistrationVersionUid": "hu:registration-version:xfx-cp-rv-ct2",
+    "projectionMethodVersion": "xfx-builder/1",
+    "projectionDerivedAt": "2026-10-09T05:01:14Z"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "rv-ct2",
+   "mode": "new",
+   "nodeType": "RegistrationVersion",
+   "name": "NCT02950441 as observed 2026-10-09 (last update posted 2017-06-07)",
+   "uidSegment": "xfx-cp-rv-ct2",
+   "properties": {
+    "registry": "CTGOV",
+    "registrationId": "NCT02950441",
+    "versionDate": "2017-06-07T00:00:00Z",
+    "versionDatePrecision": "DAY",
+    "populatingMode": "OBSERVED",
+    "payloadHash": "sha256:79e06200c9ddbe0d461add746395259ea3995ddfee7f16bf235ee5b2c17fdf48",
+    "overallStatus": "UNKNOWN",
+    "overallStatusVerbatim": "UNKNOWN (lastKnownStatus RECRUITING)",
+    "phase": [
+     "PHASE_2"
+    ],
+    "allocation": "RANDOMIZED",
+    "interventionModel": "CROSSOVER",
+    "sponsorNameVerbatim": "University of Birmingham",
+    "interventionNamesVerbatim": [
+     "Nicotinamide Riboside",
+     "Placebo"
+    ]
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "arm-el-nr",
+   "mode": "new",
+   "nodeType": "StudyArm",
+   "name": "NCT02950441 arm 'Nicotinamide Riboside'",
+   "uidSegment": "xfx-cp-arm-el-nr",
+   "properties": {
+    "armType": "EXPERIMENTAL",
+    "armKey": "Nicotinamide Riboside",
+    "description": "1000mg (2x250mg tablets twice daily)",
+    "payloadHash": "sha256:afed287808b1ec8fe12b91485a6949ea9b092f592e692dbae658212f068466d9"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "ic-el-nr",
+   "mode": "new",
+   "nodeType": "InterventionComponent",
+   "name": "NCT02950441 NR arm: NIAGEN component",
+   "uidSegment": "xfx-cp-ic-el-nr",
+   "properties": {
+    "componentRole": "ACTIVE",
+    "materialTextVerbatim": "NR chloride (Niagen)",
+    "quantity": 1,
+    "unitCode": "g",
+    "quantityBasis": "PER_DAY",
+    "massBasis": "UNSPECIFIED",
+    "durationIso": "P21D",
+    "verbatimDoseText": "1 g NR per day for 21 days",
+    "supplierNameVerbatim": "ChromaDex",
+    "payloadHash": "sha256:3669af490e87624e58069fcd760c92393b16dca32a5c40f602d623f2f33138b7"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "prod-tn",
+   "mode": "new",
+   "nodeType": "Product",
+   "name": "Tru Niagen 300 mg",
+   "uidSegment": "xfx-cp-prod-tn",
+   "properties": {
+    "productKind": "DIETARY_SUPPLEMENT",
+    "marketedName": "Tru Niagen 300 mg",
+    "jurisdiction": "US"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "var-tn-300",
+   "mode": "new",
+   "nodeType": "ProductVariant",
+   "name": "Tru Niagen 300 mg capsule (US)",
+   "uidSegment": "xfx-cp-var-tn-300",
+   "properties": {
+    "dosageForm": "CAPSULE",
+    "strengthVerbatim": "300 mg",
+    "jurisdiction": "US"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "pkg-tn-30",
+   "mode": "new",
+   "nodeType": "Package",
+   "name": "Tru Niagen 300 mg, 30 vegetarian capsules",
+   "uidSegment": "xfx-cp-pkg-tn-30",
+   "properties": {
+    "packageKind": "CONTAINER",
+    "unitCount": 30,
+    "unitNoun": "Vegetarian Capsule(s)"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  },
+  {
+   "ref": "lv-tn-v12-3",
+   "mode": "new",
+   "nodeType": "LabelVersion",
+   "name": "Tru Niagen 300 mg label V12.3 (DSLD 323170)",
+   "uidSegment": "xfx-cp-lv-tn-v12-3",
+   "properties": {
+    "panelKind": "SUPPLEMENT_FACTS",
+    "labelVersionCode": "V12.3",
+    "jurisdiction": "US",
+    "contentDigest": "sha256:9cf4d6d2d6bad8d464467c8c6266d9fbbb58c22236885cad7618b6ecbef98729",
+    "compositionDigest": "sha256:998c6b1532b4d8b27ae7428c6d02351bd595fe75490cfb71de404fe1f15e2632",
+    "servingSizeValue": 1,
+    "servingSizeUnit": "Vegetarian Capsule(s)",
+    "servingsPerContainer": 30,
+    "minDailyServings": 1,
+    "maxDailyServings": 3,
+    "directionsText": "Suggested use: Adults take one capsule 1-3 times daily as needed or as recommended by your healthcare professional.",
+    "responsiblePartyRole": "DISTRIBUTED_BY",
+    "responsiblePartyVerbatim": "Distributed by ChromaDex, Inc",
+    "firstObservedAt": "2026-10-09T04:17:03Z",
+    "lastObservedAt": "2026-10-09T04:17:03Z"
+   },
+   "identifiers": [],
+   "onMatch": "review"
+  }
+ ],
+ "proposals": [
+  {
+   "proposalId": "p-id-person-brenner-orcid",
+   "kind": "identifier.attach",
+   "subjectRef": "person-brenner",
+   "identifier": {
+    "scheme": "ORCID",
+    "issuer": "ORCID",
+    "value": "0000-0002-4955-3226",
+    "normalizationRule": "strip http://orcid.org/"
+   },
+   "evidence": [
+    "l-cz-brenner-orcid"
+   ],
+   "rationale": "asserter pub-conze (identifier.attach carries no asserterRef; kept in assertions.yaml)"
+  },
+  {
+   "proposalId": "p-id-sub-nrcl-unii",
+   "kind": "identifier.attach",
+   "subjectRef": "sub-nrcl",
+   "identifier": {
+    "scheme": "UNII",
+    "issuer": "FDA GSRS",
+    "value": "8XM2XT8VWI"
+   },
+   "evidence": [
+    "l-gsrs-nrcl-unii"
+   ],
+   "rationale": "asserter org-fda (identifier.attach carries no asserterRef; kept in assertions.yaml)"
+  },
+  {
+   "proposalId": "p-id-sub-nrcl-cas_rn",
+   "kind": "identifier.attach",
+   "subjectRef": "sub-nrcl",
+   "identifier": {
+    "scheme": "CAS_RN",
+    "issuer": "Chemical Abstracts Service",
+    "value": "23111-00-4"
+   },
+   "evidence": [
+    "l-gsrs-nrcl-cas"
+   ],
+   "rationale": "asserter org-fda (identifier.attach carries no asserterRef; kept in assertions.yaml)"
+  },
+  {
+   "proposalId": "p-id-sub-nrcl-pubchem_cid",
+   "kind": "identifier.attach",
+   "subjectRef": "sub-nrcl",
+   "identifier": {
+    "scheme": "PUBCHEM_CID",
+    "issuer": "NCBI PubChem",
+    "value": "90480033"
+   },
+   "evidence": [
+    "l-gsrs-nrcl-pubchem"
+   ],
+   "rationale": "asserter org-fda (identifier.attach carries no asserterRef; kept in assertions.yaml)"
+  },
+  {
+   "proposalId": "p-id-sub-nr-unii",
+   "kind": "identifier.attach",
+   "subjectRef": "sub-nr",
+   "identifier": {
+    "scheme": "UNII",
+    "issuer": "FDA GSRS",
+    "value": "0I8H2M0L7N"
+   },
+   "evidence": [
+    "l-gsrs-nr-unii"
+   ],
+   "rationale": "asserter org-fda (identifier.attach carries no asserterRef; kept in assertions.yaml)"
+  },
+  {
+   "proposalId": "p-id-sub-nr-cas_rn",
+   "kind": "identifier.attach",
+   "subjectRef": "sub-nr",
+   "identifier": {
+    "scheme": "CAS_RN",
+    "issuer": "Chemical Abstracts Service",
+    "value": "1341-23-7"
+   },
+   "evidence": [
+    "l-gsrs-nr-cas"
+   ],
+   "rationale": "asserter org-fda (identifier.attach carries no asserterRef; kept in assertions.yaml)"
+  },
+  {
+   "proposalId": "p-id-sub-nr-pubchem_cid",
+   "kind": "identifier.attach",
+   "subjectRef": "sub-nr",
+   "identifier": {
+    "scheme": "PUBCHEM_CID",
+    "issuer": "NCBI PubChem",
+    "value": "439924"
+   },
+   "evidence": [
+    "l-gsrs-nr-pubchem"
+   ],
+   "rationale": "asserter org-fda (identifier.attach carries no asserterRef; kept in assertions.yaml)"
+  },
+  {
+   "proposalId": "p-id-sub-nr-chebi",
+   "kind": "identifier.attach",
+   "subjectRef": "sub-nr",
+   "identifier": {
+    "scheme": "CHEBI",
+    "issuer": "EMBL-EBI",
+    "value": "CHEBI:15927",
+    "normalizationRule": "upper-case prefix with colon (GSRS stores 15927)"
+   },
+   "evidence": [
+    "l-gsrs-nr-chebi"
+   ],
+   "rationale": "asserter org-fda (identifier.attach carries no asserterRef; kept in assertions.yaml)"
+  },
+  {
+   "proposalId": "p-id-sub-nr-drugbank",
+   "kind": "identifier.attach",
+   "subjectRef": "sub-nr",
+   "identifier": {
+    "scheme": "DRUGBANK",
+    "issuer": "DrugBank",
+    "value": "DB14933"
+   },
+   "evidence": [
+    "l-gsrs-nr-drugbank"
+   ],
+   "rationale": "asserter org-fda (identifier.attach carries no asserterRef; kept in assertions.yaml)"
+  },
+  {
+   "proposalId": "p-id-sub-nad-chebi",
+   "kind": "identifier.attach",
+   "subjectRef": "sub-nad",
+   "identifier": {
+    "scheme": "CHEBI",
+    "issuer": "EMBL-EBI",
+    "value": "CHEBI:15846"
+   },
+   "evidence": [
+    "l-chebi-15846"
+   ],
+   "rationale": "asserter org-embl-ebi (identifier.attach carries no asserterRef; kept in assertions.yaml)"
+  },
+  {
+   "proposalId": "p-id-sub-naad-chebi",
+   "kind": "identifier.attach",
+   "subjectRef": "sub-naad",
+   "identifier": {
+    "scheme": "CHEBI",
+    "issuer": "EMBL-EBI",
+    "value": "CHEBI:18304"
+   },
+   "evidence": [
+    "l-chebi-18304"
+   ],
+   "rationale": "asserter org-embl-ebi (identifier.attach carries no asserterRef; kept in assertions.yaml)"
+  },
+  {
+   "proposalId": "p-id-mech-deacetylation-go",
+   "kind": "identifier.attach",
+   "subjectRef": "mech-deacetylation",
+   "identifier": {
+    "scheme": "GO",
+    "issuer": "GO Consortium",
+    "value": "GO:0006476"
+   },
+   "evidence": [
+    "l-go-0006476"
+   ],
+   "rationale": "asserter org-embl-ebi (identifier.attach carries no asserterRef; kept in assertions.yaml)"
+  },
+  {
+   "proposalId": "p-id-pub-conze-pmid",
+   "kind": "identifier.attach",
+   "subjectRef": "pub-conze",
+   "identifier": {
+    "scheme": "PMID",
+    "issuer": "NLM",
+    "value": "31278280"
+   },
+   "evidence": [
+    "l-cz-pmid"
+   ]
+  },
+  {
+   "proposalId": "p-id-pub-conze-doi",
+   "kind": "identifier.attach",
+   "subjectRef": "pub-conze",
+   "identifier": {
+    "scheme": "DOI",
+    "issuer": "Crossref",
+    "value": "10.1038/s41598-019-46120-z"
+   },
+   "evidence": [
+    "l-cz-pmid"
+   ]
+  },
+  {
+   "proposalId": "p-id-pub-conze-pmcid",
+   "kind": "identifier.attach",
+   "subjectRef": "pub-conze",
+   "identifier": {
+    "scheme": "PMCID",
+    "issuer": "NLM",
+    "value": "PMC6611812"
+   },
+   "evidence": [
+    "l-cz-pmcid"
+   ]
+  },
+  {
+   "proposalId": "p-id-study-cz-nct",
+   "kind": "identifier.attach",
+   "subjectRef": "study-cz",
+   "identifier": {
+    "scheme": "NCT",
+    "issuer": "NLM ClinicalTrials.gov",
+    "value": "NCT02712593"
+   },
+   "evidence": [
+    "l-ct1-nct"
+   ],
+   "rationale": "asserter org-kgk (identifier.attach carries no asserterRef; kept in assertions.yaml)"
+  },
+  {
+   "proposalId": "p-id-pub-elhassan-pmid",
+   "kind": "identifier.attach",
+   "subjectRef": "pub-elhassan",
+   "identifier": {
+    "scheme": "PMID",
+    "issuer": "NLM",
+    "value": "31412242"
+   },
+   "evidence": [
+    "l-el-pmid"
+   ]
+  },
+  {
+   "proposalId": "p-id-pub-elhassan-doi",
+   "kind": "identifier.attach",
+   "subjectRef": "pub-elhassan",
+   "identifier": {
+    "scheme": "DOI",
+    "issuer": "Crossref",
+    "value": "10.1016/j.celrep.2019.07.043"
+   },
+   "evidence": [
+    "l-el-pmid"
+   ]
+  },
+  {
+   "proposalId": "p-id-pub-elhassan-pmcid",
+   "kind": "identifier.attach",
+   "subjectRef": "pub-elhassan",
+   "identifier": {
+    "scheme": "PMCID",
+    "issuer": "NLM",
+    "value": "PMC6702140"
+   },
+   "evidence": [
+    "l-el-pmcid"
+   ]
+  },
+  {
+   "proposalId": "p-id-study-el-nct",
+   "kind": "identifier.attach",
+   "subjectRef": "study-el",
+   "identifier": {
+    "scheme": "NCT",
+    "issuer": "NLM ClinicalTrials.gov",
+    "value": "NCT02950441"
+   },
+   "evidence": [
+    "l-ct2-nct"
+   ],
+   "rationale": "asserter org-uob (identifier.attach carries no asserterRef; kept in assertions.yaml)"
+  },
+  {
+   "proposalId": "p-id-pkg-tn-30-gtin",
+   "kind": "identifier.attach",
+   "subjectRef": "pkg-tn-30",
+   "identifier": {
+    "scheme": "GTIN",
+    "issuer": "GS1",
+    "value": "00850015311116",
+    "normalizationRule": "digits only; left-pad to 14; mod-10 check digit verified (6)"
+   },
+   "evidence": [
+    "l-dsld-upc"
+   ],
+   "rationale": "asserter org-nih-ods (identifier.attach carries no asserterRef; kept in assertions.yaml)"
+  },
+  {
+   "proposalId": "p-id-lv-tn-v12-3-dsld",
+   "kind": "identifier.attach",
+   "subjectRef": "lv-tn-v12-3",
+   "identifier": {
+    "scheme": "DSLD",
+    "issuer": "NIH ODS",
+    "value": "323170"
+   },
+   "evidence": [
+    "l-dsld-id"
+   ],
+   "rationale": "asserter org-nih-ods (identifier.attach carries no asserterRef; kept in assertions.yaml)"
+  },
+  {
+   "proposalId": "p-a-mw-salt",
+   "kind": "assertion.literal",
+   "subjectRef": "sub-nrcl",
+   "predicate": "MOLECULAR_WEIGHT",
+   "valueNumber": 290.7006,
+   "unitCode": "g/mol",
+   "assertion": {
+    "predicate": "MOLECULAR_WEIGHT",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-mw-salt",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "evidence": [
+    "l-gsrs-nrcl-mw",
+    "l-gsrs-nrcl-version"
+   ],
+   "asserterRef": "org-fda"
+  },
+  {
+   "proposalId": "p-a-formula-salt",
+   "kind": "assertion.literal",
+   "subjectRef": "sub-nrcl",
+   "predicate": "MOLECULAR_FORMULA",
+   "valueString": "C11H15N2O5.Cl",
+   "assertion": {
+    "predicate": "MOLECULAR_FORMULA",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-formula-salt",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "evidence": [
+    "l-gsrs-nrcl-formula"
+   ],
+   "asserterRef": "org-fda"
+  },
+  {
+   "proposalId": "p-a-mw-nr",
+   "kind": "assertion.literal",
+   "subjectRef": "sub-nr",
+   "predicate": "MOLECULAR_WEIGHT",
+   "valueNumber": 255.2476,
+   "unitCode": "g/mol",
+   "assertion": {
+    "predicate": "MOLECULAR_WEIGHT",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-mw-nr",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "evidence": [
+    "l-gsrs-nr-mw",
+    "l-gsrs-nr-version"
+   ],
+   "asserterRef": "org-fda"
+  },
+  {
+   "proposalId": "p-a-moiety",
+   "kind": "edge.assert",
+   "relationshipType": "HAS_ACTIVE_MOIETY",
+   "fromRef": "sub-nrcl",
+   "toRef": "sub-nr",
+   "evidence": [
+    "l-gsrs-nrcl-moiety",
+    "l-gsrs-nrcl-version"
+   ],
+   "assertion": {
+    "predicate": "HAS_ACTIVE_MOIETY",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-moiety",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "org-fda"
+  },
+  {
+   "proposalId": "p-a-realizes-dsld",
+   "kind": "edge.assert",
+   "relationshipType": "REALIZES_SUBSTANCE",
+   "fromRef": "mat-niagen",
+   "toRef": "sub-nrcl",
+   "evidence": [
+    "l-dsld-row-name",
+    "l-dsld-row-form"
+   ],
+   "assertion": {
+    "predicate": "REALIZES_SUBSTANCE",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-realizes-dsld",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "org-nih-ods"
+  },
+  {
+   "proposalId": "p-a-realizes-conze",
+   "kind": "edge.assert",
+   "relationshipType": "REALIZES_SUBSTANCE",
+   "fromRef": "mat-niagen",
+   "toRef": "sub-nrcl",
+   "evidence": [
+    "l-cz-gras"
+   ],
+   "assertion": {
+    "predicate": "REALIZES_SUBSTANCE",
+    "polarity": "POSITIVE",
+    "basisKind": "CITED_FROM_PRIOR_WORK",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-realizes-conze",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "pub-conze"
+  },
+  {
+   "proposalId": "p-f-physform",
+   "kind": "assertion.literal",
+   "subjectRef": "mat-niagen",
+   "predicate": "PHYSICAL_FORM",
+   "valueString": "CRYSTAL_FORM",
+   "assertion": {
+    "predicate": "PHYSICAL_FORM",
+    "polarity": "POSITIVE",
+    "basisKind": "CITED_FROM_PRIOR_WORK",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-f-physform",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "evidence": [
+    "l-cz-gras"
+   ],
+   "asserterRef": "pub-conze"
+  },
+  {
+   "proposalId": "p-a-cz-reports-on",
+   "kind": "edge.assert",
+   "relationshipType": "REPORTS_ON",
+   "fromRef": "pub-conze",
+   "toRef": "study-cz",
+   "evidence": [
+    "l-ct1-firstpost",
+    "l-ct1-int1000",
+    "l-ct1-collab",
+    "l-cz-registry",
+    "l-ct0-404"
+   ],
+   "assertion": {
+    "predicate": "REPORTS_ON",
+    "polarity": "POSITIVE",
+    "basisKind": "CURATOR_CLASSIFICATION",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-cz-reports-on",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "agent-s-xfx"
+  },
+  {
+   "proposalId": "p-a-cz-printed-id",
+   "kind": "assertion.literal",
+   "subjectRef": "pub-conze",
+   "predicate": "REGISTRY_ID_AS_PRINTED",
+   "valueString": "NCT0271593",
+   "assertion": {
+    "predicate": "REGISTRY_ID_AS_PRINTED",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-cz-printed-id",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "evidence": [
+    "l-cz-registry"
+   ],
+   "asserterRef": "pub-conze"
+  },
+  {
+   "proposalId": "p-a-ct1-hasrv",
+   "kind": "edge.assert",
+   "relationshipType": "HAS_REGISTRATION_VERSION",
+   "fromRef": "study-cz",
+   "toRef": "rv-ct1",
+   "evidence": [
+    "l-ct1-nct",
+    "l-ct1-lastupdate"
+   ],
+   "assertion": {
+    "predicate": "HAS_REGISTRATION_VERSION",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-ct1-hasrv",
+    "validity": {
+     "validFrom": "2018-04-11T00:00:00Z",
+     "validFromPrecision": "DAY",
+     "validFromBasis": "STATED_BY_SOURCE",
+     "validToBasis": "UNKNOWN"
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "org-kgk"
+  },
+  {
+   "proposalId": "p-a-arm-cz-100-rv",
+   "kind": "edge.assert",
+   "relationshipType": "STATED_IN",
+   "fromRef": "arm-cz-100",
+   "toRef": "rv-ct1",
+   "evidence": [
+    "l-ct1-arm100"
+   ],
+   "assertion": {
+    "predicate": "STATED_IN",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-arm-cz-100-rv",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "org-kgk"
+  },
+  {
+   "proposalId": "p-a-arm-cz-100-pub",
+   "kind": "edge.assert",
+   "relationshipType": "STATED_IN",
+   "fromRef": "arm-cz-100",
+   "toRef": "pub-conze",
+   "evidence": [
+    "l-cz-arms",
+    "l-cz-groups"
+   ],
+   "assertion": {
+    "predicate": "STATED_IN",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-arm-cz-100-pub",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "pub-conze"
+  },
+  {
+   "proposalId": "p-a-arm-cz-300-rv",
+   "kind": "edge.assert",
+   "relationshipType": "STATED_IN",
+   "fromRef": "arm-cz-300",
+   "toRef": "rv-ct1",
+   "evidence": [
+    "l-ct1-arm300"
+   ],
+   "assertion": {
+    "predicate": "STATED_IN",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-arm-cz-300-rv",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "org-kgk"
+  },
+  {
+   "proposalId": "p-a-arm-cz-300-pub",
+   "kind": "edge.assert",
+   "relationshipType": "STATED_IN",
+   "fromRef": "arm-cz-300",
+   "toRef": "pub-conze",
+   "evidence": [
+    "l-cz-arms",
+    "l-cz-groups"
+   ],
+   "assertion": {
+    "predicate": "STATED_IN",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-arm-cz-300-pub",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "pub-conze"
+  },
+  {
+   "proposalId": "p-a-arm-cz-1000-rv",
+   "kind": "edge.assert",
+   "relationshipType": "STATED_IN",
+   "fromRef": "arm-cz-1000",
+   "toRef": "rv-ct1",
+   "evidence": [
+    "l-ct1-arm1000"
+   ],
+   "assertion": {
+    "predicate": "STATED_IN",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-arm-cz-1000-rv",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "org-kgk"
+  },
+  {
+   "proposalId": "p-a-arm-cz-1000-pub",
+   "kind": "edge.assert",
+   "relationshipType": "STATED_IN",
+   "fromRef": "arm-cz-1000",
+   "toRef": "pub-conze",
+   "evidence": [
+    "l-cz-arms",
+    "l-cz-groups"
+   ],
+   "assertion": {
+    "predicate": "STATED_IN",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-arm-cz-1000-pub",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "pub-conze"
+  },
+  {
+   "proposalId": "p-a-arm-cz-placebo-rv",
+   "kind": "edge.assert",
+   "relationshipType": "STATED_IN",
+   "fromRef": "arm-cz-placebo",
+   "toRef": "rv-ct1",
+   "evidence": [
+    "l-ct1-armplacebo"
+   ],
+   "assertion": {
+    "predicate": "STATED_IN",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-arm-cz-placebo-rv",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "org-kgk"
+  },
+  {
+   "proposalId": "p-a-arm-cz-placebo-pub",
+   "kind": "edge.assert",
+   "relationshipType": "STATED_IN",
+   "fromRef": "arm-cz-placebo",
+   "toRef": "pub-conze",
+   "evidence": [
+    "l-cz-arms",
+    "l-cz-groups"
+   ],
+   "assertion": {
+    "predicate": "STATED_IN",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-arm-cz-placebo-pub",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "pub-conze"
+  },
+  {
+   "proposalId": "p-a-adm-cz-paper",
+   "kind": "edge.assert",
+   "relationshipType": "ADMINISTERS",
+   "fromRef": "ic-cz-1000",
+   "toRef": "mat-niagen",
+   "evidence": [
+    "l-cz-capsule",
+    "l-cz-arms",
+    "l-cz-period"
+   ],
+   "assertion": {
+    "predicate": "ADMINISTERS",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "REPORTS_PRACTICE",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-adm-cz-paper",
+    "validity": {
+     "validFrom": "2016-03-01T00:00:00Z",
+     "validTo": "2017-03-17T00:00:00Z",
+     "validFromPrecision": "DAY",
+     "validToPrecision": "DAY",
+     "validFromBasis": "INFERRED",
+     "validToBasis": "INFERRED"
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "pub-conze"
+  },
+  {
+   "proposalId": "p-a-adm-cz-registry",
+   "kind": "edge.assert",
+   "relationshipType": "ADMINISTERS",
+   "fromRef": "ic-cz-1000",
+   "toRef": "mat-niagen",
+   "evidence": [
+    "l-ct1-int1000",
+    "l-ct1-start"
+   ],
+   "assertion": {
+    "predicate": "ADMINISTERS",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-adm-cz-registry",
+    "validity": {
+     "validFrom": "2016-03-21T00:00:00Z",
+     "validFromPrecision": "DAY",
+     "validFromBasis": "INFERRED",
+     "validToBasis": "UNKNOWN"
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "org-kgk"
+  },
+  {
+   "proposalId": "p-f-cz-qty",
+   "kind": "assertion.literal",
+   "subjectRef": "ic-cz-1000",
+   "predicate": "QUANTITY",
+   "valueNumber": 1000,
+   "unitCode": "mg",
+   "assertion": {
+    "predicate": "QUANTITY",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "REPORTS_PRACTICE",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-f-cz-qty",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "evidence": [
+    "l-cz-arms"
+   ],
+   "asserterRef": "pub-conze"
+  },
+  {
+   "proposalId": "p-f-cz-purity",
+   "kind": "assertion.literal",
+   "subjectRef": "ic-cz-1000",
+   "predicate": "ADMINISTERED_MATERIAL_PURITY",
+   "valueNumber": 99,
+   "unitCode": "%",
+   "assertion": {
+    "predicate": "ADMINISTERED_MATERIAL_PURITY",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "REPORTS_PRACTICE",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-f-cz-purity",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "evidence": [
+    "l-cz-capsule"
+   ],
+   "asserterRef": "pub-conze"
+  },
+  {
+   "proposalId": "p-f-cz-duration",
+   "kind": "assertion.literal",
+   "subjectRef": "ic-cz-1000",
+   "predicate": "DURATION_ISO",
+   "valueString": "P56D",
+   "assertion": {
+    "predicate": "DURATION_ISO",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "REPORTS_PRACTICE",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-f-cz-duration",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "evidence": [
+    "l-cz-56day"
+   ],
+   "asserterRef": "pub-conze"
+  },
+  {
+   "proposalId": "p-a-od-cz-blood-pub",
+   "kind": "edge.assert",
+   "relationshipType": "STATED_IN",
+   "fromRef": "od-cz-blood-nad",
+   "toRef": "pub-conze",
+   "evidence": [
+    "l-cz-secondary-objective",
+    "l-cz-day14"
+   ],
+   "assertion": {
+    "predicate": "STATED_IN",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-od-cz-blood-pub",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "pub-conze"
+  },
+  {
+   "proposalId": "p-a-od-ct1-blood-rv",
+   "kind": "edge.assert",
+   "relationshipType": "STATED_IN",
+   "fromRef": "od-ct1-blood",
+   "toRef": "rv-ct1",
+   "evidence": [
+    "l-ct1-secondary"
+   ],
+   "assertion": {
+    "predicate": "STATED_IN",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-od-ct1-blood-rv",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "org-kgk"
+  },
+  {
+   "proposalId": "p-a-od-cz-ae-pub",
+   "kind": "edge.assert",
+   "relationshipType": "STATED_IN",
+   "fromRef": "od-cz-ae",
+   "toRef": "pub-conze",
+   "evidence": [
+    "l-cz-safety-objective"
+   ],
+   "assertion": {
+    "predicate": "STATED_IN",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-od-cz-ae-pub",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "pub-conze"
+  },
+  {
+   "proposalId": "p-a-sr-nad-d14",
+   "kind": "edge.assert",
+   "relationshipType": "STATED_IN",
+   "fromRef": "sr-cz-nad-d14",
+   "toRef": "pub-conze",
+   "evidence": [
+    "l-cz-day14",
+    "l-cz-sem",
+    "l-cz-abstract-result",
+    "l-cz-significance"
+   ],
+   "assertion": {
+    "predicate": "STATED_IN",
+    "polarity": "POSITIVE",
+    "basisKind": "DIRECT_MEASUREMENT",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-sr-nad-d14",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "pub-conze"
+  },
+  {
+   "proposalId": "p-a-sr-ae-any",
+   "kind": "edge.assert",
+   "relationshipType": "STATED_IN",
+   "fromRef": "sr-cz-ae-any",
+   "toRef": "pub-conze",
+   "evidence": [
+    "l-cz-ae-count",
+    "l-cz-tab2"
+   ],
+   "assertion": {
+    "predicate": "STATED_IN",
+    "polarity": "POSITIVE",
+    "basisKind": "DIRECT_MEASUREMENT",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-sr-ae-any",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "pub-conze"
+  },
+  {
+   "proposalId": "p-a-sr-ae-serious",
+   "kind": "edge.assert",
+   "relationshipType": "STATED_IN",
+   "fromRef": "sr-cz-ae-serious",
+   "toRef": "pub-conze",
+   "evidence": [
+    "l-cz-ae-serious",
+    "l-cz-abstract-safety",
+    "l-cz-tab2"
+   ],
+   "assertion": {
+    "predicate": "STATED_IN",
+    "polarity": "POSITIVE",
+    "basisKind": "DIRECT_MEASUREMENT",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-sr-ae-serious",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "pub-conze"
+  },
+  {
+   "proposalId": "p-a-cz-role-lead",
+   "kind": "edge.assert",
+   "relationshipType": "HAS_STUDY_ROLE",
+   "fromRef": "study-cz",
+   "toRef": "org-kgk",
+   "evidence": [
+    "l-ct1-lead"
+   ],
+   "assertion": {
+    "predicate": "HAS_STUDY_ROLE",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-cz-role-lead",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {
+    "roleKind": "LEAD_SPONSOR"
+   },
+   "asserterRef": "org-kgk"
+  },
+  {
+   "proposalId": "p-a-cz-role-collab",
+   "kind": "edge.assert",
+   "relationshipType": "HAS_STUDY_ROLE",
+   "fromRef": "study-cz",
+   "toRef": "org-chromadex",
+   "evidence": [
+    "l-ct1-collab"
+   ],
+   "assertion": {
+    "predicate": "HAS_STUDY_ROLE",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-cz-role-collab",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {
+    "roleKind": "COLLABORATOR"
+   },
+   "asserterRef": "org-kgk"
+  },
+  {
+   "proposalId": "p-a-cz-role-funder",
+   "kind": "edge.assert",
+   "relationshipType": "HAS_STUDY_ROLE",
+   "fromRef": "study-cz",
+   "toRef": "org-chromadex",
+   "evidence": [
+    "l-cz-coi"
+   ],
+   "assertion": {
+    "predicate": "HAS_STUDY_ROLE",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-cz-role-funder",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {
+    "roleKind": "FUNDER"
+   },
+   "asserterRef": "pub-conze"
+  },
+  {
+   "proposalId": "p-a-el-reports-on",
+   "kind": "edge.assert",
+   "relationshipType": "REPORTS_ON",
+   "fromRef": "pub-elhassan",
+   "toRef": "study-el",
+   "evidence": [
+    "l-el-nct"
+   ],
+   "assertion": {
+    "predicate": "REPORTS_ON",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-el-reports-on",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "pub-elhassan"
+  },
+  {
+   "proposalId": "p-a-ct2-hasrv",
+   "kind": "edge.assert",
+   "relationshipType": "HAS_REGISTRATION_VERSION",
+   "fromRef": "study-el",
+   "toRef": "rv-ct2",
+   "evidence": [
+    "l-ct2-nct",
+    "l-ct2-lastupdate"
+   ],
+   "assertion": {
+    "predicate": "HAS_REGISTRATION_VERSION",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-ct2-hasrv",
+    "validity": {
+     "validFrom": "2017-06-07T00:00:00Z",
+     "validFromPrecision": "DAY",
+     "validFromBasis": "STATED_BY_SOURCE",
+     "validToBasis": "UNKNOWN"
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "org-uob"
+  },
+  {
+   "proposalId": "p-a-arm-el-rv",
+   "kind": "edge.assert",
+   "relationshipType": "STATED_IN",
+   "fromRef": "arm-el-nr",
+   "toRef": "rv-ct2",
+   "evidence": [
+    "l-ct2-armnr"
+   ],
+   "assertion": {
+    "predicate": "STATED_IN",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-arm-el-rv",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "org-uob"
+  },
+  {
+   "proposalId": "p-a-arm-el-pub",
+   "kind": "edge.assert",
+   "relationshipType": "STATED_IN",
+   "fromRef": "arm-el-nr",
+   "toRef": "pub-elhassan",
+   "evidence": [
+    "l-el-design"
+   ],
+   "assertion": {
+    "predicate": "STATED_IN",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-arm-el-pub",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "pub-elhassan"
+  },
+  {
+   "proposalId": "p-a-adm-el",
+   "kind": "edge.assert",
+   "relationshipType": "ADMINISTERS",
+   "fromRef": "ic-el-nr",
+   "toRef": "mat-niagen",
+   "evidence": [
+    "l-el-material",
+    "l-el-design"
+   ],
+   "assertion": {
+    "predicate": "ADMINISTERS",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "REPORTS_PRACTICE",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-adm-el",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "pub-elhassan"
+  },
+  {
+   "proposalId": "p-f-el-qty",
+   "kind": "assertion.literal",
+   "subjectRef": "ic-el-nr",
+   "predicate": "QUANTITY",
+   "valueNumber": 1,
+   "unitCode": "g",
+   "assertion": {
+    "predicate": "QUANTITY",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "REPORTS_PRACTICE",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-f-el-qty",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "evidence": [
+    "l-el-design"
+   ],
+   "asserterRef": "pub-elhassan"
+  },
+  {
+   "proposalId": "p-f-el-form-paper",
+   "kind": "assertion.literal",
+   "subjectRef": "ic-el-nr",
+   "predicate": "DOSAGE_FORM",
+   "valueString": "capsule",
+   "assertion": {
+    "predicate": "DOSAGE_FORM",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "REPORTS_PRACTICE",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-f-el-form-paper",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "evidence": [
+    "l-el-material"
+   ],
+   "asserterRef": "pub-elhassan"
+  },
+  {
+   "proposalId": "p-f-el-form-registry",
+   "kind": "assertion.literal",
+   "subjectRef": "ic-el-nr",
+   "predicate": "DOSAGE_FORM",
+   "valueString": "tablet",
+   "assertion": {
+    "predicate": "DOSAGE_FORM",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-f-el-form-registry",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "evidence": [
+    "l-ct2-armnr"
+   ],
+   "asserterRef": "org-uob"
+  },
+  {
+   "proposalId": "p-a-el-role-lead",
+   "kind": "edge.assert",
+   "relationshipType": "HAS_STUDY_ROLE",
+   "fromRef": "study-el",
+   "toRef": "org-uob",
+   "evidence": [
+    "l-ct2-lead"
+   ],
+   "assertion": {
+    "predicate": "HAS_STUDY_ROLE",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-el-role-lead",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {
+    "roleKind": "LEAD_SPONSOR"
+   },
+   "asserterRef": "org-uob"
+  },
+  {
+   "proposalId": "p-a-el-role-material",
+   "kind": "edge.assert",
+   "relationshipType": "HAS_STUDY_ROLE",
+   "fromRef": "study-el",
+   "toRef": "org-chromadex",
+   "evidence": [
+    "l-el-material"
+   ],
+   "assertion": {
+    "predicate": "HAS_STUDY_ROLE",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-el-role-material",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {
+    "roleKind": "MATERIAL_PROVIDER"
+   },
+   "asserterRef": "pub-elhassan"
+  },
+  {
+   "proposalId": "p-a-brenner-stake",
+   "kind": "edge.assert",
+   "relationshipType": "HOLDS_STAKE",
+   "fromRef": "person-brenner",
+   "toRef": "org-chromadex",
+   "evidence": [
+    "l-el-coi",
+    "l-el-brenner"
+   ],
+   "assertion": {
+    "predicate": "HOLDS_STAKE",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-brenner-stake",
+    "validity": {
+     "validFromBasis": "OBSERVATION_ONLY",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {
+    "stakeKind": "EQUITY"
+   },
+   "asserterRef": "pub-elhassan"
+  },
+  {
+   "proposalId": "p-a-brenner-role-el",
+   "kind": "edge.assert",
+   "relationshipType": "HOLDS_ROLE",
+   "fromRef": "person-brenner",
+   "toRef": "org-chromadex",
+   "evidence": [
+    "l-el-coi"
+   ],
+   "assertion": {
+    "predicate": "HOLDS_ROLE",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-brenner-role-el",
+    "validity": {
+     "validFromBasis": "OBSERVATION_ONLY",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {
+    "roleKind": "ADVISOR"
+   },
+   "asserterRef": "pub-elhassan"
+  },
+  {
+   "proposalId": "p-a-brenner-role-cz",
+   "kind": "edge.assert",
+   "relationshipType": "HOLDS_ROLE",
+   "fromRef": "person-brenner",
+   "toRef": "org-chromadex",
+   "evidence": [
+    "l-cz-coi"
+   ],
+   "assertion": {
+    "predicate": "HOLDS_ROLE",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-brenner-role-cz",
+    "validity": {
+     "validFromBasis": "OBSERVATION_ONLY",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {
+    "roleKind": "ADVISOR"
+   },
+   "asserterRef": "pub-conze"
+  },
+  {
+   "proposalId": "p-a-tn-label-version",
+   "kind": "edge.assert",
+   "relationshipType": "HAS_LABEL_VERSION",
+   "fromRef": "pkg-tn-30",
+   "toRef": "lv-tn-v12-3",
+   "evidence": [
+    "l-dsld-version",
+    "l-dsld-upc",
+    "l-dsld-entered"
+   ],
+   "assertion": {
+    "predicate": "HAS_LABEL_VERSION",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-tn-label-version",
+    "validity": {
+     "validFrom": "2025-04-24T00:00:00Z",
+     "validFromPrecision": "DAY",
+     "validFromBasis": "PUBLICATION_PROXY",
+     "validToBasis": "UNKNOWN"
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "org-nih-ods"
+  },
+  {
+   "proposalId": "p-a-tn-line-niagen",
+   "kind": "edge.assert",
+   "relationshipType": "DECLARES_COMPONENT",
+   "fromRef": "lv-tn-v12-3",
+   "toRef": "mat-niagen",
+   "evidence": [
+    "l-dsld-row-qty",
+    "l-dsld-row-name",
+    "l-dsld-row-form"
+   ],
+   "assertion": {
+    "predicate": "DECLARES_COMPONENT",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-tn-line-niagen",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {
+    "orderIndex": 0,
+    "lineRole": "DIETARY_INGREDIENT",
+    "amount": 300,
+    "unitCode": "mg",
+    "amountReferent": "AS_NAMED",
+    "massBasis": "SALT_FORM",
+    "amountBasis": "PER_SERVING"
+   },
+   "asserterRef": "org-nih-ods"
+  },
+  {
+   "proposalId": "p-a-tn-responsible",
+   "kind": "edge.assert",
+   "relationshipType": "NAMES_RESPONSIBLE_PARTY",
+   "fromRef": "lv-tn-v12-3",
+   "toRef": "org-chromadex",
+   "evidence": [
+    "l-dsld-contact",
+    "l-dsld-contact-name"
+   ],
+   "assertion": {
+    "predicate": "NAMES_RESPONSIBLE_PARTY",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-a-tn-responsible",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "edgeProperties": {},
+   "asserterRef": "org-nih-ods"
+  },
+  {
+   "proposalId": "p-f-tn-maxdaily",
+   "kind": "assertion.literal",
+   "subjectRef": "lv-tn-v12-3",
+   "predicate": "MAX_DAILY_SERVINGS",
+   "valueNumber": 3,
+   "assertion": {
+    "predicate": "MAX_DAILY_SERVINGS",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-f-tn-maxdaily",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "evidence": [
+    "l-dsld-serving",
+    "l-dsld-directions"
+   ],
+   "asserterRef": "org-nih-ods"
+  },
+  {
+   "proposalId": "p-f-tn-dosageform",
+   "kind": "assertion.literal",
+   "subjectRef": "var-tn-300",
+   "predicate": "DOSAGE_FORM",
+   "valueString": "CAPSULE",
+   "assertion": {
+    "predicate": "DOSAGE_FORM",
+    "polarity": "POSITIVE",
+    "basisKind": "UNSTATED",
+    "speechAct": "STATES",
+    "extractionMethod": "manual-fixture/s-xfx (quotes re-selected by build_locators.py)",
+    "uidSegment": "xfx-cp-f-tn-dosageform",
+    "validity": {
+     "validFromBasis": "UNKNOWN",
+     "validToBasis": "UNKNOWN",
+     "validFrom": null
+    }
+   },
+   "evidence": [
+    "l-dsld-form",
+    "l-dsld-net"
+   ],
+   "asserterRef": "org-nih-ods"
+  },
+  {
+   "proposalId": "p-st-has_variant-prod-tn-var-tn-300",
+   "kind": "edge.structural",
+   "relationshipType": "HAS_VARIANT",
+   "fromRef": "prod-tn",
+   "toRef": "var-tn-300",
+   "properties": {},
+   "evidence": []
+  },
+  {
+   "proposalId": "p-st-has_package-var-tn-300-pkg-tn-30",
+   "kind": "edge.structural",
+   "relationshipType": "HAS_PACKAGE",
+   "fromRef": "var-tn-300",
+   "toRef": "pkg-tn-30",
+   "properties": {},
+   "evidence": []
+  },
+  {
+   "proposalId": "p-st-has_arm-study-cz-arm-cz-100",
+   "kind": "edge.structural",
+   "relationshipType": "HAS_ARM",
+   "fromRef": "study-cz",
+   "toRef": "arm-cz-100",
+   "properties": {},
+   "evidence": [
+    "l-ct1-arm100"
+   ]
+  },
+  {
+   "proposalId": "p-st-has_component-arm-cz-100-ic-cz-100",
+   "kind": "edge.structural",
+   "relationshipType": "HAS_COMPONENT",
+   "fromRef": "arm-cz-100",
+   "toRef": "ic-cz-100",
+   "properties": {},
+   "evidence": []
+  },
+  {
+   "proposalId": "p-st-has_arm-study-cz-arm-cz-300",
+   "kind": "edge.structural",
+   "relationshipType": "HAS_ARM",
+   "fromRef": "study-cz",
+   "toRef": "arm-cz-300",
+   "properties": {},
+   "evidence": [
+    "l-ct1-arm300"
+   ]
+  },
+  {
+   "proposalId": "p-st-has_component-arm-cz-300-ic-cz-300",
+   "kind": "edge.structural",
+   "relationshipType": "HAS_COMPONENT",
+   "fromRef": "arm-cz-300",
+   "toRef": "ic-cz-300",
+   "properties": {},
+   "evidence": []
+  },
+  {
+   "proposalId": "p-st-has_arm-study-cz-arm-cz-1000",
+   "kind": "edge.structural",
+   "relationshipType": "HAS_ARM",
+   "fromRef": "study-cz",
+   "toRef": "arm-cz-1000",
+   "properties": {},
+   "evidence": [
+    "l-ct1-arm1000"
+   ]
+  },
+  {
+   "proposalId": "p-st-has_component-arm-cz-1000-ic-cz-1000",
+   "kind": "edge.structural",
+   "relationshipType": "HAS_COMPONENT",
+   "fromRef": "arm-cz-1000",
+   "toRef": "ic-cz-1000",
+   "properties": {},
+   "evidence": []
+  },
+  {
+   "proposalId": "p-st-has_arm-study-cz-arm-cz-placebo",
+   "kind": "edge.structural",
+   "relationshipType": "HAS_ARM",
+   "fromRef": "study-cz",
+   "toRef": "arm-cz-placebo",
+   "properties": {},
+   "evidence": [
+    "l-ct1-armplacebo"
+   ]
+  },
+  {
+   "proposalId": "p-st-has_component-arm-cz-placebo-ic-cz-placebo",
+   "kind": "edge.structural",
+   "relationshipType": "HAS_COMPONENT",
+   "fromRef": "arm-cz-placebo",
+   "toRef": "ic-cz-placebo",
+   "properties": {},
+   "evidence": []
+  },
+  {
+   "proposalId": "p-st-has_arm-study-el-arm-el-nr",
+   "kind": "edge.structural",
+   "relationshipType": "HAS_ARM",
+   "fromRef": "study-el",
+   "toRef": "arm-el-nr",
+   "properties": {},
+   "evidence": [
+    "l-ct2-armnr"
+   ]
+  },
+  {
+   "proposalId": "p-st-has_component-arm-el-nr-ic-el-nr",
+   "kind": "edge.structural",
+   "relationshipType": "HAS_COMPONENT",
+   "fromRef": "arm-el-nr",
+   "toRef": "ic-el-nr",
+   "properties": {},
+   "evidence": []
+  },
+  {
+   "proposalId": "p-st-has_outcome-study-cz-od-cz-blood-nad",
+   "kind": "edge.structural",
+   "relationshipType": "HAS_OUTCOME",
+   "fromRef": "study-cz",
+   "toRef": "od-cz-blood-nad",
+   "properties": {},
+   "evidence": [
+    "l-cz-secondary-objective"
+   ]
+  },
+  {
+   "proposalId": "p-st-has_outcome-study-cz-od-ct1-blood",
+   "kind": "edge.structural",
+   "relationshipType": "HAS_OUTCOME",
+   "fromRef": "study-cz",
+   "toRef": "od-ct1-blood",
+   "properties": {},
+   "evidence": [
+    "l-ct1-secondary"
+   ]
+  },
+  {
+   "proposalId": "p-st-has_outcome-study-cz-od-cz-ae",
+   "kind": "edge.structural",
+   "relationshipType": "HAS_OUTCOME",
+   "fromRef": "study-cz",
+   "toRef": "od-cz-ae",
+   "properties": {},
+   "evidence": [
+    "l-cz-safety-objective"
+   ]
+  },
+  {
+   "proposalId": "p-st-result_for-sr-cz-nad-d14-od-cz-blood-nad",
+   "kind": "edge.structural",
+   "relationshipType": "RESULT_FOR",
+   "fromRef": "sr-cz-nad-d14",
+   "toRef": "od-cz-blood-nad",
+   "properties": {},
+   "evidence": [
+    "l-cz-secondary-objective"
+   ]
+  },
+  {
+   "proposalId": "p-st-result_for_arm-sr-cz-nad-d14-arm-cz-1000",
+   "kind": "edge.structural",
+   "relationshipType": "RESULT_FOR_ARM",
+   "fromRef": "sr-cz-nad-d14",
+   "toRef": "arm-cz-1000",
+   "properties": {},
+   "evidence": [
+    "l-ct1-arm1000"
+   ]
+  },
+  {
+   "proposalId": "p-st-result_for-sr-cz-ae-any-od-cz-ae",
+   "kind": "edge.structural",
+   "relationshipType": "RESULT_FOR",
+   "fromRef": "sr-cz-ae-any",
+   "toRef": "od-cz-ae",
+   "properties": {},
+   "evidence": [
+    "l-cz-safety-objective"
+   ]
+  },
+  {
+   "proposalId": "p-st-result_for_arm-sr-cz-ae-any-arm-cz-100",
+   "kind": "edge.structural",
+   "relationshipType": "RESULT_FOR_ARM",
+   "fromRef": "sr-cz-ae-any",
+   "toRef": "arm-cz-100",
+   "properties": {},
+   "evidence": [
+    "l-ct1-arm100"
+   ]
+  },
+  {
+   "proposalId": "p-st-result_for_arm-sr-cz-ae-any-arm-cz-300",
+   "kind": "edge.structural",
+   "relationshipType": "RESULT_FOR_ARM",
+   "fromRef": "sr-cz-ae-any",
+   "toRef": "arm-cz-300",
+   "properties": {},
+   "evidence": [
+    "l-ct1-arm300"
+   ]
+  },
+  {
+   "proposalId": "p-st-result_for_arm-sr-cz-ae-any-arm-cz-1000",
+   "kind": "edge.structural",
+   "relationshipType": "RESULT_FOR_ARM",
+   "fromRef": "sr-cz-ae-any",
+   "toRef": "arm-cz-1000",
+   "properties": {},
+   "evidence": [
+    "l-ct1-arm1000"
+   ]
+  },
+  {
+   "proposalId": "p-st-result_for_arm-sr-cz-ae-any-arm-cz-placebo",
+   "kind": "edge.structural",
+   "relationshipType": "RESULT_FOR_ARM",
+   "fromRef": "sr-cz-ae-any",
+   "toRef": "arm-cz-placebo",
+   "properties": {},
+   "evidence": [
+    "l-ct1-armplacebo"
+   ]
+  },
+  {
+   "proposalId": "p-st-result_for-sr-cz-ae-serious-od-cz-ae",
+   "kind": "edge.structural",
+   "relationshipType": "RESULT_FOR",
+   "fromRef": "sr-cz-ae-serious",
+   "toRef": "od-cz-ae",
+   "properties": {},
+   "evidence": [
+    "l-cz-safety-objective"
+   ]
+  },
+  {
+   "proposalId": "p-st-result_for_arm-sr-cz-ae-serious-arm-cz-100",
+   "kind": "edge.structural",
+   "relationshipType": "RESULT_FOR_ARM",
+   "fromRef": "sr-cz-ae-serious",
+   "toRef": "arm-cz-100",
+   "properties": {},
+   "evidence": [
+    "l-ct1-arm100"
+   ]
+  },
+  {
+   "proposalId": "p-st-result_for_arm-sr-cz-ae-serious-arm-cz-300",
+   "kind": "edge.structural",
+   "relationshipType": "RESULT_FOR_ARM",
+   "fromRef": "sr-cz-ae-serious",
+   "toRef": "arm-cz-300",
+   "properties": {},
+   "evidence": [
+    "l-ct1-arm300"
+   ]
+  },
+  {
+   "proposalId": "p-st-result_for_arm-sr-cz-ae-serious-arm-cz-1000",
+   "kind": "edge.structural",
+   "relationshipType": "RESULT_FOR_ARM",
+   "fromRef": "sr-cz-ae-serious",
+   "toRef": "arm-cz-1000",
+   "properties": {},
+   "evidence": [
+    "l-ct1-arm1000"
+   ]
+  },
+  {
+   "proposalId": "p-st-result_for_arm-sr-cz-ae-serious-arm-cz-placebo",
+   "kind": "edge.structural",
+   "relationshipType": "RESULT_FOR_ARM",
+   "fromRef": "sr-cz-ae-serious",
+   "toRef": "arm-cz-placebo",
+   "properties": {},
+   "evidence": [
+    "l-ct1-armplacebo"
+   ]
+  },
+  {
+   "proposalId": "p-st-exposed_to-ctx-el-muscle-mat-niagen",
+   "kind": "edge.structural",
+   "relationshipType": "EXPOSED_TO",
+   "fromRef": "ctx-el-muscle",
+   "toRef": "mat-niagen",
+   "properties": {
+    "exposureRole": "TESTED",
+    "orderIndex": 0
+   },
+   "evidence": []
+  },
+  {
+   "proposalId": "p-st-in_study_arm-ctx-el-muscle-arm-el-nr",
+   "kind": "edge.structural",
+   "relationshipType": "IN_STUDY_ARM",
+   "fromRef": "ctx-el-muscle",
+   "toRef": "arm-el-nr",
+   "properties": {},
+   "evidence": [
+    "l-ct2-armnr"
+   ]
+  },
+  {
+   "proposalId": "p-st-exposed_to-ctx-cz-blood-mat-niagen",
+   "kind": "edge.structural",
+   "relationshipType": "EXPOSED_TO",
+   "fromRef": "ctx-cz-blood",
+   "toRef": "mat-niagen",
+   "properties": {
+    "exposureRole": "TESTED",
+    "orderIndex": 0
+   },
+   "evidence": []
+  },
+  {
+   "proposalId": "p-st-in_study_arm-ctx-cz-blood-arm-cz-1000",
+   "kind": "edge.structural",
+   "relationshipType": "IN_STUDY_ARM",
+   "fromRef": "ctx-cz-blood",
+   "toRef": "arm-cz-1000",
+   "properties": {},
+   "evidence": [
+    "l-ct1-arm1000"
+   ]
+  }
+ ],
+ "notes": "FIXTURE intent for the S cross-domain compound-profile fixture (nicotinamide riboside: D1 identity, D2 mechanism, D3 trials, D6 label). Run ids are fixture ids, not live Mission Control ids. Not executed: the planner reads the pinned workspace, not the candidate IR (03-SYNTHESIS step 8). schemaDigest = the candidate IR digest. Not expressible in intent v1 and kept in assertions.yaml: predicate-only object assertions (G1): a-cz-funded-by, m-el-deacetylation, m-el-naad, m-el-nad, m-cz-nad-blood, c-moiety-trial, c-label-max-salt, c-label-max-moiety; OBSERVED_IN_CONTEXT Assertion->context (G2); Assessments and Adjudications (G3); DERIVED_FROM inputs of CALCULATED assertions; asserters of identifier.attach; RENDITION_OF Source->Publication (sources are not subjects); D9 chunks, MENTIONS, COVERS_LOCATOR and the derived AFFECTS_MECHANISM; Assertion qualifiers and HAS_EVIDENCE roles other than SUPPORTS"
+}

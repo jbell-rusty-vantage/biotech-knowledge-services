@@ -1,0 +1,552 @@
+# Fixture nr-nad-compound-to-test - locators (fixtures stage, A3, 2026-10-08).
+# selectorKind values are the kernel SelectorKind enum (verification.v1 kinds + WHOLE_SNAPSHOT); W3C selector JSON in `selector`.
+# Every exact quote was re-verified as an exact substring of a fresh capture made today (scratch ft/D4/refetch);
+# offsets are 0-based [start, end) in the basis named by the snapshot (offsetBasis / derivedText.rule).
+snapshots:
+- ref: snap-martens
+  uid: hu:snapshot:dd620181966f862d
+  url: https://www.ebi.ac.uk/europepmc/webservices/rest/PMC5876407/fullTextXML
+  title: Martens et al. 2018, Chronic nicotinamide riboside supplementation is well-tolerated and elevates NAD+ in healthy middle-aged and older adults, Nat Commun
+    9:1286 (Europe PMC JATS XML; PMID 29599478; DOI 10.1038/s41467-018-03421-7)
+  sourceKind: API
+  genre: PEER_REVIEWED_PUBLICATION
+  retrievedAt: '2026-10-08T17:39:00-04:00'
+  contentHash: sha256:dd620181966f862df7030f4bb7b09811befd90e8e67c2b94fc90f9c212664794
+  contentHashBasis: RAW_BYTES
+  bytes: 142126
+  mimeType: application/xml
+  captureMethod: curl Europe PMC REST fullTextXML (no key)
+  captureCompleteness: COMPLETE
+  derivedText:
+    contentHash: sha256:e954d92dafeffbeeb10f8468b6ff22925020af4f36afb8773798ae57646ad702
+    rule: 'python: re.sub(r''\s+'', '' '', html.unescape(re.sub(r''<[^>]+>'', '' '', xml_utf8))) (tags -> space, entities unescaped, whitespace runs -> one space,
+      no strip)'
+    chars: 73084
+    decodedAs: utf-8
+  researchStageDigest: identical (re-fetch returned the same bytes)
+- ref: snap-ctgov
+  uid: hu:snapshot:b723914eeecf73f7
+  url: https://clinicaltrials.gov/api/v2/studies/NCT02921659?fields=protocolSection.identificationModule,protocolSection.outcomesModule
+  title: ClinicalTrials.gov API v2 - NCT02921659 (identification and outcomes modules)
+  sourceKind: REGISTRY
+  genre: TRIAL_REGISTRY_RECORD
+  retrievedAt: '2026-10-08T17:39:00-04:00'
+  contentHash: sha256:b723914eeecf73f7f217f05bcebed23b6996f16dfabaad66943bc132a41a4a5c
+  contentHashBasis: RAW_BYTES
+  bytes: 1422
+  mimeType: application/json
+  captureMethod: curl ClinicalTrials.gov API v2 (fields filter)
+  captureCompleteness: COMPLETE
+  researchStageDigest: identical (re-fetch returned the same bytes)
+- ref: snap-jinfiniti
+  uid: hu:snapshot:405e28c0e82b77d6
+  url: https://www.jinfiniti.com/product/intracellular-nad-test
+  title: 'Jinfiniti - Intracellular NAD® Test: At-Home NAD+ Test Kit (product page)'
+  sourceKind: WEB_PAGE
+  genre: PRODUCT_PAGE
+  retrievedAt: '2026-10-08T17:40:00-04:00'
+  contentHash: sha256:405e28c0e82b77d68ea124b1ec5cb9d3984a80ebb026248fbb0c471bf88832f4
+  contentHashBasis: RAW_BYTES
+  bytes: 24544
+  mimeType: text/markdown
+  captureMethod: Firecrawl CLI 1.23.1 scrape --only-main-content --max-age 0 (found with Tavily CLI search in the research stage)
+  captureCompleteness: COMPLETE
+  researchStageDigest: sha256:edb294193347b80e72a64f5cf58eb2a9b419829e0982eeff43687b66255659b5
+  changedSinceResearch: true
+  note: research-stage capture (shared with the D2 packet) had sha256 edb29419...; the page changed slightly; all quotes re-verified here
+locators:
+- ref: m1-pbmc-nad
+  uid: hu:locator:ft-d4-nrnad-m1-pbmc-nad
+  snapshot: snap-martens
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 15148
+    end: 15317
+    offsetBasis: Unicode code points of the derived text (see derivedText.rule) of the XML snapshot
+  textQuote:
+    type: TextQuoteSelector
+    exact: Oral NR supplementation effectively elevated levels of NAD + in PBMCs by ~60% compared with placebo (mean change = 6.2 pmol per mg protein; one-sided 95%
+      CI (0.074, ∞)).
+    prefix: ' as previously established 34 . '
+    suffix: ' The mean level of NADP + also i'
+  exact: Oral NR supplementation effectively elevated levels of NAD + in PBMCs by ~60% compared with placebo (mean change = 6.2 pmol per mg protein; one-sided 95%
+    CI (0.074, ∞)).
+  startOffset: 15148
+  endOffset: 15317
+  occurrences: 1
+  quoteHash: sha256:893489448fb8e9b3df3016aa0bce92c6046694eca8e862848a19321aeb42fe11
+  quoteNormalization: none (exact code points)
+  section: Results
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: m2-compartment
+  uid: hu:locator:ft-d4-nrnad-m2-compartment
+  snapshot: snap-martens
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 14950
+    end: 15056
+    offsetBasis: Unicode code points of the derived text (see derivedText.rule) of the XML snapshot
+  textQuote:
+    type: TextQuoteSelector
+    exact: measurable in circulating peripheral blood mononuclear cells (PBMCs), but undetectable in plasma and urine
+    prefix: ' have recently been shown to be '
+    suffix: ' 26 , we assessed the NAD + meta'
+  exact: measurable in circulating peripheral blood mononuclear cells (PBMCs), but undetectable in plasma and urine
+  startOffset: 14950
+  endOffset: 15056
+  occurrences: 1
+  quoteHash: sha256:183853f15f07f5d226341662da16b382f0267aeb37731bf47aacafb35b633f2f
+  quoteNormalization: none (exact code points)
+  section: Results
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: m3-naad-marker
+  uid: hu:locator:ft-d4-nrnad-m3-naad-marker
+  snapshot: snap-martens
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 15710
+    end: 15831
+    offsetBasis: Unicode code points of the derived text (see derivedText.rule) of the XML snapshot
+  textQuote:
+    type: TextQuoteSelector
+    exact: NAAD is a highly sensitive and reliable biomarker of increased NAD + metabolism and a product of NR utilization in humans
+    prefix: 'nfirming a previous report that '
+    suffix: ' 26 . NR also elevated the mean '
+  exact: NAAD is a highly sensitive and reliable biomarker of increased NAD + metabolism and a product of NR utilization in humans
+  startOffset: 15710
+  endOffset: 15831
+  occurrences: 1
+  quoteHash: sha256:5839e3b526fa207d467e19868aacfba44ec5f188b02cf2487841fd79fe7568be
+  quoteNormalization: none (exact code points)
+  section: Results
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: m4-stimulates
+  uid: hu:locator:ft-d4-nrnad-m4-stimulates
+  snapshot: snap-martens
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 2471
+    end: 2658
+    offsetBasis: Unicode code points of the derived text (see derivedText.rule) of the XML snapshot
+  textQuote:
+    type: TextQuoteSelector
+    exact: chronic supplementation with the NAD + precursor vitamin, nicotinamide riboside (NR), is well tolerated and effectively stimulates NAD + metabolism in
+      healthy middle-aged and older adults
+    prefix: ', crossover clinical trial that '
+    suffix: . Our results also provide initi
+  exact: chronic supplementation with the NAD + precursor vitamin, nicotinamide riboside (NR), is well tolerated and effectively stimulates NAD + metabolism in healthy
+    middle-aged and older adults
+  startOffset: 2471
+  endOffset: 2658
+  occurrences: 1
+  quoteHash: sha256:d9b36ae3d8d13fc9134484cab2eb0fe8ae0c676e015e8bcc6123bcbe93d861ac
+  quoteNormalization: none (exact code points)
+  section: Abstract
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: m5-pbmc-method
+  uid: hu:locator:ft-d4-nrnad-m5-pbmc-method
+  snapshot: snap-martens
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 15062
+    end: 15145
+    offsetBasis: Unicode code points of the derived text (see derivedText.rule) of the XML snapshot
+  textQuote:
+    type: TextQuoteSelector
+    exact: we assessed the NAD + metabolome in circulating PBMCs, as previously established 34
+    prefix: 'ctable in plasma and urine 26 , '
+    suffix: ' . Oral NR supplementation effec'
+  exact: we assessed the NAD + metabolome in circulating PBMCs, as previously established 34
+  startOffset: 15062
+  endOffset: 15145
+  occurrences: 1
+  quoteHash: sha256:687096061effbcbe0d8a541b2e3737b100764f40f00c8ca04c4914c27009e3d5
+  quoteNormalization: none (exact code points)
+  section: Results
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: m6-lcms-ref
+  uid: hu:locator:ft-d4-nrnad-m6-lcms-ref
+  snapshot: snap-martens
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 62545
+    end: 62627
+    offsetBasis: Unicode code points of the derived text (see derivedText.rule) of the XML snapshot
+  textQuote:
+    type: TextQuoteSelector
+    exact: Targeted, LCMS-based metabolomics for quantitative measurement of NAD+ metabolites
+    prefix: '76803 34. Trammell SA Brenner C '
+    suffix: ' Comput. Struct. Biotechnol. J. '
+  exact: Targeted, LCMS-based metabolomics for quantitative measurement of NAD+ metabolites
+  startOffset: 62545
+  endOffset: 62627
+  occurrences: 1
+  quoteHash: sha256:2c104974e2336badecedf880cf1be64b64c0e5fcadc5b48ae3a4b8124810defd
+  quoteNormalization: none (exact code points)
+  section: References (34)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: m7-nct
+  uid: hu:locator:ft-d4-nrnad-m7-nct
+  snapshot: snap-martens
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 9476
+    end: 9541
+    offsetBasis: Unicode code points of the derived text (see derivedText.rule) of the XML snapshot
+  textQuote:
+    type: TextQuoteSelector
+    exact: registered on clinicaltrials.gov under the identifier NCT02921659
+    prefix: 'ented for this study, which was '
+    suffix: ' and conducted between March 201'
+  exact: registered on clinicaltrials.gov under the identifier NCT02921659
+  startOffset: 9476
+  endOffset: 9541
+  occurrences: 1
+  quoteHash: sha256:39cfc5c1a1683d2a92ea5cf89a2ac6986df7bba1bc5181b1d0a45a5a2d4fdf5c
+  quoteNormalization: none (exact code points)
+  section: Methods
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: m8-naad
+  uid: hu:locator:ft-d4-nrnad-m8-naad
+  snapshot: snap-martens
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 15503
+    end: 15616
+    offsetBasis: Unicode code points of the derived text (see derivedText.rule) of the XML snapshot
+  textQuote:
+    type: TextQuoteSelector
+    exact: NR also elevated levels of nicotinic acid adenine dinucleotide (NAAD) nearly fivefold above the placebo condition
+    prefix: '(Fig. 2 and Table 3 ). Of note, '
+    suffix: ' (mean change = 1.1 pmol per mg '
+  exact: NR also elevated levels of nicotinic acid adenine dinucleotide (NAAD) nearly fivefold above the placebo condition
+  startOffset: 15503
+  endOffset: 15616
+  occurrences: 1
+  quoteHash: sha256:ab26a1e6437860804e4a908b027aec3e99a1c15e2693302e380cc8c809913811
+  quoteNormalization: none (exact code points)
+  section: Results
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: ct1-primary
+  uid: hu:locator:ft-d4-nrnad-ct1-primary
+  snapshot: snap-ctgov
+  selectorKind: JSON_POINTER
+  selector:
+    type: JsonPointerSelector
+    pointer: /protocolSection/outcomesModule/primaryOutcomes/0/measure
+    refinedBy:
+      type: TextPositionSelector
+      start: 0
+      end: 46
+      offsetBasis: Unicode code points of the decoded JSON string value at pointer
+  exact: Incidence of treatment emergent adverse events
+  prefix: ''
+  suffix: ''
+  startOffset: 0
+  endOffset: 46
+  jsonPointer: /protocolSection/outcomesModule/primaryOutcomes/0/measure
+  quoteHash: sha256:f5a8a24e4e693eb3be6811b84282301303577fce10d5d2c56e40df24a58c2d70
+  quoteNormalization: none (exact code points)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: ct2-secondary
+  uid: hu:locator:ft-d4-nrnad-ct2-secondary
+  snapshot: snap-ctgov
+  selectorKind: JSON_POINTER
+  selector:
+    type: JsonPointerSelector
+    pointer: /protocolSection/outcomesModule/secondaryOutcomes/4/measure
+    refinedBy:
+      type: TextPositionSelector
+      start: 0
+      end: 53
+      offsetBasis: Unicode code points of the decoded JSON string value at pointer
+  exact: Systemic markers of oxidative stress and inflammation
+  prefix: ''
+  suffix: ''
+  startOffset: 0
+  endOffset: 53
+  jsonPointer: /protocolSection/outcomesModule/secondaryOutcomes/4/measure
+  quoteHash: sha256:cc4bae33591f142881cb6ab0748381588a552be36652e308b9ad79257eae0bf3
+  quoteNormalization: none (exact code points)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: j1-rbc
+  uid: hu:locator:ft-d4-nrnad-j1-rbc
+  snapshot: snap-jinfiniti
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 21098
+    end: 21175
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: This test measures NAD+ intracellularly, meaning inside your red blood cells.
+    prefix: ' the liquid part of your blood. '
+    suffix: ' That’s where NAD+ is actually u'
+  exact: This test measures NAD+ intracellularly, meaning inside your red blood cells.
+  startOffset: 21098
+  endOffset: 21175
+  occurrences: 1
+  quoteHash: sha256:a3d5c16e183cba3b69e045c8f72aab0b9cb49aa769ea1754069fec0857b15b74
+  quoteNormalization: none (exact code points)
+  section: FAQ
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: j2-not-serum
+  uid: hu:locator:ft-d4-nrnad-j2-not-serum
+  snapshot: snap-jinfiniti
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 21018
+    end: 21097
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: Most NAD+ tests measure NAD in serum or plasma — the liquid part of your blood.
+    prefix: 'oduct/intracellular-nad-test/)
+
+
+      '
+    suffix: ' This test measures NAD+ intrace'
+  exact: Most NAD+ tests measure NAD in serum or plasma — the liquid part of your blood.
+  startOffset: 21018
+  endOffset: 21097
+  occurrences: 1
+  quoteHash: sha256:7255fb942acec24fc0463175494805010ae14f14158d7a4e62e26bcbc9ed3d2d
+  quoteNormalization: none (exact code points)
+  section: FAQ
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: j3-unit
+  uid: hu:locator:ft-d4-nrnad-j3-unit
+  snapshot: snap-jinfiniti
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 7479
+    end: 7526
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: Personalized results with your NAD+ level in μM
+    prefix: 'tracellular NAD+ measurement
+
+
+      - '
+    suffix: '
+
+
+      - Dosing recommendations based'
+  exact: Personalized results with your NAD+ level in μM
+  startOffset: 7479
+  endOffset: 7526
+  occurrences: 1
+  quoteHash: sha256:2a0fb7433e4ce30422c606f7c0b6b373e9df93544011a0333aa48320f8d80d4c
+  quoteNormalization: none (exact code points)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: j4-clia
+  uid: hu:locator:ft-d4-nrnad-j4-clia
+  snapshot: snap-jinfiniti
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 7430
+    end: 7475
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: CLIA-certified intracellular NAD+ measurement
+    prefix: ' finger-prick collection kit
+
+
+      - '
+    suffix: '
+
+
+      - Personalized results with yo'
+  exact: CLIA-certified intracellular NAD+ measurement
+  startOffset: 7430
+  endOffset: 7475
+  occurrences: 1
+  quoteHash: sha256:63148f79aaa0bcd94f551b5ac5780720f9154477b9e22085c1629df3328281ee
+  quoteNormalization: none (exact code points)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: j5-fingerprick
+  uid: hu:locator:ft-d4-nrnad-j5-fingerprick
+  snapshot: snap-jinfiniti
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 7391
+    end: 7426
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: At-home finger-prick collection kit
+    prefix: 'ct/intracellular-nad-test/#)
+
+
+      - '
+    suffix: '
+
+
+      - CLIA-certified intracellular'
+  exact: At-home finger-prick collection kit
+  startOffset: 7391
+  endOffset: 7426
+  occurrences: 1
+  quoteHash: sha256:8c2adab6fb6602d2b76f4925127552ecb887c798ece129abf8635475be840bd1
+  quoteNormalization: none (exact code points)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: j6-optimal
+  uid: hu:locator:ft-d4-nrnad-j6-optimal
+  snapshot: snap-jinfiniti
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 22369
+    end: 22394
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: optimal range (40–100 μM)
+    prefix: 'our level falls relative to the '
+    suffix: . If you’re already supplementin
+  exact: optimal range (40–100 μM)
+  startOffset: 22369
+  endOffset: 22394
+  occurrences: 1
+  quoteHash: sha256:4fd5cc87abd4ec8bb98b29e66fb2e35c110ece08f9280332c63dbe91db5925bf
+  quoteNormalization: none (exact code points)
+  section: 'FAQ: dosing guidance'
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: j7-price
+  uid: hu:locator:ft-d4-nrnad-j7-price
+  snapshot: snap-jinfiniti
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 7262
+    end: 7297
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: Intracellular NAD® TestFrom $198.00
+    prefix: 'nfiniti.com/?add-to-cart=3043)
+
+
+      '
+    suffix: 'Add To Cart
+
+
+      [What’s Included](h'
+  exact: Intracellular NAD® TestFrom $198.00
+  startOffset: 7262
+  endOffset: 7297
+  occurrences: 1
+  quoteHash: sha256:c686ba10d16596f9601d041e9e98a135ab7e15979ca085b32d52a0692c90f762
+  quoteNormalization: none (exact code points)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: j8-membership
+  uid: hu:locator:ft-d4-nrnad-j8-membership
+  snapshot: snap-jinfiniti
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 23005
+    end: 23102
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: The NAD Membership includes Intracellular NAD® Test and Vitality↑® NAD+ Booster shipped quarterly
+    prefix: '/intracellular-nad-test/)
+
+
+      Yes. '
+    suffix: ' — designed to establish your ba'
+  exact: The NAD Membership includes Intracellular NAD® Test and Vitality↑® NAD+ Booster shipped quarterly
+  startOffset: 23005
+  endOffset: 23102
+  occurrences: 1
+  quoteHash: sha256:9edca08f89da989a4487055e002bd04f451df6df5efd7a6e6e59c02a0bd6011b
+  quoteNormalization: none (exact code points)
+  section: FAQ
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: j9-set-ranges
+  uid: hu:locator:ft-d4-nrnad-j9-set-ranges
+  snapshot: snap-jinfiniti
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 4305
+    end: 4443
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: Jinfiniti pioneered NAD testing, established the reference ranges and guidelines and generated most of the NAD data relevant to consumers.
+    prefix: 'an all other vendors combined.
+
+
+      '
+    suffix: ' The test was developed by Profe'
+  exact: Jinfiniti pioneered NAD testing, established the reference ranges and guidelines and generated most of the NAD data relevant to consumers.
+  startOffset: 4305
+  endOffset: 4443
+  occurrences: 1
+  quoteHash: sha256:ffbf9d45145cda273a03849cc282f4262fbbb269e740c9bb17622be1f97ec19e
+  quoteNormalization: none (exact code points)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: j10-own-booster
+  uid: hu:locator:ft-d4-nrnad-j10-own-booster
+  snapshot: snap-jinfiniti
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 11972
+    end: 12167
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: Jinfiniti’s clinical data — conducted on our own Vitality↑® NAD+ Booster — found that 85% of participants reached optimal NAD+ levels (40–100 μM) within
+      4 weeks when dosing was guided by testing.
+    prefix: 'tracellular-nad-test/#buy-now)
+
+
+      '
+    suffix: ' That result is not achievable w'
+  exact: Jinfiniti’s clinical data — conducted on our own Vitality↑® NAD+ Booster — found that 85% of participants reached optimal NAD+ levels (40–100 μM) within
+    4 weeks when dosing was guided by testing.
+  startOffset: 11972
+  endOffset: 12167
+  occurrences: 1
+  quoteHash: sha256:e5eaae55a0dcc98bee7d75844c0cbc669843f74715f83d390ec1d7529abf8850
+  quoteNormalization: none (exact code points)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)
+- ref: j11-cv
+  uid: hu:locator:ft-d4-nrnad-j11-cv
+  snapshot: snap-jinfiniti
+  selectorKind: CHARACTER_POSITION
+  selector:
+    type: TextPositionSelector
+    start: 4081
+    end: 4136
+    offsetBasis: Unicode code points of the UTF-8 Firecrawl markdown capture
+  textQuote:
+    type: TextQuoteSelector
+    exact: A simple finger prick test with high accuracy (3.1% CV)
+    prefix: 'ls — where it actually matters. '
+    suffix: ' and reproducibility, trusted by'
+  exact: A simple finger prick test with high accuracy (3.1% CV)
+  startOffset: 4081
+  endOffset: 4136
+  occurrences: 1
+  quoteHash: sha256:82ce1a5d0f1fcaef600889604df7e1a5676753967f93e30fc5aabc730ce395ec
+  quoteNormalization: none (exact code points)
+  verified: 2026-10-08 exact substring of the fresh capture (refetch)

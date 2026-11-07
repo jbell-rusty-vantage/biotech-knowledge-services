@@ -1,0 +1,364 @@
+version: 1
+module: D3
+# Model stage, A4, 2026-10-08. 14 relationship types; 31 from→to pairs (= packet-check field-pairs: the inverse navigation
+# fields Study.publications and OutcomeDefinition.results were removed in the adversarial-review stage, 2026-10-08).
+# Adversarial-review stage: every `questions` list names only questions whose 03 pattern traverses the edge;
+# populatedBy names only sources that can produce it today (ctgov-history is blocked, 08 readiness 0).
+# populatedBy ids are the source/tool ids of 08-sources-and-tools.md (seeded in this stage; the fixtures stage completes
+# the table). `curation-agent` = BellLabs extraction/curation agent run as a Mission Control Activity with a methodVersion;
+# `entity-link` = the resolution step that licenses an asserted edge to another module's entity (kernel RESOLUTION
+# Assessment, D11 bridge table).
+# temporal (check stage 2026-10-08, kernel M10/M11): only HAS_REGISTRATION_VERSION (StateEpisodeProperties) and
+# HAS_STUDY_ROLE (StudyRoleEdgeProperties = AssertedEdgeProperties + roleKind) carry a valid-time episode; the other
+# asserted edges are recorded-only and use the kernel's AssertedRecordedProperties (REVISES: RevisionEdgeProperties =
+# AssertedRecordedProperties + revisionKind). Any valid time a source states stays on the authorizing Assertion; source
+# wording (role label, Retraction Watch reasons) is Assertion.qualifiers, never an edge field (09-reasoning.md
+# "Bitemporal decision per edge").
+relationships:
+  - type: HAS_REGISTRATION_VERSION
+    class: asserted
+    from: Study
+    to: RegistrationVersion
+    edgeProperties: StateEpisodeProperties
+    cardinality: many (EXCLUSIVE per registry in valid × recorded time; one open episode per registry)
+    temporal: episode
+    questions: [CQ-ST-04, CQ-ST-08, Q-D3-02, Q-D3-16, Q-D3-18]
+    pattern: 03#CQ-ST-08
+    populatedBy: [ctgov-v2, isrctn, isrctn-web]
+    fixture: 07-fixtures/aspree-registry-history-harm
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      The registry history is the domain's main as-of question ("what did the registry say on date D", "did the
+      primary outcome change"). A state attachment with a bitemporal episode lets OBSERVED versions (our captures) and
+      RECONSTRUCTED versions (dated history prose inside a later ISRCTN snapshot) coexist with their own valid time,
+      while recorded time stays our capture. Replaces pinned TrialRegistration -HAS_REGISTRATION_VERSION-> and
+      Study -REGISTERED_AS-> (registration ids are kernel Identifiers on Study). The attach Assertion cites one locator
+      per RegistrationVersion field (reportsField = overallStatus, enrollmentCount, masking, studyTypeVerbatim, …), the
+      same rule as STATED_IN, so no per-field predicates exist. ctgov-history (CTG version history) is future / blocked
+      (403, 08 readiness 0); CTG versions fill forward from our own ctgov-v2 captures.
+  - type: HAS_ARM
+    class: structural
+    from: Study
+    to: StudyArm
+    edgeProperties: StructuralEdgeProperties
+    cardinality: many (one per arm per stating source)
+    temporal: recorded-only
+    questions: [CQ-ST-01, Q-D3-01, Q-D3-05, Q-D3-06]
+    pattern: 03#CQ-ST-01
+    populatedBy: [ctgov-v2, isrctn, pmc-jats, curation-agent]
+    fixture: 07-fixtures/dq-bone-trial-unstructured
+    nestedOperations: [CREATE, CONNECT]
+    aggregate: false
+    rationale: >-
+      Every "what was done" question enters through the study's arms; results and adverse events are per arm. Kept
+      structural: the arm exists only as part of the study; who states it is STATED_IN.
+  - type: HAS_COMPONENT
+    class: structural
+    from: StudyArm
+    to: InterventionComponent
+    edgeProperties: StructuralEdgeProperties
+    cardinality: one_or_more (none for NO_INTERVENTION arms)
+    temporal: recorded-only
+    questions: [CQ-ST-01, Q-D3-04, Q-D3-05, Q-D3-06]
+    pattern: 03#CQ-ST-01
+    populatedBy: [ctgov-v2, isrctn, pmc-jats, curation-agent]
+    fixture: 07-fixtures/dq-bone-trial-unstructured
+    nestedOperations: [CREATE, CONNECT]
+    aggregate: false
+    rationale: >-
+      Multi-component arms (dasatinib + quercetin) need one dose record per component; the kernel edge-property
+      types carry no dose fields, so the component is a node and this edge holds it to its arm (orderIndex keeps the
+      stated order). Replaces pinned ASSIGNS_INTERVENTION + HAS_INTERVENTION_COMPONENT (StudyIntervention absorbed).
+  - type: ADMINISTERS
+    class: asserted
+    from: InterventionComponent
+    to: [D1.IngredientMaterial, D6.ProductVariant, D4.Device, D5.Intervention, D12.FoodItem, D12.DietaryPattern]
+    edgeProperties: AssertedRecordedProperties
+    cardinality: zero_or_one (exactly one once resolved)
+    temporal: recorded-only
+    questions: [CQ-ST-01, CQ-ST-02, Q-D3-04, Q-D3-05, Q-D3-06]
+    pattern: 03#CQ-ST-02
+    populatedBy: [ctgov-v2, pmc-jats, isrctn, entity-link]
+    fixture: 07-fixtures/dq-bone-trial-unstructured
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      The study-to-product bridge (CQ-ST-02, value 1) and the means side of "what helps or hurts outcome Y"
+      (Q-D3-04/05). One type for every kind of administered thing, union of 6 (the cap). Members follow the sibling
+      SDLs and their requests: D12 asked for DietaryPattern (Q-D12-12/13/25) and FoodItem; D1 also lists
+      ChemicalSubstance, but D1's own rule resolves substance-only statements to an UNRESOLVED_MATERIAL
+      IngredientMaterial, so it is left out; D8 Lot is left out because investigational lots are rarely named —
+      InterventionComponent.lotCodeVerbatim joins D8 Lot.lotCode by property for CQ-ST-02 SAME_LOT. Replaces pinned
+      USES_INTERVENTION_MATERIAL, USES_INTERVENTION_DEVICE and FOLLOWS_INTERVENTION_DEFINITION.
+  - type: HAS_POPULATION
+    class: structural
+    from: Study
+    to: StudyPopulation
+    edgeProperties: StructuralEdgeProperties
+    cardinality: many (eligible / enrolled / randomized / analyzed per stating source)
+    temporal: recorded-only
+    questions: [Q-D3-17, Q-D3-06, Q-D3-04, Q-D3-07]
+    pattern: 03#Q-D3-17
+    populatedBy: [ctgov-v2, isrctn, pmc-jats, curation-agent]
+    fixture: 07-fixtures/aspree-registry-history-harm
+    nestedOperations: [CREATE, CONNECT]
+    aggregate: false
+    rationale: >-
+      "Who was studied" and the population dimension of applicability need population records to filter on
+      (species, sex, age, healthy volunteers). One type with populationKind replaces three pinned edges
+      (HAS_ELIGIBLE_POPULATION, HAS_ENROLLED_COHORT, HAS_ANALYZED_COHORT). Kept after a measured fold-in test
+      (adversarial-review stage: folding the population fields onto Study saves 16.6 KB / 12 inputs but loses the
+      per-kind, per-source records; 06-node-register.yaml StudyPopulation whyNode).
+  - type: HAS_OUTCOME
+    class: structural
+    from: Study
+    to: OutcomeDefinition
+    edgeProperties: StructuralEdgeProperties
+    cardinality: many
+    temporal: recorded-only
+    questions: [CQ-ST-05, CQ-ST-03, Q-D3-04, Q-D3-16]
+    pattern: 03#CQ-ST-05
+    populatedBy: [ctgov-v2, isrctn, pmc-jats, curation-agent]
+    fixture: 07-fixtures/dq-bone-trial-unstructured
+    nestedOperations: [CREATE, CONNECT]
+    aggregate: false
+    rationale: >-
+      Outcome-level questions (priority, switching, null primary) start at the study's outcome set. Pinned name was
+      DEFINES_OUTCOME; renamed to the HAS_ structural family of this module.
+  - type: STATED_IN
+    class: asserted
+    from: [StudyArm, StudyPopulation, OutcomeDefinition, StudyResult]
+    to: [RegistrationVersion, Publication]
+    edgeProperties: AssertedRecordedProperties
+    cardinality: one_or_more per element (exactly_one for StudyResult)
+    temporal: recorded-only
+    questions: [CQ-ST-04, CQ-ST-05, CQ-ST-06, Q-D3-01, Q-D3-13, Q-D3-15, Q-D3-16, Q-D3-17]
+    pattern: 03#Q-D3-15
+    populatedBy: [ctgov-v2, isrctn, isrctn-web, pmc-jats, pubmed, medrxiv-api]
+    fixture: 07-fixtures/dq-bone-trial-unstructured
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      The per-source rule in one edge: every arm, population, outcome declaration and result says which registry
+      version or publication states it, and its authorizing Assertion carries the asserter and the locators (registry
+      JSON pointer, JATS section + quote). This is what makes "registry vs paper" disagreement (Q-D3-01, Q-D3-15),
+      outcome switching across versions (CQ-ST-04, Q-D3-16) and per-number traceability (Q-D3-13) single traversals.
+      8 field-pairs (4 from-types × union of 2). Replaces pinned DEFINED_IN, the DECLARES_OUTCOME_PRIORITY predicate and
+      the SUPPORTED_BY fields on StudyResult / AdverseEventResult.
+  - type: RESULT_FOR
+    class: structural
+    from: StudyResult
+    to: OutcomeDefinition
+    edgeProperties: StructuralEdgeProperties
+    cardinality: exactly_one
+    temporal: recorded-only
+    questions: [CQ-ST-05, CQ-ST-06, Q-D3-04, Q-D3-05]
+    pattern: 03#CQ-ST-05
+    populatedBy: [ctgov-v2, pmc-jats, pubmed, curation-agent]
+    fixture: 07-fixtures/dq-bone-trial-unstructured
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      A number without its outcome is meaningless; filters on priority / measureKind join results through it.
+      nestedOperations [CONNECT] (not [CREATE, CONNECT]) by design: the edge binds an OutcomeDefinition that HAS_OUTCOME
+      already created; the inverse field OutcomeDefinition.results was removed (adversarial-review stage). The name
+      collides with D8's QualityResult RESULT_FOR (11-open-questions #25: D8 renames).
+  - type: RESULT_FOR_ARM
+    class: structural
+    from: StudyResult
+    to: StudyArm
+    edgeProperties: StructuralEdgeProperties
+    cardinality: one_or_more (reference arm named by StudyResult.comparatorArmKey)
+    temporal: recorded-only
+    questions: [CQ-ST-06, Q-D3-01, Q-D3-04]
+    pattern: 03#CQ-ST-06
+    populatedBy: [ctgov-v2, pmc-jats, curation-agent]
+    fixture: 07-fixtures/dq-bone-trial-unstructured
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Adverse events and per-arm results are read per arm (the fisetin-arm serious adverse event). nestedOperations
+      [CONNECT] by design: binds arms HAS_ARM already created. The pinned
+      ResultArmProperties.armRole is replaced by armType on the arm plus comparatorArmKey on the result (no question
+      filters the edge by role, so a module edge-property type would not pass the kernel M11 rule).
+  - type: REPORTS_ON
+    class: asserted
+    from: Publication
+    to: Study
+    edgeProperties: AssertedRecordedProperties
+    cardinality: many
+    temporal: recorded-only
+    questions: [CQ-ST-07, Q-D3-02, Q-D3-03, CQ-ST-04, Q-D3-18]
+    pattern: 03#CQ-ST-07
+    populatedBy: [ctgov-v2, pubmed, pmc-jats, europepmc]
+    fixture: 07-fixtures/aspree-registry-history-harm
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Joins papers to the study they report on (three ASPREE NEJM papers → one study) — the basis of independence
+      counting, retraction propagation to studies, and "no publication N years after completion". Also replaces pinned
+      ANALYZES_DATASET / PRODUCED_DATASET: a reused cohort is a Study that secondary analyses report on. The inverse
+      field Study.publications was removed (adversarial-review stage); the Cypher patterns traverse both directions.
+  - type: REVISES
+    class: asserted
+    from: Publication
+    to: Publication
+    edgeProperties: RevisionEdgeProperties
+    cardinality: many (one episode per asserter)
+    temporal: recorded-only
+    questions: [CQ-EV-05, Q-D3-03, Q-D3-11, Q-D3-12]
+    pattern: 03#CQ-EV-05
+    populatedBy: [pubmed, crossref, crossref-labs, medrxiv-api]
+    fixture: 07-fixtures/resveratrol-retraction
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      One type for every work-level revision: correction, retraction, expression of concern, withdrawal (from the
+      notice), new preprint version, journal version of a preprint, review update (from the newer version). Each
+      asserter's episode carries its own revisionKind (RevisionEdgeProperties = AssertedRecordedProperties + revisionKind,
+      the qualifier CQ-EV-05 filters on), so Retraction Watch "retraction" vs publisher "erratum" for one notice DOI stays
+      two typed, filterable episodes; the asserter's stated reasons are Assertion.qualifiers (reason:<text>). Replaces pinned
+      CORRECTS and RETRACTS (+ PublicationRevisionProperties). Adversarial-review stage: revisionKind is the kernel enum
+      SourceRevisionKind (publisher erratum / correction -> ERRATUM; preprint -> journal and review pub1 -> pub2 ->
+      NEW_VERSION), so one vocabulary serves REVISES and the kernel's HAS_REVISION_STATUS. REVISES is written only when
+      the revising work is identified (a notice or newer version with a DOI or PMID); a status flag without an
+      identified notice (OpenAlex is_retracted) is a kernel HAS_REVISION_STATUS Assertion on the Source carrying the
+      work's DOI (no D3 predicate), so openalex is not a REVISES source. Publication.revisionStatus is a read-only cache
+      over both (method publication-revision-status/v2). Distinct from the kernel's SourceSnapshot.revisionKind, which
+      records that the bytes of one Source changed (11-open-questions #33).
+  - type: HAS_STUDY_ROLE
+    class: asserted
+    from: Study
+    to: [D7.Organization, D7.Person, D7.Award]
+    edgeProperties: StudyRoleEdgeProperties
+    cardinality: many (one episode per party, roleKind and asserting registry or paper)
+    temporal: episode
+    questions: [Q-D3-08, Q-D3-09, Q-D3-02, Q-D3-10]
+    pattern: 03#Q-D3-08
+    populatedBy: [ctgov-v2, isrctn, isrctn-web, pmc-jats, europepmc, entity-link]
+    fixture: 07-fixtures/aspree-registry-history-harm
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Q-D3-08 (value 1) asks role by role and per source who sponsored, funded, supplied, ran and investigated a study;
+      Q-D3-09 and D7's Q-D7-05 (value 1) traverse from a company or funder to its studies. One typed edge with
+      roleKind (LEAD_SPONSOR, SPONSOR, COLLABORATOR, FUNDER, FUNDING_AWARD, MATERIAL_PROVIDER, CRO, SITE,
+      PRINCIPAL_INVESTIGATOR, RESPONSIBLE_PARTY) matches D7's seam (D7 10-seams.yaml HAS_STUDY_ROLE) and D7's request
+      for Study → Award (OQ-D7-04) without a 15th type: the Award is a union member with roleKind FUNDING_AWARD. Valid
+      time is read (sponsors and funders change; ASPREE sponsor differs by registry; a registry's own record
+      correction, such as ISRCTN removing Bayer as funder on 22/08/2018, is record time and supersedes the listing
+      Assertion, never a valid-time end). Replaces pinned
+      derived SPONSORED_BY, OPERATED_BY and INVESTIGATED_BY. D7 declares no inverse field. StudyRoleEdgeProperties =
+      AssertedEdgeProperties + roleKind (the qualifier Q-D3-08 / Q-D7-05 filter on); the role label as printed is
+      Assertion.qualifiers (roleText:<label>).
+  - type: MEASURES
+    class: asserted
+    from: OutcomeDefinition
+    to: [D4.Metric, D4.Biomarker, D2.Outcome, D2.Condition]
+    edgeProperties: AssertedRecordedProperties
+    cardinality: zero_or_one
+    temporal: recorded-only
+    questions: [Q-D3-04, Q-D3-05, CQ-ST-03, CQ-ST-06]
+    pattern: 03#Q-D3-04
+    populatedBy: [curation-agent, entity-link, ctgov-v2, pmc-jats]
+    fixture: 07-fixtures/dq-bone-trial-unstructured
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Cross-study questions ("strongest evidence that X changes outcome Y", "what harms") need outcomes resolved to
+      shared concepts; it is also the only path from study evidence to a D5 Target (D5 union TargetMeasure: Target
+      -OPERATIONALIZED_BY-> Metric | Biomarker | D2 Outcome; D2 Condition terms do not reach a Target). Asserted because the mapping of registry free
+      text to a concept is a resolution judgment that can be wrong and superseded. Members follow the sibling SDLs: D2
+      Outcome (study-independent endpoint concept) and Condition (D5 maps adverse-effect terms to D2 Condition; no
+      AdverseEffect type exists). Replaces pinned MEASURES_BIOMARKER, MEASURED_BY_METRIC and REFERS_TO_OUTCOME.
+  - type: INVESTIGATES
+    class: asserted
+    from: Study
+    to: D2.Condition
+    edgeProperties: AssertedRecordedProperties
+    cardinality: many
+    temporal: recorded-only
+    questions: [Q-D3-10]
+    pattern: 03#Q-D3-10
+    populatedBy: [ctgov-v2, isrctn, pmc-jats, entity-link]
+    fixture: 07-fixtures/aspree-registry-history-harm
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      "Which trials study condition C" is the registries' primary search axis and the investor entry for Q-D3-10; D2
+      lists INVESTIGATES as a D3-declared seam (D2 10-seams.yaml, Q-D2-06) and D13 anchors frontiers on conditions.
+      Promoted from predicate-only in exchange for AUTHORED_BY (now predicate-only), keeping 14 types.
+predicateOnly:
+  - { predicate: AUTHORED_BY, subject: Publication, object: D7.Person, promoteWhen: "Q-D3-03 (integrity contamination through shared authors) becomes value 1, or a D7 conflict-of-interest question traverses authorship from the person side at volume; today both walk Assertion → HAS_OBJECT (two extra hops)" }
+  - { predicate: MATERIAL_PROVIDED_BY, subject: InterventionComponent, object: D7.Organization, promoteWhen: "never as a second edge: the study-level role is HAS_STUDY_ROLE {MATERIAL_PROVIDER}; this predicate says which component a supplier provided (ChromaDex NR in the ITP)" }
+  - { predicate: MEASURED_DELIVERY_FRACTION, subject: InterventionComponent, object: "literal valueNumber (fraction of nominal)", promoteWhen: "Q-D3-06 / CQ-ST-02 filter on measured delivery across studies (ITP NR diet assayed at 67–89% of nominal)" }
+  - { predicate: DOSE_EQUIVALENT_TO, subject: InterventionComponent, object: "literal (equivalent amount, unit) or another InterventionComponent", promoteWhen: "CQ-EV-04 dose dimension needs typed traversal (PEARL compounded 5 mg ≈ 1.43 mg generic)" }
+  - { predicate: ARM_DROPPED_REASON, subject: StudyArm, object: "literal valueString", promoteWhen: "never as an edge; Q-D3-01 reads it per arm" }
+  - { predicate: STOPPED_EARLY_REASON, subject: Study, object: "literal valueString", promoteWhen: "never as an edge; RegistrationVersion.whyStopped holds the registry text, this holds the paper's" }
+  - { predicate: SHARES_PARTICIPANTS_WITH, subject: Study, object: Study, promoteWhen: "CQ-ST-07 independence counting needs overlaps that REPORTS_ON to a cohort Study cannot express" }
+  - { predicate: REGISTERED_RETROSPECTIVELY, subject: Study, object: "literal valueBoolean (computed: firstSubmittedDate > startDate)", promoteWhen: "never; computed assertion with derivationRule" }
+  - { predicate: INCLUDED_STUDY_COUNT, subject: Publication, object: "literal valueNumber", promoteWhen: "never as an edge; Q-D3-11 reads it per review version (78 trials in CD007176.pub2)" }
+  - { predicate: CLINICALLY_MEANINGFUL, subject: StudyResult, object: "literal valueBoolean (authors' own statement; polarity)", promoteWhen: "never; CQ-ST-10 contrasts it with the BellLabs interpretation Assessment" }
+  - { predicate: MASKING_STATED, subject: Study, object: "literal valueString (paper's design statement, e.g. open-label)", promoteWhen: "never; Q-D3-15 compares it with RegistrationVersion.masking" }
+  - { predicate: COMPETING_INTEREST_STATED, subject: Publication, object: "literal valueString (the paper's disclosure as printed)", questions: [Q-D3-08], promoteWhen: "never; the typed interest (Person -> organization, patents) is D7's" }
+  - { predicate: FUNDER_ROLE_STATEMENT, subject: Publication, object: "literal valueString (e.g. 'The funders played no role in the conduct or analyses')", questions: [Q-D3-08], promoteWhen: "never; read beside HAS_STUDY_ROLE {FUNDER | FUNDING_AWARD}" }
+  - { predicate: REGISTRY_NOT_MAINTAINED_NOTE, subject: RegistrationVersion, object: "literal valueString (registry editorial note that the record is frozen)", questions: [CQ-ST-08, Q-D3-18], promoteWhen: "never; no RegistrationVersion field holds editorial notes" }
+  - { predicate: INTERPRETATION_CAVEAT, subject: StudyResult, object: "literal valueString (authors' caution, speechAct CAUTIONS)", questions: [Q-D3-05], promoteWhen: "never; contrasted with the BellLabs D3.result-interpretation Assessment" }
+  - { predicate: CITED_BY_COUNT, subject: Publication, object: "literal valueNumber {citations} (per counting authority: Crossref, OpenAlex)", questions: [Q-D3-15], promoteWhen: "a ranking question sorts publications by citations (then a D10 projection, never a stored property)" }
+  - { predicate: PUBLICATION_DATE_STATED, subject: Publication, object: "literal valueString date (per asserter: online vs issue date)", questions: [Q-D3-15], promoteWhen: "never; Publication.publishedAt holds the identity date" }
+  - { predicate: TITLE_AS_DEPOSITED, subject: Publication, object: "literal valueString (title as a depositor states it, e.g. 'RETRACTED: …')", questions: [CQ-EV-05, Q-D3-15], promoteWhen: "never" }
+# Kernel predicate conventions the fixtures also use (no D3 registration needed): HAS_IDENTIFIER (identifier.attach; a
+# second asserter of a registration number, e.g. ISRCTN listing NCT01038583), HAS_REVISION_STATUS (status-only revision
+# flag, subject a Source), OCCURRENCE_OF (claim occurrence). Withdrawn in the adversarial-review stage: the per-field
+# RegistrationVersion predicates (REGISTERED_STUDY_TYPE, OVERALL_STATUS_STATED, ENROLLMENT_STATED,
+# RESULTS_SUBMISSION_EVENTS, MASKING_REGISTERED -> locators on the attach Assertion), REGISTERED_AS_SAME_TRIAL
+# (-> HAS_IDENTIFIER), REVISION_STATUS_STATED (-> HAS_REVISION_STATUS), APPLIES_TO_POPULATION (D5 0.2.0 withdrew it:
+# population:<uid> is a kernel Assertion.qualifiers string).
+deferred:
+  - { type: REGISTERED_AS, reason: "registration is kernel Identifier (NCT, ISRCTN, …) on Study; registry fields on RegistrationVersion" }
+  - { type: HAS_PROTOCOL_VERSION, reason: "protocols and analysis plans are Publications (PROTOCOL / ANALYSIS_PLAN) that REPORT_ON the study; versions chain by REVISES" }
+  - { type: HAS_ELIGIBLE_POPULATION, reason: "merged into HAS_POPULATION (populationKind ELIGIBLE)" }
+  - { type: HAS_ENROLLED_COHORT, reason: "merged into HAS_POPULATION (populationKind ENROLLED)" }
+  - { type: HAS_ANALYZED_COHORT, reason: "StudyResult.analysisPopulation + HAS_POPULATION (populationKind ANALYZED); no question traverses result → population" }
+  - { type: DEFINES_OUTCOME, reason: "renamed HAS_OUTCOME" }
+  - { type: DEFINED_IN, reason: "merged into STATED_IN (asserted, with locators); priority moved onto the OutcomeDefinition identity" }
+  - { type: PRODUCED_DATASET, reason: "Dataset merged into Study (cohort); secondary analyses REPORT_ON it" }
+  - { type: ANALYZES_DATASET, reason: "same as PRODUCED_DATASET" }
+  - { type: STUDIED_IN, reason: "species is StudyPopulation.ncbiTaxonId + strainOrLine (no taxon node; D2 cuts AnatomicalContext/species nodes too)" }
+  - { type: OPERATED_BY, reason: "HAS_STUDY_ROLE {CRO | SITE}" }
+  - { type: INVESTIGATED_BY, reason: "HAS_STUDY_ROLE {PRINCIPAL_INVESTIGATOR}" }
+  - { type: SPONSORED_BY, reason: "pinned derived edge; HAS_STUDY_ROLE {LEAD_SPONSOR | SPONSOR} is the asserted record" }
+  - { type: FUNDED_BY_AWARD, reason: "requested by D7 (OQ-D7-04); folded into HAS_STUDY_ROLE {FUNDING_AWARD} → D7.Award to stay at 14 types" }
+  - { type: AUTHORED_BY, reason: "predicate-only (see predicateOnly); swapped for INVESTIGATES" }
+  - { type: LEGACY_EVALUATES, reason: "legacy 9-member union; replaced by HAS_ARM → HAS_COMPONENT → ADMINISTERS" }
+  - { type: REPORTS_SAFETY_SIGNAL, reason: "SafetySignal is a kernel Assessment (kind SAFETY_SIGNAL, D5 owns the kind) that ASSESSES the StudyResults; no D3 edge" }
+  - { type: ASSIGNS_INTERVENTION, reason: "StudyIntervention merged into StudyArm / InterventionComponent" }
+  - { type: HAS_INTERVENTION_COMPONENT, reason: "renamed HAS_COMPONENT (from StudyArm)" }
+  - { type: FOLLOWS_INTERVENTION_DEFINITION, reason: "ADMINISTERS → D5.Intervention covers 'this arm follows that named regimen' (Q-D5-25)" }
+  - { type: USES_INTERVENTION_MATERIAL, reason: "merged into ADMINISTERS; InterventionMaterialProperties moved onto InterventionComponent (dose facts are assertion subjects and need a node; 09-reasoning.md)" }
+  - { type: USES_INTERVENTION_DEVICE, reason: "merged into ADMINISTERS (D4.Device member)" }
+  - { type: MEASURES_BIOMARKER, reason: "merged into MEASURES" }
+  - { type: MEASURED_BY_METRIC, reason: "merged into MEASURES" }
+  - { type: REFERS_TO_OUTCOME, reason: "merged into MEASURES (D2.Outcome is a MEASURES member)" }
+  - { type: CORRECTS, reason: "merged into REVISES (revisionKind ERRATUM, kernel SourceRevisionKind)" }
+  - { type: RETRACTS, reason: "merged into REVISES" }
+  - { type: SUPPORTED_BY, reason: "kernel HAS_EVIDENCE on the STATED_IN / ADMINISTERS / … Assertions (00-DIRECTIVE 3.8)" }
+  - { type: CONSIDERS, reason: "W10 → kernel Assessment DERIVED_FROM (inputAssertions)" }
+  - { type: CONSIDERS_ASSESSMENT, reason: "W10 → kernel Assessment DERIVED_FROM (inputAssessments)" }
+  - { type: CLASSIFIES_OUTCOME, reason: "EndpointClassification → kernel Assessment ASSESSES OutcomeDefinition (kind requested in 11-open-questions)" }
+  - { type: CLASSIFIES_BIOMARKER, reason: "general context-of-use classification belongs to D4 (Biomarker)" }
+  - { type: COMPARED_WITH_CONTEXT, reason: "no question traverses classification-to-classification" }
+  - { type: HAS_EVIDENCE_TARGET, reason: "EvidenceApplicability → kernel Assessment ASSESSES (evidence side)" }
+  - { type: ASSESSES_APPLICABILITY_TO, reason: "kernel Assessment ASSESSES (use side: D6 ProductVariant, D5 Intervention/Protocol)" }
+  - { type: FOR_USE_CONTEXT, reason: "UseContextProfile deferred (11-open-questions); use-context facts are the assessed D5/D6 entity plus assessment fields" }
+  - { type: BASED_ON_EVIDENCE, reason: "kernel ASSESSES / DERIVED_FROM" }
+  - { type: HAS_DIMENSION, reason: "applicability dimensions are child Assessments the parent DERIVES_FROM (kernel inputAssessments)" }
+  - { type: ASSESSES_STRENGTH_OF, reason: "kernel Assessment (kind QUALITY, subkind D3.evidence-strength) ASSESSES" }
+  - { type: ASSESSES_CLAIM, reason: "kernel Assessment (EVIDENCE_SYNTHESIS) ASSESSES Claim" }
+  - { type: INCLUDES_RESULT, reason: "kernel DERIVED_FROM to the StudyResults' STATED_IN Assertions; pinned inputRole lost (11-open-questions, kernel)" }
+  - { type: TRIGGERED_BY, reason: "kernel DERIVED_FROM + Assessment.evidenceCutoffAt + supersedesUid" }
+  - { type: INTERPRETS_RESULT_OF, reason: "ResultInterpretation → kernel Assessment ASSESSES StudyResult" }
+  - { type: USES_THRESHOLD_SOURCE, reason: "kernel HAS_EVIDENCE (role CONTEXT) on the interpretation Assessment" }
+  - { type: SUPERSEDES, reason: "kernel supersedesUid property" }
+  - { type: ASSESSED_BY, reason: "kernel: the generating Activity's Agent" }

@@ -1,0 +1,333 @@
+# D8 fixture eu-nrcl-authorisation-data-protection — assertions (fixtures stage, A7, 2026-10-08). producedBy ids are fixture-scoped.
+fixture: eu-nrcl-authorisation-data-protection
+producedBy:
+  missionId: mission:ft-D8-fixtures
+  runId: run:ft-D8-eu-nrcl-authorisation-data-protection
+  note: fixture-scoped ids, not Mission Control ids
+entities:
+- ref: ec
+  type: D7.Organization
+  name: European Commission
+  onMatch: use_existing
+- ref: chromadex-inc
+  type: D7.Organization
+  name: ChromaDex, Inc.
+  onMatch: use_existing
+  note: the act spells 'ChromaDex Inc.' (Los Angeles address); same organization as in the patent fixture, resolved by D7
+- ref: agent-a7
+  type: Agent
+  name: BellLabs fixtures agent A7 (ft-D8)
+  onMatch: use_existing
+- ref: nrcl
+  type: D1.IngredientMaterial
+  name: Nicotinamide riboside chloride (novel food, specification of Implementing Regulation (EU) 2020/16)
+  onMatch: review
+- ref: rr-eu-2020-16
+  type: RegulatoryRecord
+  name: Commission Implementing Regulation (EU) 2020/16 — NR chloride novel food authorisation
+  uidSegment: ec-novel_food_authorisation-32020R0016
+  properties:
+    recordKind: NOVEL_FOOD_AUTHORISATION
+    recordFamily: MARKET_ACCESS
+    pathway: EU_NOVEL_FOOD
+    jurisdiction: EU
+    recordNumber: 32020R0016
+    issuedAt: '2020-01-10T00:00:00Z'
+    issuingOffice: European Commission
+    outcome: AUTHORISED
+    conditionsVerbatim: Food Supplements as defined in Directive 2002/46/EC 300 mg/day for the general adult population, excluding pregnant and lactating women
+    legalBasisCitation: Regulation (EU) 2015/2283, Articles 12 and 26
+  identifiers:
+  - scheme: CELEX
+    issuer: EUR-Lex (Publications Office of the EU)
+    value: 32020R0016
+    requested: true
+  propertyEvidence:
+  - loc-eu-title
+  - loc-eu-done
+  - loc-eu-art1
+  - loc-eu-conditions
+  onMatch: review
+- ref: ls-eu-authorised
+  type: LegalStatus
+  name: NR chloride — EU — authorised novel food
+  uidSegment: nrcl-eu-novel_food-authorised
+  properties:
+    statusKind: AUTHORISED
+    statusFamily: MARKET_ACCESS
+    jurisdiction: EU
+    pathway: EU_NOVEL_FOOD
+    statusVerbatim: Authorised on 20 February 2020.
+  propertyEvidence:
+  - loc-eu-authorised
+  onMatch: review
+- ref: ls-eu-dp
+  type: LegalStatus
+  name: NR chloride — EU — data protection (only ChromaDex may place on the market)
+  uidSegment: nrcl-eu-novel_food-data_protected
+  properties:
+    statusKind: DATA_PROTECTED
+    statusFamily: EXCLUSIVITY
+    jurisdiction: EU
+    pathway: EU_NOVEL_FOOD
+    statusVerbatim: 'End date of the data protection: 20 February 2025.'
+  propertyEvidence:
+  - loc-eu-dp-only
+  - loc-eu-dp-end
+  onMatch: review
+assertions:
+- id: e01
+  predicate: ISSUED_BY
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: rr-eu-2020-16
+    type: RegulatoryRecord
+  object:
+    ref: ec
+    type: D7.Organization
+  asserter:
+    ref: ec
+    type: D7.Organization
+  locators:
+  - loc-eu-title
+  - loc-eu-done
+  edge:
+    type: ISSUED_BY
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eu-nrcl-authorisation-data-protection
+- id: e02
+  predicate: ADDRESSED_TO
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: rr-eu-2020-16
+    type: RegulatoryRecord
+  object:
+    ref: chromadex-inc
+    type: D7.Organization
+  asserter:
+    ref: ec
+    type: D7.Organization
+  locators:
+  - loc-eu-applicant
+  edge:
+    type: ADDRESSED_TO
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - 'role: applicant'
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eu-nrcl-authorisation-data-protection
+- id: e03
+  predicate: CONCERNS
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: rr-eu-2020-16
+    type: RegulatoryRecord
+  object:
+    ref: nrcl
+    type: D1.IngredientMaterial
+  asserter:
+    ref: ec
+    type: D7.Organization
+  locators:
+  - loc-eu-art1
+  - loc-eu-spec
+  edge:
+    type: CONCERNS
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eu-nrcl-authorisation-data-protection
+- id: e04
+  predicate: STATUS_OF
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: ls-eu-authorised
+    type: LegalStatus
+  object:
+    ref: nrcl
+    type: D1.IngredientMaterial
+  asserter:
+    ref: ec
+    type: D7.Organization
+  locators:
+  - loc-eu-authorised
+  - loc-eu-art1
+  edge:
+    type: STATUS_OF
+    class: asserted
+    properties: AssertedEdgeProperties
+  validTime:
+    validFrom: '2020-02-20'
+    validFromPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+    validTo: null
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - 'conditions: food supplements, 300 mg/day general adult population excluding pregnant and lactating women (230 mg/day for pregnant and lactating women in the
+    same row)'
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eu-nrcl-authorisation-data-protection
+- id: e05
+  predicate: STATUS_FROM
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: ls-eu-authorised
+    type: LegalStatus
+  object:
+    ref: rr-eu-2020-16
+    type: RegulatoryRecord
+  asserter:
+    ref: ec
+    type: D7.Organization
+  locators:
+  - loc-eu-art1
+  edge:
+    type: STATUS_FROM
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eu-nrcl-authorisation-data-protection
+- id: e06
+  predicate: STATUS_OF
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: ls-eu-dp
+    type: LegalStatus
+  object:
+    ref: nrcl
+    type: D1.IngredientMaterial
+  asserter:
+    ref: ec
+    type: D7.Organization
+  locators:
+  - loc-eu-dp-only
+  - loc-eu-dp-end
+  - loc-eu-five-years
+  edge:
+    type: STATUS_OF
+    class: asserted
+    properties: AssertedEdgeProperties
+  validTime:
+    validFrom: '2020-02-20'
+    validFromPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+    validTo: '2025-02-20'
+    validToPrecision: DAY
+    validToBasis: STATED_BY_SOURCE
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - 'beneficiary: ChromaDex Inc.'
+  - 'exception: a subsequent applicant authorised without reference to the protected data, or with ChromaDex''s agreement'
+  expectedStatus: PROPOSED
+  note: 'the exclusivity ENDED 2025-02-20: as of 2026-10-08 the status is closed by its own stated end date (Q-D8-13)'
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eu-nrcl-authorisation-data-protection
+- id: e07
+  predicate: STATUS_FROM
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: ls-eu-dp
+    type: LegalStatus
+  object:
+    ref: rr-eu-2020-16
+    type: RegulatoryRecord
+  asserter:
+    ref: ec
+    type: D7.Organization
+  locators:
+  - loc-eu-five-years
+  - loc-eu-dp-end
+  edge:
+    type: STATUS_FROM
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eu-nrcl-authorisation-data-protection
+- id: e08
+  predicate: ENTRY_INTO_FORCE_COMPUTED
+  assertionKind: COMPUTATION
+  subject:
+    ref: rr-eu-2020-16
+    type: RegulatoryRecord
+  value: '2020-02-02'
+  asserter:
+    ref: agent-a7
+    type: Agent
+  locators:
+  - loc-eu-force
+  - loc-eu-oj
+  edge: false
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'no typed edge (literal or predicate-only assertion): valid bounds unknown'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: CALCULATED
+  expectedStatus: PROPOSED
+  note: Article 4 (twentieth day following publication) applied to OJ L 7 of 13.1.2020 gives 2020-02-02, while the Annex states 'Authorised on 20 February 2020' and
+    a data-protection end of 20 February 2025. The fixture keeps the stated Annex dates (e04, e06) and records the computed date for review; not resolved here
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eu-nrcl-authorisation-data-protection

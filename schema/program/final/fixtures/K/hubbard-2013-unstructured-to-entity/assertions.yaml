@@ -1,0 +1,166 @@
+# Assertions, surface forms and the directive 3.8 walk for fixture hubbard-2013-unstructured-to-entity (K, fixtures stage, A1, 2026-10-08;
+# adversarial review 2026-10-08: no surface-form node (R-09/R-27), the E230K occurrence belongs to the refined Claim).
+# Kind: unstructured-to-entity. One real full-text document (PMC JATS author manuscript of Hubbard et al., Science 2013)
+# walked from a user question to captured bytes:
+#   question -> D9 chunk (vector index or MENTIONS) -> COVERS_LOCATOR -> SourceLocator -> the Assertion whose HAS_EVIDENCE is that
+#   locator -> HAS_LOCATOR <- SourceSnapshot (contentHash) <- HAS_SNAPSHOT <- Source; the verifier's Adjudication re-selects the
+#   same span (expectedSelectedContentDigest == the locator's quoteHash).
+# MENTIONS is a derived retrieval projection (entity-link, method version), never evidence; support / context live on
+# HAS_EVIDENCE {role} from records to locators, never document -> entity (00-DIRECTIVE 3.8).
+# Conventions: see ../resveratrol-sirt1-evidence-mission/assertions.yaml (fixture ids, types, producedBy, fixture clock).
+
+fixture: hubbard-2013-unstructured-to-entity
+producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }   # default; fixture ids
+activities:   # defined in ../two-run-lineage/assertions.yaml
+  - { ref: act-r2-mission, uid: "hu:activity:fx-k-r2-evidence-mission", activityKind: EVIDENCE_MISSION, runId: "run:ft-K-r2-evidence-mission" }
+  - { ref: act-r2-verification, uid: "hu:activity:fx-k-r2-verification", activityKind: VERIFICATION, runId: "run:ft-K-r2-verification" }
+  - { ref: act-entity-link, uid: "hu:activity:fx-k-entity-link-projection", activityKind: PROJECTION, runId: "run:ft-K-entity-link-projection" }
+
+entities:
+  - { ref: e-resveratrol, type: D1.ChemicalSubstance, uid: "hu:chemical-substance:fx-k-resveratrol", name: resveratrol }
+  - { ref: e-sirt1, type: D2.MolecularEntity, uid: "hu:molecular-entity:fx-k-sirt1-human", name: "NAD-dependent protein deacetylase sirtuin-1 (SIRT1)" }
+  - { ref: e-hubbard, type: D7.Person, uid: "hu:person:fx-k-hubbard-bp", name: "Basil P. Hubbard (first author for the author group of PMID 23471411)" }
+
+sources:
+  - ref: src-pmc-3799917
+    uid: "hu:source:fx-k-pmc-3799917-jats"
+    type: K.Source
+    canonicalUri: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=3799917"
+    sourceKind: API
+    genre: PEER_REVIEWED_PUBLICATION_AUTHOR_MANUSCRIPT
+    name: "Evidence for a Common Mechanism of SIRT1 Regulation by Allosteric Activators (NIH author manuscript, JATS)"
+    snapshots: [snap-pmc-3799917]          # HAS_SNAPSHOT
+    identifiers: ["PMCID:PMC3799917", "NIHMS:NIHMS504463", "PMID:23471411", "DOI:10.1126/science.1231097"]
+  - ref: src-pubmed-23471411
+    uid: "hu:source:fx-k-pubmed-23471411"
+    type: K.Source
+    canonicalUri: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=23471411&retmode=xml"
+    sourceKind: API
+    genre: BIBLIOGRAPHIC_INDEX_RECORD
+    snapshots: [snap-pubmed-23471411]
+    note: "rendition trap: the abstract sentence of loc-hub-conclusion-pmc recurs here (loc-hub-conclusion-pubmed); two Sources, one source family"
+
+assertions:
+  - id: a-hub-occ-e230k
+    uid: "hu:assertion:fx-k-hub-occ-e230k"
+    assertionKind: CLAIM
+    claimType: RELATIONSHIP
+    predicate: ACTIVATES
+    subject: { ref: e-resveratrol, type: D1.ChemicalSubstance }        # HAS_SUBJECT
+    object: { ref: e-sirt1, type: D2.MolecularEntity }                 # HAS_OBJECT
+    asserter: { ref: e-hubbard, type: D7.Person }                      # ASSERTED_BY
+    occurrenceOf: "hu:claim:fx-k-resveratrol-activates-sirt1-hydrophobic-motif" # OCCURRENCE_OF claim-refined of ../resveratrol-sirt1-evidence-mission (adversarial review: the Glu230 dependence is the allosteric qualification of the refined proposition, whose qualifiers name 'requires sirt1 glu230'; was claim-general)
+    proposition: "activation of SIRT1 by resveratrol is attenuated by the E230K substitution (presupposes that wild-type SIRT1 is activated by resveratrol)"
+    locators: [loc-hub-e230k, loc-hub-conclusion-pmc]                  # HAS_EVIDENCE role SUPPORTS origin DECLARED
+    polarity: POSITIVE
+    speechAct: STATES
+    basisKind: DIRECT_MEASUREMENT
+    qualifiers: ["E230K mutant", "AMC-tagged or natural amino acid substrate (sentence continues in the capture)", "in vitro"]
+    validTime: { validFrom: "2013-03-08", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN }
+    status: ACCEPTED
+    recordedAt: "2026-10-08T22:09:18Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }
+
+surfaceForms:   # staged by mention.stage proposals (intent.json); NOT records: there is no surface-form node (cut in the adversarial review; R-09/R-27).
+                # A surface form is a SourceLocator (exact = the form) cited with role CONTEXT by the RESOLUTION Assessment that
+                # resolves it; the accepted Assessment licenses the derived D9 Chunk MENTIONS (derivedFromAssessmentUids).
+  - { id: m-resveratrol, surfaceForm: resveratrol, normalizedForm: resveratrol, typeHint: ChemicalSubstance, locator: loc-hub-surface-resveratrol, resolvedBy: as-res-resveratrol }
+  - { id: m-sirt1, surfaceForm: SIRT1, normalizedForm: sirt1, typeHint: MolecularEntity, locator: loc-hub-surface-sirt1, resolvedBy: as-res-sirt1 }
+
+assessments:   # RESOLUTION assessments: the competing-hypothesis records of Q-K-13 and the licence of the derived D9 Chunk MENTIONS
+  - id: as-res-resveratrol
+    uid: "hu:assessment:fx-k-resolution-resveratrol-p10"
+    type: K.Assessment
+    assessmentKind: RESOLUTION
+    status: ACCEPTED
+    methodVersion: "fixture:entity-link-surface@0"
+    score: 1.0
+    facets: ["surfaceForm=resveratrol", "normalizedForm=resveratrol", "typeHint=ChemicalSubstance"]
+    about: [{ ref: e-resveratrol, type: D1.ChemicalSubstance }]        # ASSESSES the candidate entity
+    evidence: [{ locator: loc-hub-surface-resveratrol, role: CONTEXT, origin: DECLARED }]   # HAS_EVIDENCE: the surface-form span
+    rationale: "exact surface-form match to the D1 preferred name; the paper's MeSH ChemicalList (PMID 23471411) lists Resveratrol D000077185 / UNII Q369O8926L"
+    recordedAt: "2026-10-08T22:25:00Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-entity-link-projection" }
+  - id: as-res-sirt1
+    uid: "hu:assessment:fx-k-resolution-sirt1-p10"
+    type: K.Assessment
+    assessmentKind: RESOLUTION
+    status: ACCEPTED
+    methodVersion: "fixture:entity-link-surface@0"
+    score: 1.0
+    facets: ["surfaceForm=SIRT1", "normalizedForm=sirt1", "typeHint=MolecularEntity"]
+    about: [{ ref: e-sirt1, type: D2.MolecularEntity }]
+    evidence: [{ locator: loc-hub-surface-sirt1, role: CONTEXT, origin: DECLARED }]
+    rationale: "gene-symbol match; species from the paper (human SIRT1 constructs); the ChemicalList lists Sirtuin 1 D056564"
+    recordedAt: "2026-10-08T22:25:00Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-entity-link-projection" }
+
+adjudications:
+  - id: adj-cf-hub-e230k
+    uid: "hu:adjudication:fx-k-cf-hub-e230k"
+    type: K.Adjudication
+    adjudicationKind: CAPTURE_FIDELITY
+    verdict: DIRECTLY_SUPPORTED
+    policyOutcome: PASS
+    mechanicalStatus: passed
+    judgeKind: DETERMINISTIC
+    methodVersion: "fixture-reselect/gen_locators_k.py@2026-10-08"
+    attributionFaithfulness: SATISFIED
+    provenanceIntegrity: SATISFIED
+    evaluates: [a-hub-occ-e230k]                                       # ASSESSES -> Assertion
+    evidence:
+      - { locator: loc-hub-e230k, role: SUPPORTS, origin: VERIFIER_FOUND, expectedSelectedContentDigest: "sha256:6dc6b0a684f94d7c03202786f5766f56e11baacc861396a0356cec20122bd533" }
+      - { locator: loc-hub-conclusion-pmc, role: SUPPORTS, origin: VERIFIER_FOUND, expectedSelectedContentDigest: "sha256:568ec4ef572a7fc891da3cd611e54e68d16363c5fe019b4131faa023a4d6ee6c" }
+    rationale: "re-fetched JATS is byte-identical (sha256:ced64cfd...1c44); both TEXT_QUOTE selectors resolve to exactly one span and the selected bytes hash to the declared digests"
+    recordedAt: "2026-10-08T22:20:00Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-verification" }
+  - id: adj-sup-hub-e230k
+    uid: "hu:adjudication:fx-k-support-hub-e230k"
+    type: K.Adjudication
+    adjudicationKind: SUPPORT
+    verdict: SUPPORTED_WITH_QUALIFICATION
+    policyOutcome: PASS_WITH_WARNINGS
+    judgeKind: LLM
+    methodVersion: "fixture:support-judgment/claude-opus-5-5@2026-10-08"
+    evidenceSupport: SATISFIED
+    worldCorrectness: UNKNOWN
+    attributionFaithfulness: SATISFIED
+    sourceAuthority: SATISFIED
+    provenanceIntegrity: SATISFIED
+    unsupportedFacets: ["native substrates without hydrophobic motifs", "in vivo"]
+    evaluates: [a-hub-occ-e230k]
+    evidence:
+      - { locator: loc-hub-e230k, role: SUPPORTS, origin: VERIFIER_FOUND, expectedSelectedContentDigest: "sha256:6dc6b0a684f94d7c03202786f5766f56e11baacc861396a0356cec20122bd533", authority: PRIMARY, independence: INDEPENDENT }
+      - { locator: loc-hub-motifs-pmc, role: QUALIFIES, origin: VERIFIER_FOUND, expectedSelectedContentDigest: "sha256:0540d84d2d0120f8c64a0a0c7f1c8264f20a0ecc11fae87060214c74ca7856c3", authority: PRIMARY, independence: INDEPENDENT }
+      - { locator: loc-hub-debate, role: CONTEXT, origin: VERIFIER_FOUND, expectedSelectedContentDigest: "sha256:d6ced3b477bd8a68afe88d2acb83dfce29e5497c354fe5de822d8e8672a41988", authority: PRIMARY, independence: INDEPENDENT }
+    rationale: "the paper supports activation for substrates with hydrophobic motifs and records that direct activation was 'widely debated'; the general proposition is judged in ../resveratrol-sirt1-evidence-mission"
+    recordedAt: "2026-10-08T22:20:00Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-verification" }
+
+retrieval:   # D9 retrieval structures (derived; never locators, never evidence). Byte ranges and coversLocators computed in locators.yaml `chunks`.
+  chunks:
+    - { ref: chunk-pmc3799917-P10, uid: "hu:chunk:fx-k-pmc3799917-p10", type: D9.Chunk, chunkOf: snap-pmc-3799917, coversLocators: [loc-hub-e230k, loc-hub-surface-resveratrol, loc-hub-surface-sirt1], mentions: [e-resveratrol, e-sirt1], mentionsEdgeProperties: { derivationRule: "fixture:entity-link-surface@0", derivedFromAssessmentUids: ["hu:assessment:fx-k-resolution-resveratrol-p10", "hu:assessment:fx-k-resolution-sirt1-p10"], derivedAt: "2026-10-08T22:25:00Z", lastWriterRunId: "run:ft-K-entity-link-projection" }, derivationRule: "fixture:jats-paragraph@0 + fixture:entity-link-surface@0" }
+    - { ref: chunk-pmc3799917-P3, uid: "hu:chunk:fx-k-pmc3799917-p3", type: D9.Chunk, chunkOf: snap-pmc-3799917, coversLocators: [loc-hub-debate], mentions: [e-resveratrol, e-sirt1] }
+    - { ref: chunk-pmc3799917-P1, uid: "hu:chunk:fx-k-pmc3799917-p1", type: D9.Chunk, chunkOf: snap-pmc-3799917, coversLocators: [loc-hub-motifs-pmc, loc-hub-conclusion-pmc], mentions: [e-sirt1] }
+  embedding: { model: null, note: "no embedding computed in this run; the vector-index step (D9 chunk_embedding) is described, not executed" }
+  walk:   # Q-K-14 / Q-K-20 expected trace
+    - "question: 'Does resveratrol really activate SIRT1?' (Q-K-14)"
+    - "chunks: MENTIONS(e-resveratrol) AND MENTIONS(e-sirt1) -> chunk-pmc3799917-P10 and chunk-pmc3799917-P3 (or vector search over chunk text)"
+    - "COVERS_LOCATOR: P10 [21734, 22809) covers loc-hub-e230k [22067, 22213); P3 [15111, 16337) covers loc-hub-debate [15518, 15602) (UTF-8 bytes)"
+    - "assertions: a-hub-occ-e230k HAS_EVIDENCE loc-hub-e230k (SUPPORTS, DECLARED); loc-hub-debate is evidence only on adj-sup-hub-e230k (CONTEXT, VERIFIER_FOUND)"
+    - "snapshot: snap-pmc-3799917 contentHash sha256:ced64cfd1261ed0f62b359d7278b9f5d2931f8f814025dba2e45f3f1d31b1c44 (51,695 bytes), Source src-pmc-3799917"
+    - "verifier: adj-cf-hub-e230k re-selects loc-hub-e230k; selected bytes sha256:6dc6b0a6...d533 == expectedSelectedContentDigest -> match = true"
+    - "claim: a-hub-occ-e230k OCCURRENCE_OF claim-refined -> rpt-refined (ASSESSES claim-refined) cites it by DERIVED_FROM (../resveratrol-sirt1-evidence-mission)"
+
+edgesExercised:
+  - { type: HAS_SNAPSHOT, pairs: "src-pmc-3799917->snap-pmc-3799917; src-pubmed-23471411->snap-pubmed-23471411" }
+  - { type: HAS_LOCATOR, pairs: "snap-pmc-3799917->6 locators; snap-pubmed-23471411->loc-hub-conclusion-pubmed" }
+  - { type: HAS_EVIDENCE, pairs: "a-hub-occ-e230k->loc-hub-e230k, loc-hub-conclusion-pmc (SUPPORTS/DECLARED); adj-cf-hub-e230k (SUPPORTS/VERIFIER_FOUND + expectedSelectedContentDigest); adj-sup-hub-e230k (SUPPORTS, QUALIFIES, CONTEXT); as-res-* -> the surface-form locators (CONTEXT/DECLARED)" }
+  - { type: HAS_SUBJECT, pairs: "a-hub-occ-e230k->e-resveratrol" }
+  - { type: HAS_OBJECT, pairs: "a-hub-occ-e230k->e-sirt1" }
+  - { type: ASSERTED_BY, pairs: "a-hub-occ-e230k->e-hubbard" }
+  - { type: OCCURRENCE_OF, pairs: "a-hub-occ-e230k->claim-refined" }
+  - { type: "D9 seam MENTIONS (derived, kernel meaning)", pairs: "chunk-pmc3799917-P10 -> e-resveratrol, e-sirt1 (Chunk.mentions; derivedFromAssessmentUids = as-res-resveratrol, as-res-sirt1)" }
+  - { type: ASSESSES, pairs: "adj-*->a-hub-occ-e230k; as-res-resveratrol->e-resveratrol; as-res-sirt1->e-sirt1" }
+  - { type: WAS_GENERATED_BY, pairs: "a-hub-occ-e230k -> act-r2-mission; adjudications -> act-r2-verification; as-res-* -> act-entity-link" }
+  - { type: "D9 seam COVERS_LOCATOR (derived)", pairs: "chunk-P10->loc-hub-e230k, loc-hub-surface-*; chunk-P3->loc-hub-debate; chunk-P1->loc-hub-motifs-pmc, loc-hub-conclusion-pmc (Q-K-14; 11-open-questions Q-K-14 seam)" }

@@ -1,0 +1,117 @@
+# Claim lifecycle — final vocabulary (synthesis, VOCABULARIES stage, 2026-10-09).
+# The scientific loop of 00-DIRECTIVE 3.4: claim → occurrence → vetting disposition → evidence mission → evidence report.
+# Kernel-owned (K + D10). The mission itself lives in Mission Control; the graph holds the Activity, the report skeleton
+# and the links. Source of the shapes: packets/K/09-reasoning.md "Claim lifecycle (00-DIRECTIVE 3.4) at kernel level"
+# and "Lineage spine"; final/decision-report.md R-12, R-13, R-20, R-32, R-45. Every enum value, node type and relationship
+# type below is checked against final/schema/final_biotech_schema_v2.graphql (final/_runlog/vocabularies.md).
+
+version: 1
+status: synthesis-final-candidate
+published: 2026-10-09
+owner: K (records and lifecycle); D10 (evidence report skeleton d10.evidence-report@1); D9 (occurrence containers)
+sources:
+  - fast-track/00-DIRECTIVE.md 3.4, 4 (lineage spine), 4.1 (one lineage mechanism)
+  - packets/K/09-reasoning.md (claim lifecycle block; lineage spine; decision 4 minimum citation set)
+  - packets/K/02-questions.md Q-K-08, Q-K-09, Q-K-11, Q-K-19, Q-K-21, Q-K-23, Q-K-26, Q-K-27, Q-K-28
+  - packets/D10/report-skeletons.md section 4 (d10.evidence-report@1)
+  - final/decision-report.md R-12 (mission ↔ claim link), R-13 (one Activity per run), R-20 (assessing one occurrence), R-32 (report verdict), R-45 (projection caches)
+  - final/schema/kernel.graphql (Claim, Assertion, Assessment, Activity, Report)
+
+# ---------------------------------------------------------------------------------------------
+# 1. The stages and the record each one is
+# ---------------------------------------------------------------------------------------------
+stages:
+  - stage: claim
+    record: Claim
+    identity: "propositionHash = sha256 over the normalized proposition plus its structured binding (subject uid, predicate, object uid or literal, qualifiers)"
+    rules:
+      - "the proposition independent of who said it; near-duplicates are separate Claims linked by an EQUIVALENCE Assessment, never merged by similarity"
+      - "a qualified variant is its own Claim; refinement = EQUIVALENCE Assessment (assessmentSubkind K.claim-relation, conclusionCode REFINES) that ASSESSES both; the narrower Claim caches refinesClaimUid"
+      - "the verdict a report states is about the exact Claim it ASSESSES (FC-2: MIXED_OR_CONFLICTING for the general resveratrol–SIRT1 claim, SUPPORTED_WITH_QUALIFICATION for the refined one)"
+  - stage: occurrence
+    record: "Assertion {assertionKind: CLAIM}"
+    links: ["(occurrence)-[:OCCURRENCE_OF]->(Claim)", "(occurrence)-[:ASSERTED_BY]->(asserter)", "(occurrence)-[:HAS_EVIDENCE {role, origin: DECLARED}]->(SourceLocator)", "(MediaWork)-[:OCCURS_IN]->(occurrence)  # D9 container, declared IN on MediaWork.occurrences"]
+    rules:
+      - "who said it, where, with locator; carries speechAct, polarity, basisKind; claimType is required for CLAIM (verification.v1)"
+      - "a recommendation is a claim occurrence with speechAct RECOMMENDS"
+      - "a retelling has basisKind CITED_FROM_PRIOR_WORK and DERIVED_FROM the primary occurrence"
+      - "an assessment of one occurrence (retelling fidelity, conflict relevance) ASSESSES that occurrence's Claim and is DERIVED_FROM the judged occurrence(s), with occurrence=/retelling=/original= facets (R-20)"
+      - "a third party's verdict on the claim is an Assertion with predicate RATES_CLAIM (subject the Claim) by that party, never our Assessment (verdict-lattice.yaml)"
+  - stage: vetting
+    record: "Assessment {assessmentKind: VETTING, disposition}"
+    links: ["(vetting)-[:ASSESSES]->(Claim)", "(vetting)-[:WAS_GENERATED_BY]->(Activity {activityKind: VETTING})"]
+    dispositions:
+      - {value: IGNORE, effect: "no further work; lifecycleState IGNORED"}
+      - {value: MONITOR, effect: "watch for new occurrences or evidence after the vetting date (Q-K-26 pattern); lifecycleState MONITORED"}
+      - {value: RESEARCH, effect: "queue an evidence mission; lifecycleState QUEUED_FOR_RESEARCH; Q-K-19 lists queued claims with no mission started"}
+    rules:
+      - "a vetting is an immutable, supersedable Assessment; the current one (recordedTo null, status not SUPERSEDED / WITHDRAWN) decides the state"
+  - stage: evidenceMission
+    record: "Activity {activityKind: EVIDENCE_MISSION, externalRunSystem: mission-control, missionId, runId}"
+    links: ["(mission)-[:ASSESSES]->(Claim)  # exactly one Claim, written by the executor at run start (R-12, P15)", "(mission)-[:WAS_INFORMED_BY]->(Activity {activityKind: VETTING})", "(Activity {activityKind: VERIFICATION, bundleDigest})-[:WAS_INFORMED_BY]->(mission)", "(Adjudication {adjudicationKind: SUPPORT, verdict})-[:ASSESSES]->(occurrence)"]
+    rules:
+      - "its purpose is to try to disqualify the claim; a claim that survives is one that passed the test (directive 3.4)"
+      - "one Activity per Mission Control run, never per applied intent; retries keep the run identity (R-13)"
+      - "WAS_INFORMED_BY is the only chaining relationship (R-12)"
+      - "the KS / Mission Control operation state (queued … quarantined) is not in the graph"
+  - stage: evidenceReport
+    record: "Report {reportKind: EVIDENCE_REPORT, skeletonKey: d10.evidence-report@1, verdict, worldCorrectness, policyVersion, bodyDigest, bundleDigest}"
+    links: ["(report)-[:ASSESSES]->(Claim)  # exactly the Claim", "(report)-[:DERIVED_FROM]->(Assertion | Assessment)  # every input a report sentence rests on", "(report)-[:HAS_EVIDENCE]->(SourceLocator)  # every quoted span", "(report)-[:WAS_GENERATED_BY]->(mission)"]
+    skeletonSections: [CLAIM_UNDER_TEST, INTERESTS, EVIDENCE_FOR, EVIDENCE_AGAINST, VERDICT, HARMS_AND_AVOIDANCE, OPEN_QUESTIONS]
+    rules:
+      - "verdict on the verification.v1 lattice plus worldCorrectness (PropertyStatus); no SURVIVED / DISQUALIFIED enum; never changes Assertion.status (R-32)"
+      - "the VERDICT section cites the mission's EVIDENCE_SYNTHESIS Assessment; the Report's own verdict mirrors it (d10.evidence-report@1)"
+      - "insert-only; a revision is a new Report naming supersedesUid; the older one gets recordedTo"
+      - "counts of a Claim's evidence always go through OCCURRENCE_OF, never through report citations (K decision 4)"
+
+# ---------------------------------------------------------------------------------------------
+# 2. Claim.lifecycleState — a projection cache; authority = the Assessments and Reports (R-45)
+# ---------------------------------------------------------------------------------------------
+lifecycleStates:
+  - {value: EXTRACTED, when: "occurrences only; no current VETTING Assessment"}
+  - {value: IGNORED, when: "latest current VETTING disposition IGNORE"}
+  - {value: MONITORED, when: "latest current VETTING disposition MONITOR"}
+  - {value: QUEUED_FOR_RESEARCH, when: "latest current VETTING disposition RESEARCH, no EVIDENCE_MISSION Activity ASSESSES the Claim yet"}
+  - {value: UNDER_RESEARCH, when: "an EVIDENCE_MISSION Activity ASSESSES the Claim and no current EVIDENCE_REPORT exists"}
+  - {value: REPORTED, when: "a current EVIDENCE_REPORT Report ASSESSES the Claim"}
+transitions:
+  - {from: EXTRACTED, to: [IGNORED, MONITORED, QUEUED_FOR_RESEARCH], by: "a VETTING Assessment (disposition)"}
+  - {from: [IGNORED, MONITORED, QUEUED_FOR_RESEARCH], to: [IGNORED, MONITORED, QUEUED_FOR_RESEARCH], by: "a superseding VETTING Assessment (re-vetting, e.g. after the MONITOR trigger fires)"}
+  - {from: QUEUED_FOR_RESEARCH, to: UNDER_RESEARCH, by: "Mission Control starts the evidence mission; its Activity ASSESSES the Claim"}
+  - {from: UNDER_RESEARCH, to: REPORTED, by: "the mission's EVIDENCE_REPORT is published"}
+transitionsNote: "the states and their 'when' conditions are K's (09-reasoning lifecycle paragraph); the transition rows are a restatement of those conditions, not additional rules"
+caches:
+  - {field: Claim.lifecycleState, enum: ClaimLifecycleState, authority: "current VETTING Assessment, EVIDENCE_MISSION Activity, current EVIDENCE_REPORT"}
+  - {field: Claim.latestVerdict, enum: SemanticVerdict, authority: "the latest published EVIDENCE_REPORT's verdict"}
+  - {field: Claim.refinesClaimUid, enum: null, authority: "the accepted EQUIVALENCE Assessment with conclusionCode REFINES"}
+cacheRule: "a cache is maintained by the lifecycle projection in the authority's transaction; answers cite the authority, not the cache (R-45)"
+
+# ---------------------------------------------------------------------------------------------
+# 3. Supporting vocabularies (exact copies of the SDL enums the lifecycle uses)
+# ---------------------------------------------------------------------------------------------
+sdlEnums:
+  ClaimLifecycleState: [EXTRACTED, IGNORED, MONITORED, QUEUED_FOR_RESEARCH, UNDER_RESEARCH, REPORTED]
+  ClaimDisposition: [IGNORE, MONITOR, RESEARCH]
+  ActivityKind: [RESEARCH, INGESTION, VETTING, EVIDENCE_MISSION, VERIFICATION, PROJECTION, ANSWER]
+  AssessmentStatus: [PROPOSED, ACCEPTED, SUPERSEDED, WITHDRAWN]
+  ReportKind: [EVIDENCE_REPORT, ANSWER, COMPARISON, PROFILE, RECOMMENDATION]
+  AssertionKind: [FIELD, CLAIM, METRIC, RELATIONSHIP, COMPUTATION]
+  SpeechAct: [STATES, REPORTS_PRACTICE, RECOMMENDS, CAUTIONS, SPECULATES, QUESTIONS, DENIES]
+  ClaimType: [ATTRIBUTE, RELATIONSHIP, MEASUREMENT, CAPABILITY, COMPATIBILITY, TEMPORAL, CAUSAL, COMPARATIVE, METHODOLOGICAL, DEFINITION, EVENT, PROVENANCE, RECOMMENDATION, OTHER]
+  ReportSectionKind: [SCOPE, IDENTITY, USES_BY_TARGET, EVIDENCE_FOR, EVIDENCE_AGAINST, HARMS_AND_AVOIDANCE, INTERACTIONS, CRITERIA, OPTIONS, PRODUCTS_AND_QUALITY, PROTOCOL_STEP, CLAIM_UNDER_TEST, VERDICT, MISSING_OR_DISPUTED, INTERESTS, OPEN_QUESTIONS, CHANGES]
+assessmentKindsUsed: {VETTING: "the vetting stage", EVIDENCE_SYNTHESIS: "the mission's weighed conclusion cited by the VERDICT section", EQUIVALENCE: "claim refinement and near-duplicates (subkind K.claim-relation)", RETELLING_FIDELITY: "retelling of one occurrence (R-20)", CONFLICT_RELEVANCE: "the claimant's interests (R-55)"}
+relationshipTypesUsed: [OCCURRENCE_OF, ASSERTED_BY, HAS_EVIDENCE, OCCURS_IN, ASSESSES, WAS_GENERATED_BY, WAS_INFORMED_BY, DERIVED_FROM, HAS_SUBJECT]
+nodeTypesUsed: [Claim, Assertion, Assessment, Adjudication, Activity, Report, ReportItem, SourceLocator, MediaWork]
+
+questions:
+  Q-K-08: "which evidence mission tested claim C, with what verdict, and which report published it (published)"
+  Q-K-09: "where has claim C been made, and its vetting disposition (retrieved)"
+  Q-K-11: "claims contradicted or not supported by a mission, and who repeated them since (published)"
+  Q-K-19: "vetted claims queued for research with no mission started (assessment)"
+  Q-K-26: "evidence reports stale because new evidence was captured after publication (retrieved; also the MONITOR trigger)"
+  Q-K-27: "third-party verdicts on claim C and how they map to the lattice (assessment)"
+  Q-K-28: "write precheck: is the proposition already in the graph (propositionHash) (retrieved)"
+answerKindsNote: "kinds from packets/D10/answer-kind-table.md (final = D10 ruling, R-50); see answer-kinds.yaml"
+
+openItems:
+  - "R-12 asks the owner to confirm the reading of directive 4.1 (the EVIDENCE_MISSION Activity ASSESSES exactly one Claim); owner decision."

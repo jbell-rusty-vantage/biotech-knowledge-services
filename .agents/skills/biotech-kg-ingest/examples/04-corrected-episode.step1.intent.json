@@ -1,0 +1,108 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v2",
+  "intentId": "skill-episode-1",
+  "pins": {
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+    "policyVersion": "bks-admission-policy/v1"
+  },
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "biotech-kg-ingest-examples",
+      "model": "example"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run-skill-episode-1",
+      "missionId": "mission-skill-episode",
+      "operationId": "op-skill-episode-1"
+    },
+    "activityKind": "INGESTION"
+  },
+  "basis": {
+    "creationOnly": {
+      "reason": "biotech-kg-ingest example episode: first capture of synthetic example entities"
+    }
+  },
+  "sources": [
+    {
+      "ref": "pr",
+      "source": {
+        "canonicalUri": "https://examples.bks.test/episode/press-release",
+        "sourceKind": "WEB_PAGE"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-04T08:00:00Z",
+        "observedAt": "2026-10-04T08:00:00Z",
+        "contentHash": "sha256:82b963ea39a519a0b3653b650e766674e23317153644a6da36eb5798b105eb05",
+        "contentHashBasis": "SYNTHETIC_FIXTURE",
+        "captureMethod": "bks-example/1",
+        "captureCompleteness": "COMPLETE"
+      },
+      "locators": [
+        {
+          "ref": "l-owns",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "raw-capture/v1",
+            "type": "TextQuoteSelector",
+            "exact": "Example Owner Co acquired Example Brand in March 2025",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 60,
+              "end": 113
+            }
+          },
+          "exact": "Example Owner Co acquired Example Brand in March 2025",
+          "startOffset": 60,
+          "endOffset": 113
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "org",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "Example Owner Co",
+      "uidSegment": "skill-episode-owner",
+      "properties": {
+        "entityKind": "LEGAL_ENTITY"
+      },
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "brand",
+      "mode": "new",
+      "nodeType": "Brand",
+      "name": "Example Brand",
+      "uidSegment": "skill-episode-brand",
+      "properties": {
+        "brandKind": "CONSUMER_PRODUCT"
+      },
+      "onMatch": "use_existing"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "owns",
+      "kind": "edge.assert",
+      "relationshipType": "OWNS_BRAND",
+      "fromRef": "org",
+      "toRef": "brand",
+      "asserterRef": "org",
+      "evidence": [
+        "l-owns"
+      ],
+      "assertion": {
+        "speechAct": "STATES",
+        "validity": {
+          "validFrom": "2025-03-01T00:00:00Z",
+          "validFromPrecision": "MONTH",
+          "validFromBasis": "STATED_BY_SOURCE"
+        }
+      }
+    }
+  ]
+}

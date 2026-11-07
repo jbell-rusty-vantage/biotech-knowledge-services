@@ -1,0 +1,29 @@
+"""
+Derived mechanism projection (AFFECTS_MECHANISM), recorded time only, read-only, regenerable by a PROJECTION Activity.
+Kernel DerivedEdgeProperties fields first, verbatim (derivationRule names method + version, e.g.
+`d2.affects-mechanism/v1`; derivedFromAssertionUids lists every input Assertion). The summary fields are computed from
+the input Assertions and their MechanismEvidenceContexts and exist because questions filter on them (Q-D2-02 direction
+and highest setting; CQ-MX-05 best basis; Q-D2-06 human yes/no). A superset of kernel DerivedEdgeProperties, an M11
+base (R-47). `score` stays null on this edge: it links two domain entities, so the executor validates score = null
+(00-DIRECTIVE 3.6); support scores and rankings (Q-D2-18) are D10 Association records (EVIDENCE_AGGREGATE, one per
+modulator × mechanism). `direction` is D3 EstimateDirection (R-59): direction of change, never benefit or harm.
+Questions: CQ-MX-05, Q-D2-02, Q-D2-03, Q-D2-06.
+"""
+type MechanismProjectionProperties @relationshipProperties {
+  projectionOfAssertionUid: String
+  derivationRule: String
+  derivedFromAssertionUids: [String!]
+  derivedFromAssessmentUids: [String!]
+  score: Float
+  derivedAt: DateTime
+  lastWriterRunId: String
+  direction: EstimateDirection
+  "Strongest kernel BasisKind among the inputs, ranked by the one published kernel basis order (BasisKind docstring; R-25)."
+  bestBasis: BasisKind
+  highestSetting: MechanismSetting
+  humanMeasured: Boolean
+  nContexts: Int
+  nHumanContexts: Int
+  "True when the input assertions name a MolecularEntity or D1 metabolite that PARTICIPATES_IN the mechanism, not the mechanism itself."
+  viaParticipant: Boolean
+}

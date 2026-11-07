@@ -1,0 +1,370 @@
+{
+  "format": "bks-eval-write-scoring-rules.v1",
+  "suite": "write-recovery",
+  "declared": "before any write-recovery answer of either arm",
+  "protocolSection": 10,
+  "inputs": {
+    "tasks": "sha256:97191305c0e1915bfc84979780ffbbb5f1ad8efda36f310abc92db640f8e2bad",
+    "gold": "sha256:c01731d1cd83dd094e064a117f204c8f6b70b8225e63127a3dcf8bd38ed4c779",
+    "exclusions": "sha256:0422184f9d9b9fc01f6f344bad8ff02035f98ea19f0ca04494720d09ec31d47c",
+    "answerContract": "sha256:5de181bdcf5b99c38cfca9d22791077907354d23dfc84b451421dc972918f948 (DEV-3, in force)"
+  },
+  "command": "node evals/v2/score.mjs --run <runDir> --bindings <bindings.json> --manifest runs/release-v2/custody/backups/20261011T224403Z-aura-neo4j/plans/mig-0b2e97d4b8e0/migration-manifest.json --report json",
+  "adapter": "none declared; any later adapter must be structural, identical for both arms and recorded in FREEZE.json before scoring",
+  "gates": {
+    "criticalFailures": 0,
+    "endToEndSuccess": ">= 0.90 (bootstrap 95% CI, seed 20261011, 10,000 resamples)",
+    "pairing": "identical seeded graphs (derive-gold-seeded.mjs --compare) else per-arm reporting"
+  },
+  "missingAnswer": "failure",
+  "tasks": [
+    {
+      "id": "WR-01",
+      "category": "supported-proposal",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "outcome",
+      "invariantKeys": [
+        "assertedEdgeBacked",
+        "assertion.evidence",
+        "receipt.complete"
+      ],
+      "duplicateRule": "duplicate = failure (fact not pre-seeded: write-seed-exclusions.json)"
+    },
+    {
+      "id": "WR-02",
+      "category": "provenance",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "error",
+      "invariantKeys": [],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-03",
+      "category": "admission",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "error",
+      "invariantKeys": [],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-04",
+      "category": "admission",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "error",
+      "invariantKeys": [],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-05",
+      "category": "admission",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "error",
+      "invariantKeys": [],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-06",
+      "category": "provenance",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "error",
+      "invariantKeys": [],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-07",
+      "category": "recovery",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "outcome",
+      "invariantKeys": [
+        "receipt.sameId",
+        "noNewEffects"
+      ],
+      "duplicateRule": "duplicate is the correct outcome (gold)"
+    },
+    {
+      "id": "WR-08",
+      "category": "recovery",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "error",
+      "invariantKeys": [],
+      "duplicateRule": "changed payload under an applied key = BKS_EFFECT_CONFLICT (gold)"
+    },
+    {
+      "id": "WR-09",
+      "category": "concurrency",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "oneOf",
+      "invariantKeys": [
+        "identity.single"
+      ],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-10",
+      "category": "temporal",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "error",
+      "invariantKeys": [],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-11",
+      "category": "temporal",
+      "critical": false,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "outcome",
+      "invariantKeys": [
+        "episodes.bothRetained"
+      ],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-12",
+      "category": "concurrency",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "error",
+      "invariantKeys": [],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-13",
+      "category": "recovery",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "markerStatus",
+      "invariantKeys": [
+        "marker.attemptsAppended",
+        "marker.notOverwritten"
+      ],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-14",
+      "category": "recovery",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "outcome",
+      "invariantKeys": [
+        "receipt.lookupFirst",
+        "noNewEffects",
+        "noNewIntentId"
+      ],
+      "duplicateRule": "receipt lookup returning the applied receipt is correct recovery (gold applied + receipt.lookupFirst)"
+    },
+    {
+      "id": "WR-15",
+      "category": "admission",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "error",
+      "invariantKeys": [],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-16",
+      "category": "admission",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "error",
+      "invariantKeys": [],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-17",
+      "category": "partial",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "sequence",
+      "invariantKeys": [],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-18",
+      "category": "verification",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "outcome",
+      "invariantKeys": [
+        "readback.allPages",
+        "readback.complete"
+      ],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-19",
+      "category": "temporal",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "error",
+      "invariantKeys": [],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-20",
+      "category": "admission",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "error",
+      "invariantKeys": [],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-21",
+      "category": "boundary",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "invariants",
+      "invariantKeys": [
+        "payloadDigest.equal"
+      ],
+      "duplicateRule": "duplicate = failure (WR-01 intent; not pre-seeded)"
+    },
+    {
+      "id": "WR-22",
+      "category": "boundary",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "outcome",
+      "invariantKeys": [
+        "verification.distinctFromAdmission",
+        "noNewEffects"
+      ],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-23",
+      "category": "boundary",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "outcome",
+      "invariantKeys": [
+        "receipt.effectReported",
+        "recovery.retained"
+      ],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-24",
+      "category": "capability",
+      "critical": false,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "status",
+      "invariantKeys": [
+        "notEmpty"
+      ],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-25",
+      "category": "read-safety",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "sequence",
+      "invariantKeys": [],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-26",
+      "category": "capability",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "status",
+      "invariantKeys": [
+        "notEmpty",
+        "evidence.gdsInstalledNotAdmitted"
+      ],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-27",
+      "category": "analytics-safety",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "status",
+      "invariantKeys": [
+        "noGraphWrites"
+      ],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-28",
+      "category": "provenance",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "error",
+      "invariantKeys": [],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-29",
+      "category": "migration",
+      "critical": true,
+      "environment": "migration shadow (eval-migration-shadow.sh, per arm)",
+      "goldKind": "invariants",
+      "invariantKeys": [
+        "verify.allChecks",
+        "elementIds.notPreserved",
+        "legacyKey.preserved"
+      ],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-30",
+      "category": "migration",
+      "critical": true,
+      "environment": "migration shadow (eval-migration-shadow.sh, per arm)",
+      "goldKind": "invariants",
+      "invariantKeys": [
+        "dryRun.allInvariants",
+        "accounting.reconciles",
+        "held.notVisible"
+      ],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-31",
+      "category": "read-safety",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "error",
+      "invariantKeys": [],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-32",
+      "category": "read-safety",
+      "critical": true,
+      "environment": "fresh fixture database (seed-write-pass.mjs, per arm)",
+      "goldKind": "status",
+      "invariantKeys": [
+        "retryBuffer.reset"
+      ],
+      "duplicateRule": null
+    },
+    {
+      "id": "WR-33",
+      "category": "migration",
+      "critical": true,
+      "environment": "migration shadow (eval-migration-shadow.sh, per arm)",
+      "goldKind": "invariants",
+      "invariantKeys": [
+        "legacy.nodesRetained",
+        "legacy.relationshipsRetained",
+        "nodesDeleted.zero"
+      ],
+      "duplicateRule": null
+    }
+  ],
+  "answerContract": "DEV-3 in force: runners hand answer-contract.json[taskId] to the agent with the prompt, identically for both arms; agents read only tasks.json and answer-contract.json"
+}

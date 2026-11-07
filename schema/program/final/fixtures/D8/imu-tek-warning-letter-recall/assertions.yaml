@@ -1,0 +1,630 @@
+# D8 fixture imu-tek-warning-letter-recall — assertions (fixtures stage, A7, 2026-10-08). Types: D8 SDL types bare, other modules
+# prefixed (D6.Product, D7.Organization). Predicates D8.* are literal (property-level) assertions; i12 is a kernel claim
+# occurrence (retelling by FDA) and i17 a kernel RATES_CLAIM (adversarial-review revision). producedBy ids are fixture-scoped, not Mission Control ids. expectedStatus is what the executor would write before
+# verification (PROPOSED); verification.v1 CAPTURE_FIDELITY on these exact spans moves them to ACCEPTED.
+fixture: imu-tek-warning-letter-recall
+producedBy:
+  missionId: mission:ft-D8-fixtures
+  runId: run:ft-D8-imu-tek-warning-letter-recall
+  note: fixture-scoped ids, not Mission Control ids
+entities:
+- ref: fda
+  type: D7.Organization
+  name: U.S. Food and Drug Administration
+  onMatch: use_existing
+- ref: imutek
+  type: D7.Organization
+  name: Imu-Tek Animal Health, Incorporated
+  onMatch: use_existing
+- ref: prod-c5-caps
+  type: D6.Product
+  name: Colostrum-5 Capsules (Imu-Tek)
+  onMatch: review
+  note: 'surface forms in the letter: ''Colostrum-5 Capsules'', ''Colostrom-5 Capsules'', ''ImuTek Colostrum-5 Capsules'''
+- ref: prod-c5-powder
+  type: D6.Product
+  name: Colostrum-5 Powder (Imu-Tek)
+  onMatch: review
+  note: 'NOT merged with prod-immuno5-powder: the letter and the recall name different products; sameness would need a D6 EQUIVALENCE assessment'
+- ref: prod-immuno5-powder
+  type: D6.Product
+  name: Imu-Tek Immuno-5 Colostrum Powder 7 oz
+  identifiers:
+  - scheme: GTIN
+    issuer: GS1 (UPC-A as printed in the recall record)
+    value: '738654000335'
+    normalizationRule: UPC-A '7 38654 00033 5' with spaces removed; GTIN-14 = left-pad with 00
+  propertyEvidence:
+  - loc-rc-product
+  onMatch: review
+- ref: wl-724610
+  type: RegulatoryRecord
+  name: FDA warning letter CMS 724610 to Imu-Tek Animal Health, Incorporated
+  uidSegment: fda-warning_letter-724610
+  properties:
+    recordKind: WARNING_LETTER
+    recordFamily: ENFORCEMENT
+    pathway: US_DIETARY_SUPPLEMENT
+    jurisdiction: US
+    recordNumber: '724610'
+    issuedAt: '2026-06-05T00:00:00Z'
+    issuingOffice: Human Foods Program, Office of Compliance and Enforcement, Office of Enforcement
+    outcome: VIOLATIONS_CITED
+    violationCategories:
+    - UNAPPROVED_NEW_DRUG_CLAIMS
+    - MISBRANDING
+    - CGMP_DIETARY_SUPPLEMENT
+    inspectionStartedAt: '2025-10-06T00:00:00Z'
+    inspectionEndedAt: '2025-10-14T00:00:00Z'
+    facilityAddressVerbatim: 3541 E. Vine Dr., Fort Collins, CO 80524
+  identifiers:
+  - scheme: FDA_WARNING_LETTER
+    issuer: FDA (MARCS-CMS)
+    value: '724610'
+    requested: true
+  propertyEvidence:
+  - loc-wl-cms
+  - loc-wl-office
+  - loc-wl-inspection
+  - loc-wl-drugclaim
+  - loc-wl-adulterated
+  onMatch: review
+- ref: rc-h04832026
+  type: RegulatoryRecord
+  name: FDA enforcement report recall H-0483-2026 (Imu-Tek Immuno-5 Colostrum Powder)
+  uidSegment: fda-recall-H-0483-2026
+  properties:
+    recordKind: RECALL
+    recordFamily: ENFORCEMENT
+    pathway: US_DIETARY_SUPPLEMENT
+    jurisdiction: US
+    recordNumber: H-0483-2026
+    issuedAt: '2026-02-05T00:00:00Z'
+    outcome: RECALL_INITIATED
+    violationCategories:
+    - UNDECLARED_ALLERGEN
+    recallClass: CLASS_II
+    recallStatus: TERMINATED
+    terminatedAt: '2026-08-14T00:00:00Z'
+    reasonVerbatim: Undeclared milk allergen
+    lotCodesVerbatim: 'Lot #216, Expiration 4/16/2027'
+  identifiers:
+  - scheme: FDA_RECALL
+    issuer: FDA Enforcement Report
+    value: H-0483-2026
+    requested: true
+  - scheme: FDA_RECALL_EVENT
+    issuer: FDA Enforcement Report
+    value: '98082'
+    requested: true
+  propertyEvidence:
+  - loc-rc-number
+  - loc-rc-class
+  - loc-rc-status
+  - loc-rc-classified
+  - loc-rc-terminated
+  - loc-rc-reason
+  - loc-rc-code
+  - loc-rc-event
+  onMatch: review
+  note: issuedAt = center_classification_date (FDA's act); recall_initiation_date 2025-11-25 is the firm's act and stays a literal assertion
+- ref: lot-216
+  type: Lot
+  name: Imu-Tek Immuno-5 Colostrum Powder 7 oz — lot 216
+  uidSegment: imutek-immuno5-powder-7oz-lot-216
+  properties:
+    lotCode: '216'
+    expiresAt: '2027-04-16T00:00:00Z'
+  identifiers:
+  - scheme: LOT_CODE
+    issuer: Imu-Tek Animal Health, Incorporated
+    value: '216'
+    requested: true
+  propertyEvidence:
+  - loc-rc-code
+  onMatch: review
+- ref: claim-c5
+  type: K.Claim
+  name: Colostrum-5 kills bacteria and viral invaders and helps correct bowel dysfunction
+  proposition: ImuTek Colostrum-5 Capsules and Powder has been shown to kill bacteria and viral invaders; it can also help correct bowel dysfunction by stimulating tissue repair
+  claimType: CAUSAL
+  onMatch: review
+  note: kernel Claim (adversarial-review revision); its occurrences are i12 (FDA's retelling) and, once the firm's page is captured, the firm's primary occurrence
+assertions:
+- id: i01
+  predicate: ISSUED_BY
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: wl-724610
+    type: RegulatoryRecord
+  object:
+    ref: fda
+    type: D7.Organization
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-wl-office
+  - loc-wl-signer
+  edge:
+    type: ISSUED_BY
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-imu-tek-warning-letter-recall
+- id: i02
+  predicate: ADDRESSED_TO
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: wl-724610
+    type: RegulatoryRecord
+  object:
+    ref: imutek
+    type: D7.Organization
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-wl-recipient
+  edge:
+    type: ADDRESSED_TO
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-imu-tek-warning-letter-recall
+- id: i03
+  predicate: CONCERNS
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: wl-724610
+    type: RegulatoryRecord
+  object:
+    ref: prod-c5-caps
+    type: D6.Product
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-wl-products
+  - loc-wl-adulterated
+  - loc-wl-mmr
+  edge:
+    type: CONCERNS
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-imu-tek-warning-letter-recall
+- id: i04
+  predicate: CONCERNS
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: wl-724610
+    type: RegulatoryRecord
+  object:
+    ref: prod-c5-powder
+    type: D6.Product
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-wl-products
+  - loc-wl-adulterated
+  - loc-wl-mmr
+  edge:
+    type: CONCERNS
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-imu-tek-warning-letter-recall
+- id: i05
+  predicate: ISSUED_BY
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: rc-h04832026
+    type: RegulatoryRecord
+  object:
+    ref: fda
+    type: D7.Organization
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-rc-number
+  - loc-rc-classified
+  edge:
+    type: ISSUED_BY
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  note: the Enforcement Report entry is FDA's record (FDA classifies); the recall itself was firm-initiated (literal i14)
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-imu-tek-warning-letter-recall
+- id: i06
+  predicate: ADDRESSED_TO
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: rc-h04832026
+    type: RegulatoryRecord
+  object:
+    ref: imutek
+    type: D7.Organization
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-rc-firm
+  edge:
+    type: ADDRESSED_TO
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-imu-tek-warning-letter-recall
+- id: i07
+  predicate: CONCERNS
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: rc-h04832026
+    type: RegulatoryRecord
+  object:
+    ref: prod-immuno5-powder
+    type: D6.Product
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-rc-product
+  edge:
+    type: CONCERNS
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-imu-tek-warning-letter-recall
+- id: i08
+  predicate: CONCERNS
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: rc-h04832026
+    type: RegulatoryRecord
+  object:
+    ref: lot-216
+    type: Lot
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-rc-code
+  edge:
+    type: CONCERNS
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-imu-tek-warning-letter-recall
+- id: i09
+  predicate: LOT_OF
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: lot-216
+    type: Lot
+  object:
+    ref: prod-immuno5-powder
+    type: D6.Product
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-rc-code
+  - loc-rc-product
+  edge:
+    type: LOT_OF
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  note: lot 216 is a lot of the recalled product; LOT_OF → Product because the record names one size (7 oz) of one product and no variant node exists yet
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-imu-tek-warning-letter-recall
+- id: i10
+  predicate: INSPECTION_WINDOW
+  assertionKind: FIELD
+  subject:
+    ref: wl-724610
+    type: RegulatoryRecord
+  value: 2025-10-06/2025-10-14
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-wl-inspection
+  edge: false
+  validTime:
+    validFrom: '2025-10-06'
+    validTo: '2025-10-14'
+    validFromPrecision: DAY
+    validToPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+    validToBasis: STATED_BY_SOURCE
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  note: node property inspectionStartedAt/EndedAt; valid time of the inspection as the letter states it (end date inclusive in the letter)
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-imu-tek-warning-letter-recall
+- id: i11
+  predicate: FORM_483_ISSUED_AND_RESPONSE
+  assertionKind: FIELD
+  subject:
+    ref: wl-724610
+    type: RegulatoryRecord
+  value: Form FDA 483 issued 2025-10-14; firm response dated 2025-10-29
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-wl-483
+  edge: false
+  validTime:
+    validFrom: '2025-10-14'
+    validFromPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-imu-tek-warning-letter-recall
+- id: i12
+  predicate: CLAIMS_THERAPEUTIC_EFFECT
+  assertionKind: CLAIM
+  claimType: CAUSAL
+  occurrenceOf: claim-c5
+  subject:
+    ref: prod-c5-caps
+    type: D6.Product
+  value: ImuTek Colostrum-5 Capsules and Powder has been shown to kill bacteria and viral invaders; can help correct bowel dysfunction by stimulating tissue repair
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-wl-drugclaim
+  - loc-wl-webreview
+  edge: false
+  validTime:
+    validObservedAt: '2026-04-01'
+    validObservedAtPrecision: MONTH
+    validFromBasis: OBSERVATION_ONLY
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: CITED_FROM_PRIOR_WORK
+  qualifiers:
+  - 'retelling (K M5): FDA quotes the claim from www.imutek.com as read in April 2026; the located span is in FDA''s letter, so the asserter is FDA'
+  - 'primary occurrence not captured: when the firm''s page is captured it becomes the primary (asserter imutek, basisKind MANUFACTURER_CLAIM) and this assertion gains DERIVED_FROM to it'
+  - the quote names "Capsules and Powder"; the occurrence also concerns prod-c5-powder
+  expectedStatus: PROPOSED
+  note: 'adversarial-review revision: was MAKES_CLAIM asserted by Imu-Tek on a span in FDA''s letter, which attributed a second-hand quote to the firm'
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-imu-tek-warning-letter-recall
+- id: i13
+  predicate: CGMP_FINDING
+  assertionKind: FIELD
+  subject:
+    ref: wl-724610
+    type: RegulatoryRecord
+  value: '21 CFR 111.70(e): no finished product specifications established for any dietary supplement'
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-wl-spec
+  edge: false
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'no typed edge (literal or predicate-only assertion): valid bounds unknown'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-imu-tek-warning-letter-recall
+- id: i14
+  predicate: CGMP_FINDING
+  assertionKind: FIELD
+  subject:
+    ref: wl-724610
+    type: RegulatoryRecord
+  value: '21 CFR 111.205(a): no master manufacturing record for Colostrum-5 Capsules and Colostrum-5 Powder'
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-wl-mmr
+  edge: false
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'no typed edge (literal or predicate-only assertion): valid bounds unknown'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-imu-tek-warning-letter-recall
+- id: i15
+  predicate: RECALL_INITIATED_BY_FIRM
+  assertionKind: FIELD
+  subject:
+    ref: rc-h04832026
+    type: RegulatoryRecord
+  value: 'Voluntary: Firm initiated; 2025-11-25'
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-rc-voluntary
+  - loc-rc-initiated
+  edge: false
+  validTime:
+    validFrom: '2025-11-25'
+    validFromPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-imu-tek-warning-letter-recall
+- id: i16
+  predicate: RECALL_STATUS
+  assertionKind: FIELD
+  subject:
+    ref: rc-h04832026
+    type: RegulatoryRecord
+  value: TERMINATED
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-rc-status
+  - loc-rc-terminated
+  edge: false
+  validTime:
+    validFrom: '2026-08-14'
+    validFromPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+    statedAsOf: '2026-09-30'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  note: statedAsOf = openFDA meta.last_updated in the capture
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-imu-tek-warning-letter-recall
+- id: i17
+  predicate: RATES_CLAIM
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: claim-c5
+    type: K.Claim
+  object:
+    ref: wl-724610
+    type: RegulatoryRecord
+  value: DRUG_CLAIM
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-wl-drugrating
+  - loc-wl-drugclaim
+  edge: false
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'no typed edge (kernel predicate convention): the rating is dated by the record (issuedAt 2026-06-05)'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - 'scale: FDA intended-use determination under 21 U.S.C. 321(g)(1)(B); DRUG_CLAIM = the claim establishes that the product is a drug'
+  expectedStatus: PROPOSED
+  note: 'adversarial-review revision: K item 9 / M4 — a regulator''s finding on a claim is RATES_CLAIM by the regulator (subject the Claim, rating in valueString); the object is the record that carries the finding (Q-D8-16 joins on it; kernel to confirm the object slot, OQ-D8-31)'
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-imu-tek-warning-letter-recall

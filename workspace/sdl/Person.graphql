@@ -1,0 +1,49 @@
+"""
+Purpose: a natural person who is a public actor in sourced material — officer, director, founder, investor, author,
+investigator, speaker, host, clinician who comments publicly, endorser named by a regulator — and only in that role. The
+holder of roles, stakes and payments; a possible asserter (ASSERTED_BY) and the speaker whose recommendations reach a
+financial interest. Never stores date of birth, residence or address, contact details, family members or transaction-level
+personal payments (privacy rule, 09-reasoning.md); privacyClass must be set (null fails closed).
+Identity rule: ORCID, SEC_CIK (Form 4 reporting owner) or NPI-1 when present, else (normalized full name, the public role
+and organization that make the person public); a name match alone never merges two Persons (RESOLUTION / EQUIVALENCE
+Assessment instead). A handle is not a Person (pseudonymous speakers are D9 accounts; 11-open-questions.md).
+uid token: `person` (hu:person:<opaque>).
+Questions: CQ-CL-05, CQ-EC-03, CQ-AX-18, CQ-EC-04, Q-D7-02, Q-D7-03, Q-D7-06, Q-D7-07, Q-D7-08, Q-D7-11, Q-D7-12,
+Q-D7-17, Q-D7-18, Q-D7-20, Q-D7-24, Q-D7-25.
+"""
+type Person implements Entity & Subjectable
+  @node(labels: ["Person", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Why this person is a public actor (privacy gate; Q-D7-18, Q-D7-24 filter on it)."
+  publicActorBasis: [PublicActorBasis!]
+  "Post-nominal credentials as printed (MD, PhD, RD); display and filter only, never a role fact."
+  credentialsVerbatim: String
+  "Display headline; facts in it are not queryable until asserted."
+  description: String
+  "Discourse projection cache (R-49, Q-D9-19): influence score of this person over the retelling graph (PageRank class), graph-wide, under influenceMethodVersion. A per-topic or per-frontier score is not stored here (open-questions FU-11). Authority: the occurrences and retellings it was computed from."
+  influenceScore: Float
+  "Method version of the influence cache, e.g. d9-influence/pagerank-v1 (R-45 condition 3)."
+  influenceMethodVersion: String @filterable(byValue: false) @sortable(byValue: false)
+  "When the PROJECTION Activity derived the influence cache (R-45 condition 3)."
+  influenceDerivedAt: DateTime @filterable(byValue: false) @sortable(byValue: false)
+  """class: asserted; cardinality: many (one episode per authorizing Assertion; two roles at one organization are two episodes); questions: Q-D7-02, Q-D7-03, Q-D7-08, Q-D7-12, Q-D7-17, Q-D7-25, CQ-CL-05, CQ-EC-03, CQ-AX-18, CQ-EC-04."""
+  holdsRoles: [Organization!]!
+    @relationship(type: "HOLDS_ROLE", direction: OUT, properties: "RoleEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (one episode per authorizing Assertion); questions: Q-D7-01, Q-D7-03, Q-D7-06, Q-D7-11, Q-D7-12, CQ-CL-05, CQ-EC-03, CQ-AX-18."""
+  holdsStakes: [Organization!]!
+    @relationship(type: "HOLDS_STAKE", direction: OUT, properties: "StakeEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (one episode per authorizing Assertion; the payer is the target); questions: Q-D7-06, Q-D7-07, Q-D7-16, Q-D7-18, CQ-CL-05, CQ-EC-03, CQ-AX-18, CQ-EC-04."""
+  receivesValueFrom: [Organization!]!
+    @relationship(type: "RECEIVES_VALUE_FROM", direction: OUT, properties: "ValueEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

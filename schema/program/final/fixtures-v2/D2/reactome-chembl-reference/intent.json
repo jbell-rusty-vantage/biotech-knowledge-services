@@ -1,0 +1,1365 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v2",
+  "intentId": "ft-d2-reactome-chembl-reference-2026-10-08",
+  "pins": {
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+    "policyVersion": "bks-admission-policy/v1"
+  },
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "a3-d2-fixtures",
+      "model": "claude-opus-5-5"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run:ft-D2-reactome-chembl-reference",
+      "missionId": "mission:ft-D2-fixtures"
+    },
+    "activityKind": "INGESTION"
+  },
+  "basis": {
+    "creationOnly": {
+      "reason": "FU-03 v2 fixture round: replay of a packet fixture into a graph without a prior custody snapshot",
+      "expectAbsent": [],
+      "expectPresent": []
+    }
+  },
+  "defaults": {
+    "privacyClass": "PUBLIC"
+  },
+  "sources": [
+    {
+      "ref": "s-chembl-mech-chembl413",
+      "source": {
+        "canonicalUri": "https://www.ebi.ac.uk/chembl/api/data/mechanism.json?molecule_chembl_id=CHEMBL413",
+        "title": "ChEMBL 37 mechanism record, CHEMBL413 (sirolimus)",
+        "sourceKind": "API"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:42:08Z",
+        "observedAt": "2026-10-08T21:42:08Z",
+        "contentHash": "sha256:d489e4f77fbebff09c1fe6e46dadbb980c95786cfcb48da7a2398659fe26d1fe",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {
+          "captureTool": "tool:chembl-rest (curl)"
+        }
+      },
+      "locators": [
+        {
+          "ref": "l-r-14",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "FK506-binding protein 1A inhibitor",
+            "jsonPointer": "/mechanisms/0/mechanism_of_action",
+            "valueDigest": "sha256:a464f793c449ae85f2b89df134e49c9613bd4217af7814d9e0052a8a756ecd55",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "FK506-binding protein 1A inhibitor"
+        },
+        {
+          "ref": "l-r-15",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "INHIBITOR",
+            "jsonPointer": "/mechanisms/0/action_type",
+            "valueDigest": "sha256:db43acd06e136898074a332ba9b81eefa331e1c4bd0a7282907d4b24ae75597b",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "INHIBITOR"
+        },
+        {
+          "ref": "l-r-16",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "CHEMBL1902",
+            "jsonPointer": "/mechanisms/0/target_chembl_id",
+            "valueDigest": "sha256:c4b1cd114efbe4630731a616959d328bebca9cf3fa06fafacd2d69afefcd2605",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "CHEMBL1902"
+        },
+        {
+          "ref": "l-r-17",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "http://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=3275b824-3f82-4151-2ab2-0036a9ba0acc#section-14",
+            "jsonPointer": "/mechanisms/0/mechanism_refs/0/ref_url",
+            "valueDigest": "sha256:fadadcded1d3e03f867311f1feea65baac4944a08f80e3399fd0fa69f26a8519",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "http://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=3275b824-3f82-4151-2ab2-0036a9ba0acc#section-14"
+        }
+      ]
+    },
+    {
+      "ref": "s-pubmed-36599349",
+      "source": {
+        "canonicalUri": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=36599349&retmode=xml",
+        "title": "Lopez-Otin et al. 2023 Cell 186(2):243 Hallmarks of aging: An expanding universe (PMID 36599349) PubMed record",
+        "sourceKind": "API"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:42:08Z",
+        "observedAt": "2026-10-08T21:42:08Z",
+        "contentHash": "sha256:4921f265511707dde7f02b8573ec05ce73e947c1e67b0d948da12cc8ef4ce37d",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/xml",
+        "metadata": {
+          "captureTool": "tool:pubmed-eutils (curl)",
+          "derivedTextHash": "sha256:08b036fd4c0e1497efef2991f2a602e408ab773a5f0ee8e8ecd42ac0df8d9897",
+          "derivedTextRule": "jats-xml2txt/v1"
+        }
+      },
+      "locators": [
+        {
+          "ref": "l-r-18",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "We propose the following twelve hallmarks of aging: genomic instability, telomere attrition, epigenetic alterations, loss of proteostasis, disabled macroautophagy, deregulated nutrient-sensing, mitochondrial dysfunction, cellular senescence, stem cell exhaustion, altered intercellular communication, chronic inflammation, and dysbiosis.",
+            "prefix": "rapeutic interventions on them. ",
+            "suffix": " These hallmarks are interconnec",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 434,
+              "end": 771
+            },
+            "offsetBasis": "jats-xml2txt/v1",
+            "normalization": "none",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "We propose the following twelve hallmarks of aging: genomic instability, telomere attrition, epigenetic alterations, loss of proteostasis, disabled macroautophagy, deregulated nutrient-sensing, mitochondrial dysfunction, cellular senescence, stem cell exhaustion, altered intercellular communication, chronic inflammation, and dysbiosis.",
+          "prefix": "rapeutic interventions on them. ",
+          "suffix": " These hallmarks are interconnec",
+          "quoteHash": "sha256:a5120c33c4c2ff4dd96f428052164f88e1664a4cd197641c169c2014d748e361",
+          "startOffset": 434,
+          "endOffset": 771
+        }
+      ]
+    },
+    {
+      "ref": "s-reactome-r-hsa-165159",
+      "source": {
+        "canonicalUri": "https://reactome.org/ContentService/data/query/R-HSA-165159",
+        "title": "Reactome R-HSA-165159.10 MTOR signalling",
+        "sourceKind": "API"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:42:08Z",
+        "observedAt": "2026-10-08T21:42:08Z",
+        "contentHash": "sha256:e9a2d1a5b150a5f80750156526bf90487d7591c3a3bed08962e405f8b4dc9e00",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {
+          "captureTool": "tool:reactome-content-service (curl)"
+        }
+      },
+      "locators": [
+        {
+          "ref": "l-r-10",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "R-HSA-165159.10",
+            "jsonPointer": "/stIdVersion",
+            "valueDigest": "sha256:b92c9f3f3d85472e117db0b6ab4fb6a3609c1ca79729e804e133f29ae9faaf0d",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "R-HSA-165159.10"
+        }
+      ]
+    },
+    {
+      "ref": "s-reactome-r-hsa-196807",
+      "source": {
+        "canonicalUri": "https://reactome.org/ContentService/data/query/R-HSA-196807",
+        "title": "Reactome R-HSA-196807.8 Nicotinate metabolism (database version 97)",
+        "sourceKind": "API"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:42:08Z",
+        "observedAt": "2026-10-08T21:42:08Z",
+        "contentHash": "sha256:dcb9f006696da212347945542f2ec9cf20e2afa337efdb99e4c147e5f024ed19",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {
+          "captureTool": "tool:reactome-content-service (curl)"
+        }
+      },
+      "locators": [
+        {
+          "ref": "l-r-01",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "R-HSA-196807.8",
+            "jsonPointer": "/stIdVersion",
+            "valueDigest": "sha256:8faa000283cb26fd54971cf24e3df7de98b3af5eb749fd36844a23435d991038",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "R-HSA-196807.8"
+        },
+        {
+          "ref": "l-r-02",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "Nicotinate (niacin) and nicotinamide are precursors of the coenzymes nicotinamide-adenine dinucleotide (NAD+) and nicotinamide-adenine dinucleotide phosphate (NADP+), essential cofactors in many redox reactions.",
+            "jsonPointer": "/summation/0/text",
+            "valueDigest": "sha256:80b0c04cae60881daca4d01c6b9e095a5de0d1989cbc8b2f2893a0b7fcf824e7",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Nicotinate (niacin) and nicotinamide are precursors of the coenzymes nicotinamide-adenine dinucleotide (NAD+) and nicotinamide-adenine dinucleotide phosphate (NADP+), essential cofactors in many redox reactions."
+        }
+      ]
+    },
+    {
+      "ref": "s-reactome-ancestors-r-hsa-196807",
+      "source": {
+        "canonicalUri": "https://reactome.org/ContentService/data/event/R-HSA-196807/ancestors",
+        "title": "Reactome event ancestors of R-HSA-196807",
+        "sourceKind": "API"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:42:08Z",
+        "observedAt": "2026-10-08T21:42:08Z",
+        "contentHash": "sha256:7b5291bc213956804ae31a1e9842ba598b4ee0a4cb399a973fb4e96bc8ea34aa",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {
+          "captureTool": "tool:reactome-content-service (curl)"
+        }
+      },
+      "locators": [
+        {
+          "ref": "l-r-03",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "R-HSA-196849.6",
+            "jsonPointer": "/0/1/stIdVersion",
+            "valueDigest": "sha256:05e39e28ea0ea1a38dafb4bd6ce259ba8d8b15a59dc02ffd3b68487761b49466",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "R-HSA-196849.6"
+        },
+        {
+          "ref": "l-r-04",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "R-HSA-196854.8",
+            "jsonPointer": "/0/2/stIdVersion",
+            "valueDigest": "sha256:c72dd746475bbba94f0db82fb3519ded6463f359c4e27ddf12b4c0600e682e1f",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "R-HSA-196854.8"
+        }
+      ]
+    },
+    {
+      "ref": "s-reactome-participants-r-hsa-165159",
+      "source": {
+        "canonicalUri": "https://reactome.org/ContentService/data/participants/R-HSA-165159/referenceEntities",
+        "title": "Reactome reference-entity participants of R-HSA-165159 (65)",
+        "sourceKind": "API"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:42:08Z",
+        "observedAt": "2026-10-08T21:42:08Z",
+        "contentHash": "sha256:5a799c76ffed4706c2b8a3cbc4e56b673fde602365b2554078ab66bbface5fdc",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {
+          "captureTool": "tool:reactome-content-service (curl)"
+        }
+      },
+      "locators": [
+        {
+          "ref": "l-r-11",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "jsonPointer": "/58",
+            "valueDigest": "sha256:4c5dd76f79f82075caa7c848fa948c2ab0792c09df42955dd039fbdfe0806359",
+            "basis": "raw-capture/v1"
+          }
+        },
+        {
+          "ref": "l-r-12",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "jsonPointer": "/22",
+            "valueDigest": "sha256:dfefddb9decc3c162989d2b31c7b6653e442856c08001677b87d3a3c1403d1e5",
+            "basis": "raw-capture/v1"
+          }
+        },
+        {
+          "ref": "l-r-13",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "jsonPointer": "/59",
+            "valueDigest": "sha256:0822b176d908e6dd21c80f62857c0f87edcb8529ded9cb44b2a94024fc360a7b",
+            "basis": "raw-capture/v1"
+          }
+        }
+      ]
+    },
+    {
+      "ref": "s-reactome-participants-r-hsa-196807",
+      "source": {
+        "canonicalUri": "https://reactome.org/ContentService/data/participants/R-HSA-196807/referenceEntities",
+        "title": "Reactome reference-entity participants of R-HSA-196807 (75)",
+        "sourceKind": "API"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:42:08Z",
+        "observedAt": "2026-10-08T21:42:08Z",
+        "contentHash": "sha256:6fb2fb339bd8eee2fd9f906453297b7ae3cbfc09f33e645e18fda9be2032d395",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {
+          "captureTool": "tool:reactome-content-service (curl)"
+        }
+      },
+      "locators": [
+        {
+          "ref": "l-r-05",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "jsonPointer": "/72",
+            "valueDigest": "sha256:263d117cf849364fe244597bb1a679dc09a8c0dcdae8150b0a4f05041c447280",
+            "basis": "raw-capture/v1"
+          }
+        },
+        {
+          "ref": "l-r-06",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "jsonPointer": "/71",
+            "valueDigest": "sha256:65b7c79c60457cab64e24e13e226136433c914f6b3378e13c44b39bac91ad33a",
+            "basis": "raw-capture/v1"
+          }
+        },
+        {
+          "ref": "l-r-07",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "jsonPointer": "/5",
+            "valueDigest": "sha256:ed678c3a69f9e65ff84876245af066a0643640a8dd9abd8686cde40c9ff6b28b",
+            "basis": "raw-capture/v1"
+          }
+        },
+        {
+          "ref": "l-r-08",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "jsonPointer": "/20",
+            "valueDigest": "sha256:1cd3644135932a21761a85ca3ec15c86f833d0ede8180e14874defc7d7440c35",
+            "basis": "raw-capture/v1"
+          }
+        },
+        {
+          "ref": "l-r-09",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "jsonPointer": "/8",
+            "valueDigest": "sha256:f1b1068429c7fea38f166172770fdd68ea45df27c0974e4c02df5b1537b3c116",
+            "basis": "raw-capture/v1"
+          }
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "agent-d2-curator",
+      "mode": "new",
+      "nodeType": "Agent",
+      "name": "D2 hallmark-mapping curator (fixture agent A3)",
+      "uidSegment": "fx-d2-hallmark-curator",
+      "properties": {
+        "agentKind": "MANUAL_AGENT"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "m-hallmark-mito",
+      "mode": "new",
+      "nodeType": "Mechanism",
+      "name": "mitochondrial dysfunction (hallmark of aging)",
+      "uidSegment": "fx-d2-hallmark-mitochondrial-dysfunction",
+      "properties": {
+        "key": "bellabs:hallmark-mitochondrial-dysfunction",
+        "mechanismKind": "HALLMARK",
+        "referenceScheme": "BELLLABS_CURATED",
+        "referenceRelease": "hallmarks-2023 (PMID 36599349)"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "m-hallmark-nutrient",
+      "mode": "new",
+      "nodeType": "Mechanism",
+      "name": "deregulated nutrient-sensing (hallmark of aging)",
+      "uidSegment": "fx-d2-hallmark-deregulated-nutrient-sensing",
+      "properties": {
+        "key": "bellabs:hallmark-deregulated-nutrient-sensing",
+        "mechanismKind": "HALLMARK",
+        "referenceScheme": "BELLLABS_CURATED",
+        "referenceRelease": "hallmarks-2023 (PMID 36599349)"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "m-hallmark-senescence",
+      "mode": "new",
+      "nodeType": "Mechanism",
+      "name": "cellular senescence (hallmark of aging)",
+      "uidSegment": "fx-d2-hallmark-cellular-senescence",
+      "properties": {
+        "key": "bellabs:hallmark-cellular-senescence",
+        "mechanismKind": "HALLMARK",
+        "referenceScheme": "BELLLABS_CURATED",
+        "referenceRelease": "hallmarks-2023 (PMID 36599349)"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "m-mito-respiration",
+      "mode": "new",
+      "nodeType": "Mechanism",
+      "name": "mitochondrial respiration",
+      "uidSegment": "fx-d2-mitochondrial-respiration",
+      "properties": {
+        "key": "bellabs:mitochondrial-respiration",
+        "mechanismKind": "PROCESS",
+        "referenceScheme": "BELLLABS_CURATED",
+        "referenceRelease": "fx-d2-curation-2026-10-08"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "m-reactome-165159",
+      "mode": "new",
+      "nodeType": "Mechanism",
+      "name": "MTOR signalling",
+      "uidSegment": "fx-d2-reactome-r-hsa-165159",
+      "properties": {
+        "key": "reactome:R-HSA-165159",
+        "mechanismKind": "PATHWAY",
+        "referenceScheme": "REACTOME",
+        "referenceRelease": "R-HSA-165159.10"
+      },
+      "identifiers": [
+        {
+          "scheme": "REACTOME",
+          "issuer": "Reactome",
+          "value": "R-HSA-165159"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "m-reactome-196807",
+      "mode": "new",
+      "nodeType": "Mechanism",
+      "name": "Nicotinate metabolism",
+      "uidSegment": "fx-d2-reactome-r-hsa-196807",
+      "properties": {
+        "key": "reactome:R-HSA-196807",
+        "mechanismKind": "PATHWAY",
+        "referenceScheme": "REACTOME",
+        "referenceRelease": "R-HSA-196807.8"
+      },
+      "identifiers": [
+        {
+          "scheme": "REACTOME",
+          "issuer": "Reactome",
+          "value": "R-HSA-196807"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "m-reactome-196849",
+      "mode": "new",
+      "nodeType": "Mechanism",
+      "name": "Metabolism of water-soluble vitamins and cofactors",
+      "uidSegment": "fx-d2-reactome-r-hsa-196849",
+      "properties": {
+        "key": "reactome:R-HSA-196849",
+        "mechanismKind": "PATHWAY",
+        "referenceScheme": "REACTOME",
+        "referenceRelease": "R-HSA-196849.6"
+      },
+      "identifiers": [
+        {
+          "scheme": "REACTOME",
+          "issuer": "Reactome",
+          "value": "R-HSA-196849"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "m-reactome-196854",
+      "mode": "new",
+      "nodeType": "Mechanism",
+      "name": "Metabolism of vitamins and cofactors",
+      "uidSegment": "fx-d2-reactome-r-hsa-196854",
+      "properties": {
+        "key": "reactome:R-HSA-196854",
+        "mechanismKind": "PATHWAY",
+        "referenceScheme": "REACTOME",
+        "referenceRelease": "R-HSA-196854.8"
+      },
+      "identifiers": [
+        {
+          "scheme": "REACTOME",
+          "issuer": "Reactome",
+          "value": "R-HSA-196854"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "m-senescence",
+      "mode": "new",
+      "nodeType": "Mechanism",
+      "name": "cellular senescence",
+      "uidSegment": "fx-d2-go-0090398",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "me-fkbp1a",
+      "mode": "new",
+      "nodeType": "MolecularEntity",
+      "name": "FKBP1A",
+      "uidSegment": "fx-d2-fkbp1a",
+      "properties": {
+        "entityKind": "PROTEIN",
+        "geneSymbol": "FKBP1A",
+        "organism": "HUMAN",
+        "ncbiTaxonId": "9606"
+      },
+      "identifiers": [
+        {
+          "scheme": "UNIPROT",
+          "issuer": "UniProt",
+          "value": "P62942"
+        },
+        {
+          "scheme": "CHEMBL",
+          "issuer": "EMBL-EBI ChEMBL",
+          "value": "CHEMBL1902"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "me-mtor",
+      "mode": "new",
+      "nodeType": "MolecularEntity",
+      "name": "MTOR",
+      "uidSegment": "fx-d2-mtor",
+      "properties": {
+        "entityKind": "PROTEIN",
+        "geneSymbol": "MTOR",
+        "organism": "HUMAN",
+        "ncbiTaxonId": "9606"
+      },
+      "identifiers": [
+        {
+          "scheme": "UNIPROT",
+          "issuer": "UniProt",
+          "value": "P42345"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "me-nampt",
+      "mode": "new",
+      "nodeType": "MolecularEntity",
+      "name": "NAMPT",
+      "uidSegment": "fx-d2-nampt",
+      "properties": {
+        "entityKind": "PROTEIN",
+        "geneSymbol": "NAMPT",
+        "organism": "HUMAN",
+        "ncbiTaxonId": "9606"
+      },
+      "identifiers": [
+        {
+          "scheme": "UNIPROT",
+          "issuer": "UniProt",
+          "value": "P43490"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "me-nmnat1",
+      "mode": "new",
+      "nodeType": "MolecularEntity",
+      "name": "NMNAT1",
+      "uidSegment": "fx-d2-nmnat1",
+      "properties": {
+        "entityKind": "PROTEIN",
+        "geneSymbol": "NMNAT1",
+        "organism": "HUMAN",
+        "ncbiTaxonId": "9606"
+      },
+      "identifiers": [
+        {
+          "scheme": "UNIPROT",
+          "issuer": "UniProt",
+          "value": "Q9HAN9"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "naad",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "NAAD",
+      "uidSegment": "fx-d2-naad",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "nad",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "NAD+",
+      "uidSegment": "fx-d2-nad",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "nr",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "nicotinamide riboside",
+      "uidSegment": "fx-d2-nicotinamide-riboside",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "org-reactome",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "Reactome (database version 97)",
+      "uidSegment": "fx-d2-reactome",
+      "properties": {
+        "entityKind": "UNSPECIFIED"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "sirolimus",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "sirolimus",
+      "uidSegment": "fx-d2-sirolimus",
+      "properties": {},
+      "identifiers": [
+        {
+          "scheme": "CHEMBL",
+          "issuer": "EMBL-EBI ChEMBL",
+          "value": "CHEMBL413"
+        }
+      ],
+      "onMatch": "use_existing"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "p-ae-00-part_of_mechanism",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "PART_OF_MECHANISM",
+      "fromRef": "m-reactome-196807",
+      "toRef": "m-reactome-196849",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "CITED_FROM_PRIOR_WORK",
+        "qualifiers": [],
+        "validity": {},
+        "uidSegment": "fx-d2-r-ref-01"
+      },
+      "edgeProperties": {
+        "referenceScheme": "REACTOME",
+        "referenceRelease": "R-HSA-196807.8"
+      },
+      "evidence": [
+        "l-r-03"
+      ],
+      "asserterRef": "org-reactome"
+    },
+    {
+      "proposalId": "p-ae-01-part_of_mechanism",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "PART_OF_MECHANISM",
+      "fromRef": "m-reactome-196849",
+      "toRef": "m-reactome-196854",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "CITED_FROM_PRIOR_WORK",
+        "qualifiers": [],
+        "validity": {},
+        "uidSegment": "fx-d2-r-ref-02"
+      },
+      "edgeProperties": {
+        "referenceScheme": "REACTOME",
+        "referenceRelease": "R-HSA-196849.6"
+      },
+      "evidence": [
+        "l-r-04"
+      ],
+      "asserterRef": "org-reactome"
+    },
+    {
+      "proposalId": "p-ae-03-part_of_mechanism",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "PART_OF_MECHANISM",
+      "fromRef": "m-mito-respiration",
+      "toRef": "m-hallmark-mito",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "CURATOR_CLASSIFICATION",
+        "qualifiers": [],
+        "validity": {},
+        "uidSegment": "fx-d2-r-ref-04"
+      },
+      "edgeProperties": {
+        "referenceScheme": "BELLLABS_CURATED",
+        "referenceRelease": "fx-d2-curation-2026-10-08"
+      },
+      "evidence": [
+        "l-r-18"
+      ],
+      "asserterRef": "agent-d2-curator"
+    },
+    {
+      "proposalId": "p-ae-04-part_of_mechanism",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "PART_OF_MECHANISM",
+      "fromRef": "m-reactome-165159",
+      "toRef": "m-hallmark-nutrient",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "CURATOR_CLASSIFICATION",
+        "qualifiers": [],
+        "validity": {},
+        "uidSegment": "fx-d2-r-ref-05"
+      },
+      "edgeProperties": {
+        "referenceScheme": "BELLLABS_CURATED",
+        "referenceRelease": "fx-d2-curation-2026-10-08"
+      },
+      "evidence": [
+        "l-r-18"
+      ],
+      "asserterRef": "agent-d2-curator"
+    },
+    {
+      "proposalId": "p-ae-05-part_of_mechanism",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "PART_OF_MECHANISM",
+      "fromRef": "m-senescence",
+      "toRef": "m-hallmark-senescence",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "CURATOR_CLASSIFICATION",
+        "qualifiers": [],
+        "validity": {},
+        "uidSegment": "fx-d2-r-ref-06"
+      },
+      "edgeProperties": {
+        "referenceScheme": "BELLLABS_CURATED",
+        "referenceRelease": "fx-d2-curation-2026-10-08"
+      },
+      "evidence": [
+        "l-r-18"
+      ],
+      "asserterRef": "agent-d2-curator"
+    },
+    {
+      "proposalId": "p-ae-06-participates_in",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "PARTICIPATES_IN",
+      "fromRef": "me-nampt",
+      "toRef": "m-reactome-196807",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "CITED_FROM_PRIOR_WORK",
+        "qualifiers": [],
+        "validity": {},
+        "uidSegment": "fx-d2-r-ref-07"
+      },
+      "edgeProperties": {
+        "referenceScheme": "REACTOME",
+        "referenceRelease": "R-HSA-196807.8",
+        "participantRole": "MEMBER"
+      },
+      "evidence": [
+        "l-r-05"
+      ],
+      "asserterRef": "org-reactome"
+    },
+    {
+      "proposalId": "p-ae-07-participates_in",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "PARTICIPATES_IN",
+      "fromRef": "me-nmnat1",
+      "toRef": "m-reactome-196807",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "CITED_FROM_PRIOR_WORK",
+        "qualifiers": [],
+        "validity": {},
+        "uidSegment": "fx-d2-r-ref-08"
+      },
+      "edgeProperties": {
+        "referenceScheme": "REACTOME",
+        "referenceRelease": "R-HSA-196807.8",
+        "participantRole": "MEMBER"
+      },
+      "evidence": [
+        "l-r-06"
+      ],
+      "asserterRef": "org-reactome"
+    },
+    {
+      "proposalId": "p-ae-08-participates_in",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "PARTICIPATES_IN",
+      "fromRef": "me-fkbp1a",
+      "toRef": "m-reactome-165159",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "CITED_FROM_PRIOR_WORK",
+        "qualifiers": [],
+        "validity": {},
+        "uidSegment": "fx-d2-r-ref-09"
+      },
+      "edgeProperties": {
+        "referenceScheme": "REACTOME",
+        "referenceRelease": "R-HSA-165159.10",
+        "participantRole": "MEMBER"
+      },
+      "evidence": [
+        "l-r-11"
+      ],
+      "asserterRef": "org-reactome"
+    },
+    {
+      "proposalId": "p-ae-09-participates_in",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "PARTICIPATES_IN",
+      "fromRef": "me-mtor",
+      "toRef": "m-reactome-165159",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "CITED_FROM_PRIOR_WORK",
+        "qualifiers": [],
+        "validity": {},
+        "uidSegment": "fx-d2-r-ref-10"
+      },
+      "edgeProperties": {
+        "referenceScheme": "REACTOME",
+        "referenceRelease": "R-HSA-165159.10",
+        "participantRole": "MEMBER"
+      },
+      "evidence": [
+        "l-r-12"
+      ],
+      "asserterRef": "org-reactome"
+    },
+    {
+      "proposalId": "p-ae-10-participates_in",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "PARTICIPATES_IN",
+      "fromRef": "nad",
+      "toRef": "m-reactome-196807",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "CITED_FROM_PRIOR_WORK",
+        "qualifiers": [],
+        "validity": {},
+        "uidSegment": "fx-d2-r-ref-11"
+      },
+      "edgeProperties": {
+        "referenceScheme": "REACTOME",
+        "referenceRelease": "R-HSA-196807.8",
+        "participantRole": "MEMBER"
+      },
+      "evidence": [
+        "l-r-07"
+      ],
+      "asserterRef": "org-reactome"
+    },
+    {
+      "proposalId": "p-ae-11-participates_in",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "PARTICIPATES_IN",
+      "fromRef": "naad",
+      "toRef": "m-reactome-196807",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "CITED_FROM_PRIOR_WORK",
+        "qualifiers": [],
+        "validity": {},
+        "uidSegment": "fx-d2-r-ref-12"
+      },
+      "edgeProperties": {
+        "referenceScheme": "REACTOME",
+        "referenceRelease": "R-HSA-196807.8",
+        "participantRole": "MEMBER"
+      },
+      "evidence": [
+        "l-r-08"
+      ],
+      "asserterRef": "org-reactome"
+    },
+    {
+      "proposalId": "p-ae-12-participates_in",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "PARTICIPATES_IN",
+      "fromRef": "nr",
+      "toRef": "m-reactome-196807",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "CITED_FROM_PRIOR_WORK",
+        "qualifiers": [],
+        "validity": {},
+        "uidSegment": "fx-d2-r-ref-13"
+      },
+      "edgeProperties": {
+        "referenceScheme": "REACTOME",
+        "referenceRelease": "R-HSA-196807.8",
+        "participantRole": "MEMBER"
+      },
+      "evidence": [
+        "l-r-09"
+      ],
+      "asserterRef": "org-reactome"
+    },
+    {
+      "proposalId": "p-ae-13-participates_in",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "PARTICIPATES_IN",
+      "fromRef": "sirolimus",
+      "toRef": "m-reactome-165159",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "CITED_FROM_PRIOR_WORK",
+        "qualifiers": [],
+        "validity": {},
+        "uidSegment": "fx-d2-r-ref-14"
+      },
+      "edgeProperties": {
+        "referenceScheme": "REACTOME",
+        "referenceRelease": "R-HSA-165159.10",
+        "participantRole": "MEMBER"
+      },
+      "evidence": [
+        "l-r-13"
+      ],
+      "asserterRef": "org-reactome"
+    }
+  ],
+  "notes": "Contract gaps (intent v1, 2026-10-08): (G1) no proposal kind writes a predicate-only Assertion with an object node (subject-predicate-object, no typed edge); edge.assert would create a typed edge named after the predicate, which D2 registers as predicate-only. (G2) an Assertion created by a proposal cannot be the endpoint of another proposal, so OBSERVED_IN_CONTEXT (Assertion -> MechanismEvidenceContext) cannot be written in the same intent. (G3) no kernel Assessment / Adjudication proposals. (G4) D2 node types and properties are not in the pinned schema yet, so the planner would reject the node types until the merged schema is pinned. Not expressed here: PART_OF_MECHANISM m-oxphos->m-mito-respiration (A-r-ref-03: curated, curation-record locator not captured); A-r-01 sirolimus INHIBITS me-fkbp1a Close-out FU-03 (2026-10-09): R-26 the curator-agent hallmark-mapping edge.asserts (A-r-ref-04..06; A-r-ref-03 has no proposal since it has no locator) use basisKind CURATOR_CLASSIFICATION.",
+  "provenance": {
+    "derivedFrom": {
+      "schemaVersion": "biotech-knowledge-intent.v1",
+      "path": "schema/program/final/fixtures/D2/reactome-chembl-reference/intent.json",
+      "rawBytesDigest": "sha256:dbfae3425abebc33bbdb4d09092c246ab5edb6d774a4bdd43565c35af6ad5967"
+    },
+    "migrator": "bks-migrate-intent-v1/1",
+    "edits": [
+      {
+        "at": "context.activityKind",
+        "rule": "P3-kernel-activity-kind",
+        "from": "EXTRACTION",
+        "to": "INGESTION"
+      },
+      {
+        "at": "onStale",
+        "rule": "strict-stale",
+        "from": "fail",
+        "to": null,
+        "note": "production onStale removed; stale state is a new plan"
+      },
+      {
+        "at": "sources[0].snapshot.metadata",
+        "rule": "retained-not-written",
+        "from": [
+          "captureTool"
+        ]
+      },
+      {
+        "at": "sources[0].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:7a5472f279a4f0d86be310ed313e112b3274784a8132db68368e581fe43db270",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[1].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:4ec8d0c6c1b66c8e1610dcd6e26c795779593c7429831c0a72fc9852a70f6ad6",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[2].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[2].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:e45e3b28bed75107d0c4720a1178a00c616a3d7c21c2e9dd6998fbd16b3118c7",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[3].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[3].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:b7e5c4cbd86d9de80afdeac214aa167b932621bf06e02e37e83cd61c06f5050a",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[1].snapshot.metadata",
+        "rule": "retained-not-written",
+        "from": [
+          "captureTool",
+          "derivedTextHash",
+          "derivedTextRule"
+        ]
+      },
+      {
+        "at": "sources[1].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis jats-xml2txt/v1)"
+      },
+      {
+        "at": "sources[1].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:0cb382a7974a21c4494791de8d4c0d65ffcb59c5b69b6d8789c22171f2e32296",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[2].snapshot.metadata",
+        "rule": "retained-not-written",
+        "from": [
+          "captureTool"
+        ]
+      },
+      {
+        "at": "sources[2].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[2].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:79769f7b99df111189e71cafe1a5ead3011cad6e3742b52c4fdea0b128e6315f",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[3].snapshot.metadata",
+        "rule": "retained-not-written",
+        "from": [
+          "captureTool"
+        ]
+      },
+      {
+        "at": "sources[3].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[3].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:79769f7b99df111189e71cafe1a5ead3011cad6e3742b52c4fdea0b128e6315f",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[3].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[3].locators[1].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:6d1f378c4c9d3bc17384daddcf118bba597ef11ea21ff5c9395ea5d7dfbc80aa",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[4].snapshot.metadata",
+        "rule": "retained-not-written",
+        "from": [
+          "captureTool"
+        ]
+      },
+      {
+        "at": "sources[4].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[4].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:c8b1973c3a5fdbc2b97a7e2d53d8f9033a8c6f5f83b269ef93ef044f6f9d5562",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[4].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[4].locators[1].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:bf6d5a36db792944c3e1a5398d697af2f8af416a9b0056d61fc4b73f74fb8863",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[5].snapshot.metadata",
+        "rule": "retained-not-written",
+        "from": [
+          "captureTool"
+        ]
+      },
+      {
+        "at": "sources[5].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[5].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:0ca8096c2ebbd5fd75147ed0eea40b169a30cd94539e8a4a4b428b693339b9e2",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[5].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[5].locators[1].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:7cb84361c781fc712cb8200a0788ea942f12c7d2adee942779df009b62b1be8a",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[5].locators[2].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[5].locators[2].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:5201b73ac110919b636d47074e74b05aa4a5f8be5896efb1a75ed112357ecea8",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[6].snapshot.metadata",
+        "rule": "retained-not-written",
+        "from": [
+          "captureTool"
+        ]
+      },
+      {
+        "at": "sources[6].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[6].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:a7e52f926c29d69d9b2c71d83ee12914f952d1d1223c7f3b07bba6c46f8c1a9d",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[6].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[6].locators[1].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:42fe4466c8452b13af80386e85b0b08a37621b83410c3fd5eb603517e28df60d",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[6].locators[2].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[6].locators[2].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:6ecd9f4911d2ab25b67ecf7972bed7fdccd45a95fa13f67182ecf27d1ca3fb88",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[6].locators[3].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[6].locators[3].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:8fae86ebe68765b6d0437c69a772db9f26ee180e784f73081a74b93198372895",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[6].locators[4].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[6].locators[4].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:027b4e51d870e483bfbe4b15cb7baf1e761268e6ee4d57189b14fcd2e4af2f97",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "subjects[org-reactome].properties.entityKind",
+        "rule": "schema-unknown-marker",
+        "from": null,
+        "to": "UNSPECIFIED",
+        "note": "not stated by the fixture source; OrganizationEntityKind.UNSPECIFIED is the release's explicit unknown member (OD-24 / OD-25), not a sourced fact"
+      }
+    ]
+  }
+}

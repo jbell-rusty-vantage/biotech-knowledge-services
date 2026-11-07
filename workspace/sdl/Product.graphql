@@ -1,0 +1,38 @@
+"""
+Purpose: the enduring marketed concept behind every variant, package and listing ("Tru Niagen", "AG1", "Big Mac"):
+what a brand presents, what marketing and target claims are made about (kernel Assertions with this as subject), what
+D8 recalls/certifications, D12 reference foods and D5 protocol steps point at. Prepared foods from a named organization
+are Products (productKind PREPARED_FOOD) whose brand is that organization's brand (00-DIRECTIVE 3.2, 3.3).
+Identity rule: (uid of the brand the product was first captured under, normalized marketed name) — jurisdiction joins
+the key only when the marketed name differs by market; never GTIN (GTINs identify Packages through the kernel). The key is
+fixed at minting: a later BRANDED_AS episode (acquisition, relaunch under another brand) never re-keys or re-mints the
+Product.
+uid token: `product` (hu:product:<opaque>).
+Questions: Q-D6-16, CQ-AX-25, Q-D6-03, Q-D6-18, Q-D6-19, Q-D6-20, Q-D6-22, Q-D6-11, Q-D6-12, CQ-AX-17.
+"""
+type Product implements Entity & Subjectable
+  @node(labels: ["Product", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Filter for every ranking and avoidance question (Q-D6-03, Q-D6-12, Q-D6-22)."
+  productKind: ProductKind!
+  "Marketed name as the brand prints it (identity key with the brand)."
+  marketedName: String!
+  "ISO 3166 code when the product is market-specific; null for multi-market products."
+  jurisdiction: String
+  """class: structural; cardinality: one_or_more; questions: CQ-AX-25, Q-D6-16, Q-D6-02."""
+  variants: [ProductVariant!]!
+    @relationship(type: "HAS_VARIANT", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: zero_or_one open episode (brand reassignments and renames are successive episodes); questions: Q-D6-16, Q-D6-20, Q-D6-11, Q-D6-12."""
+  brand: [Brand!]!
+    @relationship(type: "BRANDED_AS", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

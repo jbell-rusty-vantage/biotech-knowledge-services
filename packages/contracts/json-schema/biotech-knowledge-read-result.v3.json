@@ -1,0 +1,852 @@
+{
+  "$id": "https://belllabs.dev/contracts/biotech-knowledge-read-result.v3.json",
+  "title": "biotech-knowledge-read-result.v3",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "biotech-knowledge-read-result.v3"
+    },
+    "intentId": {
+      "type": "string"
+    },
+    "intentKind": {
+      "type": "string",
+      "const": "biotech-knowledge-read-intent.v3"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "empty",
+        "truncated",
+        "failed",
+        "skipped",
+        "unsupported",
+        "stale",
+        "forbidden"
+      ]
+    },
+    "reasons": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "ROW_CAP",
+              "BYTE_CAP",
+              "LIST_CAP",
+              "NESTING_CAP",
+              "TIMEOUT",
+              "CONCURRENCY_LIMIT",
+              "PARSE_REJECTED",
+              "CLAUSE_FORBIDDEN",
+              "PROCEDURE_FORBIDDEN",
+              "FUNCTION_FORBIDDEN",
+              "LABEL_FORBIDDEN",
+              "RELATIONSHIP_FORBIDDEN",
+              "PROPERTY_FORBIDDEN",
+              "FULL_ENTITY_RETURN",
+              "UNBOUNDED_PATTERN",
+              "VISIBILITY_UNPROVEN",
+              "READ_AUTHORITY_UNAVAILABLE",
+              "BINDING_FORBIDDEN",
+              "RELEASE_MISMATCH",
+              "CATALOG_MISMATCH",
+              "TEMPLATE_NOT_FOUND",
+              "TEMPLATE_UNSUPPORTED",
+              "PARAMETER_INVALID",
+              "RESULT_SCHEMA_MISMATCH",
+              "STALE_REVISION",
+              "TRANSIENT_RETRIES_EXHAUSTED",
+              "DATABASE_ERROR",
+              "DATABASE_FORBIDDEN",
+              "ONTOLOGY_ARTIFACT_ABSENT",
+              "VECTOR_SEARCH_DISABLED",
+              "UNKNOWN_TYPE",
+              "NOT_ADJUDICATED",
+              "AMBIGUOUS"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "path": {
+            "type": "string",
+            "maxLength": 400
+          },
+          "limit": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "parts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "opId": {
+            "type": "string"
+          },
+          "op": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "empty",
+              "truncated",
+              "failed",
+              "skipped",
+              "unsupported",
+              "stale",
+              "forbidden"
+            ]
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "enum": [
+                    "ROW_CAP",
+                    "BYTE_CAP",
+                    "LIST_CAP",
+                    "NESTING_CAP",
+                    "TIMEOUT",
+                    "CONCURRENCY_LIMIT",
+                    "PARSE_REJECTED",
+                    "CLAUSE_FORBIDDEN",
+                    "PROCEDURE_FORBIDDEN",
+                    "FUNCTION_FORBIDDEN",
+                    "LABEL_FORBIDDEN",
+                    "RELATIONSHIP_FORBIDDEN",
+                    "PROPERTY_FORBIDDEN",
+                    "FULL_ENTITY_RETURN",
+                    "UNBOUNDED_PATTERN",
+                    "VISIBILITY_UNPROVEN",
+                    "READ_AUTHORITY_UNAVAILABLE",
+                    "BINDING_FORBIDDEN",
+                    "RELEASE_MISMATCH",
+                    "CATALOG_MISMATCH",
+                    "TEMPLATE_NOT_FOUND",
+                    "TEMPLATE_UNSUPPORTED",
+                    "PARAMETER_INVALID",
+                    "RESULT_SCHEMA_MISMATCH",
+                    "STALE_REVISION",
+                    "TRANSIENT_RETRIES_EXHAUSTED",
+                    "DATABASE_ERROR",
+                    "DATABASE_FORBIDDEN",
+                    "ONTOLOGY_ARTIFACT_ABSENT",
+                    "VECTOR_SEARCH_DISABLED",
+                    "UNKNOWN_TYPE",
+                    "NOT_ADJUDICATED",
+                    "AMBIGUOUS",
+                    "USE_INELIGIBLE",
+                    "USE_UNADMITTED"
+                  ]
+                },
+                "message": {
+                  "type": "string",
+                  "maxLength": 2000
+                },
+                "path": {
+                  "type": "string",
+                  "maxLength": 400
+                },
+                "limit": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "code",
+                "message"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "columns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {
+                "$ref": "#/$defs/__schema0"
+              }
+            }
+          },
+          "rowCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "truncations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "rows",
+                    "bytes",
+                    "list"
+                  ]
+                },
+                "limit": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "path": {
+                  "type": "string",
+                  "maxLength": 400
+                }
+              },
+              "required": [
+                "kind",
+                "limit"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "annotations": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {
+              "$ref": "#/$defs/__schema0"
+            }
+          }
+        },
+        "required": [
+          "opId",
+          "op",
+          "status",
+          "reasons",
+          "columns",
+          "rows",
+          "rowCount",
+          "truncations"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "serialization": {
+      "type": "string",
+      "const": "bks-read-values.v1"
+    },
+    "ordering": {
+      "type": "string",
+      "enum": [
+        "statement",
+        "set",
+        "operation"
+      ]
+    },
+    "pins": {
+      "type": "object",
+      "properties": {
+        "releaseId": {
+          "type": "string"
+        },
+        "schemaReleaseDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "schemaDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "queryCatalogDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "workspaceFingerprint": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "releaseId",
+        "schemaReleaseDigest",
+        "schemaDigest",
+        "queryCatalogDigest",
+        "workspaceFingerprint"
+      ],
+      "additionalProperties": false
+    },
+    "binding": {
+      "type": "object",
+      "properties": {
+        "ref": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal"
+          ]
+        },
+        "readAuthority": {
+          "type": "string",
+          "enum": [
+            "database-role",
+            "session-routing"
+          ]
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "database-rbac",
+            "application"
+          ]
+        }
+      },
+      "required": [
+        "ref",
+        "scope",
+        "readAuthority",
+        "visibility"
+      ],
+      "additionalProperties": false
+    },
+    "consistency": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "observed",
+            "stable_revision"
+          ]
+        },
+        "graphRevision": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "attempts": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "bookmarks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "readInterval": {
+          "type": "object",
+          "properties": {
+            "startedAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+            },
+            "finishedAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+            }
+          },
+          "required": [
+            "startedAt",
+            "finishedAt"
+          ],
+          "additionalProperties": false
+        },
+        "snapshotClaim": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "mode",
+        "graphRevision",
+        "attempts",
+        "bookmarks",
+        "readInterval",
+        "snapshotClaim"
+      ],
+      "additionalProperties": false
+    },
+    "query": {
+      "type": "object",
+      "properties": {
+        "statementDigest": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "templateId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "language": {
+          "type": "string",
+          "const": "CYPHER_5"
+        }
+      },
+      "required": [
+        "statementDigest",
+        "templateId",
+        "language"
+      ],
+      "additionalProperties": false
+    },
+    "digests": {
+      "type": "object",
+      "properties": {
+        "queryDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "resultDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "receiptDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "queryDigest",
+        "resultDigest",
+        "receiptDigest"
+      ],
+      "additionalProperties": false
+    },
+    "snapshot": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "ref": {
+              "type": "string"
+            },
+            "bytesDigest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "ref",
+            "bytesDigest"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "receipt": {
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "type": "string"
+        },
+        "principalId": {
+          "type": "string"
+        },
+        "startedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+        },
+        "finishedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+        },
+        "elapsedMs": {
+          "type": "number"
+        },
+        "attempts": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "server": {
+          "type": "object",
+          "properties": {
+            "agent": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "edition": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "agent",
+            "edition"
+          ],
+          "additionalProperties": false
+        },
+        "plan": {
+          "anyOf": [
+            {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {
+                "$ref": "#/$defs/__schema0"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "requestId",
+        "principalId",
+        "startedAt",
+        "finishedAt",
+        "elapsedMs",
+        "attempts",
+        "server",
+        "plan"
+      ],
+      "additionalProperties": false
+    },
+    "use": {
+      "type": "object",
+      "properties": {
+        "officialUse": {
+          "type": "boolean"
+        },
+        "useName": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "audience": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "officialUse",
+        "useName",
+        "audience"
+      ],
+      "additionalProperties": false
+    },
+    "eligibility": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "format": {
+              "type": "string",
+              "const": "bks-read-eligibility.v1"
+            },
+            "checkedAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+            },
+            "authoritativeEpoch": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "decisionEpoch": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "state": {
+              "type": "string",
+              "enum": [
+                "eligible",
+                "revoked",
+                "stale",
+                "authority_unavailable"
+              ]
+            },
+            "authority": {
+              "type": "object",
+              "properties": {
+                "component": {
+                  "type": "string",
+                  "const": "knowledge_verification"
+                },
+                "available": {
+                  "type": "boolean"
+                },
+                "tenantId": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "detail": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "maxLength": 400
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "component",
+                "available",
+                "tenantId",
+                "detail"
+              ],
+              "additionalProperties": false
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "opId": {
+                    "type": "string"
+                  },
+                  "recordUid": {
+                    "type": "string"
+                  },
+                  "useDecisionId": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "useDecisionDigest": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^sha256:[0-9a-f]{64}$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "state": {
+                    "type": "string",
+                    "enum": [
+                      "eligible",
+                      "revoked",
+                      "stale",
+                      "unadmitted",
+                      "authority_unavailable"
+                    ]
+                  },
+                  "served": {
+                    "type": "boolean"
+                  },
+                  "reason": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 400
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "decisionEpoch": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "disposition": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "expiresAt": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                },
+                "required": [
+                  "opId",
+                  "recordUid",
+                  "useDecisionId",
+                  "useDecisionDigest",
+                  "state",
+                  "served",
+                  "reason",
+                  "decisionEpoch",
+                  "disposition",
+                  "expiresAt"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "excluded": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "held": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "format",
+            "checkedAt",
+            "authoritativeEpoch",
+            "decisionEpoch",
+            "state",
+            "authority",
+            "items",
+            "excluded",
+            "held"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "intentId",
+    "intentKind",
+    "status",
+    "reasons",
+    "parts",
+    "serialization",
+    "ordering",
+    "pins",
+    "binding",
+    "consistency",
+    "query",
+    "digests",
+    "snapshot",
+    "receipt",
+    "use",
+    "eligibility"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "__schema0": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema0"
+          }
+        },
+        {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/__schema0"
+          }
+        }
+      ]
+    }
+  }
+}

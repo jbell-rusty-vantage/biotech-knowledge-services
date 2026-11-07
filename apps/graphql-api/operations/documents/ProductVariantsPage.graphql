@@ -1,0 +1,33 @@
+# Paginated relationship: variants of a product (stable uid order, offset cursors) with their first packages.
+query ProductVariantsPage($uid: String!, $first: Int = 25, $after: String) {
+  products(where: { uid: { eq: $uid } }, limit: 1) {
+    uid
+    variantsConnection(first: $first, after: $after, sort: [{ node: { uid: ASC } }]) {
+      totalCount
+      pageInfo {
+        ...PageInfoFields
+      }
+      edges {
+        cursor
+        properties {
+          orderIndex
+        }
+        node {
+          uid
+          name
+          dosageForm
+          strengthVerbatim
+          flavor
+          jurisdiction
+          packages(limit: 5, sort: [{ uid: ASC }]) {
+            uid
+            name
+            packageKind
+            unitCount
+            unitNoun
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+"""
+Purpose: one production lot (batch) of one product or variant — the join key for "is the thing I hold real and lawful":
+recall lot lists, COA lot numbers, certifier lot and batch tables, counterfeit reports ('outdated and out-of-market lot
+numbers'), the consumer's bottle. Renames pinned ProductLot. Identity rule: (product or variant uid, normalized
+lotCode); the printed form stays in lotCode and the scheme LOT_CODE identifier (issuer = brand or manufacturer).
+uid token: `lot`. Questions: Q-D8-04, CQ-AX-19, Q-D8-05, Q-D8-07, Q-D8-08, CQ-PF-03a, Q-D8-18.
+"""
+type Lot implements Entity & Subjectable
+  @node(labels: ["Lot", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Lot or batch code as printed (e.g. 216, LNA-199-0715, H26246, P043-01)."
+  lotCode: String!
+  "Expiry or best-before date as printed."
+  expiresAt: DateTime
+  "Manufacture date when printed."
+  manufacturedAt: DateTime @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  """class: asserted; cardinality: exactly_one (variant when the source distinguishes it, else product); questions: Q-D8-04, CQ-AX-19, Q-D8-08, Q-D8-18."""
+  lotOf: [LotOfTarget!]!
+    @relationship(type: "LOT_OF", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

@@ -1,0 +1,248 @@
+# Fixture mcdonalds-fries-prepared-food — assertions (kernel Assertion shape, final/schema/kernel.graphql).
+# Fixture stage (A2, 2026-10-08); adversarial-review pass the same day. Every asserted edge is authorized by exactly one
+# Assertion whose predicate equals the edge type. FOOD_CONTAINS amounts are typed on the edge (FoodContentProperties:
+# statementKind, quantity, unitCode, amountBasis; `edgeValues` below) and repeated on the Assertion (valueNumber,
+# unitCode); derivation codes, n, min/max and portion labels are Assertion qualifiers in the 05 `qualifierGrammar`
+# (`key:VALUE`, no space). `notes` are fixture annotations, not Assertion fields. Locator refs resolve in locators.yaml.
+# uids are fixture-scoped (hu:<token>:<opaque>); producedBy ids are FIXTURE ids (mission:ft-D12-fixtures /
+# run:ft-D12-<fixture>), not real Mission Control runs. status = the value the executor writes at admission (PROPOSED);
+# expectedAfterAdjudication = what a CAPTURE_FIDELITY adjudication should yield if the locator re-selects the exact text.
+# Research is not medical advice.
+version: 1
+fixture: mcdonalds-fries-prepared-food
+producedBy: &run { missionId: "mission:ft-D12-fixtures", runId: "run:ft-D12-mcdonalds-fries-prepared-food", note: "fixture ids, not a real Mission Control run" }
+
+entities:
+  - { uid: "hu:product:mcdonalds-world-famous-fries-us", type: D6.Product, name: "World Famous Fries (McDonald's, US)", properties: { productKind: PREPARED_FOOD }, owner: D6 }
+  - { uid: "hu:product-variant:mcdonalds-world-famous-fries-us-medium", type: D6.ProductVariant, name: "World Famous Fries — Medium (US)", owner: D6 }
+  - { uid: "hu:label-version:mcdonalds-fries-us-medium-2022-01", type: D6.LabelVersion, name: "Medium French Fries menu declaration, as of January 2022", properties: { panelKind: MENU_DECLARATION, jurisdiction: US, asOfStatementVerbatim: "This information is correct as of January 2022, unless stated otherwise.", containsAllergens: [WHEAT, MILK], allergenStatementVerbatim: "Contains: Wheat, Milk." }, owner: D6 }
+  - { uid: "hu:brand:mcdonalds", type: D7.Brand, name: "McDonald's", owner: D7 }
+  - { uid: "hu:org:mcdonalds-us-web", type: D7.Organization, name: "McDonald's (publisher of mcdonalds.com/us)", owner: D7, note: "legal entity not resolved in this fixture (D7 resolves the publisher)" }
+  - { uid: "hu:org:usda-ars", type: D7.Organization, name: "USDA Agricultural Research Service (FoodData Central)", owner: D7 }
+  - { uid: "hu:food:fdc-170721", type: D12.FoodItem, name: "McDONALD'S, french fries", properties: { descriptionVerbatim: "McDONALD'S, french fries", definingSystem: FDC_SR_LEGACY, sourceRecordId: "170721", preparationMethod: NOT_STATED, variantKind: BASE, brandNameVerbatim: "McDONALD'S", isHistoricalReference: true, sourcePublishedAt: "2019-04-01T00:00:00Z" }, identifiers: [ { scheme: FDC_ID, value: "170721" }, { scheme: NDB_NUMBER, value: "21238", note: "scheme requested (06-node-register)" } ], note: "preparationMethod NOT_STATED: the record names no method (the curator does not read frying into french fries; SDL rule)" }
+  - { uid: "hu:food:fdc-170027", type: D12.FoodItem, name: "Potatoes, russet, flesh and skin, raw", properties: { descriptionVerbatim: "Potatoes, russet, flesh and skin, raw (Includes foods for USDA's Food Distribution Program)", definingSystem: FDC_SR_LEGACY, sourceRecordId: "170027", preparationMethod: RAW, variantKind: BASE, processingVerbatim: ["flesh and skin", "raw"], isHistoricalReference: true, sourcePublishedAt: "2019-04-01T00:00:00Z" }, identifiers: [ { scheme: FDC_ID, value: "170027" }, { scheme: NDB_NUMBER, value: "11353" } ] }
+  - { uid: "hu:food:fdc-170030", type: D12.FoodItem, name: "Potatoes, Russet, flesh and skin, baked", properties: { descriptionVerbatim: "Potatoes, Russet, flesh and skin, baked", definingSystem: FDC_SR_LEGACY, sourceRecordId: "170030", preparationMethod: BAKED, variantKind: PREPARATION, processingVerbatim: ["flesh and skin", "baked"], isHistoricalReference: true, sourcePublishedAt: "2019-04-01T00:00:00Z" }, identifiers: [ { scheme: FDC_ID, value: "170030" }, { scheme: NDB_NUMBER, value: "11356" } ] }
+  - { uid: "hu:constituent:energy", type: D1.Constituent, name: "Energy", identifiers: [ { scheme: FDC_NUTRIENT_NUMBER, value: "208", note: "scheme not in K identifier-schemes.yaml; D1 decides" } ], owner: D1 }
+  - { uid: "hu:constituent:potassium", type: D1.Constituent, name: "Potassium, K", identifiers: [ { scheme: FDC_NUTRIENT_NUMBER, value: "306" } ], owner: D1 }
+  - { uid: "hu:food-category:fdc-food-category-2100", type: D12.FoodCategory, name: "Fast Foods", properties: { system: FDC_FOOD_CATEGORY, code: "2100", label: "Fast Foods", systemVersion: "SR Legacy 2019-04" } }
+  - { uid: "hu:food-category:nova-4", type: D12.FoodCategory, name: "NOVA group 4 — ultra-processed foods", properties: { system: NOVA, code: "4", systemVersion: "Monteiro et al. 2019 (PHN 22(5):936-941)", label: "ultra-processed foods" } }
+  - { uid: "hu:agent:d12-curation-agent", type: K.Agent, name: "D12 curation agent (entity resolution, fixture)", properties: { agentKind: AUTOMATED_AGENT } }
+  - { uid: "hu:agent:nova-classifier", type: K.Agent, name: "NOVA marker classifier nova-markers/v1 (fixture rule)", properties: { agentKind: COMPUTATIONAL_MODEL } }
+
+assertions:
+  - id: "hu:assertion:ft-d12-mcd-01"
+    predicate: HAS_REFERENCE_FOOD
+    assertionKind: RELATIONSHIP
+    edge: { type: HAS_REFERENCE_FOOD, class: asserted, edgeProperties: AssertedEdgeProperties, storedDirection: "Product -> FoodItem (declared on FoodItem.referencedByProducts, direction IN)" }
+    subject: { uid: "hu:product:mcdonalds-world-famous-fries-us", type: D6.Product }
+    object: { uid: "hu:food:fdc-170721", type: D12.FoodItem }
+    asserter: { uid: "hu:agent:d12-curation-agent", type: K.Agent }
+    locators:
+      - { ref: loc-fdc721-description, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-mcd-potatoes, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-fdc721-historical, role: QUALIFIES, origin: DECLARED }
+    valueString: SAME_ITEM_IN_REFERENCE_DB
+    basisKind: EXPERT_OPINION
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["matchBasis:SAME_ITEM_IN_REFERENCE_DB"]
+    notes:
+      - "FDC names the chain and the item"
+      - "reference record is historical (FDC isHistoricalReference true; SR Legacy published 2019-04-01): composition values are not the chain's current declaration"
+      - "the chain declaration (LabelVersion as of January 2022) and the reference record stay two dated statements; nothing reconciles them"
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN, note: "a reformulation closes the episode (edge.close) when D6 records a new LabelVersion that breaks the match" }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-mcd-02"
+    predicate: FOOD_CONTAINS
+    assertionKind: METRIC
+    edge: { type: FOOD_CONTAINS, class: asserted, edgeProperties: FoodContentProperties, temporal: recorded-only }
+    edgeValues: { statementKind: CALCULATED, quantity: 323, unitCode: kcal, amountBasis: PER_100G }
+    subject: { uid: "hu:food:fdc-170721", type: D12.FoodItem }
+    object: { uid: "hu:constituent:energy", type: D1.Constituent }
+    asserter: { uid: "hu:org:usda-ars", type: D7.Organization }
+    locators:
+      - { ref: loc-fdc721-energy, role: SUPPORTS, origin: DECLARED }
+    valueNumber: 323
+    unitCode: kcal
+    basisKind: INFERRED_FROM_MEASUREMENT
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["derivation:FDC:NC", "dataPoints:0", "dataType:SR_LEGACY", "fdcNutrientNumber:208", "fdcFoodNutrientId:1546510"]
+    notes: ["FDC:NC = Calculated (foodNutrientSource 4 'Calculated or imputed'): a source-side calculation, so statementKind CALCULATED on the edge; not a BellLabs CALCULATED assertion (basisKind stays INFERRED_FROM_MEASUREMENT)"]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN, sourcePublishedAt: "2019-04-01", note: "sampling period not stated by the record; release date kept as a note, not as a valid-time bound (FOOD_CONTAINS is recorded-only)" }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-mcd-03"
+    predicate: FOOD_CONTAINS
+    assertionKind: METRIC
+    edge: { type: FOOD_CONTAINS, class: asserted, edgeProperties: FoodContentProperties, temporal: recorded-only }
+    edgeValues: { statementKind: MEASURED_IN_SAMPLE, quantity: 417, unitCode: mg, amountBasis: PER_100G }
+    subject: { uid: "hu:food:fdc-170027", type: D12.FoodItem }
+    object: { uid: "hu:constituent:potassium", type: D1.Constituent }
+    asserter: { uid: "hu:org:usda-ars", type: D7.Organization }
+    locators:
+      - { ref: loc-fdc027-potassium, role: SUPPORTS, origin: DECLARED }
+    valueNumber: 417
+    unitCode: mg
+    basisKind: DIRECT_MEASUREMENT
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["derivation:FDC:A", "dataPoints:4", "min:368", "max:458", "dataType:SR_LEGACY", "fdcNutrientNumber:306", "fdcFoodNutrientId:1488912"]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN, sourcePublishedAt: "2019-04-01" }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-mcd-04"
+    predicate: FOOD_CONTAINS
+    assertionKind: METRIC
+    edge: { type: FOOD_CONTAINS, class: asserted, edgeProperties: FoodContentProperties, temporal: recorded-only }
+    edgeValues: { statementKind: MEASURED_IN_SAMPLE, quantity: 550, unitCode: mg, amountBasis: PER_100G }
+    subject: { uid: "hu:food:fdc-170030", type: D12.FoodItem }
+    object: { uid: "hu:constituent:potassium", type: D1.Constituent }
+    asserter: { uid: "hu:org:usda-ars", type: D7.Organization }
+    locators:
+      - { ref: loc-fdc030-potassium, role: SUPPORTS, origin: DECLARED }
+    valueNumber: 550
+    unitCode: mg
+    basisKind: DIRECT_MEASUREMENT
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["derivation:FDC:A", "dataPoints:8", "min:422", "max:616", "dataType:SR_LEGACY", "fdcNutrientNumber:306", "fdcFoodNutrientId:1489164"]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN, sourcePublishedAt: "2019-04-01" }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-mcd-05"
+    predicate: VARIANT_OF
+    predicateOnly: true
+    assertionKind: RELATIONSHIP
+    subject: { uid: "hu:food:fdc-170030", type: D12.FoodItem, note: "variant: preparationMethod BAKED, variantKind PREPARATION" }
+    object: { uid: "hu:food:fdc-170027", type: D12.FoodItem, note: "base: preparationMethod RAW, variantKind BASE" }
+    asserter: { uid: "hu:agent:d12-curation-agent", type: K.Agent }
+    locators:
+      - { ref: loc-fdc030-description, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-fdc027-description, role: SUPPORTS, origin: DECLARED }
+    basisKind: EXPERT_OPINION
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["pairingRule:description-differs-only-in-preparation-term"]
+    notes:
+      - "FDC does not state the link; the curator pairs records whose descriptions differ only in the preparation term ('raw' vs 'baked', same food 'Potatoes, russet, flesh and skin'); this is why VARIANT_OF is predicate-only since the adversarial review (no typed edge is materialized)"
+      - "the base record also carries '(Includes foods for USDA's Food Distribution Program)'; this does not change the food concept"
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, note: "the relation between two dataset records has no valid-time history" }
+    status: PROPOSED
+    expectedAfterAdjudication: "ACCEPTED (SUPPORTED_WITH_QUALIFICATION: a pairing, not a verbatim statement)"
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-mcd-06"
+    predicate: IN_FOOD_CATEGORY
+    assertionKind: RELATIONSHIP
+    edge: { type: IN_FOOD_CATEGORY, class: asserted, edgeProperties: AssertedEdgeProperties, field: "FoodItem.categories (OUT)" }
+    subject: { uid: "hu:food:fdc-170721", type: D12.FoodItem }
+    object: { uid: "hu:food-category:fdc-food-category-2100", type: D12.FoodCategory }
+    asserter: { uid: "hu:org:usda-ars", type: D7.Organization }
+    locators:
+      - { ref: loc-fdc721-category, role: SUPPORTS, origin: DECLARED }
+    basisKind: UNSTATED
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["fdcFoodCategoryId:21"]
+    notes: ["source-stated membership (FDC foodCategory id 21, code 2100)"]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, sourcePublishedAt: "2019-04-01" }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  # D6-owned input (seam): the captured menu declaration attached to the medium served portion. It is the DERIVED_FROM
+  # input of the computed NOVA membership below. D6 writes it (state.attach HAS_LABEL_VERSION, AssertedEdgeProperties);
+  # it is listed here so the CALCULATED assertion's input is resolvable inside the fixture.
+  - id: "hu:assertion:ft-d12-mcd-07"
+    predicate: HAS_LABEL_VERSION
+    owner: D6
+    assertionKind: FIELD
+    edge: { type: HAS_LABEL_VERSION, class: asserted, edgeProperties: AssertedEdgeProperties, from: "D6.Package (medium served portion of hu:product-variant:mcdonalds-world-famous-fries-us-medium)", to: D6.LabelVersion }
+    subject: { uid: "hu:package:mcdonalds-world-famous-fries-us-medium-served", type: D6.Package }
+    object: { uid: "hu:label-version:mcdonalds-fries-us-medium-2022-01", type: D6.LabelVersion }
+    asserter: { uid: "hu:org:mcdonalds-us-web", type: D7.Organization }
+    locators:
+      - { ref: loc-mcd-ingredients, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-mcd-beef-flavor, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-mcd-allergens, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-mcd-calories, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-mcd-formulation, role: QUALIFIES, origin: DECLARED }
+      - { ref: loc-mcd-asof, role: QUALIFIES, origin: DECLARED }
+    basisKind: MANUFACTURER_CLAIM
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["jurisdiction:US"]
+    notes: ["declared energy line: 320 Cal per medium serving (D6 DECLARES_COMPONENT line → D1 Constituent energy, ComponentLineProperties amount 320, unitCode kcal, amountBasis PER_SERVING)"]
+    validTime: { validFrom: "2022-01-01T00:00:00Z", validFromPrecision: MONTH, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: UNKNOWN }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-mcd-08"
+    predicate: IN_FOOD_CATEGORY
+    assertionKind: COMPUTATION
+    edge: { type: IN_FOOD_CATEGORY, class: asserted, edgeProperties: AssertedEdgeProperties, field: "FoodCategory.memberProducts (IN; stored Product -> FoodCategory)" }
+    subject: { uid: "hu:product:mcdonalds-world-famous-fries-us", type: D6.Product }
+    object: { uid: "hu:food-category:nova-4", type: D12.FoodCategory }
+    asserter: { uid: "hu:agent:nova-classifier", type: K.Agent }
+    locators:
+      - { ref: loc-mcd-ingredients, role: SUPPORTS, origin: DECLARED, marker: "Hydrogenated Soybean Oil" }
+      - { ref: loc-mcd-beef-flavor, role: SUPPORTS, origin: DECLARED, marker: "Hydrolyzed Wheat And Hydrolyzed Milk" }
+      - { ref: loc-nova-rule-practical, role: CONTEXT, origin: DECLARED }
+      - { ref: loc-nova-rule-markers, role: CONTEXT, origin: DECLARED }
+    basisKind: CALCULATED
+    derivationRule: "nova-markers/v1"
+    derivedFrom: ["hu:assertion:ft-d12-mcd-07"]
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["marker:HYDROGENATED_OIL", "marker:HYDROLYSED_PROTEIN"]
+    notes:
+      - "rule nova-markers/v1 (fixture definition): NOVA group 4 when the ingredient statement contains at least one marker of the Monteiro et al. 2019 list ('hydrogenated or interesterified oils, and hydrolysed proteins', plus cosmetic additive classes)"
+      - "markers matched: hydrogenated oil ('Hydrogenated Soybean Oil'); hydrolysed protein ('Hydrolyzed Wheat And Hydrolyzed Milk')"
+      - "computed by BellLabs, not stated by McDonald's or by NOVA's authors; a source-stated NOVA group would be a separate Assertion on the same edge type"
+    validTime: { validFrom: "2022-01-01T00:00:00Z", validFromPrecision: MONTH, validFromBasis: INFERRED, note: "inherits the input declaration's as-of; a new LabelVersion or a new rule version supersedes this assertion" }
+    status: PROPOSED
+    expectedAfterAdjudication: "ACCEPTED if DERIVED_VERIFIED (both markers re-selected in the input snapshot)"
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-mcd-09"
+    predicate: HAS_PORTION_WEIGHT
+    assertionKind: METRIC
+    predicateOnly: true
+    subject: { uid: "hu:food:fdc-170721", type: D12.FoodItem }
+    object: null
+    asserter: { uid: "hu:org:usda-ars", type: D7.Organization }
+    locators:
+      - { ref: loc-fdc721-portion, role: SUPPORTS, origin: DECLARED }
+    valueNumber: 117
+    unitCode: g
+    basisKind: UNSTATED
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["portion:medium_serving", "fdcPortionSequence:2"]
+    notes: ["FDC foodPortions: 1 'medium serving' = 117 g; the label is a qualifier (exactly one literal value per Assertion)"]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, sourcePublishedAt: "2019-04-01" }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+relationshipsExercised:
+  HAS_REFERENCE_FOOD: ["hu:assertion:ft-d12-mcd-01"]
+  FOOD_CONTAINS: ["hu:assertion:ft-d12-mcd-02", "hu:assertion:ft-d12-mcd-03", "hu:assertion:ft-d12-mcd-04"]
+  IN_FOOD_CATEGORY: ["hu:assertion:ft-d12-mcd-06 (source-stated, FoodItem -> FDC category)", "hu:assertion:ft-d12-mcd-08 (CALCULATED, Product -> NOVA 4)"]
+  predicateOnly: { HAS_PORTION_WEIGHT: ["hu:assertion:ft-d12-mcd-09"], VARIANT_OF: ["hu:assertion:ft-d12-mcd-05 (predicate-only since the adversarial review)"] }
+  seams: { "D6 HAS_LABEL_VERSION": ["hu:assertion:ft-d12-mcd-07"] }
+
+notComputedOrStored:
+  - "Per-serving energy of the reference record (323 kcal/100 g × 117 g = 377.9 kcal) is computed at query time from mcd-02 and mcd-09; it is never stored and never reconciled with the chain's 320 Cal (Q-D12-04, Q-D12-30)."
+  - "No 'unhealthy' or 'ultra-processed' property on the Product or FoodItem: NOVA membership is an edge authorized by a CALCULATED assertion (00-DIRECTIVE 3.2)."

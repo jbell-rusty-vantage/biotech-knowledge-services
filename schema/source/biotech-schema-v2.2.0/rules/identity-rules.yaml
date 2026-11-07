@@ -1,0 +1,991 @@
+# Identity rules (bks-rules.v1)
+# GENERATED at promotion by scripts/release/lib/registries.mjs 1.0.0 (S1 schema authority) from the frozen candidate
+# (biotech-knowledge-services schema/program/final @ 431c8a7) and the promoted release sources. Upstream authority after
+# promotion: edit here through a release revision; re-running promotion on the same frozen inputs reproduces these bytes.
+# Closes: R-42, EX-04, MD-D1-03, MD-D5-04, MD-D5-07, BM-01, BM-06, KN-13, MD-D6-02, MD-D6-03.
+# Inputs (sha256):
+#   final/node-register.yaml  8cb701d7ab42a0d3343066eb66b74251bd66b57b2bfcd612496eadda178ef536
+#   final/vocabularies/identifier-schemes.yaml  e1633169c4ffda7bde60e0067975527feff06546d7cf70bdfe4d17f1c8e1f939
+# Research only, not medical advice.
+
+format: bks-rules.v1
+ruleSet: identity
+version: 1.0.0
+closes:
+  - R-42
+  - EX-04
+  - MD-D1-03
+  - MD-D5-04
+  - MD-D5-07
+  - BM-01
+  - BM-06
+  - KN-13
+  - MD-D6-02
+  - MD-D6-03
+references:
+  - vocabularies/identifier-schemes.yaml
+  - registers/node-register.yaml
+rules:
+  - id: ID-01
+    decision: R-42
+    rule: One (scheme, issuer, normalized value) identifies at most one Subjectable; no join through a shared Identifier. Enforced by the identifier_key uniqueness constraint (Identifier scheme, issuer, value); an issuer-less match is reported as ambiguous.
+  - id: ID-02
+    decision: KN-06 / MD-X-01
+    rule: An identifier scheme is writable only when vocabularies/identifier-schemes.yaml marks it active with namespace, issuer, normalization, uniqueness and rights definitions and an exercised capture route; requested schemes stay disabled for writes and keep their registry history.
+  - id: ID-03
+    decision: EX-04
+    rule: "Source identity is a versioned canonical-URI digest (canonical-uri/v1): lowercase scheme and host, default port dropped, fragment dropped, semantic query keys preserved and sorted (e.g. YouTube `v`), only documented tracking keys stripped (utm_*, fbclid, gclid, mc_cid, mc_eid), per-host rules versioned. The canonical URI is retained; a digest collision with a different canonical URI is quarantined, never merged; legacy slug identities are migrated with collision checks."
+  - id: ID-04
+    decision: MD-D1-03
+    rule: compositionDigest (D6 LabelVersion and D1 material composition) is computed over resolved D1 uids, normalized quantity/basis/unit and explicit unknown markers, sorted canonically; provisional names never establish cross-source equivalence; a spelling variant with the same resolved uids has the same digest, a changed formula a different one.
+  - id: ID-05
+    decision: MD-D5-04 / OD-27
+    rule: ProtocolEdition identity hashes the normalized instruction payload per logical edition/section set, not the whole page; the page capture is preserved separately; sponsor/disclosure-only changes are excluded from the hash and do not mint an edition (D7 temporal interest assertions capture them); changed instructions or doses mint a new edition.
+  - id: ID-06
+    decision: MD-D5-07
+    rule: A DOI or ISBN identifies the Publication; Protocol / ProtocolEdition link to their publication. No second identifier holder for the same namespace key.
+  - id: ID-07
+    decision: BM-06
+    rule: ProtocolStep stepKey = section slug + normalized action-text hash with stepKeyAlignmentVersion; a changed or ambiguous alignment preserves the prior step identity and requires a recorded mapping decision (rename fixtures).
+  - id: ID-08
+    decision: BM-01
+    rule: Equivalence scale and material boundaries per D1 (identity levels); a supplier-only change under the same evidenced specification does not create a new material; unresolved specification equivalence is held.
+  - id: ID-09
+    decision: BM-03
+    rule: An extract is not equated to a plant-part UNII because a label database does; record Taxon, plant part and preparation; REALIZES_SUBSTANCE only when the exact source scope supports it.
+  - id: ID-10
+    decision: BM-05 / MD-D4-02
+    rule: A vendor algorithm implementation is a distinct AlgorithmVersion until an accepted EQUIVALENCE assessment says otherwise; published algorithm identity and trademark/name stay separate.
+  - id: ID-11
+    decision: KN-13
+    rule: A QualityResult is reused only when its stable semantic identity and source measurement are unchanged; a new snapshot/locator is retained; re-anchoring alone is not an identity proof; a changed result becomes a new or superseding sourced record.
+  - id: ID-12
+    decision: MD-D6-02
+    rule: Two GTINs may identify one Package only when format, count and market equivalence is evidenced; otherwise separate candidates are retained and resolved; never split solely on sales channel.
+  - id: ID-13
+    decision: MD-D6-03
+    rule: Differently named enforcement products stay distinct until an EQUIVALENCE Assessment supports merging; observed names and their source are stored.
+  - id: ID-14
+    decision: OD-43
+    rule: A listing maps to a single evidenced Package only; ambiguous mappings become held resolution work.
+  - id: ID-15
+    decision: MD-D7-10 / MD-D11-04
+    rule: A rename does not create a new Organization; sponsor names resolve through kernel RESOLUTION with time-aware aliases; no module-owned competing alias database.
+  - id: ID-16
+    decision: EX-03
+    rule: Every capture attempt has a canonical request digest over method, normalized URI, body digest and behavior-affecting non-secret headers; secrets are referenced by credential identity/version, never by value.
+types:
+  Activity:
+    module: K
+    uidToken: activity
+    uidPattern: hu:activity:<opaque>
+    archetype: Occurrence
+    identityKeys:
+      - externalRunSystem
+      - runId
+    identifierSchemes: []
+  Adjudication:
+    module: K
+    uidToken: adjudication
+    uidPattern: hu:adjudication:<opaque>
+    archetype: EvidenceAssessment
+    identityKeys:
+      - judgmentId
+      - else (assertion, adjudicationKind, methodVersion, recordedAt)
+    identifierSchemes: []
+  Agent:
+    module: K
+    uidToken: agent
+    uidPattern: hu:agent:<opaque>
+    archetype: Entity
+    identityKeys:
+      - agentKind
+      - model
+      - promptVersion
+      - skillVersion
+      - toolVersion
+    identifierSchemes: []
+  AlgorithmVersion:
+    module: D4
+    uidToken: algorithm-version
+    uidPattern: hu:algorithm-version:<opaque>
+    archetype: Entity & Subjectable (versioned state; insert-only)
+    identityKeys:
+      - (familyKey, realization, versionLabel)
+      - else (familyKey, realization, issuer, versionPinnedAt) with versionBasis
+    identifierSchemes: []
+  AssayVersion:
+    module: D4
+    uidToken: assay-version
+    uidPattern: hu:assay-version:<opaque>
+    archetype: Entity & Subjectable (versioned state; insert-only)
+    identityKeys:
+      - payloadHash (identity fields + performing lab uid; + snapshot digest when any identity field is NOT_REPORTED)
+    identifierSchemes: []
+  Assertion:
+    module: K
+    uidToken: assertion
+    uidPattern: hu:assertion:<opaque>
+    archetype: Assertion
+    identityKeys:
+      - subject
+      - predicate
+      - object or literal
+      - asserter
+      - locator set
+      - validity
+    identifierSchemes: []
+  Assessment:
+    module: K
+    uidToken: assessment
+    uidPattern: hu:assessment:<opaque>
+    archetype: EvidenceAssessment
+    identityKeys:
+      - assessmentKind
+      - subjects
+      - methodVersion
+      - inputSetDigest
+      - recordedAt
+    identifierSchemes: []
+  Association:
+    module: D10
+    uidToken: association
+    uidPattern: hu:association:<opaque>
+    archetype: Entity
+    identityKeys:
+      - associationKind
+      - memberUids
+      - methodVersion
+      - inputSetDigest
+    identifierSchemes: []
+  Award:
+    module: D7
+    uidToken: award
+    uidPattern: hu:award:<opaque>
+    archetype: Entity
+    identityKeys:
+      - (award number, issuer as printed) as a kernel Identifier (AWARD_NUMBER / NIH_PROJECT)
+      - (normalized title, start year, issuer as printed) when no number exists
+    identifierSchemes:
+      - AWARD_NUMBER
+      - NIH_PROJECT
+      - DOI (award DOIs
+      - Crossref grant ids)
+    requestedSchemes:
+      - NIH_PROJECT
+  Biomarker:
+    module: D4
+    uidToken: biomarker
+    uidPattern: hu:biomarker:<opaque>
+    archetype: Entity & Subjectable (curated vocabulary node)
+    identityKeys:
+      - curated slug (hu:biomarker:<slug>)
+    identifierSchemes: []
+  Brand:
+    module: D7
+    uidToken: brand
+    uidPattern: hu:brand:<opaque>
+    archetype: Entity
+    identityKeys:
+      - (normalized brand name, brandKind, holder organization at first capture)
+    identifierSchemes:
+      - WIKIDATA
+      - WEB_DOMAIN
+    requestedSchemes:
+      - WEB_DOMAIN
+  CaptureAttempt:
+    module: D11
+    uidToken: capture-attempt
+    uidPattern: hu:capture-attempt:<opaque>
+    archetype: "Occurrence (implements Entity only; not Subjectable: nothing is asserted about an attempt). Stored labels [CaptureAttempt, Occurrence] per R-17: the :Entity label is only on Subjectable implementers and Identifier"
+    identityKeys:
+      - uid
+    identifierSchemes: []
+    identityRule: "uid = hu:capture-attempt:<sha256(runId of the generating Activity | toolId | requestDigest | attemptedAt)>; enforced by the kernel uid uniqueness constraint. runId is not a CaptureAttempt property; for an immutable attempt lastWriterRunId equals it (adversarial review: the earlier key list named generatingActivity.runId, which no constraint can see)"
+  CertificationListing:
+    module: D8
+    uidToken: cert-listing
+    uidPattern: hu:cert-listing:<opaque>
+    archetype: Entity & Subjectable (authority record)
+    identityKeys:
+      - issuedBy.uid
+      - programme
+      - listingId (else canonical listing URL)
+    identifierSchemes:
+      - CERT_LISTING
+  Channel:
+    module: D9
+    uidToken: channel
+    uidPattern: hu:channel:<opaque>
+    archetype: Entity
+    identityKeys:
+      - platform
+      - platformAccountId
+    identifierSchemes:
+      - PODCAST_INDEX_FEED
+      - ISSN
+      - WIKIDATA
+      - YOUTUBE_CHANNEL
+      - APPLE_PODCAST
+      - SPOTIFY
+      - X_ACCOUNT
+    requestedSchemes:
+      - YOUTUBE_CHANNEL
+      - APPLE_PODCAST
+      - SPOTIFY
+      - X_ACCOUNT
+    identityFallback: normalized feedUrl, else normalized homeUrl
+  ChemicalSubstance:
+    module: D1
+    uidToken: substance
+    uidPattern: hu:substance:<opaque>
+    archetype: Entity
+    identityKeys:
+      - UNII
+      - INCHIKEY (when no UNII)
+      - (normalized preferred name, substanceClass) provisional
+    identifierSchemes:
+      - UNII
+      - INCHIKEY
+      - PUBCHEM_CID
+      - CAS_RN
+      - CHEBI
+      - DRUGBANK
+      - RXCUI
+      - MESH
+      - WIKIDATA
+  Chunk:
+    module: D9
+    uidToken: chunk
+    uidPattern: hu:chunk:<opaque>
+    archetype: Entity
+    identityKeys:
+      - snapshot
+      - textVersionHash
+      - chunkerVersion
+      - chunkIndex
+    identifierSchemes: []
+  Claim:
+    module: K
+    uidToken: claim
+    uidPattern: hu:claim:<opaque>
+    archetype: Entity
+    identityKeys:
+      - propositionHash
+    identifierSchemes: []
+  Condition:
+    module: D2
+    uidToken: condition
+    uidPattern: hu:condition:<opaque>
+    archetype: vocabulary (MONDO-backed, loaded on demand)
+    identityKeys:
+      - MONDO identifier when present
+      - key
+    identifierSchemes:
+      - MONDO
+      - ICD10CM
+      - HPO
+      - SNOMEDCT
+      - MESH
+      - WIKIDATA
+      - ORPHANET
+      - OMIM
+      - EFO
+    requestedSchemes:
+      - ORPHANET
+      - OMIM
+  Constituent:
+    module: D1
+    uidToken: constituent
+    uidPattern: hu:constituent:<opaque>
+    archetype: Entity
+    identityKeys:
+      - constituentKind
+      - "normalized name (nutrients: authority nutrient list name, e.g. 21 CFR 101.9)"
+      - CHEBI class id when one exists
+    identifierSchemes:
+      - CHEBI
+      - MESH
+      - FDC_NUTRIENT
+  DecisionCriterion:
+    module: D10
+    uidToken: decision-criterion
+    uidPattern: hu:decision-criterion:<opaque>
+    archetype: Entity
+    identityKeys:
+      - criterionKey
+      - version
+    identifierSchemes: []
+  Device:
+    module: D4
+    uidToken: device
+    uidPattern: hu:device:<opaque>
+    archetype: Entity & Subjectable
+    identityKeys:
+      - (maker, model designation, generation)
+    identifierSchemes:
+      - UDI_DI
+      - FDA_510K
+      - FDA_PRODUCT_CODE
+    requestedSchemes:
+      - UDI_DI
+      - FDA_510K
+      - FDA_PRODUCT_CODE
+  DietaryPattern:
+    module: D12
+    uidToken: dietary-pattern
+    uidPattern: hu:dietary-pattern:<opaque>
+    archetype: Entity & Subjectable (definition concept)
+    identityKeys:
+      - definedBySourceUid
+      - patternKey
+      - version
+    identifierSchemes:
+      - WIKIDATA
+    identityNote: "definedBySourceUid = kernel Source uid of the defining document (DOI / PMID / normalized URL); patternKey non-null; version '' when the source names none; definedBy (free-text citation) is presentation only (adversarial review 2026-10-08); definedBySourceUid is a frozen identity key, never the provenance path: the defined-by trace is the attach Assertion's HAS_EVIDENCE (R-46)"
+  Event:
+    module: D13
+    uidToken: event
+    uidPattern: hu:event:<opaque>
+    archetype: Occurrence
+    identityKeys:
+      - eventKind
+      - primarySubjectUid
+      - jurisdiction
+      - firstStatedTimeAtPrecision
+      - discriminator
+    identifierSchemes: []
+    identityRule: "Adversarial-review pass. identityKey is a MINT-TIME key, written once when the Event is created and never recomputed: eventKind | primary subject uid | jurisdiction or '-' | the time anchor as first stated (startedAt, or the scheduled window, at its stated precision) | discriminator when required. Primary subject = the object of the one EVENT_ABOUT Assertion with qualifier primary=true; for FINANCING the ISSUER or BORROWER participant, for ACQUISITION the ACQUIREE, for PARTNERSHIP the party whose asset is licensed (the INVOLVES Assertion with primary=true). Discriminator, required when one subject can have several events of one kind on one day: FINANCING instrument (loan-tranche, registered-direct, atm-sales, ipo, follow-on, private-round, grant). Matching never compares key strings: a candidate shares eventKind, primary subject and jurisdiction and has an overlapping time window (scheduled window or occurrence at its precision); a sure match attaches the new Assertions, a doubtful one mints a new Event plus a proposed EQUIVALENCE Assessment, and Events merge only through an accepted EQUIVALENCE Assessment. So a re-guided window, PLANNED → OCCURRED, or a more precise later date is a new Assertion on the SAME Event (Q-D13-11), never a new Event. Several artifacts about one occurrence (8-K, press-release exhibit, registry change, regulator record) are several Assertions about ONE Event; an acquisition's agreement and closing are one Event with two clocks. Fixtures: every Event records `mintedFrom` (snapshot and assertions its key came from)."
+  FoodCategory:
+    module: D12
+    uidToken: food-category
+    uidPattern: hu:food-category:<opaque>
+    archetype: Entity & Subjectable (classification concept)
+    identityKeys:
+      - system
+      - systemVersion
+      - code
+    identifierSchemes:
+      - WWEIA_CATEGORY
+      - FOODEX2
+      - LANGUAL
+  FoodItem:
+    module: D12
+    uidToken: food
+    uidPattern: hu:food:<opaque>
+    archetype: Entity & Subjectable (reference concept)
+    identityKeys:
+      - definingSystem
+      - sourceRecordId
+    identifierSchemes:
+      - FDC_ID
+      - NDB_NUMBER
+      - FNDDS_FOOD_CODE
+      - FOODON
+      - PHENOL_EXPLORER_FOOD
+      - WIKIDATA
+    identityNote: "(definingSystem, sourceRecordId) whenever the system issues a record id; only CURATED / OTHER records without one use (definingSystem, normalized descriptionVerbatim: NFC, case-folded, whitespace-collapsed) (adversarial review 2026-10-08: FDC descriptions change case and suffix across releases)"
+  Frontier:
+    module: D13
+    uidToken: frontier
+    uidPattern: hu:frontier:<opaque>
+    archetype: Vocabulary
+    identityKeys:
+      - key
+    identifierSchemes: []
+    identityRule: vocabulary key frontier:<slug> from vocab-frontiers.yaml; never reused or renamed; DEPRECATED frontiers name replacedBy
+  Identifier:
+    module: K
+    uidToken: identifier
+    uidPattern: hu:identifier:<opaque>
+    archetype: Entity
+    identityKeys:
+      - scheme
+      - issuer
+      - value
+    identifierSchemes:
+      - every scheme in identifier-schemes.yaml
+  IngredientMaterial:
+    module: D1
+    uidToken: material
+    uidPattern: hu:material:<opaque>
+    archetype: Entity
+    identityKeys:
+      - materialKind
+      - defining substance or source taxon
+      - brandName
+      - specification owner (D7 assertion)
+      - physicalForm
+      - formDescriptor
+      - grade
+      - plantPart
+      - preparationType
+      - extractRatioLow/High
+      - extractionSolvent
+      - viabilityState
+    identifierSchemes:
+      - SUPPLIER_CODE
+      - DSLD_INGREDIENT
+      - LNHPD_INGREDIENT
+    requestedSchemes:
+      - SUPPLIER_CODE
+      - DSLD_INGREDIENT
+      - LNHPD_INGREDIENT
+  Intervention:
+    module: D5
+    uidToken: intervention
+    uidPattern: hu:intervention:<opaque>
+    archetype: Entity (concept)
+    identityKeys:
+      - normalizedName
+      - kind
+      - regimenQualifier
+    identifierSchemes:
+      - MESH
+      - SNOMEDCT
+      - WIKIDATA
+  InterventionComponent:
+    module: D3
+    uidToken: intervention-component
+    uidPattern: hu:intervention-component:<opaque>
+    archetype: Entity
+    identityKeys:
+      - arm
+      - materialTextVerbatim (normalized)
+      - componentRole
+      - payloadHash
+    identifierSchemes: []
+  LabelVersion:
+    module: D6
+    uidToken: label-version
+    uidPattern: hu:label-version:<opaque>
+    archetype: versioned state (content payload; time on the HAS_LABEL_VERSION episode)
+    identityKeys:
+      - responsibleBrandOrOrgUid (as printed on this version)
+      - panelKind
+      - jurisdiction
+      - labelVersionCode (when printed) else contentDigest
+    identifierSchemes:
+      - DSLD
+    identityNote: a label version is immutable, so its key never changes; a later re-resolution of the printed party changes the NAMES_RESPONSIBLE_PARTY assertion, not the LabelVersion
+  LabTest:
+    module: D4
+    uidToken: lab-test
+    uidPattern: hu:lab-test:<opaque>
+    archetype: Entity & Subjectable
+    identityKeys:
+      - (issuer, issuer test code) via kernel Identifier scheme LAB_TEST_CODE (requested)
+      - else (issuer, verbatim test name)
+    identifierSchemes:
+      - LAB_TEST_CODE
+      - CPT
+    requestedSchemes:
+      - LAB_TEST_CODE
+  LegalStatus:
+    module: D8
+    uidToken: legal-status
+    uidPattern: hu:legal-status:<opaque>
+    archetype: Entity & Subjectable (immutable state; time on the STATUS_OF episode)
+    identityKeys:
+      - statusOf.uid
+      - jurisdiction
+      - pathway
+      - statusKind
+      - marketStatus
+      - claimNumbers
+    identifierSchemes: []
+  Lot:
+    module: D8
+    uidToken: lot
+    uidPattern: hu:lot:<opaque>
+    archetype: Entity & Subjectable
+    identityKeys:
+      - lotOf.uid
+      - lotCode (normalized)
+    identifierSchemes:
+      - LOT_CODE
+  Mechanism:
+    module: D2
+    uidToken: mechanism
+    uidPattern: hu:mechanism:<opaque>
+    archetype: vocabulary (curated, ~100–300 nodes; Reactome/GO mirrors added on demand)
+    identityKeys:
+      - key
+    identifierSchemes:
+      - REACTOME
+      - GO
+      - WIKIDATA
+      - MESH
+      - WIKIPATHWAYS
+      - KEGG_PATHWAY
+    requestedSchemes:
+      - WIKIPATHWAYS
+  MechanismEvidenceContext:
+    module: D2
+    uidToken: mech-context
+    uidPattern: hu:mech-context:<opaque>
+    archetype: occurrence / qualifier payload (implements Entity only; stored label MechanismEvidenceContext only, R-17; immutable; a correction is a new node)
+    identityKeys:
+      - contextKey
+    identifierSchemes: []
+  MediaWork:
+    module: D9
+    uidToken: media-work
+    uidPattern: hu:media-work:<opaque>
+    archetype: Entity
+    identityKeys:
+      - channel
+      - publisherItemKey
+    identifierSchemes:
+      - PODCAST_GUID
+      - YOUTUBE_VIDEO
+      - ISBN
+      - DOI
+      - WIKIDATA
+      - X_POST
+      - SUBSTACK_POST
+      - SPOTIFY
+    requestedSchemes:
+      - X_POST
+      - SUBSTACK_POST
+      - SPOTIFY
+    identityFallback: platform item id (YouTube video id, X post id, Substack post id, forum topic id), else normalized canonicalUrl
+  MerchantListing:
+    module: D6
+    uidToken: listing
+    uidPattern: hu:listing:<opaque>
+    archetype: enduring identity (host catalog entry)
+    identityKeys:
+      - hostDomain
+      - hostItemId
+    identifierSchemes:
+      - ASIN
+      - RETAILER_ITEM_ID
+      - STOREFRONT_PRODUCT_ID
+    requestedSchemes:
+      - RETAILER_ITEM_ID
+      - STOREFRONT_PRODUCT_ID
+  Metric:
+    module: D4
+    uidToken: metric
+    uidPattern: hu:metric:<opaque>
+    archetype: Entity & Subjectable (definition node)
+    identityKeys:
+      - LOINC code via kernel Identifier when one exists
+      - else (definitionSource, definitionIssuerName, verbatim name, canonicalUnitCode)
+    identifierSchemes:
+      - LOINC
+  MolecularEntity:
+    module: D2
+    uidToken: molecular-entity
+    uidPattern: hu:molecular-entity:<opaque>
+    archetype: reference entity (mirrors UniProt/HGNC; human default, orthologs only on demand)
+    identityKeys:
+      - ncbiTaxonId
+      - primary identifier (UNIPROT for proteins, HGNC for human genes, NCBI_GENE / ENSEMBL_GENE otherwise)
+    identifierSchemes:
+      - UNIPROT
+      - HGNC
+      - NCBI_GENE
+      - ENSEMBL_GENE
+      - WIKIDATA
+      - CHEMBL
+  Offer:
+    module: D6
+    uidToken: offer
+    uidPattern: hu:offer:<opaque>
+    archetype: enduring identity (commercial proposition; prices are Assertions about it)
+    identityKeys:
+      - listingUid
+      - sellerAccountIdVerbatim or 'host'
+      - purchaseMode
+      - jurisdiction
+      - condition
+    identifierSchemes:
+      - MARKETPLACE_SELLER_ID (requested
+      - attached to the seller Organization by D7 and echoed here)
+  Organization:
+    module: D7
+    uidToken: org
+    uidPattern: hu:org:<opaque>
+    archetype: Entity
+    identityKeys:
+      - registry identifier (LEI | SEC_CIK | COMPANY_NUMBER (requested) | NPI for NPI-2 | ROR)
+      - (normalized legal name, jurisdiction)
+      - (group name as printed, entityKind CORPORATE_GROUP)
+    identifierSchemes:
+      - LEI
+      - SEC_CIK
+      - ROR
+      - NPI
+      - WIKIDATA
+      - OPENALEX
+      - COMPANY_NUMBER
+      - UEI
+      - CROSSREF_FUNDER
+      - WEB_DOMAIN
+    requestedSchemes:
+      - COMPANY_NUMBER
+      - UEI
+      - CROSSREF_FUNDER
+      - WEB_DOMAIN
+  Outcome:
+    module: D2
+    uidToken: outcome
+    uidPattern: hu:outcome:<opaque>
+    archetype: vocabulary (curated, 50–150 nodes)
+    identityKeys:
+      - key
+    identifierSchemes:
+      - WIKIDATA
+  OutcomeDefinition:
+    module: D3
+    uidToken: outcome-definition
+    uidPattern: hu:outcome-definition:<opaque>
+    archetype: Entity
+    identityKeys:
+      - study
+      - outcomeKey (normalized measure + timepoint)
+      - priority
+    identifierSchemes: []
+  Package:
+    module: D6
+    uidToken: package
+    uidPattern: hu:package:<opaque>
+    archetype: enduring identity (sellable configuration)
+    identityKeys:
+      - variantUid
+      - packageKind
+      - unitCount
+      - netQuantityValue
+      - netQuantityUnit
+    identifierSchemes:
+      - GTIN
+      - SKU
+      - DSLD
+      - FDC_ID
+  Patent:
+    module: D8
+    uidToken: patent
+    uidPattern: hu:patent:<opaque>
+    archetype: Entity & Subjectable
+    identityKeys:
+      - office
+      - publicationNumber
+      - kindCode
+    identifierSchemes:
+      - PATENT_PUB
+      - PATENT_APPLICATION
+    requestedSchemes:
+      - PATENT_APPLICATION
+  Person:
+    module: D7
+    uidToken: person
+    uidPattern: hu:person:<opaque>
+    archetype: Entity
+    identityKeys:
+      - ORCID
+      - SEC_CIK (Form 4 reporting owner)
+      - NPI (NPI-1)
+      - (normalized full name, the public role and organization that make the person public)
+    identifierSchemes:
+      - ORCID
+      - SEC_CIK
+      - NPI
+      - OPENALEX
+      - WIKIDATA
+      - NIH_PROFILE_ID
+    requestedSchemes:
+      - NIH_PROFILE_ID
+  Product:
+    module: D6
+    uidToken: product
+    uidPattern: hu:product:<opaque>
+    archetype: enduring identity (catalog entity)
+    identityKeys:
+      - firstCapturedBrandUid (the brand the product was first captured under; fixed at minting)
+      - marketedName (normalized)
+      - jurisdiction (only when the marketed name differs by market)
+    identifierSchemes:
+      - STOREFRONT_PRODUCT_ID
+      - WIKIDATA
+    requestedSchemes:
+      - STOREFRONT_PRODUCT_ID
+    identityNote: later BRANDED_AS episodes (acquisition, relaunch under another brand) never re-key or re-mint the Product; the brand history lives on BRANDED_AS episodes, not in the key (adversarial-review stage)
+  ProductVariant:
+    module: D6
+    uidToken: product-variant
+    uidPattern: hu:product-variant:<opaque>
+    archetype: enduring identity (realization)
+    identityKeys:
+      - productUid
+      - strengthVerbatim
+      - dosageForm
+      - flavor
+      - jurisdiction
+    identifierSchemes:
+      - SKU
+      - STOREFRONT_VARIANT_ID
+      - NPN
+      - NDC
+    requestedSchemes:
+      - STOREFRONT_VARIANT_ID
+  Protocol:
+    module: D5
+    uidToken: protocol
+    uidPattern: hu:protocol:<opaque>
+    archetype: Entity
+    identityKeys:
+      - publisher
+      - canonicalUri
+    identifierSchemes:
+      - ISBN
+      - DOI
+  ProtocolEdition:
+    module: D5
+    uidToken: protocol-edition
+    uidPattern: hu:protocol-edition:<opaque>
+    archetype: VersionedState (Subjectable, because assessments and INTENDED_FOR_TARGET assertions are about it; R-18)
+    identityKeys:
+      - protocolUid
+      - payloadHash
+    identifierSchemes: []
+  ProtocolStep:
+    module: D5
+    uidToken: protocol-step
+    uidPattern: hu:protocol-step:<opaque>
+    archetype: Entity (component of a VersionedState)
+    identityKeys:
+      - editionUid
+      - stepKey
+    identifierSchemes: []
+  Publication:
+    module: D3
+    uidToken: publication
+    uidPattern: hu:publication:<opaque>
+    archetype: Entity
+    identityKeys:
+      - DOI (+ versionLabel for preprint versions and review updates)
+      - else PMID
+      - else PMCID
+      - else (venueName, title, publishedAt)
+    identifierSchemes:
+      - DOI
+      - PMID
+      - PMCID
+      - OPENALEX
+  QualityResult:
+    module: D8
+    uidToken: quality-result
+    uidPattern: hu:quality-result:<opaque>
+    archetype: Entity & Subjectable (observation record)
+    identityKeys:
+      - issuedBy.uid (when named)
+      - reportNumber or source canonicalUri
+      - analyteVerbatim (normalized)
+      - resultFor.uid
+      - testedAt; when no issuer is named — source canonicalUri
+      - snapshot contentHash
+      - row selector
+    identifierSchemes:
+      - LAB_REPORT
+  ReferenceIntervalVersion:
+    module: D4
+    uidToken: ri-version
+    uidPattern: hu:ri-version:<opaque>
+    archetype: Entity & Subjectable (versioned state; insert-only)
+    identityKeys:
+      - payloadHash over (assay version uid
+      - metric uid
+      - intervalKind
+      - partition
+      - bounds
+      - unit
+      - intervalText)
+    identifierSchemes: []
+  RegistrationVersion:
+    module: D3
+    uidToken: registration-version
+    uidPattern: hu:registration-version:<opaque>
+    archetype: Entity
+    identityKeys:
+      - registry
+      - registrationId
+      - versionNumber when the registry numbers versions, else (versionDate, populatingMode, payloadHash)
+    identifierSchemes: []
+  RegulatoryRecord:
+    module: D8
+    uidToken: reg-record
+    uidPattern: hu:reg-record:<opaque>
+    archetype: Entity & Subjectable (authority record)
+    identityKeys:
+      - issuedBy.uid
+      - recordKind
+      - recordNumber
+    identifierSchemes:
+      - FDA_APPLICATION
+      - NPN
+      - FDA_NDI
+      - FDA_GRN
+      - FDA_WARNING_LETTER
+      - FDA_RECALL
+      - FDA_RECALL_EVENT
+      - FDA_DOCKET
+      - CELEX
+      - LNHPD_ID
+      - COURT_DOCKET
+      - PTAB_TRIAL
+    requestedSchemes:
+      - FDA_NDI
+      - FDA_GRN
+      - FDA_WARNING_LETTER
+      - FDA_RECALL
+      - FDA_RECALL_EVENT
+      - FDA_DOCKET
+      - CELEX
+      - LNHPD_ID
+      - COURT_DOCKET
+      - PTAB_TRIAL
+  Report:
+    module: K
+    uidToken: report
+    uidPattern: hu:report:<opaque>
+    archetype: InformationArtifact
+    identityKeys:
+      - reportKind
+      - bodyDigest
+    identifierSchemes: []
+  ReportItem:
+    module: D10
+    uidToken: report-item
+    uidPattern: hu:report-item:<opaque>
+    archetype: InformationArtifact
+    identityKeys:
+      - reportUid
+      - itemKey
+    identifierSchemes: []
+  Source:
+    module: K
+    uidToken: source
+    uidPattern: hu:source:<opaque>
+    archetype: Entity
+    identityKeys:
+      - canonicalUri
+    identifierSchemes:
+      - DOI
+      - PMID
+      - PMCID
+      - NCT
+      - SEC_ACCESSION
+      - YOUTUBE_VIDEO
+      - PODCAST_GUID
+      - WIKIDATA
+  SourceLocator:
+    module: K
+    uidToken: locator
+    uidPattern: hu:locator:<opaque>
+    archetype: InformationArtifact
+    identityKeys:
+      - snapshot
+      - selectorKind
+      - selectorDigest
+    identifierSchemes: []
+  SourceSnapshot:
+    module: K
+    uidToken: snapshot
+    uidPattern: hu:snapshot:<opaque>
+    archetype: InformationArtifact
+    identityKeys:
+      - source
+      - contentHash
+      - retrievedAt
+    identifierSchemes: []
+  Study:
+    module: D3
+    uidToken: study
+    uidPattern: hu:study:<opaque>
+    archetype: Entity
+    identityKeys:
+      - registry identifier (NCT | ISRCTN | EUCT | EUDRACT | requested ACTRN
+      - CHICTR
+      - DRKS
+      - CTRI
+      - JRCT) via kernel Identifier
+      - else (first reporting publication DOI|PMID, studyKind, normalized design label)
+    identifierSchemes:
+      - NCT
+      - ISRCTN
+      - EUCT
+      - EUDRACT
+  StudyArm:
+    module: D3
+    uidToken: study-arm
+    uidPattern: hu:study-arm:<opaque>
+    archetype: Entity
+    identityKeys:
+      - study
+      - sourceFamily (registry + registrationId | the work's DOI, else PMID)
+      - armKey
+      - payloadHash
+    identifierSchemes: []
+  StudyPopulation:
+    module: D3
+    uidToken: study-population
+    uidPattern: hu:study-population:<opaque>
+    archetype: Entity
+    identityKeys:
+      - study
+      - sourceFamily (as StudyArm)
+      - populationKind
+      - analysisSet
+      - payloadHash
+    identifierSchemes: []
+  StudyResult:
+    module: D3
+    uidToken: study-result
+    uidPattern: hu:study-result:<opaque>
+    archetype: Entity
+    identityKeys:
+      - outcome definition
+      - arm set
+      - analysisPopulation
+      - subgroupLabel
+      - timepoint
+      - resultKind
+      - sourceFamily (as StudyArm)
+      - payloadHash
+    identifierSchemes: []
+  Target:
+    module: D5
+    uidToken: target
+    uidPattern: hu:target:<opaque>
+    archetype: Entity (curated vocabulary)
+    identityKeys:
+      - key
+    identifierSchemes:
+      - MESH
+      - WIKIDATA
+  Taxon:
+    module: D1
+    uidToken: taxon
+    uidPattern: hu:taxon:<opaque>
+    archetype: Entity
+    identityKeys:
+      - NCBI taxid (requested scheme NCBI_TAXON)
+      - culture-collection deposits for strains without a taxid (requested ATCC/DSMZ/LMG/CCUG)
+      - (accepted scientific name, rank) provisional
+    identifierSchemes:
+      - NCBI_TAXON
+      - CULTURE_COLLECTION
+      - WIKIDATA
+    requestedSchemes:
+      - NCBI_TAXON
+  UseConstraint:
+    module: D5
+    uidToken: use-constraint
+    uidPattern: hu:use-constraint:<opaque>
+    archetype: Entity (shared identity; immutable identity key)
+    identityKeys:
+      - identityKeyHash
+      - identityKeyVersion
+    identifierSchemes: []

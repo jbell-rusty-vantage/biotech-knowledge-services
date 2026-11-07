@@ -1,0 +1,2938 @@
+# claim-mission-report — assertions and judgments (S team, cross-domain fixture 3, 2026-10-09)
+# The scientific loop of 00-DIRECTIVE 3.4 on one real statement, joined to the speaker's interest (3.9, D7) and to the
+# mission lineage of section 4:
+#   D9 container (Huberman Lab ep 52) -> claim occurrence o1 by David A. Sinclair (located quote) -> Claim claim-avg
+#   -> VETTING (RESEARCH, run R1-vetting) -> EVIDENCE_MISSION Activity (R2, ASSESSES claim-avg, WAS_INFORMED_BY the vetting run)
+#   -> trial evidence (PubMed, PMC, publisher PDF, J-STAGE PDF) + the speaker's interests as of the statement (D7 episodes)
+#   -> CAPTURE_FIDELITY and SUPPORT adjudications (VERIFICATION run) -> EVIDENCE_REPORT (verification.v1 verdict
+#      PARTIALLY_SUPPORTED) with D10 ReportItems (skeleton d10.evidence-report@1).
+# Conventions: uids and missionId/runId are FIXTURE ids; nothing was written to a production graph (a disposable Neo4j 5.26
+# load of exactly these records is in walk.md). Locator ids resolve in ./locators.yaml. asserter = who said it (ASSERTED_BY);
+# producedBy = the run that wrote the record (WAS_GENERATED_BY). Run clocks are measured (clockBasis on each Activity).
+# Judgments with judgeKind LLM are this agent's reading of the quoted spans: fixture judgments, not verification.v1 outputs;
+# bundleDigest is sha256 over the canonical JSON of the adjudication records, not a sealed bundle. Research, not medical advice.
+fixture: claim-mission-report
+kind: cross-domain (D9 container + D7 interest + K claim lifecycle and lineage + D10 evidence report); verdict PARTIALLY_SUPPORTED
+producedBy:
+  missionId: mission:xfx-claim-mission-report
+  runId: run:xfx-claim-r2-evidence-mission
+activities:
+- ref: act-d7-sinclair
+  uid: hu:activity:ft-d7-sinclair-self-disclosure-unstructured
+  activityKind: INGESTION
+  externalRunSystem: mission-control
+  missionId: mission:ft-D7-fixtures
+  runId: run:ft-D7-sinclair-self-disclosure-unstructured
+  note: D7 packet fixture run (packets/D7/07-fixtures/sinclair-self-disclosure-unstructured); its packet publishes no run clock
+  preexisting: true
+- ref: act-d9-hl52
+  uid: hu:activity:ft-d9-hl52-transcript-nmn-practice
+  activityKind: INGESTION
+  externalRunSystem: mission-control
+  missionId: mission:ft-D9-fixtures
+  runId: run:ft-D9-hl52-transcript-nmn-practice
+  note: D9 packet fixture run (packets/D9/07-fixtures/hl52-transcript-nmn-practice); no run clock published
+  preexisting: true
+- ref: act-d9-sinclair
+  uid: hu:activity:ft-d9-sinclair-recommendation-disclosure-asof
+  activityKind: INGESTION
+  externalRunSystem: mission-control
+  missionId: mission:ft-D9-fixtures
+  runId: run:ft-D9-sinclair-recommendation-disclosure-asof
+  note: D9 packet fixture run (packets/D9/07-fixtures/sinclair-recommendation-disclosure-asof); no run clock published
+  preexisting: true
+- ref: act-r1-ingest
+  uid: hu:activity:xfx-claim-r1-ingest
+  activityKind: INGESTION
+  externalRunSystem: mission-control
+  missionId: mission:xfx-claim-mission-report
+  runId: run:xfx-claim-r1-ingest
+  operationKind: knowledge.ingestion_apply
+  startedAt: '2026-10-09T04:17:48Z'
+  endedAt: '2026-10-09T04:18:24Z'
+  clockBasis: birth time of scratch dir synth/xfx-claim (the command that first read the episode transcript for this fixture)
+  wasAssociatedWith:
+  - ag-extractor
+  - ag-executor
+  operationIds:
+  - xfx-claim-r1-ingest
+  intentDigests:
+  - sha256:a2e811d44b69a8832f40f4cce90507e46e6930bdf7077199356e1597ac8efcfd
+- ref: act-r1-vetting
+  uid: hu:activity:xfx-claim-r1-vetting
+  activityKind: VETTING
+  externalRunSystem: mission-control
+  missionId: mission:xfx-claim-mission-report
+  runId: run:xfx-claim-r1-vetting
+  operationKind: claim.vetting
+  startedAt: '2026-10-09T04:18:24.343Z'
+  endedAt: '2026-10-09T04:18:24.343Z'
+  clockBasis: birth time of scratch dir synth/xfx-claim/cap (the vetting decision, immediately before the first mission query)
+  wasAssociatedWith:
+  - ag-extractor
+  wasInformedBy:
+  - act-r1-ingest
+- ref: act-r2-mission
+  uid: hu:activity:xfx-claim-r2-evidence-mission
+  activityKind: EVIDENCE_MISSION
+  externalRunSystem: mission-control
+  missionId: mission:xfx-claim-mission-report
+  runId: run:xfx-claim-r2-evidence-mission
+  operationKind: evidence_mission
+  startedAt: '2026-10-09T04:18:24.696Z'
+  endedAt: '2026-10-09T04:36:14Z'
+  policyVersion: policy:bl-publish@fixture
+  clockBasis: start = mtime of cap/esearch-nmn.json (first mission query); end = the mission's last write (synthesis evidenceCutoffAt = retrievedAt of pmc-11205942, the verifier's last capture; fix stage 2026-10-09, was the generator's first run 04:35:02Z)
+  wasAssociatedWith:
+  - ag-extractor
+  - ag-executor
+  wasInformedBy:
+  - act-r1-vetting
+  assesses:
+  - claim-avg
+  operationIds:
+  - xfx-claim-r2-evidence-mission
+  intentDigests:
+  - sha256:c17ebe5c762349f1ea1054de9f427762e20f5d7e4a6624ec9dddb1c63d250efc
+- ref: act-r2-verification
+  uid: hu:activity:xfx-claim-r2-verification
+  activityKind: VERIFICATION
+  externalRunSystem: ks-verification
+  missionId: mission:xfx-claim-mission-report
+  runId: run:xfx-claim-r2-verification
+  operationKind: verification_claims
+  startedAt: '2026-10-09T04:35:02Z'
+  endedAt: '2026-10-09T04:36:14Z'
+  bundleDigest: sha256:f5f40226acf0b7f1963d4d3ea17a4627ea4c173c39a3fafa3a115307132bf487
+  clockBasis: start = generator first run (deterministic re-selection is done by gen.py); end = retrievedAt of pmc-11205942, the snapshot this run produced (fix stage 2026-10-09, was 04:35:02Z)
+  wasAssociatedWith:
+  - ag-verifier
+  - ag-judge
+  wasInformedBy:
+  - act-r2-mission
+agents:
+- ref: ag-extractor
+  uid: hu:agent:xfx-claim-extractor
+  agentKind: TEXT_MINING_AGENT
+  model: claude-opus-5-5
+  promptVersion: S xfx-claim fixture 2026-10-09
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r1-ingest
+- ref: ag-executor
+  uid: hu:agent:xfx-claim-kg-executor
+  agentKind: AUTOMATED_AGENT
+  toolVersion: '@bks/kg-ops (fixture: intents validated, not applied)'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r1-ingest
+- ref: ag-verifier
+  uid: hu:agent:xfx-claim-reselect
+  agentKind: AUTOMATED_AGENT
+  toolVersion: gen.py reselect@2026-10-09
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-verification
+- ref: ag-judge
+  uid: hu:agent:xfx-claim-support-judge
+  agentKind: TEXT_MINING_AGENT
+  model: claude-opus-5-5
+  promptVersion: S xfx-claim support judgment 2026-10-09
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-verification
+entities:
+- ref: p-sinclair
+  uid: hu:person:david-a-sinclair
+  type: D7.Person
+  name: David A. Sinclair
+  properties:
+    publicActorBasis:
+    - FOUNDER_OR_INVESTOR
+    - AUTHOR_OR_INVESTIGATOR
+    - SPEAKER_OR_CREATOR
+    privacyClass: PUBLIC
+  producedBy:
+    missionId: mission:ft-D7-fixtures
+    runId: run:ft-D7-sinclair-self-disclosure-unstructured
+  preexisting: true
+  note: uid from packets/D7/07-fixtures/sinclair-self-disclosure-unstructured; also the guest of D9 hl52 fixtures (ref p-sinclair)
+- ref: org-edenroc
+  uid: hu:org:edenroc-sciences-companies
+  type: D7.Organization
+  name: EdenRoc Sciences companies
+  properties:
+    entityKind: CORPORATE_GROUP
+  producedBy:
+    missionId: mission:ft-D7-fixtures
+    runId: run:ft-D7-sinclair-self-disclosure-unstructured
+  preexisting: true
+  note: uid from the D7 fixture; group named collectively
+- ref: org-metro
+  uid: hu:org:metrobiotech-international
+  type: D7.Organization
+  name: MetroBiotech International
+  properties:
+    organizationKind: BIOTECH_OR_PHARMA
+  producedBy:
+    missionId: mission:ft-D7-fixtures
+    runId: run:ft-D7-sinclair-self-disclosure-unstructured
+  preexisting: true
+  note: uid from the D7 fixture, which writes entityKind UNSPECIFIED; the final OrganizationEntityKind has no such value and the field is non-null (open issue); surface forms resolved
+    by as-res-metro
+- ref: ch-hl
+  uid: hu:channel:huberman-lab
+  type: D9.Channel
+  name: Huberman Lab
+  properties:
+    channelKind: SHOW
+    platform: RSS
+    feedUrl: https://feeds.megaphone.fm/hubermanlab
+  producedBy:
+    missionId: mission:ft-D9-fixtures
+    runId: run:ft-D9-hl52-transcript-nmn-practice
+  preexisting: true
+  note: D9 fixtures use refs only; uid assigned here
+- ref: mw-ep52
+  uid: hu:media-work:huberman-lab-ep52-sinclair
+  type: D9.MediaWork
+  name: 'Dr. David Sinclair: The Biology of Slowing & Reversing Aging'
+  properties:
+    workKind: PODCAST_EPISODE
+    publishedAt: '2021-12-27'
+    publishedAtPrecision: DAY
+    canonicalUrl: https://www.hubermanlab.com/episode/dr-david-sinclair-the-biology-of-slowing-and-reversing-aging
+  producedBy:
+    missionId: mission:ft-D9-fixtures
+    runId: run:ft-D9-hl52-transcript-nmn-practice
+  preexisting: true
+  note: D9 fixture ref ep52 (RSS guid 8fd04ec7-dda7-4497-a731-be008c9f2521 per D9 source.md); uid assigned here
+- ref: sub-nmn
+  uid: hu:substance:xfx-nicotinamide-mononucleotide
+  type: D1.ChemicalSubstance
+  name: Nicotinamide Mononucleotide (NMN)
+  identifiers:
+  - scheme: MESH
+    issuer: NLM
+    value: D009537
+    locator: pg-chem-nmn
+    attachedBy: act-r2-mission
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r1-ingest
+  note: identity provisional (normalized name); UNII not captured in this fixture
+- ref: sub-nad
+  uid: hu:substance:xfx-nad
+  type: D1.ChemicalSubstance
+  name: NAD (nicotinamide adenine dinucleotide)
+  identifiers:
+  - scheme: MESH
+    issuer: NLM
+    value: D009243
+    locator: pg-chem-nad
+    attachedBy: act-r2-mission
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r1-ingest
+  note: the PubMed ChemicalList prints RegistryNumber 0U46U6E8UK beside it; not attached (issuer of the registry number is not NLM)
+- ref: mat-mib626
+  uid: hu:material:xfx-mib-626
+  type: D1.IngredientMaterial
+  name: MIB-626 (microcrystalline unique polymorph of beta-NMN)
+  properties:
+    materialKind: CHEMICALLY_DEFINED
+    physicalForm: CRYSTAL_FORM
+    brandName: MIB-626
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- ref: pub-pencina-jg
+  uid: hu:publication:doi-10.1093-gerona-glac049
+  type: D3.Publication
+  name: MIB-626, an Oral Formulation of a Microcrystalline Unique Polymorph of beta-Nicotinamide Mononucleotide, Increases Circulating Nicotinamide Adenine Dinucleotide and its Metabolome
+    in Middle-Aged and Older Adults
+  properties:
+    publicationKind: ARTICLE
+    venueName: J Gerontol A Biol Sci Med Sci
+    publishedAt: '2023-01-26'
+    publishedAtPrecision: DAY
+  identifiers:
+  - scheme: DOI
+    issuer: Crossref
+    value: 10.1093/gerona/glac049
+    locator: null
+  - scheme: PMID
+    issuer: NLM
+    value: '35182418'
+    locator: null
+  renditions:
+  - pubmed-35182418
+  - oup-glac049-pdf
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- ref: pub-pencina-jcem
+  uid: hu:publication:doi-10.1210-clinem-dgad027
+  type: D3.Publication
+  name: 'Nicotinamide Adenine Dinucleotide Augmentation in Overweight or Obese Middle-Aged and Older Adults: A Physiologic Study'
+  properties:
+    publicationKind: ARTICLE
+    venueName: J Clin Endocrinol Metab
+    publishedAt: '2023-07-14'
+    publishedAtPrecision: DAY
+  identifiers:
+  - scheme: DOI
+    issuer: Crossref
+    value: 10.1210/clinem/dgad027
+    locator: null
+  - scheme: PMID
+    issuer: NLM
+    value: '36740954'
+    locator: null
+  - scheme: PMCID
+    issuer: NLM
+    value: PMC11491622
+    locator: null
+  renditions:
+  - pubmed-36740954
+  - pmc-11491622
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- ref: pub-yi
+  uid: hu:publication:doi-10.1007-s11357-022-00705-1
+  type: D3.Publication
+  name: 'The efficacy and safety of beta-nicotinamide mononucleotide (NMN) supplementation in healthy middle-aged adults: a randomized, multicenter, double-blind, placebo-controlled,
+    parallel-group, dose-dependent clinical trial'
+  properties:
+    publicationKind: ARTICLE
+    venueName: Geroscience
+    publishedAt: '2022-12-08'
+    publishedAtPrecision: DAY
+  identifiers:
+  - scheme: DOI
+    issuer: Crossref
+    value: 10.1007/s11357-022-00705-1
+    locator: null
+  - scheme: PMID
+    issuer: NLM
+    value: '36482258'
+    locator: null
+  - scheme: PMCID
+    issuer: NLM
+    value: PMC9735188
+    locator: null
+  renditions:
+  - pubmed-36482258
+  - pmc-9735188
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- ref: pub-huang
+  uid: hu:publication:doi-10.3389-fragi.2022.851698
+  type: D3.Publication
+  name: A Multicentre, Randomised, Double Blind, Parallel Design, Placebo Controlled Study to Evaluate the Efficacy and Safety of Uthever (NMN Supplement), an Orally Administered Supplementation
+    in Middle Aged and Older Adults
+  properties:
+    publicationKind: ARTICLE
+    venueName: Front Aging
+  identifiers:
+  - scheme: DOI
+    issuer: Crossref
+    value: 10.3389/fragi.2022.851698
+    locator: null
+  - scheme: PMID
+    issuer: NLM
+    value: '35821806'
+    locator: null
+  - scheme: PMCID
+    issuer: NLM
+    value: PMC9261366
+    locator: null
+  renditions:
+  - pmc-9261366
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- ref: pub-kuerec
+  uid: hu:publication:doi-10.1016-j.mad.2024.111917
+  type: D3.Publication
+  name: 'Towards personalized nicotinamide mononucleotide (NMN) supplementation: Nicotinamide adenine dinucleotide (NAD) concentration'
+  properties:
+    publicationKind: ARTICLE
+    venueName: Mech Ageing Dev
+    publishedAt: '2024-02-29'
+    publishedAtPrecision: DAY
+  identifiers:
+  - scheme: DOI
+    issuer: Crossref
+    value: 10.1016/j.mad.2024.111917
+    locator: null
+  - scheme: PMID
+    issuer: NLM
+    value: '38430946'
+    locator: null
+  renditions:
+  - pubmed-38430946
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- ref: pub-okabe
+  uid: hu:publication:doi-10.3389-fnut.2022.868640
+  type: D3.Publication
+  name: Oral administration of nicotinamide mononucleotide is safe and efficiently increases blood nicotinamide adenine dinucleotide levels in healthy subjects
+  properties:
+    publicationKind: ARTICLE
+    venueName: Front Nutr
+  identifiers:
+  - scheme: DOI
+    issuer: Crossref
+    value: 10.3389/fnut.2022.868640
+    locator: null
+  - scheme: PMID
+    issuer: NLM
+    value: '35479740'
+    locator: null
+  - scheme: PMCID
+    issuer: NLM
+    value: PMC9036060
+    locator: null
+  renditions:
+  - pmc-9036060
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- ref: pub-morita
+  uid: hu:publication:doi-10.24659-gsr.9.2-33
+  type: D3.Publication
+  name: Clinical evaluation of changes in biomarkers by oral intake of NMN
+  properties:
+    publicationKind: ARTICLE
+    venueName: Glycative Stress Research
+    publishedAt: '2022-06-30'
+    publishedAtPrecision: DAY
+  identifiers:
+  - scheme: DOI
+    issuer: Crossref
+    value: 10.24659/gsr.9.2_33
+    locator: pm-doi
+    normalizationRule: spaces inserted by pdftotext removed
+  renditions:
+  - jstage-gsr9-33-pdf
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- ref: pub-review-2024
+  uid: hu:publication:doi-10.3390-metabo14060341
+  type: D3.Publication
+  name: 'Nicotinamide Mononucleotide Supplementation: Understanding Metabolic Variability and Clinical Implications'
+  properties:
+    publicationKind: ARTICLE
+    venueName: Metabolites
+  identifiers:
+  - scheme: DOI
+    issuer: Crossref
+    value: 10.3390/metabo14060341
+    locator: null
+  - scheme: PMID
+    issuer: NLM
+    value: '38921475'
+    locator: null
+  - scheme: PMCID
+    issuer: NLM
+    value: PMC11205942
+    locator: null
+  renditions:
+  - pmc-11205942
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-verification
+sources:
+- ref: src-hl52-web
+  uid: hu:source:www-hubermanlab-com-episode-dr-david-sinclair-the-biology-of-slowing-and-reversing-aging
+  canonicalUri: https://www.hubermanlab.com/episode/dr-david-sinclair-the-biology-of-slowing-and-reversing-aging
+  sourceKind: WEB_PAGE
+  genre: PODCAST_SHOW_NOTES_AND_TRANSCRIPT
+  snapshots:
+  - hl52-web
+  - hl52-web-r2
+  producedBy:
+    missionId: mission:ft-D9-fixtures
+    runId: run:ft-D9-hl52-transcript-nmn-practice
+- ref: src-hl52-youtube
+  uid: hu:source:www-youtube-com-watch-v-n9ixombusuw
+  canonicalUri: https://www.youtube.com/watch?v=n9IxomBusuw
+  sourceKind: VIDEO
+  genre: VIDEO_PAGE_WITH_CAPTIONS
+  snapshots:
+  - hl52-youtube
+  producedBy:
+    missionId: mission:ft-D9-fixtures
+    runId: run:ft-D9-hl52-transcript-nmn-practice
+- ref: src-aff
+  uid: hu:source:sinclair-hms-harvard-edu-david-sinclairs-affiliations
+  canonicalUri: https://sinclair.hms.harvard.edu/david-sinclairs-affiliations
+  sourceKind: WEB_PAGE
+  genre: SELF_DISCLOSURE_PAGE
+  snapshots:
+  - aff-20211209
+  - aff-now
+  producedBy:
+    missionId: mission:ft-D7-fixtures
+    runId: run:ft-D7-sinclair-self-disclosure-unstructured
+- ref: src-pubmed-35182418
+  uid: hu:source:eutils-ncbi-nlm-nih-gov-entrez-eutils-efetch-fcgi-db-pubmed-id-35182418-retmode-xml
+  canonicalUri: https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=35182418&retmode=xml
+  sourceKind: API
+  genre: BIBLIOGRAPHIC_INDEX_RECORD
+  snapshots:
+  - pubmed-35182418
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- ref: src-oup-glac049-pdf
+  uid: hu:source:academic-oup-com-biomedgerontology-article-pdf-78-1-90-48909943-glac049-pdf
+  canonicalUri: https://academic.oup.com/biomedgerontology/article-pdf/78/1/90/48909943/glac049.pdf
+  sourceKind: PDF
+  genre: PUBLISHER_ARTICLE_PDF
+  snapshots:
+  - oup-glac049-pdf
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- ref: src-pubmed-36740954
+  uid: hu:source:eutils-ncbi-nlm-nih-gov-entrez-eutils-efetch-fcgi-db-pubmed-id-36740954-retmode-xml
+  canonicalUri: https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=36740954&retmode=xml
+  sourceKind: API
+  genre: BIBLIOGRAPHIC_INDEX_RECORD
+  snapshots:
+  - pubmed-36740954
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- ref: src-pmc-11491622
+  uid: hu:source:eutils-ncbi-nlm-nih-gov-entrez-eutils-efetch-fcgi-db-pmc-id-11491622-retmode-xml
+  canonicalUri: https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=11491622&retmode=xml
+  sourceKind: API
+  genre: SCHOLARLY_FULL_TEXT_JATS
+  snapshots:
+  - pmc-11491622
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- ref: src-pubmed-36482258
+  uid: hu:source:eutils-ncbi-nlm-nih-gov-entrez-eutils-efetch-fcgi-db-pubmed-id-36482258-retmode-xml
+  canonicalUri: https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=36482258&retmode=xml
+  sourceKind: API
+  genre: BIBLIOGRAPHIC_INDEX_RECORD
+  snapshots:
+  - pubmed-36482258
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- ref: src-pmc-9735188
+  uid: hu:source:eutils-ncbi-nlm-nih-gov-entrez-eutils-efetch-fcgi-db-pmc-id-9735188-retmode-xml
+  canonicalUri: https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=9735188&retmode=xml
+  sourceKind: API
+  genre: SCHOLARLY_FULL_TEXT_JATS
+  snapshots:
+  - pmc-9735188
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- ref: src-pmc-9261366
+  uid: hu:source:eutils-ncbi-nlm-nih-gov-entrez-eutils-efetch-fcgi-db-pmc-id-9261366-retmode-xml
+  canonicalUri: https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=9261366&retmode=xml
+  sourceKind: API
+  genre: SCHOLARLY_FULL_TEXT_JATS
+  snapshots:
+  - pmc-9261366
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- ref: src-pubmed-38430946
+  uid: hu:source:eutils-ncbi-nlm-nih-gov-entrez-eutils-efetch-fcgi-db-pubmed-id-38430946-retmode-xml
+  canonicalUri: https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=38430946&retmode=xml
+  sourceKind: API
+  genre: BIBLIOGRAPHIC_INDEX_RECORD
+  snapshots:
+  - pubmed-38430946
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- ref: src-pmc-9036060
+  uid: hu:source:eutils-ncbi-nlm-nih-gov-entrez-eutils-efetch-fcgi-db-pmc-id-9036060-retmode-xml
+  canonicalUri: https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=9036060&retmode=xml
+  sourceKind: API
+  genre: SCHOLARLY_FULL_TEXT_JATS
+  snapshots:
+  - pmc-9036060
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- ref: src-pmc-11205942
+  uid: hu:source:eutils-ncbi-nlm-nih-gov-entrez-eutils-efetch-fcgi-db-pmc-id-11205942-retmode-xml
+  canonicalUri: https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=11205942&retmode=xml
+  sourceKind: API
+  genre: SCHOLARLY_FULL_TEXT_JATS
+  snapshots:
+  - pmc-11205942
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-verification
+- ref: src-jstage-gsr9-33-pdf
+  uid: hu:source:www-jstage-jst-go-jp-article-gsr-9-2-9-33-pdf-char-en
+  canonicalUri: https://www.jstage.jst.go.jp/article/gsr/9/2/9_33/_pdf/-char/en
+  sourceKind: PDF
+  genre: PUBLISHER_ARTICLE_PDF
+  snapshots:
+  - jstage-gsr9-33-pdf
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+claims:
+- ref: claim-avg
+  uid: hu:claim:xfx-nmn-two-weeks-doubles-blood-nad
+  type: K.Claim
+  name: Taking NMN daily for about two weeks doubles blood NAD levels on average in humans
+  proposition: Taking NMN daily for about two weeks doubles blood NAD levels on average in humans
+  propositionHash: sha256:b63b223b105020831467ea8cc78738597dc447968197abff9653720c6ecb045a
+  propositionHashInput: '{"object":"hu:substance:xfx-nad","predicate":"INCREASES_LEVEL_OF","proposition":"taking nmn daily for about two weeks doubles blood nad levels on average in
+    humans","qualifiers":["compartment: blood","duration: about two weeks","magnitude: about 2-fold on average","population: humans"],"subject":"hu:substance:xfx-nicotinamide-mononucleotide"}'
+  claimType: CAUSAL
+  lifecycleState: REPORTED
+  latestVerdict: PARTIALLY_SUPPORTED
+  refinesClaimUid: hu:claim:xfx-oral-nmn-increases-blood-nad
+  cacheHistory:
+  - by: act-r1-vetting
+    lifecycleState: QUEUED_FOR_RESEARCH
+  - by: act-r2-mission
+    lifecycleState: REPORTED
+    latestVerdict: PARTIALLY_SUPPORTED
+    refinesClaimUid: hu:claim:xfx-oral-nmn-increases-blood-nad
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r1-ingest
+  updatedBy:
+  - missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r1-vetting
+  - missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- ref: claim-universal
+  uid: hu:claim:xfx-nmn-1-2g-doubles-blood-nad-in-everyone
+  type: K.Claim
+  name: Taking 1 to 2 g of NMN daily raises blood NAD about twofold or more in every person who takes it
+  proposition: Taking 1 to 2 g of NMN daily raises blood NAD about twofold or more in every person who takes it
+  propositionHash: sha256:b4c5ce44d5bc3f090e628f853c634072e46dcd679f8553484f6568ea8437411f
+  propositionHashInput: '{"object":"hu:substance:xfx-nad","predicate":"INCREASES_LEVEL_OF","proposition":"taking 1 to 2 g of nmn daily raises blood nad about twofold or more in every
+    person who takes it","qualifiers":["compartment: blood","dose: 1 to 2 g per day","magnitude: about 2-fold or more","scope: without any exceptions"],"subject":"hu:substance:xfx-nicotinamide-mononucleotide"}'
+  claimType: CAUSAL
+  lifecycleState: MONITORED
+  cacheHistory:
+  - by: act-r1-vetting
+    lifecycleState: MONITORED
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r1-ingest
+  updatedBy:
+  - missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r1-vetting
+- ref: claim-broad
+  uid: hu:claim:xfx-oral-nmn-increases-blood-nad
+  type: K.Claim
+  name: Oral NMN supplementation increases blood NAD concentrations in humans
+  proposition: Oral NMN supplementation increases blood NAD concentrations in humans
+  propositionHash: sha256:f038d9ae7df764094a7d2496f18ac78bb25fece2e4e7b1938eaf017744a5f38a
+  propositionHashInput: '{"object":"hu:substance:xfx-nad","predicate":"INCREASES_LEVEL_OF","proposition":"oral nmn supplementation increases blood nad concentrations in humans","qualifiers":["compartment:
+    blood","population: humans"],"subject":"hu:substance:xfx-nicotinamide-mononucleotide"}'
+  claimType: CAUSAL
+  lifecycleState: EXTRACTED
+  note: created by the mission as the parent of claim-avg (as-refines); not itself under test; its occurrences are the trials' findings
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+  updatedBy: []
+claimHashMethod: propositionHash = sha256 over canonical JSON (sorted keys, no spaces) of {proposition, subject uid, predicate, object uid, qualifiers (sorted)}, strings NFKC + lower
+  case + whitespace collapsed (fixture method claim-hash@0, as K); propositionHashInput is the exact input
+assertions:
+- id: o1
+  uid: hu:assertion:xfx-claim-o1
+  assertionKind: CLAIM
+  claimType: CAUSAL
+  predicate: INCREASES_LEVEL_OF
+  subject: sub-nmn
+  object: sub-nad
+  asserter: p-sinclair
+  occurrenceOf: claim-avg
+  occursIn: mw-ep52
+  proposition: 'if you take NMN for about two weeks you will on average double your blood NAD levels; basis: clinical trials not yet published'
+  evidence:
+  - locator: l-o1
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: l-o1-unpub
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: CITED_FROM_PRIOR_WORK
+  qualifiers:
+  - segment:EDITORIAL
+  - 'compartment: blood'
+  - 'duration: about two weeks'
+  - 'magnitude: double on average'
+  - 'basis-as-stated: clinical trials not yet published (at 2021-12-27)'
+  validTime:
+    validObservedAt: '2021-12-27T00:00:00Z'
+    validObservedAtPrecision: DAY
+    validFromBasis: OBSERVATION_ONLY
+    validToBasis: UNKNOWN
+    note: the speaker states it as present fact; observed at the work's publication date (PUBLICATION_PROXY for the act of asserting)
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:17:48Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r1-ingest
+  updatedBy:
+  - missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-verification
+  note: status EXTRACTED at R1; ACCEPTED by adj-cf-o1 (R2 verification)
+- id: o2
+  uid: hu:assertion:xfx-claim-o2
+  assertionKind: CLAIM
+  claimType: CAUSAL
+  predicate: INCREASES_LEVEL_OF
+  subject: sub-nmn
+  object: sub-nad
+  asserter: p-sinclair
+  occurrenceOf: claim-universal
+  occursIn: mw-ep52
+  proposition: in every person the speaker studied who takes NMN at 1 g (sometimes 2 g) a day, blood NAD rises about twofold or more
+  evidence:
+  - locator: l-o2
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  qualifiers:
+  - segment:EDITORIAL
+  - 'compartment: blood'
+  - 'dose: a gram, sometimes two grams'
+  - 'scope: without any exceptions'
+  - 'population: dozens of people the speaker studied (unpublished)'
+  validTime:
+    validObservedAt: '2021-12-27T00:00:00Z'
+    validObservedAtPrecision: DAY
+    validFromBasis: OBSERVATION_ONLY
+    validToBasis: UNKNOWN
+    note: the speaker states it as present fact; observed at the work's publication date (PUBLICATION_PROXY for the act of asserting)
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:17:48Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r1-ingest
+  updatedBy:
+  - missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-verification
+  note: status EXTRACTED at R1; ACCEPTED by adj-cf-o2
+- id: a-mib626-realizes-nmn
+  uid: hu:assertion:xfx-claim-a-mib626-realizes-nmn
+  assertionKind: RELATIONSHIP
+  predicate: REALIZES_SUBSTANCE
+  subject: mat-mib626
+  object: sub-nmn
+  asserter: pub-pencina-jg
+  evidence:
+  - locator: pg-material
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  edge:
+    type: REALIZES_SUBSTANCE
+    properties: AssertedRecordedProperties
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: id-nmn-mesh
+  uid: hu:assertion:xfx-claim-id-nmn-mesh
+  assertionKind: RELATIONSHIP
+  predicate: HAS_IDENTIFIER
+  subject: sub-nmn
+  value:
+    identifier: MESH:D009537 (issuer NLM)
+  asserter: ag-executor
+  evidence:
+  - locator: pg-chem-nmn
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  edge:
+    type: HAS_IDENTIFIER
+    properties: IdentifierLinkProperties
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: id-nad-mesh
+  uid: hu:assertion:xfx-claim-id-nad-mesh
+  assertionKind: RELATIONSHIP
+  predicate: HAS_IDENTIFIER
+  subject: sub-nad
+  value:
+    identifier: MESH:D009243 (issuer NLM)
+  asserter: ag-executor
+  evidence:
+  - locator: pg-chem-nad
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  edge:
+    type: HAS_IDENTIFIER
+    properties: IdentifierLinkProperties
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: rend-pubmed-35182418
+  uid: hu:assertion:xfx-claim-rend-pubmed-35182418
+  assertionKind: RELATIONSHIP
+  predicate: RENDITION_OF
+  subject: src-pubmed-35182418
+  object: pub-pencina-jg
+  asserter: ag-executor
+  evidence:
+  - locator: null
+    role: SUPPORTS
+    origin: DECLARED
+    note: identifier block of pubmed-35182418
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - 'rendition-rule: the record prints the work''s PMID / DOI'
+  edge:
+    type: RENDITION_OF
+    properties: AssertedRecordedProperties
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: rend-oup-glac049-pdf
+  uid: hu:assertion:xfx-claim-rend-oup-glac049-pdf
+  assertionKind: RELATIONSHIP
+  predicate: RENDITION_OF
+  subject: src-oup-glac049-pdf
+  object: pub-pencina-jg
+  asserter: ag-executor
+  evidence:
+  - locator: null
+    role: SUPPORTS
+    origin: DECLARED
+    note: identifier block of oup-glac049-pdf
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - 'rendition-rule: the record prints the work''s PMID / DOI'
+  edge:
+    type: RENDITION_OF
+    properties: AssertedRecordedProperties
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: rend-pubmed-36740954
+  uid: hu:assertion:xfx-claim-rend-pubmed-36740954
+  assertionKind: RELATIONSHIP
+  predicate: RENDITION_OF
+  subject: src-pubmed-36740954
+  object: pub-pencina-jcem
+  asserter: ag-executor
+  evidence:
+  - locator: null
+    role: SUPPORTS
+    origin: DECLARED
+    note: identifier block of pubmed-36740954
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - 'rendition-rule: the record prints the work''s PMID / DOI'
+  edge:
+    type: RENDITION_OF
+    properties: AssertedRecordedProperties
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: rend-pmc-11491622
+  uid: hu:assertion:xfx-claim-rend-pmc-11491622
+  assertionKind: RELATIONSHIP
+  predicate: RENDITION_OF
+  subject: src-pmc-11491622
+  object: pub-pencina-jcem
+  asserter: ag-executor
+  evidence:
+  - locator: null
+    role: SUPPORTS
+    origin: DECLARED
+    note: identifier block of pmc-11491622
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - 'rendition-rule: the record prints the work''s PMID / DOI'
+  edge:
+    type: RENDITION_OF
+    properties: AssertedRecordedProperties
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: rend-pubmed-36482258
+  uid: hu:assertion:xfx-claim-rend-pubmed-36482258
+  assertionKind: RELATIONSHIP
+  predicate: RENDITION_OF
+  subject: src-pubmed-36482258
+  object: pub-yi
+  asserter: ag-executor
+  evidence:
+  - locator: null
+    role: SUPPORTS
+    origin: DECLARED
+    note: identifier block of pubmed-36482258
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - 'rendition-rule: the record prints the work''s PMID / DOI'
+  edge:
+    type: RENDITION_OF
+    properties: AssertedRecordedProperties
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: rend-pmc-9735188
+  uid: hu:assertion:xfx-claim-rend-pmc-9735188
+  assertionKind: RELATIONSHIP
+  predicate: RENDITION_OF
+  subject: src-pmc-9735188
+  object: pub-yi
+  asserter: ag-executor
+  evidence:
+  - locator: null
+    role: SUPPORTS
+    origin: DECLARED
+    note: identifier block of pmc-9735188
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - 'rendition-rule: the record prints the work''s PMID / DOI'
+  edge:
+    type: RENDITION_OF
+    properties: AssertedRecordedProperties
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: rend-pmc-9261366
+  uid: hu:assertion:xfx-claim-rend-pmc-9261366
+  assertionKind: RELATIONSHIP
+  predicate: RENDITION_OF
+  subject: src-pmc-9261366
+  object: pub-huang
+  asserter: ag-executor
+  evidence:
+  - locator: null
+    role: SUPPORTS
+    origin: DECLARED
+    note: identifier block of pmc-9261366
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - 'rendition-rule: the record prints the work''s PMID / DOI'
+  edge:
+    type: RENDITION_OF
+    properties: AssertedRecordedProperties
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: rend-pubmed-38430946
+  uid: hu:assertion:xfx-claim-rend-pubmed-38430946
+  assertionKind: RELATIONSHIP
+  predicate: RENDITION_OF
+  subject: src-pubmed-38430946
+  object: pub-kuerec
+  asserter: ag-executor
+  evidence:
+  - locator: null
+    role: SUPPORTS
+    origin: DECLARED
+    note: identifier block of pubmed-38430946
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - 'rendition-rule: the record prints the work''s PMID / DOI'
+  edge:
+    type: RENDITION_OF
+    properties: AssertedRecordedProperties
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: rend-pmc-9036060
+  uid: hu:assertion:xfx-claim-rend-pmc-9036060
+  assertionKind: RELATIONSHIP
+  predicate: RENDITION_OF
+  subject: src-pmc-9036060
+  object: pub-okabe
+  asserter: ag-executor
+  evidence:
+  - locator: null
+    role: SUPPORTS
+    origin: DECLARED
+    note: identifier block of pmc-9036060
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - 'rendition-rule: the record prints the work''s PMID / DOI'
+  edge:
+    type: RENDITION_OF
+    properties: AssertedRecordedProperties
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: rend-jstage-gsr9-33-pdf
+  uid: hu:assertion:xfx-claim-rend-jstage-gsr9-33-pdf
+  assertionKind: RELATIONSHIP
+  predicate: RENDITION_OF
+  subject: src-jstage-gsr9-33-pdf
+  object: pub-morita
+  asserter: ag-executor
+  evidence:
+  - locator: null
+    role: SUPPORTS
+    origin: DECLARED
+    note: identifier block of jstage-gsr9-33-pdf
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - 'rendition-rule: the record prints the work''s PMID / DOI'
+  edge:
+    type: RENDITION_OF
+    properties: AssertedRecordedProperties
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: rend-pmc-11205942
+  uid: hu:assertion:xfx-claim-rend-pmc-11205942
+  assertionKind: RELATIONSHIP
+  predicate: RENDITION_OF
+  subject: src-pmc-11205942
+  object: pub-review-2024
+  asserter: ag-executor
+  evidence:
+  - locator: null
+    role: SUPPORTS
+    origin: DECLARED
+    note: identifier block of pmc-11205942
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - 'rendition-rule: the record prints the work''s PMID / DOI'
+  edge:
+    type: RENDITION_OF
+    properties: AssertedRecordedProperties
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:35:02Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-verification
+- id: b-pencina-jg
+  uid: hu:assertion:xfx-claim-b-pencina-jg
+  assertionKind: CLAIM
+  claimType: CAUSAL
+  predicate: INCREASES_LEVEL_OF
+  subject: mat-mib626
+  object: sub-nad
+  asserter: pub-pencina-jg
+  occurrenceOf: claim-broad
+  proposition: MIB-626 1000 mg once or twice daily for 14 days was associated with substantial dose-related increases in blood NAD
+  evidence:
+  - locator: pg-result
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: pg-methods
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: pf-nad-text
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  qualifiers:
+  - 'dose: 1000 mg MIB-626 once or twice daily'
+  - 'duration: 14 days'
+  - 'population: 32 overweight or obese adults, 55-80 years'
+  - 'design: double-blind, placebo-controlled'
+  validTime:
+    validObservedAt: '2023-01-26T00:00:00Z'
+    validObservedAtPrecision: DAY
+    validFromBasis: OBSERVATION_ONLY
+    validToBasis: UNKNOWN
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: b-pencina-jcem
+  uid: hu:assertion:xfx-claim-b-pencina-jcem
+  assertionKind: CLAIM
+  claimType: CAUSAL
+  predicate: INCREASES_LEVEL_OF
+  subject: mat-mib626
+  object: sub-nad
+  asserter: pub-pencina-jcem
+  occurrenceOf: claim-broad
+  proposition: MIB-626 2 x 500 mg twice daily for 28 days substantially increased circulating NAD
+  evidence:
+  - locator: pj-result
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: pj-methods
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  qualifiers:
+  - 'dose: 2 tablets of 500 mg twice daily'
+  - 'duration: 28 days'
+  - 'population: 30 overweight or obese adults, >= 45 years'
+  - 'design: randomized 2:1, placebo'
+  validTime:
+    validObservedAt: '2023-07-14T00:00:00Z'
+    validObservedAtPrecision: DAY
+    validFromBasis: OBSERVATION_ONLY
+    validToBasis: UNKNOWN
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: b-yi
+  uid: hu:assertion:xfx-claim-b-yi
+  assertionKind: CLAIM
+  claimType: CAUSAL
+  predicate: INCREASES_LEVEL_OF
+  subject: sub-nmn
+  object: sub-nad
+  asserter: pub-yi
+  occurrenceOf: claim-broad
+  proposition: NMN 300, 600 or 900 mg daily for 60 days increased blood NAD, highest at 600 and 900 mg
+  evidence:
+  - locator: py-result
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: py-design
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  qualifiers:
+  - 'dose: 300 / 600 / 900 mg once daily'
+  - 'duration: 60 days (samples at days 0, 30, 60)'
+  - 'population: 80 healthy middle-aged adults'
+  - 'assay: serum NAD+ + NADH, colorimetric'
+  validTime:
+    validObservedAt: '2022-12-08T00:00:00Z'
+    validObservedAtPrecision: DAY
+    validFromBasis: OBSERVATION_ONLY
+    validToBasis: UNKNOWN
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: b-huang
+  uid: hu:assertion:xfx-claim-b-huang
+  assertionKind: CLAIM
+  claimType: CAUSAL
+  predicate: INCREASES_LEVEL_OF
+  subject: sub-nmn
+  object: sub-nad
+  asserter: pub-huang
+  occurrenceOf: claim-broad
+  proposition: NMN 300 mg daily for 60 days raised serum NAD+/NADH by 38% from baseline vs 14.3% with placebo; the difference was not statistically significant
+  evidence:
+  - locator: ph-38
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: ph-ns
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: ph-dose
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: MIXED
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  qualifiers:
+  - 'dose: 300 mg/day'
+  - 'duration: 60 days'
+  - 'assay: serum NAD+/NADH, colorimetric'
+  validTime:
+    validObservedAt: null
+    validObservedAtPrecision: null
+    validFromBasis: OBSERVATION_ONLY
+    validToBasis: UNKNOWN
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: b-okabe
+  uid: hu:assertion:xfx-claim-b-okabe
+  assertionKind: CLAIM
+  claimType: CAUSAL
+  predicate: INCREASES_LEVEL_OF
+  subject: sub-nmn
+  object: sub-nad
+  asserter: pub-okabe
+  occurrenceOf: claim-broad
+  proposition: NMN 250 mg/day for 12 weeks significantly increased whole-blood NAD+, with an extent that may vary among individuals
+  evidence:
+  - locator: po-vary
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: po-design
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  qualifiers:
+  - 'dose: 250 mg/day'
+  - 'duration: 12 weeks'
+  - 'population: 30 healthy subjects (15 NMN, 15 placebo)'
+  - individual variation stated
+  validTime:
+    validObservedAt: null
+    validObservedAtPrecision: null
+    validFromBasis: OBSERVATION_ONLY
+    validToBasis: UNKNOWN
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: b-morita
+  uid: hu:assertion:xfx-claim-b-morita
+  assertionKind: CLAIM
+  claimType: CAUSAL
+  predicate: DECREASES_LEVEL_OF
+  subject: sub-nmn
+  object: sub-nad
+  asserter: pub-morita
+  proposition: after NMN 300 mg/day for eight weeks blood NAD decreased significantly from 17.4 to 13.7 ng/mL
+  evidence:
+  - locator: pm-nad
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: pm-design
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  qualifiers:
+  - 'dose: 300 mg/day'
+  - 'duration: eight weeks'
+  - 'design: single arm, no placebo'
+  - 'population: 17 postmenopausal women'
+  - 'assay: blood, mass spectrometry'
+  validTime:
+    validObservedAt: '2022-06-30T00:00:00Z'
+    validObservedAtPrecision: DAY
+    validFromBasis: OBSERVATION_ONLY
+    validToBasis: UNKNOWN
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+  note: 'a measured decrease is a positive statement with the registered D2 predicate DECREASES_LEVEL_OF (kernel analogy: a measured null is POSITIVE NO_CHANGE_IN); no OCCURRENCE_OF
+    (cardinality zero_or_one); it bears on claim-broad (contrary) and claim-avg (QUALIFIES) through the adjudication evidence roles'
+- id: m-pencina-cmax-1g
+  uid: hu:assertion:xfx-claim-m-pencina-cmax-1g
+  assertionKind: METRIC
+  predicate: BLOOD_NAD_CMAX_ABOVE_BASELINE_DAY14
+  subject: pub-pencina-jg
+  value:
+    valueNumber: 23.0
+    unitCode: ug/mL
+  asserter: pub-pencina-jg
+  evidence:
+  - locator: pf-table-nad
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: pf-baseline
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  qualifiers:
+  - 'arm: MIB-626 1000 mg once daily (N = 12)'
+  - 'statistic: mean (CV 35.1%)'
+  - 'basis: baseline-corrected; baseline = -15 min sample on Day 1'
+  validTime:
+    validObservedAt: '2023-01-26T00:00:00Z'
+    validObservedAtPrecision: DAY
+    validFromBasis: OBSERVATION_ONLY
+    validToBasis: UNKNOWN
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: m-pencina-cmax-2g
+  uid: hu:assertion:xfx-claim-m-pencina-cmax-2g
+  assertionKind: METRIC
+  predicate: BLOOD_NAD_CMAX_ABOVE_BASELINE_DAY14
+  subject: pub-pencina-jg
+  value:
+    valueNumber: 40.4
+    unitCode: ug/mL
+  asserter: pub-pencina-jg
+  evidence:
+  - locator: pf-table-nad
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: pf-baseline
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  qualifiers:
+  - 'arm: MIB-626 1000 mg twice daily (N = 12)'
+  - 'statistic: mean (CV 40.1%)'
+  - 'basis: baseline-corrected'
+  validTime:
+    validObservedAt: '2023-01-26T00:00:00Z'
+    validObservedAtPrecision: DAY
+    validFromBasis: OBSERVATION_ONLY
+    validToBasis: UNKNOWN
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: m-pencina-cmax-pbo
+  uid: hu:assertion:xfx-claim-m-pencina-cmax-pbo
+  assertionKind: METRIC
+  predicate: BLOOD_NAD_CMAX_ABOVE_BASELINE_DAY14
+  subject: pub-pencina-jg
+  value:
+    valueNumber: 1.36
+    unitCode: ug/mL
+  asserter: pub-pencina-jg
+  evidence:
+  - locator: pf-table-nad
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: pf-baseline
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  qualifiers:
+  - 'arm: placebo (N = 8)'
+  - 'statistic: mean (CV 74.9%)'
+  - 'basis: baseline-corrected'
+  validTime:
+    validObservedAt: '2023-01-26T00:00:00Z'
+    validObservedAtPrecision: DAY
+    validFromBasis: OBSERVATION_ONLY
+    validToBasis: UNKNOWN
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: m-yi-600-d0
+  uid: hu:assertion:xfx-claim-m-yi-600-d0
+  assertionKind: METRIC
+  predicate: SERUM_NAD_CONCENTRATION
+  subject: pub-yi
+  value:
+    valueNumber: 7.95
+    unitCode: nmol/L
+  asserter: pub-yi
+  evidence:
+  - locator: py-row
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: py-assay
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  qualifiers:
+  - 'arm: 600 mg NMN (n = 20)'
+  - 'timepoint: baseline'
+  - 'statistic: mean, SD 3.29'
+  validTime:
+    validObservedAt: '2022-12-08T00:00:00Z'
+    validObservedAtPrecision: DAY
+    validFromBasis: OBSERVATION_ONLY
+    validToBasis: UNKNOWN
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: m-yi-600-d30
+  uid: hu:assertion:xfx-claim-m-yi-600-d30
+  assertionKind: METRIC
+  predicate: SERUM_NAD_CONCENTRATION
+  subject: pub-yi
+  value:
+    valueNumber: 39.0
+    unitCode: nmol/L
+  asserter: pub-yi
+  evidence:
+  - locator: py-row
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: py-assay
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  qualifiers:
+  - 'arm: 600 mg NMN (n = 20)'
+  - 'timepoint: day 30'
+  - 'statistic: mean, SD 12.6'
+  validTime:
+    validObservedAt: '2022-12-08T00:00:00Z'
+    validObservedAtPrecision: DAY
+    validFromBasis: OBSERVATION_ONLY
+    validToBasis: UNKNOWN
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: m-yi-900-d0
+  uid: hu:assertion:xfx-claim-m-yi-900-d0
+  assertionKind: METRIC
+  predicate: SERUM_NAD_CONCENTRATION
+  subject: pub-yi
+  value:
+    valueNumber: 10.5
+    unitCode: nmol/L
+  asserter: pub-yi
+  evidence:
+  - locator: py-row
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: py-assay
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  qualifiers:
+  - 'arm: 900 mg NMN (n = 20)'
+  - 'timepoint: baseline'
+  - 'statistic: mean, SD 6.8'
+  validTime:
+    validObservedAt: '2022-12-08T00:00:00Z'
+    validObservedAtPrecision: DAY
+    validFromBasis: OBSERVATION_ONLY
+    validToBasis: UNKNOWN
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: m-yi-900-d30
+  uid: hu:assertion:xfx-claim-m-yi-900-d30
+  assertionKind: METRIC
+  predicate: SERUM_NAD_CONCENTRATION
+  subject: pub-yi
+  value:
+    valueNumber: 43.1
+    unitCode: nmol/L
+  asserter: pub-yi
+  evidence:
+  - locator: py-row
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: py-assay
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  qualifiers:
+  - 'arm: 900 mg NMN (n = 20)'
+  - 'timepoint: day 30'
+  - 'statistic: mean, SD 14.3'
+  validTime:
+    validObservedAt: '2022-12-08T00:00:00Z'
+    validObservedAtPrecision: DAY
+    validFromBasis: OBSERVATION_ONLY
+    validToBasis: UNKNOWN
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: m-kuerec-cv
+  uid: hu:assertion:xfx-claim-m-kuerec-cv
+  assertionKind: METRIC
+  predicate: WITHIN_GROUP_CV_OF_NAD_CHANGE
+  subject: pub-kuerec
+  value:
+    valueString: 29.2-113.3%
+  asserter: pub-kuerec
+  evidence:
+  - locator: pk-cv
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: pk-design
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  qualifiers:
+  - 'data: post-hoc of the 300/600/900 mg 60-day trial (pub-yi)'
+  validTime:
+    validObservedAt: '2024-02-29T00:00:00Z'
+    validObservedAtPrecision: DAY
+    validFromBasis: OBSERVATION_ONLY
+    validToBasis: UNKNOWN
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: i-edenroc-f
+  uid: hu:assertion:xfx-claim-i-edenroc-f
+  assertionKind: RELATIONSHIP
+  predicate: HOLDS_ROLE
+  subject: p-sinclair
+  object: org-edenroc
+  asserter: p-sinclair
+  evidence:
+  - locator: w-metro
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: w-legend
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - roleText:F (EdenRoc)
+  - 'printed on the MetroBiotech line; ''(EdenRoc)'' marks the code as held through the group (D7 rule: group-level, never pushed to the member)'
+  validTime:
+    validFrom: '2015-01-01T00:00:00Z'
+    validFromPrecision: YEAR
+    validFromBasis: STATED_BY_SOURCE
+    validTo: null
+    validToBasis: OBSERVATION_ONLY
+    validObservedAt: '2021-12-09T00:38:48Z'
+    validObservedAtPrecision: INSTANT
+    note: '''(2015-present)'' printed on the MetroBiotech line of the copy observed 2021-12-09T00:38:48Z (snapshot observedAt)'
+  edge:
+    type: HOLDS_ROLE
+    properties:
+      roleKind: FOUNDER
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: i-edenroc-i
+  uid: hu:assertion:xfx-claim-i-edenroc-i
+  assertionKind: RELATIONSHIP
+  predicate: HOLDS_STAKE
+  subject: p-sinclair
+  object: org-edenroc
+  asserter: p-sinclair
+  evidence:
+  - locator: w-metro
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: w-legend
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - stakeClass:I (EdenRoc)
+  - 'printed on the MetroBiotech line; ''(EdenRoc)'' marks the code as held through the group (D7 rule: group-level, never pushed to the member)'
+  validTime:
+    validFrom: '2015-01-01T00:00:00Z'
+    validFromPrecision: YEAR
+    validFromBasis: STATED_BY_SOURCE
+    validTo: null
+    validToBasis: OBSERVATION_ONLY
+    validObservedAt: '2021-12-09T00:38:48Z'
+    validObservedAtPrecision: INSTANT
+    note: '''(2015-present)'' printed on the MetroBiotech line of the copy observed 2021-12-09T00:38:48Z (snapshot observedAt)'
+  edge:
+    type: HOLDS_STAKE
+    properties:
+      stakeKind: INVESTOR_UNSPECIFIED
+      stakeBand: UNSTATED
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: i-edenroc-e
+  uid: hu:assertion:xfx-claim-i-edenroc-e
+  assertionKind: RELATIONSHIP
+  predicate: HOLDS_STAKE
+  subject: p-sinclair
+  object: org-edenroc
+  asserter: p-sinclair
+  evidence:
+  - locator: w-metro
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: w-legend
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - stakeClass:E (EdenRoc)
+  - 'printed on the MetroBiotech line; ''(EdenRoc)'' marks the code as held through the group (D7 rule: group-level, never pushed to the member)'
+  validTime:
+    validFrom: '2015-01-01T00:00:00Z'
+    validFromPrecision: YEAR
+    validFromBasis: STATED_BY_SOURCE
+    validTo: null
+    validToBasis: OBSERVATION_ONLY
+    validObservedAt: '2021-12-09T00:38:48Z'
+    validObservedAtPrecision: INSTANT
+    note: '''(2015-present)'' printed on the MetroBiotech line of the copy observed 2021-12-09T00:38:48Z (snapshot observedAt)'
+  edge:
+    type: HOLDS_STAKE
+    properties:
+      stakeKind: EQUITY
+      stakeBand: UNSTATED
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: i-edenroc-a
+  uid: hu:assertion:xfx-claim-i-edenroc-a
+  assertionKind: RELATIONSHIP
+  predicate: HOLDS_ROLE
+  subject: p-sinclair
+  object: org-edenroc
+  asserter: p-sinclair
+  evidence:
+  - locator: w-metro
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: w-legend
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - roleText:A (EdenRoc)
+  - 'printed on the MetroBiotech line; ''(EdenRoc)'' marks the code as held through the group (D7 rule: group-level, never pushed to the member)'
+  validTime:
+    validFrom: '2015-01-01T00:00:00Z'
+    validFromPrecision: YEAR
+    validFromBasis: STATED_BY_SOURCE
+    validTo: null
+    validToBasis: OBSERVATION_ONLY
+    validObservedAt: '2021-12-09T00:38:48Z'
+    validObservedAtPrecision: INSTANT
+    note: '''(2015-present)'' printed on the MetroBiotech line of the copy observed 2021-12-09T00:38:48Z (snapshot observedAt)'
+  edge:
+    type: HOLDS_ROLE
+    properties:
+      roleKind: ADVISOR
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: i-edenroc-b
+  uid: hu:assertion:xfx-claim-i-edenroc-b
+  assertionKind: RELATIONSHIP
+  predicate: HOLDS_ROLE
+  subject: p-sinclair
+  object: org-edenroc
+  asserter: p-sinclair
+  evidence:
+  - locator: w-metro
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: w-legend
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - roleText:B (EdenRoc)
+  - 'printed on the MetroBiotech line; ''(EdenRoc)'' marks the code as held through the group (D7 rule: group-level, never pushed to the member)'
+  validTime:
+    validFrom: '2015-01-01T00:00:00Z'
+    validFromPrecision: YEAR
+    validFromBasis: STATED_BY_SOURCE
+    validTo: null
+    validToBasis: OBSERVATION_ONLY
+    validObservedAt: '2021-12-09T00:38:48Z'
+    validObservedAtPrecision: INSTANT
+    note: '''(2015-present)'' printed on the MetroBiotech line of the copy observed 2021-12-09T00:38:48Z (snapshot observedAt)'
+  edge:
+    type: HOLDS_ROLE
+    properties:
+      roleKind: DIRECTOR
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: i-metro-ip
+  uid: hu:assertion:xfx-claim-i-metro-ip
+  assertionKind: RELATIONSHIP
+  predicate: RECEIVES_VALUE_FROM
+  subject: p-sinclair
+  object: org-metro
+  asserter: p-sinclair
+  evidence:
+  - locator: w-metro
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: w-legend
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - '''IP=Inventor on licensed patents'' printed after ''(EdenRoc),'' on the MetroBiotech line: held at the member'
+  - no amount stated
+  validTime:
+    validFrom: '2015-01-01T00:00:00Z'
+    validFromPrecision: YEAR
+    validFromBasis: STATED_BY_SOURCE
+    validTo: null
+    validToBasis: OBSERVATION_ONLY
+    validObservedAt: '2021-12-09T00:38:48Z'
+    validObservedAtPrecision: INSTANT
+    note: '''(2015-present)'' printed on the MetroBiotech line of the copy observed 2021-12-09T00:38:48Z (snapshot observedAt)'
+  edge:
+    type: RECEIVES_VALUE_FROM
+    properties:
+      valueKind: INVENTOR_ON_LICENSED_IP
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: i-parent-2021
+  uid: hu:assertion:xfx-claim-i-parent-2021
+  assertionKind: RELATIONSHIP
+  predicate: PARENT_OF
+  subject: org-edenroc
+  object: org-metro
+  asserter: p-sinclair
+  evidence:
+  - locator: w-metro
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - '''an EdenRoc company'': membership without ownership detail'
+  validTime:
+    validFrom: null
+    validFromBasis: UNKNOWN
+    validTo: null
+    validToBasis: OBSERVATION_ONLY
+    validObservedAt: '2021-12-09T00:38:48Z'
+    validObservedAtPrecision: INSTANT
+  edge:
+    type: PARENT_OF
+    properties:
+      controlKind: GROUP_MEMBER_UNSPECIFIED
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+  note: 'corroborates the D7 fixture''s PARENT_OF episode (a-10, same asserter, current page): one episode per (from, to, type, asserter), so no new episode (R-22)'
+- id: i-jcem-affiliation
+  uid: hu:assertion:xfx-claim-i-jcem-affiliation
+  assertionKind: RELATIONSHIP
+  predicate: HOLDS_ROLE
+  subject: p-sinclair
+  object: org-metro
+  asserter: pub-pencina-jcem
+  evidence:
+  - locator: pj-sinclair-aff
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - 'roleText: author affiliation ''Metro International Biotech'''
+  - surface form resolved to org-metro by as-res-metro (PROPOSED)
+  validTime:
+    validObservedAt: '2023-07-14T00:00:00Z'
+    validObservedAtPrecision: DAY
+    validFromBasis: OBSERVATION_ONLY
+    validToBasis: UNKNOWN
+  edge:
+    type: HOLDS_ROLE
+    properties:
+      roleKind: OTHER
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+  note: 'discovered interest: a scholarly record, not the speaker''s own disclosure; after the statement (2023)'
+- id: f-pencina-jg-funding
+  uid: hu:assertion:xfx-claim-f-pencina-jg-funding
+  assertionKind: RELATIONSHIP
+  predicate: FUNDED_BY
+  subject: pub-pencina-jg
+  object: org-metro
+  asserter: pub-pencina-jg
+  evidence:
+  - locator: pf-funding
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - predicate-only (D3 HAS_STUDY_ROLE funder once the Study is instantiated)
+  validTime:
+    validObservedAt: '2023-01-26T00:00:00Z'
+    validObservedAtPrecision: DAY
+    validFromBasis: OBSERVATION_ONLY
+    validToBasis: UNKNOWN
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- id: f-pencina-jcem-funding
+  uid: hu:assertion:xfx-claim-f-pencina-jcem-funding
+  assertionKind: RELATIONSHIP
+  predicate: FUNDED_BY
+  subject: pub-pencina-jcem
+  object: org-metro
+  asserter: pub-pencina-jcem
+  evidence:
+  - locator: pj-grant
+    role: SUPPORTS
+    origin: DECLARED
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - predicate-only; from the NLM GrantList of the record
+  validTime:
+    validObservedAt: '2023-07-14T00:00:00Z'
+    validObservedAtPrecision: DAY
+    validFromBasis: OBSERVATION_ONLY
+    validToBasis: UNKNOWN
+  status: ACCEPTED
+  recordedAt: '2026-10-09T04:18:24.696Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+assessments:
+- uid: hu:assessment:xfx-claim-as-vet-avg
+  type: K.Assessment
+  assessmentKind: VETTING
+  about:
+  - claim-avg
+  inputAssertions:
+  - o1
+  inputAssessments: []
+  evidence:
+  - locator: l-o1-unpub
+    role: CONTEXT
+    origin: DECLARED
+  - locator: l-o1-basis
+    role: CONTEXT
+    origin: DECLARED
+  - locator: l-disclaimer
+    role: CONTEXT
+    origin: DECLARED
+  - locator: y-views
+    role: CONTEXT
+    origin: DECLARED
+  recordedAt: '2026-10-09T04:18:24.343Z'
+  status: ACCEPTED
+  methodVersion: fixture:claim-vetting@0
+  disposition: RESEARCH
+  rationale: Quantitative and testable (dose, duration, magnitude); its stated basis was unpublished trials; said as fact on a work with large reach; the speaker discloses roles in a
+    company group whose field is NAD boosters. Research.
+  inputSetDigest: sha256:924e0599e9baa139e70f0143c39aff8d7fcfb3792d2249e03b550497527075a2
+  id: as-vet-avg
+  generatedBy: act-r1-vetting
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r1-vetting
+- uid: hu:assessment:xfx-claim-as-vet-univ
+  type: K.Assessment
+  assessmentKind: VETTING
+  about:
+  - claim-universal
+  inputAssertions:
+  - o2
+  inputAssessments: []
+  evidence:
+  - locator: l-o2
+    role: CONTEXT
+    origin: DECLARED
+  recordedAt: '2026-10-09T04:18:24.343Z'
+  status: ACCEPTED
+  methodVersion: fixture:claim-vetting@0
+  disposition: MONITOR
+  rationale: Universal ('without any exceptions') and based on the speaker's own unpublished measurements; it needs individual-level data. Monitor; the average-effect claim is researched
+    first.
+  inputSetDigest: sha256:a177e1fcc1c38254062a4a9296a29e66f6d759d2636254657665607ee3fe7a3a
+  id: as-vet-univ
+  generatedBy: act-r1-vetting
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r1-vetting
+- uid: hu:assessment:xfx-claim-as-refines
+  type: K.Assessment
+  assessmentKind: EQUIVALENCE
+  about:
+  - claim-avg
+  - claim-broad
+  inputAssertions:
+  - o1
+  inputAssessments: []
+  evidence:
+  - locator: l-o1
+    role: CONTEXT
+    origin: DECLARED
+  recordedAt: '2026-10-09T04:35:02Z'
+  status: ACCEPTED
+  methodVersion: fixture:claim-relation@0
+  assessmentSubkind: K.claim-relation
+  conclusionCode: REFINES
+  rationale: claim-avg adds duration (about two weeks) and magnitude (2-fold on average) to the broader proposition that oral NMN increases blood NAD; the mission's trial occurrences
+    are of the broader claim.
+  inputSetDigest: sha256:924e0599e9baa139e70f0143c39aff8d7fcfb3792d2249e03b550497527075a2
+  id: as-refines
+  generatedBy: act-r2-mission
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- uid: hu:assessment:xfx-claim-as-res-metro
+  type: K.Assessment
+  assessmentKind: RESOLUTION
+  about:
+  - org-metro
+  inputAssertions: []
+  inputAssessments: []
+  evidence:
+  - locator: w-metro
+    role: CONTEXT
+    origin: DECLARED
+  - locator: pj-maker
+    role: CONTEXT
+    origin: DECLARED
+  - locator: pf-funding
+    role: CONTEXT
+    origin: DECLARED
+  - locator: pj-sinclair-aff
+    role: CONTEXT
+    origin: DECLARED
+  recordedAt: '2026-10-09T04:35:02Z'
+  status: PROPOSED
+  methodVersion: fixture:org-resolution@0
+  facets:
+  - surfaceForm=MetroBiotech, an EdenRoc company (aka Bauhaus; NAD boosters)
+  - surfaceForm=Metro International Biotech
+  - normalizedForm=metrobiotech international
+  - typeHint=Organization
+  rationale: 'Same candidate for three printings: the self-disclosure line links metrobiotech.com and names the field ''NAD boosters''; the trial papers name ''Metro International Biotech,
+    Worcester, MA'' as the maker of MIB-626, a beta-NMN formulation, and as funder. No registry record was captured, so this stays a PROPOSED resolution, never a merge.'
+  inputSetDigest: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+  id: as-res-metro
+  generatedBy: act-r2-mission
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- uid: hu:assessment:xfx-claim-as-res-trial
+  type: K.Assessment
+  assessmentKind: RESOLUTION
+  about:
+  - pub-pencina-jg
+  inputAssertions: []
+  inputAssessments: []
+  evidence:
+  - locator: l-o1-unpub
+    role: CONTEXT
+    origin: DECLARED
+  - locator: l-harvard
+    role: CONTEXT
+    origin: DECLARED
+  - locator: pf-received
+    role: CONTEXT
+    origin: DECLARED
+  - locator: pg-methods
+    role: CONTEXT
+    origin: DECLARED
+  recordedAt: '2026-10-09T04:35:02Z'
+  status: PROPOSED
+  methodVersion: fixture:work-resolution@0
+  facets:
+  - surfaceForm=clinical trials that are not yet published over the last two years
+  - typeHint=Publication
+  rationale: 'Hypothesis only: the episode names no trial. Pencina 2023 is a 14-day NMN trial at Harvard Medical School / Brigham and Women''s Hospital, received by the journal on 2021-12-14
+    (13 days before the episode), funded by the company group the speaker lists. The speaker says ''trials'', plural.'
+  inputSetDigest: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+  id: as-res-trial
+  generatedBy: act-r2-mission
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- uid: hu:assessment:xfx-claim-as-conflict
+  type: K.Assessment
+  assessmentKind: CONFLICT_RELEVANCE
+  about:
+  - claim-avg
+  - p-sinclair
+  inputAssertions:
+  - o1
+  - i-edenroc-f
+  - i-edenroc-i
+  - i-edenroc-e
+  - i-edenroc-a
+  - i-edenroc-b
+  - i-metro-ip
+  - i-parent-2021
+  - i-jcem-affiliation
+  - f-pencina-jg-funding
+  inputAssessments:
+  - as-res-metro
+  - as-res-trial
+  evidence:
+  - locator: w-metro
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: w-legend
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: l-abs-hl
+    role: CONTEXT
+    origin: DECLARED
+  - locator: l-caveat
+    role: QUALIFIES
+    origin: DECLARED
+  - locator: pf-funding
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: pf-coi
+    role: SUPPORTS
+    origin: DECLARED
+  - locator: pj-sinclair-aff
+    role: SUPPORTS
+    origin: DECLARED
+  recordedAt: '2026-10-09T04:35:02Z'
+  status: PROPOSED
+  methodVersion: fixture-manual/v0 (D9 03#CQ-CL-05 pattern)
+  facets:
+  - relevanceLevel=HIGH
+  - 'relevanceBasis=CLAIM_SUBJECT_IN_FIELD_OF_ORG_WITH_INTEREST (MetroBiotech: ''NAD boosters'')'
+  - temporalOverlap=OVERLAPS (2015-present on the copy observed 2021-12-09, 18 days before the statement)
+  - 'disclosureFinding=NOT_FOUND_IN_CONTAINER (episode page capture: 0 matches for metro / edenroc / bauhaus / nad booster; the transcript is marked under human review)'
+  - disclosureFinding=DISCLOSED_ELSEWHERE_AT_TIME (self-disclosure page, copy observed 2021-12-09)
+  - evidenceLink=SUPPORTING_TRIAL_FUNDED_BY_ORG_WITH_INTEREST (conditional on as-res-metro)
+  - evidenceLink=SPEAKER_AFFILIATED_WITH_ORG_ON_LATER_TRIAL (2023)
+  rationale: The claim's subject (NMN) is the field of a company in which the speaker held founder, investor, equity, advisor and board codes through EdenRoc and licensed-IP income at
+    the time of the statement; the episode does not disclose it; the trial that best fits his 'not yet published' basis was funded by that company.
+  inputSetDigest: sha256:2d6cdb2052426fc1138132501937dc199eb928b3a018d5af709ebea4e1afbaa1
+  id: as-conflict
+  generatedBy: act-r2-mission
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- uid: hu:assessment:xfx-claim-as-synthesis
+  type: K.Assessment
+  assessmentKind: EVIDENCE_SYNTHESIS
+  about:
+  - claim-avg
+  inputAssertions:
+  - b-pencina-jg
+  - b-pencina-jcem
+  - b-yi
+  - b-huang
+  - b-okabe
+  - b-morita
+  - m-pencina-cmax-1g
+  - m-pencina-cmax-2g
+  - m-pencina-cmax-pbo
+  - m-yi-600-d0
+  - m-yi-600-d30
+  - m-yi-900-d0
+  - m-yi-900-d30
+  - m-kuerec-cv
+  inputAssessments:
+  - as-refines
+  - as-conflict
+  - as-res-trial
+  evidence: []
+  recordedAt: '2026-10-09T04:35:02Z'
+  status: ACCEPTED
+  methodVersion: fixture:evidence-synthesis/claude-opus-5-5@2026-10-09
+  verdict: PARTIALLY_SUPPORTED
+  certainty: NOT_GRADED
+  evidenceCutoffAt: '2026-10-09T04:36:14Z'
+  summary: 'Direction and two-week time course: supported by one placebo-controlled 14-day trial at 1 g/day and 2 g/day (Day 8 similar to Day 14), funded by the speaker''s affiliated
+    company group. Magnitude (''double on average''): not stated in any located text (Table 1 gives increments above baseline, not fold changes). Lower doses (250-900 mg/day) raise blood
+    NAD in most trials but measured first at 30 days or later, with large between-person variation; at 300 mg/day one placebo-controlled trial found a non-significant +38% and one single-arm
+    study a decrease.'
+  inputSetDigest: sha256:6bd6f002d1e947013106e441cec5c1b3f0367af5fb75ca2e23e6240e90ec7a6a
+  facets:
+  - distinctSourceFamilies=6
+  - independentSourceFamilies=1
+  - supportingFamilies=1 (pub-pencina-jg)
+  - supportingFamiliesIndependent=0
+  - independentFamily=pub-morita (300 mg/day, single arm, decrease; QUALIFIES)
+  - magnitudeStatedInLocatedText=false
+  - evidenceAtClaimDoseAndDuration=1 family (pub-pencina-jg)
+  id: as-synthesis
+  generatedBy: act-r2-mission
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+adjudications:
+- id: adj-cf-o1
+  uid: hu:adjudication:xfx-claim-adj-cf-o1
+  type: K.Adjudication
+  adjudicationKind: CAPTURE_FIDELITY
+  verdict: DIRECTLY_SUPPORTED
+  evaluates:
+  - o1
+  evidence:
+  - locator: l-o1-r2
+    role: SUPPORTS
+    origin: VERIFIER_FOUND
+  - locator: y-o1
+    role: CONTEXT
+    origin: VERIFIER_FOUND
+  - locator: y-unpub
+    role: CONTEXT
+    origin: VERIFIER_FOUND
+  - locator: l-caveat
+    role: QUALIFIES
+    origin: VERIFIER_FOUND
+  recordedAt: '2026-10-09T04:35:02Z'
+  policyOutcome: PASS
+  mechanicalStatus: passed
+  judgeKind: DETERMINISTIC
+  methodVersion: fixture-reselect/gen.py@2026-10-09
+  attributionFaithfulness: SATISFIED
+  provenanceIntegrity: SATISFIED
+  rationale: l-o1 re-selected verbatim in the 2026-10-09 capture (exact match with context, offset shift -281); speaker label 'David Sinclair:' on the publisher rendition; the caption
+    rendition carries the same statement in different wording ('you'll double on average,') without a speaker label.
+  generatedBy: act-r2-verification
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-verification
+- id: adj-cf-o2
+  uid: hu:adjudication:xfx-claim-adj-cf-o2
+  type: K.Adjudication
+  adjudicationKind: CAPTURE_FIDELITY
+  verdict: DIRECTLY_SUPPORTED
+  evaluates:
+  - o2
+  evidence:
+  - locator: l-o2-r2
+    role: SUPPORTS
+    origin: VERIFIER_FOUND
+  - locator: l-caveat
+    role: QUALIFIES
+    origin: VERIFIER_FOUND
+  recordedAt: '2026-10-09T04:35:02Z'
+  policyOutcome: PASS
+  mechanicalStatus: passed
+  judgeKind: DETERMINISTIC
+  methodVersion: fixture-reselect/gen.py@2026-10-09
+  attributionFaithfulness: SATISFIED
+  provenanceIntegrity: SATISFIED
+  generatedBy: act-r2-verification
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-verification
+- id: adj-sup-o1
+  uid: hu:adjudication:xfx-claim-adj-sup-o1
+  type: K.Adjudication
+  adjudicationKind: SUPPORT
+  verdict: PARTIALLY_SUPPORTED
+  evaluates:
+  - o1
+  evidence:
+  - locator: pg-result
+    role: SUPPORTS
+    origin: VERIFIER_FOUND
+    authority: PRIMARY
+    independence: INTERESTED_PARTY
+    family: pub-pencina-jg
+  - locator: pf-nad-text
+    role: SUPPORTS
+    origin: VERIFIER_FOUND
+    authority: PRIMARY
+    independence: INTERESTED_PARTY
+    family: pub-pencina-jg
+  - locator: pf-day8
+    role: SUPPORTS
+    origin: VERIFIER_FOUND
+    authority: PRIMARY
+    independence: INTERESTED_PARTY
+    family: pub-pencina-jg
+  - locator: pf-table-nad
+    role: QUALIFIES
+    origin: VERIFIER_FOUND
+    authority: PRIMARY
+    independence: INTERESTED_PARTY
+    family: pub-pencina-jg
+  - locator: pf-baseline
+    role: QUALIFIES
+    origin: VERIFIER_FOUND
+    authority: PRIMARY
+    independence: INTERESTED_PARTY
+    family: pub-pencina-jg
+  - locator: pg-methods
+    role: CONTEXT
+    origin: VERIFIER_FOUND
+    authority: PRIMARY
+    independence: INTERESTED_PARTY
+    family: pub-pencina-jg
+  - locator: pj-result
+    role: CONTEXT
+    origin: VERIFIER_FOUND
+    authority: PRIMARY
+    independence: INTERESTED_PARTY
+    family: pub-pencina-jcem
+  - locator: py-row
+    role: CONTEXT
+    origin: VERIFIER_FOUND
+    authority: PRIMARY
+    independence: INTERESTED_PARTY
+    family: pub-yi
+  - locator: py-days
+    role: QUALIFIES
+    origin: VERIFIER_FOUND
+    authority: PRIMARY
+    independence: INTERESTED_PARTY
+    family: pub-yi
+  - locator: py-assay
+    role: QUALIFIES
+    origin: VERIFIER_FOUND
+    authority: PRIMARY
+    independence: INTERESTED_PARTY
+    family: pub-yi
+  - locator: pk-cv
+    role: QUALIFIES
+    origin: VERIFIER_FOUND
+    authority: PRIMARY
+    independence: INTERESTED_PARTY
+    family: pub-kuerec
+  - locator: ph-ns
+    role: QUALIFIES
+    origin: VERIFIER_FOUND
+    authority: PRIMARY
+    independence: UNKNOWN
+    family: pub-huang
+  - locator: po-vary
+    role: QUALIFIES
+    origin: VERIFIER_FOUND
+    authority: PRIMARY
+    independence: INTERESTED_PARTY
+    family: pub-okabe
+  - locator: po-visits
+    role: QUALIFIES
+    origin: VERIFIER_FOUND
+    authority: PRIMARY
+    independence: INTERESTED_PARTY
+    family: pub-okabe
+  - locator: pm-nad
+    role: QUALIFIES
+    origin: VERIFIER_FOUND
+    authority: PRIMARY
+    independence: INDEPENDENT
+    family: pub-morita
+  - locator: l-o1-unpub
+    role: CONTEXT
+    origin: VERIFIER_FOUND
+    authority: PRIMARY
+    independence: SELF_REPORTED
+    family: mw-ep52
+  recordedAt: '2026-10-09T04:35:02Z'
+  policyOutcome: REVIEW
+  judgeKind: LLM
+  methodVersion: fixture:support-judgment/claude-opus-5-5@2026-10-09
+  evidenceSupport: NOT_SATISFIED
+  worldCorrectness: UNKNOWN
+  attributionFaithfulness: SATISFIED
+  sourceAuthority: SATISFIED
+  provenanceIntegrity: SATISFIED
+  unsupportedFacets:
+  - 'magnitude: about 2-fold on average at about two weeks (no located text states a fold change)'
+  - 'independence: the only located evidence at about 1 g/day for about two weeks is funded by the speaker''s affiliated company group'
+  rationale: Direction and time course at ~1 g/day for 14 days are supported by one sponsor-funded primary; the magnitude is not in the located text; lower-dose trials qualify the generality
+    (measured at >= 30 days, large between-person variation, one non-significant and one decreasing result at 300 mg/day). No located span contradicts the claim at its own dose and duration.
+  generatedBy: act-r2-verification
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-verification
+captureFidelityAdjudications:
+  common:
+    type: K.Adjudication
+    adjudicationKind: CAPTURE_FIDELITY
+    verdict: DIRECTLY_SUPPORTED
+    policyOutcome: PASS
+    mechanicalStatus: passed
+    judgeKind: DETERMINISTIC
+    methodVersion: fixture-reselect/gen.py@2026-10-09
+    attributionFaithfulness: SATISFIED
+    provenanceIntegrity: SATISFIED
+    recordedAt: '2026-10-09T04:35:02Z'
+    generatedBy: act-r2-verification
+    producedBy:
+      missionId: mission:xfx-claim-mission-report
+      runId: run:xfx-claim-r2-verification
+  records:
+  - uid: hu:adjudication:xfx-claim-adj-cf-a-mib626-realizes-nmn
+    evaluates:
+    - a-mib626-realizes-nmn
+    evidence:
+    - locator: pg-material
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+  - uid: hu:adjudication:xfx-claim-adj-cf-b-pencina-jg
+    evaluates:
+    - b-pencina-jg
+    evidence:
+    - locator: pg-result
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+    - locator: pg-methods
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+    - locator: pf-nad-text
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+  - uid: hu:adjudication:xfx-claim-adj-cf-b-pencina-jcem
+    evaluates:
+    - b-pencina-jcem
+    evidence:
+    - locator: pj-result
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+    - locator: pj-methods
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+  - uid: hu:adjudication:xfx-claim-adj-cf-b-yi
+    evaluates:
+    - b-yi
+    evidence:
+    - locator: py-result
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+    - locator: py-design
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+  - uid: hu:adjudication:xfx-claim-adj-cf-b-huang
+    evaluates:
+    - b-huang
+    evidence:
+    - locator: ph-38
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+    - locator: ph-ns
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+    - locator: ph-dose
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+  - uid: hu:adjudication:xfx-claim-adj-cf-b-okabe
+    evaluates:
+    - b-okabe
+    evidence:
+    - locator: po-vary
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+    - locator: po-design
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+  - uid: hu:adjudication:xfx-claim-adj-cf-b-morita
+    evaluates:
+    - b-morita
+    evidence:
+    - locator: pm-nad
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+    - locator: pm-design
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+  - uid: hu:adjudication:xfx-claim-adj-cf-m-pencina-cmax-1g
+    evaluates:
+    - m-pencina-cmax-1g
+    evidence:
+    - locator: pf-table-nad
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+    - locator: pf-baseline
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+    - locator: rv-row
+      role: CONTEXT
+      origin: VERIFIER_FOUND
+  - uid: hu:adjudication:xfx-claim-adj-cf-m-pencina-cmax-2g
+    evaluates:
+    - m-pencina-cmax-2g
+    evidence:
+    - locator: pf-table-nad
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+    - locator: pf-baseline
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+  - uid: hu:adjudication:xfx-claim-adj-cf-m-pencina-cmax-pbo
+    evaluates:
+    - m-pencina-cmax-pbo
+    evidence:
+    - locator: pf-table-nad
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+    - locator: pf-baseline
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+  - uid: hu:adjudication:xfx-claim-adj-cf-m-yi-600-d0
+    evaluates:
+    - m-yi-600-d0
+    evidence:
+    - locator: py-row
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+    - locator: py-assay
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+  - uid: hu:adjudication:xfx-claim-adj-cf-m-yi-600-d30
+    evaluates:
+    - m-yi-600-d30
+    evidence:
+    - locator: py-row
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+    - locator: py-assay
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+  - uid: hu:adjudication:xfx-claim-adj-cf-m-yi-900-d0
+    evaluates:
+    - m-yi-900-d0
+    evidence:
+    - locator: py-row
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+    - locator: py-assay
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+  - uid: hu:adjudication:xfx-claim-adj-cf-m-yi-900-d30
+    evaluates:
+    - m-yi-900-d30
+    evidence:
+    - locator: py-row
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+    - locator: py-assay
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+  - uid: hu:adjudication:xfx-claim-adj-cf-m-kuerec-cv
+    evaluates:
+    - m-kuerec-cv
+    evidence:
+    - locator: pk-cv
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+    - locator: pk-design
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+  - uid: hu:adjudication:xfx-claim-adj-cf-i-edenroc-f
+    evaluates:
+    - i-edenroc-f
+    evidence:
+    - locator: w-metro
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+    - locator: w-legend
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+  - uid: hu:adjudication:xfx-claim-adj-cf-i-edenroc-i
+    evaluates:
+    - i-edenroc-i
+    evidence:
+    - locator: w-metro
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+    - locator: w-legend
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+  - uid: hu:adjudication:xfx-claim-adj-cf-i-edenroc-e
+    evaluates:
+    - i-edenroc-e
+    evidence:
+    - locator: w-metro
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+    - locator: w-legend
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+  - uid: hu:adjudication:xfx-claim-adj-cf-i-edenroc-a
+    evaluates:
+    - i-edenroc-a
+    evidence:
+    - locator: w-metro
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+    - locator: w-legend
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+  - uid: hu:adjudication:xfx-claim-adj-cf-i-edenroc-b
+    evaluates:
+    - i-edenroc-b
+    evidence:
+    - locator: w-metro
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+    - locator: w-legend
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+  - uid: hu:adjudication:xfx-claim-adj-cf-i-metro-ip
+    evaluates:
+    - i-metro-ip
+    evidence:
+    - locator: w-metro
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+    - locator: w-legend
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+  - uid: hu:adjudication:xfx-claim-adj-cf-i-parent-2021
+    evaluates:
+    - i-parent-2021
+    evidence:
+    - locator: w-metro
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+  - uid: hu:adjudication:xfx-claim-adj-cf-i-jcem-affiliation
+    evaluates:
+    - i-jcem-affiliation
+    evidence:
+    - locator: pj-sinclair-aff
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+  - uid: hu:adjudication:xfx-claim-adj-cf-f-pencina-jg-funding
+    evaluates:
+    - f-pencina-jg-funding
+    evidence:
+    - locator: pf-funding
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+  - uid: hu:adjudication:xfx-claim-adj-cf-f-pencina-jcem-funding
+    evaluates:
+    - f-pencina-jcem-funding
+    evidence:
+    - locator: pj-grant
+      role: SUPPORTS
+      origin: VERIFIER_FOUND
+report:
+  id: rpt-avg
+  uid: hu:report:xfx-evidence-report-nmn-two-weeks-doubles-blood-nad
+  type: K.Report
+  reportKind: EVIDENCE_REPORT
+  skeletonKey: d10.evidence-report@1
+  name: 'Evidence report: does NMN double blood NAD in about two weeks?'
+  status: PROPOSED
+  verdict: PARTIALLY_SUPPORTED
+  worldCorrectness: UNKNOWN
+  policyOutcome: REVIEW
+  policyVersion: policy:bl-publish@fixture
+  bodyFile: composed-body.txt
+  bodyDigest: sha256:f11f7d49e853db7d9dd6654ebceb48fda6da58a3e8c6e0e1f9cdf469c260191f
+  bundleDigest: sha256:f5f40226acf0b7f1963d4d3ea17a4627ea4c173c39a3fafa3a115307132bf487
+  citationCompleteness: 0.9444
+  citationCorrectness: null
+  distinctSourceFamilyCount: 6
+  independentSourceFamilyCount: 1
+  unsupportedHighSeverityCount: null
+  about:
+  - claim-avg
+  citesAssertions:
+  - b-huang
+  - b-morita
+  - b-okabe
+  - b-pencina-jg
+  - b-yi
+  - f-pencina-jg-funding
+  - i-edenroc-a
+  - i-edenroc-b
+  - i-edenroc-e
+  - i-edenroc-f
+  - i-edenroc-i
+  - i-jcem-affiliation
+  - i-metro-ip
+  - m-kuerec-cv
+  - m-pencina-cmax-1g
+  - m-pencina-cmax-2g
+  - m-pencina-cmax-pbo
+  - o1
+  citesAssessments:
+  - as-conflict
+  - as-res-metro
+  - as-res-trial
+  - as-synthesis
+  - as-vet-avg
+  - as-vet-univ
+  evidence:
+  - l-o1
+  - l-o1-unpub
+  - pf-baseline
+  - pf-coi
+  - pf-day8
+  - pf-funding
+  - pf-table-nad
+  - pg-methods
+  - pg-result
+  - ph-38
+  - ph-coi
+  - ph-ns
+  - pj-grant
+  - pj-sinclair-aff
+  - pk-cv
+  - pm-coi
+  - pm-design
+  - pm-nad
+  - po-coi
+  - po-funding
+  - po-vary
+  - po-visits
+  - py-coi
+  - py-days
+  - py-product
+  - w-legend
+  - w-metro
+  adjudicationsConsidered:
+  - adj-sup-o1
+  items:
+  - sec:claim-under-test
+  - sec:interests
+  - sec:evidence-for
+  - sec:evidence-against
+  - sec:verdict
+  - sec:open-questions
+  recordedAt: '2026-10-09T04:35:02Z'
+  publishedAt: null
+  sentenceCount: 18
+  citedSentenceCount: 17
+  generatedBy: act-r2-mission
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+reportItems:
+- itemKey: sec:claim-under-test
+  uid: hu:report-item:xfx-claim-avg-claim-under-test
+  itemKind: SECTION
+  sectionKind: CLAIM_UNDER_TEST
+  name: Claim under test
+  about:
+  - claim-avg
+  citesAssertions:
+  - o1
+  citesAssessments:
+  - as-vet-avg
+  evidence:
+  - l-o1
+  - l-o1-unpub
+  bodyStartOffset: 64
+  bodyEndOffset: 465
+  uncitedSentenceCount: 0
+  citationCompleteness: 1.0
+  recordedAt: '2026-10-09T04:35:02Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- itemKey: sec:interests
+  uid: hu:report-item:xfx-claim-avg-interests
+  itemKind: SECTION
+  sectionKind: INTERESTS
+  name: Interests of the claimant
+  about:
+  - p-sinclair
+  citesAssertions:
+  - f-pencina-jg-funding
+  - i-edenroc-a
+  - i-edenroc-b
+  - i-edenroc-e
+  - i-edenroc-f
+  - i-edenroc-i
+  - i-jcem-affiliation
+  - i-metro-ip
+  citesAssessments:
+  - as-conflict
+  - as-res-metro
+  - as-res-trial
+  evidence:
+  - pf-coi
+  - pf-funding
+  - pj-sinclair-aff
+  - w-legend
+  - w-metro
+  bodyStartOffset: 465
+  bodyEndOffset: 1223
+  uncitedSentenceCount: 0
+  citationCompleteness: 1.0
+  recordedAt: '2026-10-09T04:35:02Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- itemKey: sec:evidence-for
+  uid: hu:report-item:xfx-claim-avg-evidence-for
+  itemKind: SECTION
+  sectionKind: EVIDENCE_FOR
+  name: Evidence for
+  about:
+  - claim-avg
+  citesAssertions:
+  - b-pencina-jg
+  - m-pencina-cmax-1g
+  - m-pencina-cmax-2g
+  - m-pencina-cmax-pbo
+  citesAssessments: []
+  evidence:
+  - pf-day8
+  - pf-table-nad
+  - pg-methods
+  - pg-result
+  bodyStartOffset: 1223
+  bodyEndOffset: 1796
+  uncitedSentenceCount: 0
+  citationCompleteness: 1.0
+  recordedAt: '2026-10-09T04:35:02Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- itemKey: sec:evidence-against
+  uid: hu:report-item:xfx-claim-avg-evidence-against
+  itemKind: SECTION
+  sectionKind: EVIDENCE_AGAINST
+  name: Evidence against and qualifications
+  about:
+  - claim-avg
+  citesAssertions:
+  - b-huang
+  - b-morita
+  - b-okabe
+  - b-yi
+  - m-kuerec-cv
+  - m-pencina-cmax-1g
+  citesAssessments:
+  - as-synthesis
+  evidence:
+  - pf-baseline
+  - pf-funding
+  - ph-38
+  - ph-coi
+  - ph-ns
+  - pj-grant
+  - pk-cv
+  - pm-coi
+  - pm-design
+  - pm-nad
+  - po-coi
+  - po-funding
+  - po-vary
+  - po-visits
+  - py-coi
+  - py-days
+  - py-product
+  bodyStartOffset: 1796
+  bodyEndOffset: 3118
+  uncitedSentenceCount: 0
+  citationCompleteness: 1.0
+  recordedAt: '2026-10-09T04:35:02Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- itemKey: sec:verdict
+  uid: hu:report-item:xfx-claim-avg-verdict
+  itemKind: SECTION
+  sectionKind: VERDICT
+  name: Verdict
+  about:
+  - claim-avg
+  citesAssertions:
+  - b-morita
+  citesAssessments:
+  - as-synthesis
+  evidence:
+  - pm-coi
+  - pm-nad
+  bodyStartOffset: 3118
+  bodyEndOffset: 3551
+  uncitedSentenceCount: 0
+  citationCompleteness: 1.0
+  recordedAt: '2026-10-09T04:35:02Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+- itemKey: sec:open-questions
+  uid: hu:report-item:xfx-claim-avg-open-questions
+  itemKind: SECTION
+  sectionKind: OPEN_QUESTIONS
+  name: Open questions
+  about:
+  - claim-avg
+  citesAssertions: []
+  citesAssessments:
+  - as-synthesis
+  - as-vet-univ
+  evidence: []
+  bodyStartOffset: 3551
+  bodyEndOffset: 3890
+  uncitedSentenceCount: 1
+  citationCompleteness: 0.6667
+  recordedAt: '2026-10-09T04:35:02Z'
+  producedBy:
+    missionId: mission:xfx-claim-mission-report
+    runId: run:xfx-claim-r2-evidence-mission
+lineage:
+  rule: createdBy = earliest Activity that wrote the record (WAS_GENERATED_BY); updatedBy = later Activities that wrote WAS_GENERATED_BY on update; records of mission:ft-D7-fixtures
+    / mission:ft-D9-fixtures are the sibling packets' records this fixture reads
+  recordsTotal: 203
+  countsCreatedByRun:
+    mission:ft-D7-fixtures:
+      run:ft-D7-sinclair-self-disclosure-unstructured:
+        Activity: 1
+        Person: 1
+        Organization: 2
+        Source: 1
+        SourceSnapshot: 1
+    mission:ft-D9-fixtures:
+      run:ft-D9-hl52-transcript-nmn-practice:
+        Activity: 1
+        Channel: 1
+        MediaWork: 1
+        Source: 2
+        SourceSnapshot: 2
+      run:ft-D9-sinclair-recommendation-disclosure-asof:
+        Activity: 1
+        SourceSnapshot: 1
+    mission:xfx-claim-mission-report:
+      run:xfx-claim-r1-ingest:
+        Activity: 1
+        Agent: 2
+        ChemicalSubstance: 2
+        SourceLocator: 10
+        Claim: 2
+        Assertion: 2
+      run:xfx-claim-r1-vetting:
+        Activity: 1
+        Assessment: 2
+      run:xfx-claim-r2-evidence-mission:
+        Activity: 1
+        IngredientMaterial: 1
+        Publication: 7
+        Source: 10
+        SourceSnapshot: 11
+        SourceLocator: 44
+        Claim: 1
+        Assertion: 37
+        Assessment: 5
+        ReportItem: 6
+        Report: 1
+        Identifier: 2
+      run:xfx-claim-r2-verification:
+        Activity: 1
+        Agent: 2
+        Publication: 1
+        Source: 1
+        SourceSnapshot: 1
+        SourceLocator: 5
+        Assertion: 1
+        Adjudication: 28
+  updatedByRun:
+    run:xfx-claim-r2-evidence-mission:
+    - hu:substance:xfx-nicotinamide-mononucleotide
+    - hu:substance:xfx-nad
+    - hu:claim:xfx-nmn-two-weeks-doubles-blood-nad
+    run:xfx-claim-r1-vetting:
+    - hu:claim:xfx-nmn-two-weeks-doubles-blood-nad
+    - hu:claim:xfx-nmn-1-2g-doubles-blood-nad-in-everyone
+    run:xfx-claim-r2-verification:
+    - hu:assertion:xfx-claim-o1
+    - hu:assertion:xfx-claim-o2

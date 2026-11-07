@@ -1,0 +1,339 @@
+version: 1
+module: D9
+# Source: packets/D9/10-seams.yaml (sha256 1fcb1633…), edited by the S module editor for D9 2026-10-08 per
+# final/decision-report.md and final/_work/rulings.yaml (global + modules.D9). Every entry keeps the 01-PACKET-CONTRACT
+# fields (type, from, to, questions, direction, owner), adds `module: D9`, and carries `status` (accepted | cut) with the
+# ruling that decides it (`ruling: none` = carried unchanged, no ruling touches it). Synthesis edits:
+#   R-94  relationship seams (`seams`) are separate from Assertion.predicate rows (`predicateSeams`, checked against
+#         final/vocabularies/predicates.yaml, R-52); vocabulary files point at final/.
+#   R-43  RENDITION_OF row added (kernel meaning, asserted, AssertedRecordedProperties; registered by D3).
+#   R-15  ASSERTED_BY row added (admits D9.MediaWork for a multi-byline work's own voice, and ACCOUNT Channels).
+#   R-19  OCCURS_IN: every Assertion whose evidence is in a MediaWork; T = container publishedAt, read by D7 too.
+#   R-20  ASSESSES / DERIVED_FROM notes: occurrence assessments ASSESSES the Claim + DERIVED_FROM the occurrence;
+#         corrections use the kernel CORRECTS predicate; K-2 and K-3 closed.
+#   R-49  discourse metrics are projection-cache properties, not OTHER / DISCOURSE_METRIC Assessments.
+#   R-55  CONFLICT_RELEVANCE: one register entry D7.conflict-relevance (registrar D7); D9 contributes the disclosure facets.
+#   R-65  PRESENTED_AT_CONFERENCE predicate seam added (D13 registrar, object D9.Channel EVENT_SERIES).
+#   R-79, R-80, R-82, R-83, R-84  predicate registrars and names.
+# Names in rows are final names (Mention, StateEpisodeProperties, OPERATES_CHANNEL, RECOMMENDS_FOR,
+# REPORTS_ADVERSE_EXPERIENCE, COMPETING_INTEREST_STATED are retired).
+seams:
+  # ---- typed edges declared in final/schema/D9.graphql
+  - type: OCCURS_IN
+    module: D9
+    from: K.Assertion
+    to: D9.MediaWork
+    declaredOn: D9.MediaWork.occurrences (direction IN)
+    questions: [CQ-CL-01, CQ-CL-05, Q-D9-01, Q-D9-02, Q-D9-04, Q-D9-11, Q-D9-23]
+    direction: IN
+    owner: this
+    status: accepted
+    ruling: R-19
+    note: >-
+      Listed although Assertion is on the kernel allowlist so the edge is visible from both sides: K.seams.yaml lists the same
+      edge (owner other) and K Q-K-09 reads it as the container. Every Assertion whose evidence is in a MediaWork has exactly
+      one OCCURS_IN, not only CLAIM occurrences (R-19). Shared definition of the statement time T = OCCURS_IN →
+      MediaWork.publishedAt, snapshot fallback only without a container; D7 rewrites CQ-CL-05 / Q-D7-06 to read it (R-19,
+      closes D7-5). Structural, written in the same intent as the Assertion, corrected only by superseding it (R-29).
+  - type: RENDITION_OF
+    module: D9
+    from: K.Source
+    to: D9.MediaWork
+    declaredOn: D9.MediaWork.renditions (direction IN)
+    edgeProperties: K.AssertedRecordedProperties
+    questions: [CQ-CL-01, CQ-CL-05, CQ-PV-02, Q-D9-02, Q-D9-06, Q-D9-07, Q-D9-16, Q-D9-17, Q-D9-18, Q-K-21]
+    direction: IN
+    owner: this
+    status: accepted
+    ruling: R-43
+    note: >-
+      Added in synthesis (Source is on the kernel allowlist, so the packet had no row). Kernel meaning (R-43): Source →
+      D9.MediaWork | D3.Publication, declared by D9 and D3, registered by D3; asserted with recorded time only, so regrouping
+      is a supersession (R-26). K's source family = OCCURS_IN work, else RENDITION_OF work, else Source (K Q-K-21,
+      Report.distinctSourceFamilyCount). K.seams.yaml lists the same edge (owner other).
+  - type: APPEARS_IN
+    module: D9
+    from: D7.Person
+    to: D9.MediaWork
+    declaredOn: D9.MediaWork.appearances (direction IN)
+    edgeProperties: D9.AppearanceEdgeProperties
+    questions: [CQ-CL-08, Q-D9-16, Q-D9-18]
+    direction: IN
+    owner: this
+    status: accepted
+    ruling: R-81
+    note: >-
+      D7 Person declares no inverse field (per D7's "declared by the domain that asks, on its own type"). An appearance in
+      media is APPEARS_IN; a presentation at a meeting is D13 INVOLVES {PRESENTER} (R-81); MediaWork authorship stays
+      APPEARS_IN {AUTHOR} (R-80).
+  - type: CONTENT_SPONSORED_BY
+    module: D9
+    from: D9.MediaWork
+    to: [D7.Organization, D7.Brand]
+    via: union ContentSponsor (2 members; owned by D9, foreign members listed here, R-05)
+    questions: [CQ-CL-05, CQ-CL-08, Q-D9-06]
+    direction: OUT
+    owner: this
+    status: accepted
+    ruling: R-67
+    note: >-
+      Every role edge lives on the asking module's type; Organization gets no new relationship field (R-67). Bitemporal
+      episode (AssertedEdgeProperties).
+  # ---- kernel edges D9 relies on whose endpoints are D9 types or that D9 patterns read
+  - type: ASSERTED_BY
+    module: D9
+    from: K.Assertion
+    to: "D9.MediaWork | D9.Channel (channelKind ACCOUNT) (through K.Subjectable)"
+    questions: [CQ-CL-07, Q-D9-11]
+    direction: OUT
+    owner: other
+    status: accepted
+    ruling: R-15
+    note: >-
+      Added in synthesis to mirror K.seams.yaml (owner this there). ACCOUNT channels are admitted asserters (K-6, accepted in
+      the adversarial review); a MediaWork with several bylines asserts what it states in its own voice, a bylined web article
+      is asserted by its single named author, else the site owner (R-15, executor P20). Asserter defaults per R-16.
+  - type: OCCURRENCE_OF
+    module: D9
+    from: K.Assertion (claim occurrence)
+    to: K.Claim
+    questions: [CQ-CL-06, Q-D9-08, Q-D9-22]
+    direction: OUT
+    owner: other
+    status: accepted
+    ruling: none
+    note: read only; D9's OCCURS_IN completes the occurrence with its container.
+  - type: ASSESSES
+    module: D9
+    from: K.Assessment
+    to: [D9.Channel, D9.MediaWork, K.Claim, K.Source]
+    questions: [CQ-CL-04, CQ-CL-05, CQ-CL-06, CQ-CL-07, CQ-PV-04, Q-D9-05, Q-D9-09, Q-D9-13, Q-D9-14, Q-D9-19, Q-D9-21]
+    direction: OUT
+    owner: other
+    status: accepted
+    ruling: R-20
+    note: >-
+      D9 assessment kinds and subkinds (registered in final/vocabularies/assessment-vocabularies.yaml, R-54):
+      RETELLING_FIDELITY, SOURCE_AUTHORITY (subkind = claim kind), QUALITY (D9.capture-error; D9.dose-statement-risk about the
+      statement's Claim, effectDirection null, conclusionCode CORRECTED_QUANTITY | UNSPECIFIED_BASIS), RESOLUTION (account →
+      person). CONFLICT_RELEVANCE is one register entry, D7.conflict-relevance, registrar D7 (conclusionCode DIRECT |
+      INDIRECT | NOT_RELEVANT | UNDETERMINED; facets relevanceBasis, temporalOverlap); D9 contributes the disclosure facets
+      disclosureFinding (DISCLOSED_ELSEWHERE_AT_TIME, DISCLOSED_ELSEWHERE, DISCLOSED_IN_LATER_REVISION,
+      NOT_FOUND_IN_COMPLETE_CAPTURE, NOT_FOUND_IN_PARTIAL_CAPTURE), disclosurePlacement and completeness, whose values change
+      only with D9's agreement (R-55). Other findings use the kernel shared slots: conclusionCode (fidelity verdict) and
+      facets (lostQualificationKinds, speechActFrom/To, amountChanged, matchedSpan, errorKind). An assessment of one
+      occurrence ASSESSES the Claim (and the speaker) and is DERIVED_FROM the judged occurrence, facets occurrence= /
+      retelling= / original= (R-20; K-3 closed, no ASSESSES → Assertion). Discourse metrics (independence, claim spread,
+      influence) are projection-cache properties with methodVersion + derivedAt written by a PROJECTION Activity, never an
+      Assessment or Association (R-49; DISCOURSE_METRIC request K-10 and the interim OTHER form withdrawn).
+  - type: DERIVED_FROM
+    module: D9
+    from: K.Assertion (claim occurrence, retelling or correction)
+    to: K.Assertion (original span, e.g. a D3 study-result assertion)
+    questions: [CQ-CL-04, CQ-CL-06, CQ-PV-05, Q-D9-04, Q-D9-09, Q-D9-10, Q-D9-13, Q-D9-19]
+    direction: OUT
+    owner: other
+    status: accepted
+    ruling: R-20
+    note: >-
+      Retellings and relayed records: kernel convention DERIVED_FROM with basisKind CITED_FROM_PRIOR_WORK (K-1 closed; R-21).
+      Corrections: an occurrence with the kernel predicate CORRECTS plus DERIVED_FROM to the corrected occurrence (R-20; K-2
+      closed). Qualifications: HAS_EVIDENCE {role QUALIFIES} plus qualifier prefixes (R-20).
+  # ---- typed edges of other modules D9 patterns read
+  - type: HOLDS_ROLE | HOLDS_STAKE | RECEIVES_VALUE_FROM (read)
+    module: D9
+    from: D7.Person
+    to: D7.Organization
+    questions: [CQ-CL-05, Q-D9-02, Q-D9-03, Q-D9-12, Q-D9-13, Q-D9-21]
+    direction: OUT
+    owner: other
+    status: accepted
+    ruling: R-19
+    note: >-
+      D9 reads D7 interest episodes valid at the container's publishedAt (T, R-19); OVERLAP reads the authorizing Assertion's
+      validObservedAt through r.assertionUid (no kernel edge carries observedAt). In-container disclosure = the interest's
+      authorizing assertion located in a rendition of the same work (Source -RENDITION_OF-> work).
+  - type: HAS_OFFER | SELLER_OF_RECORD (read)
+    module: D9
+    from: [D6.MerchantListing, D6.Offer]
+    to: [D6.Offer, D7.Organization]
+    questions: [Q-D9-21]
+    direction: OUT
+    owner: other
+    status: accepted
+    ruling: none
+    note: a LINKS_TO_OFFER object is a D6 MerchantListing (priceless landing page) or Offer (D6 answer to D6-1); the seller is reached MerchantListing -HAS_OFFER-> Offer -SELLER_OF_RECORD->
+  - type: ON_FRONTIER | INVOLVES (read)
+    module: D9
+    from: [D13.Event, D3.Study]
+    to: [D13.Frontier, "K.Subjectable (D13 INVOLVES)"]
+    questions: [Q-D9-18, Q-D9-19]
+    direction: OUT
+    owner: other
+    status: accepted
+    ruling: R-91
+    note: only Event and Study attach to Frontier (R-91); D9 types never point at a Frontier; Q-D9-19 restricts its retelling projection to occurrences whose subject or object reaches F through D13
+  - type: RECOMMENDS (derived projection, not declared)
+    module: D9
+    from: D7.Person
+    to: Subjectable
+    questions: [Q-D9-01]
+    direction: OUT
+    owner: other
+    status: cut
+    ruling: R-83
+    note: no stored RECOMMENDS edge (directive 3.9, R-83); D9 answers Q-D9-01 from the indexed claim-occurrence Assertion path (assertionKind CLAIM, speechAct RECOMMENDS, predicate RECOMMENDS_USE | RECOMMENDS_AGAINST → HAS_SUBJECT).
+
+  # ---- added by the S integrator 2026-10-09 (contract rule 8: every reference to a type outside the module is a seam row;
+  #      these three D9 -> K edges were listed only on the K side, K.seams.yaml rows 24-26). Questions from D9.relationship.yaml.
+  - { type: CHUNK_OF, module: D9, from: D9.Chunk, to: K.SourceSnapshot, declaredOn: D9.Chunk.snapshot (direction OUT), questions: [Q-D9-20, Q-D9-16], direction: OUT, owner: this, status: accepted, ruling: "integration (decision-report I-01)", note: "structural; a chunk is cut from one snapshot's projection" }
+  - { type: COVERS_LOCATOR, module: D9, from: D9.Chunk, to: K.SourceLocator, declaredOn: D9.Chunk.locators (direction OUT), questions: [Q-D9-20, CQ-PV-04], direction: OUT, owner: this, status: accepted, ruling: "integration (decision-report I-01)", note: "derived; never support: answers cite HAS_EVIDENCE (R-27)" }
+  - { type: MENTIONS, module: D9, from: D9.Chunk, to: K.Subjectable, declaredOn: D9.Chunk.mentions (direction OUT), questions: [Q-D9-20], direction: OUT, owner: this, status: accepted, ruling: "R-27; integration (decision-report I-01)", note: "kernel meaning, derived (DerivedEdgeProperties), registrar D9; counted once in K (R-01)" }
+
+predicateSeams:
+  # Assertion.predicate rows (R-94) checked against final/vocabularies/predicates.yaml (R-52); `registrar` per R-52.
+  - predicate: OPERATED_BY
+    module: D9
+    registrar: D9
+    subjects: [D9.Channel]
+    objects: [D7.Person, D7.Organization]
+    questions: [CQ-CL-05, Q-D9-12]
+    owner: this
+    status: accepted
+    ruling: R-79
+    note: predicate-only, valid time on the Assertion, read with OVERLAP; D7 deletes its typed OPERATED_BY seam row (union ChannelOperator) and its inverse predicate OPERATES_CHANNEL (R-79)
+  - predicate: RECOMMENDS_USE | RECOMMENDS_AGAINST
+    module: D9
+    registrar: D9
+    subjects: "recommended means (D1 compound, D6 product, D5 protocol, D4 device, D12 food); never a D5 Target"
+    objects: none (a goal is the qualifier target:<key>)
+    questions: [Q-D9-01]
+    owner: this
+    status: accepted
+    ruling: R-83
+    note: aliases RECOMMENDS_FOR, ENDORSES_PRODUCT retired into RECOMMENDS_USE; D5 and D10 drop their RECOMMENDS_AGAINST registrations, D7 its RECOMMENDS_USE registration (R-83)
+  - predicate: DISCLOSES_INTEREST
+    module: D9
+    registrar: D9
+    subjects: [D7.Person, D7.Organization, D9.MediaWork, D3.Publication]
+    objects: [D7.Organization]
+    questions: [CQ-CL-05, Q-D9-02]
+    owner: this
+    status: accepted
+    ruling: R-82
+    note: one disclosure predicate; D3 COMPETING_INTEREST_STATED and D11 DISCLOSES_SUPPORT_FROM / DECLARES_NO_COMPETING_INTEREST fold into it ("no competing interest" = polarity NEGATIVE, speechAct DENIES); D7 DISCLOSES_INTERESTS_OF stays for third-party lists (R-82)
+  - predicate: AUTHORED_BY
+    module: D9
+    registrar: D3
+    subjects: [D3.Publication, D5.Protocol, D5.ProtocolEdition]
+    objects: [D7.Person, D7.Organization]
+    questions: [Q-D9-13]
+    owner: other
+    status: accepted
+    ruling: R-80
+    note: D3's authorship predicate; D9 reads it and uses APPEARS_IN {AUTHOR} for MediaWorks only (R-80)
+  - predicate: CITES_CONTENT
+    module: D9
+    registrar: D9
+    subjects: [D8.RegulatoryRecord]
+    objects: [D9.MediaWork]
+    questions: [Q-D9-12]
+    owner: this
+    status: accepted
+    ruling: R-74
+    note: records that cite media use the D9 predicate CITES_CONTENT; D8 does not add MediaWork to its CONCERNS target (R-74 declines the union widening)
+  - predicate: RECORDING_OF
+    module: D9
+    registrar: D9
+    subjects: [D9.MediaWork]
+    objects: [D13.Event]
+    questions: [Q-D9-18]
+    owner: this
+    status: accepted
+    ruling: R-65
+    note: a recording is a MediaWork linked by RECORDING_OF to the D13 DATA_PRESENTATION Event (R-65); D13 drops its registration (R-52)
+  - predicate: PRESENTED_AT_CONFERENCE
+    module: D9
+    registrar: D13
+    subjects: [D13.Event]
+    objects: [D9.Channel]
+    questions: [Q-D13-25]
+    owner: other
+    status: accepted
+    ruling: R-65
+    note: added in synthesis; the recurring meeting is a D9 Channel with channelKind EVENT_SERIES, edition and session are qualifiers on the predicate; no Conference, Session or per-edition Event node (R-65, closes D13-2)
+  - predicate: LINKS_TO_OFFER
+    module: D9
+    registrar: D9
+    subjects: [D9.MediaWork]
+    objects: [D6.Offer, D6.MerchantListing]
+    questions: [CQ-CM-04, Q-D9-21]
+    owner: this
+    status: accepted
+    ruling: none
+  - predicate: INTENDED_FOR_TARGET | IMPROVES_TARGET | WORSENS_TARGET | NO_EFFECT_ON_TARGET | MIXED_EFFECT_ON_TARGET
+    module: D9
+    registrar: D5
+    subjects: "K.Assertion subject (means: D1 compound, D6 product, D5 protocol, D4 device, D12 food)"
+    objects: [D5.Target]
+    questions: [Q-D9-01, CQ-RC-05]
+    owner: other
+    status: accepted
+    ruling: R-83
+    note: D5's five goal predicates are the only predicates that take a Target object (R-52, R-83); a recommendation is RECOMMENDS_USE | RECOMMENDS_AGAINST with the goal in the qualifier target:<key>
+  - predicate: CAUSES_ADVERSE_EFFECT
+    module: D9
+    registrar: D5
+    subjects: "K.Assertion subject (compound, product, combination)"
+    objects: [D2.Condition]
+    questions: [Q-D9-11]
+    owner: other
+    status: accepted
+    ruling: R-84
+    note: D9 community reports use it with basisKind PERSONAL_EXPERIENCE and qualifier sourceKind:COMMUNITY, aggregated only by a D5 safety-signal Assessment; REPORTS_ADVERSE_EXPERIENCE retired (R-84)
+  - predicate: CORRECTS
+    module: D9
+    registrar: K
+    subjects: [K.Assertion (correction occurrence)]
+    objects: none (DERIVED_FROM to the corrected occurrence)
+    questions: [Q-D9-04, CQ-CL-04]
+    owner: other
+    status: accepted
+    ruling: R-20
+    note: added in synthesis; kernel convention registered by K (R-52); D9 dropped its own CORRECTS registration
+
+sharedVocabularies:
+  - name: kernel-types
+    owner: K
+    file: final/schema/kernel.graphql
+    use: >-
+      kernel edge-property type outside the packet-check allowlist: AssertedRecordedProperties (base of
+      D9.AppearanceEdgeProperties, and the RENDITION_OF edge type since R-43). Kernel enums used as D9 property types:
+      PrivacyClass (Entity fields), TimePrecision (MediaWork.publishedAtPrecision). Listed per the K pattern "Kernel types a
+      domain may reference without a seam".
+  - name: predicates
+    owner: S
+    file: final/vocabularies/predicates.yaml
+    use: one predicate registry (R-52); D9 registers RECOMMENDS_USE, RECOMMENDS_AGAINST, DISCLOSES_INTEREST, OPERATED_BY, REPUBLISHES, RECORDING_OF, TAKES, LINKS_TO_OFFER, CITES_CONTENT, DEPICTS and the authorizing predicates APPEARS_IN, CONTENT_SPONSORED_BY
+  - name: assessment-vocabularies
+    owner: S
+    file: final/vocabularies/assessment-vocabularies.yaml
+    use: D9 subkinds and facets (RETELLING_FIDELITY, SOURCE_AUTHORITY, QUALITY D9.*), and the D9-contributed disclosure facets of D7.conflict-relevance (R-54, R-55)
+  - name: targets
+    owner: D5
+    file: final/vocabularies/targets.yaml
+    version: "0.2.2"
+    use: a recommendation's stated goal is the qualifier target:<key> (uid hu:target:<slug>); efficacy statements point at a Target through the D5 goal predicates; population qualifier mandatory (UNSPECIFIED when unstated) (pin R-60)
+  - name: frontiers
+    owner: D13
+    file: final/vocabularies/frontiers.yaml
+    version: "0.2.1"
+    use: Q-D9-18 / Q-D9-19 reach a frontier only through D13 Events (ON_FRONTIER) and the kernel subject/object pattern; D9 types never point at a Frontier (pin R-60)
+  - name: identifier schemes
+    owner: K
+    file: final/vocabularies/identifier-schemes.yaml
+    use: PODCAST_GUID, PODCAST_INDEX_FEED, YOUTUBE_VIDEO, ISSN, ISBN, DOI, WIKIDATA, ORCID; requested YOUTUBE_CHANNEL, APPLE_PODCAST, SPOTIFY, X_ACCOUNT, X_POST, SUBSTACK_POST (11-open-questions K-8); one (scheme, issuer, normalized value) identifies at most one Subjectable (R-42)
+  - name: source genres and authority register (published by D9)
+    owner: D9
+    file: packets/D9/vocab-source-genres.yaml
+    use: controlled values of kernel Source.genre and the seed SOURCE_AUTHORITY register (claim kind → default authority per genre); hosted under final/vocabularies/ by the vocabulary stage

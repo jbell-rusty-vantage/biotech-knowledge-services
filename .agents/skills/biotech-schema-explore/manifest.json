@@ -1,0 +1,38 @@
+{
+  "format": "bks-skill-manifest.v1",
+  "skill": "biotech-schema-explore",
+  "version": "2.0.0",
+  "entry": "SKILL.md",
+  "requires": {
+    "tools": {
+      "bks-schema": { "package": "@bks/schema-workspace", "rendererVersion": ">=2.0.0 <3.0.0", "commands": ["manifest", "doctor", "verify", "search", "find", "get", "neighbors", "path", "pattern", "slice", "context", "rehydrate", "eval"] },
+      "rg": { "optional": true },
+      "jq": { "optional": true }
+    },
+    "contracts": {
+      "workspace": "bks-schema-workspace.v2",
+      "card": "bks-schema-card.v1",
+      "slice": "bks-schema-slice.v2",
+      "schemaContext": "biotech-schema-context.v1",
+      "adjacency": "bks-schema-adjacency.v1",
+      "ir": "bks-schema-ir.v2"
+    },
+    "release": { "releaseIdPattern": "^biotech-schema-v2\\.0\\.\\d+$", "binding": "manifest.json release.schemaReleaseDigest; callers may pin with --expect-release" },
+    "cypher": { "baseline": "5", "forbidden": "CYPHER 25" }
+  },
+  "references": [
+    "references/command-cookbook.md",
+    "references/graph-direction-and-interfaces.md",
+    "references/predicate-vs-typed-relationship.md",
+    "references/semantic-fallback.md",
+    "references/migrating-old-names.md"
+  ],
+  "examples": {
+    "positive": ["examples/per-serving-label-content.example.json", "examples/registry-versus-paper-estimate.example.json", "examples/podcast-recommendation.example.json", "examples/product-to-source-trace.example.json"],
+    "negative": ["examples/wrong-pin.example.json", "examples/retired-mention.example.json", "examples/stale-hosted-result.example.json", "examples/source-instructions-masquerading-as-rule.example.json"],
+    "runner": "packages/schema-workspace/src/skill-examples.test.ts (clean-room build of the pinned release)"
+  },
+  "dependencies": { "onDemand": ["neo4j-modeling-skill"], "overridesFirst": ["OV-CYPHER-VERSION", "OV-SCHEMA-SOURCE"] },
+  "limits": { "searchTop": 10, "searchMax": 50, "depthDefault": 1, "depthMax": 5, "adjacencyNodes": 100, "adjacencyArcs": 250, "maxPaths": 5, "sliceTokens": 12000 },
+  "grantsAuthority": false
+}

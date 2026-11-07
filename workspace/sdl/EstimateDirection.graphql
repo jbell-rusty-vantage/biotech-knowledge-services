@@ -1,0 +1,18 @@
+"""
+Direction of the reported point estimate relative to the comparator arm (BETWEEN_ARM) or to baseline (WITHIN_ARM_CHANGE):
+ratios against 1, differences and changes against 0. Read off the stated estimate (no recomputation of significance);
+NO_CHANGE only when the estimate equals the null value; UNKNOWN when no estimate is stated. For an event-risk result
+kind (HAZARD_RATIO, RISK_RATIO, ODDS_RATIO, RISK_DIFFERENCE, RATE, PROPORTION, ADVERSE_EVENT_COUNT) on an outcome of
+measureKind CLINICAL_EVENT, SURVIVAL or ADVERSE_EVENT, INCREASED means more events on the intervention (the Q-D3-05
+event-risk reading, d3-event-risk-reading/v1, applied at query time); for a survival time (MEAN / MEDIAN / PERCENT_CHANGE
+of lifespan) INCREASED means longer survival. Never a benefit / harm verdict (directive 3.2): that is a
+D3.result-interpretation Assessment (effectDirection) or a D5 target assertion. Replaces the pinned OutcomeDirection
+(IMPROVED / WORSENED).
+"""
+enum EstimateDirection {
+  INCREASED
+  DECREASED
+  NO_CHANGE
+  MIXED
+  UNKNOWN
+}

@@ -1,0 +1,42 @@
+# Local stack: disposable Neo4j 5.26 Community + APOC and the consumer API. The API never runs DDL: apply the pinned
+# release DDL (schema/pinned/release/ddl/required.cypher) and write the :KsReleaseMarker through the migration job
+# (or, for a disposable synthetic graph, `pnpm api:bench:seed`) before expecting /readyz to pass.
+#   docker compose -f apps/graphql-api/docker-compose.yml up --build
+# BKS_LOCAL_GRAPH_PASSWORD sets the password of this local container only (never an Aura credential).
+services:
+  neo4j:
+    image: neo4j:5.26-community
+    environment:
+      NEO4J_AUTH: neo4j/${BKS_LOCAL_GRAPH_PASSWORD:-change-me-locally}
+      NEO4J_PLUGINS: '["apoc"]'
+      NEO4J_dbms_security_procedures_unrestricted: apoc.*
+      NEO4J_server_memory_heap_max__size: 2G
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p ${BKS_LOCAL_GRAPH_PASSWORD:-change-me-locally} 'RETURN 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+  graphql-api:
+    build:
+      context: ../..
+      dockerfile: apps/graphql-api/Dockerfile
+    environment:
+      PORT: 4010
+      BKS_BIOTECH_GRAPH_URI: neo4j://neo4j:7687
+      BKS_BIOTECH_GRAPH_USERNAME: neo4j
+      BKS_BIOTECH_GRAPH_PASSWORD: ${BKS_LOCAL_GRAPH_PASSWORD:-change-me-locally}
+      BKS_BIOTECH_GRAPH_DATABASE: neo4j
+      GRAPHQL_API_KEY: ${GRAPHQL_API_KEY:?set a >= 32 character service key}
+      GRAPHQL_ACTOR_PUBLIC_KEY: ${GRAPHQL_ACTOR_PUBLIC_KEY:?set the BFF actor-context public key}
+    ports:
+      - "4010:4010"
+    depends_on:
+      neo4j:
+        condition: service_healthy
+volumes:
+  neo4j-data: {}

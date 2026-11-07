@@ -1,0 +1,49 @@
+"""
+Purpose: a dietary pattern as one defining source states it — what foods, groups or nutrients it includes, emphasizes,
+limits or excludes, and when or how much one eats (Mediterranean diet + EVOO as the PREDIMED arm defined it; the DGA
+2025–2030 pattern; Hall 2019's ultra-processed and unprocessed 14-day diets; time-restricted eating as TREAT defined
+it). It is what trial arms administer (D3 seam), what guidelines recommend, and the subject of pattern-level claims and
+target-effect assertions. It is the only node for any eating pattern defined by what, when or how much is eaten,
+including time-restricted eating and fasting-mimicking diets (R-63; OQ-D12-03 closed): D5 Intervention never mints a
+diet, D3 AdministeredMaterial administers an eating pattern as a DietaryPattern, and D5 STEP_USES reaches it through
+Subjectable as an admissible target. A new edition of a guideline or a different trial's definition is a new node; equivalence of
+two definitions is an EQUIVALENCE Assessment. Non-dietary practices (sauna, training) are D5 Interventions.
+Identity rule: (definedBySourceUid, patternKey, version) — the kernel Source uid of the defining document (DOI / PMID /
+normalized URL), a non-null key for the pattern within it, and the edition the source names (empty string when none);
+the free-text citation `definedBy` is presentation only. definedBySourceUid is a frozen identity key, never the
+provenance path: the "defined by" trace is the attach Assertion's HAS_EVIDENCE (R-46).
+uid token: `dietary-pattern` (hu:dietary-pattern:<opaque>).
+Questions: Q-D12-11, Q-D12-08, Q-D12-09, Q-D12-12, Q-D12-13, Q-D12-23, Q-D12-25.
+"""
+type DietaryPattern implements Entity & Subjectable
+  @node(labels: ["DietaryPattern", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "uid of the kernel Source that defines the pattern (e.g. hu:source:pubmed-29897866; from DOI / PMID / normalized URL) (identity key)."
+  definedBySourceUid: String!
+  "Key of the pattern within its defining source, lower-kebab ('meddiet-evoo-arm', 'ultra-processed-diet') (identity key)."
+  patternKey: String!
+  "Edition or version the defining source names; empty string when it names none (identity key)."
+  version: String!
+  "Short human citation of the defining source ('DGA 2025-2030', 'PREDIMED protocol, MedDiet+EVOO arm'); presentation only."
+  definedBy: String
+  "What the pattern constrains (filter: Q-D12-11, Q-D12-13 timing patterns)."
+  patternKind: DietaryPatternKind!
+  "Who defines it and for what (filter: Q-D12-12 trial arms vs Q-D12-11 guidelines)."
+  definitionScope: DietaryPatternScope
+  "The defining text, verbatim (the locator lives on the defining Assertions)."
+  definitionVerbatim: String
+  "Names used in discourse ('MedDiet', 'TRE', 'carnivore'); feeds fulltext index dietary_pattern_search."
+  synonyms: [String!]
+  """class: asserted; cardinality: many (recorded time only: kernel AssertedRecordedProperties; role INCLUDES|EMPHASIZES|LIMITS|EXCLUDES in Assertion.valueString, quantity in valueNumber + unitCode); questions: Q-D12-11, Q-D12-08, Q-D12-23, Q-D12-25."""
+  components: [PatternComponentTarget!]!
+    @relationship(type: "PATTERN_COMPONENT", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

@@ -1,0 +1,119 @@
+# sinclair-recommendation-disclosure-asof — assertions (fixtures stage, A8, 2026-10-08)
+# Close-out 2026-10-09 (FU-03, structural only; sources, locators and quoted values unchanged): R-30 roleTitleVerbatim / stakeClassVerbatim -> roleText: / stakeClass: qualifiers (15 rows); R-55 cr-o5 disclosureFinding re-keyed to the merged D7.conflict-relevance list.
+# The recommendation-with-reachable-financial-interest case of 00-DIRECTIVE 3.9, read as of the statement time.
+# Locator refs are ids in ./locators.yaml. D7 role/stake episodes use the D7 edge-property types published by A6
+# (RoleEdgeProperties roleKind, StakeEdgeProperties stakeKind, ValueEdgeProperties valueKind). Role codes from the
+# page legend (p7): F=Founder; I=Investor; E=Equity; A=Advisor/Consultant; B=Board of Directors; IP=Inventor on
+# licensed patents; L=Funding for laboratory. producedBy ids are FIXTURE ids, not Mission Control ids.
+# Nothing here asserts wrongdoing: the findings are about what a public page listed on which date.
+producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-sinclair-recommendation-disclosure-asof" }
+
+nodes:
+  - { ref: p-sinclair, type: D7.Person, name: "David A. Sinclair" }
+  - { ref: w-52, type: D9.MediaWork, sameAs: "hl52-transcript-nmn-practice#w-52", publishedAt: "2021-12-27T09:00:00Z" }
+  - { ref: ch-hl, type: D9.Channel, sameAs: "hl52-transcript-nmn-practice#ch-hl" }
+  - { ref: org-tally, type: D7.Organization, name: "Tally Health" }
+  - { ref: org-levels, type: D7.Organization, name: "Levels Health" }
+  - { ref: org-insidetracker, type: D7.Organization, name: "InsideTracker (Segterra)" }
+  - { ref: org-ag, type: D7.Organization, name: "Athletic Greens" }
+  - { ref: prod-sinclair-test, type: D6.Product, sameAs: "hl52-transcript-nmn-practice#prod-sinclair-test" }
+  - { ref: src-aff, type: K.Source, canonicalUri: "https://sinclair.hms.harvard.edu/david-sinclairs-affiliations", sourceKind: WEB_PAGE, genre: SELF_DISCLOSURE_PAGE, snapshots: ["locators.yaml#aff-now (retrieved 2026-10-08)", "locators.yaml#aff-20211209 (observedAt 2021-12-09T00:38:48Z)", "locators.yaml#aff-20211231", "locators.yaml#aff-20220308", "locators.yaml#aff-20220522", "locators.yaml#aff-20220826 (observedAt 2022-08-26T11:34:01Z)"], note: "one Source, six snapshots; archive copies are snapshots of the same Source with observedAt = archive timestamp, each accepted only after its served memento-datetime and payload SHA1 matched the CDX row (locators.yaml archiveCheck)" }
+
+assertions:
+  # ---------------- the recommendation (same occurrence as hl52-transcript-nmn-practice#o5) ----------------
+  - id: o5
+    class: claim-occurrence
+    sameAs: "hl52-transcript-nmn-practice#o5"
+    asserter: p-sinclair
+    speechAct: RECOMMENDS
+    predicate: RECOMMENDS_USE
+    subject: prod-sinclair-test
+    container: w-52
+    qualifiers: ["call-to-action:sign-up", "segment:EDITORIAL", "involvement-stated-in-container:developer (\"We've developed it.\")"]
+    evidence: [{ locator: l5, role: SUPPORTS }, { locator: l10, role: CONTEXT }]
+    validTime: { validFrom: "2021-12-27T09:00:00Z", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-sinclair-recommendation-disclosure-asof" }
+  - { id: s-occ-o5, class: structural, relationship: OCCURS_IN, from: o5, to: w-52, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-sinclair-recommendation-disclosure-asof" } }
+  - { id: s-pub, class: structural, relationship: PUBLISHES, from: ch-hl, to: w-52, evidence: [r11], producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-sinclair-recommendation-disclosure-asof" } }
+  - id: a-app-guest
+    class: asserted
+    relationship: APPEARS_IN
+    sameAs: "hl52-transcript-nmn-practice#a-app-guest"
+    asserter: "D7 Organization Scicomm Media"
+    subject: p-sinclair
+    object: w-52
+    edgeProperties: { appearanceRole: GUEST }
+    qualifiers: ["credited-name:Dr. David Sinclair"]
+    evidence: [{ locator: "hl52-transcript-nmn-practice/locators.yaml#r6", role: SUPPORTS }]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-sinclair-recommendation-disclosure-asof" }
+
+  # ---------------- RESOLUTION hypothesis: what "doctorsinclair.com" is ----------------
+  - id: res-test-tally
+    class: assessment
+    assessmentKind: RESOLUTION
+    status: PROPOSED
+    methodVersion: "fixture-manual/v0"
+    about: [prod-sinclair-test, org-tally]
+    summary: "Hypothesis, not identity: the test recommended at 'doctorsinclair.com' is offered by Tally Health. Basis: the episode page's show-notes link labelled 'Aging Test Waitlist' points to tallyhealth.com; the RSS chapter names www.doctorsinclair.com."
+    evidence: [{ locator: l8, role: SUPPORTS }, { locator: r11, role: CONTEXT }, { locator: l5, role: CONTEXT }]
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-sinclair-recommendation-disclosure-asof" }
+
+  # ---------------- D7 interest episodes read from the self-disclosure page: NOW (snapshot aff-now) ----------------
+  - { id: d7-tally-founder-now, class: asserted, relationship: "D7 HOLDS_ROLE", asserter: p-sinclair, subject: p-sinclair, object: org-tally, edgeProperties: { roleKind: FOUNDER }, qualifiers: ["roleText:'F'"], evidence: [{ locator: p3, role: SUPPORTS }, { locator: p2, role: QUALIFIES }, { locator: p7, role: CONTEXT }], validTime: { validFrom: "2021", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: "2024", validToPrecision: YEAR, validToBasis: STATED_BY_SOURCE }, snapshotObservedAt: "2026-10-08 (page self-dated 'Updated Oct 8th, 2024', p1)", producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-sinclair-recommendation-disclosure-asof" } }
+  - { id: d7-tally-investor-now, class: asserted, relationship: "D7 HOLDS_STAKE", asserter: p-sinclair, subject: p-sinclair, object: org-tally, edgeProperties: { stakeKind: INVESTOR_UNSPECIFIED }, qualifiers: ["stakeClass:'I'"], evidence: [{ locator: p3, role: SUPPORTS }, { locator: p2, role: QUALIFIES }], validTime: { validFrom: "2021", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: "2024", validToPrecision: YEAR, validToBasis: STATED_BY_SOURCE }, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-sinclair-recommendation-disclosure-asof" } }
+  - { id: d7-tally-equity-now, class: asserted, relationship: "D7 HOLDS_STAKE", asserter: p-sinclair, subject: p-sinclair, object: org-tally, edgeProperties: { stakeKind: EQUITY }, qualifiers: ["stakeClass:'E'"], evidence: [{ locator: p3, role: SUPPORTS }, { locator: p2, role: QUALIFIES }], validTime: { validFrom: "2021", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: "2024", validToPrecision: YEAR, validToBasis: STATED_BY_SOURCE }, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-sinclair-recommendation-disclosure-asof" } }
+  - { id: d7-levels-equity-now, class: asserted, relationship: "D7 HOLDS_STAKE", asserter: p-sinclair, subject: p-sinclair, object: org-levels, edgeProperties: { stakeKind: EQUITY }, qualifiers: ["stakeClass:'E'"], evidence: [{ locator: p4, role: SUPPORTS }], validTime: { validFrom: "2021", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: STATED_BY_SOURCE, note: "'present'" }, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-sinclair-recommendation-disclosure-asof" } }
+  - { id: d7-levels-advisor-now, class: asserted, relationship: "D7 HOLDS_ROLE", asserter: p-sinclair, subject: p-sinclair, object: org-levels, edgeProperties: { roleKind: ADVISOR }, qualifiers: ["roleText:'A'"], evidence: [{ locator: p4, role: SUPPORTS }], validTime: { validFrom: "2021", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: STATED_BY_SOURCE }, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-sinclair-recommendation-disclosure-asof" } }
+  - { id: d7-it-board-now, class: asserted, relationship: "D7 HOLDS_ROLE", asserter: p-sinclair, subject: p-sinclair, object: org-insidetracker, edgeProperties: { roleKind: DIRECTOR }, qualifiers: ["roleText:'B'"], evidence: [{ locator: p5, role: SUPPORTS }], validTime: { validFrom: "2011", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: "2017", validToPrecision: YEAR, validToBasis: STATED_BY_SOURCE }, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-sinclair-recommendation-disclosure-asof" } }
+  - { id: d7-it-investor-now, class: asserted, relationship: "D7 HOLDS_STAKE", asserter: p-sinclair, subject: p-sinclair, object: org-insidetracker, edgeProperties: { stakeKind: INVESTOR_UNSPECIFIED }, qualifiers: ["stakeClass:'I'"], evidence: [{ locator: p5, role: SUPPORTS }], validTime: { validFrom: "2011", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: STATED_BY_SOURCE }, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-sinclair-recommendation-disclosure-asof" } }
+  - { id: d7-it-advisor-now, class: asserted, relationship: "D7 HOLDS_ROLE", asserter: p-sinclair, subject: p-sinclair, object: org-insidetracker, edgeProperties: { roleKind: ADVISOR }, qualifiers: ["roleText:'A'"], evidence: [{ locator: p5, role: SUPPORTS }], validTime: { validFrom: "2011", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: STATED_BY_SOURCE }, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-sinclair-recommendation-disclosure-asof" } }
+  - { id: d7-it-ip-now, class: asserted, relationship: "D7 RECEIVES_VALUE_FROM", asserter: p-sinclair, subject: p-sinclair, object: org-insidetracker, edgeProperties: { valueKind: INVENTOR_ON_LICENSED_IP, valueBucket: "IP" }, evidence: [{ locator: p5, role: SUPPORTS }], validTime: { validFrom: "2011", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: STATED_BY_SOURCE }, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-sinclair-recommendation-disclosure-asof" } }
+  - { id: d7-ag-advisor-now, class: asserted, relationship: "D7 HOLDS_ROLE", asserter: p-sinclair, subject: p-sinclair, object: org-ag, edgeProperties: { roleKind: ADVISOR }, qualifiers: ["roleText:'A'"], evidence: [{ locator: p6, role: SUPPORTS }], validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN, note: "no years printed" }, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-sinclair-recommendation-disclosure-asof" } }
+
+  # ---------------- the same page AS OF 2021-12-09 (18 days before the episode; copy verified in the adversarial review) ----------------
+  - { id: d7-it-investor-2021, class: asserted, relationship: "D7 HOLDS_STAKE", asserter: p-sinclair, subject: p-sinclair, object: org-insidetracker, edgeProperties: { stakeKind: INVESTOR_UNSPECIFIED }, qualifiers: ["stakeClass:'I'"], evidence: [{ locator: w2, role: SUPPORTS }], validTime: { validFrom: "2011", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: STATED_BY_SOURCE }, snapshotObservedAt: "2021-12-09T00:38:48Z (page self-dated 'Updated September 18, 2020', w1)", producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-sinclair-recommendation-disclosure-asof" } }
+  - { id: d7-it-board-2021, class: asserted, relationship: "D7 HOLDS_ROLE", asserter: p-sinclair, subject: p-sinclair, object: org-insidetracker, edgeProperties: { roleKind: DIRECTOR }, qualifiers: ["roleText:'B'"], evidence: [{ locator: w2, role: SUPPORTS }], validTime: { validFrom: "2011", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: "2017", validToPrecision: YEAR, validToBasis: STATED_BY_SOURCE }, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-sinclair-recommendation-disclosure-asof" } }
+  # (A and IP on the same 2021 line are written exactly like d7-it-advisor-now / d7-it-ip-now with locator w2.)
+  # Levels was listed at T (adversarial review: the fixtures-stage absence came from a misfiled 2021-08-16 capture).
+  - { id: d7-levels-equity-2021, class: asserted, relationship: "D7 HOLDS_STAKE", asserter: p-sinclair, subject: p-sinclair, object: org-levels, edgeProperties: { stakeKind: EQUITY }, qualifiers: ["stakeClass:'E'"], evidence: [{ locator: w3, role: SUPPORTS }], validTime: { validFrom: "2021", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: STATED_BY_SOURCE }, snapshotObservedAt: "2021-12-09T00:38:48Z", producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-sinclair-recommendation-disclosure-asof" } }
+  - { id: d7-levels-advisor-2021, class: asserted, relationship: "D7 HOLDS_ROLE", asserter: p-sinclair, subject: p-sinclair, object: org-levels, edgeProperties: { roleKind: ADVISOR }, qualifiers: ["roleText:'A'"], evidence: [{ locator: w3, role: SUPPORTS }], validTime: { validFrom: "2021", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: STATED_BY_SOURCE }, snapshotObservedAt: "2021-12-09T00:38:48Z", producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-sinclair-recommendation-disclosure-asof" } }
+
+  # ---------------- the same page AS OF 2022-08-26 (first copy listing Tally Health; copies of 2021-12-31, 2022-03-08, 2022-05-22 do not) ----------------
+  - { id: d7-tally-founder-2022, class: asserted, relationship: "D7 HOLDS_ROLE", asserter: p-sinclair, subject: p-sinclair, object: org-tally, edgeProperties: { roleKind: FOUNDER }, qualifiers: ["roleText:'F'"], evidence: [{ locator: x1, role: SUPPORTS }, { locator: x3, role: CONTEXT }], validTime: { validFrom: "2021", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: STATED_BY_SOURCE, note: "'present' in 2022; the 2026 page closes it at 2024 — a later snapshot supersedes valid time, both stay recorded" }, snapshotObservedAt: "2022-08-26T11:34:01Z", producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-sinclair-recommendation-disclosure-asof" } }
+  - { id: d7-levels-equity-2022, class: asserted, relationship: "D7 HOLDS_STAKE", asserter: p-sinclair, subject: p-sinclair, object: org-levels, edgeProperties: { stakeKind: EQUITY }, qualifiers: ["stakeClass:'E'"], evidence: [{ locator: x2, role: SUPPORTS }], validTime: { validFrom: "2021", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: STATED_BY_SOURCE }, snapshotObservedAt: "2022-08-26T11:34:01Z", producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-sinclair-recommendation-disclosure-asof" } }
+
+  # ---------------- the judgment (kernel Assessment CONFLICT_RELEVANCE; facets per kernel request K-4) ----------------
+  - id: cr-o5
+    class: assessment
+    assessmentKind: CONFLICT_RELEVANCE
+    status: PROPOSED
+    methodVersion: "fixture-manual/v0 (03#CQ-CL-05 pattern)"
+    about: "Claim of o5 (interim: ASSESSES the Claim, DERIVED_FROM the occurrence; kernel request K-3)"
+    derivedFrom: [o5, d7-tally-founder-now, d7-tally-investor-now, d7-tally-equity-now, d7-tally-founder-2022, res-test-tally]
+    facets:
+      - "relevanceLevel=HIGH"
+      - "relevanceBasis=RECOMMENDED_ITEM_OFFERED_BY_ORG_WITH_INTEREST (conditional on res-test-tally)"
+      - "temporalOverlap=UNKNOWN (OVERLAP rule, 03 Conventions: the page states 2021-2024 at YEAR precision and T=2021-12-27 falls in the start year; read as likely in force, not established)"
+      - "disclosureFinding=DISCLOSED_IN_CONTAINER (partial: developer of the test stated in the episode, l10; no company named)"
+      - "disclosureFinding=NOT_FOUND_IN_COMPLETE_CAPTURE (self-disclosure page as observed 2021-12-09, w0; page itself warns entities may be missing, p8)"
+      - "disclosureFinding=DISCLOSED_IN_LATER_REVISION (first listing in the copy of 2022-08-26, x1; absent from the verified copies of 2021-12-31, 2022-03-08 and 2022-05-22, v0 u0 u2: added in (2022-05-22, 2022-08-26])"
+      - "disclosurePlacement=SELF_DISCLOSURE_PAGE"
+    evidence: [{ locator: w0, role: CONTEXT }, { locator: u2, role: CONTEXT }, { locator: p8, role: QUALIFIES }, { locator: x1, role: SUPPORTS }, { locator: p3, role: SUPPORTS }, { locator: l10, role: SUPPORTS }]
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-sinclair-recommendation-disclosure-asof" }
+  - id: cr-o4
+    class: assessment
+    assessmentKind: CONFLICT_RELEVANCE
+    status: PROPOSED
+    methodVersion: "fixture-manual/v0"
+    about: "Claim of hl52-transcript-nmn-practice#o4 (InsideTracker recommendation)"
+    derivedFrom: ["hl52-transcript-nmn-practice#o4", "hl52-transcript-nmn-practice#o3", d7-it-investor-2021, d7-it-board-2021]
+    facets: ["relevanceLevel=HIGH", "disclosureFinding=DISCLOSED_IN_CONTAINER (o3, same episode, 'I'm still their scientific lead guy')", "disclosureFinding=DISCLOSED_ELSEWHERE_AT_TIME (page as of 2021-12-09 lists I,A,IP 2011-present)", "temporalOverlap=OVERLAPS (I 2011-present, and the in-container present-tense 'still' of o3 at T)", "sponsorOfSameWork=TRUE (sp-web-insidetracker)"]
+    evidence: [{ locator: w2, role: SUPPORTS }]
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-sinclair-recommendation-disclosure-asof" }
+
+# Recorded time vs observed time: every assertion above is RECORDED 2026-10-08 (this run). The as-of-T disclosure
+# view (Q-D9-03) filters on the evidence snapshot's observedAt <= T, not on recordedAt; valid time comes from the
+# page's own year bounds. A silent content change is visible: the 2022-08-26 copy adds Tally Health while still
+# self-dated "Updated September 18, 2020" (x3) — SourceSnapshot.revisionKind SILENT_CONTENT_CHANGE. Levels is on every
+# verified copy from 2021-12-09 on (w3, v2), so for Levels the finding is DISCLOSED_ELSEWHERE_AT_TIME (adversarial review).

@@ -1,0 +1,278 @@
+version: 1
+module: D13
+# Source: packets/D13/05-relationship-register.yaml (sha256 0c7095d7…891ba8e), edited by the S module editor for D13
+# 2026-10-08 per final/decision-report.md and final/_work/rulings.yaml (global, modules.D13). Every entry keeps the
+# 01-PACKET-CONTRACT fields and adds `module: D13`; fixture paths point at final/fixtures/D13/<folder>. Synthesis edits:
+#   R-22  LEADS_TO, RESPONDS_TO: `projectionGate: SUPPORT` (the packet's gate text moved to `projectionGateNote`).
+#   R-25  ON_FRONTIER: `basisKind: CURATOR_CLASSIFICATION` on the authorizing classification Assertion.
+#   R-44  INVOLVES: roles AUTHOR and PUBLISHER removed (authors through D3 AUTHORED_BY on the Publication); lesne fixture
+#         rows dropped, so lesne leaves INVOLVES.otherFixtures and the Event → Person pair has no fixture left (see
+#         `pairFixtures`; R-06 open item for the coordinator); CQ-EV-05 leaves the Event → Person questions.
+#   R-66  INVOLVES {REGULATOR, APPLICANT, ISSUER} only without DOCUMENTED_BY_RECORD (executor-enforced); no re-asserted
+#         D3/D8 dates; regulatory process chains from the D8 application identifier, not LEADS_TO; APPROVAL_PATHWAY /
+#         DESIGNATION_TYPE literals are D8 RegulatoryPathway values.
+#   R-69  award rule (AWARD Event = milestone, EVENT_ABOUT → D7.Award, no amount) and investor rule (INVOLVES INVESTOR |
+#         LEAD_INVESTOR; D7 HOLDS_STAKE only when stated).
+#   R-92  FINANCING_AMOUNT amountKind + ROUND_TOTAL, amountBasis + REMAINING; DATE_OF_FIRST_SALE and INVESTOR_COUNT
+#         registered here (subject Event).
+#   R-52  predicateOnly rows HAS_REVISION_STATUS (registrar K) and RECORDING_OF (registrar D9) removed; they remain
+#         predicateSeams in D13.seams.yaml.
+#   R-07  DOCUMENTED_BY_RECORD recorded as a first demotion candidate (no change while within budget).
+#   R-65  PRESENTED_AT_CONFERENCE confirmed (object D9.Channel EVENT_SERIES; no Event per edition).
+# Not applied here (other files or stages): R-21 / R-35 / R-44 fixture edits and the Q-D13-22 pattern (fixtures and
+# patterns stage); R-94 03 line ~188; R-66 vocab-frontiers breakthroughCriteria remap (vocabularies stage).
+# Original note (A7): five relationship types, seven pairs, no unions. populatedBy ids are the stable source/tool/agent
+# ids listed in packets/D13/08-sources-and-tools.md:
+#   tool:sec-edgar-archives (8-K + exhibits), tool:sec-edgar-submissions (filing index: filing dates, item codes),
+#   tool:openfda-drugsfda, tool:clinicaltrials-gov-v2, tool:crossref-rest, tool:pubmed-eutils, tool:tavily-extract,
+#   tool:firecrawl-scrape, tool:verification-v1 (SUPPORT adjudication of link spans),
+#   agent:d13-frontier-curator (classification agent, writes ON_FRONTIER with the vocab version),
+#   agent:d13-event-linker (proposes LEADS_TO / RESPONDS_TO / INVOLVES assertions from located spans).
+relationships:
+  - type: ON_FRONTIER
+    module: D13
+    class: asserted
+    from: [Event, D3.Study]
+    to: Frontier
+    edgeProperties: AssertedRecordedProperties
+    cardinality: "many; an event or study attaches to 1-2 level-2 frontiers (rarely 3), a level-1 theme only when no child fits"
+    temporal: recorded-only
+    temporalNote: "kernel AssertedRecordedProperties (recorded time only, 00-DIRECTIVE rule 9): a classification has no validity of its own; reclassification on a vocabulary bump closes the episode (recordedTo) and opens a new one from a superseding Assertion"
+    basisKind: CURATOR_CLASSIFICATION   # R-25: basisKind of the authorizing classification Assertion
+    questions: [Q-D13-01, Q-D13-02, Q-D13-03, Q-D13-04, Q-D13-08, Q-D13-09, Q-D13-16, Q-D13-23, Q-D13-28, Q-D13-29]
+    pattern: 03#Q-D13-01
+    populatedBy: [d13-frontier-curator, sec-edgar, ctgov-v2-api, crossref-rest, tavily-cli]
+    fixture: final/fixtures/D13/madrigal-maestro-nash-topline-8k   # both pairs: Event → Frontier (a08) and D3 Study MAESTRO-NASH → Frontier (a12, registry locators l09/l10)
+    otherFixtures: [final/fixtures/D13/madrigal-pdufa-to-accelerated-approval, final/fixtures/D13/lesne-2006-retraction, final/fixtures/D13/bioage-strides-discontinuation]
+    nestedOperations: [CONNECT]
+    aggregate: false
+    declaredOn: ["Event.frontiers (OUT)", "Frontier.studies (IN, from D3 Study; D3 declares nothing)"]
+    rationale: >-
+      Every frontier question (timeline, ladder, who is active, harm channel, target-to-frontier) traverses it, so it
+      earns a typed edge (vocab-frontiers.yaml section 8 rejected tags and predicate-only for this reason). Asserted, not
+      structural: a classification is a curator's claim with an asserter, a vocabulary version (Assertion qualifier
+      frontierVocabVersion) and supersession; its authorizing Assertion has basisKind CURATOR_CLASSIFICATION (R-25).
+      Only Events and Studies attach (R-91); organizations, compounds and claims reach a frontier through them. Declared
+      from the Frontier side for Study so ON_FRONTIER stays one D13-owned type.
+  - type: LEADS_TO
+    module: D13
+    class: asserted
+    from: Event
+    to: Event
+    edgeProperties: AssertedRecordedProperties
+    cardinality: many-to-many (earlier enabling event → later enabled event)
+    temporal: recorded-only
+    temporalNote: "valid time of the link is the later event's own clock; the recorded-time episode (AssertedRecordedProperties) records when BellLabs believed the link (recordedFrom/recordedTo)"
+    questions: [Q-D13-01, Q-D13-05, Q-D13-06]
+    pattern: 03#Q-D13-05
+    populatedBy: [d13-event-linker, ks-verification, sec-edgar, openfda-drugsfda]
+    fixture: final/fixtures/D13/madrigal-financing-after-readout
+    otherFixtures: [final/fixtures/D13/madrigal-pdufa-to-accelerated-approval]   # fixtures stage: readout -> NDA submission and readout -> approval, each from a 'supported by' / 'based on' span; the financing fixture carries two CONTEXT_ONLY negatives (a10, a15)
+    nestedOperations: [CONNECT]
+    aggregate: false
+    projectionGate: SUPPORT   # R-22: also needs a SUPPORT Adjudication DIRECTLY_SUPPORTED | SUPPORTED_WITH_QUALIFICATION
+    projectionGateNote: >-
+      one Assertion (predicate LEADS_TO, subject earlier Event, object later Event, one asserter) with speechAct STATES,
+      a locator whose exact quote states the basis ("as a result of", "based on", "efficacy was evaluated in"), and a
+      SUPPORT Adjudication DIRECTLY_SUPPORTED or SUPPORTED_WITH_QUALIFICATION; service check object.startedAt >=
+      subject.startedAt (announcedAt when startedAt is null). Temporal wording alone ("following", "after") is
+      adjudicated CONTEXT_ONLY and never projects; the pair is then only a computed FOLLOWS. Denials and gated but
+      unadjudicated Assertions are held without an edge; one episode per (from, to, type, asserter) (R-22).
+    rationale: >-
+      Replaces pinned CAUSED_BY (effect → cause) with the forward direction investors read ("readout leads to filing
+      leads to approval"). Q-D13-05 traverses it as a variable-length path; Q-D13-06 separates stated LEADS_TO pairs
+      from computed temporal pairs. Process/precondition, not agency (that is RESPONDS_TO). A regulatory process chain
+      (submission → acceptance → approval) is computed from the shared D8 application identifier, not stored as
+      LEADS_TO (R-66).
+  - type: RESPONDS_TO
+    module: D13
+    class: asserted
+    from: Event
+    to: Event
+    edgeProperties: AssertedRecordedProperties
+    cardinality: many-to-many (responding event → stimulus event)
+    temporal: recorded-only
+    temporalNote: "same as LEADS_TO"
+    questions: [Q-D13-01, Q-D13-08, Q-D13-14, Q-D13-15, Q-D13-26]
+    pattern: 03#Q-D13-14
+    populatedBy: [d13-event-linker, ks-verification, tavily-cli, ctgov-v2-api, sec-edgar]
+    fixture: final/fixtures/D13/bioage-strides-discontinuation
+    otherFixtures: []   # fixtures stage: lesne-2006-retraction writes no RESPONDS_TO (the notice names no dated stimulus); bioage-strides-discontinuation also carries the CONTEXT_ONLY negative test
+    nestedOperations: [CONNECT]
+    aggregate: false
+    projectionGate: SUPPORT   # R-22
+    projectionGateNote: "same as LEADS_TO; the locator must state the basis ('discontinued due to observation of ...', 'because ...', 'as a result of ...'); 'after ...' or 'following ...' alone is CONTEXT_ONLY (fixture bioage a14); the responding party's own statement or the regulator's letter is the usual locator; ClinicalTrials.gov whyStopped is a structured locator"
+    rationale: >-
+      The harm questions ask what a safety signal, hold or failed readout made the sponsor, regulator or market DO
+      (agency), separately from process links. Kept apart from LEADS_TO because the two are queried separately
+      (Q-D13-14 lists responses to a stimulus; Q-D13-05 walks enabling chains) and because merging them would need a
+      kind property on the edge that every chain query must filter.
+  - type: INVOLVES
+    module: D13
+    class: asserted
+    from: Event
+    to: [D7.Organization, D7.Person]
+    edgeProperties: EventRoleEdgeProperties
+    cardinality: many (one episode per participant and role)
+    temporal: recorded-only
+    temporalNote: "EventRoleEdgeProperties = kernel AssertedRecordedProperties fields verbatim and in order + role (the one qualifier questions filter on: Q-D13-03, Q-D13-06, Q-D13-14, Q-D13-33); the printed title is the authorizing Assertion's qualifier roleText=<label> (kernel rule M11(3); roleTitleVerbatim removed in the adversarial-review pass); an involvement has no validity of its own beyond the event's clocks"
+    questions: [Q-D13-03, Q-D13-06, Q-D13-14, Q-D13-15, Q-D13-21, Q-D13-23, Q-D13-25, Q-D13-33]
+    questionsByPair: {"Event → Organization": [Q-D13-03, Q-D13-06, Q-D13-14, Q-D13-15, Q-D13-21, Q-D13-23, Q-D13-33], "Event → Person": [Q-D13-14, Q-D13-25]}
+    pattern: 03#Q-D13-03
+    populatedBy: [d13-event-linker, sec-edgar, openfda-drugsfda, tavily-cli, crossref-rest]
+    fixture: final/fixtures/D13/madrigal-financing-after-readout
+    otherFixtures: [final/fixtures/D13/madrigal-maestro-nash-topline-8k, final/fixtures/D13/madrigal-pdufa-to-accelerated-approval, final/fixtures/D13/bioage-strides-discontinuation]
+    pairFixtures:
+      "Event → Organization": final/fixtures/D13/madrigal-financing-after-readout
+      "Event → Person": "none after R-44 (its only rows were lesne-2006-retraction AUTHOR roles, dropped); R-06 open item: a fixture request (R-81 names INVOLVES {PRESENTER} for presenters, deciding question CQ-CL-05 v1) or a cut to a predicate (D13 questions Q-D13-14 v2, Q-D13-25 v3); coordinator decides"
+    nestedOperations: [CONNECT]
+    aggregate: false
+    declaredOn: ["Event.involvedOrganizations (OUT)", "Event.involvedPeople (OUT)"]
+    rationale: >-
+      "Who is active on frontier F" (Q-D13-03, value 1) and "who financed after a readout" (Q-D13-06) traverse
+      Frontier ← Event → Organization with a role filter. D7 asked D13 to own the event-role edge and declares no inverse
+      (D7 research notes §1, §3; R-67). Merges pinned INVOLVES, HOSTS_EVENT, SPEAKS_AT, ATTENDS, EXHIBITS_AT into one type
+      with an EventRole enum; a presentation at a meeting is INVOLVES {PRESENTER} (R-81). Two typed fields instead of a
+      2-member union (same pairs, no union input family). Kernel M11(3): the only qualifier on the superset type is
+      `role`, which Q-D13-03/06/14/33 filter; the printed title stays in Assertion.qualifiers. Roles REGULATOR, APPLICANT
+      and ISSUER are written only while no D8 RegulatoryRecord documents the event (a hold, a submission, a designation
+      known only from the sponsor); once DOCUMENTED_BY_RECORD exists the regulator, applicant and issuer are the
+      record's ISSUED_BY / ADDRESSED_TO, and the executor enforces this (R-66). Funder and recipient of an award are D7
+      Award edges, not roles (R-69). Round participation is INVOLVES {INVESTOR | LEAD_INVESTOR}; D7 HOLDS_STAKE is
+      written only when a source states the holding, never inferred from round participation (R-69). Authors and
+      publisher of a retracted work are not roles: they are reached through the D3 Publication (AUTHORED_BY, R-44/R-80).
+  - type: DOCUMENTED_BY_RECORD
+    module: D13
+    class: asserted
+    from: Event
+    to: D8.RegulatoryRecord
+    edgeProperties: AssertedRecordedProperties
+    cardinality: "many (usually one record per regulatory occurrence: Drugs@FDA action, designation, warning letter, recall)"
+    temporal: recorded-only
+    temporalNote: "the record's issuedAt (D8) and the Event's clocks carry valid time; the episode records when BellLabs believed the record documents this occurrence"
+    questions: [Q-D13-12, Q-D13-14, Q-D13-22]
+    pattern: 03#Q-D13-12
+    populatedBy: [d13-event-linker, openfda-drugsfda, sec-edgar]
+    fixture: final/fixtures/D13/madrigal-pdufa-to-accelerated-approval   # a16: APPROVAL → Drugs@FDA NDA217785 ORIG-1 (rule event-record-match/v1)
+    nestedOperations: [CONNECT]
+    aggregate: false
+    declaredOn: ["Event.regulatoryRecords (OUT); D8 RegulatoryRecord declares no inverse"]
+    demotionCandidate: "R-07: first demotion candidate if step 7 runs over budget (questions are value 2/3)"
+    rationale: >-
+      Promoted from predicate-only in the adversarial-review pass. D8's RegulatoryRecord already carries the regulator
+      (ISSUED_BY), the addressee (ADDRESSED_TO), the record date (issuedAt), the jurisdiction and the act's kind; keeping
+      INVOLVES REGULATOR / APPLICANT on the APPROVAL / REGULATORY_DESIGNATION / RECALL / ENFORCEMENT_ACTION Event repeated
+      them. With a typed edge Q-D13-12 and Q-D13-14 reach the regulator in two hops (Event → record → ISSUED_BY) instead of
+      three through an Assertion node, and the Event drops the duplicate role edges (packet-measured +5.1 KB printed and
+      +4 input types, packets/D13/09-reasoning.md). R-66: a regulatory act is one D8 RegulatoryRecord plus at most one
+      D13 Event linked by this edge; its date is one Assertion on one shared locator and the Event clocks are caches
+      (R-45); D13 mints an Event only for a frontier timeline and never re-asserts a date a D3 or D8 record carries.
+      D13 owns the occurrence (clocks, chains, frontier), D8 owns the record (OQ-D8-02).
+predicateOnly:
+  # Assertion.predicate values (kernel Assertion; subject = Event unless stated). Each names the question that would
+  # promote it. Registrar D13 unless stated (R-52); HAS_REVISION_STATUS (K) and RECORDING_OF (D9) are not registered here.
+  - predicate: EVENT_ABOUT
+    use: "what the event is about: compound, product, study, publication, condition, adverse-effect concept, intervention, award (object = any Subjectable). A RETRACTION Event (curated frontier milestone only) points at the D3 Publication, its clock cites the notice's locator and no second date Assertion is written (R-44). An AWARD Event is an announcement or milestone pointing at the D7 Award, with no amount; the amount, funders and recipients are D7's (R-69)"
+    promoteWhen: "Q-D13-05 / Q-D13-16 latency over the 2-hop Assertion path is measured above budget on the assembled graph; then a typed ABOUT edge with ≤ 6 members (Study, Compound, Product, Intervention, Condition, Publication)"
+  - predicate: EVENT_OCCURRED
+    use: "the occurrence time (validFrom/validTo); materialized into startedAt/endedAt (timeAssertionUid); never re-asserts a date a D3 or D8 record already carries (R-66)"
+    promoteWhen: never (time literal; CQ-TM-03 reads the assertions)
+  - predicate: EVENT_SCHEDULED
+    use: "a guided or goal window (half-open validFrom/validTo with precisions); every restatement is a new assertion, so slips are visible (Q-D13-11)"
+    promoteWhen: never (time literal)
+  - predicate: EVENT_ANNOUNCED
+    use: "first public announcement by a party; materialized into announcedAt"
+    promoteWhen: never
+  - predicate: EVENT_EFFECTIVE
+    use: "legal or contractual effect (may be an INSTANT with localTimeZone); materialized into effectiveFrom"
+    promoteWhen: never
+  - predicate: EVENT_CANCELLED
+    use: "a planned event called off; materializes eventStatus CANCELLED"
+    promoteWhen: never
+  - predicate: CONTINGENT_ON
+    use: "APPROVAL Event → confirmatory D3 Study or pending requirement (FC3 quote 3)"
+    promoteWhen: "Q-D13-12 raised to value 1"
+  - predicate: PRESENTED_AT_CONFERENCE
+    use: "DATA_PRESENTATION Event → D9 Channel with channelKind EVENT_SERIES (the recurring meeting, e.g. CTAD, ARVO); the edition and session are the Assertion's qualifiers (edition=<year or name>, session=<label>), not a node; no Event per edition (R-65). Registrar D13; D9 owns Channel."
+    promoteWhen: "Q-D13-25 (value 3) raised to value 1 or 2"
+  - predicate: REPORTED_MARKET_MOVE
+    use: "a named source's statement that a share price moved after an event. ONE shape, registrar D13 (R-92): subject = Event, object = the Organization whose shares moved, valueString = the located magnitude text, asserter = the reporting source. D7 holds market data series only."
+    promoteWhen: "Q-D13-21 needs ranking by move size with a market-data source"
+  - predicate: FORECASTS
+    use: "forecast source (Metaculus, Manifold) → PLANNED Event or frontier milestone, value and capture time as literals"
+    promoteWhen: "Q-D13-20 (value 3) raised"
+  - predicate: STATED_CASE_COUNT
+    use: "number of subjects with a finding as the source states it (SAFETY_SIGNAL; valueNumber + unitCode {subjects}; denominator, group and as-of date as qualifiers) (fixtures stage, FC6)"
+    promoteWhen: never (literal; frequency judgments are D5/D10 assessments)
+  - predicate: STATED_REASON
+    use: "the reason the source gives for a discontinuation, retraction, rejection or hold (valueString = the located quote) (fixtures stage, FC5/FC6; Q-D13-08, Q-D13-15)"
+    promoteWhen: never (literal)
+  - predicate: FIRST_OF_KIND_CLAIM
+    use: "claim occurrence (assertionKind CLAIM) that an event is the first or only of its kind ('the first and only medication approved by the FDA for the treatment of NASH'); Q-D13-17 checks it against the computed breakthrough criteria (fixtures stage, FC3)"
+    promoteWhen: never (claim occurrences are kernel records)
+  - predicate: FINANCING_AMOUNT
+    registrar: D13   # R-92
+    use: "amount of a FINANCING / ACQUISITION / PARTNERSHIP event. ONE name and shape, registrar D13 (R-92; D7's FINANCING_AMOUNT_SOLD is retired and D7 re-keys its fixtures): subject = Event, valueNumber + unitCode iso4217:<CODE> (kernel convention), qualifiers amountKind = GROSS_PROCEEDS | NET_PROCEEDS | BORROWING_CAPACITY | DRAWN_PRINCIPAL | UPFRONT_PAYMENT | MILESTONE_POTENTIAL | DEAL_VALUE | ROUND_TOTAL and amountBasis = OFFERED | SOLD | COMMITTED | AVAILABLE | REMAINING (Form D totalOfferingAmount = OFFERED, totalAmountSold = SOLD); amounts of different kinds are never summed. Award amounts are D7 Award.amount; an AWARD Event carries no amount (R-69)."
+    promoteWhen: never (literal)
+  - predicate: DATE_OF_FIRST_SALE
+    registrar: D13   # R-92 (moved from D7; subject is the D13 Event)
+    use: "FINANCING Event → literal date (Form D dateOfFirstSale; 'yet to occur' as valueString); D13 may copy it to the Event's start clock"
+    promoteWhen: never (literal)
+  - predicate: INVESTOR_COUNT
+    registrar: D13   # R-92 (moved from D7; subject is the D13 Event)
+    use: "FINANCING Event → literal integer (Form D totalNumberAlreadyInvested)"
+    promoteWhen: never (literal)
+  - predicate: "READOUT_STAGE, PRIMARY_ENDPOINT_STATEMENT, APPROVAL_PATHWAY, DESIGNATION_TYPE, DISCONTINUATION_SCOPE, JURISDICTION"
+    use: "FIELD assertions whose literal the Event's qualifier properties materialize (predicate = property in SCREAMING_SNAKE; R-14: the node value is a cache); APPROVAL_PATHWAY and DESIGNATION_TYPE literals are D8 RegulatoryPathway values (R-66, OQ-D8-02 mapping); when a D8 record documents the event, they cite the record's locator (one shared span, no second date or jurisdiction source)"
+    promoteWhen: never (literals)
+deferred:
+  - type: FOLLOWS
+    reason: "computed at query time by ordering the clocks within a scope (same frontier, subject or organization), method valid-time-order-v1; stored only if a GDS or latency question needs it, then derived, read-only (replaces pinned FOLLOWED_BY)"
+  - type: ACTIVE_ON_FRONTIER
+    reason: "derived Organization|Compound → Frontier projection (frontier-activity-v1); Q-D13-03 is answered by traversal at ~25 frontiers; admit only on measured latency or a GDS community question"
+  - type: CAUSED_BY
+    reason: "merged into LEADS_TO (forward direction) and RESPONDS_TO (agency)"
+  - type: FOLLOWED_BY
+    reason: "computed (FOLLOWS above)"
+  - type: EVENT_ABOUT
+    reason: "kernel subject/object pattern (predicate-only above); the pinned 15-member EventSubjectTarget union is gone"
+  - type: REPORTED_IN
+    reason: "computed: assertions → locators → snapshots → sources (Q-D13-22); a stored derived copy adds nothing at expected volumes"
+  - type: SUPPORTED_BY_CHUNK
+    reason: "chunk links are D9 MENTIONS (derived); support is kernel HAS_EVIDENCE to SourceLocator, never chunk → entity (00-DIRECTIVE 3.8)"
+  - type: HAS_EVENT
+    reason: "Conference → Event structural edge cut; no Conference node in D9 or D13 (D9 Channel EVENT_SERIES is the recurring meeting); presentation link is predicate-only PRESENTED_AT_CONFERENCE (R-65)"
+  - type: HOSTS_EVENT
+    reason: "folded into INVOLVES (no host role needed by any D13 question; Community cut)"
+  - type: SPEAKS_AT
+    reason: "folded into INVOLVES role PRESENTER (R-81: D7 retires SPEAKS_AT)"
+  - type: ATTENDS
+    reason: "cut: no question; attendance lists are private-ish and unverifiable"
+  - type: EXHIBITS_AT
+    reason: "cut: no question"
+  - type: SPONSORS_CONTENT
+    reason: "D9 / D7 financial-interest seam (sponsorship of media), not an event relation"
+  - type: RECORDING_OF
+    reason: "D9 registers it as a predicate (MediaWork → D13 Event, R-52); listed in D13.seams.yaml predicateSeams (owner other); D13 needs no media container"
+  - type: PRESENTED_AT
+    reason: "D9 decides (Document → session); D13 keeps predicate-only PRESENTED_AT_CONFERENCE"
+  - type: ARC_ABOUT
+    reason: "NarrativeArc → kernel Report (D10 composition); ASSESSES is kernel"
+  - type: ARC_INCLUDES_EVENT
+    reason: "a published brief cites its events through kernel DERIVED_FROM → Assertion (the events' time and link assertions)"
+  - type: ASSESSES_EVENT
+    reason: "kernel ASSESSES (Assessment.about → Subjectable)"
+  - type: IMPACT_ON
+    reason: "impact is a kernel Assessment (assessmentKind EVENT_IMPACT, facets impactDomain=<value>), not an edge"
+  - type: SUPERSEDES
+    reason: "kernel supersedesUid on Assertion / Assessment / Report (same asserter only, R-23); corrections are new Assertions on the same Event"
+  - type: SUPPORTED_BY
+    reason: "kernel HAS_EVIDENCE {role, origin}"
+  - type: WAS_GENERATED_BY
+    reason: "kernel lineage (Activity.generated); declared once by the kernel"
+  - type: CONTRADICTS
+    reason: "never an event → claim or event → event edge: contradiction is HAS_EVIDENCE role CONTRADICTS from an Adjudication / Assessment to the event's locators (00-DIRECTIVE 3.8)"
+  - type: FRONTIER_PARENT
+    reason: "hierarchy is the property parentKey (two levels, ~25 nodes)"
+  - type: FRONTIER_TARGET
+    reason: "relevance to D5 targets is the property targetKeys (vocabulary-to-vocabulary, not an effect claim)"

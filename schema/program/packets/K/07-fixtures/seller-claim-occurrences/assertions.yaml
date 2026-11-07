@@ -1,0 +1,323 @@
+# Assertions for fixture seller-claim-occurrences (K, fixtures stage, A1, 2026-10-08).
+# Kind: harm (authority and independence). Interested parties restate the resveratrol-SIRT1 proposition:
+#  - a reagent vendor's catalog page states it as present fact and cites the 2003 paper (a retelling: DERIVED_FROM the primary
+#    occurrence, basisKind CITED_FROM_PRIOR_WORK; the cited work does say it, in 2003; the page omits the later disconfirmation);
+#  - a supplement brand's blog accurately retells the 2010 disconfirmation while selling resveratrol (accuracy and interest
+#    are orthogonal);
+#  - the verification.v1 benchmark twin (internal) shows CAPTURE_FIDELITY rejecting an interested-party statement mutated into
+#    "an independent clinical trial establishes ...".
+# The verifier sets authority PROMOTIONAL / independence INTERESTED_PARTY on its Adjudications' VERIFIER_FOUND evidence edges
+# (EvidenceEdgeProperties); the occurrences' own DECLARED edges carry role and origin only (adversarial review: the verifier never
+# rewrites the extractor's evidence record).
+# Two runs: R1 (run:ft-K-r1-ingest) captured both pages first; R2 (run:ft-K-r2-evidence-mission) re-captured them and corrected
+# one R1 occurrence (see ../two-run-lineage). Conventions: see ../resveratrol-sirt1-evidence-mission/assertions.yaml.
+
+fixture: seller-claim-occurrences
+producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }   # default; R1 rows say so
+activities:
+  - { ref: act-r1-ingest, uid: "hu:activity:fx-k-r1-ingest", activityKind: INGESTION, runId: "run:ft-K-r1-ingest" }
+  - { ref: act-r2-mission, uid: "hu:activity:fx-k-r2-evidence-mission", activityKind: EVIDENCE_MISSION, runId: "run:ft-K-r2-evidence-mission" }
+  - { ref: act-r2-verification, uid: "hu:activity:fx-k-r2-verification", activityKind: VERIFICATION, runId: "run:ft-K-r2-verification" }
+  - ref: act-bench
+    uid: "hu:activity:fx-k-benchmark-twin-verification"
+    activityKind: VERIFICATION
+    externalRunSystem: ks-verification
+    runId: "run:ft-K-seller-claim-occurrences-benchmark"
+    missionId: "mission:ft-K-fixtures"
+    operationKind: verification_benchmark_case_replay
+    methodVersion: "verification-benchmark.v1 diagnostics-companies-pilot-v4 (engineering expectations)"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-seller-claim-occurrences-benchmark" }
+    note: "fixture Activity standing for a verification.v1 run over the two benchmark cases; the verdicts below are the cases' recorded engineering expectations, not a live run"
+
+entities:
+  - { ref: e-resveratrol, type: D1.ChemicalSubstance, uid: "hu:chemical-substance:fx-k-resveratrol", name: resveratrol }
+  - { ref: e-sirt1, type: D2.MolecularEntity, uid: "hu:molecular-entity:fx-k-sirt1-human", name: SIRT1 }
+  - { ref: e-activemotif, type: D7.Organization, uid: "hu:organization:fx-k-active-motif", name: "Active Motif (reagent vendor; catalog item 14022 Resveratrol)", interest: "sells the substance (catalog page of the item); D6/D7 seam" }
+  - { ref: e-megares, type: D7.Organization, uid: "hu:organization:fx-k-megaresveratrol", name: "MegaResveratrol (megaresveratrol.net, trans-resveratrol supplement brand)", interest: "sells resveratrol supplements (loc-mr-cta-r2); D6/D7 seam" }
+  - { ref: e-mr-products, type: D6.Product, uid: "hu:product:fx-k-megaresveratrol-trans-resveratrol-range", name: "MegaResveratrol trans-resveratrol supplements (range, as offered on the blog)" }
+  - { ref: e-generation-lab, type: D7.Organization, uid: "hu:organization:fx-k-generation-lab", name: "Generation Lab" }
+  - { ref: e-systemage, type: D6.Product, uid: "hu:product:fx-k-systemage", name: "SystemAge test (Generation Lab)" }
+
+sources:
+  - { ref: src-am-14022, uid: "hu:source:fx-k-activemotif-catalog-14022", canonicalUri: "https://www.activemotif.com/catalog/details/14022/resveratrol", sourceKind: WEB_PAGE, genre: VENDOR_CATALOG_PAGE, name: "Resveratrol a SIRT1 (Sirtuin) activator", snapshots: [snap-am-r1, snap-am-r2] }
+  - { ref: src-mr-blog, uid: "hu:source:fx-k-megaresveratrol-blog-sirtuins", canonicalUri: "https://megaresveratrol.net/feeds/blog/resveratrol-sirtuins-longevity", sourceKind: WEB_PAGE, genre: BRAND_BLOG_POST, name: "Resveratrol and Sirtuins: Unlocking Longevity Benefits", snapshots: [snap-mr-r1, snap-mr-r2] }
+  - { ref: src-pubmed-12939617, uid: "hu:source:fx-k-pubmed-12939617", snapshots: [snap-pubmed-12939617], note: "defined in ../resveratrol-sirt1-evidence-mission" }
+  - { ref: src-pubmed-20061378, uid: "hu:source:fx-k-pubmed-20061378", snapshots: [snap-pubmed-20061378], note: "defined in ../resveratrol-sirt1-evidence-mission" }
+  - { ref: src-gl-source, uid: "hu:source:fx-k-bench-gl-interested-comparison-source", canonicalUri: "https://github.com/Overton77/ai-engineer-knowledge-services/blob/28c4422228826c41f92dd837f3c5f0b561471b3b/catalog/verification-benchmarks/diagnostics-companies-pilot-v4/artifacts/case-input/gl-interested-comparison-source.json", sourceKind: DATASET, privacyClass: INTERNAL, snapshots: [snap-gl-source] }
+  - { ref: src-gl-mutated, uid: "hu:source:fx-k-bench-gl-interested-comparison-mutated", canonicalUri: "https://github.com/Overton77/ai-engineer-knowledge-services/blob/28c4422228826c41f92dd837f3c5f0b561471b3b/catalog/verification-benchmarks/diagnostics-companies-pilot-v4/artifacts/case-input/gl-interested-comparison-mutated.json", sourceKind: DATASET, privacyClass: INTERNAL, snapshots: [snap-gl-mutated] }
+
+assertions:
+  # ---- R1 (run:ft-K-r1-ingest)
+  - id: a-am-occ-r1
+    uid: "hu:assertion:fx-k-occ-activemotif-r1"
+    assertionKind: CLAIM
+    claimType: RELATIONSHIP
+    predicate: DIRECTLY_ACTIVATES
+    subject: { ref: e-resveratrol, type: D1.ChemicalSubstance }
+    object: { ref: e-sirt1, type: D2.MolecularEntity }
+    asserter: { ref: e-activemotif, type: D7.Organization }
+    occurrenceOf: "hu:claim:fx-k-resveratrol-directly-activates-sirt1"
+    proposition: "resveratrol activates SIRT1 and increases longevity in yeast"
+    locators: [loc-am-claim-r1]
+    polarity: POSITIVE
+    speechAct: STATES
+    basisKind: CITED_FROM_PRIOR_WORK
+    validTime: { validFrom: "2026-10-08", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN, error: "R1 used the retrieval date as a publication proxy; the page carries no date" }
+    status: SUPERSEDED
+    recordedAt: "2026-10-08T21:28:36Z"
+    recordedTo: "2026-10-08T22:09:18Z"   # closed once by R2 (a-am-occ-r2.supersedesUid)
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r1-ingest" }
+  - id: a-mr-takeaway
+    uid: "hu:assertion:fx-k-occ-megaresveratrol-takeaway"
+    assertionKind: CLAIM
+    claimType: RELATIONSHIP
+    predicate: DIRECTLY_ACTIVATES
+    subject: { ref: e-resveratrol, type: D1.ChemicalSubstance }
+    object: { ref: e-sirt1, type: D2.MolecularEntity }
+    asserter: { ref: e-megares, type: D7.Organization }
+    occurrenceOf: "hu:claim:fx-k-resveratrol-directly-activates-sirt1"
+    proposition: "resveratrol was named a SIRT1 activator in 2003; later assays and a 2020 CRISPR study cast doubt on direct activation"
+    locators: [loc-mr-takeaway-r1]
+    validTimeEvidence: loc-mr-datepublished-r1
+    polarity: MIXED
+    speechAct: STATES
+    basisKind: CITED_FROM_PRIOR_WORK
+    validTime: { validFrom: "2026-09-23", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN, note: "JSON-LD datePublished 2026-09-23T11:55:49Z" }
+    status: ACCEPTED
+    recordedAt: "2026-10-08T21:28:36Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r1-ingest" }
+    note: "R2 re-anchored its locator exactly on snap-mr-r2 (loc-mr-takeaway-r2); the Assertion itself is unchanged"
+  # ---- R2 (run:ft-K-r2-evidence-mission)
+  - id: a-am-occ-r2
+    uid: "hu:assertion:fx-k-occ-activemotif-r2"
+    assertionKind: CLAIM
+    claimType: RELATIONSHIP
+    predicate: DIRECTLY_ACTIVATES
+    subject: { ref: e-resveratrol, type: D1.ChemicalSubstance }
+    object: { ref: e-sirt1, type: D2.MolecularEntity }
+    asserter: { ref: e-activemotif, type: D7.Organization }                      # ASSERTED_BY
+    occurrenceOf: "hu:claim:fx-k-resveratrol-directly-activates-sirt1"
+    proposition: "resveratrol activates SIRT1 and increases longevity in yeast"
+    evidence:
+      - { locator: loc-am-claim-r2, role: SUPPORTS, origin: DECLARED }
+      - { locator: loc-am-ref2-r2, role: SUPPORTS, origin: DECLARED }
+    derivedFrom: ["hu:assertion:fx-k-occ-howitz-2003"]                            # DERIVED_FROM the primary occurrence (retelling)
+    polarity: POSITIVE
+    speechAct: STATES
+    basisKind: CITED_FROM_PRIOR_WORK
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, validObservedAt: "2026-10-08", validTo: null, validToBasis: UNKNOWN }
+    supersedesUid: "hu:assertion:fx-k-occ-activemotif-r1"
+    status: ACCEPTED
+    recordedAt: "2026-10-08T22:09:18Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }
+  - id: a-mr-retelling
+    uid: "hu:assertion:fx-k-occ-megaresveratrol-pacholec-retelling"
+    assertionKind: CLAIM
+    claimType: RELATIONSHIP
+    predicate: DIRECTLY_ACTIVATES
+    subject: { ref: e-resveratrol, type: D1.ChemicalSubstance }
+    object: { ref: e-sirt1, type: D2.MolecularEntity }
+    asserter: { ref: e-megares, type: D7.Organization }
+    occurrenceOf: "hu:claim:fx-k-resveratrol-directly-activates-sirt1"
+    proposition: "resveratrol only appeared to activate SIRT1 because of a fluorescent tag; with the native protein the activation disappeared"
+    evidence:
+      - { locator: loc-mr-retelling-r2, role: SUPPORTS, origin: DECLARED }
+    derivedFrom: ["hu:assertion:fx-k-occ-pacholec-2010"]
+    polarity: NEGATIVE
+    speechAct: STATES
+    basisKind: CITED_FROM_PRIOR_WORK
+    validTime: { validFrom: "2026-09-23", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN }
+    status: ACCEPTED
+    recordedAt: "2026-10-08T22:09:18Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }
+  - id: a-mr-offers
+    uid: "hu:assertion:fx-k-megaresveratrol-offers-resveratrol"
+    assertionKind: RELATIONSHIP
+    predicate: OFFERS_FOR_SALE            # placeholder; D6 (offer / seller of record) owns the typed edge
+    subject: { ref: e-megares, type: D7.Organization }
+    object: { ref: e-mr-products, type: D6.Product }
+    asserter: { ref: e-megares, type: D7.Organization }
+    locators: [loc-mr-cta-r2]
+    speechAct: STATES
+    basisKind: MANUFACTURER_CLAIM
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, validObservedAt: "2026-10-08", validTo: null, validToBasis: UNKNOWN }
+    status: ACCEPTED
+    recordedAt: "2026-10-08T22:09:18Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }
+    note: "the interest that makes the brand's occurrences INTERESTED_PARTY evidence (Q-K-15; D7 financial-interest seam)"
+  - id: a-am-cas
+    uid: "hu:assertion:fx-k-activemotif-states-cas"
+    assertionKind: FIELD
+    predicate: HAS_IDENTIFIER
+    subject: { ref: e-resveratrol, type: D1.ChemicalSubstance }
+    object: { uid: "hu:identifier:fx-k-cas-501-36-0", type: K.Identifier }
+    asserter: { ref: e-activemotif, type: D7.Organization }
+    locators: [loc-am-cas-r2]
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, validObservedAt: "2026-10-08", validTo: null, validToBasis: UNKNOWN }
+    status: ACCEPTED
+    recordedAt: "2026-10-08T22:09:18Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }
+    note: "an interested party's identifier statement that agrees with Wikidata P231 (../resveratrol-identifier-crosswalk, Q-K-29)"
+  # ---- verification.v1 benchmark twin (internal; privacyClass INTERNAL)
+  - id: a-gl-source
+    uid: "hu:assertion:fx-k-bench-gl-interested-comparison-source"
+    privacyClass: INTERNAL
+    assertionKind: CLAIM
+    claimType: COMPARATIVE
+    predicate: IS_MOST_ADVANCED_AGING_TEST
+    subject: { ref: e-systemage, type: D6.Product }
+    asserter: { ref: e-generation-lab, type: D7.Organization }
+    proposition: "Generation Lab's comparison page calls SystemAge the most advanced and comprehensive aging-speed test in preventive healthcare."
+    evidence:
+      - { locator: loc-gl-source-fragment, role: SUPPORTS, origin: DECLARED, benchmarkSelectedContentDigest: "sha256:7ee1cd1972ba8cd1701c79238567c493d37a5eae951cfa0f22481eaefc6a1af8", note: "the locator selects the case input field that records the digest of the restricted excerpt; the excerpt capture itself is not in this repo" }
+    propositionLocator: loc-gl-source-assertion
+    speechAct: STATES
+    basisKind: MANUFACTURER_CLAIM
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    status: PROPOSED                     # DIRECTLY_SUPPORTED + policy REVIEW -> PROPOSED (held), per 09-reasoning's mapping
+    recordedAt: "2026-10-08T22:09:18Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-seller-claim-occurrences-benchmark" }
+  - id: a-gl-mutated
+    uid: "hu:assertion:fx-k-bench-gl-interested-comparison-mutated"
+    privacyClass: INTERNAL
+    assertionKind: CLAIM
+    claimType: COMPARATIVE
+    predicate: IS_MOST_ADVANCED_AGING_TEST
+    subject: { ref: e-systemage, type: D6.Product }
+    asserter: { ref: e-generation-lab, type: D7.Organization }
+    proposition: "An independent clinical trial establishes that SystemAge is the most advanced and comprehensive aging test."
+    evidence:
+      - { locator: loc-gl-mutated-fragment, role: SUPPORTS, origin: DECLARED, benchmarkSelectedContentDigest: "sha256:7ee1cd1972ba8cd1701c79238567c493d37a5eae951cfa0f22481eaefc6a1af8", note: "the locator selects the case input field that records the digest of the restricted excerpt; the excerpt capture itself is not in this repo" }
+    propositionLocator: loc-gl-mutated-assertion
+    speechAct: STATES
+    basisKind: UNSTATED
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    status: REJECTED                     # NOT_SUPPORTED + policy FAIL -> REJECTED
+    recordedAt: "2026-10-08T22:09:18Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-seller-claim-occurrences-benchmark" }
+
+adjudications:
+  - id: adj-cf-gl-source
+    uid: "hu:adjudication:fx-k-cf-bench-gl-source"
+    type: K.Adjudication
+    adjudicationKind: CAPTURE_FIDELITY
+    verdict: DIRECTLY_SUPPORTED
+    policyOutcome: REVIEW
+    judgeKind: POLICY
+    methodVersion: "verification-benchmark.v1 expectation (label promotional_only, labelStatus engineering_expectation)"
+    evidenceSupport: SATISFIED
+    worldCorrectness: UNKNOWN            # benchmark: worldCorrectness not_established
+    attributionFaithfulness: SATISFIED
+    sourceAuthority: NOT_SATISFIED       # benchmark: authority interested_party_only
+    provenanceIntegrity: SATISFIED
+    evaluates: [a-gl-source]
+    evidence: [{ locator: loc-gl-source-fragment, role: SUPPORTS, origin: VERIFIER_FOUND, authority: PROMOTIONAL, independence: INTERESTED_PARTY }]
+    rationale: "the interested-party source supports only that the company made the statement; it does not establish the superlative"
+    decisionProvenance: null             # no human decision; engineering expectations never move status by themselves
+    recordedAt: "2026-10-08T22:15:00Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-seller-claim-occurrences-benchmark" }
+  - id: adj-cf-gl-mutated
+    uid: "hu:adjudication:fx-k-cf-bench-gl-mutated"
+    type: K.Adjudication
+    adjudicationKind: CAPTURE_FIDELITY
+    verdict: NOT_SUPPORTED
+    policyOutcome: FAIL
+    judgeKind: POLICY
+    methodVersion: "verification-benchmark.v1 expectation (label unsupported, adversarial transform interested_party_to_independent)"
+    evidenceSupport: NOT_SATISFIED
+    worldCorrectness: UNKNOWN
+    attributionFaithfulness: NOT_SATISFIED
+    sourceAuthority: NOT_SATISFIED
+    provenanceIntegrity: SATISFIED
+    unsupportedFacets: ["independent clinical trial", "establishes"]
+    evaluates: [a-gl-mutated]
+    evidence: [{ locator: loc-gl-mutated-fragment, role: CONTRADICTS, origin: VERIFIER_FOUND, authority: PROMOTIONAL, independence: INTERESTED_PARTY }]
+    rationale: "same evidence fragment as the source case; it is the company's own statement, so the mutated attribution to an independent trial is not supported"
+    recordedAt: "2026-10-08T22:15:00Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-seller-claim-occurrences-benchmark" }
+  - id: adj-cf-am-r2
+    uid: "hu:adjudication:fx-k-cf-activemotif-r2"
+    type: K.Adjudication
+    adjudicationKind: CAPTURE_FIDELITY
+    verdict: DIRECTLY_SUPPORTED
+    policyOutcome: PASS
+    mechanicalStatus: passed
+    judgeKind: DETERMINISTIC
+    methodVersion: "fixture-reselect/gen_locators_k.py@2026-10-08"
+    evaluates: [a-am-occ-r2]
+    evidence: [{ locator: loc-am-claim-r2, role: SUPPORTS, origin: VERIFIER_FOUND, authority: PROMOTIONAL, independence: INTERESTED_PARTY }]
+    rationale: "snap-am-r2 differs from snap-am-r1 only in a per-request token; the quote re-anchors exactly"
+    recordedAt: "2026-10-08T22:20:00Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-verification" }
+  - id: adj-cf-mr-takeaway             # adversarial review: the brand occurrences get their capture-fidelity judgments, which carry the
+    uid: "hu:adjudication:fx-k-cf-megaresveratrol-takeaway"   # verifier's authority / independence (no longer on the DECLARED edges)
+    type: K.Adjudication
+    adjudicationKind: CAPTURE_FIDELITY
+    verdict: DIRECTLY_SUPPORTED
+    policyOutcome: PASS
+    mechanicalStatus: passed
+    judgeKind: DETERMINISTIC
+    methodVersion: "fixture-reselect/gen_locators_k.py@2026-10-08"
+    evaluates: [a-mr-takeaway]
+    evidence: [{ locator: loc-mr-takeaway-r1, role: SUPPORTS, origin: VERIFIER_FOUND, authority: PROMOTIONAL, independence: INTERESTED_PARTY }]
+    rationale: "the declared TEXT_QUOTE re-selects exactly one span on snap-mr-r1 (second occurrence: the rendered list item); the page is the supplement seller's own blog"
+    recordedAt: "2026-10-08T22:20:00Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-verification" }
+  - id: adj-cf-mr-retelling
+    uid: "hu:adjudication:fx-k-cf-megaresveratrol-retelling"
+    type: K.Adjudication
+    adjudicationKind: CAPTURE_FIDELITY
+    verdict: DIRECTLY_SUPPORTED
+    policyOutcome: PASS
+    mechanicalStatus: passed
+    judgeKind: DETERMINISTIC
+    methodVersion: "fixture-reselect/gen_locators_k.py@2026-10-08"
+    evaluates: [a-mr-retelling]
+    evidence: [{ locator: loc-mr-retelling-r2, role: SUPPORTS, origin: VERIFIER_FOUND, authority: PROMOTIONAL, independence: INTERESTED_PARTY }]
+    rationale: "the declared TEXT_QUOTE re-selects exactly one span on snap-mr-r2; the page is the supplement seller's own blog"
+    recordedAt: "2026-10-08T22:20:00Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-verification" }
+
+assessments:
+  - id: as-retelling-am
+    uid: "hu:assessment:fx-k-retelling-fidelity-activemotif-howitz"
+    type: K.Assessment
+    assessmentKind: RETELLING_FIDELITY
+    status: ACCEPTED
+    methodVersion: "fixture:retelling-fidelity/claude-opus-5-5@2026-10-08"
+    verdict: SUPPORTED_WITH_QUALIFICATION
+    about: [{ uid: "hu:claim:fx-k-resveratrol-directly-activates-sirt1", type: K.Claim }]
+    inputAssertions: [a-am-occ-r2, "hu:assertion:fx-k-occ-howitz-2003"]
+    evidence:
+      - { locator: loc-am-claim-r2, role: CONTEXT, origin: DECLARED }
+      - { locator: loc-howitz-km, role: SUPPORTS, origin: DECLARED }
+      - { locator: loc-howitz-yeast, role: QUALIFIES, origin: DECLARED }
+    summary: "The cited 2003 paper does say it: SIRT1 activation in vitro (Km lowering) and yeast lifespan extension via Sir2. The vendor merges the two (yeast longevity is through Sir2, not SIRT1), states it as present fact, and omits the 2005 and 2010 disconfirmation."
+    recordedAt: "2026-10-08T22:25:00Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }
+  - id: as-retelling-mr
+    uid: "hu:assessment:fx-k-retelling-fidelity-megaresveratrol-pacholec"
+    type: K.Assessment
+    assessmentKind: RETELLING_FIDELITY
+    status: ACCEPTED
+    methodVersion: "fixture:retelling-fidelity/claude-opus-5-5@2026-10-08"
+    verdict: DIRECTLY_SUPPORTED
+    about: [{ uid: "hu:claim:fx-k-resveratrol-directly-activates-sirt1", type: K.Claim }]
+    inputAssertions: [a-mr-retelling, "hu:assertion:fx-k-occ-pacholec-2010"]
+    evidence:
+      - { locator: loc-mr-retelling-r2, role: CONTEXT, origin: DECLARED }
+      - { locator: loc-pach-fluor, role: SUPPORTS, origin: DECLARED }
+    summary: "The brand's retelling matches the 2010 abstract (activation only with a fluorophore-tagged peptide, none with native substrates) even though the brand sells resveratrol: accurate and interested at once."
+    recordedAt: "2026-10-08T22:25:00Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }
+
+edgesExercised:
+  - { type: ASSERTED_BY, pairs: "a-am-occ-r1, a-am-occ-r2, a-am-cas -> e-activemotif; a-mr-takeaway, a-mr-retelling, a-mr-offers -> e-megares; a-gl-* -> e-generation-lab" }
+  - { type: OCCURRENCE_OF, pairs: "a-am-occ-r1, a-am-occ-r2, a-mr-takeaway, a-mr-retelling -> claim-general" }
+  - { type: HAS_EVIDENCE, pairs: "assertion evidence (DECLARED, role and origin only); adjudications VERIFIER_FOUND with authority PROMOTIONAL / independence INTERESTED_PARTY (adj-cf-am-r2, adj-cf-mr-takeaway, adj-cf-mr-retelling, adj-cf-gl-*); assessments (CONTEXT/SUPPORTS/QUALIFIES)" }
+  - { type: DERIVED_FROM, pairs: "a-am-occ-r2 -> a-occ-howitz (retelling); a-mr-retelling -> a-occ-pacholec (retelling); as-retelling-* -> inputs" }
+  - { type: ASSESSES, pairs: "adj-cf-gl-source -> a-gl-source (DIRECTLY_SUPPORTED, REVIEW -> PROPOSED); adj-cf-gl-mutated -> a-gl-mutated (NOT_SUPPORTED, FAIL -> REJECTED); adj-cf-am-r2 -> a-am-occ-r2; adj-cf-mr-takeaway -> a-mr-takeaway; adj-cf-mr-retelling -> a-mr-retelling; as-retelling-* -> claim-general" }
+  - { type: HAS_SUBJECT, pairs: "occurrences -> e-resveratrol; a-mr-offers -> e-megares; a-gl-* -> e-systemage" }
+  - { type: HAS_OBJECT, pairs: "occurrences -> e-sirt1; a-mr-offers -> e-mr-products; a-am-cas -> Identifier (the HAS_IDENTIFIER episode itself is in ../resveratrol-identifier-crosswalk)" }
+  - { type: HAS_SNAPSHOT, pairs: "src-am-14022 -> snap-am-r1, snap-am-r2 (SILENT_CONTENT_CHANGE, token only); src-mr-blog -> snap-mr-r1, snap-mr-r2" }
+  - { type: WAS_GENERATED_BY, pairs: "R1 rows -> act-r1-ingest; R2 rows -> act-r2-mission; adj-cf-am-r2, adj-cf-mr-* -> act-r2-verification; benchmark rows -> act-bench" }

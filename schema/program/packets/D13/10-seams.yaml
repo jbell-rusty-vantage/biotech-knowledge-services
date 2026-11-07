@@ -1,0 +1,145 @@
+version: 1
+module: D13
+# Model stage (Wave 2), A7, 2026-10-08. Every reference from the D13 SDL to a type outside the module that is not on
+# packet-check's kernel allowlist, keyed by relationship type (or by property for kernel enums), plus the kernel
+# records D13 relies on without declaring fields (assessments, reports, claims) so their owners see the dependency.
+# Check stage (A7, 2026-10-08): kernel enums and kernel edge-property types outside the packet-check allowlist moved
+# from `seams` to `sharedVocabularies: kernel-types` (kernel pattern change 9); ON_FRONTIER now uses
+# AssertedRecordedProperties; assessment kinds BREAKTHROUGH_JUDGMENT / EVENT_IMPACT and Report.skeletonKey adopted.
+# Adversarial-review pass (A7, 2026-10-08): owners' published type names (D1.ChemicalSubstance, D3.Publication, D9.Channel,
+# D7.Award); DOCUMENTED_BY_RECORD typed (→ D8.RegulatoryRecord); FINANCING_AMOUNT and REPORTED_MARKET_MOVE owned here with
+# one shape each; the D10 financing-aggregate seam deleted (Q-D13-23 is computed at query time); inbound RECORDING_OF added.
+seams:
+  # ---- declared in the D13 SDL (packet-check verifies these) ----
+  - type: INVOLVES
+    from: D13.Event
+    to: D7.Organization
+    field: Event.involvedOrganizations
+    direction: OUT
+    edgeProperties: D13.EventRoleEdgeProperties
+    questions: [Q-D13-03, Q-D13-06, Q-D13-14, Q-D13-15, Q-D13-21, Q-D13-23, Q-D13-33]
+    owner: this
+    note: "D7 declares no inverse field on Organization (D7 research notes §1 role-split rule); 'which events involve org X' is read as events(where: { involvedOrganizations: { some: { uid: { eq: X } } } }). D7 05 SPEAKS_AT promoteWhen names role SPEAKER; the D13 value is PRESENTER (11-open-questions.md, owner D7)"
+  - type: INVOLVES
+    from: D13.Event
+    to: D7.Person
+    field: Event.involvedPeople
+    direction: OUT
+    edgeProperties: D13.EventRoleEdgeProperties
+    questions: [Q-D13-14, Q-D13-25, CQ-EV-05]
+    owner: this
+    note: "public actors only (presenters, authors of a retracted paper, named individual investors)"
+  - type: ON_FRONTIER
+    from: D3.Study
+    to: D13.Frontier
+    field: Frontier.studies
+    direction: IN
+    edgeProperties: K.AssertedRecordedProperties
+    questions: [Q-D13-02, Q-D13-03, Q-D13-16]
+    owner: this
+    note: "declared on Frontier with direction IN so D3 Study spends no relationship field and ON_FRONTIER stays one D13-owned type (vocab-frontiers.yaml@0.2.1 consumerObligations: D3 declares nothing); fixture madrigal-maestro-nash-topline-8k a12 exercises this pair"
+  - type: DOCUMENTED_BY_RECORD
+    from: D13.Event
+    to: D8.RegulatoryRecord
+    field: Event.regulatoryRecords
+    direction: OUT
+    edgeProperties: K.AssertedRecordedProperties
+    questions: [Q-D13-12, Q-D13-14, Q-D13-22]
+    owner: this
+    note: "promoted from predicate-only (adversarial-review pass): regulator, applicant and record date are read from the record's ISSUED_BY / ADDRESSED_TO / issuedAt, so APPROVAL / REGULATORY_DESIGNATION / RECALL / ENFORCEMENT_ACTION Events carry no INVOLVES REGULATOR / APPLICANT once a record exists; D8 declares no inverse (D8 10-seams row to update from 'predicate, D8 does not traverse it' to this typed edge; 11-open-questions.md owner D8)"
+  # ---- kernel records that point AT D13 types (declared by the kernel; listed so the dependency is visible) ----
+  - type: HAS_SUBJECT
+    from: K.Assertion
+    to: [D13.Event, D13.Frontier]
+    direction: OUT
+    questions: [Q-D13-05, Q-D13-10, Q-D13-11, CQ-TM-03, CQ-TM-01, Q-D13-22, Q-D13-28]
+    owner: other
+    note: "time assertions (EVENT_OCCURRED, EVENT_SCHEDULED, EVENT_ANNOUNCED, EVENT_EFFECTIVE, EVENT_CANCELLED), EVENT_ABOUT, qualifier FIELD assertions and every asserted D13 edge's authorizing Assertion; Assertion is on the allowlist, listed for visibility"
+  - type: HAS_OBJECT
+    from: K.Assertion
+    to: [D13.Event, D13.Frontier]
+    direction: OUT
+    questions: [Q-D13-05, Q-D13-07]
+    owner: other
+    note: "object of LEADS_TO / RESPONDS_TO / ON_FRONTIER assertions; claims whose object is a Frontier or an Event (Q-D13-07)"
+  - type: ASSESSES
+    from: K.Assessment
+    to: [D13.Event, D13.Frontier]
+    direction: OUT
+    questions: [Q-D13-07, Q-D13-17, Q-D13-27, Q-D13-30, Q-D13-31]
+    owner: other
+    assessmentKinds: "assessmentKind BREAKTHROUGH_JUDGMENT (Q-D13-30; conclusionCode registered by D13: MEETS_CRITERION / DOES_NOT_MEET / NOT_CHECKABLE, criterion version in methodVersion) and EVENT_IMPACT (Q-D13-31; facets impactDomain=MARKET|CLINICAL_PRACTICE|REGULATORY|SCIENTIFIC|COMMERCIAL|PATIENT_ACCESS) — both accepted by the kernel model stage (change 4); INSIGHT with assessmentSubkind D13.press-language-check (Q-D13-17) and D13.hypothesis-disconfirmation (Q-D13-27); EVIDENCE_SYNTHESIS for Q-D13-07 claim before/after"
+    note: "D13 declares no inverse field (kernel open question 5); questions read from the Assessment side"
+  - type: ASSESSES
+    from: K.Report
+    to: D13.Frontier
+    direction: OUT
+    questions: [Q-D13-29]
+    owner: other
+    note: "frontier progress brief = kernel Report (reportKind PROFILE, skeletonKey d10.frontier-brief@1 — kernel change 4); D10 owns the composition method; rows cite events through DERIVED_FROM → their time, link and ON_FRONTIER Assertions"
+  - type: OCCURRENCE_OF
+    from: K.Assertion
+    to: K.Claim
+    direction: OUT
+    questions: [Q-D13-07, Q-D13-17]
+    owner: other
+    note: "claim occurrences about frontiers or events ('historic moment', 'remains compelling') are kernel/D9 records; D13 splits them by occurrence time against Event.announcedAt"
+  # ---- predicate-only links whose objects live in other modules (no SDL field; Assertion object) ----
+  - type: EVENT_ABOUT (Assertion.predicate)
+    from: D13.Event
+    to: [D1.ChemicalSubstance, D6.Product, D3.Study, D5.Intervention, D2.Condition, D3.Publication, D7.Award]
+    questions: [Q-D13-05, Q-D13-16, Q-D13-26, Q-D13-27, CQ-EV-05]
+    owner: this
+    note: "kernel subject/object pattern; object may be any Subjectable; the listed types are the expected ones, named as their owners publish them (adversarial-review pass: D1.Compound → D1.ChemicalSubstance, D9.Publication → D3.Publication; adverse-effect phenotypes are D2.Condition with conditionKind PHENOTYPE per D2 10-seams; an AWARD Event points at the D7 Award, whose amount, funder and recipients D7 owns). One EVENT_ABOUT per Event carries qualifier primary=true (identity rule)"
+  - type: CONTINGENT_ON (Assertion.predicate)
+    from: D13.Event
+    to: D3.Study
+    questions: [Q-D13-12]
+    owner: this
+  - type: PRESENTED_AT_CONFERENCE (Assertion.predicate)
+    from: D13.Event
+    to: D9.Channel
+    questions: [Q-D13-25]
+    owner: this
+    note: "object = D9 Channel with channelKind EVENT_SERIES (the recurring meeting; D9 06 merged the pinned Conference into Channel EVENT_SERIES + D13 Event); edition and session are Assertion qualifiers. D13 owns the predicate, D9 owns Channel; no Conference type exists (11-open-questions.md, D9 asked to confirm)"
+  - type: REPORTED_MARKET_MOVE (Assertion.predicate)
+    from: D13.Event
+    to: D7.Organization
+    questions: [Q-D13-14, Q-D13-21]
+    owner: this
+    note: "one shape: subject Event, object the Organization whose shares moved, valueString = the located magnitude text, asserter = the reporting source. D7's 05 row (subject Organization, object literal + event reference) is to be re-shaped and listed as owner D13 (11-open-questions.md, owner D7); market data series stay D7's"
+  - type: FINANCING_AMOUNT (Assertion.predicate)
+    from: D13.Event
+    to: "literal (valueNumber + unitCode iso4217:<CODE>)"
+    questions: [Q-D13-06, Q-D13-23]
+    owner: this
+    note: "one name and shape, owned by D13 (it is read only by D13 questions and written by D13 fixtures): qualifiers amountKind (GROSS_PROCEEDS | NET_PROCEEDS | BORROWING_CAPACITY | DRAWN_PRINCIPAL | UPFRONT_PAYMENT | MILESTONE_POTENTIAL | DEAL_VALUE) and amountBasis (OFFERED | SOLD | COMMITTED | AVAILABLE); D7's FINANCING_AMOUNT_SOLD is to be retired (11-open-questions.md, owner D7). Award amounts stay D7 Award.amount"
+  - type: RECORDING_OF (Assertion.predicate)
+    from: D9.MediaWork
+    to: D13.Event
+    questions: [Q-D13-25]
+    owner: other
+    note: "inbound, declared by D9 (10-seams, Q-D9-18, owner D9): a recording of a presentation, call or session points at the D13 Event; D13 declares nothing and reads it from the Assertion side when a presentation row needs its recording"
+sharedVocabularies:
+  - name: kernel-types
+    ref: packets/K/04-schema-proposal.graphql (A1, sha256 b2c2b1b0…cb7d5c7, 51,355 bytes, read 2026-10-08 for the adversarial-review compile check)
+    role: consumed
+    edgePropertyTypes: "AssertedRecordedProperties (ON_FRONTIER, LEADS_TO, RESPONDS_TO, DOCUMENTED_BY_RECORD; base of D13.EventRoleEdgeProperties for INVOLVES)"
+    enums: "TimePrecision (Event.startedAtPrecision, endedAtPrecision, announcedAtPrecision, effectiveFromPrecision, scheduledFromPrecision, scheduledToPrecision); ValidTimeBasis (Event.startedAtBasis, effectiveFromBasis); PrivacyClass (Entity field on Event and Frontier)"
+    questions: [CQ-TM-03, Q-D13-10, Q-D13-11, Q-D13-22, Q-D13-32]
+    note: "no HALF_YEAR TimePrecision value is needed: guidance windows are half-open intervals with MONTH precision on both bounds (09-reasoning.md)"
+  - name: frontiers
+    ref: packets/D13/vocab-frontiers.yaml@0.2.1
+    role: owned
+    note: "Frontier keys, EventKind values, event relations (LEADS_TO, RESPONDS_TO asserted; FOLLOWS computed), seam rule (only Event and Study attach via ON_FRONTIER; D13 declares the Study side as Frontier.studies). 0.2.1 (adversarial-review pass): declaring side corrected, consumer obligations rebased on the kernel (HAS_REVISION_STATUS) and @0.2.x, MATURED redefined as a vocabulary-retirement state, RESPONDS_TO examples rest on stated-basis spans. Consumers on @0.1.0 (D10 10-seams) should move to @0.2.1 (11-open-questions.md)"
+  - name: targets
+    ref: packets/D5/vocab-targets.yaml@0.1.0
+    role: consumed
+    seamRule: >-
+      Frontier.targetKeys lists D5 target keys as a curated relevance mapping (vocabulary to vocabulary), never an
+      effect claim; no D13 entity points at a Target through an edge; effect on a target is D5's Assertion pattern
+      (INTENDED_FOR_TARGET, IMPROVES_TARGET, ...) with a means as subject.
+  - name: identifier-schemes
+    ref: packets/K/identifier-schemes.yaml (version 1, seed)
+    role: consumed
+    note: "D13 node types carry no identifiers of their own; SEC_CIK (participants, D7) and WIKIDATA (anchors) are used through other modules; SEC_ACCESSION requested for filing Sources (11-open-questions.md)"

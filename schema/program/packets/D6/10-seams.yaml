@@ -1,0 +1,123 @@
+# D6 — seams (model stage, A6, 2026-10-08; adversarial-review stage 2026-10-08)
+# direction is from D6's point of view: out = D6 declares the field on its own type pointing at the other module;
+# in = the other module declares the edge on its type pointing at a D6 type (D6 lists it so the synthesizer can check
+# both sides). owner: this = D6 declares and registers it; other = the named module declares and registers it.
+# Kernel allowlist types (Entity, Subjectable, Assertion, Source, SourceSnapshot, SourceLocator, Adjudication, Activity,
+# Agent, Identifier, Mention, AssertedEdgeProperties, DerivedEdgeProperties, StructuralEdgeProperties,
+# StateEpisodeProperties) need no seam. Kernel node types outside the allowlist that a D6 question traverses (Claim,
+# Assessment, Report) are listed under seams; kernel edge-property types outside it and kernel enums are listed under
+# sharedVocabularies: kernel-types (A1 pattern "Kernel types a domain may reference without a seam", change 9).
+
+seams:
+  # ---- declared by D6 (out) ----
+  - { type: BRANDED_AS, from: D6.Product, to: D7.Brand, questions: [Q-D6-16, Q-D6-20, Q-D6-11, Q-D6-12], direction: out, owner: this, note: "D7 owns Brand and OWNS_BRAND (Organization → Brand, episode). D7 keeps Brand in its SDL and lists this seam with field Product.brand (OQ-D6-03 resolved, check stage)." }
+  - { type: SELLER_OF_RECORD, from: D6.Offer, to: D7.Organization, questions: [CQ-CM-01, Q-D6-06, Q-D6-16, Q-D6-20], direction: out, owner: this, note: "no inverse field on Organization (D7 split map: commerce role edges live on D6 types)" }
+  - { type: NAMES_RESPONSIBLE_PARTY, from: D6.LabelVersion, to: D7.Organization, questions: [Q-D6-16, Q-D6-04], direction: out, owner: this, note: "no inverse field on Organization" }
+  - { type: DECLARES_COMPONENT, from: D6.LabelVersion, to: D1.IngredientMaterial, questions: [CQ-AX-25, CQ-PF-01, Q-D6-02, Q-D6-08, Q-D6-21], direction: out, owner: this, note: "member of union DeclaredComponentTarget; includes D1's unresolved-material sentinel. Asserted since the adversarial-review stage: one Assertion per line (predicate DECLARES_COMPONENT), ComponentLineProperties = kernel AssertedRecordedProperties + line qualifiers incl. massBasis (D1 MassBasis); D1 CALCULATED amounts cite the line Assertion in DERIVED_FROM (D1 OQ-D1-24, D6 OQ-D6-24 closed)" }
+  - { type: DECLARES_COMPONENT, from: D6.LabelVersion, to: D1.Constituent, questions: [CQ-PF-01, Q-D6-09, Q-D6-11, Q-D6-12], direction: out, owner: this, note: "nutrient lines (Vitamin D, sodium, energy); type name follows D1's research notes (Constituent incl. Nutrient) — rename with D1's final name" }
+  - { type: DECLARES_COMPONENT, from: D6.LabelVersion, to: D12.FoodItem, questions: [Q-D6-11, Q-D6-10, Q-D6-21], direction: out, owner: this, note: "prepared-food ingredient statements (beef patty, pickle slices); if D1/D12 make FoodItem an IngredientMaterial specialization the union shrinks to 2 (OQ-D6-04)" }
+
+  # ---- declared by other modules into D6 (in) ----
+  - { type: "OFFERS_INTERVENTION (Assertion.predicate)", from: "D6.Offer | D6.Product (kind SERVICE)", to: D5.Intervention, questions: [], direction: out, owner: this, note: "predicate-only, registered in D6 05 (adversarial-review stage); answers D5 OQ-D5-20 and matches D5/D7 seam rows (D5 Q-D5-17, D7 Q-D7-10): a sold clinic programme, telehealth plan or test service is a D6 Product of kind SERVICE with Offers, and what it delivers is a D5 Intervention through this predicate. No typed edge (no D6 question traverses it)" }
+  - { type: OWNS_BRAND, from: D7.Organization, to: D7.Brand, questions: [Q-D6-16, Q-D6-11], direction: in, owner: other, note: "not a D6 edge; listed because Q-D6-16 traverses Product → BRANDED_AS → Brand ← OWNS_BRAND ← Organization" }
+  - { type: HAS_REFERENCE_FOOD, from: D6.Product, to: D12.FoodItem, questions: [Q-D6-11], direction: in, owner: other, note: "D12 declares it on its side (direction IN on FoodItem, or on Product if the synthesizer prefers; D12's questions); episode (reformulation changes the mapping)" }
+  - { type: IN_FOOD_CATEGORY, from: D6.Product, to: D12.FoodCategory, questions: [], direction: in, owner: other, note: "D12 (source-stated food groups: NOVA, WWEIA); no D6 pattern traverses it (Q-D6-12 filters declared %DV), listed for the synthesizer's two-sided check" }
+  - { type: LOT_OF, from: D8.Lot, to: D6.ProductVariant, questions: [Q-D6-04, CQ-AX-19], direction: in, owner: other, note: "D8 declares Lot.lotOf with AssertedRecordedProperties, union LotOfTarget = Product | ProductVariant (checked against A7's D8 SDL, check stage). D6.Package not accepted yet (OQ-D6-13)" }
+  - { type: LOT_OF, from: D8.Lot, to: D6.Product, questions: [Q-D6-04], direction: in, owner: other, note: "second member of D8's LotOfTarget (recalls naming only the product)" }
+  - { type: CONCERNS, from: D8.RegulatoryRecord, to: D6.Product, questions: [Q-D6-04, Q-D6-05], direction: in, owner: other, note: "D8 names (check stage; was ACTION_CONCERNS from EnforcementAction): RegulatoryRecord with recordFamily ENFORCEMENT, union RegulatoryRecordTopic = ChemicalSubstance | IngredientMaterial | Product | Lot | Patent, AssertedRecordedProperties. Q-D6-21 traverses the IngredientMaterial member (a D8 -> D1 edge), not this row. D6 still asks for D6.Package (OQ-D6-13)" }
+  - { type: QUALITY_RESULT_FOR, from: D8.QualityResult, to: D6.Product, questions: [], direction: in, owner: other, note: "D8 measured results (union QualityResultFor = Lot | Product); added in the check stage — D8's seams list it, D6's did not. D8 renamed RESULT_FOR -> QUALITY_RESULT_FOR (D3 owns RESULT_FOR; OQ-D8-30; row renamed in the close-out round). CQ-AX-19 reads QUALITY_RESULT_FOR on the Lot member, so no D6 pattern traverses this row (adversarial-review stage)" }
+  - { type: COVERS, from: D8.CertificationListing, to: D6.Product, questions: [CQ-PF-03], direction: in, owner: other, note: "D8 union CertificationCoverageTarget = Product | ProductVariant | Lot | Organization (AssertedEdgeProperties). NSF 'Package Size 30, 60, 90' stays in scopeVerbatim until D8 accepts D6.Package (OQ-D6-13)" }
+  - { type: COVERS, from: D8.CertificationListing, to: D6.ProductVariant, questions: [CQ-PF-03], direction: in, owner: other, note: "second D6 member of D8's CertificationCoverageTarget" }
+  - { type: STATUS_OF, from: D8.LegalStatus, to: D6.Product, questions: [], direction: in, owner: other, note: "D8 names (check stage; was RegulatoryStatus): LegalStatus.statusOf, union LegalStatusSubject, AssertedEdgeProperties (episode); no D6 pattern traverses it today (D10 may when composing Q-D6-22)" }
+  - { type: ADMINISTERS, from: D3.InterventionComponent, to: D6.ProductVariant, questions: [CQ-ID-02], direction: in, owner: other, note: "D3 declares ADMINISTERS on InterventionComponent (check stage; was StudyArm); study material identity vs sold variant is a kernel EQUIVALENCE Assessment" }
+  - { type: STEP_USES, from: D5.ProtocolStep, to: D6.Product, questions: [], direction: in, owner: other, note: "D5 protocol steps that use a product; no D6 pattern traverses it (D5 questions do)" }
+  - { type: DELIVERS, from: D6.Product, to: D4.LabTest, questions: [], direction: in, owner: other, note: "D4 declares it on LabTest.products (direction IN; stored Product → LabTest); a consumer test kit or test service is a D6 Product of kind SERVICE/DEVICE; no D6 question traverses it (D4 questions do). Added in the check stage — D4's seams list it, D6's did not. CONSTRAINS_USE_OF (D5) was removed here: D5 cut it (product constraints are Assertions with the product as subject, D5 OQ-D5-36)" }
+  - { type: DELIVERS, from: D6.Product, to: D4.Device, questions: [], direction: in, owner: other, note: "D4 declares it on Device.products (direction IN); replaces pinned EMBODIES_MODEL" }
+  - { type: "LINKS_TO_OFFER (Assertion.predicate)", from: D9.MediaWork, to: "D6.Offer | D6.MerchantListing", questions: [CQ-CM-04], direction: in, owner: other, note: "D9 keeps tracked/affiliate links predicate-only (no TrackedLink node; OQ-D6-07 resolved). Answer to D9's question D6-1: object = MerchantListing when the link lands on a product or store page with no displayed price (show-note affiliate URL); Offer only when the link carries a specific purchasable offer (promo-code price, subscription plan)" }
+
+  # ---- kernel types outside the allowlist that D6 uses (no SDL field; listed per A1's rule) ----
+  - { type: ASSESSES, from: K.Assessment, to: D6.LabelVersion, questions: [CQ-ID-05, CQ-PF-03, Q-D6-09], direction: in, owner: other, note: "assessmentKind OTHER / APPLICABILITY with assessmentSubkind D6.change-kind, D6.certification-scope, D6.max-intake-vs-reference, D6.blend-disclosure-rule; needs LabelVersion to implement Subjectable (OQ-D6-02)" }
+  - { type: ASSESSES, from: K.Assessment, to: D6.MerchantListing, questions: [CQ-CM-02, Q-D6-05], direction: in, owner: other, note: "EQUIVALENCE subkind D6.listing-to-package; OTHER subkind D6.recall-scope" }
+  - { type: ASSESSES, from: K.Assessment, to: D6.Package, questions: [CQ-CM-02, Q-D6-15], direction: in, owner: other, note: "EQUIVALENCE subkinds D6.listing-to-package, D6.identifier-equivalence; also D6.change-kind (fixture as01, as10) and SAFETY_SIGNAL D6.recalled-product-harm (as50) (adversarial-review stage: row added)" }
+  - { type: ASSESSES, from: K.Assessment, to: D6.Product, questions: [], direction: in, owner: other, note: "SAFETY_SIGNAL D6.recalled-product-harm (as50) and OTHER D6.authorized-channel (as52) are about the Product in fixture recall-moringa-mogo; read by D10 when it composes Q-D6-22 rows, by no D6 pattern directly (adversarial-review stage: row added)" }
+  - { type: ASSESSES, from: K.Assessment, to: D6.Offer, questions: [Q-D6-06], direction: in, owner: other, note: "OTHER subkind D6.authorized-channel" }
+  - { type: ASSESSES, from: K.Assessment, to: D6.ProductVariant, questions: [CQ-ID-01, CQ-AX-17], direction: in, owner: other, note: "EQUIVALENCE subkind D6.study-material-match (with D3)" }
+  - { type: ASSESSES, from: D10.ReportItem, to: D6.Product, questions: [Q-D6-03, Q-D6-22], direction: in, owner: other, note: "D10 option rows (OPTIONS section of a COMPARISON report, rank products for target T) and HARMS_AND_AVOIDANCE rows (Q-D6-22); the Report itself ASSESSES the target; ReportItem.about targets Subjectable, so ProductVariant, Package and Offer are reachable too (OQ-D6-10 resolved in the check stage)" }
+  - { type: OCCURRENCE_OF, from: K.Assertion, to: K.Claim, questions: [Q-D6-07, Q-D6-18, CQ-PF-02], direction: in, owner: other, note: "marketing, retailer and company claims about D6 types are claim occurrences (assertionKind CLAIM) with a D6 type as subject" }
+  - { type: HAS_IDENTIFIER, from: K.Identifier, to: D6.Package, questions: [Q-D6-15], direction: in, owner: other, note: "IdentifierLinkProperties episodes (GTIN 850015311116 → 850015311857); schemes per 06-node-register.yaml" }
+
+sharedVocabularies:
+  - name: kernel-types
+    owner: K
+    source: C:\Users\Pinda\Proyectos\Biotech\biotech-knowledge-services-A1\schema\program\packets\K\04-schema-proposal.graphql
+    types: [AssertedRecordedProperties, IdentifierLinkProperties, PrivacyClass]
+    use: >-
+      AssertedRecordedProperties is the edge-property type of NAMES_RESPONSIBLE_PARTY (asserted, recorded time only; A1
+      M10) and the base of D6's ComponentLineProperties on DECLARES_COMPONENT (superset rule M11, adversarial-review
+      stage). IdentifierLinkProperties carries the GTIN/ASIN/SKU episodes of kernel HAS_IDENTIFIER into D6 types (Q-D6-15).
+      PrivacyClass is the Entity field listed verbatim on every D6 type. Kernel Assertion fields D6 relies on:
+      unitCode `iso4217:<CODE>` for prices (OQ-D6-06 resolved) and validObservedAt for "as of" dates (OQ-D6-19).
+      Kernel Assessment slot D6 uses for its subkinds: conclusionCode (OQ-D6-14 resolved; values under
+      assessment-subkinds).
+  - name: MassBasis
+    owner: D1
+    source: C:\Users\Pinda\Proyectos\Biotech\biotech-knowledge-services-A2\schema\program\packets\D1\10-seams.yaml
+    use: >-
+      ComponentLineProperties.massBasis (adversarial-review stage; answers D1 OQ-D1-24 with D1's vocabulary instead of
+      D6's former AmountReferent values AS_SALT_FORM / AS_ACTIVE_MOIETY): SALT_FORM | ACTIVE_MOIETY | NUTRIENT_EQUIVALENT
+      | MATERIAL_AS_IS | UNSPECIFIED. One owner (D1); D3 (InterventionComponent.massBasis) and D6 reference it, never
+      re-declare it. D1's 04 header (adversarial-review stage, uncommitted on 2026-10-08) says MassBasis was removed from
+      D1's SDL: the synthesizer must keep exactly one declaration (OQ-D6-26).
+  - name: targets
+    owner: D5
+    source: C:\Users\Pinda\Proyectos\Biotech\biotech-knowledge-services-A5\schema\program\packets\D5\vocab-targets.yaml
+    use: >-
+      What a product is for or does to a target: kernel Assertion with subject D6.Product (D5's seam row names D6.Product only;
+      a variant-level target claim is recorded on its Product with a qualifier), object the
+      Target node (uid hu:target:<slug>), predicate from the closed list INTENDED_FOR_TARGET, IMPROVES_TARGET,
+      WORSENS_TARGET, NO_EFFECT_ON_TARGET, MIXED_EFFECT_ON_TARGET, one asserter, a locator, a valid time and a mandatory
+      population qualifier (UNSPECIFIED when the source names none). Brand target copy (Elysium product_type 'Cellular
+      Aging', NSF 'Purpose/Goal') is INTENDED_FOR_TARGET asserted by the brand; weighed conclusions are D10 assessments
+      with effectDirection. D6 declares no typed edge to Target. Questions: Q-D6-03, Q-D6-22.
+  - name: frontiers
+    owner: D13
+    source: C:\Users\Pinda\Proyectos\Biotech\biotech-knowledge-services-A7\schema\program\packets\D13\vocab-frontiers.yaml
+    use: >-
+      Not consumed directly. Per D13's seam rule products never point at a frontier; a product reaches one only through
+      D13 Events whose predicate-only EVENT_ABOUT assertions name it (D13 lists D6.Product among EVENT_ABOUT objects;
+      D13's typed INVOLVES targets only Organization or Person) and through studies that test it. D6 declares nothing.
+  - name: identifier-schemes
+    owner: K
+    source: C:\Users\Pinda\Proyectos\Biotech\biotech-knowledge-services-A1\schema\program\packets\K\identifier-schemes.yaml
+    use: >-
+      GTIN, ASIN, SKU, DSLD, NDC, NPN, FDC_ID, WIKIDATA as seeded; requested: RETAILER_ITEM_ID, STOREFRONT_PRODUCT_ID,
+      STOREFRONT_VARIANT_ID, MARKETPLACE_SELLER_ID (OQ-D6-05).
+  - name: predicates
+    owner: K (registry), D6 (values)
+    use: >-
+      D6 predicate values listed in 05-relationship-register.yaml predicateOnly (OFFER_PRICE_*, MARKET_REFERENCE_PRICE,
+      OFFER_AVAILABILITY, OFFER_SUBSCRIPTION_TERMS, CONTAINS_PACKAGE, SOLD_THROUGH_CHANNEL, AUTHORIZES_CHANNEL,
+      RETAILER_DISCONTINUED, SUCCEEDED_BY, OFF_MARKET, OFFERS_INTERVENTION, BEARS_SEAL, CALCULATED_DAILY_MAX_INTAKE, ...).
+      Used but registered elsewhere: SUPPLIES_MATERIAL (D1/D7; D6's former SOLE_SUPPLIER_OF is now this with qualifier
+      exclusivity=SOLE). Provisional names requested from their owners (OQ-D6-27): SAMPLE_POSITIVE_OUTBREAK_STRAIN (D8),
+      SOURCED_FROM_COUNTRY (D1/D8).
+  - name: assessment-subkinds
+    owner: K (assessmentKind), D6 (subkinds)
+    use: >-
+      Registered subkinds and their conclusionCode vocabularies (kernel Assessment.conclusionCode, A1 M9; adversarial-review
+      stage: D6.label-claim-match dropped — a claim's verdict is the kernel SUPPORT Adjudication; three subkinds the
+      fixtures used are now registered):
+      D6.change-kind (OTHER): LABEL_ONLY | PACKAGE_ONLY | FORMULATION | IDENTITY | UNKNOWN.
+      D6.listing-to-package (EQUIVALENCE): DIRECTLY_SUPPORTED | PROPOSED_MATCH | INSUFFICIENT_EVIDENCE | NOT_SAME.
+      D6.identifier-equivalence (EQUIVALENCE): SAME_PACKAGE | DIFFERENT_PACKAGE | INSUFFICIENT_EVIDENCE.
+      D6.recall-scope (OTHER): IN_SCOPE | NOT_IN_SCOPE | UNKNOWN.
+      D6.authorized-channel (OTHER): AUTHORIZED | UNAUTHORIZED | UNKNOWN.
+      D6.certification-scope (OTHER): SUPPORTED | SUPPORTED_WITH_QUALIFICATION | NOT_SUPPORTED | UNKNOWN.
+      D6.max-intake-vs-reference (OTHER): EXCEEDS_REFERENCE | WITHIN_REFERENCE | NO_REFERENCE (effectDirection HARM only
+      when the assessment is also ABOUT a D5 target).
+      D6.study-material-match (EQUIVALENCE, with D3): SAME_MATERIAL | DIFFERENT_MATERIAL | UNKNOWN.
+      D6.seller-account-to-organization (RESOLUTION): RESOLVED | PROPOSED_MATCH | UNRESOLVED.
+      D6.blend-disclosure-rule (APPLICABILITY): BLEND_TOTAL_ONLY_PERMITTED | NON_COMPLIANT_DISCLOSURE | NOT_APPLICABLE.
+      D6.recalled-product-harm (SAFETY_SIGNAL): CONTAMINATION_CONFIRMED | CONTAMINATION_SUSPECTED | NOT_CONFIRMED — about
+      Product/Package; no effectDirection unless a D5 target is also ABOUT (kernel: harm is a direction on an assessment
+      about a target).

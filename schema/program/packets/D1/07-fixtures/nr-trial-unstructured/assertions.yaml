@@ -1,0 +1,213 @@
+# Assertions for fixture nr-trial-unstructured (FIXTURES stage, A2, 2026-10-08) — directive 3.8 path.
+# Kernel Assertion shape (packets/K/04-schema-proposal.graphql, A1); locators in locators.yaml (verified offsets).
+# producedBy ids are FIXTURE ids (mission:ft-D1-fixtures / run:ft-D1-<fixture>), not live Mission Control ids.
+# Seam types: D3 Study / InterventionComponent / ADMINISTERS (A4 worktree), D9 Chunk / CHUNK_OF / COVERS_LOCATOR / MENTIONS
+# (A8 worktree), D7 Person / Organization. Nodes marked "same as <fixture>#<ref>" resolve to the node of that fixture.
+# Adversarial review (2026-10-08): the ORCID formerly on person-conze belongs to Charles Brenner (JATS contrib-id inside
+# Brenner's <contrib>; ORCID public API) and was removed; the trial-batch purity is a D3 FIELD Assertion (t02), not a
+# MATERIAL_CONTAINS episode on the canonical NIAGEN material; t03 takes the paper's own study period (l-sr-period) and
+# t03b the registry's start/completion dates (l-ctgov-start, l-ctgov-completion); ADMINISTERS is AssertedRecordedProperties
+# in D3's SDL; the kernel has no Mention node any more (a surface form is a locator + RESOLUTION Assessment).
+fixture: nr-trial-unstructured
+producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-trial-unstructured" }
+activities:
+  - { ref: act-ingest, activityKind: INGESTION, agent: "agent:a2-d1-fixtures", missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-trial-unstructured" }
+  - { ref: act-chunk, activityKind: PROJECTION, agent: "agent:d9-chunker", methodVersion: "fixture-chunker: one chunk per JATS <sec>/<abstract> (raw code points)", missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-trial-unstructured" }
+  - { ref: act-link, activityKind: PROJECTION, agent: "agent:entity-linker", methodVersion: "entity-link/v1 (d1_identity_fulltext exact-name match)", missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-trial-unstructured" }
+  - { ref: act-project, activityKind: PROJECTION, agent: "agent:d1-amount-projection", methodVersion: "d1-amounts/v1", missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-trial-unstructured" }
+
+nodes:
+  - { ref: mat-niagen, module: D1, type: IngredientMaterial, name: "NIAGEN (crystalline nicotinamide riboside chloride)", sameAs: "nr-salt-moiety-us-canada#mat-niagen" }
+  - { ref: sub-nrcl, module: D1, type: ChemicalSubstance, name: "NICOTINAMIDE RIBOSIDE CHLORIDE", sameAs: "nr-salt-moiety-us-canada#sub-nrcl", identifiers: [ { scheme: UNII, issuer: "FDA GSRS", value: "8XM2XT8VWI" } ] }
+  - { ref: sub-nr, module: D1, type: ChemicalSubstance, name: "NICOTINAMIDE RIBOSIDE", sameAs: "nr-salt-moiety-us-canada#sub-nr", identifiers: [ { scheme: UNII, issuer: "FDA GSRS", value: "0I8H2M0L7N" } ] }
+  - { ref: src-sr2019, module: K, type: Source, name: "Conze, Brenner, Kruger 2019 Sci Rep (JATS full text)", properties: { canonicalUri: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6611812/fullTextXML" }, identifiers: [ { scheme: PMID, issuer: NLM, value: "31278280" }, { scheme: PMCID, issuer: NLM, value: "PMC6611812", evidence: l-epmc-ids }, { scheme: DOI, issuer: "Crossref", value: "10.1038/s41598-019-46120-z" } ] }
+  - { ref: study-nct02712593, module: D3, type: Study, name: "A Study Investigating the Effects of Niagen in Healthy Adults (KGK Science; collaborator ChromaDex)", identifiers: [ { scheme: NCT, issuer: "NLM ClinicalTrials.gov", value: "NCT02712593", evidence: l-ctgov-nct } ] }
+  - { ref: ic-1000, module: D3, type: InterventionComponent, name: "1000 mg NR arm — Niagen component", properties: { componentRole: "ACTIVE", materialTextVerbatim: "1000 mg NR (4 capsules containing 250 mg NR)", quantity: 1000, unitCode: "mg", quantityBasis: "PER_DAY", massBasis: UNSPECIFIED }, note: "massBasis stays UNSPECIFIED as printed; the APPLICABILITY assessment ap01 states it is SALT_FORM, a superseding D3 write may cite ap01" }
+  - { ref: person-conze, module: D7, type: Person, name: "Dietrich Conze", note: "first author; stands for the author group of PMID 31278280 as asserter. No identifier: Conze's JATS <contrib> carries no contrib-id; the only ORCID in the article (0000-0002-4955-3226) sits in Charles Brenner's <contrib> and resolves to Charles Brenner at pub.orcid.org (adversarial review, 2026-10-08)" }
+  - { ref: org-kgk, module: D7, type: Organization, name: "KGK Science Inc. (registry lead sponsor)" }
+  - { ref: agent-projection, module: K, type: Agent, name: "agent:d1-amount-projection (d1-amounts/v1)" }
+
+# ------------------------------------------------------------------------------------------------------------
+# Directive 3.8: question -> chunk (MENTIONS or vector) -> assertion(s) -> SourceLocator -> SourceSnapshot bytes
+# ------------------------------------------------------------------------------------------------------------
+retrievalPath:
+  question: "Q-D1-08 — In Conze 2019 (PMID 31278280), are the reported 'mg NR' doses salt mass or moiety mass, and do paper and registry agree on material, dose and trial id?"
+  snapshot: { ref: "snap-epmc-pmc6611812-fulltext", contentHash: "sha256:ae7b5a420c48282b6604bd3c6e22ac818dcd0fc5a9fbaba0d45abf62e34661d2", contentHashBasis: RAW_BYTES }
+  chunks:   # D9 Chunk (retrieval structure, never a locator); offsets in raw-JATS code points of the snapshot above
+    - { ref: chunk-sec6, module: D9, type: Chunk, chunkIndex: 6, startOffset: 28532, endOffset: 30482, textBasis: JATS_XML, textVersionHash: "sha256:ae7b5a420c48282b6604bd3c6e22ac818dcd0fc5a9fbaba0d45abf62e34661d2", spanDigest: "sha256:564450bdf895a217f0e67c08cfe56efa3ff2b0d86477285a7722d32d3473ff5f", extractorVersion: "europepmc-jats/raw", normalizationVersion: "none (raw code points; U+2009/U+00A0 kept)", chunkerVersion: "fixture-chunker/1 (one <sec>)", section: "Methods > Study product", generatedBy: act-chunk }
+    - { ref: chunk-abstract, module: D9, type: Chunk, chunkIndex: 0, startOffset: 5578, endOffset: 6783, textBasis: JATS_XML, textVersionHash: "sha256:ae7b5a420c48282b6604bd3c6e22ac818dcd0fc5a9fbaba0d45abf62e34661d2", spanDigest: "sha256:2611154eb89e911617d3799a78beac7ceba5e2b4addfc3995f54d580fb072f7e", section: "Abstract", generatedBy: act-chunk }
+    - { ref: chunk-sec3, module: D9, type: Chunk, chunkIndex: 3, startOffset: 20792, endOffset: 26638, textBasis: JATS_XML, textVersionHash: "sha256:ae7b5a420c48282b6604bd3c6e22ac818dcd0fc5a9fbaba0d45abf62e34661d2", spanDigest: "sha256:0dd656165cefed8333bd48d046f1901479074900cbcf97c30a223040b9a0e100", section: "Methods > Study design", generatedBy: act-chunk }
+  mentions:   # surface form at a locator (HAS_EVIDENCE role CONTEXT on the RESOLUTION Assessment; the kernel has no Mention node since its adversarial review) + D9 derived MENTIONS (DerivedEdgeProperties) licensed by that assessment
+    - { surfaceForm: "NR chloride", locator: l-sr-mention-nrcl, chunk: chunk-sec6, resolvedTo: { ref: sub-nrcl, type: ChemicalSubstance }, licensedBy: r01-resolve-nrcl, edge: "Chunk -[:MENTIONS {derivationRule: 'entity-link/v1', derivedFromAssessmentUids: [r01-resolve-nrcl]}]-> ChemicalSubstance" }
+    - { surfaceForm: "NIAGEN", locator: l-sr-mention-niagen, chunk: chunk-abstract, resolvedTo: { ref: mat-niagen, type: IngredientMaterial }, licensedBy: r02-resolve-niagen }
+  vectorEntry: { index: "chunk_embedding (D9; db.index.vector.queryNodes on Neo4j 5.26)", queryText: "capsule consisted of mg NR chloride purity active ingredient", expectedTopChunk: chunk-sec6, note: "embedding scores are not stored in the fixture; the MENTIONS hop is the deterministic entry" }
+  coversLocator:   # D9 COVERS_LOCATOR (derived, span-overlap/v1): locator spans inside the chunk span of the same snapshot
+    chunk-sec6: [l-sr-doses, l-sr-capsule, l-sr-arms, l-sr-mention-nrcl]
+    chunk-abstract: [l-sr-abstract-niagen, l-sr-mention-niagen]
+    chunk-sec3: [l-sr-registry]
+  assertionsReached: { l-sr-capsule: [t02-administered-purity, t03-administers, t04-unit-dose], l-sr-arms: [t03-administers, t04-unit-dose, t05-arm-dose], l-sr-doses: [t05-arm-dose], l-sr-abstract-niagen: [t01-realizes], l-sr-registry: [t06-printed-registry-id] }
+  verifierReselect: "for every locator: snapshot_text[startOffset:endOffset] == exact and sha256(exact) == quoteHash (offsetBasis CODE_POINT); re-run 2026-10-08 by build_locators.py on a fresh capture with identical sha256 (bytes unchanged since the research capture)"
+  cypher: |
+    // entry by MENTIONS (deterministic) — or replace the first MATCH with db.index.vector.queryNodes('chunk_embedding', 8, $embedding) (03 Q-D1-08)
+    MATCH (s:ChemicalSubstance {uid: $nrChlorideUid})<-[:MENTIONS]-(c:Chunk)-[:CHUNK_OF]->(snap:SourceSnapshot)
+    MATCH (c)-[:COVERS_LOCATOR]->(loc:SourceLocator)<-[ev:HAS_EVIDENCE]-(a:Assertion)
+    WHERE a.recordedTo IS NULL AND ev.role = 'SUPPORTS'
+    OPTIONAL MATCH (a)<-[:ASSESSES]-(adj:Adjudication {adjudicationKind: 'CAPTURE_FIDELITY'})
+    RETURN c.uid, a.predicate, a.valueNumber, a.unitCode, loc.exact, loc.startOffset, loc.endOffset,
+           snap.contentHash, snap.retrievedAt, adj.verdict
+    ORDER BY loc.startOffset
+
+assertions:
+  - id: t01-realizes
+    predicate: REALIZES_SUBSTANCE
+    assertionKind: RELATIONSHIP
+    subject: { ref: mat-niagen, type: IngredientMaterial }
+    object: { ref: sub-nrcl, type: ChemicalSubstance }
+    asserter: { ref: person-conze, type: Person }
+    locators: [l-sr-abstract-niagen]
+    speechAct: STATES
+    polarity: POSITIVE
+    basisKind: CITED_FROM_PRIOR_WORK
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    edge: { type: REALIZES_SUBSTANCE, properties: AssertedRecordedProperties, episode: "corroborates nr-salt-moiety-us-canada#a01-realizes-dsld (same edge); no new episode" }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-trial-unstructured" }
+  - id: t02-administered-purity
+    predicate: ADMINISTERED_MATERIAL_PURITY
+    assertionKind: FIELD
+    subject: { ref: ic-1000, type: InterventionComponent, module: D3 }
+    literal: { valueNumber: 99, unitCode: "%" }
+    qualifiers: ["purity of the NR chloride as administered in this trial, as reported; no method or lot stated", "contentBasis:MASS_FRACTION_W_W"]
+    asserter: { ref: person-conze, type: Person }
+    locators: [l-sr-capsule]
+    speechAct: REPORTS_PRACTICE
+    polarity: POSITIVE
+    basisKind: UNSTATED
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    note: "a statement about the trial batch, so its subject is the D3 InterventionComponent and no D1 edge is written: MATERIAL_CONTAINS is reserved for specification and standardization statements about the material itself (05 rationale); a lot COA would be a D8 QualityResult"
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-trial-unstructured" }
+  - id: t03-administers
+    predicate: ADMINISTERS
+    assertionKind: RELATIONSHIP
+    subject: { ref: ic-1000, type: InterventionComponent, module: D3 }
+    object: { ref: mat-niagen, type: IngredientMaterial }
+    asserter: { ref: person-conze, type: Person }
+    locators: [l-sr-capsule, l-sr-arms, l-sr-period]
+    speechAct: REPORTS_PRACTICE
+    basisKind: UNSTATED
+    validTime: { validFrom: "2016-03-01T00:00:00Z", validFromPrecision: DAY, validFromBasis: INFERRED, validTo: "2017-03-17T00:00:00Z", validToPrecision: DAY, validToBasis: INFERRED, inferredFrom: "the paper's own study period (l-sr-period): first participant screened 2016-03-01, last participant's last visit 2017-03-17; administration lies inside it" }
+    edge: { type: ADMINISTERS, module: D3, properties: AssertedRecordedProperties, episode: "recorded-only in D3's SDL; the valid time above stays on the Assertion" }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-trial-unstructured" }
+  - id: t03b-administers-registry
+    predicate: ADMINISTERS
+    assertionKind: RELATIONSHIP
+    subject: { ref: ic-1000, type: InterventionComponent, module: D3 }
+    object: { ref: mat-niagen, type: IngredientMaterial }
+    asserter: { ref: org-kgk, type: Organization }
+    locators: [l-ctgov-niagen1000, l-ctgov-collab, l-ctgov-start, l-ctgov-completion]
+    speechAct: STATES
+    basisKind: UNSTATED
+    validTime: { validFrom: "2016-03-21T00:00:00Z", validFromPrecision: DAY, validFromBasis: INFERRED, validTo: "2017-04-01T00:00:00Z", validToPrecision: MONTH, validToBasis: INFERRED, inferredFrom: "registry startDateStruct 2016-03-21 ACTUAL and completionDateStruct 2017-04 ACTUAL (l-ctgov-start, l-ctgov-completion); the registry's dates differ from the paper's period (t03) and both are kept" }
+    note: "registry intervention name 'Niagen™ 1000' (type DIETARY_SUPPLEMENT, description null): corroborates t03; the registry states no dose basis"
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-trial-unstructured" }
+  - id: t04-unit-dose
+    predicate: UNIT_DOSE_AMOUNT
+    assertionKind: FIELD
+    subject: { ref: ic-1000, type: InterventionComponent, module: D3 }
+    literal: { valueNumber: 250, unitCode: "mg" }
+    qualifiers: ["per capsule", "of NR chloride (99% purity)", "4 capsules per day in the 1000 mg arm"]
+    asserter: { ref: person-conze, type: Person }
+    locators: [l-sr-capsule, l-sr-arms]
+    speechAct: REPORTS_PRACTICE
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-trial-unstructured" }
+  - id: t05-arm-dose
+    predicate: ADMINISTERED_AMOUNT
+    assertionKind: FIELD
+    subject: { ref: ic-1000, type: InterventionComponent, module: D3 }
+    literal: { valueNumber: 1000, unitCode: "mg/d" }
+    qualifiers: ["printed as '1000 mg NR' (mass basis not stated where printed)", "single daily dose after breakfast"]
+    asserter: { ref: person-conze, type: Person }
+    locators: [l-sr-doses, l-sr-arms]
+    speechAct: REPORTS_PRACTICE
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-trial-unstructured" }
+  - id: c05-moiety-1000
+    predicate: MOIETY_EQUIVALENT_AMOUNT
+    assertionKind: COMPUTATION
+    basisKind: CALCULATED
+    derivationRule: "rule:mw-ratio.v1"
+    subject: { ref: ic-1000, type: InterventionComponent, module: D3 }
+    object: { ref: sub-nr, type: ChemicalSubstance }
+    literal: { valueNumber: 878.0, unitCode: "mg/d" }
+    qualifiers: ["1000 mg NR chloride x 255.2476 / 290.7006 = 878.04 mg NR cation per day", "input massBasis SALT_FORM per APPLICABILITY assessment ap01-dose-basis", "the 99% purity is NOT applied (rule:mw-ratio.v1 converts declared mass only)"]
+    asserter: { ref: agent-projection, type: Agent }
+    derivedFrom: [t05-arm-dose, t04-unit-dose, t03-administers, "nr-salt-moiety-us-canada#a01-realizes-dsld", "nr-salt-moiety-us-canada#a06-has-active-moiety", "nr-salt-moiety-us-canada#a07-mw-salt", "nr-salt-moiety-us-canada#a09-mw-moiety"]
+    locators: []
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    generatedBy: act-project
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-trial-unstructured" }
+
+  # ---------- disconfirmation branch: the printed registry id does not resolve ----------
+  - id: t06-printed-registry-id
+    predicate: REGISTRY_ID_AS_PRINTED
+    assertionKind: FIELD
+    subject: { ref: src-sr2019, type: Source, module: K }
+    literal: { valueString: "NCT0271593" }
+    qualifiers: ["registered on clinicaltrials.org on March 18, 2016 (as printed)"]
+    asserter: { ref: person-conze, type: Person }
+    locators: [l-sr-registry]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    note: "recorded as printed; never silently corrected (7 digits after 'NCT'; the kernel NCT scheme pattern requires 8)"
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-trial-unstructured" }
+
+assessments:
+  - id: ap01-dose-basis
+    assessmentKind: APPLICABILITY
+    assessmentSubkind: "D1.dose-mass-basis"
+    about: [ { ref: ic-1000, type: InterventionComponent, module: D3 } ]
+    inputAssertions: [t02-administered-purity, t04-unit-dose, t05-arm-dose]
+    evidence: [ { locator: l-sr-capsule, role: SUPPORTS }, { locator: l-sr-arms, role: SUPPORTS }, { locator: l-sr-doses, role: CONTEXT } ]
+    verdict: SUPPORTED_WITH_QUALIFICATION
+    summary: "The printed 'mg NR' doses are NR chloride masses: each capsule held 100 or 250 mg of NR chloride, and '1000 mg NR' = 4 capsules containing 250 mg. massBasis SALT_FORM; the cation equivalent is ~878 mg/d (c05). Qualification: the 99% purity means the salt content itself is ~990 mg."
+    methodVersion: "d1-dose-basis/v1 (manual in this fixture)"
+    status: PROPOSED
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-trial-unstructured" }
+  - id: r01-resolve-nrcl
+    assessmentKind: RESOLUTION
+    assessmentSubkind: "D1.mention-resolution"
+    about: [ { ref: sub-nrcl, type: ChemicalSubstance } ]
+    evidence: [ { locator: l-sr-mention-nrcl, role: CONTEXT } ]
+    score: 1.0
+    summary: "'NR chloride' -> NICOTINAMIDE RIBOSIDE CHLORIDE (UNII 8XM2XT8VWI): abbreviation 'NR' defined in the abstract as nicotinamide riboside; salt named explicitly, so not the cation."
+    methodVersion: "entity-link/v1"
+    status: PROPOSED
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-trial-unstructured" }
+  - id: r02-resolve-niagen
+    assessmentKind: RESOLUTION
+    assessmentSubkind: "D1.mention-resolution"
+    about: [ { ref: mat-niagen, type: IngredientMaterial } ]
+    evidence: [ { locator: l-sr-mention-niagen, role: CONTEXT }, { locator: l-sr-abstract-niagen, role: SUPPORTS }, { locator: l-ctgov-niagen1000, role: SUPPORTS } ]
+    score: 0.9
+    summary: "'NIAGEN' (abstract) and 'Niagen™ 1000' (registry) -> the NIAGEN branded material; the Methods' 'NR chloride (99% purity)' is taken to be that material (title and registry), not proven by a lot record."
+    methodVersion: "entity-link/v1"
+    status: PROPOSED
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-trial-unstructured" }
+  - id: r03-registry-id-resolution
+    assessmentKind: RESOLUTION
+    assessmentSubkind: "D3.registry-id-resolution"
+    about: [ { ref: study-nct02712593, type: Study, module: D3 }, { ref: src-sr2019, type: Source, module: K } ]
+    inputAssertions: [t06-printed-registry-id]
+    evidence:
+      - { locator: l-sr-registry, role: CONTEXT }
+      - { locator: l-ctgov-404, role: CONTRADICTS, note: "the printed id NCT0271593 returns HTTP 404 'not found'" }
+      - { locator: l-ctgov-nct, role: SUPPORTS }
+      - { locator: l-ctgov-firstpost, role: SUPPORTS, note: "first posted 2016-03-18 = the paper's 'March 18, 2016'" }
+      - { locator: l-ctgov-niagen1000, role: SUPPORTS, note: "arms Niagen 100 / 300 / 1000 = the paper's 100, 300, 1000 mg" }
+      - { locator: l-ctgov-collab, role: SUPPORTS }
+    verdict: SUPPORTED_WITH_QUALIFICATION
+    score: 0.95
+    summary: "Disconfirmation: the paper's registry id NCT0271593 does not exist (one digit short). NCT02712593 matches date, product, collaborator and dose arms; the paper is linked to that Study through this assessment, the printed value t06 is kept unchanged."
+    methodVersion: "d3-registry-resolve/v1 (manual in this fixture)"
+    status: PROPOSED
+    producedBy: { missionId: "mission:ft-D1-fixtures", runId: "run:ft-D1-nr-trial-unstructured" }

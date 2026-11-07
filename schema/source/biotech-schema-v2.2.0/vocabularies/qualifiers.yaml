@@ -1,0 +1,2389 @@
+# Qualifier grammar registry (bks-qualifier-grammar.v1)
+# GENERATED at promotion by scripts/release/lib/registries.mjs 1.0.0 (S1 schema authority) from the frozen candidate
+# (biotech-knowledge-services schema/program/final @ 431c8a7) and the promoted release sources. Upstream authority after
+# promotion: edit here through a release revision; re-running promotion on the same frozen inputs reproduces these bytes.
+# Closes: FU-14 (a), MD-D12-02, MD-D5-02, OD-29, R-83 (target: prefix).
+# Inputs (sha256):
+#   final/fixtures (159 assertions.yaml / intent*.json files, aggregate)  e2fba136100aefe8d99eed36d9c5d7a61425d1987119414b00768fcca937cbab
+#   final/patterns-by-question/D1.md  b4d1f9c55a86fb944eb3fc7035f148e12877d964161004bf8f020efb70921764
+#   final/patterns-by-question/D10.md  9d1fae4d829c1b35b9cbcc1ec60c65ce35f39169675267d4d8d19bccc47178ba
+#   final/patterns-by-question/D11.md  8bc29696a4863aa544223a0b9a81230899afa0478aa1ebf3e5c3d9eb3b090d67
+#   final/patterns-by-question/D12.md  d0222a2d647aac7cde3646a1db90846b3611eb1bb3f6263af8c622c3e75a87e5
+#   final/patterns-by-question/D13.md  d1aa1cf132a411e447ec305c7a02f0f78ec8d069f1df3783bfbd7a699bc9a3ea
+#   final/patterns-by-question/D2.md  6ef8dd6e6742415c0ceb6cedf93722bb38e5e3a0e80f5bdba931a2a34c394415
+#   final/patterns-by-question/D3.md  bd8a67d6ca1c21f59a27fc161e5961153b4d17a7f49d93a0b90dc3c0a97e7ad1
+#   final/patterns-by-question/D5.md  6e62cebf2e716e4f9225e696fa14d153b684ac0e23ccbd523efda2ce308c1da5
+#   final/patterns-by-question/D6.md  4ca83e997ccc32cc2ceaad0fca2a4c11a8fc3ad767a410200fa083a9ce4a9699
+#   final/patterns-by-question/D7.md  63d555d223bfcf4d9b1a7bb10f5613d4037554f06ccc53c080ac37f0067ee8e0
+#   final/patterns-by-question/D8.md  8523c8d8eae8101f47a5fc52235986d1bf7e0ddc50751005d1adec9e5bacdee8
+#   final/patterns-by-question/D9.md  6e2d03f183f07255340b9a63ffcc06dac85a28c8dfa1900fe38982f9e3e50a15
+#   final/patterns-by-question/K.md  5a63b65c34edc45f7928c33c1f41f29b45d3c304d759c4ca120d5f7016357f8a
+#   final/query-patterns.md  e76e82642b7ce80adc5da8559b8088c0b47d2e1ee760fde26a07250ecb481525
+#   final/relationship-register.yaml  1db01e03e55d1708ae8c26f250ea9383ae5df6cce989f0ef27538163b506a501
+#   final/vocabularies/predicates.yaml  21b0412bcac093ff70ad77b6e378c3948bae8e8e60f4eaa42162df30d1785dab
+#   packets/D1/03-retrieval-patterns.md  4274d754ad30be38f254d00e720cda8998a09aa17d9fd16eab4c46ad5ab7315f
+#   packets/D10/03-retrieval-patterns.md  67367e4efa6486ef2b0c2af39fe9328837e28c31f192f8ff5e506f3aff9c47ad
+#   packets/D11/03-retrieval-patterns.md  810677fe0a084ffe21c027f9b175d0036808979280c7e632d5a070e38e552533
+#   packets/D12/03-retrieval-patterns.md  3c3c13c7d6852d344737422471412fdaa80a3cfcd1a4fd13ac8d261bf6a2381f
+#   packets/D13/03-retrieval-patterns.md  42fa631d801a6c6da81d61a993c9cd78d566c9c9fb65926fb73628c87eafbb45
+#   packets/D2/03-retrieval-patterns.md  b5e3d2c4cb9b4598e5c14c3c3cb5bc1b74566c4880f52a8cd763c7e87eca4c07
+#   packets/D3/03-retrieval-patterns.md  9e8c8ffe6a4c72b9f5796bbc307368f230b05100f625288686c810464546d186
+#   packets/D4/03-retrieval-patterns.md  16175badda4424e568a471b009f5e86d5ee6b0af75c36cb433b1ae286a19e19c
+#   packets/D5/03-retrieval-patterns.md  da3c3a80b99f6926ae846db32a17d760c0e25cf74d70e7e198666785188107b6
+#   packets/D6/03-retrieval-patterns.md  fbdf34d1a9a0458219cce1c2cc3b3022650dac024a18d09452b8c447a2681d8e
+#   packets/D7/03-retrieval-patterns.md  e66998589d525b949ab1757fc0e61c084c9eee2c270b78d50ddff4741e951586
+#   packets/D8/03-retrieval-patterns.md  9cebf8beec8632154ec83de3c4908cd7c6e938a6b731fe70b531692694f913c8
+#   packets/D9/03-retrieval-patterns.md  921c0860f54bdb04b629ead4fed268f31526f285f3215371dd0c3a22b71146c0
+#   packets/K/03-retrieval-patterns.md  06d3d89988ea606df4adf9765ccea72cc42c5f865c3f6e0f95fce68e35ec54d7
+#   release/sdl/modules/D1.graphql  5bb58e9fc1fa9c0140736fb5b24f611ae54e48a57fd50217e0db4b430bfb1257
+#   release/sdl/modules/D10.graphql  e2dce9e712e0ea6a17debbcfecd747080114d1a685b2d5e3213f52a5a63769fb
+#   release/sdl/modules/D11.graphql  ec9a90a90a15bb7cea1390504fdaf1df115a32a0312bd51238a28f1fea286ee6
+#   release/sdl/modules/D12.graphql  f7c6b4107e27f4db9f787db9de971e344522da674b6f1631e7c6132483fec4c0
+#   release/sdl/modules/D13.graphql  54d56da432d763a9e3cdb1831d7553727fa26b515b5d066fc5f7e9d1de50525b
+#   release/sdl/modules/D2.graphql  3d1f1a729fcd2ec595e875abcabe9d3b7de1931496120cfbe5f7d0d3b8421b71
+#   release/sdl/modules/D3.graphql  6a3cdc8982074fc479ae467dee456865ee6f019958070d8f07906cfc83e2df75
+#   release/sdl/modules/D4.graphql  b62054b09a7740809ade7b6f3f01c9c424b7097d312a101cb090182201a1bb00
+#   release/sdl/modules/D5.graphql  7fb18a838e1b29b4576b4eedea3c20d0f86798b12cbc4fd21edf4f0e7a52a251
+#   release/sdl/modules/D6.graphql  6b14b735ef1a80f479264325feb62140ee078a81082661f79e78253d3abd1523
+#   release/sdl/modules/D7.graphql  da9146a94314d8c402c7f2cfba7f9265ac75ccc3d3cc6aa621fe6bb38b30768d
+#   release/sdl/modules/D8.graphql  735106bbfc1f667079b5d72bf5869d054eb0ec398ebc073bc352ee7e70029627
+#   release/sdl/modules/D9.graphql  216af59fccffbfd9d1ac09b309e69fc076b0450c0e975d7650f5160b971c7519
+#   release/sdl/modules/kernel.graphql  7a125ee568a97371e83a72bf7fad18a8099ff643d0b0899acd62c160fe7c2325
+# Research only, not medical advice.
+# biotech-schema-v2.0.1: + the operational legacy: family (legacy:recordedFrom=, legacy:extractedAt=, legacy:runId=) registered by scripts/release/derive.mjs; class operational, excluded from projection, migrator-only.
+
+format: bks-qualifier-grammar.v1
+version: 1.0.0
+closes:
+  - FU-14 (a)
+  - MD-D12-02
+  - MD-D5-02
+  - OD-29
+  - "R-83 (target: prefix)"
+grammar:
+  form: Each Assertion.qualifiers entry is `<name><separator><value>`; registry keys are the prefix as written (name plus separator), so `q STARTS WITH '<key>'` matches exactly.
+  separators:
+    ":": kernel convention (Assertion.qualifiers docstring, D12 grammar rule)
+    =: D7 / D8 / D13 commerce and event keys registered with '=' (exclusivity=, buyer=, product=, role=, primary=, ...)
+  noSpaceAfterSeparator: No space after the separator; a value with a leading space is nonconforming (D12 grammar rule).
+  enumValues: When valueGrammar names an enum the value is exactly one enum value, so `('<key>' + $value) IN a.qualifiers` matches; repeat the key for several values.
+  freeText: Source wording goes under a `*Verbatim:` key (populationVerbatim:, preparationVerbatim:, outcomeVerbatim:) or a registered text key; no pattern filters on free text.
+  valueGrammarAtoms:
+    - uid
+    - enum:<SDL enum>
+    - enum:[A|B|...]
+    - ucum-unit
+    - iso-date
+    - iso-duration
+    - text
+    - key:<vocabulary file>
+    - number
+    - code:<scheme>
+  valueGrammarUnion: atoms joined by ' | ' (any one matches)
+  facetsAreNotQualifiers: Assessment.facets `<facet>=<value>` are registered per subkind in vocabularies/assessments.yaml, not here.
+  enforcement: The executor rejects an unregistered prefix and a nonconforming value of a registered prefix on new writes; the observed counts below are the frozen fixtures' state (FU-03 re-keys them).
+counts:
+  registered: 80
+  registeredOperational: 3
+  aliases: 2
+  unregisteredObservedPrefixes: 97
+  unregisteredObservedUses: 221
+  freeTextUses: 571
+  fixtureQualifierStrings: 1328
+  registeredUses: 536
+  nonconformingUses: 82
+  predicateQualifierGaps: 0
+qualifiers:
+  "segment:":
+    name: segment
+    separator: ":"
+    valueGrammar: enum:[SPONSOR_READ|EDITORIAL|SHOW_NOTES|CORRECTION_NOTE]
+    owner: D9
+    description: D9 segment of a media work the assertion was made in (kernel-registered prefix; D9 extends the value list by registry update).
+    status: registered
+    sources:
+      - sdl/modules/kernel.graphql Assertion.qualifiers
+    observed:
+      count: 27
+      fixtures: 5
+      conforming: 27
+      nonconforming: 0
+      spaceAfterSeparator: 0
+      observedValues:
+        - CORRECTION_NOTE
+        - EDITORIAL
+        - SHOW_NOTES
+        - SPONSOR_READ
+  "population:":
+    name: population
+    separator: ":"
+    valueGrammar: enum:PopulationGroup | uid
+    owner: D5
+    description: "Population the statement is scoped to: a D5 PopulationGroup code or a D3 StudyPopulation uid. Required qualifier of the D5 target/limit/harm predicates. Source wording goes to populationVerbatim:."
+    status: registered
+    usedByPredicates:
+      - CAUSES_ADVERSE_EFFECT
+      - HAS_AUTHORIZED_DOSE_RANGE
+      - HAS_UPPER_LIMIT
+      - IMPROVES_TARGET
+      - INTENDED_FOR_TARGET
+      - INTERACTS_WITH
+      - MIXED_EFFECT_ON_TARGET
+      - NO_EFFECT_ON_TARGET
+      - USE_CONSTRAINED_IN
+      - WORSENS_TARGET
+    requiredByPredicates:
+      - CAUSES_ADVERSE_EFFECT
+      - HAS_AUTHORIZED_DOSE_RANGE
+      - HAS_UPPER_LIMIT
+      - IMPROVES_TARGET
+      - INTENDED_FOR_TARGET
+      - INTERACTS_WITH
+      - MIXED_EFFECT_ON_TARGET
+      - NO_EFFECT_ON_TARGET
+      - USE_CONSTRAINED_IN
+      - WORSENS_TARGET
+    filteredByPatterns:
+      - final/patterns-by-question/D10.md
+      - final/patterns-by-question/D9.md
+      - final/query-patterns.md
+      - packets/D12/03-retrieval-patterns.md
+      - packets/D2/03-retrieval-patterns.md
+      - packets/D5/03-retrieval-patterns.md
+    sources:
+      - predicates.yaml requiredQualifiers
+      - relationship-register moduleExtras.D12.qualifierGrammar
+      - sdl/modules/kernel.graphql Assertion.qualifiers
+    observed:
+      count: 70
+      fixtures: 13
+      conforming: 58
+      nonconforming: 12
+      spaceAfterSeparator: 7
+      nonconformingExamples:
+        - population:liver transplant recipients
+        - population:lung transplant recipients
+        - "population: 36 replicate adult-blood-sample datasets (Lehne et al. 201"
+      observedValues:
+        - ATHLETES
+        - GENERAL_ADULTS
+        - IMMUNOSUPPRESSED
+        - OTHER
+        - PREGNANT
+        - SPEAKER_ONLY
+        - UNSPECIFIED
+  "populationVerbatim:":
+    name: populationVerbatim
+    separator: ":"
+    valueGrammar: text
+    owner: D5
+    description: Source wording of the population (free text; never filtered).
+    status: registered
+    sources:
+      - relationship-register moduleExtras.D12.qualifierGrammar
+    observed:
+      count: 1
+      fixtures: 1
+      conforming: 1
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "rendition:":
+    name: rendition
+    separator: ":"
+    valueGrammar: uid
+    owner: K
+    description: Source uid of the rendition that carried the statement (D9 re-cuts, R-43).
+    status: registered
+    filteredByPatterns:
+      - packets/D9/03-retrieval-patterns.md
+    sources:
+      - sdl/modules/D9.graphql CONTENT_SPONSORED_BY
+      - sdl/modules/kernel.graphql Assertion.qualifiers
+    observed:
+      count: 18
+      fixtures: 4
+      conforming: 0
+      nonconforming: 18
+      spaceAfterSeparator: 0
+      nonconformingExamples:
+        - rendition:openFDA drug/label
+        - rendition:src-ess-audio
+        - rendition:src-web
+  "asserterBasis:":
+    name: asserterBasis
+    separator: ":"
+    valueGrammar: enum:[PUBLISHER_DEFAULT|INFERRED]
+    owner: K
+    description: How the asserter of a work that names nobody was set (R-16).
+    status: registered
+    sources:
+      - sdl/modules/kernel.graphql Assertion.qualifiers
+    observed:
+      count: 3
+      fixtures: 1
+      conforming: 3
+      nonconforming: 0
+      spaceAfterSeparator: 0
+      observedValues:
+        - PUBLISHER_DEFAULT
+  "sourceRecordRemovedAt:":
+    name: sourceRecordRemovedAt
+    separator: ":"
+    valueGrammar: iso-date
+    owner: K
+    description: The source's own record-removal time (R-24); not recorded time.
+    status: registered
+    sources:
+      - sdl/modules/kernel.graphql Assertion.qualifiers
+    observed:
+      count: 1
+      fixtures: 1
+      conforming: 1
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  scale=:
+    name: scale
+    separator: "="
+    valueGrammar: text
+    owner: K
+    description: Rating scale of a third-party verdict (RATES_CLAIM, R-31); the mapping to the verdict lattice is a versioned D10 query-time rule (OD-19).
+    status: registered
+    sources:
+      - sdl/modules/kernel.graphql RATES_CLAIM docstring
+    observed:
+      count: 0
+      fixtures: 0
+      conforming: 0
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "target:":
+    name: target
+    separator: ":"
+    valueGrammar: key:targets
+    owner: D5
+    description: D5 Target key (targets.yaml) a D9 recommendation is aimed at (RECOMMENDS_USE / RECOMMENDS_AGAINST goal, R-83).
+    status: registered
+    filteredByPatterns:
+      - final/patterns-by-question/D10.md
+      - final/patterns-by-question/D9.md
+      - final/query-patterns.md
+    sources:
+      - decision-report R-83
+      - patterns-by-question/D9.md
+    observed:
+      count: 0
+      fixtures: 0
+      conforming: 0
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "declaredName:":
+    name: declaredName
+    separator: ":"
+    valueGrammar: text
+    owner: D6
+    description: "Declared name of a label line as printed (R-30: verbatim wording lives on the line Assertion, not on ComponentLineProperties)."
+    status: registered
+    filteredByPatterns:
+      - final/patterns-by-question/D1.md
+      - final/patterns-by-question/D12.md
+      - final/patterns-by-question/D6.md
+    sources:
+      - patterns-by-question/D6.md
+      - sdl/modules/D6.graphql ComponentLineProperties
+    observed:
+      count: 52
+      fixtures: 12
+      conforming: 51
+      nonconforming: 1
+      spaceAfterSeparator: 1
+      nonconformingExamples:
+        - "declaredName: SIROLIMUS"
+      observedValues:
+        - SIROLIMUS
+  "form:":
+    name: form
+    separator: ":"
+    valueGrammar: text
+    owner: D6
+    description: Declared form of a label line as printed (R-30).
+    status: registered
+    filteredByPatterns:
+      - final/patterns-by-question/D1.md
+      - final/patterns-by-question/D6.md
+    sources:
+      - patterns-by-question/D6.md
+      - sdl/modules/D6.graphql
+    observed:
+      count: 14
+      fixtures: 8
+      conforming: 14
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "statement:":
+    name: statement
+    separator: ":"
+    valueGrammar: text
+    owner: D6
+    description: Per-component statement as printed (R-30).
+    status: registered
+    filteredByPatterns:
+      - final/patterns-by-question/D12.md
+      - final/patterns-by-question/D6.md
+    sources:
+      - patterns-by-question/D12.md
+      - patterns-by-question/D6.md
+      - sdl/modules/D6.graphql
+    observed:
+      count: 7
+      fixtures: 4
+      conforming: 5
+      nonconforming: 2
+      spaceAfterSeparator: 2
+      nonconformingExamples:
+        - "statement: A research misconduct investigation at the University of Co"
+        - "statement: numerator 1 mg / denominator 1 mL"
+  quantity=:
+    name: quantity
+    separator: "="
+    valueGrammar: text
+    owner: D6
+    description: Quantity scope of a listing/offer statement as printed.
+    status: registered
+    filteredByPatterns:
+      - packets/D6/03-retrieval-patterns.md
+    sources:
+      - packets/D6/03-retrieval-patterns.md
+    observed:
+      count: 0
+      fixtures: 0
+      conforming: 0
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  sellerClass=:
+    name: sellerClass
+    separator: "="
+    valueGrammar: code:D6.seller-class
+    owner: D6
+    description: Seller class of a market tracker aggregate (e.g. THIRD_PARTY_NEW).
+    status: registered
+    filteredByPatterns:
+      - packets/D6/03-retrieval-patterns.md
+    sources:
+      - packets/D6/03-retrieval-patterns.md
+    observed:
+      count: 3
+      fixtures: 1
+      conforming: 0
+      nonconforming: 3
+      spaceAfterSeparator: 0
+      nonconformingExamples:
+        - "sellerClass=THIRD_PARTY_NEW: the tracker's aggregate over third-party "
+  "roleText:":
+    name: roleText
+    separator: ":"
+    valueGrammar: text
+    owner: D7
+    description: "Role or funder statement as printed (D3 HAS_STUDY_ROLE / FUNDED_BY, D7 HOLDS_ROLE, D13 INVOLVES). R-30: printed wording stays on the authorizing Assertion."
+    status: registered
+    usedByPredicates:
+      - FUNDED_BY
+    filteredByPatterns:
+      - final/patterns-by-question/D11.md
+      - final/patterns-by-question/D7.md
+      - packets/D3/03-retrieval-patterns.md
+    sources:
+      - relationship-register predicateOnly FUNDED_BY
+      - sdl/modules/D3.graphql
+      - sdl/modules/D7.graphql
+    observed:
+      count: 56
+      fixtures: 14
+      conforming: 52
+      nonconforming: 4
+      spaceAfterSeparator: 4
+      nonconformingExamples:
+        - "roleText: Study pills, NR standards for metabolite analyses ... were p"
+        - "roleText: partial funding support were provided by ChromaDex, Inc."
+        - "roleText: collaborators: ChromaDex, Inc. (class INDUSTRY)"
+  roleText=:
+    name: roleText
+    separator: "="
+    valueGrammar: text
+    owner: D13
+    description: "D13 spelling of roleText: (INVOLVES / EVENT_ABOUT authorizing Assertions). Re-key to roleText:."
+    status: "alias-of:roleText:"
+    sources:
+      - sdl/modules/D13.graphql INVOLVES docstring
+    observed:
+      count: 4
+      fixtures: 1
+      conforming: 4
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "stakeClass:":
+    name: stakeClass
+    separator: ":"
+    valueGrammar: text
+    owner: D7
+    description: Stake class as printed (R-30; StakeEdgeProperties.stakeClassVerbatim retired).
+    status: registered
+    sources:
+      - sdl/modules/D7.graphql
+    observed:
+      count: 23
+      fixtures: 7
+      conforming: 22
+      nonconforming: 1
+      spaceAfterSeparator: 1
+      nonconformingExamples:
+        - "stakeClass: owns stock"
+  "reason:":
+    name: reason
+    separator: ":"
+    valueGrammar: text
+    owner: D3
+    description: The asserter's stated reasons (D3 REVISES / retraction reasons). Corrupted reason strings are quarantined, never repaired by guess (MD-D11-02).
+    status: registered
+    filteredByPatterns:
+      - final/patterns-by-question/D3.md
+      - packets/D3/03-retrieval-patterns.md
+    sources:
+      - patterns-by-question/D3.md
+      - sdl/modules/D3.graphql
+    observed:
+      count: 7
+      fixtures: 2
+      conforming: 7
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  product=:
+    name: product
+    separator: "="
+    valueGrammar: uid
+    owner: D7
+    description: D6 Product uid a contract-manufacturing statement names, when stated (CONTRACT_MANUFACTURES_FOR).
+    status: registered
+    usedByPredicates:
+      - CONTRACT_MANUFACTURES_FOR
+    filteredByPatterns:
+      - final/patterns-by-question/D8.md
+    sources:
+      - patterns-by-question/D8.md
+      - relationship-register predicateOnly CONTRACT_MANUFACTURES_FOR
+    observed:
+      count: 0
+      fixtures: 0
+      conforming: 0
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  exclusivity=:
+    name: exclusivity
+    separator: "="
+    valueGrammar: enum:[SOLE|EXCLUSIVE|NON_EXCLUSIVE|UNSTATED]
+    owner: D7
+    description: Supply or licence exclusivity as stated (SUPPLIES_MATERIAL; D8 licence statements use EXCLUSIVE).
+    status: registered
+    usedByPredicates:
+      - SUPPLIES_MATERIAL
+    filteredByPatterns:
+      - final/patterns-by-question/D8.md
+    sources:
+      - patterns-by-question/D8.md
+      - relationship-register predicateOnly SUPPLIES_MATERIAL
+    observed:
+      count: 4
+      fixtures: 4
+      conforming: 2
+      nonconforming: 2
+      spaceAfterSeparator: 0
+      nonconformingExamples:
+        - exclusivity=SOLE ('our single source for the supply of food-grade NRC'
+        - exclusivity=EXCLUSIVE ('licensed exclusively to Niagen Bioscience')
+      observedValues:
+        - SOLE
+  buyer=:
+    name: buyer
+    separator: "="
+    valueGrammar: uid
+    owner: D7
+    description: Organization uid of the buyer in a supply statement (SUPPLIES_MATERIAL).
+    status: registered
+    usedByPredicates:
+      - SUPPLIES_MATERIAL
+    filteredByPatterns:
+      - final/patterns-by-question/D8.md
+      - packets/D7/03-retrieval-patterns.md
+    sources:
+      - patterns-by-question/D8.md
+      - relationship-register predicateOnly SUPPLIES_MATERIAL
+    observed:
+      count: 2
+      fixtures: 2
+      conforming: 1
+      nonconforming: 1
+      spaceAfterSeparator: 0
+      nonconformingExamples:
+        - buyer=org-niagen-bio
+  manufacturingKind=:
+    name: manufacturingKind
+    separator: "="
+    valueGrammar: enum:[CONTRACT|INGREDIENT|PACKAGING]
+    owner: D7
+    description: Kind of unnamed manufacturer (MANUFACTURER_UNNAMED).
+    status: registered
+    usedByPredicates:
+      - MANUFACTURER_UNNAMED
+    filteredByPatterns:
+      - final/patterns-by-question/D8.md
+    sources:
+      - relationship-register predicateOnly MANUFACTURER_UNNAMED
+    observed:
+      count: 1
+      fixtures: 1
+      conforming: 0
+      nonconforming: 1
+      spaceAfterSeparator: 0
+      nonconformingExamples:
+        - manufacturingKind=CONTRACT (finished consumer products); an unnamed pa
+  "dose:":
+    name: dose
+    separator: ":"
+    valueGrammar: text
+    owner: D5
+    description: Dose as stated by the source (D5 target, harm and composition statements).
+    status: registered
+    usedByPredicates:
+      - CAUSES_ADVERSE_EFFECT
+      - IMPROVES_TARGET
+      - INTERVENTION_INCLUDES
+      - MIXED_EFFECT_ON_TARGET
+      - NO_EFFECT_ON_TARGET
+      - WORSENS_TARGET
+    filteredByPatterns:
+      - packets/D5/03-retrieval-patterns.md
+    sources:
+      - relationship-register predicateOnly IMPROVES_TARGET / CAUSES_ADVERSE_EFFECT
+    observed:
+      count: 13
+      fixtures: 3
+      conforming: 6
+      nonconforming: 7
+      spaceAfterSeparator: 7
+      nonconformingExamples:
+        - "dose: a gram, sometimes two grams"
+        - "dose: 1000 mg MIB-626 once or twice daily"
+        - "dose: 2 tablets of 500 mg twice daily"
+  "schedule:":
+    name: schedule
+    separator: ":"
+    valueGrammar: text
+    owner: D5
+    description: Dosing schedule as stated.
+    status: registered
+    usedByPredicates:
+      - CAUSES_ADVERSE_EFFECT
+    filteredByPatterns:
+      - packets/D5/03-retrieval-patterns.md
+    sources:
+      - relationship-register predicateOnly CAUSES_ADVERSE_EFFECT
+    observed:
+      count: 0
+      fixtures: 0
+      conforming: 0
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "route:":
+    name: route
+    separator: ":"
+    valueGrammar: text
+    owner: D5
+    description: Route of administration as stated.
+    status: registered
+    usedByPredicates:
+      - CAUSES_ADVERSE_EFFECT
+      - USE_CONSTRAINED_IN
+    filteredByPatterns:
+      - packets/D5/03-retrieval-patterns.md
+    sources:
+      - relationship-register predicateOnly CAUSES_ADVERSE_EFFECT / USE_CONSTRAINED_IN
+    observed:
+      count: 0
+      fixtures: 0
+      conforming: 0
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "window:":
+    name: window
+    separator: ":"
+    valueGrammar: iso-duration
+    owner: D5
+    description: Separation window of an interaction or constraint (e.g. window:PT2H).
+    status: registered
+    usedByPredicates:
+      - INTERACTS_WITH
+      - USE_CONSTRAINED_IN
+    filteredByPatterns:
+      - packets/D5/03-retrieval-patterns.md
+    sources:
+      - relationship-register predicateOnly INTERACTS_WITH
+      - sdl/modules/D5.graphql UseConstraint
+    observed:
+      count: 1
+      fixtures: 1
+      conforming: 0
+      nonconforming: 1
+      spaceAfterSeparator: 0
+      nonconformingExamples:
+        - window:BEDTIME-PT10H/BEDTIME-PT8H
+  "severity:":
+    name: severity
+    separator: ":"
+    valueGrammar: code:<scheme>:<grade> (scheme CTCAE_V5 | CTCAE_V6 | LABEL_TEXT | SOURCE_TEXT)
+    owner: D5
+    description: Severity of an adverse effect as <scheme>:<grade>.
+    status: registered
+    usedByPredicates:
+      - CAUSES_ADVERSE_EFFECT
+    filteredByPatterns:
+      - packets/D5/03-retrieval-patterns.md
+    sources:
+      - relationship-register predicateOnly CAUSES_ADVERSE_EFFECT
+    observed:
+      count: 3
+      fixtures: 2
+      conforming: 0
+      nonconforming: 3
+      spaceAfterSeparator: 0
+      nonconformingExamples:
+        - severity:LABEL_TEXT:boxed warning
+        - severity:SOURCE_TEXT:agitated stomach
+  "context:":
+    name: context
+    separator: ":"
+    valueGrammar: enum:[OVERDOSE|ACCIDENTAL_INGESTION|THERAPEUTIC]
+    owner: D5
+    description: "Exposure context of an adverse-effect report. OD-29: the accepted enum shape is kept; a source-stated high intake is NOT an overdose and uses intakeContext:."
+    status: registered
+    usedByPredicates:
+      - CAUSES_ADVERSE_EFFECT
+    sources:
+      - DECISIONS OD-29
+      - relationship-register predicateOnly CAUSES_ADVERSE_EFFECT
+    observed:
+      count: 6
+      fixtures: 3
+      conforming: 6
+      nonconforming: 0
+      spaceAfterSeparator: 0
+      observedValues:
+        - OVERDOSE
+        - THERAPEUTIC
+  "intakeContext:":
+    name: intakeContext
+    separator: ":"
+    valueGrammar: enum:[HIGH_INTAKE_SOURCE_STATED|UNSPECIFIED]
+    owner: D5
+    description: "OD-29: source-stated high-intake context ('high doses can cause diarrhea') for reference-source effect statements; UNSPECIFIED when the source gives no structured context. Never inferred, never relabeled as overdose."
+    status: registered
+    sources:
+      - DECISIONS OD-29
+      - open-questions OD-29 / OQ-D5-28
+    observed:
+      count: 0
+      fixtures: 0
+      conforming: 0
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "sourceKind:":
+    name: sourceKind
+    separator: ":"
+    valueGrammar: enum:[LABEL|TRIAL_ARM|CASE_REPORT|SPONTANEOUS_REPORT|REFERENCE_MONOGRAPH|PROTOCOL_AUTHOR|COMMUNITY]
+    owner: D5
+    description: Kind of source an adverse-effect statement comes from (R-85 adds REFERENCE_MONOGRAPH).
+    status: registered
+    usedByPredicates:
+      - CAUSES_ADVERSE_EFFECT
+    filteredByPatterns:
+      - packets/D5/03-retrieval-patterns.md
+    sources:
+      - relationship-register predicateOnly CAUSES_ADVERSE_EFFECT
+    observed:
+      count: 10
+      fixtures: 5
+      conforming: 10
+      nonconforming: 0
+      spaceAfterSeparator: 0
+      observedValues:
+        - COMMUNITY
+        - LABEL
+        - PROTOCOL_AUTHOR
+        - REFERENCE_MONOGRAPH
+  "claimClass:":
+    name: claimClass
+    separator: ":"
+    valueGrammar: enum:[STRUCTURE_FUNCTION|DISEASE_CLAIM|APPROVED_INDICATION|PERMITTED_NHP_CLAIM|NONE_STATED]
+    owner: D5
+    description: Regulatory class of an intended-use claim (INTENDED_FOR_TARGET).
+    status: registered
+    usedByPredicates:
+      - INTENDED_FOR_TARGET
+    filteredByPatterns:
+      - packets/D5/03-retrieval-patterns.md
+    sources:
+      - relationship-register predicateOnly INTENDED_FOR_TARGET
+    observed:
+      count: 2
+      fixtures: 2
+      conforming: 2
+      nonconforming: 0
+      spaceAfterSeparator: 0
+      observedValues:
+        - NONE_STATED
+        - STRUCTURE_FUNCTION
+  "coExposure:":
+    name: coExposure
+    separator: ":"
+    valueGrammar: uid
+    owner: D5
+    description: Intervention uid co-administered in the statement (target-effect predicates).
+    status: registered
+    usedByPredicates:
+      - IMPROVES_TARGET
+      - MIXED_EFFECT_ON_TARGET
+      - WORSENS_TARGET
+    filteredByPatterns:
+      - packets/D5/03-retrieval-patterns.md
+    sources:
+      - relationship-register predicateOnly WORSENS_TARGET
+    observed:
+      count: 3
+      fixtures: 1
+      conforming: 3
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "outcomeUid:":
+    name: outcomeUid
+    separator: ":"
+    valueGrammar: uid
+    owner: D5
+    description: "Metric / Biomarker / Outcome / Condition uid the target-effect statement measured (KN-15: entity identity uses outcomeUid)."
+    status: registered
+    usedByPredicates:
+      - IMPROVES_TARGET
+      - MIXED_EFFECT_ON_TARGET
+      - NO_EFFECT_ON_TARGET
+      - WORSENS_TARGET
+    sources:
+      - DECISIONS KN-15
+      - relationship-register predicateOnly IMPROVES_TARGET
+    observed:
+      count: 4
+      fixtures: 2
+      conforming: 4
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "outcome:":
+    name: outcome
+    separator: ":"
+    valueGrammar: uid
+    owner: D12
+    description: D4 Metric | D4 Biomarker | D2 Outcome uid (named text goes to outcomeVerbatim:, KN-15).
+    status: registered
+    filteredByPatterns:
+      - packets/D5/03-retrieval-patterns.md
+    sources:
+      - DECISIONS KN-15
+      - relationship-register moduleExtras.D12.qualifierGrammar
+    observed:
+      count: 0
+      fixtures: 0
+      conforming: 0
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "outcomeVerbatim:":
+    name: outcomeVerbatim
+    separator: ":"
+    valueGrammar: text
+    owner: D12
+    description: Outcome as the source names it, when it is not resolved to a uid (KN-15 separate grammar).
+    status: registered
+    sources:
+      - relationship-register moduleExtras.D12.qualifierGrammar
+    observed:
+      count: 4
+      fixtures: 3
+      conforming: 4
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "section:":
+    name: section
+    separator: ":"
+    valueGrammar: code:D5.label-section (CONTRAINDICATIONS | WARNINGS | PRECAUTIONS | CAUTIONS | BOXED_WARNING | PROTOCOL_TEXT | DRUG_INTERACTIONS ...)
+    owner: D5
+    description: Label or protocol section the constraint was stated in (USE_CONSTRAINED_IN).
+    status: registered
+    usedByPredicates:
+      - USE_CONSTRAINED_IN
+    filteredByPatterns:
+      - packets/D5/03-retrieval-patterns.md
+    sources:
+      - relationship-register predicateOnly USE_CONSTRAINED_IN
+    observed:
+      count: 38
+      fixtures: 5
+      conforming: 38
+      nonconforming: 0
+      spaceAfterSeparator: 0
+      observedValues:
+        - ABSTRACT
+        - BOXED_WARNING
+        - CONTRAINDICATIONS
+        - DRUG_INTERACTIONS
+        - FORUM_POST
+        - PROTOCOL_TEXT
+        - RESULTS
+        - WEB_PAGE
+  "jurisdiction:":
+    name: jurisdiction
+    separator: ":"
+    valueGrammar: code:ISO-3166-1-alpha-2
+    owner: D5
+    description: Jurisdiction of a constraint, authorized dose range or claim.
+    status: registered
+    usedByPredicates:
+      - HAS_AUTHORIZED_DOSE_RANGE
+      - USE_CONSTRAINED_IN
+    sources:
+      - relationship-register predicateOnly USE_CONSTRAINED_IN / HAS_AUTHORIZED_DOSE_RANGE
+    observed:
+      count: 5
+      fixtures: 2
+      conforming: 1
+      nonconforming: 4
+      spaceAfterSeparator: 4
+      nonconformingExamples:
+        - "jurisdiction: US"
+        - "jurisdiction: US; retailers not named"
+      observedValues:
+        - US
+  jurisdiction=:
+    name: jurisdiction
+    separator: "="
+    valueGrammar: code:ISO-3166-1-alpha-2
+    owner: D1
+    description: D1 packet spelling of jurisdiction:. Re-key to jurisdiction:.
+    status: "alias-of:jurisdiction:"
+    sources:
+      - packets/D1/03-retrieval-patterns.md
+    observed:
+      count: 0
+      fixtures: 0
+      conforming: 0
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "exposureChange:":
+    name: exposureChange
+    separator: ":"
+    valueGrammar: enum:[INCREASES_EXPOSURE|DECREASES_EXPOSURE|REDUCES_ABSORPTION|ADDITIVE_EFFECT|ANTAGONIZES_EFFECT|UNKNOWN]
+    owner: D5
+    description: Direction of an interaction, per asserter (never a UseConstraint property).
+    status: registered
+    usedByPredicates:
+      - INTERACTS_WITH
+    filteredByPatterns:
+      - packets/D12/03-retrieval-patterns.md
+      - packets/D5/03-retrieval-patterns.md
+    sources:
+      - relationship-register predicateOnly INTERACTS_WITH
+    observed:
+      count: 10
+      fixtures: 2
+      conforming: 10
+      nonconforming: 0
+      spaceAfterSeparator: 0
+      observedValues:
+        - ANTAGONIZES_EFFECT
+        - DECREASES_EXPOSURE
+        - INCREASES_EXPOSURE
+        - UNKNOWN
+  "mechanism:":
+    name: mechanism
+    separator: ":"
+    valueGrammar: text
+    owner: D5
+    description: Interaction mechanism as stated (e.g. CYP3A4).
+    status: registered
+    usedByPredicates:
+      - INTERACTS_WITH
+    filteredByPatterns:
+      - packets/D5/03-retrieval-patterns.md
+    sources:
+      - relationship-register predicateOnly INTERACTS_WITH
+    observed:
+      count: 4
+      fixtures: 1
+      conforming: 4
+      nonconforming: 0
+      spaceAfterSeparator: 0
+      observedValues:
+        - CYP3A4
+  "stance:":
+    name: stance
+    separator: ":"
+    valueGrammar: enum:[AVOID|DELIBERATE_USE]
+    owner: D5
+    description: Whether the interaction statement advises avoidance or deliberate use.
+    status: registered
+    usedByPredicates:
+      - INTERACTS_WITH
+    filteredByPatterns:
+      - packets/D5/03-retrieval-patterns.md
+    sources:
+      - relationship-register predicateOnly INTERACTS_WITH
+    observed:
+      count: 3
+      fixtures: 2
+      conforming: 1
+      nonconforming: 2
+      spaceAfterSeparator: 0
+      nonconformingExamples:
+        - stance:ACCEPTS
+        - stance:QUALIFIES (accepts the numbers, contests the implication)
+      observedValues:
+        - ACCEPTS
+        - DELIBERATE_USE
+  "ageBand:":
+    name: ageBand
+    separator: ":"
+    valueGrammar: text
+    pattern: ^\d+(-\d+)?\+?$
+    owner: D5
+    description: Age band of an upper limit (<low>-<high> years as printed).
+    status: registered
+    usedByPredicates:
+      - HAS_UPPER_LIMIT
+    sources:
+      - predicates.yaml HAS_UPPER_LIMIT
+    observed:
+      count: 3
+      fixtures: 1
+      conforming: 3
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "intakeScope:":
+    name: intakeScope
+    separator: ":"
+    valueGrammar: enum:IntakeScope
+    owner: D5
+    description: Whether a limit covers supplemental or total intake.
+    status: registered
+    usedByPredicates:
+      - HAS_UPPER_LIMIT
+    sources:
+      - relationship-register predicateOnly HAS_UPPER_LIMIT
+    observed:
+      count: 6
+      fixtures: 2
+      conforming: 6
+      nonconforming: 0
+      spaceAfterSeparator: 0
+      observedValues:
+        - NOT_STATED
+        - SUPPLEMENTAL_ONLY
+  "limitKind:":
+    name: limitKind
+    separator: ":"
+    valueGrammar: enum:[UL|MONOGRAPH_MAX|LABEL_MAX|PROTOCOL_MAX|SCHEDULING_THRESHOLD|LABEL_WARNING_THRESHOLD]
+    owner: D5
+    description: Kind of upper limit (PROTOCOL_MAX = a protocol author's own ceiling).
+    status: registered
+    usedByPredicates:
+      - HAS_UPPER_LIMIT
+    filteredByPatterns:
+      - packets/D1/03-retrieval-patterns.md
+    sources:
+      - relationship-register predicateOnly HAS_UPPER_LIMIT
+    observed:
+      count: 8
+      fixtures: 3
+      conforming: 8
+      nonconforming: 0
+      spaceAfterSeparator: 0
+      observedValues:
+        - LABEL_WARNING_THRESHOLD
+        - PROTOCOL_MAX
+        - SCHEDULING_THRESHOLD
+        - UL
+  "use:":
+    name: use
+    separator: ":"
+    valueGrammar: text
+    owner: D5
+    description: Use scope of an authorized dose range as stated.
+    status: registered
+    usedByPredicates:
+      - HAS_AUTHORIZED_DOSE_RANGE
+    sources:
+      - relationship-register predicateOnly HAS_AUTHORIZED_DOSE_RANGE
+    observed:
+      count: 0
+      fixtures: 0
+      conforming: 0
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "basis:":
+    name: basis
+    separator: ":"
+    valueGrammar: enum:MassBasis
+    owner: D1
+    description: "MD-D5-02: mass basis of a stated amount (salt form, active moiety, nutrient equivalent, material as is, unspecified). Never inferred; ambiguous basis is UNSPECIFIED plus notReportedFields where the type has them. No elemental-mass inference."
+    status: registered
+    sources:
+      - DECISIONS MD-D5-02
+      - seams providedVocabularies D1 MassBasis (R-56)
+    observed:
+      count: 3
+      fixtures: 1
+      conforming: 0
+      nonconforming: 3
+      spaceAfterSeparator: 3
+      nonconformingExamples:
+        - "basis: baseline-corrected; baseline = -15 min sample on Day 1"
+        - "basis: baseline-corrected"
+  "referent:":
+    name: referent
+    separator: ":"
+    valueGrammar: enum:AmountReferent
+    owner: D6
+    description: "MD-D5-02: what a stated amount refers to (as named, as nutrient, extract mass, marker constituent, blend total, not declared)."
+    status: registered
+    sources:
+      - DECISIONS MD-D5-02
+      - sdl/modules/D6.graphql AmountReferent
+    observed:
+      count: 0
+      fixtures: 0
+      conforming: 0
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "direction:":
+    name: direction
+    separator: ":"
+    valueGrammar: enum:[INCREASE|DECREASE|NO_CHANGE] | text
+    owner: D12
+    description: Direction of a preparation-driven content change (D12); D4 INTERFERES_WITH uses it for the source-stated bias direction (text).
+    status: registered
+    usedByPredicates:
+      - INTERFERES_WITH
+    sources:
+      - relationship-register moduleExtras.D12.qualifierGrammar
+      - relationship-register predicateOnly INTERFERES_WITH
+    observed:
+      count: 7
+      fixtures: 3
+      conforming: 5
+      nonconforming: 2
+      spaceAfterSeparator: 2
+      nonconformingExamples:
+        - "direction: falsely low"
+        - "direction: not stated"
+      observedValues:
+        - DECREASE
+  "threshold:":
+    name: threshold
+    separator: ":"
+    valueGrammar: text
+    owner: D4
+    description: Interference threshold as stated (INTERFERES_WITH).
+    status: registered
+    usedByPredicates:
+      - INTERFERES_WITH
+    sources:
+      - relationship-register predicateOnly INTERFERES_WITH
+    observed:
+      count: 1
+      fixtures: 1
+      conforming: 0
+      nonconforming: 1
+      spaceAfterSeparator: 1
+      nonconformingExamples:
+        - "threshold: HbF > 10 %"
+  "preparationMethod:":
+    name: preparationMethod
+    separator: ":"
+    valueGrammar: enum:PreparationMethod
+    owner: D12
+    description: Preparation method; repeat the key for several values.
+    status: registered
+    filteredByPatterns:
+      - final/patterns-by-question/D12.md
+      - packets/D12/03-retrieval-patterns.md
+    sources:
+      - relationship-register moduleExtras.D12.qualifierGrammar
+    observed:
+      count: 11
+      fixtures: 2
+      conforming: 11
+      nonconforming: 0
+      spaceAfterSeparator: 0
+      observedValues:
+        - BAKED
+        - FRIED_DEEP
+        - FRIED_PAN
+        - MICROWAVED
+        - ROASTED
+  "preparationVerbatim:":
+    name: preparationVerbatim
+    separator: ":"
+    valueGrammar: text
+    owner: D12
+    description: Source wording of a preparation (free text; never filtered).
+    status: registered
+    sources:
+      - relationship-register moduleExtras.D12.qualifierGrammar
+    observed:
+      count: 4
+      fixtures: 2
+      conforming: 4
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "temperatureC:":
+    name: temperatureC
+    separator: ":"
+    valueGrammar: number
+    owner: D12
+    description: Preparation temperature in degrees Celsius.
+    status: registered
+    sources:
+      - relationship-register moduleExtras.D12.qualifierGrammar
+    observed:
+      count: 1
+      fixtures: 1
+      conforming: 1
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "duration:":
+    name: duration
+    separator: ":"
+    valueGrammar: iso-duration
+    owner: D12
+    description: ISO 8601 duration (D12 preparation; D5 target-effect statements).
+    status: registered
+    usedByPredicates:
+      - IMPROVES_TARGET
+      - NO_EFFECT_ON_TARGET
+      - WORSENS_TARGET
+    sources:
+      - relationship-register moduleExtras.D12.qualifierGrammar
+      - relationship-register predicateOnly IMPROVES_TARGET
+    observed:
+      count: 11
+      fixtures: 3
+      conforming: 4
+      nonconforming: 7
+      spaceAfterSeparator: 7
+      nonconformingExamples:
+        - "duration: about two weeks"
+        - "duration: 14 days"
+        - "duration: 28 days"
+      observedValues:
+        - P11W
+        - P4W
+        - PT10M
+  "cycles:":
+    name: cycles
+    separator: ":"
+    valueGrammar: number
+    owner: D12
+    description: Number of preparation cycles; `<=N` for 'up to N'.
+    status: registered
+    sources:
+      - relationship-register moduleExtras.D12.qualifierGrammar
+    observed:
+      count: 3
+      fixtures: 1
+      conforming: 3
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "changeLow:":
+    name: changeLow
+    separator: ":"
+    valueGrammar: number
+    owner: D12
+    description: Signed percent change, low bound.
+    status: registered
+    sources:
+      - relationship-register moduleExtras.D12.qualifierGrammar
+    observed:
+      count: 1
+      fixtures: 1
+      conforming: 1
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "changeHigh:":
+    name: changeHigh
+    separator: ":"
+    valueGrammar: number
+    owner: D12
+    description: Signed percent change, high bound.
+    status: registered
+    sources:
+      - relationship-register moduleExtras.D12.qualifierGrammar
+    observed:
+      count: 1
+      fixtures: 1
+      conforming: 1
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "comparator:":
+    name: comparator
+    separator: ":"
+    valueGrammar: enum:QuantityComparator
+    owner: D1
+    description: "MD-D12-02 / R-57: a comparison OPERATOR from the D1 QuantityComparator enum (GTE, LTE, ...; absent = EQ). Never a uid: a comparator arm is comparatorArm:."
+    status: registered
+    sources:
+      - DECISIONS MD-D12-02
+      - relationship-register moduleExtras.D12.qualifierGrammar
+      - sdl/modules/D12.graphql
+    observed:
+      count: 7
+      fixtures: 5
+      conforming: 3
+      nonconforming: 4
+      spaceAfterSeparator: 1
+      nonconformingExamples:
+        - "comparator: 0.7% of controls"
+        - comparator:hu:dietary-pattern:predimed-control-reduced-fat
+        - comparator:hu:dietary-pattern:hall-2019-unprocessed-diet
+      observedValues:
+        - APPROX
+        - GTE
+        - LT
+  "comparatorArm:":
+    name: comparatorArm
+    separator: ":"
+    valueGrammar: uid
+    owner: D3
+    description: "MD-D12-02: uid of the comparator StudyArm a result or claim is stated against (the PREDIMED / UPF fixtures wrote it as comparator:hu:...)."
+    status: registered
+    sources:
+      - DECISIONS MD-D12-02
+    observed:
+      count: 0
+      fixtures: 0
+      conforming: 0
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "range:":
+    name: range
+    separator: ":"
+    valueGrammar: text
+    pattern: ^-?\d+(\.\d+)?-\d+(\.\d+)?$
+    owner: D12
+    description: <low>-<high> numeric range as stated.
+    status: registered
+    sources:
+      - relationship-register moduleExtras.D12.qualifierGrammar
+      - sdl/modules/D12.graphql
+    observed:
+      count: 0
+      fixtures: 0
+      conforming: 0
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "portion:":
+    name: portion
+    separator: ":"
+    valueGrammar: text
+    pattern: ^\S+$
+    owner: D12
+    description: Portion label, spaces as '_' (medium_serving).
+    status: registered
+    filteredByPatterns:
+      - packets/D12/03-retrieval-patterns.md
+    sources:
+      - relationship-register moduleExtras.D12.qualifierGrammar
+    observed:
+      count: 1
+      fixtures: 1
+      conforming: 1
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "derivation:":
+    name: derivation
+    separator: ":"
+    valueGrammar: code:<system>:<code> (e.g. FDC:A, FDC:NC)
+    owner: D12
+    description: Source derivation code of a food composition value.
+    status: registered
+    sources:
+      - relationship-register moduleExtras.D12.qualifierGrammar
+    observed:
+      count: 3
+      fixtures: 1
+      conforming: 3
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "dataPoints:":
+    name: dataPoints
+    separator: ":"
+    valueGrammar: number
+    owner: D12
+    description: Number of data points behind a composition value.
+    status: registered
+    sources:
+      - relationship-register moduleExtras.D12.qualifierGrammar
+    observed:
+      count: 3
+      fixtures: 1
+      conforming: 3
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "min:":
+    name: min
+    separator: ":"
+    valueGrammar: number
+    owner: D12
+    description: Minimum of a composition value.
+    status: registered
+    sources:
+      - relationship-register moduleExtras.D12.qualifierGrammar
+    observed:
+      count: 2
+      fixtures: 1
+      conforming: 2
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "max:":
+    name: max
+    separator: ":"
+    valueGrammar: number
+    owner: D12
+    description: Maximum of a composition value.
+    status: registered
+    sources:
+      - relationship-register moduleExtras.D12.qualifierGrammar
+    observed:
+      count: 2
+      fixtures: 1
+      conforming: 2
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "dataType:":
+    name: dataType
+    separator: ":"
+    valueGrammar: enum:[FOUNDATION|SR_LEGACY|SURVEY|ANALYTICAL_DB]
+    owner: D12
+    description: Food composition data type.
+    status: registered
+    sources:
+      - relationship-register moduleExtras.D12.qualifierGrammar
+    observed:
+      count: 5
+      fixtures: 2
+      conforming: 5
+      nonconforming: 0
+      spaceAfterSeparator: 0
+      observedValues:
+        - ANALYTICAL_DB
+        - SR_LEGACY
+  "role:":
+    name: role
+    separator: ":"
+    valueGrammar: enum:[INCLUDES|EMPHASIZES|LIMITS|EXCLUDES] | text
+    owner: D12
+    description: Role of a component in a dietary pattern statement (D12); D5 INTERVENTION_INCLUDES role as stated (text).
+    status: registered
+    usedByPredicates:
+      - INTERVENTION_INCLUDES
+    sources:
+      - relationship-register moduleExtras.D12.qualifierGrammar
+      - relationship-register predicateOnly INTERVENTION_INCLUDES
+    observed:
+      count: 3
+      fixtures: 2
+      conforming: 2
+      nonconforming: 1
+      spaceAfterSeparator: 1
+      nonconformingExamples:
+        - "role: applicant"
+  "frequency:":
+    name: frequency
+    separator: ":"
+    valueGrammar: enum:[PER_DAY|PER_WEEK]
+    owner: D12
+    description: Frequency of a dietary-pattern component.
+    status: registered
+    sources:
+      - relationship-register moduleExtras.D12.qualifierGrammar
+    observed:
+      count: 2
+      fixtures: 1
+      conforming: 0
+      nonconforming: 2
+      spaceAfterSeparator: 0
+      nonconformingExamples:
+        - frequency:daily
+        - frequency:a couple of times a year at a minimum
+  "species:":
+    name: species
+    separator: ":"
+    valueGrammar: uid | enum:[HUMAN|LABORATORY_ANIMALS]
+    owner: D12
+    description: Species of an adverse-effect finding (NCBI taxon uid or HUMAN | LABORATORY_ANIMALS).
+    status: registered
+    sources:
+      - relationship-register moduleExtras.D12.qualifierGrammar
+    observed:
+      count: 1
+      fixtures: 1
+      conforming: 1
+      nonconforming: 0
+      spaceAfterSeparator: 0
+      observedValues:
+        - LABORATORY_ANIMALS
+  "doseContext:":
+    name: doseContext
+    separator: ":"
+    valueGrammar: enum:[ABOVE_DIETARY_EXPOSURE|AT_DIETARY_EXPOSURE|NOT_STATED]
+    owner: D12
+    description: Dose context of a food-constituent harm statement.
+    status: registered
+    sources:
+      - relationship-register moduleExtras.D12.qualifierGrammar
+    observed:
+      count: 1
+      fixtures: 1
+      conforming: 1
+      nonconforming: 0
+      spaceAfterSeparator: 0
+      observedValues:
+        - ABOVE_DIETARY_EXPOSURE
+  "issueDate:":
+    name: issueDate
+    separator: ":"
+    valueGrammar: iso-date
+    owner: K
+    description: Print issue date of a notice (HAS_REVISION_STATUS flag with no identified notice, R-44).
+    status: registered
+    sources:
+      - relationship-register moduleExtras.D12.qualifierGrammar
+    observed:
+      count: 2
+      fixtures: 1
+      conforming: 2
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  "reportingLimit:":
+    name: reportingLimit
+    separator: ":"
+    valueGrammar: text
+    owner: D12
+    description: Reporting limit of a measured content value as stated (number + unit).
+    status: registered
+    filteredByPatterns:
+      - final/patterns-by-question/D12.md
+    sources:
+      - patterns-by-question/D12.md
+    observed:
+      count: 0
+      fixtures: 0
+      conforming: 0
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  role=:
+    name: role
+    separator: "="
+    valueGrammar: enum:EventRole
+    owner: D13
+    description: Role of an organization or person in an Event (authorizing Assertion of INVOLVES).
+    status: registered
+    usedByPredicates:
+      - INTERVENTION_INCLUDES
+    sources:
+      - sdl/modules/D13.graphql INVOLVES / EventRole
+    observed:
+      count: 8
+      fixtures: 3
+      conforming: 8
+      nonconforming: 0
+      spaceAfterSeparator: 0
+      observedValues:
+        - APPLICANT
+        - BORROWER
+        - ISSUER
+        - LENDER
+        - SPONSOR
+        - UNDERWRITER
+  primary=:
+    name: primary
+    separator: "="
+    valueGrammar: enum:[true]
+    owner: D13
+    description: Marks the one EVENT_ABOUT Assertion naming the primary subject of an Event.
+    status: registered
+    sources:
+      - sdl/modules/D13.graphql Event identity
+    observed:
+      count: 11
+      fixtures: 5
+      conforming: 11
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  amountKind=:
+    name: amountKind
+    separator: "="
+    valueGrammar: code:D13.amount-kind
+    owner: D13
+    description: Kind of a financing amount (e.g. GROSS_PROCEEDS, BORROWING_CAPACITY).
+    status: registered
+    filteredByPatterns:
+      - packets/D13/03-retrieval-patterns.md
+    sources:
+      - packets/D13/03-retrieval-patterns.md
+    observed:
+      count: 3
+      fixtures: 1
+      conforming: 3
+      nonconforming: 0
+      spaceAfterSeparator: 0
+      observedValues:
+        - BORROWING_CAPACITY
+        - GROSS_PROCEEDS
+  amountBasis=:
+    name: amountBasis
+    separator: "="
+    valueGrammar: code:D13.amount-basis
+    owner: D13
+    description: Basis of a financing amount (e.g. COMMITTED, AVAILABLE, SOLD).
+    status: registered
+    filteredByPatterns:
+      - packets/D13/03-retrieval-patterns.md
+    sources:
+      - packets/D13/03-retrieval-patterns.md
+    observed:
+      count: 3
+      fixtures: 1
+      conforming: 3
+      nonconforming: 0
+      spaceAfterSeparator: 0
+      observedValues:
+        - AVAILABLE
+        - COMMITTED
+        - SOLD
+  edition=:
+    name: edition
+    separator: "="
+    valueGrammar: text
+    owner: D13
+    description: Edition of a frontier-classification input as stated.
+    status: registered
+    filteredByPatterns:
+      - packets/D13/03-retrieval-patterns.md
+    sources:
+      - packets/D13/03-retrieval-patterns.md
+    observed:
+      count: 0
+      fixtures: 0
+      conforming: 0
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  derivedFrom=:
+    name: derivedFrom
+    separator: "="
+    valueGrammar: uid
+    owner: D13
+    description: Input record a D13 classification statement was derived from.
+    status: registered
+    filteredByPatterns:
+      - packets/D13/03-retrieval-patterns.md
+    sources:
+      - packets/D13/03-retrieval-patterns.md
+    observed:
+      count: 0
+      fixtures: 0
+      conforming: 0
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  frontierVocabVersion=:
+    name: frontierVocabVersion
+    separator: "="
+    valueGrammar: text
+    pattern: ^\d+\.\d+\.\d+$
+    owner: D13
+    description: Version of frontiers.yaml a frontier classification used (pin R-60).
+    status: registered
+    filteredByPatterns:
+      - packets/D13/03-retrieval-patterns.md
+    sources:
+      - packets/D13/03-retrieval-patterns.md
+    observed:
+      count: 7
+      fixtures: 4
+      conforming: 7
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  classificationRule=:
+    name: classificationRule
+    separator: "="
+    valueGrammar: text
+    owner: D13
+    description: Versioned frontier classification rule id (e.g. frontier-classification/v1).
+    status: registered
+    sources:
+      - final/fixtures D13
+    observed:
+      count: 7
+      fixtures: 4
+      conforming: 7
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  milestoneKind=:
+    name: milestoneKind
+    separator: "="
+    valueGrammar: key:frontiers
+    owner: D13
+    description: Frontier milestone id (ms:<slug>) from frontiers.yaml.
+    status: registered
+    sources:
+      - final/fixtures D13
+    observed:
+      count: 6
+      fixtures: 4
+      conforming: 6
+      nonconforming: 0
+      spaceAfterSeparator: 0
+  legacy:recordedFrom=:
+    name: legacy:recordedFrom
+    separator: "="
+    valueGrammar: iso-datetime (source-stated legacy record time, verbatim)
+    owner: operational (S8 migration)
+    description: Legacy system record time of the migrated element, kept verbatim; v2 recordedFrom is the migration commit time.
+    status: registered
+    class: operational
+    projection: excluded
+    agentWrite: forbidden
+    sources:
+      - migration/legacy-map.yaml commonEdgeProperties.recordedFrom
+      - rules/operational-names.yaml
+  legacy:extractedAt=:
+    name: legacy:extractedAt
+    separator: "="
+    valueGrammar: iso-datetime (source-stated legacy extraction time, verbatim)
+    owner: operational (S8 migration)
+    description: Legacy extraction time stated by the legacy record; never a v2 observation or valid time.
+    status: registered
+    class: operational
+    projection: excluded
+    agentWrite: forbidden
+    sources:
+      - CUTOVER.md Compatibility decisions
+      - rules/operational-names.yaml
+  legacy:runId=:
+    name: legacy:runId
+    separator: "="
+    valueGrammar: text (legacy mongoResearchRunId, verbatim)
+    owner: operational (S8 migration)
+    description: Legacy research run id (mongoResearchRunId) of the migrated element; the v2 lineage is the legacy research Activity (WAS_INFORMED_BY).
+    status: registered
+    class: operational
+    projection: excluded
+    agentWrite: forbidden
+    sources:
+      - migration/legacy-map.yaml commonProperties.mongoResearchRunId
+      - rules/operational-names.yaml
+migrations:
+  - from: comparator:GE
+    to: comparator:GTE
+    decision: MD-D12-02
+    rule: R-57 spelling; explicit, not silent
+  - from: comparator:LE
+    to: comparator:LTE
+    decision: MD-D12-02
+    rule: R-57 spelling; explicit, not silent
+  - from: comparator:hu:<arm uid>
+    to: comparatorArm:hu:<arm uid>
+    decision: MD-D12-02
+    rule: "a uid after comparator: is an arm, not an operator (PREDIMED / UPF fixtures)"
+  - from: comparator:<free text>
+    to: "explicit fixture edit (FU-03): operator into comparator:, wording into the locator"
+    decision: MD-D12-02
+    rule: ambiguous values are migrated by hand, never guessed
+  - from: roleText=<label>
+    to: roleText:<label>
+    decision: FU-14 a
+    rule: one spelling per key; D13 docstrings and fixtures re-keyed
+  - from: jurisdiction=<code>
+    to: jurisdiction:<code>
+    decision: FU-14 a
+    rule: one spelling per key
+  - from: context:OVERDOSE on a reference-source high-intake statement
+    to: "intakeContext:HIGH_INTAKE_SOURCE_STATED (context: omitted)"
+    decision: OD-29
+    rule: high intake is not an overdose; fixture D5/pregnancy-magnesium-upper-limit is the known case (FU-03 edit)
+  - from: "<key>: <free text with a space> on a key whose grammar is a code/uid/duration"
+    to: <key>Verbatim:<text> or the locator's exact text
+    decision: FU-14 a
+    rule: "D12 grammar rule: no space after the separator; free text only under *Verbatim keys"
+unregisteredObserved:
+  "affected:":
+    count: 1
+    fixtures:
+      - fixtures/D4/noninvasive-glucose-cgm-recall
+    examples:
+      - "certain lots/serials of REF 72081-01 (code_info), not every "
+  "aggregate:":
+    count: 1
+    fixtures:
+      - fixtures/D9/hl-essentials-recut-nmncom-retelling
+    examples:
+      - on average
+  "also:":
+    count: 1
+    fixtures:
+      - fixtures/D10/livertox-green-tea-extract-harm
+    examples:
+      - no serum aminotransferase elevations
+  "amountReferent:":
+    count: 1
+    fixtures:
+      - fixtures/D9/lifespan-ep4-spermidine-correction
+    examples:
+      - "AS_NAMED (printed wording: the active ingredient in the caps"
+  "analyte:":
+    count: 1
+    fixtures:
+      - fixtures/D12/acrylamide-fried-potato-harm
+    examples:
+      - hu:substance:acrylamide
+  "arm:":
+    count: 7
+    fixtures:
+      - fixtures/cross-domain/claim-mission-report
+    examples:
+      - MIB-626 1000 mg once daily (N = 12)
+      - MIB-626 1000 mg twice daily (N = 12)
+  asOf=:
+    count: 1
+    fixtures:
+      - fixtures/D13/bioage-strides-discontinuation
+    examples:
+      - "2024-12-06"
+  "assay:":
+    count: 3
+    fixtures:
+      - fixtures/cross-domain/claim-mission-report
+    examples:
+      - serum NAD+ + NADH, colorimetric
+      - serum NAD+/NADH, colorimetric
+  "attribution:":
+    count: 1
+    fixtures:
+      - fixtures/D9/longecity-nmn-fatigue-pseudonymous
+    examples:
+      - "UNCERTAIN (poster: 'I am unsure which one causes it')"
+  "beneficiary:":
+    count: 1
+    fixtures:
+      - fixtures/D8/eu-nrcl-authorisation-data-protection
+    examples:
+      - ChromaDex Inc.
+  "channel:":
+    count: 3
+    fixtures:
+      - fixtures/D6/filing-channels-niagen-10k
+      - fixtures/D6/recall-moringa-mogo
+    examples:
+      - proprietary e-commerce platform TruNiagen.com (direct to con
+      - third-party online marketplace
+  "ci95:":
+    count: 4
+    fixtures:
+      - fixtures/D12/predimed-retraction-disconfirmation
+      - fixtures/D9/rapa-ex-01-attia-retelling
+    examples:
+      - 0.54-0.92
+      - 0.53-0.91
+  "citationMetadata:":
+    count: 1
+    fixtures:
+      - fixtures/D9/hl-essentials-recut-nmncom-retelling
+    examples:
+      - MISMATCH (cited year 2023 vs upload 2025-10-30, yw1; cited t
+  "combination:":
+    count: 1
+    fixtures:
+      - fixtures/D9/longecity-nmn-fatigue-pseudonymous
+    examples:
+      - "true"
+  "comparison:":
+    count: 2
+    fixtures:
+      - fixtures/D9/rapa-ex-01-attia-retelling
+    examples:
+      - sirolimus-minus-placebo
+  "compartment:":
+    count: 2
+    fixtures:
+      - fixtures/cross-domain/claim-mission-report
+    examples:
+      - blood
+  "components:":
+    count: 1
+    fixtures:
+      - fixtures/D10/opentargets-association-signal
+    examples:
+      - literature 0.9992042452669387; genetic_association 0.8814168
+  "condition:":
+    count: 3
+    fixtures:
+      - fixtures/D4/hba1c-two-labs-interference
+      - fixtures/D9/hl52-transcript-nmn-practice
+    examples:
+      - high HbF
+      - elevated HbF
+  "conditions:":
+    count: 1
+    fixtures:
+      - fixtures/D8/eu-nrcl-authorisation-data-protection
+    examples:
+      - food supplements, 300 mg/day general adult population exclud
+  "contentBasis:":
+    count: 4
+    fixtures:
+      - fixtures/D1/ashwagandha-plant-part-harm
+      - fixtures/D1/nr-trial-unstructured
+      - fixtures/cross-domain/compound-profile
+    examples:
+      - MASS_FRACTION_W_W
+  "criterion:":
+    count: 1
+    fixtures:
+      - fixtures/D10/mg-rankings-criteria-comparison
+    examples:
+      - hu:decision-criterion:fx-usnews-pharmacist-survey-2026-2027
+  "data:":
+    count: 1
+    fixtures:
+      - fixtures/cross-domain/claim-mission-report
+    examples:
+      - post-hoc of the 300/600/900 mg 60-day trial (pub-yi)
+  denominator=:
+    count: 1
+    fixtures:
+      - fixtures/D13/bioage-strides-discontinuation
+    examples:
+      - 204 subjects enrolled
+  "design:":
+    count: 3
+    fixtures:
+      - fixtures/cross-domain/claim-mission-report
+    examples:
+      - double-blind, placebo-controlled
+      - randomized 2:1, placebo
+  "disclosure:":
+    count: 1
+    fixtures:
+      - fixtures/D9/hl52-transcript-nmn-practice
+    examples:
+      - IN_CONTAINER
+  "dispersion:":
+    count: 1
+    fixtures:
+      - fixtures/D12/upf-diet-rct-unstructured
+    examples:
+      - "106"
+  "dispersionKind:":
+    count: 1
+    fixtures:
+      - fixtures/D12/upf-diet-rct-unstructured
+    examples:
+      - STANDARD_ERROR
+  endpoints=:
+    count: 1
+    fixtures:
+      - fixtures/D13/madrigal-maestro-nash-topline-8k
+    examples:
+      - dual primary (52 weeks) and key secondary (24 weeks) as head
+  "erratumIn:":
+    count: 2
+    fixtures:
+      - fixtures/D12/upf-diet-rct-unstructured
+    examples:
+      - PMID:31269427
+      - PMID:33027677
+  "exception:":
+    count: 1
+    fixtures:
+      - fixtures/D8/eu-nrcl-authorisation-data-protection
+    examples:
+      - a subsequent applicant authorised without reference to the p
+  "fdcFoodCategoryId:":
+    count: 1
+    fixtures:
+      - fixtures/D12/mcdonalds-fries-prepared-food
+    examples:
+      - "21"
+  "fdcFoodNutrientId:":
+    count: 3
+    fixtures:
+      - fixtures/D12/mcdonalds-fries-prepared-food
+    examples:
+      - "1546510"
+      - "1488912"
+  "fdcNutrientNumber:":
+    count: 3
+    fixtures:
+      - fixtures/D12/mcdonalds-fries-prepared-food
+    examples:
+      - "208"
+      - "306"
+  "fdcPortionSequence:":
+    count: 1
+    fixtures:
+      - fixtures/D12/mcdonalds-fries-prepared-food
+    examples:
+      - "2"
+  "field:":
+    count: 1
+    fixtures:
+      - fixtures/cross-domain/product-comparison
+    examples:
+      - massBasis
+  "formDescriptor:":
+    count: 2
+    fixtures:
+      - fixtures/D1/nr-salt-moiety-us-canada
+      - fixtures/cross-domain/compound-profile
+    examples:
+      - crystalline form
+      - A crystal form of NR chloride
+  group=:
+    count: 1
+    fixtures:
+      - fixtures/D13/bioage-strides-discontinuation
+    examples:
+      - azelaprag treatment groups
+  "gsrsRecordVersion:":
+    count: 3
+    fixtures:
+      - fixtures/cross-domain/compound-profile
+    examples:
+      - "18"
+      - "24"
+  "hazardRatio:":
+    count: 2
+    fixtures:
+      - fixtures/D12/predimed-retraction-disconfirmation
+    examples:
+      - "0.70"
+      - "0.69"
+  "inAbstract:":
+    count: 1
+    fixtures:
+      - fixtures/D9/rapa-ex-01-attia-retelling
+    examples:
+      - "false"
+  "inferredFrom:":
+    count: 1
+    fixtures:
+      - fixtures/cross-domain/compound-profile
+    examples:
+      - study period l-cz-period (first screening 2016-03-01, last v
+  "interestKind:":
+    count: 1
+    fixtures:
+      - fixtures/D10/mg-rankings-criteria-comparison
+    examples:
+      - affiliate commission
+  "interestScope:":
+    count: 1
+    fixtures:
+      - fixtures/D5/sleep-toolkit-unstructured
+    examples:
+      - ANY_AFFILIATION
+  "issuer:":
+    count: 22
+    fixtures:
+      - fixtures/cross-domain/compound-profile
+    examples:
+      - ORCID
+      - FDA GSRS
+  "labelHolder:":
+    count: 1
+    fixtures:
+      - fixtures/D10/opentargets-association-signal
+    examples:
+      - REMEDYREPACK INC. (labeler of record of openFDA set_id 09f24
+  "linkBasis:":
+    count: 3
+    fixtures:
+      - fixtures/D9/hl-essentials-recut-nmncom-retelling
+      - fixtures/D9/hl52-transcript-nmn-practice
+    examples:
+      - BELLLABS_MATCH
+  "linkKind:":
+    count: 1
+    fixtures:
+      - fixtures/D9/lifespan-ep4-spermidine-correction
+    examples:
+      - SPONSOR_VANITY_URL
+  "list:":
+    count: 1
+    fixtures:
+      - fixtures/D10/mg-rankings-criteria-comparison
+    examples:
+      - Best Magnesium Supplements
+  "loq:":
+    count: 1
+    fixtures:
+      - fixtures/D12/acrylamide-fried-potato-harm
+    examples:
+      - "20"
+  "magnitude:":
+    count: 2
+    fixtures:
+      - fixtures/D5/sirolimus-label-interactions-harm
+      - fixtures/cross-domain/claim-mission-report
+    examples:
+      - 3X to 7X or higher
+      - double on average
+  "marker:":
+    count: 2
+    fixtures:
+      - fixtures/D12/mcdonalds-fries-prepared-food
+    examples:
+      - HYDROGENATED_OIL
+      - HYDROLYSED_PROTEIN
+  "massBasis:":
+    count: 1
+    fixtures:
+      - fixtures/cross-domain/compound-profile
+    examples:
+      - SALT_FORM
+  "matchBasis:":
+    count: 2
+    fixtures:
+      - fixtures/D12/mcdonalds-fries-prepared-food
+      - fixtures/D9/hl-essentials-recut-nmncom-retelling
+    examples:
+      - SAME_ITEM_IN_REFERENCE_DB
+      - "same title with 'Essentials:' prefix (e1 vs e9), same guest "
+  "material:":
+    count: 2
+    fixtures:
+      - fixtures/D1/lgg-strain-resolution
+      - fixtures/D10/mg-bisglycinate-rct-unstructured
+    examples:
+      - mat-lgg
+      - magnesium bisglycinate
+  "measure:":
+    count: 4
+    fixtures:
+      - fixtures/D12/upf-diet-rct-unstructured
+      - fixtures/D9/hl-essentials-recut-nmncom-retelling
+    examples:
+      - SHARE_OF_PRESENTED_ENERGY
+      - NAD in blood
+  "method:":
+    count: 2
+    fixtures:
+      - fixtures/D6/prepared-food-bigmac-mcdonalds
+    examples:
+      - McDonald's-provided US price
+  "modality:":
+    count: 1
+    fixtures:
+      - fixtures/D7/ftc-ameribev-paid-dieticians-harm
+    examples:
+      - "'It appears that ...' — a hedged staff finding in a warning "
+  "outcomeText:":
+    count: 1
+    fixtures:
+      - fixtures/D5/antioxidant-exercise-disconfirmation
+    examples:
+      - markers of mitochondrial biogenesis (COX4, PGC-1alpha)
+  "p:":
+    count: 4
+    fixtures:
+      - fixtures/D9/rapa-ex-01-attia-retelling
+    examples:
+      - "0.344"
+      - "0.030"
+  "pairingRule:":
+    count: 1
+    fixtures:
+      - fixtures/D12/mcdonalds-fries-prepared-food
+    examples:
+      - description-differs-only-in-preparation-term
+  "platform:":
+    count: 1
+    fixtures:
+      - fixtures/D4/dunedinpace-paper-unstructured
+    examples:
+      - Illumina 450k
+  "post:":
+    count: 3
+    fixtures:
+      - fixtures/D9/longecity-nmn-fatigue-pseudonymous
+    examples:
+      - p=922108
+      - p=929300
+  "precision:":
+    count: 1
+    fixtures:
+      - fixtures/cross-domain/product-comparison
+    examples:
+      - 2 decimals as served by PubChem (GSRS weights have 4)
+  "printed:":
+    count: 8
+    fixtures:
+      - fixtures/cross-domain/compound-profile
+    examples:
+      - registered on clinicaltrials.org on March 18, 2016
+      - 1000 mg NR (mass basis not stated where printed)
+  productClass=:
+    count: 1
+    fixtures:
+      - fixtures/D10/fda-qhc-magnesium-disconfirmation
+    examples:
+      - dietary supplements bearing the claim
+  "pValueVerbatim:":
+    count: 1
+    fixtures:
+      - fixtures/D12/upf-diet-rct-unstructured
+    examples:
+      - p=0.0001
+  "quantity:":
+    count: 1
+    fixtures:
+      - fixtures/D6/offer-roles-price-kinds-truniagen
+    examples:
+      - 2 (inferred; the storefront JSON does not state the kit cont
+  "quantityBasis:":
+    count: 2
+    fixtures:
+      - fixtures/cross-domain/compound-profile
+    examples:
+      - PER_DAY
+  "readout:":
+    count: 2
+    fixtures:
+      - fixtures/D2/nr-muscle-unstructured
+      - fixtures/cross-domain/compound-profile
+    examples:
+      - western blot pan-acetylation of muscle protein (proxy for si
+  "relayedBy:":
+    count: 10
+    fixtures:
+      - fixtures/D10/mg-rankings-criteria-comparison
+      - fixtures/cross-domain/product-comparison
+    examples:
+      - NIH ODS DSLD 173951
+      - NIH ODS DSLD 271329
+  "renditionBasis:":
+    count: 9
+    fixtures:
+      - fixtures/D9/hl-essentials-recut-nmncom-retelling
+      - fixtures/D9/hl52-transcript-nmn-practice
+      - fixtures/D9/lifespan-ep4-spermidine-correction
+      - fixtures/D9/longecity-nmn-fatigue-pseudonymous
+      - fixtures/D9/rapa-ex-01-attia-retelling
+    examples:
+      - enclosure of the RSS item
+      - the article page is the only rendition of the work minted fr
+  "renditionRule:":
+    count: 9
+    fixtures:
+      - fixtures/D12/predimed-retraction-disconfirmation
+      - fixtures/D12/upf-diet-rct-unstructured
+      - fixtures/K/retracted-sah-2017-stale-evidence
+    examples:
+      - PubMed record of the PMID it carries
+      - PMC JATS full text of the article
+  "republishedAs:":
+    count: 1
+    fixtures:
+      - fixtures/D12/predimed-retraction-disconfirmation
+    examples:
+      - PMID:29897866
+  "republishedFrom:":
+    count: 1
+    fixtures:
+      - fixtures/D12/predimed-retraction-disconfirmation
+    examples:
+      - PMID:23432189
+  "responsiblePartyRole:":
+    count: 1
+    fixtures:
+      - fixtures/cross-domain/compound-profile
+    examples:
+      - DISTRIBUTED_BY
+  "retellingLinkBasis:":
+    count: 4
+    fixtures:
+      - fixtures/D9/hl-essentials-recut-nmncom-retelling
+      - fixtures/D9/rapa-ex-01-attia-retelling
+    examples:
+      - "EXPLICIT_CITATION (container level: n6 cites the Essentials "
+      - EXPLICIT_CITATION (container level, n6)
+  "retractionIn:":
+    count: 1
+    fixtures:
+      - fixtures/D12/predimed-retraction-disconfirmation
+    examples:
+      - PMID:29897867
+  "sampleVerbatim:":
+    count: 1
+    fixtures:
+      - fixtures/D12/acrylamide-fried-potato-harm
+    examples:
+      - freshly cooked restaurant / take-out product
+  "scale:":
+    count: 4
+    fixtures:
+      - fixtures/D4/noninvasive-glucose-cgm-recall
+      - fixtures/D8/imu-tek-warning-letter-recall
+    examples:
+      - none (regulator safety communication; rating-scale mapping i
+      - FDA intended-use determination under 21 U.S.C. 321(g)(1)(B);
+  "scheme:":
+    count: 2
+    fixtures:
+      - fixtures/D10/livertox-green-tea-extract-harm
+    examples:
+      - LiverTox likelihood score
+  "scope:":
+    count: 5
+    fixtures:
+      - fixtures/D10/mg-bisglycinate-rct-unstructured
+      - fixtures/D6/prepared-food-bigmac-mcdonalds
+      - fixtures/D6/recall-moringa-mogo
+      - fixtures/D7/ftc-ameribev-paid-dieticians-harm
+      - fixtures/cross-domain/claim-mission-report
+    examples:
+      - the magnesium bisglycinate supplement used in this study (DR
+      - the sentence closes the page-wide nutrition paragraph that b
+  "scopeVerbatim:":
+    count: 2
+    fixtures:
+      - fixtures/D12/upf-diet-rct-unstructured
+    examples:
+      - Daily Meals + Snacks, average 7-day rotating menu (Table 1)
+  sectionCode=:
+    count: 1
+    fixtures:
+      - fixtures/D11/sirolimus-spl-boxed-warning
+    examples:
+      - LOINC 34066-1 (BOXED WARNING SECTION)
+  sectionId=:
+    count: 1
+    fixtures:
+      - fixtures/D11/sirolimus-spl-boxed-warning
+    examples:
+      - LINK_b7e90274-8447-41bf-8803-c34d58d232cd
+  "servingSize:":
+    count: 1
+    fixtures:
+      - fixtures/cross-domain/compound-profile
+    examples:
+      - 1 Vegetarian Capsule(s)
+  severity=:
+    count: 1
+    fixtures:
+      - fixtures/D13/bioage-strides-discontinuation
+    examples:
+      - no clinically significant symptoms
+  "statistic:":
+    count: 7
+    fixtures:
+      - fixtures/cross-domain/claim-mission-report
+    examples:
+      - mean (CV 35.1%)
+      - mean (CV 40.1%)
+  "subjectAsStated:":
+    count: 1
+    fixtures:
+      - fixtures/D5/sleep-toolkit-unstructured
+    examples:
+      - we
+  "surveyTable:":
+    count: 1
+    fixtures:
+      - fixtures/D12/acrylamide-fried-potato-harm
+    examples:
+      - "2004-10-07"
+  "tier:":
+    count: 1
+    fixtures:
+      - fixtures/D6/offer-roles-price-kinds-truniagen
+    examples:
+      - "'15 percent savings'"
+  "time:":
+    count: 2
+    fixtures:
+      - fixtures/D9/hl-essentials-recut-nmncom-retelling
+    examples:
+      - about two weeks
+  "timepoint:":
+    count: 4
+    fixtures:
+      - fixtures/cross-domain/claim-mission-report
+    examples:
+      - baseline
+      - day 30
+  "timing:":
+    count: 1
+    fixtures:
+      - fixtures/D9/longecity-nmn-fatigue-pseudonymous
+    examples:
+      - afternoon
+  upTo=:
+    count: 1
+    fixtures:
+      - fixtures/D13/madrigal-financing-after-readout
+    examples:
+      - true (drawn amount not stated)
+  "url:":
+    count: 1
+    fixtures:
+      - fixtures/D9/lifespan-ep4-spermidine-correction
+    examples:
+      - https://insidetracker.com/sinclair
+  "valueKind:":
+    count: 2
+    fixtures:
+      - fixtures/D5/sleep-toolkit-unstructured
+    examples:
+      - AFFILIATE_COMMISSION
+      - NOT_STATED
+  "valueRangeMax:":
+    count: 1
+    fixtures:
+      - fixtures/D9/lifespan-ep4-spermidine-correction
+    examples:
+      - "2"
+freeTextQualifiers:
+  count: 571
+  fixtures: 58
+  examples:
+    - root-only; 'absolutely no addition of leaves'
+    - ratio_numerator 1, ratio_denominator 5
+    - dried herb equivalent 3 g (per 15 mL dose)
+    - "source material: dried root(s)"
+    - 15 mL x (1 g / 5 mL) = 3 g dried root; declared dried herb equivalent 3 g; resid
+  rule: "Key-less natural-language verification.v1 qualifiers (kernel Assertion.qualifiers docstring: population, dose, condition wording that must survive any retelling) are permitted; they carry no prefix, are never filtered on, and are not registry entries. A string that starts with a lowerCamel name followed by ':' or '=' is a keyed qualifier and must be registered."
+patternPrefixesOwnedByAssessments:
+  - bestCategory=
+  - coExposure=
+  - contextOfUse=
+  - dataSystem=
+  - dimension=
+  - exposurePopulation=
+  - impactDomain=
+  - missing=
+  - plantPart=
+patternPrefixesUnregistered:
+  - session=
+predicateQualifierGaps: []

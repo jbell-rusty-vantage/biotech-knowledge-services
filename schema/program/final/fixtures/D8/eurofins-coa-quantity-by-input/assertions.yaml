@@ -1,0 +1,696 @@
+# D8 fixture eurofins-coa-quantity-by-input — assertions (fixtures stage, A7, 2026-10-08). resultBasis is the decisive field: INPUT_VERIFIED
+# (Eurofins), IN_PROCESS_CONTROL / STATED_WITHOUT_VALUE / MEASURED (contrast COA). producedBy ids are fixture-scoped.
+fixture: eurofins-coa-quantity-by-input
+producedBy:
+  missionId: mission:ft-D8-fixtures
+  runId: run:ft-D8-eurofins-coa-quantity-by-input
+  note: fixture-scoped ids, not Mission Control ids
+entities:
+- ref: eurofins
+  type: D7.Organization
+  name: Eurofins Food Chemistry Testing Madison, Inc.
+  onMatch: use_existing
+- ref: orgabay
+  type: D7.Organization
+  name: Orgabay (brand owner named in the product name)
+  onMatch: review
+- ref: elite
+  type: D7.Organization
+  name: Elite Source Products, Inc.
+  onMatch: use_existing
+- ref: agent-a7
+  type: Agent
+  name: BellLabs fixtures agent A7 (ft-D8)
+  onMatch: use_existing
+- ref: prod-orgabay-nad
+  type: D6.Product
+  name: Orgabay Liposomal NAD 500 mg Supplement
+  propertyEvidence:
+  - loc-ef-desc
+  onMatch: review
+- ref: prod-ash
+  type: D6.Product
+  name: Organic Ashwagandha Extract (manufactured for Elite Source Products, item 496003060)
+  propertyEvidence:
+  - loc-as-product
+  - loc-as-mfr
+  onMatch: review
+- ref: nad
+  type: D1.ChemicalSubstance
+  name: NAD+ (nicotinamide adenine dinucleotide)
+  onMatch: use_existing
+- ref: betaine
+  type: D1.IngredientMaterial
+  name: Trimethylglycine (as betaine anhydrous)
+  onMatch: use_existing
+- ref: ash-extract
+  type: D1.IngredientMaterial
+  name: Organic ashwagandha (Withania somnifera) root extract, 2.5% withanolides
+  onMatch: review
+- ref: withanolides
+  type: D1.Constituent
+  name: Withanolides (total)
+  onMatch: use_existing
+- ref: lead
+  type: D1.ChemicalSubstance
+  name: Lead
+  onMatch: use_existing
+- ref: lot-ef
+  type: Lot
+  name: Orgabay Liposomal NAD — lot LNA-199-0715
+  uidSegment: orgabay-liposomal-nad-lot-LNA-199-0715
+  properties:
+    lotCode: LNA-199-0715
+  identifiers:
+  - scheme: LOT_CODE
+    issuer: Orgabay
+    value: LNA-199-0715
+    requested: true
+  propertyEvidence:
+  - loc-ef-lot
+  onMatch: review
+- ref: lot-as
+  type: Lot
+  name: Organic Ashwagandha Extract — lot 2404101ORA
+  uidSegment: elite-organic-ashwagandha-lot-2404101ORA
+  properties:
+    lotCode: 2404101ORA
+  identifiers:
+  - scheme: LOT_CODE
+    issuer: Elite Source Products, Inc.
+    value: 2404101ORA
+    requested: true
+  propertyEvidence:
+  - loc-as-lot
+  onMatch: review
+  note: 'expiry printed as month only (''Exp: 08/2027''): kept as a literal assertion with MONTH precision, not as expiresAt'
+- ref: qr-ef-nad
+  type: QualityResult
+  name: Eurofins 3921057-0 — NAD+ — Quantity by Input
+  uidSegment: eurofins-3921057-0-nad
+  properties:
+    reportNumber: 3921057-0
+    reportedAt: '2022-12-27T00:00:00Z'
+    testedAt: '2022-12-07T00:00:00Z'
+    sampleKind: NOT_STATED
+    method: Quantity by Input (QTY_INPUT)
+    methodReference: Quantity of ingredients verified through batch record review.
+    statedVerdict: NOT_STATED
+    resultBasis: INPUT_VERIFIED
+    analyteVerbatim: NAD+ (Nicotinamide Adenine Dinucleotide)
+    value: 500
+    unitCode: mg
+    valueVerbatim: 500 mg/Serving Size
+  identifiers:
+  - scheme: LAB_REPORT
+    issuer: Eurofins Food Chemistry Testing Madison, Inc.
+    value: 3921057-0
+    requested: true
+  propertyEvidence:
+  - loc-ef-nad
+  - loc-ef-qbi
+  - loc-ef-method
+  - loc-ef-note
+  - loc-ef-report
+  - loc-ef-date
+  - loc-ef-started
+  onMatch: review
+- ref: qr-ef-tmg
+  type: QualityResult
+  name: Eurofins 3921057-0 — trimethylglycine — Quantity by Input
+  uidSegment: eurofins-3921057-0-tmg
+  properties:
+    reportNumber: 3921057-0
+    reportedAt: '2022-12-27T00:00:00Z'
+    testedAt: '2022-12-07T00:00:00Z'
+    sampleKind: NOT_STATED
+    method: Quantity by Input (QTY_INPUT)
+    methodReference: Quantity of ingredients verified through batch record review.
+    statedVerdict: NOT_STATED
+    resultBasis: INPUT_VERIFIED
+    analyteVerbatim: Trimethylglycine (as Betaine Anhydrous)
+    value: 250
+    unitCode: mg
+    valueVerbatim: 250 mg/Serving Size
+  propertyEvidence:
+  - loc-ef-tmg
+  - loc-ef-qbi
+  - loc-ef-method
+  - loc-ef-note
+  - loc-ef-report
+  - loc-ef-date
+  onMatch: review
+- ref: qr-as-ipc
+  type: QualityResult
+  name: COA lot 2404101ORA — ashwagandha root extract — IPC
+  uidSegment: elite-2404101ORA-ash-extract-ipc
+  properties:
+    resultBasis: IN_PROCESS_CONTROL
+    analyteVerbatim: Organic Ashwagandha Root Extract (2.5% Withanolides)
+    method: IPC
+    specComparator: GTE
+    specLow: 450
+    unitCode: mg
+    specVerbatim: ≥ 450 mg
+    specBasis: NOT_STATED
+    specPeriod: NOT_STATED
+    statedVerdict: NOT_STATED
+    sampleKind: NOT_STATED
+  propertyEvidence:
+  - loc-as-ipc
+  - loc-as-ing-header
+  onMatch: review
+- ref: qr-as-assay
+  type: QualityResult
+  name: COA lot 2404101ORA — withanolides assay — 'Conforms'
+  uidSegment: elite-2404101ORA-withanolides-hplc
+  properties:
+    resultBasis: STATED_WITHOUT_VALUE
+    analyteVerbatim: Organic Ashwagandha Root Extract (2.5% Withanolides)
+    valueVerbatim: Conforms
+    method: HPLC
+    specComparator: GTE
+    specLow: 2.5
+    unitCode: '%'
+    specVerbatim: ≥ 2.5% Withanolides
+    specBasis: NOT_STATED
+    statedVerdict: CONFORMS
+  propertyEvidence:
+  - loc-as-assay
+  onMatch: review
+- ref: qr-as-lead
+  type: QualityResult
+  name: COA lot 2404101ORA — lead — 0.380 µg/serving
+  uidSegment: elite-2404101ORA-lead-icpms
+  properties:
+    resultBasis: MEASURED
+    analyteVerbatim: Lead
+    value: 0.38
+    unitCode: ug
+    valueQualifier: EXACT
+    valueVerbatim: 0.380 µg / serving
+    method: ICP-MS
+    specComparator: LTE
+    specHigh: 0.5
+    specVerbatim: ≤ 0.5 µg / serving
+    specBasis: NOT_STATED
+    statedVerdict: NOT_STATED
+  propertyEvidence:
+  - loc-as-lead
+  onMatch: review
+assertions:
+- id: c01
+  predicate: QUALITY_RESULT_FOR
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: qr-ef-nad
+    type: QualityResult
+  object:
+    ref: lot-ef
+    type: Lot
+  asserter:
+    ref: eurofins
+    type: D7.Organization
+  locators:
+  - loc-ef-nad
+  - loc-ef-lot
+  edge:
+    type: QUALITY_RESULT_FOR
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eurofins-coa-quantity-by-input
+- id: c02
+  predicate: QUALITY_RESULT_FOR
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: qr-ef-tmg
+    type: QualityResult
+  object:
+    ref: lot-ef
+    type: Lot
+  asserter:
+    ref: eurofins
+    type: D7.Organization
+  locators:
+  - loc-ef-tmg
+  - loc-ef-lot
+  edge:
+    type: QUALITY_RESULT_FOR
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eurofins-coa-quantity-by-input
+- id: c03
+  predicate: MEASURES_ANALYTE
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: qr-ef-nad
+    type: QualityResult
+  object:
+    ref: nad
+    type: D1.ChemicalSubstance
+  asserter:
+    ref: eurofins
+    type: D7.Organization
+  locators:
+  - loc-ef-nad
+  edge:
+    type: MEASURES_ANALYTE
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  note: the edge names the analyte a row reports on; for INPUT_VERIFIED rows nothing was measured (resultBasis carries that)
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eurofins-coa-quantity-by-input
+- id: c04
+  predicate: MEASURES_ANALYTE
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: qr-ef-tmg
+    type: QualityResult
+  object:
+    ref: betaine
+    type: D1.IngredientMaterial
+  asserter:
+    ref: eurofins
+    type: D7.Organization
+  locators:
+  - loc-ef-tmg
+  edge:
+    type: MEASURES_ANALYTE
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eurofins-coa-quantity-by-input
+- id: c05
+  predicate: ISSUED_BY
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: qr-ef-nad
+    type: QualityResult
+  object:
+    ref: eurofins
+    type: D7.Organization
+  asserter:
+    ref: eurofins
+    type: D7.Organization
+  locators:
+  - loc-ef-lab
+  - loc-ef-released
+  edge:
+    type: ISSUED_BY
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eurofins-coa-quantity-by-input
+- id: c06
+  predicate: ISSUED_BY
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: qr-ef-tmg
+    type: QualityResult
+  object:
+    ref: eurofins
+    type: D7.Organization
+  asserter:
+    ref: eurofins
+    type: D7.Organization
+  locators:
+  - loc-ef-lab
+  - loc-ef-released
+  edge:
+    type: ISSUED_BY
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eurofins-coa-quantity-by-input
+- id: c07
+  predicate: LOT_OF
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: lot-ef
+    type: Lot
+  object:
+    ref: prod-orgabay-nad
+    type: D6.Product
+  asserter:
+    ref: eurofins
+    type: D7.Organization
+  locators:
+  - loc-ef-lot
+  - loc-ef-desc
+  edge:
+    type: LOT_OF
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eurofins-coa-quantity-by-input
+- id: c08
+  predicate: QUALITY_RESULT_FOR
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: qr-as-ipc
+    type: QualityResult
+  object:
+    ref: lot-as
+    type: Lot
+  asserter:
+    ref: elite
+    type: D7.Organization
+  locators:
+  - loc-as-ipc
+  - loc-as-lot
+  edge:
+    type: QUALITY_RESULT_FOR
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  note: "R-16 rule 1: asserter = the issuer the COA presents, 'Manufactured for: Elite Source Products, Inc.' (loc-as-mfr); the COA names no laboratory and no signatory (a 'Quality Control Approved' stamp only), so no ISSUED_BY row is written"
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eurofins-coa-quantity-by-input
+- id: c09
+  predicate: QUALITY_RESULT_FOR
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: qr-as-assay
+    type: QualityResult
+  object:
+    ref: lot-as
+    type: Lot
+  asserter:
+    ref: elite
+    type: D7.Organization
+  locators:
+  - loc-as-assay
+  - loc-as-lot
+  edge:
+    type: QUALITY_RESULT_FOR
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  note: "R-16 rule 1: asserter = the issuer the COA presents, 'Manufactured for: Elite Source Products, Inc.' (loc-as-mfr); the COA names no laboratory and no signatory (a 'Quality Control Approved' stamp only), so no ISSUED_BY row is written"
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eurofins-coa-quantity-by-input
+- id: c10
+  predicate: QUALITY_RESULT_FOR
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: qr-as-lead
+    type: QualityResult
+  object:
+    ref: lot-as
+    type: Lot
+  asserter:
+    ref: elite
+    type: D7.Organization
+  locators:
+  - loc-as-lead
+  - loc-as-lot
+  edge:
+    type: QUALITY_RESULT_FOR
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  note: "R-16 rule 1: asserter = the issuer the COA presents, 'Manufactured for: Elite Source Products, Inc.' (loc-as-mfr); the COA names no laboratory and no signatory (a 'Quality Control Approved' stamp only), so no ISSUED_BY row is written"
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eurofins-coa-quantity-by-input
+- id: c11
+  predicate: MEASURES_ANALYTE
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: qr-as-ipc
+    type: QualityResult
+  object:
+    ref: ash-extract
+    type: D1.IngredientMaterial
+  asserter:
+    ref: elite
+    type: D7.Organization
+  locators:
+  - loc-as-ipc
+  edge:
+    type: MEASURES_ANALYTE
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  note: "R-16 rule 1: asserter = the issuer the COA presents, 'Manufactured for: Elite Source Products, Inc.' (loc-as-mfr); the COA names no laboratory and no signatory (a 'Quality Control Approved' stamp only), so no ISSUED_BY row is written"
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eurofins-coa-quantity-by-input
+- id: c12
+  predicate: MEASURES_ANALYTE
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: qr-as-assay
+    type: QualityResult
+  object:
+    ref: withanolides
+    type: D1.Constituent
+  asserter:
+    ref: elite
+    type: D7.Organization
+  locators:
+  - loc-as-assay
+  edge:
+    type: MEASURES_ANALYTE
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  note: "R-16 rule 1: asserter = the issuer the COA presents, 'Manufactured for: Elite Source Products, Inc.' (loc-as-mfr); the COA names no laboratory and no signatory (a 'Quality Control Approved' stamp only), so no ISSUED_BY row is written"
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eurofins-coa-quantity-by-input
+- id: c13
+  predicate: MEASURES_ANALYTE
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: qr-as-lead
+    type: QualityResult
+  object:
+    ref: lead
+    type: D1.ChemicalSubstance
+  asserter:
+    ref: elite
+    type: D7.Organization
+  locators:
+  - loc-as-lead
+  edge:
+    type: MEASURES_ANALYTE
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  note: "R-16 rule 1: asserter = the issuer the COA presents, 'Manufactured for: Elite Source Products, Inc.' (loc-as-mfr); the COA names no laboratory and no signatory (a 'Quality Control Approved' stamp only), so no ISSUED_BY row is written"
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eurofins-coa-quantity-by-input
+- id: c14
+  predicate: LOT_OF
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: lot-as
+    type: Lot
+  object:
+    ref: prod-ash
+    type: D6.Product
+  asserter:
+    ref: elite
+    type: D7.Organization
+  locators:
+  - loc-as-lot
+  - loc-as-product
+  edge:
+    type: LOT_OF
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  note: "R-16 rule 1: asserter = the issuer the COA presents, 'Manufactured for: Elite Source Products, Inc.' (loc-as-mfr); the COA names no laboratory and no signatory (a 'Quality Control Approved' stamp only), so no ISSUED_BY row is written"
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eurofins-coa-quantity-by-input
+- id: c15
+  predicate: LOT_EXPIRY_AS_PRINTED
+  assertionKind: FIELD
+  subject:
+    ref: lot-as
+    type: Lot
+  value: 08/2027
+  asserter:
+    ref: elite
+    type: D7.Organization
+  locators:
+  - loc-as-lot
+  edge: false
+  validTime:
+    validTo: '2027-08-01'
+    validToPrecision: MONTH
+    validToBasis: STATED_BY_SOURCE
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  note: "R-16 rule 1: asserter = the issuer the COA presents, 'Manufactured for: Elite Source Products, Inc.' (loc-as-mfr); the COA names no laboratory and no signatory (a 'Quality Control Approved' stamp only), so no ISSUED_BY row is written"
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eurofins-coa-quantity-by-input
+assessments:
+- id: as-ef-coa-class
+  assessmentKind: QUALITY
+  assessmentSubkind: D8.coa-classification
+  about: Source https://m.media-amazon.com/images/I/614wRFVDiqL.pdf
+  inputs:
+  - qr-ef-nad
+  - qr-ef-tmg
+  - c01
+  - c02
+  rule: document class = MEASURED_COA only if at least one label-claim row has resultBasis MEASURED; here 2 of 2 rows are INPUT_VERIFIED
+  result: INPUT_VERIFIED_ONLY — titled 'Certificate of Analysis' but reports no analytical measurement for lot LNA-199-0715
+  asserter: agent-a7
+  methodVersion: d8-coa-classification/0.1 (fixture)
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eurofins-coa-quantity-by-input
+- id: as-as-coa-class
+  assessmentKind: QUALITY
+  assessmentSubkind: D8.coa-classification
+  about: Source https://m.media-amazon.com/images/I/71N+Qjd8YlL.pdf
+  inputs:
+  - qr-as-ipc
+  - qr-as-assay
+  - qr-as-lead
+  rule: same rule; contaminant rows do not make label-claim rows measured
+  result: MIXED — label amounts are in-process controls without values (IPC), the marker assay is a bare 'Conforms', only contaminants (lead and three other metals,
+    not in this fixture) carry measured values; issuer not stated
+  asserter: agent-a7
+  methodVersion: d8-coa-classification/0.1 (fixture)
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-eurofins-coa-quantity-by-input

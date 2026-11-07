@@ -1,0 +1,172 @@
+# Verdict lattice — final vocabulary (synthesis, VOCABULARIES stage, 2026-10-09).
+# verification.v1 verdicts → Adjudication values → Assertion.status, per the kernel (packets/K/09-reasoning.md
+# "verification.v1 correspondence" and "Decisions on the four open points of PLAN 6.2"). The graph CONSUMES verdicts;
+# verification.v1 (ai-engineer-knowledge-services) produces them (00-DIRECTIVE 3.10). A verdict is capture fidelity or
+# located support, never truth; truth after an evidence mission is Report.verdict + Report.worldCorrectness.
+# Every enum value below is checked against final/schema/final_biotech_schema_v2.graphql (final/_runlog/vocabularies.md).
+
+version: 1
+status: synthesis-final-candidate
+published: 2026-10-09
+owner: K
+sources:
+  - packets/K/09-reasoning.md (verification.v1 correspondence table; decision 2 "Verdict → Assertion.status"; claim lifecycle)
+  - packets/K/04-schema-proposal.graphql → final/schema/kernel.graphql (Adjudication, Assertion, Assessment, Report, Claim)
+  - schema/program/PLAN.md 6.2 (the starting mapping)
+  - fast-track/00-DIRECTIVE.md 3.4, 3.8, 3.10
+  - final/decision-report.md R-22 (projection gate), R-31 (third-party ratings), R-32 (evidence report verdict), R-36 (tool rendition, owner decision)
+  - "corroboration of the verification.v1 spellings: ai-engineer-knowledge-services/.git/maintenance/jobs/20d31a43-…/attempt-1/worktree/apps/verification-executor/dist/executor.d.ts (sha256 9689fd44ac2a05e3…, 2026-10-01): the `verdict` union lists exactly the 15 lower_snake values below; `policyOutcome` lists the 5 policy values; the contracts source (packages/contracts/src/verification) is not present in the local checkout"
+
+# ---------------------------------------------------------------------------------------------
+# 1. The lattice: SemanticVerdict (stored SCREAMING_SNAKE; verification.v1 spells the same value lower_snake)
+#    `group` = the row of the kernel's capture-fidelity mapping (section 3) the value falls in.
+# ---------------------------------------------------------------------------------------------
+verdicts:
+  - {value: PENDING_SEMANTIC_REVIEW,      v1: pending_semantic_review,      group: pending}
+  - {value: DIRECTLY_SUPPORTED,           v1: directly_supported,           group: supported}
+  - {value: SUPPORTED_WITH_QUALIFICATION, v1: supported_with_qualification, group: supported}
+  - {value: PARTIALLY_SUPPORTED,          v1: partially_supported,          group: contested}
+  - {value: CONTEXT_ONLY,                 v1: context_only,                 group: not_supported}
+  - {value: CONTRADICTED,                 v1: contradicted,                 group: not_supported}
+  - {value: MIXED_OR_CONFLICTING,         v1: mixed_or_conflicting,         group: contested}
+  - {value: NOT_SUPPORTED,                v1: not_supported,                group: not_supported}
+  - {value: INSUFFICIENT_EVIDENCE,        v1: insufficient_evidence,        group: unresolved}
+  - {value: UNVERIFIABLE,                 v1: unverifiable,                 group: unresolved}
+  - {value: SOURCE_UNAVAILABLE,           v1: source_unavailable,           group: unresolved, infrastructure: true}
+  - {value: LOCATOR_ERROR,                v1: locator_error,                group: unresolved, infrastructure: true}
+  - {value: PARSER_ERROR,                 v1: parser_error,                 group: unresolved, infrastructure: true}
+  - {value: DERIVED_VERIFIED,             v1: derived_verified,             group: supported, derived: true}
+  - {value: DERIVED_FAILED,               v1: derived_failed,               group: not_supported, derived: true}
+groups:
+  supported: "the located evidence supports the record (DERIVED_VERIFIED: a CALCULATED Assertion whose derivation checked out)"
+  contested: "partly supported or conflicting evidence"
+  not_supported: "the evidence does not support, contradicts, or is only context (DERIVED_FAILED: the derivation failed)"
+  unresolved: "no judgment possible; an infrastructure verdict (source unavailable, locator or parser error) never rejects a record"
+  pending: "the semantic stage has not judged yet"
+derivedRule: "derived numbers are Assertion {basisKind: CALCULATED, derivationRule} with DERIVED_FROM inputs; their verdicts are DERIVED_VERIFIED / DERIVED_FAILED (K)"
+order: >-
+  No total order of the 15 values is published. R-22 says one asserted-edge episode is authorized by the asserter's
+  "highest-verdict current Assertion"; until K publishes an order, read the groups as supported > contested >
+  not_supported, with unresolved and pending never authorizing (open item 1).
+
+# ---------------------------------------------------------------------------------------------
+# 2. Where a verdict is stored (one vocabulary, four places; never an edge)
+# ---------------------------------------------------------------------------------------------
+carriers:
+  - field: Adjudication.verdict
+    required: true
+    meaning: "one verification.v1 judgment about one Assertion; kind CAPTURE_FIDELITY or SUPPORT (Adjudication.adjudicationKind)"
+  - field: Assessment.verdict
+    required: false
+    meaning: "when a BellLabs assessment judges support of a proposition"
+  - field: Report.verdict
+    required: false
+    meaning: "EVIDENCE_REPORT only: the lattice verdict on the exact Claim it ASSESSES (its propositionHash), after the evidence mission tried to disqualify it; never changes Assertion.status (R-32)"
+  - field: Claim.latestVerdict
+    required: false
+    meaning: "projection cache of the latest published evidence report's verdict; authority = the Report (R-45)"
+notStored:
+  - "a verdict is never an edge (K: 'verdict | Adjudication.verdict and Report.verdict | record | … | an edge')"
+  - "no SURVIVED / DISQUALIFIED enum: the lattice plus worldCorrectness is the evidence report vocabulary (R-32)"
+  - "a third party's verdict (ClaimReview, regulator finding) is an Assertion with predicate RATES_CLAIM by that party (rating in valueString, scale in qualifiers), never an Adjudication or Assessment; its mapping onto this lattice is a versioned D10 rule applied at query time and never stored; the mapping values are the owner's (R-31, K 11-OQ 14)"
+
+adjudicationKinds:
+  CAPTURE_FIDELITY: "judges the record against its declared span; the only kind that feeds Assertion.status (section 3)"
+  SUPPORT: "judges whether located evidence supports the proposition (a world question); never changes Assertion.status; gates projection of SUPPORT-gated edge types (section 5)"
+
+# ---------------------------------------------------------------------------------------------
+# 3. Verdict × policy outcome → Assertion.status (CAPTURE_FIDELITY adjudications only). packets/K/09-reasoning.md decision 2.
+#    Assertion.status is capture fidelity (is it an accurate record of what the asserter said at the span), never truth.
+# ---------------------------------------------------------------------------------------------
+policyOutcomes:   # verification.v1 PolicyOutcomeSchema (Adjudication.policyOutcome, Activity.policyOutcome, Report.policyOutcome)
+  - {value: PASS, v1: pass}
+  - {value: PASS_WITH_WARNINGS, v1: pass_with_warnings}
+  - {value: REVIEW, v1: review}
+  - {value: FAIL, v1: fail}
+  - {value: ABSTAIN, v1: abstain}
+captureFidelityMapping:
+  columns:
+    passing: [PASS, PASS_WITH_WARNINGS]
+    held: [REVIEW, ABSTAIN]
+    failing: [FAIL]
+  rows:
+    - verdicts: [DIRECTLY_SUPPORTED, SUPPORTED_WITH_QUALIFICATION, DERIVED_VERIFIED]
+      status: {passing: ACCEPTED, held: PROPOSED, failing: DISPUTED}
+    - verdicts: [PARTIALLY_SUPPORTED, MIXED_OR_CONFLICTING]
+      status: {passing: DISPUTED, held: PROPOSED, failing: DISPUTED}
+    - verdicts: [CONTRADICTED, NOT_SUPPORTED, CONTEXT_ONLY, DERIVED_FAILED]
+      status: {passing: REJECTED, held: PROPOSED, failing: REJECTED}
+    - verdicts: [INSUFFICIENT_EVIDENCE, UNVERIFIABLE, SOURCE_UNAVAILABLE, LOCATOR_ERROR, PARSER_ERROR]
+      status: {passing: UNRESOLVED, held: UNRESOLVED, failing: UNRESOLVED}
+    - verdicts: [PENDING_SEMANTIC_REVIEW]
+      status: {passing: PROPOSED, held: PROPOSED, failing: PROPOSED}
+  heldMeans: "PROPOSED with a REVIEW or ABSTAIN policy outcome is a held result awaiting a human decision"
+assertionStatus:   # AssertionStatus; values not produced by the mapping come from the record lifecycle
+  EXTRACTED: "not produced by the mapping and not defined in K 09-reasoning; by its name the status of a record before any CAPTURE_FIDELITY adjudication (open item 5)"
+  PROPOSED: "pending semantic review, or held (REVIEW / ABSTAIN)"
+  ACCEPTED: "supported at capture fidelity under a passing policy, or a held result affirmed by a human"
+  REJECTED: "not supported at capture fidelity under a passing or failing policy"
+  DISPUTED: "contested evidence, or supported but the policy failed"
+  SUPERSEDED: "replaced by a newer Assertion of the same asserter (supersedesUid, recordedTo; R-23); not produced by the mapping"
+  UNRESOLVED: "no capture-fidelity judgment was possible; never a rejection"
+humanDecision:   # AdjudicationDecision on a new Adjudication that supersedes the held one (verification.v1 adjudication decision)
+  AFFIRM: "with decisionProvenance HUMAN_ORIGIN moves a held Assertion PROPOSED → ACCEPTED (through a superseding Adjudication)"
+  DEFER: "changes nothing"
+  REJECT: "its effect on Assertion.status is not stated by K (open item 2)"
+  decisionProvenance: {values: [HUMAN_ORIGIN, SYNTHETIC_ENGINEERING], sdlType: String, rule: "SYNTHETIC_ENGINEERING decisions never change Assertion.status"}
+toolRendition: "whether evidence from a tool rendition alone can reach ACCEPTED is an owner decision (R-36, proposed: PASS_WITH_WARNINGS and flagged only where a CaptureAttempt records that issuer-byte capture is impossible; otherwise held at PROPOSED until a RAW_BYTES or CANONICAL_PROJECTION sibling exists)"
+
+# ---------------------------------------------------------------------------------------------
+# 4. Orthogonal properties and mechanical stage (verification.v1 Judgment properties ×5; no aggregate erases a component)
+# ---------------------------------------------------------------------------------------------
+propertyStatus: [SATISFIED, NOT_SATISFIED, UNKNOWN, NOT_ASSESSED]
+orthogonalProperties:
+  - {field: Adjudication.evidenceSupport, v1: evidenceSupport}
+  - {field: Adjudication.worldCorrectness, v1: worldCorrectness}
+  - {field: Adjudication.attributionFaithfulness, v1: attributionFaithfulness}
+  - {field: Adjudication.sourceAuthority, v1: sourceAuthority}
+  - {field: Adjudication.provenanceIntegrity, v1: provenanceIntegrity}
+  - {field: Report.worldCorrectness, v1: "Judgment.properties.worldCorrectness of the judged Claim (EVIDENCE_REPORT; beside the lattice verdict)"}
+mechanicalStatus: {field: Adjudication.mechanicalStatus, sdlType: String, values: [passed, failed, review_required]}
+judgeKinds: [DETERMINISTIC, NLI, LLM, HUMAN, POLICY, STATISTICAL]
+evidenceEdge:   # HAS_EVIDENCE {role, origin, authority, independence, facet} → SourceLocator (replaces SUPPORTED_BY / CONTRADICTED_BY)
+  role: [SUPPORTS, CONTRADICTS, QUALIFIES, CONTEXT]
+  origin: [DECLARED, VERIFIER_FOUND]
+  authority: [PRIMARY, AUTHORITATIVE_AGGREGATOR, INDEPENDENT, SECONDARY, PROMOTIONAL, UNKNOWN]
+  independence: [INDEPENDENT, SAME_ORGANIZATION, SELF_REPORTED, INTERESTED_PARTY, UNKNOWN]
+  facet: [VALUE, UNIT, IDENTITY, PERIOD_START, PERIOD_END]
+  rule: "authority / independence / facet are written only on an Adjudication's VERIFIER_FOUND edges, never on an Assertion's DECLARED edges (K adversarial review)"
+verificationRun: "no VerificationRun node: a verification run is an Activity (activityKind VERIFICATION, externalRunSystem ks-verification, bundleDigest, policyVersion, policyOutcome); each judgment is an Adjudication WAS_GENERATED_BY it (K decision 1)"
+operationState: "KS operation state (queued, running, needs_review, quarantined, succeeded, failed, cancelled) is not in the graph; the Activity carries admission (policyOutcome) and times only (K)"
+
+# ---------------------------------------------------------------------------------------------
+# 5. Verdicts that gate projection and reading
+# ---------------------------------------------------------------------------------------------
+projectionGate:
+  rule: "an edge is projected only from a current POSITIVE Assertion; types registered with projectionGate SUPPORT (D13 LEADS_TO, RESPONDS_TO) also need a SUPPORT Adjudication with one of `admittingVerdicts`; denials and gated-but-unadjudicated Assertions are held without an edge (R-22)"
+  admittingVerdicts: [DIRECTLY_SUPPORTED, SUPPORTED_WITH_QUALIFICATION]
+  corroboration: "verification-executor ADMITTED_VERDICTS = {directly_supported, supported_with_qualification} (apps/verification-executor/src/index.ts line 217 in the maintenance copy cited above)"
+  temporalWording: "temporal wording alone ('following', 'after') is adjudicated CONTEXT_ONLY by the SUPPORT adjudication and never projects LEADS_TO / RESPONDS_TO (frontiers.yaml eventRelations)"
+denial: "a denial of a goal effect is NO_EFFECT_ON_TARGET or a SUPPORT Adjudication with CONTRADICTED (HAS_EVIDENCE role CONTRADICTS) against the original claim, never a NEGATIVE copy of IMPROVES_TARGET (targets.yaml polarityRule)"
+readingDefault: "answers that list facts read Assertion.status IN [ACCEPTED, DISPUTED] (targets.yaml QP-TARGET-01)"
+
+sdlEnums:   # exact copies; the checker compares them with the assembled SDL
+  SemanticVerdict: [PENDING_SEMANTIC_REVIEW, DIRECTLY_SUPPORTED, SUPPORTED_WITH_QUALIFICATION, PARTIALLY_SUPPORTED, CONTEXT_ONLY, CONTRADICTED, MIXED_OR_CONFLICTING, NOT_SUPPORTED, INSUFFICIENT_EVIDENCE, UNVERIFIABLE, SOURCE_UNAVAILABLE, LOCATOR_ERROR, PARSER_ERROR, DERIVED_VERIFIED, DERIVED_FAILED]
+  PolicyOutcome: [PASS, PASS_WITH_WARNINGS, REVIEW, FAIL, ABSTAIN]
+  AssertionStatus: [EXTRACTED, PROPOSED, ACCEPTED, REJECTED, DISPUTED, SUPERSEDED, UNRESOLVED]
+  AdjudicationKind: [CAPTURE_FIDELITY, SUPPORT]
+  AdjudicationDecision: [AFFIRM, REJECT, DEFER]
+  PropertyStatus: [SATISFIED, NOT_SATISFIED, UNKNOWN, NOT_ASSESSED]
+  JudgeKind: [DETERMINISTIC, NLI, LLM, HUMAN, POLICY, STATISTICAL]
+  EvidenceRole: [SUPPORTS, CONTRADICTS, QUALIFIES, CONTEXT]
+  EvidenceOrigin: [DECLARED, VERIFIER_FOUND]
+  EvidenceAuthority: [PRIMARY, AUTHORITATIVE_AGGREGATOR, INDEPENDENT, SECONDARY, PROMOTIONAL, UNKNOWN]
+  EvidenceIndependence: [INDEPENDENT, SAME_ORGANIZATION, SELF_REPORTED, INTERESTED_PARTY, UNKNOWN]
+  EvidenceFacet: [VALUE, UNIT, IDENTITY, PERIOD_START, PERIOD_END]
+
+openItems:
+  - "1. No published total order of verdicts; R-22's 'highest-verdict current Assertion' needs one (owner: K)."
+  - "2. Effect of a human REJECT on a held Assertion is not stated in K 09-reasoning (owner: K; the mapping suggests REJECTED, not adopted here)."
+  - "3. RATES_CLAIM rating-scale → lattice mapping values (R-31; K 11-OQ 14; owner)."
+  - "4. R-36 tool-rendition evidence policy (owner decision)."
+  - "5. AssertionStatus EXTRACTED has no written definition in K (owner: K)."

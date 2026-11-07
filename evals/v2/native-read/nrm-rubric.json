@@ -1,0 +1,43 @@
+{
+  "format": "bks-eval-nrm-rubric.v1",
+  "reason": "NR-M answerShape is the generic trace shape and names no field for the count/value, so score.mjs cannot locate the value in a free-form answer; the expected values are fixed by the manifest, and the reviewer adjudicates each arm against this rubric, identically, citing the answer field used",
+  "declaredBefore": "any condition-B NR-M answer (0 existed); condition A's third-pass answers already existed and are adjudicated under the same text",
+  "manifest": {
+    "migrationRunId": "mig-0b2e97d4b8e0",
+    "manifestDigest": "sha256:c3036eb09926f96acdbbe5d89b1ccbfddf7d838f368032a6fe9ba4182f88cb76"
+  },
+  "tasks": {
+    "NR-M-01": {
+      "correctIff": "the answer reports the number of HOLDS_ROLE assertions created by the run equal to the manifest value AND their status EXTRACTED",
+      "expected": {
+        "count": 39,
+        "status": "EXTRACTED"
+      }
+    },
+    "NR-M-02": {
+      "correctIff": "the answer reports 0 Organization-labelled nodes without uid AND attributes it to legacy rows being relabeled (LegacyV0_Organization)",
+      "expected": {
+        "count": 0
+      }
+    },
+    "NR-M-03": {
+      "correctIff": "the answer reports source kind DATASET AND a snapshot content hash equal to the export digest",
+      "expected": {
+        "sourceKind": "DATASET",
+        "snapshotContentHash": "sha256:7f76eefcf7b50977d78efc7d761e00a4622f7e45d4afa97d11c8d0a84a385ba1"
+      }
+    },
+    "NR-M-04": {
+      "correctIff": "the answer reports the number of LegalStatus nodes created by the run equal to the manifest value AND states the others are held (not fabricated)",
+      "expected": {
+        "count": 1
+      }
+    },
+    "NR-M-05": {
+      "correctIff": "the answer state is empty / held (no Metric-to-Biomarker QUANTIFIES fact presented as v2)",
+      "expected": {
+        "status": "empty"
+      }
+    }
+  }
+}

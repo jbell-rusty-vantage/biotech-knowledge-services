@@ -1,0 +1,538 @@
+# ---- fragment D5 ----
+# Module D5 — interventions, protocols, safety and the targets (goal) vocabulary. Model stage (Wave 2) by A5, 2026-10-08.
+# Kernel pattern: packets/K/09-reasoning.md "Kernel pattern for subject, object, identifier and mention edges" (A1,
+# published 2026-10-08). Kernel types are referenced, never re-declared. Every node implements Entity (7 fields
+# verbatim) and Subjectable; @query(aggregate: false); @mutation(operations: []) (the executor is the only writer).
+# Every @relationship: aggregate: false, nestedOperations declared, @filterable(byValue: true, byAggregate: false);
+# derived fields read-only. Subject/object/identifier/mention/lineage edges are the kernel's and are not declared here.
+#
+# What is NOT a type here, and where it went (06-node-register.yaml mergedInto / deferred, 09-reasoning.md):
+# - Treatment, Procedure, Lifestyle, Exposure (practice side)        -> Intervention.kind
+# - Contraindication / interaction / adverse effect / upper limit    -> Assertion.predicate values (05 predicateOnly)
+# - SafetySignal, applicability, step-evidence, surveillance trend   -> kernel Assessment (assessmentKind/assessmentSubkind)
+# - AdverseEffect (effect term)                                      -> D2 Condition (object of CAUSES_ADVERSE_EFFECT)
+# - MeasurementPlan, ProtocolAdjustmentRule, pinned numeric Target   -> ProtocolStep (stepKind MEASURE / REVIEW, threshold*)
+# - Constraint (protocol-stated)                                     -> UseConstraint via STATES_CONSTRAINT (derived)
+# - Diets (pinned DIETARY_PATTERN practice side)                       -> D12 DietaryPattern (a step reaches it via STEP_USES -> Subjectable)
+# - FunctionalGoal                                                   -> Target (vocab-targets.yaml)
+# - Observation, ProtocolResult                                      -> kernel Assertions (METRIC kind) about the protocol
+# Adversarial review (A5, 2026-10-08, late): STEP_USES retargeted from union StepMeans (6) to the kernel interface
+# Subjectable (measured smaller; admits D12 DietaryPattern and D4 Device; admissible types validated by the executor per
+# stepKind); InterventionKind DIETARY_PATTERN retired (diets are D12 DietaryPattern only); STATES_CONSTRAINT made derived
+# (projection use-constraint-key/v2, so an identity-rule bump never touches immutable edition content);
+# UseConstraint.exposureChange dropped (per-asserter qualifier only) and `timingWindow` added (identity rule v2).
+# Harm (00-DIRECTIVE 3.2): no property, enum value or edge on any D5 entity says "good", "bad", "safe" or "helps". What
+# a means does to a target is an Assertion (predicate IMPROVES_TARGET | WORSENS_TARGET | ...) or a kernel Assessment
+# (effectDirection); what must be avoided is an Assertion (predicate USE_CONSTRAINED_IN | INTERACTS_WITH | ...) whose
+# level is the source's own directive, grouped under one UseConstraint identity.
+
+# =====================================================================================================
+# Enums (controlled vocabularies)
+# =====================================================================================================
+
+"Kind of intervention concept. Collapses pinned Treatment, Procedure, Lifestyle and the practice side of Exposure (Q-D5-28). DIETARY_PATTERN retired in the adversarial review (one diet, one node: D12 DietaryPattern)."
+enum InterventionKind {
+  "A prescription or OTC drug used as a named regimen (e.g. intermittent low-dose rapamycin)."
+  DRUG_REGIMEN
+  "A named supplement regimen that sources treat as one thing (plain intake of one supplement is NOT an Intervention: a step points at the D1/D6 record)."
+  SUPPLEMENT_REGIMEN
+  BIOLOGIC_CELL_OR_GENE
+  "An act performed on or for a person (plasma exchange, laser, IV therapy)."
+  PROCEDURE
+  "A practice whose active element is a device (red-light panel, CPAP, sauna cabin as equipment)."
+  DEVICE_BASED
+  "A repeatable behaviour, including meal-timing practices (morning sunlight viewing, resistance training, sauna bathing, cold exposure, NSDR, time-restricted eating). Diets as composition (ketogenic, Mediterranean) are D12 DietaryPattern, never an Intervention (adversarial review; OQ-D5-06 closed)."
+  LIFESTYLE_PRACTICE
+  COMBINATION
+  OTHER
+}
+
+"Lifecycle of a vocabulary target (vocab-targets.yaml); a deprecated target keeps its node and names `replacedBy`."
+enum TargetStatus {
+  ACTIVE
+  DEPRECATED
+}
+
+"How a protocol edition was established (pinned ProtocolChangeProvenance, kept)."
+enum ProtocolChangeProvenance {
+  "The publisher versions the protocol (edition number, dated revision)."
+  SOURCE_VERSIONED
+  "BellLabs observed a different canonical payload between two dated captures (pages versioned in place)."
+  SNAPSHOT_DIFF
+  "A third party reported the change."
+  THIRD_PARTY_REPORTED
+}
+
+"What a protocol step asks for (pinned ProtocolStepType's 23 values collapsed to what questions filter on; the source word stays in stepKindRaw)."
+enum StepKind {
+  "Take or apply a substance or product (ingest, inject, apply, infuse; route in `route`)."
+  TAKE
+  "Do a practice (exercise, light exposure, sleep timing, fasting, eating)."
+  PRACTICE
+  "Avoid or limit a means, or avoid it in a population/condition; carries `statedLevel`; its caution Assertion yields STATES_CONSTRAINT (derived)."
+  AVOID
+  "Measure or test something (absorbs pinned MeasurementPlan); STEP_USES points at the D4 Metric."
+  MEASURE
+  "Review / stop / adjust rule (absorbs pinned ProtocolAdjustmentRule): threshold* and reviewAction."
+  REVIEW
+  "Consult a clinician."
+  CONSULT
+  OTHER
+}
+
+"Pinned RequirementLevel (kept): how strongly the source requires the step (CQ-PR-02)."
+enum RequirementLevel {
+  ESSENTIAL
+  RECOMMENDED
+  OPTIONAL
+  CONDITIONAL
+  NOT_STATED
+}
+
+"Pinned RequirementBasis (kept): who decided the requirement level."
+enum RequirementBasis {
+  STATED_BY_SOURCE
+  EDITORIAL_INFERENCE
+  NOT_STATED
+}
+
+"Anchor a step's timing is relative to (pinned TimeOfDay, renamed; offsets in offsetMinutesMin/Max, negative = before)."
+enum TimeAnchor {
+  UPON_WAKING
+  MORNING
+  AFTERNOON
+  EVENING
+  BEDTIME
+  PRE_MEAL
+  WITH_MEAL
+  POST_MEAL
+  FASTED
+  PRE_EXERCISE
+  POST_EXERCISE
+  ANYTIME
+  NOT_STATED
+}
+
+"Period unit for occurrence ranges ('3-4 nights per week' = 3..4 per WEEK). Pinned CadenceUnit trimmed."
+enum CadenceUnit {
+  DAY
+  WEEK
+  MONTH
+  YEAR
+  CYCLE
+}
+
+"Time basis of a dose amount (new; splits the research-stage doseBasis)."
+enum DosePeriod {
+  PER_DOSE
+  PER_DAY
+  PER_WEEK
+  PER_CYCLE
+  NOT_STATED
+}
+
+"Intake scope of a dose or limit: an upper limit for supplemental magnesium is not comparable with total intake (Q-D5-06)."
+enum IntakeScope {
+  SUPPLEMENTAL_ONLY
+  TOTAL_INTAKE
+  NOT_STATED
+}
+
+"Non-personal population codes used by step applicability, UseConstraint scope and the mandatory population qualifier of D5 assertions (`population:<CODE>`). Diseases are D2 Conditions, not codes."
+enum PopulationGroup {
+  "The source names no population; explicit, never read as 'everyone'."
+  UNSPECIFIED
+  GENERAL_ADULTS
+  OLDER_ADULTS
+  ADOLESCENTS
+  CHILDREN
+  INFANTS
+  PREGNANT
+  LACTATING
+  TRYING_TO_CONCEIVE
+  ATHLETES
+  PRE_SURGERY
+  IMMUNOSUPPRESSED
+  ON_PRESCRIPTION_MEDICATION
+  OTHER
+}
+
+"Comparator for a step threshold or a UseConstraint dose band (pinned ThresholdComparator + BETWEEN)."
+enum ThresholdComparator {
+  GT
+  GTE
+  LT
+  LTE
+  BETWEEN
+  OUTSIDE_REFERENCE_RANGE
+}
+
+"Action a REVIEW step prescribes when its trigger fires (pinned ReviewTriggerAction)."
+enum ReviewAction {
+  REVIEW
+  PAUSE_STEP
+  STOP_PROTOCOL
+  ADJUST_DOSE
+  CONTACT_CLINICIAN
+}
+
+"""
+Directive level a source states (pinned ConstraintLevel + ADJUST_DOSE, SEPARATE_ADMINISTRATION, DISCONTINUE_BEFORE).
+Used typed on ProtocolStep.statedLevel; it is also the value domain of `Assertion.valueString` on the D5 safety
+predicates (USE_CONSTRAINED_IN, INTERACTS_WITH, HAS_UPPER_LIMIT). The level is per asserter and is never part of a
+UseConstraint's identity.
+"""
+enum ConstraintLevel {
+  CONTRAINDICATED
+  DO_NOT_EXCEED_DOSE
+  AVOID
+  NOT_RECOMMENDED
+  USE_WITH_CAUTION
+  MONITOR
+  MAINTAIN_CONSISTENT_INTAKE
+  CONSULT_CLINICIAN
+  "e.g. sirolimus label: cannabidiol 'dose reduction ... should be considered'."
+  ADJUST_DOSE
+  "e.g. bisphosphonates 'at least 2 hours before or after' magnesium; window in the assertion qualifier `window:PT2H`."
+  SEPARATE_ADMINISTRATION
+  "e.g. 'Stop taking ... at least one month before surgery'."
+  DISCONTINUE_BEFORE
+}
+
+"What kind of scoped use concern a UseConstraint identity is."
+enum UseConstraintKind {
+  "Use of S when a D2 Condition is present (contraindication, warning)."
+  CONDITION
+  "Use of S in a population (pregnant, under 18, pre-surgery)."
+  POPULATION
+  "Use of S together with a co-exposure (drug, supplement, food, practice)."
+  INTERACTION
+  "Use of S above a dose band (upper limit, monograph maximum)."
+  DOSE_LIMIT
+  "Use of S by a route or in a form."
+  ROUTE_OR_FORM
+  "Use of S at a time or with a separation window (`timingWindow`)."
+  TIMING
+}
+
+# =====================================================================================================
+# Unions (each <= 6 members; every member is a seam in 10-seams.yaml)
+# Check stage (A5, 2026-10-08): member names verified against the sibling SDLs in worktrees A2 (D1, D12), A3 (D2, D4), A6 (D6).
+# Adversarial review: union StepMeans removed; STEP_USES targets the kernel interface Subjectable (09 D-05).
+# =====================================================================================================
+
+"""
+How progress toward a Target is measured (OPERATIONALIZED_BY): D4 Biomarker, D4 Metric, or D2 Outcome (a
+study-independent endpoint concept such as all-cause mortality or handgrip strength, the node D3 OutcomeDefinitions
+MEASURE). D2.Outcome added in the check stage at D2's request (D2 11-open-questions item 27). 3 members.
+"""
+union TargetMeasure = Biomarker | Metric | Outcome
+
+# =====================================================================================================
+# Targets vocabulary
+# =====================================================================================================
+
+"""
+Purpose: one curated goal people pursue (sleep, strength, brain fitness, body composition, longevity, energy, mood,
+recovery ...): the shared targets vocabulary (00-DIRECTIVE 3.1; packets/D5/vocab-targets.yaml). Every "what helps /
+hurts T" and "what is this for" question starts or ends here. Means never point at a Target with a typed edge or a
+property: they reach it as the object of a kernel Assertion (predicate INTENDED_FOR_TARGET | IMPROVES_TARGET |
+WORSENS_TARGET | NO_EFFECT_ON_TARGET | MIXED_EFFECT_ON_TARGET) or of a kernel Assessment (ASSESSES, effectDirection).
+Hierarchy is the `parentKey` property (2 levels). Not a molecular target (D2), not a Condition (D2), not a Frontier (D13).
+Identity rule: `key` (target:<slug>), stable, never reused; MeSH / Wikidata ids attach through the kernel.
+Not a D2 Outcome either: an Outcome is a study-independent endpoint concept (all-cause mortality, handgrip strength,
+sleep quality as an endpoint) that a Target is OPERATIONALIZED_BY; the Target is what a person pursues, the Outcome
+how a study scores it (09 D-19).
+uid token: `target` (hu:target:<slug>).
+Questions: Q-D5-01, Q-D5-02, Q-D5-03, Q-D5-14, Q-D5-15, Q-D5-18, Q-D5-19, Q-D5-20, Q-D5-28.
+"""
+type Target implements Entity & Subjectable
+  @node(labels: ["Target", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Stable vocabulary key, e.g. target:sleep (unique)."
+  key: String!
+  label: String!
+  definition: String!
+  "Parent key for a level-2 target (target:fat-loss -> target:body-composition); null at top level."
+  parentKey: String
+  level: Int
+  "Feeds the fulltext index TargetSearch(label, synonyms, definition) used for entity linking of goal phrases."
+  synonyms: [String!]
+  "vocab-targets.yaml version at creation or last edit."
+  vocabVersion: String!
+  status: TargetStatus!
+  replacedBy: String
+  """class: structural; cardinality: many (curated vocabulary mapping, not a claim of effect); questions: Q-D5-01, Q-D5-14, Q-D5-20."""
+  operationalizedBy: [TargetMeasure!]!
+    @relationship(type: "OPERATIONALIZED_BY", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+# =====================================================================================================
+# Interventions
+# =====================================================================================================
+
+"""
+Purpose: an intervention CONCEPT that is not simply a substance or a product: a practice (morning sunlight viewing,
+sauna bathing, resistance training, time-restricted eating), a procedure, a device-based practice, or a named
+regimen that clinics, trials and protocols treat as one thing (intermittent low-dose rapamycin). It is the subject of
+target, constraint and adverse-effect assertions for non-substance means, the thing D3 study arms administer
+(Q-D5-25, D3 seam) and D6 offerings sell (Q-D5-17, D6 seam). Plain intake of a compound or product is NOT an
+Intervention: the protocol step points straight at the D1 or D6 record. Collapses pinned Treatment, Procedure,
+Lifestyle and the practice side of Exposure (kind enum).
+Identity rule: (normalized name, kind, regimenQualifier when the regimen is the identity); MeSH / SNOMED CT / Wikidata
+ids attach through the kernel. uid token: `intervention` (hu:intervention:<slug>).
+Questions: Q-D5-02, Q-D5-04, Q-D5-17, Q-D5-25, Q-D5-28.
+"""
+type Intervention implements Entity & Subjectable
+  @node(labels: ["Intervention", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  kind: InterventionKind!
+  definition: String
+  "Distinguishes regimens that share a name ('intermittent low-dose' vs 'transplant prophylaxis'); part of identity."
+  regimenQualifier: String
+  synonyms: [String!]
+}
+
+# =====================================================================================================
+# Protocols: enduring identity -> immutable editions -> ordered steps
+# =====================================================================================================
+
+"""
+Purpose: the enduring identity of a public protocol (a creator's toolkit page, a published longevity protocol, a
+clinic's program definition). Questions traverse from it to its editions over time (HAS_EDITION episodes) and, through
+kernel assertions, to its author (predicate PROTOCOL_AUTHORED_BY -> D7 Person/Organization) and the author's financial
+interests (D7).
+Identity rule: (publisher, canonical URL) when published online, else (publisher, title); the page itself is a kernel
+Source with that canonicalUri. Not merged into Source (09 D-18): a protocol keeps its identity when its URL moves
+(Huberman: hubermanlab.com/toolkit-for-sleep -> /newsletter/toolkit-for-sleep) and exists without a URL (book, clinic
+handout), while a Source is one retrieval endpoint. uid token: `protocol` (hu:protocol:<slug>).
+Questions: Q-D5-10, CQ-PR-01, Q-D5-12, Q-D5-13, Q-D5-19.
+"""
+type Protocol implements Entity & Subjectable
+  @node(labels: ["Protocol", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Normalized canonical URL of the protocol page (equals the kernel Source.canonicalUri); null for print-only protocols."
+  canonicalUri: String
+  description: String
+  """class: asserted; cardinality: one_or_more (EXCLUSIVE: at most one open episode per protocol in valid x recorded time; StateEpisodeProperties); questions: Q-D5-10, CQ-PR-01, Q-D5-13, Q-D5-24."""
+  editions: [ProtocolEdition!]!
+    @relationship(type: "HAS_EDITION", direction: OUT, properties: "StateEpisodeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+"""
+Purpose: the immutable content of one observed or published state of a Protocol: its ordered steps (with their doses,
+timing, stated constraints, stated targets and review rules). Pages are versioned in place and their displayed date
+can stay unchanged while content changes (Huberman 2021 vs 2026), so an edition is minted only when the canonical
+step payload changes (`payloadHash`: hash over the steps' own fields, including the caution fields statedLevel and
+conditionText, never over UseConstraint uids, which a projection-rule bump may re-mint); disclosure or sponsor changes do NOT mint an edition (D7 interest assertions
+with valid time carry them; 11-open-questions OQ-D5-08). Which edition was current when lives on the HAS_EDITION
+episode, not on this node. Implements Subjectable because applicability assessments (CQ-EV-04) and stated-purpose
+assertions (INTENDED_FOR_TARGET) are about an edition.
+Identity rule: (protocol, payloadHash). uid token: `protocol-edition` (hu:protocol-edition:<opaque>).
+Questions: Q-D5-10, CQ-PR-01, CQ-PR-02, Q-D5-11, Q-D5-13, CQ-EV-04.
+"""
+type ProtocolEdition implements Entity & Subjectable
+  @node(labels: ["ProtocolEdition", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "sha256:<hex> over the canonical step payload (sorted by stepKey; payloadCanonicalizationVersion)."
+  payloadHash: String!
+  payloadCanonicalizationVersion: String
+  "Version of the stepKey alignment rule used to carry stepKeys across in-place editions (OPEN-QUESTIONS P2-4)."
+  stepKeyAlignmentVersion: String
+  changeProvenance: ProtocolChangeProvenance!
+  "Publisher's edition label when one exists."
+  editionLabel: String
+  "The date the page displays, verbatim ('September 20, 2021'); never used as valid time without corroboration."
+  displayedDateText: String
+  "First and last capture in which this payload was observed (snapshot retrievedAt); unobserved gaps stay unknown."
+  firstObservedAt: DateTime
+  lastObservedAt: DateTime
+  stepCount: Int
+  """class: structural; cardinality: one_or_more (orderIndex = source order); questions: Q-D5-10, CQ-PR-01, CQ-PR-02, Q-D5-11, Q-D5-12."""
+  steps: [ProtocolStep!]!
+    @relationship(type: "HAS_STEP", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+"""
+Purpose: one step of a protocol edition: what to do (stepKind), with what (STEP_USES -> substance, product, food,
+practice, or the Metric a MEASURE step measures), how much (dose as a range, never a midpoint, with period and intake
+scope), when (anchor + offset), how often (occurrence range per period), for which target (`targetKeys`: the
+protocol's own stated purpose, captured content, never an effect claim), for whom (`appliesToPopulations`), under which
+stated cautions (STATES_CONSTRAINT -> UseConstraint, derived from the author's caution Assertion) and with which review/stop rule (REVIEW steps). One step names one
+primary means; "A or B" alternatives are sibling steps sharing `alternativeGroup` (Huberman: 145 mg magnesium
+threonate OR 200 mg bisglycinate). Absorbs pinned MeasurementPlan, ProtocolAdjustmentRule and the numeric Target.
+Its text is located: `locatorUid` names the SourceLocator (cited by the HAS_EDITION authorizing Assertion) and
+`exactText` is the verbatim span.
+Identity rule: (edition, stepKey); stepKey = section slug + normalized action-text hash, aligned across editions by
+stepKeyAlignmentVersion. uid token: `protocol-step` (hu:protocol-step:<opaque>).
+Questions: Q-D5-01, Q-D5-06, Q-D5-10, CQ-PR-02, CQ-PR-04, Q-D5-11, Q-D5-12, Q-D5-19, CQ-PR-06.
+"""
+type ProtocolStep implements Entity & Subjectable
+  @node(labels: ["ProtocolStep", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  stepKey: String!
+  "sha256:<hex> over this step's canonical payload; equal hashes across editions = unchanged step (CQ-PR-01)."
+  payloadHash: String!
+  stepKind: StepKind!
+  "The source's own verb or heading ('You might consider taking')."
+  stepKindRaw: String
+  "Section the step sits in ('Pregnancy', 'Supplements'); Blueprint numbering restarts per section."
+  sectionLabel: String
+  "Shared by sibling steps that are alternatives of one another ('A or B')."
+  alternativeGroup: String
+  "Verbatim span of the step (equals SourceLocator.exact of `locatorUid`)."
+  exactText: String
+  "uid of the SourceLocator of this step's span on the edition's snapshot."
+  locatorUid: String
+  requirementLevel: RequirementLevel!
+  requirementBasis: RequirementBasis!
+  "Practice report ('3-4 nights per week I also take') vs recommendation vs caution (kernel SpeechAct)."
+  speechAct: SpeechAct
+  "Directive level the protocol itself states for AVOID / REVIEW steps ('Don't take' = AVOID)."
+  statedLevel: ConstraintLevel
+  "Target keys (vocab-targets.yaml) the protocol states this step is for; captured purpose, never an effect claim."
+  targetKeys: [String!]
+  "Populations the step is stated for or restricted to; UNSPECIFIED when the source names none."
+  appliesToPopulations: [PopulationGroup!]
+  "Verbatim condition for CONDITIONAL steps ('if you have trouble falling asleep')."
+  conditionText: String
+  route: String
+  doseMin: Float
+  doseMax: Float
+  "UCUM unit of doseMin/doseMax (mg, g, IU, min, lx)."
+  doseUnit: String
+  dosePeriod: DosePeriod
+  intakeScope: IntakeScope
+  timeAnchor: TimeAnchor
+  "Offset from the anchor in minutes; negative = before (30-60 min before bed = -60..-30)."
+  offsetMinutesMin: Int
+  offsetMinutesMax: Int
+  occurrencesPerPeriodMin: Int
+  occurrencesPerPeriodMax: Int
+  occurrencePeriodUnit: CadenceUnit
+  durationDaysMin: Int
+  durationDaysMax: Int
+  scheduleText: String
+  isAsNeeded: Boolean
+  "MEASURE / REVIEW steps: threshold on the measured Metric (absorbs the pinned numeric Target)."
+  thresholdComparator: ThresholdComparator
+  thresholdLow: Float
+  thresholdHigh: Float
+  thresholdUnit: String
+  reviewAction: ReviewAction
+  "stepKeys this step depends on within the edition (CQ-PR-02); a property, not an edge."
+  dependsOnStepKeys: [String!]
+  "Fields the source does not state (never inferred)."
+  notReportedFields: [String!]
+  """class: structural; cardinality: zero_or_more (one primary means; none for informational OTHER / CONSULT steps). Target is the kernel interface Subjectable; the executor admits only D1 ChemicalSubstance | IngredientMaterial, D6 Product, D12 FoodItem | FoodCategory | DietaryPattern, D5 Intervention, D4 Metric | Device, and validates the type per stepKind (MEASURE -> Metric; TAKE -> substance, material, product, food); questions: Q-D5-06, Q-D5-10, Q-D5-11, Q-D5-12, Q-D5-19, CQ-PR-04."""
+  uses: [Subjectable!]!
+    @relationship(type: "STEP_USES", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: derived; cardinality: many (projection use-constraint-key/v2: when the protocol author's USE_CONSTRAINED_IN | INTERACTS_WITH | HAS_UPPER_LIMIT Assertion cites this step's locatorUid, or a locator inside its span on the same snapshot, and resolves to a UseConstraint, the step gets this edge to it; regenerable, never part of the edition payload); questions: Q-D5-11, CQ-PR-02, Q-D5-03."""
+  statesConstraints: [UseConstraint!]!
+    @relationship(type: "STATES_CONSTRAINT", direction: OUT, properties: "DerivedEdgeProperties", nestedOperations: [], aggregate: false)
+    @settable(onCreate: false, onUpdate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+# =====================================================================================================
+# Safety: the shared blocking identity
+# =====================================================================================================
+
+"""
+Purpose: the shared, stable identity of one scoped use concern, "use of S [above a dose band] [by a route] [in a
+jurisdiction] together with these scope members (population codes, D2 conditions, co-exposures)". Many sources state
+the same concern with different levels (a label: "must not be taken"; a clinic: "interaction"; a forum: deliberate
+use); each statement is a kernel Assertion (predicate USE_CONSTRAINED_IN | INTERACTS_WITH | HAS_UPPER_LIMIT, level in
+valueString, population in qualifiers) and resolves here by RESOLVES_TO_CONSTRAINT (derived, identity rule
+use-constraint-key/v2). Recommendations and answers cite its uid as the blocking constraint (CQ-RC-06); an empty
+result means "no constraint recorded", never "safe". The subject means and the scope members are the subject and
+object of the resolving Assertions (kernel HAS_SUBJECT / HAS_OBJECT); they are not duplicated as typed edges here.
+No level, verdict, direction-of-effect or "safe/unsafe" property: the level and the exposure change belong to each
+asserter (Assertion.valueString; qualifier exposureChange:<code>). Not a kernel Claim (09 D-17): a Claim's identity
+binds the predicate and the stated value, while one UseConstraint groups statements across three predicates and every
+level, and its typed dose band, scope and timing window are what Q-D5-06 / Q-D5-23 filter.
+Identity rule (use-constraint-key/v2): identityKeyHash = sha256(identityKey) where identityKey = canonical string of
+(kind, subject uid, sorted scope member uids and population codes, dose band, route, jurisdiction, timing window; empty
+components kept empty) under identityKeyVersion. v1 had no timing component (OQ-D5-29). uid token: `use-constraint`.
+Questions: Q-D5-03, Q-D5-04, Q-D5-05, Q-D5-06, Q-D5-09, Q-D5-11, Q-D5-21, Q-D5-23, CQ-RC-06, Q-D5-24, Q-D5-26.
+"""
+type UseConstraint implements Entity & Subjectable
+  @node(labels: ["UseConstraint", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  constraintKind: UseConstraintKind!
+  "Canonical identity string (readable; contains the member uids and codes)."
+  identityKey: String!
+  identityKeyHash: String!
+  identityKeyVersion: String!
+  "Population codes in scope (empty when the scope is a condition or a co-exposure only)."
+  scopePopulations: [PopulationGroup!]
+  "DOSE_LIMIT only: the dose band the concern starts at (350 mg/day supplemental magnesium -> GT 350 mg PER_DAY SUPPLEMENTAL_ONLY)."
+  doseComparator: ThresholdComparator
+  doseValue: Float
+  doseUnit: String
+  dosePeriod: DosePeriod
+  intakeScope: IntakeScope
+  route: String
+  "TIMING only: the window relative to an anchor in ISO 8601 durations ('BEDTIME-PT10H/BEDTIME-PT8H' = from 10 h to 8 h before bedtime; 'PT2H' = 2 h separation). Part of identity (v2)."
+  timingWindow: String
+  "ISO 3166 code when the concern is jurisdiction-specific."
+  jurisdiction: String
+  summary: String
+  """class: derived; cardinality: one_or_more (projection use-constraint-key/v2 over D5 safety Assertions; regenerable); questions: Q-D5-03, Q-D5-04, Q-D5-05, Q-D5-21, Q-D5-23, CQ-RC-06, Q-D5-24, Q-D5-26."""
+  resolvedFrom: [Assertion!]!
+    @relationship(type: "RESOLVES_TO_CONSTRAINT", direction: IN, properties: "DerivedEdgeProperties", nestedOperations: [], aggregate: false)
+    @settable(onCreate: false, onUpdate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

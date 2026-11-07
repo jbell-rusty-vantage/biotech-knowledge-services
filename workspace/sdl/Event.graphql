@@ -1,0 +1,130 @@
+"""
+Purpose: one dated public occurrence in biotech that investors, researchers and agents order into timelines and chains:
+a trial start, a readout, a regulatory submission, acceptance, designation, approval, rejection or clinical hold, a
+safety signal, a discontinuation, a financing, an acquisition, a partnership, a retraction curated as a frontier
+milestone. Every timeline, chain, harm and breakthrough question filters by its kind and clocks, joins it to frontiers
+and participants, and traverses LEADS_TO / RESPONDS_TO through it, so it is a node.
+Clocks (CQ-TM-03): every time property is MATERIALIZED from one kernel Assertion whose subject is this Event and whose
+validFrom/validTo carry the time: startedAt/endedAt ← EVENT_OCCURRED (timeAssertionUid); announcedAt ← EVENT_ANNOUNCED
+(the first public statement by a party; announcementAssertionUid); effectiveFrom ← EVENT_EFFECTIVE (legal or
+contractual effect, may be an INSTANT with localTimeZone; effectiveAssertionUid); scheduledFrom/scheduledTo ←
+the latest accepted EVENT_SCHEDULED (a guided or goal window, half-open, e.g. "first half of 2023" = [2023-01-01,
+2023-07-01) with MONTH precision on both bounds; scheduleAssertionUid). The filing or acceptance time of the document
+that reports the event is not an Event clock: it is SourceSnapshot.publishedAt of that document. When two asserters
+disagree (a registry start date versus the sponsor's "first participant dosed"), both Assertions stay and the
+materialized value follows the precedence rule named in `clockRule`. History lives in the Assertions (recorded time):
+a re-guided date, a correction or a cancellation is a new Assertion on the same Event, never an edit and never a new
+Event. Nothing is required beyond one EVENT_OCCURRED or EVENT_SCHEDULED Assertion with a locator: an event that exists
+only as a press release (no filing, no registry change) is a valid Event (Q-D13-22 measures corroboration).
+Records (R-66): a regulatory act is one D8 RegulatoryRecord plus at most one Event, linked by DOCUMENTED_BY_RECORD; its date is
+one Assertion on one shared locator and the Event clocks are caches. An Event is minted only for a frontier timeline and
+never re-asserts a date a D3 or D8 record already carries; process chains (submission → acceptance → approval) are
+computed from the shared D8 application identifier, not from LEADS_TO.
+Identity rule (adversarial-review pass): `identityKey` is a MINT-TIME key, written once when the executor creates the
+Event and never recomputed: eventKind | primary subject uid | jurisdiction or '-' | time anchor as first stated (startedAt,
+or the scheduled window, at its stated precision) | discriminator when required. The primary subject is the object of the
+one EVENT_ABOUT Assertion carrying the qualifier `primary=true`; for FINANCING it is the ISSUER or BORROWER participant,
+for ACQUISITION the ACQUIREE, for PARTNERSHIP the party whose asset is licensed (the INVOLVES Assertion carrying
+`primary=true`). The discriminator is required when one subject can have several events of the same kind on one day
+(FINANCING: the instrument, e.g. loan-tranche, registered-direct, atm-sales). Matching a new artifact to an existing Event
+does not compare keys: candidates share eventKind, primary subject and jurisdiction and have overlapping time windows
+(scheduled window, occurrence at its precision); a sure match attaches the new Assertions to that Event, a doubtful one
+mints a new Event plus a proposed EQUIVALENCE Assessment, and a merge happens only through an accepted EQUIVALENCE
+Assessment. So a re-guided window, PLANNED → OCCURRED, or a more precise later date never mints a second Event (Q-D13-11).
+An 8-K, its press-release exhibit, a registry status change and a regulator record about the same occurrence are several
+Assertions about ONE Event (an acquisition's agreement and closing are one Event with two clocks). External ids
+(accession numbers, NCT ids of the subject study) are identifiers of the documents or subjects, not of the Event.
+uid token: `event` (hu:event:<opaque>).
+Questions: Q-D13-01, Q-D13-02, Q-D13-03, Q-D13-04, Q-D13-05, Q-D13-06, Q-D13-07, Q-D13-08, Q-D13-10, Q-D13-11,
+Q-D13-12, CQ-EV-05, Q-D13-14, Q-D13-15, Q-D13-16, Q-D13-17, CQ-TM-03, CQ-TM-01, Q-D13-21, Q-D13-22, Q-D13-25, Q-D13-26,
+Q-D13-27, Q-D13-30, Q-D13-31, Q-D13-32, Q-D13-33.
+"""
+type Event implements Entity & Subjectable
+  @node(labels: ["Event", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Kind of event; filter key of every D13 question (vocab-frontiers.yaml section 5)."
+  eventKind: EventKind!
+  "Required when eventKind is OTHER: what the source calls it (reviewed for a vocabulary bump)."
+  eventKindNote: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "Materialized from the time Assertions; never truth."
+  eventStatus: EventStatus!
+  "Mint-time key per the identity rule (kind | primary subject uid | jurisdiction | first-stated time at precision | discriminator); frozen, never recomputed; dedup matches on overlapping windows, not on this string."
+  identityKey: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "One-paragraph neutral summary written from the cited spans (presentation and retrieval only; never evidence)."
+  summaryText: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "ISO 3166-1 alpha-2 or region code (US, EU, GB, JP); required for regulatory kinds (vocab-frontiers.yaml `requires`). When a D8 RegulatoryRecord documents the event, the JURISDICTION Assertion cites the record's locator (one shared span)."
+  jurisdiction: String
+  "When it happened (valid-time start, first instant of its precision period) ← EVENT_OCCURRED."
+  startedAt: DateTime
+  startedAtPrecision: TimePrecision @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  startedAtBasis: ValidTimeBasis @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "When a durative event ended (half-open); null = unknown or instantaneous, never 'ongoing'."
+  endedAt: DateTime
+  endedAtPrecision: TimePrecision @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "uid of the EVENT_OCCURRED Assertion that startedAt/endedAt materialize."
+  timeAssertionUid: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "First public announcement by a party to the event (press-release dateline or publication instant) ← EVENT_ANNOUNCED."
+  announcedAt: DateTime
+  announcedAtPrecision: TimePrecision @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  announcementAssertionUid: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "When the legal, regulatory or contractual effect begins ← EVENT_EFFECTIVE; never proxied from announcedAt."
+  effectiveFrom: DateTime
+  effectiveFromPrecision: TimePrecision @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  effectiveFromBasis: ValidTimeBasis @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  effectiveAssertionUid: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "IANA time zone in which the source stated a local time (\"5:00 p.m. Eastern Time\"); instants are stored in UTC."
+  localTimeZone: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "Start of the latest accepted scheduled window (half-open) ← EVENT_SCHEDULED; null bound = unknown."
+  scheduledFrom: DateTime
+  "Exclusive end of the latest accepted scheduled window (a PDUFA goal date D is [D, D+1 day))."
+  scheduledTo: DateTime
+  scheduledFromPrecision: TimePrecision @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  scheduledToPrecision: TimePrecision @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "uid of the EVENT_SCHEDULED Assertion the window materializes; earlier windows stay as superseded Assertions (Q-D13-11)."
+  scheduleAssertionUid: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "Named precedence rule used when several asserters give the same clock, e.g. event-clock/v1 (regulator > registry > filing > sponsor release > press)."
+  clockRule: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "READOUT only."
+  readoutStage: ReadoutStage
+  "READOUT only: what the source states about the primary endpoint(s); a capture, not a judgment."
+  primaryEndpointStatement: EndpointStatement
+  "APPROVAL only; D8 vocabulary (R-66, OQ-D8-02 mapping: FULL → US_DRUG_NDA | US_BLA, ACCELERATED → US_ACCELERATED_APPROVAL, CONDITIONAL → EU_CONDITIONAL_MA, 510K / DE_NOVO / PMA → US_DEVICE_*, EMERGENCY_USE → US_EUA; a supplement is the record's recordNumber)."
+  approvalPathway: RegulatoryPathway
+  "REGULATORY_DESIGNATION (and PRIORITY_REVIEW announced with REGULATORY_ACCEPTANCE) only; D8 vocabulary (R-66): the designation programme, e.g. US_BREAKTHROUGH_THERAPY, EU_PRIME, JP_SAKIGAKE, US_ / EU_ORPHAN_DESIGNATION by jurisdiction."
+  designationType: RegulatoryPathway
+  "PROGRAM_DISCONTINUATION only."
+  discontinuationScope: DiscontinuationScope
+
+  """class: asserted; cardinality: many (1–2 level-2 frontiers, rarely 3; a level-1 theme only when no child fits; one recorded-time episode per classification Assertion by the curation agent, qualifier frontierVocabVersion; reclassification supersedes, never edits); questions: Q-D13-01, Q-D13-02, Q-D13-03, Q-D13-04, Q-D13-08, Q-D13-09, Q-D13-16, Q-D13-23, Q-D13-28, Q-D13-29."""
+  frontiers: [Frontier!]!
+    @relationship(type: "ON_FRONTIER", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many-to-many (earlier enabling event → later enabled event; projected only from an Assertion with speechAct STATES whose locator states the basis and whose SUPPORT adjudication is DIRECTLY_SUPPORTED or SUPPORTED_WITH_QUALIFICATION; service check object.startedAt >= subject.startedAt; temporal wording alone ("following") never projects); questions: Q-D13-01, Q-D13-05, Q-D13-06."""
+  leadsTo: [Event!]!
+    @relationship(type: "LEADS_TO", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many-to-many (responding event → stimulus event: a deliberate act by a sponsor, regulator, investor or publisher that the source states was taken because of the stimulus; same projection gate as LEADS_TO); questions: Q-D13-01, Q-D13-08, Q-D13-14, Q-D13-15, Q-D13-26."""
+  respondsTo: [Event!]!
+    @relationship(type: "RESPONDS_TO", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (one episode per participant and role; role on the edge, the printed title as the Assertion qualifier roleText; D7 Organization declares no inverse); questions: Q-D13-03, Q-D13-06, Q-D13-14, Q-D13-15, Q-D13-21, Q-D13-23, Q-D13-33."""
+  involvedOrganizations: [Organization!]!
+    @relationship(type: "INVOLVES", direction: OUT, properties: "EventRoleEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (presenters, named individual investors; public actors only; authors of a retracted paper are reached through D3 AUTHORED_BY on the Publication, R-44; D7 Person declares no inverse); questions: Q-D13-14, Q-D13-25."""
+  involvedPeople: [Person!]!
+    @relationship(type: "INVOLVES", direction: OUT, properties: "EventRoleEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (usually one: the authority's record of the act — a Drugs@FDA action, a designation, a warning letter, a recall — for APPROVAL, REJECTION, REGULATORY_DESIGNATION, ENFORCEMENT_ACTION, RECALL, MARKET_WITHDRAWAL, REGULATORY_STATUS_CHANGE; D8 owns the record and declares no inverse; regulator, applicant and record date are read from the record's ISSUED_BY / ADDRESSED_TO / issuedAt, so the Event repeats none of them; promoted from predicate-only in the adversarial-review pass); questions: Q-D13-12, Q-D13-14, Q-D13-22."""
+  regulatoryRecords: [RegulatoryRecord!]!
+    @relationship(type: "DOCUMENTED_BY_RECORD", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

@@ -1,0 +1,48 @@
+"""
+Purpose: one administered thing inside one arm with its dose as stated — amount, unit, basis (per dose / day / kg diet),
+mass basis (salt vs moiety), form, route, schedule, duration, verbatim dose text, lot and supplier as stated — and the
+resolved material it administered (ADMINISTERS). A node rather than edge properties because the kernel edge-property
+types carry no dose fields and because assertions hang on it: measured delivery (ITP NR diet assayed at 67–89% of
+nominal), dose equivalence (PEARL compounded 5 mg ≈ 1.43 mg generic), material provider. Absorbs pinned
+InterventionComponent and the dose half of StudyIntervention.
+Identity rule: (arm, materialTextVerbatim normalized, componentRole, payloadHash).
+uid token: `intervention-component`.
+Questions: CQ-ST-01, CQ-ST-02, CQ-EV-04, Q-D3-04, Q-D3-06, Q-D3-07.
+"""
+type InterventionComponent implements Entity & Subjectable
+  @node(labels: ["InterventionComponent", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  componentRole: ComponentRole!
+  "What the source named (e.g. 'Nicotinamide riboside chloride, ChromaDex')."
+  materialTextVerbatim: String! @filterable(byValue: false) @sortable(byValue: false)
+  "Registry intervention type as stated (DRUG, DIETARY_SUPPLEMENT, DEVICE, BEHAVIORAL, ...)."
+  interventionTypeVerbatim: String @filterable(byValue: false) @sortable(byValue: false)
+  quantity: Float
+  "UCUM unit of quantity (mg, mg/kg, [ppm])."
+  unitCode: String
+  "D6 enum AmountBasis (owner D6, R-58; e.g. PER_DOSE, PER_DAY, PER_KG_DIET, MEDIUM_CONCENTRATION)."
+  quantityBasis: AmountBasis
+  "D1 enum MassBasis (owner D1; 10-seams.yaml sharedVocabularies)."
+  massBasis: MassBasis @filterable(byValue: false) @sortable(byValue: false)
+  route: AdministrationRoute
+  dosageForm: String @filterable(byValue: false) @sortable(byValue: false)
+  scheduleText: String @filterable(byValue: false) @sortable(byValue: false)
+  "ISO 8601 duration of administration (P20W)."
+  durationIso: String @filterable(byValue: false) @sortable(byValue: false)
+  verbatimDoseText: String @filterable(byValue: false) @sortable(byValue: false)
+  lotCodeVerbatim: String @filterable(byValue: false) @sortable(byValue: false)
+  supplierNameVerbatim: String @filterable(byValue: false) @sortable(byValue: false)
+  payloadHash: String! @filterable(byValue: false) @sortable(byValue: false)
+  """class: asserted; cardinality: zero_or_one (exactly one once resolved; unresolved components keep only materialTextVerbatim); questions: CQ-ST-01, CQ-ST-02, Q-D3-04, Q-D3-05, Q-D3-06."""
+  administers: [AdministeredMaterial!]!
+    @relationship(type: "ADMINISTERS", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

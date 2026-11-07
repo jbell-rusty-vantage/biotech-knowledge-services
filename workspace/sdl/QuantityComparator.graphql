@@ -1,0 +1,22 @@
+"""
+Comparator of a stated quantity — the one comparator enum of the schema (owner D1, R-57). Consumers: D1
+ContentEdgeProperties.comparator; D5 ProtocolStep.thresholdComparator and UseConstraint.doseComparator (D5 threshold enum
+retired); D8 specification fields (D8 spec enum retired: NOT_LESS_THAN -> GTE, NOT_MORE_THAN -> LTE, RANGE -> BETWEEN,
+EQUALS -> EQ, ABSENT_IN -> ABSENT; mapping in the release migration/v1-map.yaml enums.valueMappings); D12. BETWEEN keeps quantity null and the bounds in the
+Assertion qualifier range:<low>-<high>. OUTSIDE_REFERENCE_RANGE (D5 thresholds), ABSENT, CONFORMS_TO_DESCRIPTION,
+REFERENCE_ONLY and UNKNOWN (D8 specifications) carry no point value.
+"""
+enum QuantityComparator {
+  EQ
+  APPROX
+  GTE
+  GT
+  LTE
+  LT
+  BETWEEN
+  OUTSIDE_REFERENCE_RANGE
+  ABSENT
+  CONFORMS_TO_DESCRIPTION
+  REFERENCE_ONLY
+  UNKNOWN
+}

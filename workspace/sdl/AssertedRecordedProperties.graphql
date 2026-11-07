@@ -1,0 +1,13 @@
+"""
+Asserted edge, recorded time only (added in the model stage, 00-DIRECTIVE rule 9): one relationship per
+recorded-time episode, authorized by exactly one Assertion (`assertionUid`), for asserted edges whose valid time no
+question reads (the authorizing Assertion still carries any valid time the source states). Same rules as
+AssertedEdgeProperties without the valid-time fields; switching an edge to AssertedEdgeProperties later is additive.
+"""
+type AssertedRecordedProperties @relationshipProperties {
+  relationshipUid: String!
+  assertionUid: String!
+  recordedFrom: DateTime!
+  recordedTo: DateTime
+  lastWriterRunId: String
+}

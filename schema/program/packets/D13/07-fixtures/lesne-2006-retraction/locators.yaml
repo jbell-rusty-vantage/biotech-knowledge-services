@@ -1,0 +1,363 @@
+# lesne-2006-retraction — locators (fixtures stage, A7, 2026-10-08; adversarial-review pass same day). Generated and re-verified against fresh captures by _notes/tools/build_fixtures.py.
+# selectorKind values are the kernel SelectorKind enum (verification.v1 kinds + WHOLE_SNAPSHOT; EDGAR index fields use API_RECORD with rule edgar-accession/v1); offsets are code points (see snapshots[].offsetBasis); EDGAR HTML snapshots are identified by their h2t-v1 projection hash (contentHashBasis NORMALIZED_TEXT).
+fixture: lesne-2006-retraction
+snapshots:
+- ref: s-nature-retraction-note
+  uid: hu:snapshot:fx-d13-nature-retraction-note
+  source:
+    canonicalUri: https://www.nature.com/articles/s41586-024-07691-8
+    sourceKind: WEB_PAGE
+    genre: RETRACTION_NOTICE
+    name: 'Retraction Note: A specific amyloid-β protein assembly in the brain impairs memory (Nature 631, 240 (2024))'
+  retrievedAt: '2026-10-08'
+  publishedAt: '2024-06-24'
+  contentHash: sha256:9344328de8d70df9deb69c6099e7ad235bc21f52ba462755448dcad143700499
+  contentHashBasis: RAW_BYTES
+  captureMethod: firecrawl scrape --only-main-content (CLI 1.23.1); Tavily cannot fetch nature.com
+  captureTool: tool:firecrawl-scrape
+  captureCompleteness: COMPLETE
+  rawCaptureFile: scratch ft/D13/fx/raw/nature-retraction.fc.md (not committed; durable blob storage is an open item, 11-open-questions.md)
+  refetchReproducible: scraper output does not reproduce byte-exactly (Firecrawl / Tavily markdown varies by a trailing newline and by page chrome); the stored artifact is the evidence and needs durable
+    storage
+  offsetBasis: Unicode code points of the captured file decoded as UTF-8 (the capture artifact itself)
+- ref: s-crossref-nature04533
+  uid: hu:snapshot:fx-d13-crossref-nature04533
+  source:
+    canonicalUri: https://api.crossref.org/works/10.1038/nature04533
+    sourceKind: API
+    genre: BIBLIOGRAPHIC_RECORD
+    name: Crossref work record 10.1038/nature04533
+  retrievedAt: '2026-10-08'
+  publishedAt: null
+  contentHash: sha256:c16a41f932272abe72657f723ed2ba33b11bc3856610886a2de0492ccf13fbe2
+  contentHashBasis: RAW_BYTES
+  captureMethod: curl -> Crossref REST works API
+  captureTool: tool:crossref-rest
+  captureCompleteness: COMPLETE
+  rawCaptureFile: scratch ft/D13/fx/raw/crossref-nature04533.json (not committed; durable blob storage is an open item, 11-open-questions.md)
+  refetchReproducible: 'live API record: content changes as the registry, index or metadata is updated; the stored artifact is the evidence'
+- ref: s-crossref-retraction-note
+  uid: hu:snapshot:fx-d13-crossref-retraction-note
+  source:
+    canonicalUri: https://api.crossref.org/works/10.1038/s41586-024-07691-8
+    sourceKind: API
+    genre: BIBLIOGRAPHIC_RECORD
+    name: Crossref work record 10.1038/s41586-024-07691-8 (retraction note)
+  retrievedAt: '2026-10-08'
+  publishedAt: null
+  contentHash: sha256:60c30270212a8bef9a48e2243f3a2f4858b50962dc6cb17157a2da9ff0c40d45
+  contentHashBasis: RAW_BYTES
+  captureMethod: curl -> Crossref REST works API
+  captureTool: tool:crossref-rest
+  captureCompleteness: COMPLETE
+  rawCaptureFile: scratch ft/D13/fx/raw/crossref-retraction-notice.json (not committed; durable blob storage is an open item, 11-open-questions.md)
+  refetchReproducible: 'live API record: content changes as the registry, index or metadata is updated; the stored artifact is the evidence'
+- ref: s-pubmed-16541076
+  uid: hu:snapshot:fx-d13-pubmed-16541076
+  source:
+    canonicalUri: https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=16541076&retmode=xml
+    sourceKind: API
+    genre: BIBLIOGRAPHIC_RECORD
+    name: PubMed record PMID 16541076
+  retrievedAt: '2026-10-08'
+  publishedAt: null
+  contentHash: sha256:673d519342b57ebda80152a59c4d5fcb960225e91c6c7a5f6165bc9658734ee3
+  contentHashBasis: RAW_BYTES
+  captureMethod: curl -> NCBI E-utilities efetch
+  captureTool: tool:pubmed-eutils
+  captureCompleteness: COMPLETE
+  rawCaptureFile: scratch ft/D13/fx/raw/pubmed-16541076.xml (not committed; durable blob storage is an open item, 11-open-questions.md)
+  refetchReproducible: live API record (efetch XML); the stored artifact is the evidence
+  offsetBasis: Unicode code points of the captured file decoded as UTF-8 (the capture artifact itself)
+- ref: s-nature04533-wayback-2020
+  uid: hu:snapshot:fx-d13-nature04533-wayback-2020
+  source:
+    canonicalUri: https://www.nature.com/articles/nature04533
+    sourceKind: WEB_PAGE
+    genre: PEER_REVIEWED_PUBLICATION
+    name: A specific amyloid-β protein assembly in the brain impairs memory | Nature (archived 2020-08-12)
+  retrievedAt: '2026-10-08'
+  publishedAt: '2006-03-16'
+  contentHash: sha256:b9b53659a899ed9f1282f6ecd9809956618241d32b598f7bd543e8672569c1b1
+  contentHashBasis: RAW_BYTES
+  captureMethod: curl -> web.archive.org id_ capture 20200812221937 (found via the Wayback availability API)
+  captureTool: tool:wayback-archive
+  captureCompleteness: COMPLETE
+  rawCaptureFile: scratch ft/D13/fx/raw/wayback-nature04533-20200812.html (not committed; durable blob storage is an open item, 11-open-questions.md)
+  refetchReproducible: 'Wayback id_ bytes did not reproduce on re-fetch (2026-10-08: 231,151 bytes sha256 88986ab6... vs captured 231,143 bytes b9b53659...; the <title> and the absence of ''retract'' are
+    the same); the stored artifact is the evidence'
+  observedAt: '2020-08-12T22:19:37Z'
+  archiveUri: http://web.archive.org/web/20200812221937/https://www.nature.com/articles/nature04533
+- ref: s-nature04533-current
+  uid: hu:snapshot:fx-d13-nature04533-current
+  source:
+    canonicalUri: https://www.nature.com/articles/nature04533
+    sourceKind: WEB_PAGE
+    genre: PEER_REVIEWED_PUBLICATION
+    name: 'RETRACTED ARTICLE: A specific amyloid-β protein assembly in the brain impairs memory (current page)'
+  retrievedAt: '2026-10-08'
+  publishedAt: '2006-03-16'
+  contentHash: sha256:3ba3d56c8dd52438bacf30ea6b6fbf8c5a69a325bb6d304e05dde26216b8e845
+  contentHashBasis: RAW_BYTES
+  captureMethod: firecrawl scrape --only-main-content (CLI 1.23.1)
+  captureTool: tool:firecrawl-scrape
+  captureCompleteness: COMPLETE
+  rawCaptureFile: scratch ft/D13/fx/raw/nature04533-current.fc.md (not committed; durable blob storage is an open item, 11-open-questions.md)
+  refetchReproducible: scraper output does not reproduce byte-exactly (Firecrawl / Tavily markdown varies by a trailing newline and by page chrome); the stored artifact is the evidence and needs durable
+    storage
+  offsetBasis: Unicode code points of the captured file decoded as UTF-8 (the capture artifact itself)
+  revisionKind: RETRACTION
+  revisesSnapshotUid: hu:snapshot:fx-d13-nature04533-wayback-2020
+locators:
+- ref: l01
+  uid: hu:locator:fx-d13-lesne-l01
+  snapshot: s-nature-retraction-note
+  selectorKind: TEXT_QUOTE
+  section: notice body
+  exact: The authors wish to retract this article.
+  prefix: "Published online 16 March 2006\n\n"
+  suffix: ' Concerns have been raised regar'
+  startOffset: 1101
+  endOffset: 1142
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:792710e4ba159ce27b9f5b728fd603ab6a4b2983b59ac6303510eeb714bbe9df
+  selectorJson: '{"basis":"capture file, UTF-8 code points","exact":"The authors wish to retract this article.","prefix":"Published online 16 March 2006\n\n","refinedBy":{"end":1142,"start":1101,"type":"TextPositionSelector"},"suffix":"
+    Concerns have been raised regar","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:5a4db7f7089e836fca1bf234e213f521445e88894f4d8d56d778c35b06398c8e
+  verified:
+    'on': '2026-10-08'
+    against: sha256:9344328de8d70df9deb69c6099e7ad235bc21f52ba462755448dcad143700499
+    result: exact match at [1101,1142) of the fresh capture
+- ref: l02
+  uid: hu:locator:fx-d13-lesne-l02
+  snapshot: s-nature-retraction-note
+  selectorKind: TEXT_QUOTE
+  section: notice body
+  exact: which show signs of excessive manipulation, including splicing, duplication and the use of an eraser tool. The data cannot be verified from the records.
+  prefix: 'g. 2c and Supplementary Fig. 4, '
+  suffix: ' We consider that the appropriat'
+  startOffset: 1248
+  endOffset: 1400
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:7b6c7f4b0b9ecec93e58e133e4b6a519953ce4014b5ef403b3fa7ec1d7a21469
+  selectorJson: '{"basis":"capture file, UTF-8 code points","exact":"which show signs of excessive manipulation, including splicing, duplication and the use of an eraser tool. The data cannot be verified
+    from the records.","prefix":"g. 2c and Supplementary Fig. 4, ","refinedBy":{"end":1400,"start":1248,"type":"TextPositionSelector"},"suffix":" We consider that the appropriat","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:8709d9ccd81aeba9182967a6e6777d146fb00eda957ed9f041d6dd0c242ff18c
+  verified:
+    'on': '2026-10-08'
+    against: sha256:9344328de8d70df9deb69c6099e7ad235bc21f52ba462755448dcad143700499
+    result: exact match at [1248,1400) of the fresh capture
+- ref: l03
+  uid: hu:locator:fx-d13-lesne-l03
+  snapshot: s-nature-retraction-note
+  selectorKind: TEXT_QUOTE
+  section: notice header
+  exact: 'Retraction to: _Nature_ [https://doi.org/10.1038/nature04533](https://doi.org/10.1038/nature04533) Published online 16 March 2006'
+  prefix: "in-neurodegenerative-diseases)\n\n"
+  suffix: "\n\nThe authors wish to retract th"
+  startOffset: 970
+  endOffset: 1099
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:01e1d9eda7999a814eceef485a713382d8c2ef6ac666865d8b831217bdb8c602
+  selectorJson: '{"basis":"capture file, UTF-8 code points","exact":"Retraction to: _Nature_ [https://doi.org/10.1038/nature04533](https://doi.org/10.1038/nature04533) Published online 16 March 2006","prefix":"in-neurodegenerative-diseases)\n\n","refinedBy":{"end":1099,"start":970,"type":"TextPositionSelector"},"suffix":"\n\nThe
+    authors wish to retract th","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:575d59956740a6b000ccb9e0b28aeb82479806a01047b8b472e85f38467ce5bc
+  verified:
+    'on': '2026-10-08'
+    against: sha256:9344328de8d70df9deb69c6099e7ad235bc21f52ba462755448dcad143700499
+    result: exact match at [970,1099) of the fresh capture
+- ref: l04
+  uid: hu:locator:fx-d13-lesne-l04
+  snapshot: s-nature-retraction-note
+  selectorKind: TEXT_QUOTE
+  section: About this article
+  exact: '- Published: 24 June 2024'
+  prefix: "ormat=refman&flavour=citation)\n\n"
+  suffix: "\n\n- Version of record: 24 June 2"
+  startOffset: 6757
+  endOffset: 6782
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:3aeb9e4bb6405c9a32f3defc14e4ca3e39b31fd05ebd23a3c7e6f6edb3aa6915
+  selectorJson: '{"basis":"capture file, UTF-8 code points","exact":"- Published: 24 June 2024","prefix":"ormat=refman&flavour=citation)\n\n","refinedBy":{"end":6782,"start":6757,"type":"TextPositionSelector"},"suffix":"\n\n-
+    Version of record: 24 June 2","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:b6609a47161a874d1ac2b02e02a80875c9194f7068de7f5cb81ce31a256b0d19
+  verified:
+    'on': '2026-10-08'
+    against: sha256:9344328de8d70df9deb69c6099e7ad235bc21f52ba462755448dcad143700499
+    result: exact match at [6757,6782) of the fresh capture
+- ref: l05
+  uid: hu:locator:fx-d13-lesne-l05
+  snapshot: s-nature-retraction-note
+  selectorKind: TEXT_QUOTE
+  section: notice body
+  exact: Ming Teng Koh, Linda Kotilinek, Rakez Kayed, Charles G. Glabe, Michela Gallagher and Karen H. Ashe agree with the retraction.
+  prefix: "ion is to retract the article.\n\n"
+  suffix: ' Sylvain Lesné disagrees with th'
+  startOffset: 1479
+  endOffset: 1604
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:353c65d3b1a2daa95838a00ff161d6096562826da75b8b4198b95de1df36a127
+  selectorJson: '{"basis":"capture file, UTF-8 code points","exact":"Ming Teng Koh, Linda Kotilinek, Rakez Kayed, Charles G. Glabe, Michela Gallagher and Karen H. Ashe agree with the retraction.","prefix":"ion
+    is to retract the article.\n\n","refinedBy":{"end":1604,"start":1479,"type":"TextPositionSelector"},"suffix":" Sylvain Lesné disagrees with th","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:5f2d68c86617200c99055de12520640026ddfbe731cf43819972e22cd646cb4e
+  verified:
+    'on': '2026-10-08'
+    against: sha256:9344328de8d70df9deb69c6099e7ad235bc21f52ba462755448dcad143700499
+    result: exact match at [1479,1604) of the fresh capture
+- ref: l06
+  uid: hu:locator:fx-d13-lesne-l06
+  snapshot: s-nature-retraction-note
+  selectorKind: TEXT_QUOTE
+  section: notice body
+  exact: Sylvain Lesné disagrees with the retraction.
+  prefix: 'Ashe agree with the retraction. '
+  suffix: ' Austin Yang has not responded t'
+  startOffset: 1605
+  endOffset: 1649
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:3b222405794a18224fe28624988b4b6915a67fd5873d338dbf7701ef0b218519
+  selectorJson: '{"basis":"capture file, UTF-8 code points","exact":"Sylvain Lesné disagrees with the retraction.","prefix":"Ashe agree with the retraction. ","refinedBy":{"end":1649,"start":1605,"type":"TextPositionSelector"},"suffix":"
+    Austin Yang has not responded t","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:3c0c4c21e517d59b44b5ab56e0bcfcd77330d61ba3f2da17653e8449963b1b56
+  verified:
+    'on': '2026-10-08'
+    against: sha256:9344328de8d70df9deb69c6099e7ad235bc21f52ba462755448dcad143700499
+    result: exact match at [1605,1649) of the fresh capture
+- ref: l07
+  uid: hu:locator:fx-d13-lesne-l07
+  snapshot: s-crossref-nature04533
+  selectorKind: JSON_POINTER
+  pointer: /message/updated-by/2
+  exact: '{"DOI":"10.1038/s41586-024-07691-8","label":"Retraction","source":"publisher","type":"retraction","updated":{"date-parts":[[2024,6,24]],"date-time":"2024-06-24T00:00:00Z","timestamp":1719187200000}}'
+  quoteHash: sha256:d8f2ab6059b1ebf0507994c83f0e3b253408a5f042bc8397a46723f696f018d6
+  selectorJson: '{"pointer":"/message/updated-by/2","type":"JsonPointerSelector","valueSerialization":"string value as-is; objects as canonical JSON (sorted keys, no whitespace)"}'
+  selectorDigest: sha256:d84a711a19a44dda2f41861d8e1a197ae98b977bb0fa0bf8eb609611ded7f7a3
+  note: publisher-deposited retraction (source 'publisher', 2024-06-24)
+  verified:
+    'on': '2026-10-08'
+    against: sha256:c16a41f932272abe72657f723ed2ba33b11bc3856610886a2de0492ccf13fbe2
+    result: pointer resolves in the fresh capture; value equals exact
+- ref: l08
+  uid: hu:locator:fx-d13-lesne-l08
+  snapshot: s-crossref-nature04533
+  selectorKind: JSON_POINTER
+  pointer: /message/updated-by/1
+  exact: '{"DOI":"10.1038/s41586-024-07691-8","label":"Retraction","record-id":"54364","source":"retraction-watch","type":"retraction","updated":{"date-parts":[[2024,6,24]],"date-time":"2024-06-24T00:00:00Z","timestamp":1719187200000}}'
+  quoteHash: sha256:4548defd66b15bdc176cec323f15a69062b7a65b75ddcbbec582ede97b026686
+  selectorJson: '{"pointer":"/message/updated-by/1","type":"JsonPointerSelector","valueSerialization":"string value as-is; objects as canonical JSON (sorted keys, no whitespace)"}'
+  selectorDigest: sha256:0c099a8dde8a6654b6f4a1a7aba6e37581f020e315331d8ae8dd7fedeb6640a8
+  note: Retraction Watch retraction record (source 'retraction-watch', record-id 54364, 2024-06-24)
+  verified:
+    'on': '2026-10-08'
+    against: sha256:c16a41f932272abe72657f723ed2ba33b11bc3856610886a2de0492ccf13fbe2
+    result: pointer resolves in the fresh capture; value equals exact
+- ref: l09
+  uid: hu:locator:fx-d13-lesne-l09
+  snapshot: s-crossref-nature04533
+  selectorKind: JSON_POINTER
+  pointer: /message/updated-by/0
+  exact: '{"DOI":"10.1038/nature04533","label":"Expression of concern","record-id":"54372","source":"retraction-watch","type":"expression_of_concern","updated":{"date-parts":[[2022,7,14]],"date-time":"2022-07-14T00:00:00Z","timestamp":1657756800000}}'
+  quoteHash: sha256:86d9f7a2c74a65aee357f6915f99ae203ad6be6e0746cc591f02a4592b308416
+  selectorJson: '{"pointer":"/message/updated-by/0","type":"JsonPointerSelector","valueSerialization":"string value as-is; objects as canonical JSON (sorted keys, no whitespace)"}'
+  selectorDigest: sha256:1c2ef42cf8c089def85005e4ae4e11ebeba03f07cc92b18672262d78e9963670
+  note: Retraction Watch expression of concern (2022-07-14, record-id 54372)
+  verified:
+    'on': '2026-10-08'
+    against: sha256:c16a41f932272abe72657f723ed2ba33b11bc3856610886a2de0492ccf13fbe2
+    result: pointer resolves in the fresh capture; value equals exact
+- ref: l10
+  uid: hu:locator:fx-d13-lesne-l10
+  snapshot: s-crossref-retraction-note
+  selectorKind: JSON_POINTER
+  pointer: /message/publisher
+  exact: Springer Science and Business Media LLC
+  quoteHash: sha256:df38fa483ae1f77a539ee5ce539b316c05ec5dcd06acdac7c00669f57ef87292
+  selectorJson: '{"pointer":"/message/publisher","type":"JsonPointerSelector","valueSerialization":"string value as-is; objects as canonical JSON (sorted keys, no whitespace)"}'
+  selectorDigest: sha256:b46db5f89852686371383479fccd1ffa3aebc118e95f02655e160b39996c9ccd
+  verified:
+    'on': '2026-10-08'
+    against: sha256:60c30270212a8bef9a48e2243f3a2f4858b50962dc6cb17157a2da9ff0c40d45
+    result: pointer resolves in the fresh capture; value equals exact
+- ref: l11
+  uid: hu:locator:fx-d13-lesne-l11
+  snapshot: s-crossref-nature04533
+  selectorKind: JSON_POINTER
+  pointer: /message/title/0
+  exact: 'RETRACTED ARTICLE: A specific amyloid-β protein assembly in the brain impairs memory'
+  quoteHash: sha256:d4f5aaee77586eecf680550b7ebd4a4ad3ea32beb0698007568b938adc6edcc7
+  selectorJson: '{"pointer":"/message/title/0","type":"JsonPointerSelector","valueSerialization":"string value as-is; objects as canonical JSON (sorted keys, no whitespace)"}'
+  selectorDigest: sha256:fed78668e4e36f2a8db006487512fabece34b7f02a268f3efbc60fbe3d74e977
+  verified:
+    'on': '2026-10-08'
+    against: sha256:c16a41f932272abe72657f723ed2ba33b11bc3856610886a2de0492ccf13fbe2
+    result: pointer resolves in the fresh capture; value equals exact
+- ref: l12
+  uid: hu:locator:fx-d13-lesne-l12
+  snapshot: s-pubmed-16541076
+  selectorKind: TEXT_QUOTE
+  section: CommentsCorrections RetractionIn
+  exact: '<CommentsCorrections RefType="RetractionIn"><RefSource>Nature. 2024 Jul;631(8019):240. doi: 10.1038/s41586-024-07691-8.</RefSource><PMID Version="1">38914864</PMID>'
+  prefix: 054</PMID></CommentsCorrections>
+  suffix: </CommentsCorrections></Comments
+  startOffset: 4108
+  endOffset: 4272
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:75e3443d49eede977c2378d7d436792930790ac6930ed9f918e61d6bfaca1d50
+  selectorJson: '{"basis":"capture file, UTF-8 code points","exact":"<CommentsCorrections RefType=\"RetractionIn\"><RefSource>Nature. 2024 Jul;631(8019):240. doi: 10.1038/s41586-024-07691-8.</RefSource><PMID
+    Version=\"1\">38914864</PMID>","prefix":"054</PMID></CommentsCorrections>","refinedBy":{"end":4272,"start":4108,"type":"TextPositionSelector"},"suffix":"</CommentsCorrections></Comments","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:efe60d210bf6e8afe8d15195eee7e7cf413eeaafdc5b1c342e565b82da3dfcd9
+  verified:
+    'on': '2026-10-08'
+    against: sha256:673d519342b57ebda80152a59c4d5fcb960225e91c6c7a5f6165bc9658734ee3
+    result: exact match at [4108,4272) of the fresh capture
+- ref: l13
+  uid: hu:locator:fx-d13-lesne-l13
+  snapshot: s-pubmed-16541076
+  selectorKind: TEXT_QUOTE
+  section: PublicationTypeList
+  exact: <PublicationType UI="D016441">Retracted Publication</PublicationType>
+  prefix: H., Extramural</PublicationType>
+  suffix: </PublicationTypeList></Article>
+  startOffset: 3451
+  endOffset: 3520
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:f84461dbc57722842da1bcf27a0321917c009fff6d04702c363b833d8dd8a677
+  selectorJson: '{"basis":"capture file, UTF-8 code points","exact":"<PublicationType UI=\"D016441\">Retracted Publication</PublicationType>","prefix":"H., Extramural</PublicationType>","refinedBy":{"end":3520,"start":3451,"type":"TextPositionSelector"},"suffix":"</PublicationTypeList></Article>","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:77ea14c98e62085bdb6ce260c4eaf46d1537369edd6b32b885f2a1f4994982e7
+  verified:
+    'on': '2026-10-08'
+    against: sha256:673d519342b57ebda80152a59c4d5fcb960225e91c6c7a5f6165bc9658734ee3
+    result: exact match at [3451,3520) of the fresh capture
+- ref: l14
+  uid: hu:locator:fx-d13-lesne-l14
+  snapshot: s-nature04533-wayback-2020
+  selectorKind: HTML
+  css: head > title
+  exact: A specific amyloid-β protein assembly in the brain impairs memory | Nature
+  quoteHash: sha256:aa53950faa9be110ad6a247b76327d0fb968b886f977e22e8a267b5f304b7606
+  selectorJson: '{"textContent":"first match, HTML-unescaped, trimmed","type":"CssSelector","value":"head > title"}'
+  selectorDigest: sha256:cb1b4c12524d893ea8968408bb085b9d7b8be78de4f8d17e39d787cdc717d04d
+  note: 'pre-revision snapshot of the original article page (no retraction marker: 0 case-insensitive matches of ''retract'' in the archived HTML)'
+  verified:
+    'on': '2026-10-08'
+    against: sha256:b9b53659a899ed9f1282f6ecd9809956618241d32b598f7bd543e8672569c1b1
+    result: css selector re-selected in the fresh capture; text equals exact
+- ref: l15
+  uid: hu:locator:fx-d13-lesne-l15
+  snapshot: s-nature04533-current
+  selectorKind: TEXT_QUOTE
+  section: article banner
+  exact: 'This article has been retracted. Please see the Retraction Notice for more detail:'
+  prefix: "erein.\n\n- ### 24 June 2024\n\n\n\n\n\n"
+  suffix: ' [https://doi.org/10.1038/s41586'
+  startOffset: 5830
+  endOffset: 5912
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:d74d84a0aabb9b265ac1afb6ddfe26c84cecc56e4fb43ab837c0716fdd571191
+  selectorJson: '{"basis":"capture file, UTF-8 code points","exact":"This article has been retracted. Please see the Retraction Notice for more detail:","prefix":"erein.\n\n- ### 24 June 2024\n\n\n\n\n\n","refinedBy":{"end":5912,"start":5830,"type":"TextPositionSelector"},"suffix":"
+    [https://doi.org/10.1038/s41586","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:1f9edd04226c3f4e25f6aa796fb1620213241cad938e03decd76bd6679fb199d
+  verified:
+    'on': '2026-10-08'
+    against: sha256:3ba3d56c8dd52438bacf30ea6b6fbf8c5a69a325bb6d304e05dde26216b8e845
+    result: exact match at [5830,5912) of the fresh capture

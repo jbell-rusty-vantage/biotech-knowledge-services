@@ -1,0 +1,28 @@
+"Why an attempt did not yield a complete capture (observed 2026-10-08 across the first-tier tools; tooling/action-space.yaml evidence)."
+enum CaptureFailureKind {
+  "401 or login redirect: key or account required (CAS Common Chemistry, fhir.loinc.org)."
+  AUTH_REQUIRED
+  "403 by policy, including identity headers missing (CT.gov internal history API, EDGAR without declared User-Agent, regulations.gov attachment via curl)."
+  FORBIDDEN
+  "200 with an error or challenge page instead of content (Firecrawl scrape of the CT.gov history tab returned 'Error | ClinicalTrials.gov')."
+  BOT_CHALLENGE
+  "429 transient throttle (USDA FDC DEMO_KEY shared per IP, Semantic Scholar unkeyed)."
+  RATE_LIMITED
+  "Daily or monetary budget spent (OpenAlex X-RateLimit-Limit-USD without key)."
+  QUOTA_EXHAUSTED
+  "No response in the client deadline (WHO ICTRP, 60 s)."
+  TIMEOUT
+  "5xx from the source."
+  SERVER_ERROR
+  "Content exists but the licence forbids capture or storage (LOINC table, KEGG, DrugBank, Natural Medicines)."
+  LICENCE_RESTRICTED
+  "Bytes have no text layer (image-only PDF FDA-2022-S-0023-0068); OCR needed."
+  NO_TEXT_LAYER
+  "Third-party rendition (kernel contentHashBasis TOOL_RENDITION) dropped characters versus the issuer bytes (beta sign lost in a Firecrawl PDF rendition)."
+  LOSSY_RENDITION
+  "Bytes received; the parser could not read them."
+  PARSE_ERROR
+  "The calling client failed (CLI console-encoding crash), not the source."
+  CLIENT_ERROR
+  OTHER
+}

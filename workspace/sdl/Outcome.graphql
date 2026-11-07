@@ -1,0 +1,28 @@
+"""
+Purpose: a study-independent endpoint concept (lifespan, all-cause mortality, handgrip strength, VO2max, sleep
+quality) — the join point where D3 OutcomeDefinitions (MEASURES), D5 Targets (OPERATIONALIZED_BY, declared by D5
+in its TargetMeasure union; R-70) and
+D2 mechanism → outcome Assertions meet, so "which mechanism steps between compound C and outcome O were measured in
+humans" (Q-D2-26) and "what helps target T by what evidence" (D5) traverse one node instead of per-study strings.
+Biological proxies (NAD+, HbA1c, p16) are D4 Biomarkers, not Outcomes.
+Identity rule: curated `key` bellabs:outcome:<slug>; small curated vocabulary (target 50–150 nodes). No LOINC
+identifier: LOINC belongs to D4 Metric only (R-42, R-70).
+uid token: `outcome` (hu:outcome:<opaque>).
+Questions: Q-D2-07, Q-D2-14, Q-D2-20, Q-D2-26.
+"""
+type Outcome implements Entity & Subjectable
+  @node(labels: ["Outcome", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  key: String
+  outcomeKind: OutcomeKind
+  description: String
+  synonyms: [String!]
+}

@@ -1,0 +1,338 @@
+# Fixture dunedinpace-paper-unstructured - assertions (fixtures stage, A3, 2026-10-08).
+# producedBy ids are FIXTURE ids (mission:ft-D4-fixtures / run:ft-D4-<fixture>), not real Mission Control runs.
+# Types: D4 types from 04-schema-proposal.graphql; kernel types (Assertion, Claim, Assessment, Agent, SourceLocator) from
+# final/schema/kernel.graphql; other modules' types through the seams in 10-seams.yaml.
+# edgeClass: asserted = AssertedEdgeProperties episode authorized by this Assertion (assertionUid on the edge);
+# structural = StructuralEdgeProperties edge written by edge.structural, the row's locator cites the captured record;
+# literal / field = kernel Assertion with a typed value (predicate-only or a node property), no edge.
+fixture: dunedinpace-paper-unstructured
+producedBy:
+  missionId: mission:ft-D4-fixtures
+  runId: run:ft-D4-dunedinpace-paper-unstructured
+entities:
+- ref: av-dunedinpace
+  type: AlgorithmVersion
+  module: D4
+  uid: hu:algorithm-version:dunedinpace-belsky-2022
+  name: DunedinPACE (Belsky et al. 2022, eLife 11:e73420)
+  props:
+    algorithmFamily: DunedinPACE
+    familyKey: dunedinpace
+    algorithmKind: EPIGENETIC_CLOCK
+    realization: PUBLICATION_REFERENCE
+    versionBasis: PUBLICATION_VERSION
+    outputKind: PACE
+    inputPlatforms:
+    - ILLUMINA_450K
+    - ILLUMINA_EPIC_V1
+    inputFeatureCount: 173
+    trainingPopulationText: Dunedin Study members, blood DNA methylation (Illumina EPIC) at age 45, trained on 20-year Pace of Aging
+  onMatch: use_existing
+- ref: av-dunedinpoam
+  type: AlgorithmVersion
+  module: D4
+  uid: hu:algorithm-version:dunedinpoam-belsky-2020
+  name: DunedinPoAm (Belsky et al. 2020, eLife e54870)
+  props:
+    algorithmFamily: DunedinPoAm
+    familyKey: dunedinpoam
+    algorithmKind: EPIGENETIC_CLOCK
+    realization: PUBLICATION_REFERENCE
+    versionBasis: PUBLICATION_VERSION
+    outputKind: PACE
+  onMatch: use_existing
+- ref: metric-dunedinpace
+  type: Metric
+  module: D4
+  uid: hu:metric:dunedinpace-pace-of-aging
+  name: DunedinPACE pace of aging (biological years per chronological year)
+  props:
+    metricKind: ALGORITHM_OUTPUT
+    defaultResultKind: INFERRED
+    definitionSource: PUBLICATION
+    definitionIssuerName: Belsky et al. 2022
+    definitionText: an average rate of 1 year of biological aging per year of chronological aging
+    systemText: Bld (DNA methylation in blood)
+    scale: QUANTITATIVE
+    canonicalUnitCode: a/a
+    searchText: DunedinPACE pace of aging biological age speed DNA methylation
+  onMatch: use_existing
+- ref: biomarker-pace
+  type: Biomarker
+  module: D4
+  uid: hu:biomarker:pace-of-biological-aging
+  name: Pace of biological aging
+  props:
+    biomarkerKind: COMPOSITE_AGING_INDEX
+    searchText: pace of aging, rate of biological aging, aging speed
+  onMatch: use_existing
+- ref: pub-belsky-2022
+  type: Publication
+  module: D3
+  uid: hu:publication:pmid-35029144
+  name: 'DunedinPACE, a DNA methylation biomarker of the pace of aging'
+  props:
+    publicationKind: ARTICLE
+    venueName: 'eLife'
+    citationText: 'Belsky DW et al., ''DunedinPACE, a DNA methylation biomarker of the pace of aging'', eLife 2022;11:e73420'
+  identifiers:
+  - {scheme: PMID, issuer: NLM, value: '35029144'}
+  - {scheme: PMCID, issuer: NLM, value: PMC8853656}
+  - {scheme: DOI, issuer: Crossref, value: 10.7554/eLife.73420}
+  note: R-15 (closeout FU-03) - the D3 Publication is the asserter of what the multi-author paper states (replaces the first-author Person asserter of the fixtures stage). Title, venue and identifiers are those printed in source.md (snapshot title / Citation); no identifier span exists in locators.yaml, so the identifiers carry no evidence locator here.
+  onMatch: use_existing
+- ref: agent-curation
+  type: Agent
+  module: K
+  uid: hu:agent:bks-curation-d4
+  name: BellLabs D4 curation agent
+  props:
+    agentKind: AUTOMATED_AGENT
+  onMatch: use_existing
+assertions:
+- id: a01
+  uid: hu:assertion:ft-d4-dpace-a01
+  edgeClass: asserted
+  predicate: DERIVED_FROM_ALGORITHM_VERSION
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: av-dunedinpace
+    type: AlgorithmVersion
+  object:
+    ref: av-dunedinpoam
+    type: AlgorithmVersion
+  asserter:
+    ref: pub-belsky-2022
+    type: Publication
+  locators:
+  - l7-predecessor
+  speechAct: STATES
+  polarity: POSITIVE
+  basisKind: DIRECT_MEASUREMENT
+  validTime:
+    validFrom: null
+    validFromBasis: UNKNOWN
+    statedAsOf: '2022-01-14T00:00:00Z'
+    statedAsOfPrecision: DAY
+  qualifiers:
+  - 'successor -> predecessor (publication side): DunedinPACE refits the DunedinPoAm design to the 20-year Pace of Aging'
+  rationale: Authors compare DunedinPACE with "the original DunedinPoAm version"; successor -> predecessor edge, not an equivalence.
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-dunedinpace-paper-unstructured
+- id: a02
+  uid: hu:assertion:ft-d4-dpace-a02
+  edgeClass: structural
+  predicate: OUTPUTS_METRIC
+  subject:
+    ref: av-dunedinpace
+    type: AlgorithmVersion
+  object:
+    ref: metric-dunedinpace
+    type: Metric
+  asserter:
+    ref: pub-belsky-2022
+    type: Publication
+  locators:
+  - l1-epic-age45
+  - l6-unit
+  rationale: 'Definitional: the publication version outputs the pace-of-aging metric whose unit is biological years per chronological year.'
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-dunedinpace-paper-unstructured
+- id: a03
+  uid: hu:assertion:ft-d4-dpace-a03
+  edgeClass: structural
+  predicate: QUANTIFIES
+  subject:
+    ref: metric-dunedinpace
+    type: Metric
+  object:
+    ref: biomarker-pace
+    type: Biomarker
+  asserter:
+    ref: pub-belsky-2022
+    type: Publication
+  locators:
+  - l8-biomarker
+  rationale: The metric quantifies the biomarker "pace of biological aging" (author impact statement).
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-dunedinpace-paper-unstructured
+- id: a04
+  uid: hu:assertion:ft-d4-dpace-a04
+  edgeClass: field
+  predicate: INPUT_FEATURE_COUNT
+  assertionKind: FIELD
+  subject:
+    ref: av-dunedinpace
+    type: AlgorithmVersion
+  value:
+    valueNumber: 173
+  asserter:
+    ref: pub-belsky-2022
+    type: Publication
+  locators:
+  - l2-173-cpgs
+  speechAct: STATES
+  intentProperties:
+    inputFeatureCount: 173
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-dunedinpace-paper-unstructured
+- id: a05
+  uid: hu:assertion:ft-d4-dpace-a05
+  edgeClass: field
+  predicate: INPUT_PLATFORMS
+  assertionKind: FIELD
+  subject:
+    ref: av-dunedinpace
+    type: AlgorithmVersion
+  value:
+    valueString: ILLUMINA_450K, ILLUMINA_EPIC_V1
+  asserter:
+    ref: pub-belsky-2022
+    type: Publication
+  locators:
+  - l4-450k-epic
+  - l1-epic-age45
+  speechAct: STATES
+  intentProperties:
+    inputPlatforms:
+    - ILLUMINA_450K
+    - ILLUMINA_EPIC_V1
+  qualifiers:
+  - source says "EPIC" (2022, before EPIC v2); EPIC_V1 is the curator mapping of that word
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-dunedinpace-paper-unstructured
+- id: a06
+  uid: hu:assertion:ft-d4-dpace-a06
+  edgeClass: literal
+  predicate: REPORTS_RELIABILITY
+  assertionKind: METRIC
+  subject:
+    ref: av-dunedinpace
+    type: AlgorithmVersion
+  value:
+    valueNumber: 0.96
+    valueString: ICC = 0.96 [0.93–0.98], test-retest, 36 replicate adult blood samples, Illumina 450k (GSE55763)
+    unitCode: '1'
+  asserter:
+    ref: pub-belsky-2022
+    type: Publication
+  locators:
+  - l3-icc
+  - l3b-replicates
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  validTime:
+    validFrom: null
+    validFromBasis: UNKNOWN
+    statedAsOf: '2022-01-14T00:00:00Z'
+    statedAsOfPrecision: DAY
+  qualifiers:
+  - 'population: 36 replicate adult-blood-sample datasets (Lehne et al. 2015)'
+  - 'platform: Illumina 450k'
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-dunedinpace-paper-unstructured
+retrievalPath:
+  question:
+    id: CQ-DX-04
+    alsoAnswers:
+    - Q-D4-22
+    - CQ-DX-05
+    text: Which platform and inputs does DunedinPACE need, which version is it, and how reliable is it?
+  step1_entityLookup:
+    index: fulltext d4_measure_names over Metric.searchText / AlgorithmVersion name (03-retrieval-patterns Q-D4-22)
+    term: DunedinPACE
+    hits:
+    - hu:algorithm-version:dunedinpace-belsky-2022
+    - hu:metric:dunedinpace-pace-of-aging
+  step2_chunks:
+    via:
+    - (c:Chunk)-[:MENTIONS]->(av) (derived entity-link projection, D9; never evidence)
+    - or vector index on Chunk embedding with the question text
+    chunker: fixed-char-window/v1 size=1500 stride=1300 over the derived text (textVersionHash = derivedText.contentHash)
+    chunks:
+      L1:
+        chunkIndex: 11
+        uid: hu:chunk:ft-d4-dpace-011
+        startOffset: 14300
+        endOffset: 15800
+        textHash: sha256:d78a8804e545ba0d5c4ab6c38ad878fe73d4806ee1be50d846ebf8389ad2265c
+        mentionsDunedinPACE: 1
+      L2:
+        chunkIndex: 12
+        uid: hu:chunk:ft-d4-dpace-012
+        startOffset: 15600
+        endOffset: 17100
+        textHash: sha256:efd112dbb521576962222c9d71070bb4a1ab677bd244dd0915767a3cdcc51e98
+        mentionsDunedinPACE: 8
+      L3:
+        chunkIndex: 16
+        uid: hu:chunk:ft-d4-dpace-016
+        startOffset: 20800
+        endOffset: 22300
+        textHash: sha256:a893ea8ffcfc336d817b3b9932695d6f3e82889e0a19a71c4dcf70d86e84cc17
+        mentionsDunedinPACE: 5
+      L4:
+        chunkIndex: 39
+        uid: hu:chunk:ft-d4-dpace-039
+        startOffset: 50700
+        endOffset: 52200
+        textHash: sha256:73ca60dffa5b8eaf043cdb0845875971c743a104365a05c4f40822a113ca5976
+        mentionsDunedinPACE: 4
+  step3_assertions:
+    hop: '(c:Chunk)-[:COVERS_LOCATOR]->(l:SourceLocator)<-[:HAS_EVIDENCE {role: SUPPORTS}]-(a:Assertion) (COVERS_LOCATOR is D9 derived span-overlap)'
+    chunkToLocators:
+      hu:chunk:ft-d4-dpace-011:
+      - l1-epic-age45
+      hu:chunk:ft-d4-dpace-012:
+      - l2-173-cpgs
+      hu:chunk:ft-d4-dpace-016:
+      - l3-icc
+      hu:chunk:ft-d4-dpace-039:
+      - l4-450k-epic
+    locatorToAssertions:
+      l1-epic-age45:
+      - a02
+      - a05
+      l2-173-cpgs:
+      - a04
+      l3-icc:
+      - a06
+      l4-450k-epic:
+      - a05
+  step4_snapshot:
+    hop: (s:SourceSnapshot {contentHash})-[:HAS_LOCATOR]->(l:SourceLocator)
+    snapshot: snap-epmc-xml
+    bytes: sha256:dd24c21863993f6398cb4092d746217f145ed6080a75a950123cf0586d0200b7
+  step5_verifierReselect: verification.v1 re-reads the snapshot bytes, re-derives the text with derivedText.rule, selects [startOffset, endOffset) and compares with
+    exact and quoteHash; a mismatch is LOCATOR_ERROR (infrastructure verdict, never rejects the record). The same SourceLocator is the one the answer cites, so the
+    retrieval path and the verifier path end on the same bytes.
+  cypher: 'CALL db.index.fulltext.queryNodes(''d4_measure_names'', ''DunedinPACE'') YIELD node AS x
+
+    MATCH (c:Chunk)-[:MENTIONS]->(x)
+
+    MATCH (c)-[:COVERS_LOCATOR]->(l:SourceLocator)<-[:HAS_EVIDENCE]-(a:Assertion)-[:HAS_SUBJECT]->(av:AlgorithmVersion)
+
+    WHERE a.recordedTo IS NULL AND a.status IN [''ACCEPTED'',''PROPOSED'']
+
+    MATCH (s:SourceSnapshot)-[:HAS_LOCATOR]->(l)
+
+    RETURN av.uid, a.predicate, coalesce(a.valueString, toString(a.valueNumber)), l.exact, l.startOffset, l.endOffset, s.contentHash'
+  expectedRows:
+  - assertion: a05
+    answer: 'inputs: Illumina 450k or EPIC DNA methylation array data (blood)'
+    locator: l4-450k-epic
+  - assertion: a04
+    answer: 173 CpG sites
+    locator: l2-173-cpgs
+  - assertion: a06
+    answer: test-retest ICC 0.96 [0.93-0.98] on 36 replicate 450k samples
+    locator: l3-icc
+  - assertion: a02
+    answer: outputs DunedinPACE pace of aging (years/year); version = publication version Belsky 2022
+    locator: l1-epic-age45

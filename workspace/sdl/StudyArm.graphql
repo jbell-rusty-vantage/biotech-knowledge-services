@@ -1,0 +1,38 @@
+"""
+Purpose: one arm or group of a study as one source states it (registry arms/groups, paper randomization groups) — the
+unit results, adverse events and administered components hang on. Absorbs pinned StudyIntervention (arm-level
+intervention facts are on its InterventionComponents). Registry and paper arms are separate nodes (NCT04313634 has a
+fisetin arm with a serious adverse event that the paper reports only as dropped), so Q-D3-01 is a set difference.
+Identity rule: (study, sourceFamily, armKey, payloadHash of arm + components); sourceFamily = registry + registrationId
+for registry versions, the work's DOI (else PMID) for a publication. Stable: a later version of the same registry that
+states an identical arm adds a STATED_IN episode to the same node; a changed arm is a new node.
+uid token: `study-arm`.
+Questions: CQ-ST-01, CQ-ST-06, Q-D3-01, Q-D3-15, CQ-ST-02.
+"""
+type StudyArm implements Entity & Subjectable
+  @node(labels: ["StudyArm", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  "Arm label as stated (e.g. 'Fisetin Treatment Group')."
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  armType: ArmType
+  "Normalized label used to match arms across sources (never identity across sources)."
+  armKey: String!
+  plannedSize: Int @filterable(byValue: false) @sortable(byValue: false)
+  description: String @filterable(byValue: false) @sortable(byValue: false)
+  payloadHash: String! @filterable(byValue: false) @sortable(byValue: false)
+  """class: structural; cardinality: one_or_more (none for NO_INTERVENTION); questions: CQ-ST-01, Q-D3-04, Q-D3-05, Q-D3-06."""
+  components: [InterventionComponent!]!
+    @relationship(type: "HAS_COMPONENT", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: one_or_more (each registry version or publication that states this arm; the Assertion cites the locator); questions: Q-D3-01, Q-D3-15, CQ-ST-06."""
+  statedIn: [StatingRecord!]!
+    @relationship(type: "STATED_IN", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

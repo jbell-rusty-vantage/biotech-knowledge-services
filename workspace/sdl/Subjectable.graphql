@@ -1,0 +1,18 @@
+"""
+The thin interface for anything an Assertion can be about, an Identifier can identify, a D9 Chunk can mention, an
+Assessment, Report or Activity can assess, or an asserter can be. Every domain entity type implements
+`Entity & Subjectable`; kernel implementers are Source, Agent and Claim. A versioned state that carries a registry
+identifier, or that is the subject or object of an Assertion or the target of an Assessment, implements
+`Entity & Subjectable`; other payload and retrieval structures implement `Entity` only (R-18). The subject of an
+Assertion is the most specific record the source speaks about; evidence rolls up to the parent through the state
+episodes. It declares no relationship fields: the kernel edges that target it (HAS_SUBJECT, HAS_OBJECT, ASSERTED_BY,
+HAS_IDENTIFIER, ASSESSES) are declared once, on kernel types, and D9 declares MENTIONS (derived) on Chunk, so adding
+an implementer costs one enum value in the executable schema. Domain edges that target it: kernel-meaning types
+(ASSESSES, DERIVED_FROM, MENTIONS) plus two registered exceptions, D10 ASSOCIATES (derived) and D5 STEP_USES
+(structural, executor-checked type list); any other domain edge to Subjectable needs a kernel amendment (R-28).
+Questions: Q-K-01, Q-K-12, Q-K-14.
+"""
+interface Subjectable @query(aggregate: false) {
+  uid: String!
+  name: String
+}

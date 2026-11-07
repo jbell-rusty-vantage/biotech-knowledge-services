@@ -1,0 +1,105 @@
+{
+  "format": "bks-skill-example.v1",
+  "id": "registry-versus-paper-estimate",
+  "kind": "positive",
+  "task": "A trial publication and its registry disagree on the administered dose. How is each side represented, and is there a read pattern?",
+  "lesson": "Registry states are immutable RegistrationVersions of a Study; what an arm administered is an InterventionComponent that ADMINISTERS a material; disagreement stays as separate asserted facts from separate sources, never merged. A held catalog question is not a validated read route (its template may exist but was demoted): say so and use a supported one rather than inventing a query.",
+  "steps": [
+    {
+      "argv": [
+        "search",
+        "registry publication dose disagreement",
+        "--json"
+      ],
+      "expect": {
+        "exit": 0,
+        "json": [
+          {
+            "path": "hits.*.id",
+            "includes": "q:Q-D1-08"
+          }
+        ]
+      }
+    },
+    {
+      "argv": [
+        "pattern",
+        "--question",
+        "Q-D1-08",
+        "--json"
+      ],
+      "expect": {
+        "exit": 0,
+        "json": [
+          {
+            "path": "status",
+            "equals": "held"
+          },
+          {
+            "path": "question.reason",
+            "includes": "demoted"
+          }
+        ]
+      }
+    },
+    {
+      "argv": [
+        "pattern",
+        "--question",
+        "Q-D11-03",
+        "--json"
+      ],
+      "expect": {
+        "exit": 0,
+        "json": [
+          {
+            "path": "status",
+            "equals": "supported"
+          },
+          {
+            "path": "templates.*.id",
+            "includes": "QP/P-04a"
+          }
+        ]
+      }
+    },
+    {
+      "argv": [
+        "get",
+        "task:ingest-study-publication",
+        "--section",
+        "elements"
+      ],
+      "expect": {
+        "exit": 0,
+        "stdoutIncludes": [
+          "RegistrationVersion",
+          "ADMINISTERS"
+        ]
+      }
+    },
+    {
+      "argv": [
+        "find",
+        "--kind",
+        "relationship",
+        "--name",
+        "HAS_REGISTRATION_VERSION",
+        "--json"
+      ],
+      "expect": {
+        "exit": 0,
+        "json": [
+          {
+            "path": "results.0.exclusive",
+            "equals": true
+          },
+          {
+            "path": "results.0.relClass",
+            "equals": "asserted"
+          }
+        ]
+      }
+    }
+  ]
+}

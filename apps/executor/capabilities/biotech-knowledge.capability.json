@@ -1,0 +1,352 @@
+{
+  "format": "belllabs.knowledge-capability.v1",
+  "capabilityId": "biotech-knowledge-services",
+  "application": "biotech",
+  "service": "biotech-knowledge-services",
+  "executorVersion": "bks-kg-ops/2.0.0",
+  "endpoint": {
+    "audience": "bks-executor",
+    "transport": "http",
+    "auth": [
+      "x-api-key",
+      "Authorization: Bearer"
+    ],
+    "baseUrlEnv": "BIOTECH_EXECUTOR_URL",
+    "tokenEnv": "BIOTECH_EXECUTOR_TOKEN",
+    "tokenKind": "short-lived scoped service token (host-side; never in agent workspaces)"
+  },
+  "contracts": {
+    "native": {
+      "workspace": "bks-schema-workspace.v2",
+      "schemaContext": "biotech-schema-context.v1",
+      "schemaCard": "bks-schema-card.v1",
+      "schemaSlice": "bks-schema-slice.v2",
+      "readIntent": "biotech-knowledge-read-intent.v2",
+      "cypherReadIntent": "biotech-cypher-read-intent.v1",
+      "readResult": "biotech-knowledge-read-result.v2",
+      "readExplain": "biotech-cypher-read-explain.v1",
+      "readValues": "bks-read-values.v1",
+      "ingestionIntent": "biotech-knowledge-intent.v2",
+      "ingestionPlan": "biotech-knowledge-plan.v2",
+      "applyRequest": "biotech-knowledge-apply.v2",
+      "ingestionReceipt": "biotech-knowledge-receipt.v2",
+      "applyWitness": "bks-apply-witness.v1",
+      "canonicalJson": "bks-canonical-json.v2",
+      "custodySnapshot": "bks-custody-snapshot.v1",
+      "sealedVerification": "bks-sealed-verification.v1",
+      "effectVerification": "bks-effect-verification.v1",
+      "cypherRequest": "biotech-cypher-request.v1",
+      "knowledgeRequest": "mc.knowledge_request.v1",
+      "knowledgeDelivery": "mc.knowledge_delivery.v1",
+      "readIntentOfficial": "biotech-knowledge-read-intent.v3",
+      "readResultOfficial": "biotech-knowledge-read-result.v3",
+      "admissionDispatch": "biotech-knowledge-admission.v1",
+      "admissionAck": "biotech-knowledge-admission-ack.v1",
+      "admissionConsume": "biotech-knowledge-admission-consume.v1",
+      "intentMarker": "bks-intent-marker.v2"
+    },
+    "envelope": {
+      "request": "mc.knowledge_request.v1",
+      "delivery": "mc.knowledge_delivery.v1"
+    },
+    "canonicalJson": "bks-canonical-json.v2"
+  },
+  "release": {
+    "releaseId": "biotech-schema-v2.2.0",
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+    "schemaDigest": "sha256:de8ab942f3b2fac85011938adcddd75244bc9b5e7c53df07ebc7490b888f6576",
+    "queryCatalogDigest": "sha256:39c7a9d3a3f13f2c8e287bb42ea528c060a2cfc8ebe01d8a4a79abcbe27896b6",
+    "ddlDigest": "sha256:f0622dba117bd16236e575546764bd49444b604e95893eef665d1e796199ddb3",
+    "workspaceFingerprint": "sha256:b0772b5de8ac83f03f98950124ea27d1c5cc39002b5225d6b8e189d86bb520d2"
+  },
+  "skills": {
+    "bundles": {
+      "biotech-schema-explore": {
+        "digest": "sha256:907df57017983d5ec3f35dff43768c001cd3470bded0e4935f2149d4f3143937",
+        "files": 17
+      },
+      "biotech-kg-query": {
+        "digest": "sha256:c48e69b1bbfe48626d2479888f252fa581d152dea6642e2449f9088a57c3e7ff",
+        "files": 10
+      },
+      "biotech-kg-ingest": {
+        "digest": "sha256:b10da1e9764ec5093091ffc3f1c6059e2a48a7a5ba222b06300e365c38da6318",
+        "files": 22
+      },
+      "biotech-graph-ops": {
+        "digest": "sha256:4500d6c9608ef848f593580f4b65a550f13a590d73d8e4b2016584a706b0e520",
+        "files": 1
+      },
+      "biotech-graph-analyze": {
+        "digest": "sha256:23fbe395ad459aaf0386cd1cf8010d33b5494aaf0d10f714e3d6feddd87d9dda",
+        "files": 2
+      }
+    },
+    "routingDigest": "sha256:13dc3fdbda730ad42f11babdad59559e1d734274b24961e1750922c916bcc477"
+  },
+  "policy": {
+    "policyVersion": "bks-admission-policy/v1",
+    "semantics": "authorization-at-issuance-plus-bounded-lease",
+    "witness": {
+      "format": "bks-apply-witness.v1",
+      "alg": "Ed25519",
+      "audience": "bks-executor",
+      "maxLifetimeSeconds": 60
+    },
+    "requiredAuthorities": [
+      "mission-control grant reference",
+      "knowledge-services sealed verification custody (when the plan cites verifications)"
+    ],
+    "revocation": {
+      "fence": "KsRevocationFence.generation",
+      "delivery": "durable outbox, at least once",
+      "servingRecheck": "GET /kg/eligibility"
+    },
+    "failClosed": "BKS_AUTHORITY_UNAVAILABLE",
+    "policyDigest": "sha256:75ecdfd7ad987eca27f45a6cd1f0de1e258290d1920de6153c218772b1626a6e"
+  },
+  "interfaces": {
+    "knowledge.describe": {
+      "available": true,
+      "native": "GET /describe",
+      "role": "reader"
+    },
+    "knowledge.query": {
+      "available": true,
+      "native": "POST /kg/read",
+      "role": "reader",
+      "contract": "biotech-knowledge-read-intent.v2",
+      "passthrough": "native read intent bytes; result status vocabulary biotech-knowledge-read-result.v2",
+      "cypher": null
+    },
+    "knowledge.ingestion_plan": {
+      "available": true,
+      "native": "POST /kg/plan",
+      "role": "writer",
+      "contract": "biotech-knowledge-intent.v2",
+      "output": "biotech-knowledge-plan.v2",
+      "writes": false
+    },
+    "knowledge.ingestion_apply": {
+      "available": true,
+      "native": "POST /kg/apply",
+      "role": "writer",
+      "contract": "biotech-knowledge-apply.v2",
+      "receipt": "biotech-knowledge-receipt.v2",
+      "requiresWitness": true,
+      "admission": "POST /kg/admission/witness"
+    },
+    "knowledge.receipt_get": {
+      "available": true,
+      "native": "GET /kg/receipt?effectKey=",
+      "role": "reader",
+      "notFound": 404
+    },
+    "knowledge.verify_result": {
+      "available": true,
+      "native": "POST /kg/verify-effects",
+      "role": "reader",
+      "contract": "bks-effect-verification.v1",
+      "paginated": true
+    },
+    "knowledge.retrieve": {
+      "available": false,
+      "owner": "knowledge-services",
+      "note": "no Biotech retrieval capability in this release (retrieve: available false)"
+    },
+    "knowledge.capture_prepare": {
+      "available": false,
+      "owner": "knowledge-services",
+      "note": "capture/preparation is a Knowledge Services capability, not served by the Biotech executor"
+    },
+    "knowledge.verify": {
+      "available": false,
+      "owner": "knowledge-services",
+      "note": "verification algorithms live in Knowledge Services; Biotech consumes sealed verification references"
+    },
+    "knowledge.classify_propose": {
+      "available": false,
+      "owner": "knowledge-services",
+      "note": "no proved semantic classification endpoint"
+    },
+    "knowledge.classify_admit": {
+      "available": false,
+      "owner": "knowledge-services",
+      "note": "no proved semantic classification endpoint"
+    }
+  },
+  "nativeCapabilities": {
+    "admission.revocation": {
+      "available": true,
+      "role": "admin"
+    },
+    "admission.witness": {
+      "available": true,
+      "role": "writer"
+    },
+    "analytics": {
+      "available": false,
+      "role": null
+    },
+    "apply": {
+      "available": true,
+      "role": "writer"
+    },
+    "capability.descriptor": {
+      "available": true,
+      "role": "reader"
+    },
+    "plan": {
+      "available": true,
+      "role": "writer"
+    },
+    "read.official": {
+      "available": true,
+      "role": "reader"
+    },
+    "read.templates": {
+      "available": true,
+      "role": "reader"
+    },
+    "read.typed": {
+      "available": true,
+      "role": "reader"
+    },
+    "receipt.get": {
+      "available": true,
+      "role": "reader"
+    },
+    "retrieve": {
+      "available": false,
+      "role": null
+    },
+    "schema.context": {
+      "available": true,
+      "role": "reader"
+    },
+    "schema.doctor": {
+      "available": true,
+      "role": "reader"
+    },
+    "schema.find": {
+      "available": true,
+      "role": "reader"
+    },
+    "schema.get": {
+      "available": true,
+      "role": "reader"
+    },
+    "schema.neighbors": {
+      "available": true,
+      "role": "reader"
+    },
+    "schema.path": {
+      "available": true,
+      "role": "reader"
+    },
+    "schema.pattern": {
+      "available": true,
+      "role": "reader"
+    },
+    "schema.search": {
+      "available": true,
+      "role": "reader"
+    },
+    "schema.slice": {
+      "available": true,
+      "role": "reader"
+    },
+    "serving.eligibility": {
+      "available": true,
+      "role": "reader"
+    },
+    "verifyEffects": {
+      "available": true,
+      "role": "reader"
+    }
+  },
+  "scopes": {
+    "read": [
+      "schema.*",
+      "read.typed",
+      "read.templates",
+      "read.cypher (only with a proven read-only principal)",
+      "receipt.get",
+      "verifyEffects",
+      "serving.eligibility"
+    ],
+    "write": [
+      "plan",
+      "apply (witness required)"
+    ],
+    "privilegedGrants": [
+      "adjudication.deliver",
+      "projection.write",
+      "report.publish",
+      "assessment.accept"
+    ],
+    "admin": [
+      "admission.revocation",
+      "baseline.cypher (evaluation profile only)"
+    ]
+  },
+  "limits": {
+    "maxProposalsPerIntent": 500,
+    "applyTransactionMs": 30000,
+    "witnessLifetimeSeconds": 60,
+    "verifyEffectsPageSizeMax": 500
+  },
+  "partialPolicy": {
+    "modes": [
+      "all",
+      "include"
+    ],
+    "all": "refused when any proposal is held or rejected (BKS_PARTIAL_REFUSED)",
+    "include": "closed under dependencies (BKS_PARTIAL_NOT_CLOSED otherwise)"
+  },
+  "receipts": {
+    "contract": "biotech-knowledge-receipt.v2",
+    "lookup": "GET /kg/receipt?effectKey= (scoped by installation/application/tenant)",
+    "outcomes": [
+      "applied",
+      "noop",
+      "partial",
+      "rejected",
+      "failed",
+      "duplicate",
+      "unresolved"
+    ],
+    "deliveryMapping": {
+      "applied": "applied",
+      "partial": "applied",
+      "noop": "applied",
+      "duplicate": "applied",
+      "rejected": "rejected",
+      "failed": "rejected | pending (BKS_WITNESS_EXPIRED, BKS_TIMEOUT, BKS_AUTHORITY_UNAVAILABLE, BKS_EFFECT_PENDING)",
+      "unresolved": "unresolved"
+    },
+    "idempotency": "same effectKey + same intent and plan digests returns the recorded receipt (duplicate); a changed payload or plan is BKS_EFFECT_CONFLICT",
+    "heldItems": "held proposals are recorded with their reason; verification completion with held graph admission is delivery pending, never a successful write"
+  },
+  "consistency": {
+    "readModes": [
+      "observed",
+      "stable_revision"
+    ],
+    "writer": "database-scoped writer fence (KsWriteFence.graphRevision), one transaction per effect",
+    "stale": "strict (BKS_STALE_REVISION; no implicit re-plan)",
+    "graphRevisionIsNotAKnowledgeSequence": true
+  },
+  "recovery": {
+    "receiptLookup": true,
+    "atomicCrossStore": false,
+    "lostResponse": "unresolved; reconcile by GET /kg/receipt with the original effectKey before any repeat",
+    "cancellation": "client-side stop-new-work plus receipt reconciliation; the HTTP apply has no native cancellation; a committed effect stands and keeps its receipt",
+    "revocation": "authorization at issuance plus bounded lease (<= 60 s); KsRevocationFence refuses older witnesses once delivered; serving recheck denies revoked effects while history is retained"
+  },
+  "custody": {
+    "plans": "executor file custody (runs/release-v2/plans)",
+    "knowledgeArtifacts": "adapter implemented (Supabase Storage, content-addressed, digest-checked); blocked: bucket knowledge-artifacts not present in the Biotech Supabase project"
+  },
+  "descriptorDigest": "sha256:dfe3e1b9c363a754b81949691a98295e3dcac06438bf237f6eace6e439de8228"
+}

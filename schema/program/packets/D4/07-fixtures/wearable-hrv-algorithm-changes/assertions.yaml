@@ -1,0 +1,551 @@
+# Fixture wearable-hrv-algorithm-changes - assertions (fixtures stage, A3, 2026-10-08).
+# producedBy ids are FIXTURE ids (mission:ft-D4-fixtures / run:ft-D4-<fixture>), not real Mission Control runs.
+# Types: D4 types from 04-schema-proposal.graphql; kernel types (Assertion, Claim, Assessment, Agent, SourceLocator) from
+# packets/K/04-schema-proposal.graphql; other modules' types through the seams in 10-seams.yaml.
+# edgeClass: asserted = AssertedEdgeProperties episode authorized by this Assertion (assertionUid on the edge);
+# structural = StructuralEdgeProperties edge written by edge.structural, the row's locator cites the captured record;
+# literal / field = kernel Assertion with a typed value (predicate-only or a node property), no edge.
+fixture: wearable-hrv-algorithm-changes
+producedBy:
+  missionId: mission:ft-D4-fixtures
+  runId: run:ft-D4-wearable-hrv-algorithm-changes
+entities:
+- ref: device-whoop-mg
+  type: Device
+  module: D4
+  uid: hu:device:whoop-mg
+  name: WHOOP MG
+  props:
+    deviceKind: WEARABLE_WRIST
+    sensingModalities:
+    - PPG
+    deviceFamily: WHOOP
+    generationLabel: MG
+    makerName: WHOOP
+  onMatch: use_existing
+  note: deviceKind and PPG modality are curator mappings (WHOOP measures heart rate optically; captured in the research-stage WHOOP Locker article)
+- ref: device-apple-watch
+  type: Device
+  module: D4
+  uid: hu:device:apple-watch
+  name: Apple Watch (model not stated)
+  props:
+    deviceKind: WEARABLE_WRIST
+    deviceFamily: Apple Watch
+    makerName: Apple
+  onMatch: use_existing
+- ref: av-whoop-hr-2026-02-25
+  type: AlgorithmVersion
+  module: D4
+  uid: hu:algorithm-version:whoop-heart-rate-change-2026-02-25
+  name: WHOOP heart-rate signal processing, change of 2026-02-25 (unlabeled)
+  props:
+    algorithmFamily: WHOOP heart rate
+    familyKey: whoop-heart-rate
+    algorithmKind: SIGNAL_PROCESSING
+    realization: DEVICE_SOFTWARE
+    versionBasis: CHANGE_EVENT_UNLABELED
+    outputKind: FEATURE_MEASURE
+    versionPinnedAt: '2026-02-25'
+    componentLabel: heart rate
+    notReported:
+    - VERSION_LABEL
+  onMatch: review
+- ref: av-whoop-hr-2026-07-06
+  type: AlgorithmVersion
+  module: D4
+  uid: hu:algorithm-version:whoop-heart-rate-change-2026-07-06
+  name: WHOOP heart-rate algorithm, change of 2026-07-06 (unlabeled)
+  props:
+    algorithmFamily: WHOOP heart rate
+    familyKey: whoop-heart-rate
+    algorithmKind: SIGNAL_PROCESSING
+    realization: DEVICE_SOFTWARE
+    versionBasis: CHANGE_EVENT_UNLABELED
+    outputKind: FEATURE_MEASURE
+    versionPinnedAt: '2026-07-06'
+    componentLabel: heart rate
+    notReported:
+    - VERSION_LABEL
+  onMatch: review
+- ref: av-whoop-fw-50-30-3-0
+  type: AlgorithmVersion
+  module: D4
+  uid: hu:algorithm-version:whoop-mg-firmware-50.30.3.0
+  name: WHOOP MG firmware 50.30.3.0
+  props:
+    algorithmFamily: WHOOP MG firmware
+    familyKey: whoop-mg-firmware
+    algorithmKind: FIRMWARE
+    realization: DEVICE_SOFTWARE
+    versionBasis: VENDOR_VERSION_STRING
+    versionLabel: 50.30.3.0
+    componentLabel: firmware
+  onMatch: review
+- ref: av-whoop-recovery-api
+  type: AlgorithmVersion
+  module: D4
+  uid: hu:algorithm-version:whoop-recovery-api-unversioned
+  name: WHOOP Recovery as served by the WHOOP API (unversioned endpoint)
+  props:
+    algorithmFamily: WHOOP Recovery
+    familyKey: whoop-recovery
+    algorithmKind: WEARABLE_SCORE
+    realization: SERVICE_ENDPOINT
+    versionBasis: SERVICE_ENDPOINT_UNVERSIONED
+    outputKind: FEATURE_MEASURE
+    notReported:
+    - VERSION_LABEL
+  onMatch: review
+- ref: av-oura-sleep-v2
+  type: AlgorithmVersion
+  module: D4
+  uid: hu:algorithm-version:oura-sleep-algorithm-v2
+  name: 'Oura Sleep Staging Algorithm v2 (OpenAPI enum: "v2 = latest sleep algorithm")'
+  props:
+    algorithmFamily: Oura Sleep Staging Algorithms
+    familyKey: oura-sleep
+    algorithmKind: WEARABLE_SCORE
+    realization: SERVICE_ENDPOINT
+    versionBasis: VENDOR_VERSION_STRING
+    outputKind: FEATURE_MEASURE
+    versionLabel: v2
+    componentLabel: sleep staging (as the OpenAPI enum names it)
+  onMatch: review
+- ref: av-apple-hrv-sdnn
+  type: AlgorithmVersion
+  module: D4
+  uid: hu:algorithm-version:apple-healthkit-hrv-sdnn-unversioned
+  name: Apple Watch / HealthKit HRV (SDNN) computation (version not stated)
+  props:
+    algorithmFamily: Apple HRV SDNN
+    familyKey: apple-hrv-sdnn
+    algorithmKind: SIGNAL_PROCESSING
+    realization: DEVICE_SOFTWARE
+    versionBasis: UNKNOWN
+    outputKind: FEATURE_MEASURE
+    notReported:
+    - VERSION_LABEL
+  onMatch: review
+- ref: metric-whoop-hr
+  type: Metric
+  module: D4
+  uid: hu:metric:whoop-heart-rate
+  name: WHOOP heart rate
+  props:
+    metricKind: DEVICE_ESTIMATE
+    defaultResultKind: INFERRED
+    definitionSource: VENDOR
+    definitionIssuerName: WHOOP
+    notReported:
+    - UNIT
+  onMatch: review
+- ref: metric-whoop-hrv-rmssd
+  type: Metric
+  module: D4
+  uid: hu:metric:whoop-hrv-rmssd-milli
+  name: WHOOP hrv_rmssd_milli (HRV, RMSSD, ms)
+  props:
+    metricKind: DEVICE_ESTIMATE
+    defaultResultKind: CALCULATED
+    definitionSource: VENDOR
+    definitionIssuerName: WHOOP
+    methodText: RMSSD (Root Mean Square of Successive Differences), per WHOOP OpenAPI
+    definitionText: The user's Heart Rate Variability measured using Root Mean Square of Successive Differences (RMSSD), in milliseconds.
+    canonicalUnitCode: ms
+    searchText: HRV heart rate variability RMSSD WHOOP recovery
+  onMatch: review
+- ref: metric-oura-average-hrv
+  type: Metric
+  module: D4
+  uid: hu:metric:oura-sleep-average-hrv
+  name: Oura average_hrv (average HRV during sleep)
+  props:
+    metricKind: DEVICE_ESTIMATE
+    defaultResultKind: CALCULATED
+    definitionSource: VENDOR
+    definitionIssuerName: Oura
+    definitionText: Average heart rate variability during sleep.
+    timeAspect: sleep period
+    notReported:
+    - METRIC_METHOD
+    - UNIT
+    searchText: HRV heart rate variability Oura sleep average
+  onMatch: review
+- ref: metric-apple-hrv-sdnn
+  type: Metric
+  module: D4
+  uid: hu:metric:apple-heartratevariabilitysdnn
+  name: Apple HealthKit heartRateVariabilitySDNN (HRV, SDNN, ms)
+  props:
+    metricKind: DEVICE_ESTIMATE
+    defaultResultKind: CALCULATED
+    definitionSource: VENDOR
+    definitionIssuerName: Apple
+    methodText: SDNN of normal RR intervals
+    canonicalUnitCode: ms
+    searchText: HRV heart rate variability SDNN Apple Watch HealthKit
+  onMatch: review
+- ref: org-whoop
+  type: Organization
+  module: D7
+  uid: hu:org:whoop
+  name: WHOOP
+  onMatch: use_existing
+- ref: org-oura
+  type: Organization
+  module: D7
+  uid: hu:org:oura
+  name: Oura
+  onMatch: use_existing
+- ref: org-apple
+  type: Organization
+  module: D7
+  uid: hu:org:apple
+  name: Apple
+  onMatch: use_existing
+- ref: person-forum-member
+  type: Person
+  module: D7
+  uid: hu:person:whoop-community-thread-1502-op
+  name: WHOOP Community forum member (original poster, thread 1502; handle not stored)
+  onMatch: review
+- ref: agent-curation
+  type: Agent
+  module: K
+  uid: hu:agent:bks-curation-d4
+  name: BellLabs D4 curation agent
+  props:
+    agentKind: AUTOMATED_AGENT
+  onMatch: use_existing
+assertions:
+- id: f01
+  uid: hu:assertion:ft-d4-hrv-f01
+  edgeClass: asserted
+  predicate: RUNS_ON_DEVICE
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: av-whoop-hr-2026-02-25
+    type: AlgorithmVersion
+  object:
+    ref: device-whoop-mg
+    type: Device
+  asserter:
+    ref: agent-curation
+    type: Agent
+  locators:
+  - w1-feb
+  - w1-feb-date
+  speechAct: STATES
+  basisKind: CALCULATED
+  validTime:
+    validFrom: '2026-02-25T00:00:00Z'
+    validFromPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+    validTo: '2026-07-06T00:00:00Z'
+    validToPrecision: DAY
+    validToBasis: INFERRED
+  derivationRule: 'curator inference: the changelog addresses WHOOP members and names no hardware model; the episode is attached to WHOOP MG as one current WHOOP
+    model (device attachment INFERRED, not stated); closed by the next heart-rate change (f02). A secondary review (the5krunner, 2026-02-28, 01-ecosystem S43) captions
+    an image "WHOOP 5.0 and MG wearables - February 2026 heart rate algorithm accuracy update"; it is not used as evidence'
+  qualifiers:
+  - change date stated by WHOOP (2026 changelog, "February 25"); year from the page (2026 changelog)
+  - device model not named by the vendor
+  - 'basis per part: change date STATED_BY_SOURCE; device attachment INFERRED (curator)'
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-wearable-hrv-algorithm-changes
+- id: f02
+  uid: hu:assertion:ft-d4-hrv-f02
+  edgeClass: asserted
+  predicate: RUNS_ON_DEVICE
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: av-whoop-hr-2026-07-06
+    type: AlgorithmVersion
+  object:
+    ref: device-whoop-mg
+    type: Device
+  asserter:
+    ref: agent-curation
+    type: Agent
+  locators:
+  - w2-jul
+  - w2-jul-date
+  - w4-automatic
+  speechAct: STATES
+  basisKind: CALCULATED
+  validTime:
+    validFrom: '2026-07-06T00:00:00Z'
+    validFromPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+  derivationRule: as f01 (device attachment INFERRED by the curator; the July 6 entry names no hardware model); open episode as of 2026-10-08
+  qualifiers:
+  - 'basis per part: change date STATED_BY_SOURCE; device attachment INFERRED (curator)'
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-wearable-hrv-algorithm-changes
+- id: f03
+  uid: hu:assertion:ft-d4-hrv-f03
+  edgeClass: asserted
+  predicate: RUNS_ON_DEVICE
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: av-whoop-fw-50-30-3-0
+    type: AlgorithmVersion
+  object:
+    ref: device-whoop-mg
+    type: Device
+  asserter:
+    ref: person-forum-member
+    type: Person
+  locators:
+  - c1-firmware
+  - c2-post-date
+  speechAct: REPORTS_PRACTICE
+  polarity: POSITIVE
+  basisKind: PERSONAL_EXPERIENCE
+  validTime:
+    validFrom: '2025-05-20T00:00:00Z'
+    validFromPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+  qualifiers:
+  - community-reported; no vendor release note found
+  - date = date of the first post ("on May 20, 2025"); the update happened on or before it
+  - 'source authority to be weighed by a SOURCE_AUTHORITY assessment (11-open-questions #18)'
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-wearable-hrv-algorithm-changes
+- id: f04
+  uid: hu:assertion:ft-d4-hrv-f04
+  edgeClass: structural
+  predicate: OUTPUTS_METRIC
+  subject:
+    ref: av-whoop-hr-2026-02-25
+    type: AlgorithmVersion
+  object:
+    ref: metric-whoop-hr
+    type: Metric
+  asserter:
+    ref: org-whoop
+    type: Organization
+  locators:
+  - w1-feb
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-wearable-hrv-algorithm-changes
+- id: f05
+  uid: hu:assertion:ft-d4-hrv-f05
+  edgeClass: structural
+  predicate: OUTPUTS_METRIC
+  subject:
+    ref: av-whoop-hr-2026-07-06
+    type: AlgorithmVersion
+  object:
+    ref: metric-whoop-hr
+    type: Metric
+  asserter:
+    ref: org-whoop
+    type: Organization
+  locators:
+  - w2-jul
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-wearable-hrv-algorithm-changes
+- id: f06
+  uid: hu:assertion:ft-d4-hrv-f06
+  edgeClass: structural
+  predicate: OUTPUTS_METRIC
+  subject:
+    ref: av-whoop-recovery-api
+    type: AlgorithmVersion
+  object:
+    ref: metric-whoop-hrv-rmssd
+    type: Metric
+  asserter:
+    ref: org-whoop
+    type: Organization
+  locators:
+  - wa-openapi-rmssd
+  - wa-rmssd
+  - wa-scope
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-wearable-hrv-algorithm-changes
+- id: f07
+  uid: hu:assertion:ft-d4-hrv-f07
+  edgeClass: structural
+  predicate: OUTPUTS_METRIC
+  subject:
+    ref: av-oura-sleep-v2
+    type: AlgorithmVersion
+  object:
+    ref: metric-oura-average-hrv
+    type: Metric
+  asserter:
+    ref: agent-curation
+    type: Agent
+  locators:
+  - o1-avg-hrv
+  - o2-version-field
+  - o5-staging
+  - o4-v2
+  rationale: 'curator inference: Oura says sleep_algorithm_version is the "Version of the sleep algorithm used to calculate the sleep data" and average_hrv is a field
+    of the same sleep record, while the enum calls v1/v2 "Oura Sleep Staging Algorithms"; that the staging algorithm produces average_hrv is inferred. The version
+    is per record (v1 or v2): a v1 record links to a v1 AlgorithmVersion, never to this one.'
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-wearable-hrv-algorithm-changes
+- id: f08
+  uid: hu:assertion:ft-d4-hrv-f08
+  edgeClass: structural
+  predicate: OUTPUTS_METRIC
+  subject:
+    ref: av-apple-hrv-sdnn
+    type: AlgorithmVersion
+  object:
+    ref: metric-apple-hrv-sdnn
+    type: Metric
+  asserter:
+    ref: org-apple
+    type: Organization
+  locators:
+  - a1-sdnn
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-wearable-hrv-algorithm-changes
+- id: f09
+  uid: hu:assertion:ft-d4-hrv-f09
+  edgeClass: asserted
+  predicate: RUNS_ON_DEVICE
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: av-apple-hrv-sdnn
+    type: AlgorithmVersion
+  object:
+    ref: device-apple-watch
+    type: Device
+  asserter:
+    ref: org-apple
+    type: Organization
+  locators:
+  - a2-watch
+  - a1-sdnn
+  speechAct: STATES
+  polarity: POSITIVE
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:40:00-04:00'
+    statedAsOfPrecision: INSTANT
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-wearable-hrv-algorithm-changes
+- id: f10
+  uid: hu:assertion:ft-d4-hrv-f10
+  edgeClass: literal
+  predicate: DEFINITION_CHANGED
+  assertionKind: FIELD
+  subject:
+    ref: metric-whoop-hr
+    type: Metric
+  value:
+    valueString: '2026-07-06: new heart rate algorithm; downstream Strain may shift'
+  asserter:
+    ref: org-whoop
+    type: Organization
+  locators:
+  - w2-jul-date
+  - w3-strain
+  speechAct: STATES
+  polarity: POSITIVE
+  basisKind: MANUFACTURER_CLAIM
+  validTime:
+    validFrom: '2026-07-06T00:00:00Z'
+    validFromPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+  note: 'predicate-only (05 predicateOnly: DEFINITION_CHANGED); the episode boundary itself is f01/f02'
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-wearable-hrv-algorithm-changes
+- id: f11
+  uid: hu:assertion:ft-d4-hrv-f11
+  edgeClass: literal
+  predicate: FIELD_NOT_REPORTED
+  assertionKind: FIELD
+  subject:
+    ref: metric-oura-average-hrv
+    type: Metric
+  value:
+    valueString: METRIC_METHOD, UNIT
+  asserter:
+    ref: agent-curation
+    type: Agent
+  locators:
+  - o1-avg-hrv
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    statedAsOf: '2026-10-08T17:40:00-04:00'
+    statedAsOfPrecision: INSTANT
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-wearable-hrv-algorithm-changes
+assessments:
+- id: s01
+  uid: hu:assessment:ft-d4-hrv-s01
+  assessmentKind: COMPARABILITY
+  assessmentSubkind: D4.comparability
+  conclusionCode: NOT_COMPARABLE
+  status: PROPOSED
+  methodVersion: d4-comparability/0.1 (fixture)
+  about:
+  - hu:metric:whoop-hrv-rmssd-milli
+  - hu:metric:apple-heartratevariabilitysdnn
+  differingDimensions:
+  - 'method: RMSSD vs SDNN'
+  - 'aggregation window: not stated by either source'
+  inputAssertions:
+  - f06
+  - f08
+  evidence:
+  - locator: wa-openapi-rmssd
+    role: SUPPORTS
+  - locator: a1-sdnn
+    role: SUPPORTS
+  - locator: wa-rmssd
+    role: CONTEXT
+  summary: Both are sold as "HRV" in milliseconds but are different statistics of RR intervals; values are not interchangeable and no conversion is published.
+  questions:
+  - Q-D4-07
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-wearable-hrv-algorithm-changes
+- id: s02
+  uid: hu:assessment:ft-d4-hrv-s02
+  assessmentKind: COMPARABILITY
+  assessmentSubkind: D4.comparability
+  conclusionCode: UNKNOWN
+  status: PROPOSED
+  methodVersion: d4-comparability/0.1 (fixture)
+  about:
+  - hu:metric:oura-sleep-average-hrv
+  - hu:metric:whoop-hrv-rmssd-milli
+  - hu:metric:apple-heartratevariabilitysdnn
+  differingDimensions:
+  - Oura method and unit not stated in the OpenAPI document
+  inputAssertions:
+  - f07
+  - f11
+  evidence:
+  - locator: o1-avg-hrv
+    role: CONTEXT
+  summary: Oura average_hrv cannot be placed against RMSSD or SDNN from the published API definition.
+  questions:
+  - Q-D4-07
+  producedBy:
+    missionId: mission:ft-D4-fixtures
+    runId: run:ft-D4-wearable-hrv-algorithm-changes

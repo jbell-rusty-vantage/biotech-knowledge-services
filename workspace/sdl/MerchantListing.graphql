@@ -1,0 +1,41 @@
+"""
+Purpose: one host's catalog entry for a sellable item (Amazon ASIN detail page, iHerb product id, Shopify product page,
+restaurant menu-item page): the place offers live, recall-exposure and authorized-channel questions scan, and a
+retailer's own statements ('New formulation', 'Discontinued Item') are made on. Its resolution to a Package is an asserted
+episode; an unresolved or disputed match is a kernel Assessment (EQUIVALENCE, subkind D6.listing-to-package).
+Identity rule: (hostDomain, hostItemId) — e.g. (amazon.com, B07TK5K5TQ), (iherb.com, 162274).
+uid token: `listing` (hu:listing:<opaque>).
+Questions: CQ-CM-01, CQ-CM-02, CQ-CM-05, Q-D6-05, Q-D6-06, Q-D6-15, Q-D6-19, Q-D6-20, CQ-PF-02.
+"""
+type MerchantListing implements Entity & Subjectable
+  @node(labels: ["MerchantListing", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  listingKind: ListingKind!
+  "Registrable domain of the host ('amazon.com', 'iherb.com', 'truniagen.com', 'mcdonalds.com'); the host Organization is reached by D7 domain identifiers (HOSTED_BY is predicate-only)."
+  hostDomain: String!
+  "Host's item id (ASIN, iHerb product id, Shopify handle or product id, menu slug)."
+  hostItemId: String!
+  "Host's parent/family id when the host groups items (Amazon parent ASIN, '30-300MG-PARENT')."
+  parentHostItemId: String
+  "Title as displayed; a listing statement, never label truth (CQ-PF-02)."
+  titleAsDisplayed: String
+  canonicalUrl: String
+  firstObservedAt: DateTime
+  lastObservedAt: DateTime
+  """class: asserted; cardinality: zero_or_one open episode (repointed or merged listings close one episode and open the next); questions: CQ-CM-02, Q-D6-05, Q-D6-15, Q-D6-19, Q-D6-02, Q-D6-21."""
+  listingFor: [Package!]!
+    @relationship(type: "LISTING_FOR", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: many; questions: CQ-CM-01, CQ-CM-02, Q-D6-02, Q-D6-13."""
+  offers: [Offer!]!
+    @relationship(type: "HAS_OFFER", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

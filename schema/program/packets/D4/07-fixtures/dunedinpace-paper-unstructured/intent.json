@@ -1,0 +1,354 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v1",
+  "intentId": "ft-d4-dpace-2026-10-08",
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "ft-d4-fixtures-agent-a3",
+      "model": "claude-opus-5-5"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run:ft-D4-dunedinpace-paper-unstructured",
+      "missionId": "mission:ft-D4-fixtures"
+    },
+    "activityKind": "EXTRACTION"
+  },
+  "onStale": "fail",
+  "sources": [
+    {
+      "ref": "snap-epmc-xml",
+      "source": {
+        "canonicalUri": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC8853656/fullTextXML",
+        "title": "Belsky et al. 2022, DunedinPACE, a DNA methylation biomarker of the pace of aging, eLife 11:e73420 (Europe PMC JATS XML; PMID 35029144; DOI 10.7554/eLife.73420)",
+        "sourceKind": "API",
+        "properties": {
+          "genre": "PEER_REVIEWED_PUBLICATION"
+        }
+      },
+      "snapshot": {
+        "observedAt": "2026-10-08T17:39:00-04:00",
+        "retrievedAt": "2026-10-08T17:39:00-04:00",
+        "contentHash": "sha256:dd24c21863993f6398cb4092d746217f145ed6080a75a950123cf0586d0200b7",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "captureMethod": "curl Europe PMC REST fullTextXML (no key)",
+          "mimeType": "application/xml",
+          "derivedTextHash": "sha256:d136cdf62f3a234b3606d928317977d3fe3884ccd2c6f5e75423fd1f4f5d3765",
+          "derivedTextRule": "python: re.sub(r'\\s+', ' ', html.unescape(re.sub(r'<[^>]+>', ' ', xml_utf8))) (tags -> space, entities unescaped, whitespace runs -> one space, no strip)"
+        }
+      },
+      "locators": [
+        {
+          "ref": "l1-epic-age45",
+          "uid": "hu:locator:ft-d4-dpace-l1-epic-age45",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "Using Illumina EPIC array DNA methylation data from blood collected at age 45, we developed DunedinPACE to provide a surrogate for the 20-year Pace of Aging.",
+          "startOffset": 15086,
+          "endOffset": 15243,
+          "section": "Results: DunedinPACE distills the 20-year Pace of Aging",
+          "quotePrefix": "d test ( Belsky et al., 2020 ). ",
+          "quoteSuffix": " Briefly, we used elastic-net-re",
+          "properties": {
+            "selectorJson": "{\"end\": 15243, \"offsetBasis\": \"Unicode code points of the derived text (see derivedText.rule) of the XML snapshot\", \"start\": 15086, \"type\": \"TextPositionSelector\"}"
+          }
+        },
+        {
+          "ref": "l2-173-cpgs",
+          "uid": "hu:locator:ft-d4-dpace-l2-173-cpgs",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "The resulting algorithm included 173 CpG sites.",
+          "startOffset": 15796,
+          "endOffset": 15843,
+          "section": "Results",
+          "quotePrefix": "cted by the analysis was 0.042. ",
+          "quoteSuffix": " The CpGs included in DunedinPAC",
+          "properties": {
+            "selectorJson": "{\"end\": 15843, \"offsetBasis\": \"Unicode code points of the derived text (see derivedText.rule) of the XML snapshot\", \"start\": 15796, \"type\": \"TextPositionSelector\"}"
+          }
+        },
+        {
+          "ref": "l3-icc",
+          "uid": "hu:locator:ft-d4-dpace-l3-icc",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "For DunedinPACE, reliability was excellent (ICC = 0.96 [0.93–0.98]; Figure 2 ).",
+          "startOffset": 22035,
+          "endOffset": 22114,
+          "section": "Results: test-retest reliability",
+          "quotePrefix": "ICC = 0.89 95% CI [0.79–0.94]). ",
+          "quoteSuffix": "We repeated this analysis in two",
+          "properties": {
+            "selectorJson": "{\"end\": 22114, \"offsetBasis\": \"Unicode code points of the derived text (see derivedText.rule) of the XML snapshot\", \"start\": 22035, \"type\": \"TextPositionSelector\"}"
+          }
+        },
+        {
+          "ref": "l3b-replicates",
+          "uid": "hu:locator:ft-d4-dpace-l3b-replicates",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "We first evaluated test-retest reliability of DunedinPACE using a publicly available database of 36 replicate adult-blood-sample Illumina 450 k datasets",
+          "startOffset": 21639,
+          "endOffset": 21791,
+          "section": "Results: test-retest reliability",
+          "quotePrefix": "itudinal observational studies. ",
+          "quoteSuffix": " ( Lehne et al., 2015 ) (GEO Acc",
+          "properties": {
+            "selectorJson": "{\"end\": 21791, \"offsetBasis\": \"Unicode code points of the derived text (see derivedText.rule) of the XML snapshot\", \"start\": 21639, \"type\": \"TextPositionSelector\"}"
+          }
+        },
+        {
+          "ref": "l4-450k-epic",
+          "uid": "hu:locator:ft-d4-dpace-l4-450k-epic",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "It can be implemented in Illumina 450 k or in EPIC array data",
+          "startOffset": 50852,
+          "endOffset": 50913,
+          "section": "Discussion",
+          "quotePrefix": "ace of Aging from a blood test. ",
+          "quoteSuffix": ", making it immediately availabl",
+          "properties": {
+            "selectorJson": "{\"end\": 50913, \"offsetBasis\": \"Unicode code points of the derived text (see derivedText.rule) of the XML snapshot\", \"start\": 50852, \"type\": \"TextPositionSelector\"}"
+          }
+        },
+        {
+          "ref": "l6-unit",
+          "uid": "hu:locator:ft-d4-dpace-l6-unit",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "an average rate of 1 year of biological aging per year of chronological aging",
+          "startOffset": 14460,
+          "endOffset": 14537,
+          "section": "Results",
+          "quotePrefix": "e interpreted with reference to ",
+          "quoteSuffix": ". Study members showed wide vari",
+          "properties": {
+            "selectorJson": "{\"end\": 14537, \"offsetBasis\": \"Unicode code points of the derived text (see derivedText.rule) of the XML snapshot\", \"start\": 14460, \"type\": \"TextPositionSelector\"}"
+          }
+        },
+        {
+          "ref": "l7-predecessor",
+          "uid": "hu:locator:ft-d4-dpace-l7-predecessor",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "The value indicates improved fit of the DunedinPACE model to the 20-year Pace of Aging as compared to the original DunedinPoAm version’s fit to the 12-year Pace of Aging (in-sample correlation r = 0.6).",
+          "startOffset": 16121,
+          "endOffset": 16323,
+          "section": "Results",
+          "quotePrefix": "age 45 ( r = 0.78, Figure 1a ). ",
+          "quoteSuffix": " Correlations among the 12- and ",
+          "properties": {
+            "selectorJson": "{\"end\": 16323, \"offsetBasis\": \"Unicode code points of the derived text (see derivedText.rule) of the XML snapshot\", \"start\": 16121, \"type\": \"TextPositionSelector\"}"
+          }
+        },
+        {
+          "ref": "l8-biomarker",
+          "uid": "hu:locator:ft-d4-dpace-l8-biomarker",
+          "selectorKind": "CHARACTER_POSITION",
+          "quote": "DunedinPACE is a novel DNA methylation biomarker of the pace of biological aging",
+          "startOffset": 5969,
+          "endOffset": 6049,
+          "section": "Author impact statement",
+          "quotePrefix": "ref CC0 Author impact statement ",
+          "quoteSuffix": " for intervention trials and nat",
+          "properties": {
+            "selectorJson": "{\"end\": 6049, \"offsetBasis\": \"Unicode code points of the derived text (see derivedText.rule) of the XML snapshot\", \"start\": 5969, \"type\": \"TextPositionSelector\"}"
+          }
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "av-dunedinpace",
+      "mode": "new",
+      "nodeType": "AlgorithmVersion",
+      "name": "DunedinPACE (Belsky et al. 2022, eLife 11:e73420)",
+      "uidSegment": "dunedinpace-belsky-2022",
+      "properties": {
+        "algorithmFamily": "DunedinPACE",
+        "familyKey": "dunedinpace",
+        "algorithmKind": "EPIGENETIC_CLOCK",
+        "realization": "PUBLICATION_REFERENCE",
+        "versionBasis": "PUBLICATION_VERSION",
+        "outputKind": "PACE",
+        "inputPlatforms": [
+          "ILLUMINA_450K",
+          "ILLUMINA_EPIC_V1"
+        ],
+        "inputFeatureCount": 173,
+        "trainingPopulationText": "Dunedin Study members, blood DNA methylation (Illumina EPIC) at age 45, trained on 20-year Pace of Aging"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "av-dunedinpoam",
+      "mode": "new",
+      "nodeType": "AlgorithmVersion",
+      "name": "DunedinPoAm (Belsky et al. 2020, eLife e54870)",
+      "uidSegment": "dunedinpoam-belsky-2020",
+      "properties": {
+        "algorithmFamily": "DunedinPoAm",
+        "familyKey": "dunedinpoam",
+        "algorithmKind": "EPIGENETIC_CLOCK",
+        "realization": "PUBLICATION_REFERENCE",
+        "versionBasis": "PUBLICATION_VERSION",
+        "outputKind": "PACE"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "metric-dunedinpace",
+      "mode": "new",
+      "nodeType": "Metric",
+      "name": "DunedinPACE pace of aging (biological years per chronological year)",
+      "uidSegment": "dunedinpace-pace-of-aging",
+      "properties": {
+        "metricKind": "ALGORITHM_OUTPUT",
+        "defaultResultKind": "INFERRED",
+        "definitionSource": "PUBLICATION",
+        "definitionIssuerName": "Belsky et al. 2022",
+        "definitionText": "an average rate of 1 year of biological aging per year of chronological aging",
+        "systemText": "Bld (DNA methylation in blood)",
+        "scale": "QUANTITATIVE",
+        "canonicalUnitCode": "a/a",
+        "searchText": "DunedinPACE pace of aging biological age speed DNA methylation"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "biomarker-pace",
+      "mode": "new",
+      "nodeType": "Biomarker",
+      "name": "Pace of biological aging",
+      "uidSegment": "pace-of-biological-aging",
+      "properties": {
+        "biomarkerKind": "COMPOSITE_AGING_INDEX",
+        "searchText": "pace of aging, rate of biological aging, aging speed"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "person-belsky",
+      "mode": "new",
+      "nodeType": "Person",
+      "name": "Daniel W. Belsky (first author; asserter for the author group)",
+      "uidSegment": "belsky-daniel-w",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "agent-curation",
+      "mode": "new",
+      "nodeType": "Agent",
+      "name": "BellLabs D4 curation agent",
+      "uidSegment": "bks-curation-d4",
+      "properties": {
+        "agentKind": "AUTOMATED_AGENT"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "p01-a01",
+      "kind": "edge.assert",
+      "relationshipType": "DERIVED_FROM_ALGORITHM_VERSION",
+      "fromRef": "av-dunedinpace",
+      "toRef": "av-dunedinpoam",
+      "evidence": [
+        "l7-predecessor"
+      ],
+      "assertion": {
+        "polarity": "POSITIVE",
+        "basisKind": "DIRECT_MEASUREMENT",
+        "speechAct": "STATES",
+        "validity": {
+          "validFromBasis": "UNKNOWN",
+          "statedAsOf": "2022-01-14T00:00:00Z",
+          "statedAsOfPrecision": "DAY"
+        }
+      },
+      "asserterRef": "person-belsky",
+      "rationale": "Authors compare DunedinPACE with \"the original DunedinPoAm version\"; successor -> predecessor edge, not an equivalence."
+    },
+    {
+      "proposalId": "p02-a02",
+      "kind": "edge.structural",
+      "relationshipType": "OUTPUTS_METRIC",
+      "fromRef": "av-dunedinpace",
+      "toRef": "metric-dunedinpace",
+      "evidence": [
+        "l1-epic-age45",
+        "l6-unit"
+      ],
+      "properties": {},
+      "rationale": "Definitional: the publication version outputs the pace-of-aging metric whose unit is biological years per chronological year."
+    },
+    {
+      "proposalId": "p03-a03",
+      "kind": "edge.structural",
+      "relationshipType": "QUANTIFIES",
+      "fromRef": "metric-dunedinpace",
+      "toRef": "biomarker-pace",
+      "evidence": [
+        "l8-biomarker"
+      ],
+      "properties": {},
+      "rationale": "The metric quantifies the biomarker \"pace of biological aging\" (author impact statement)."
+    },
+    {
+      "proposalId": "p04-a04",
+      "kind": "node.upsert",
+      "subjectRef": "av-dunedinpace",
+      "evidence": [
+        "l2-173-cpgs"
+      ],
+      "properties": {
+        "inputFeatureCount": 173
+      }
+    },
+    {
+      "proposalId": "p05-a05",
+      "kind": "node.upsert",
+      "subjectRef": "av-dunedinpace",
+      "evidence": [
+        "l4-450k-epic",
+        "l1-epic-age45"
+      ],
+      "properties": {
+        "inputPlatforms": [
+          "ILLUMINA_450K",
+          "ILLUMINA_EPIC_V1"
+        ]
+      }
+    },
+    {
+      "proposalId": "p06-a06",
+      "kind": "assertion.literal",
+      "subjectRef": "av-dunedinpace",
+      "predicate": "REPORTS_RELIABILITY",
+      "evidence": [
+        "l3-icc",
+        "l3b-replicates"
+      ],
+      "assertion": {
+        "basisKind": "DIRECT_MEASUREMENT",
+        "speechAct": "STATES",
+        "validity": {
+          "validFromBasis": "UNKNOWN",
+          "statedAsOf": "2022-01-14T00:00:00Z",
+          "statedAsOfPrecision": "DAY"
+        }
+      },
+      "valueString": "ICC = 0.96 [0.93–0.98], test-retest, 36 replicate adult blood samples, Illumina 450k (GSE55763)",
+      "valueNumber": 0.96,
+      "unitCode": "1",
+      "asserterRef": "person-belsky"
+    }
+  ],
+  "notes": "Fixture intent (fixture ids, not a real run). Not expressible in biotech-knowledge-intent.v1 and therefore recorded only in assertions.yaml: assertionKind/claimType of an Assertion (no AssertionCore field), the reliability value as a typed METRIC assertion (sent as assertion.literal), and Chunk / MENTIONS / COVERS_LOCATOR (derived retrieval projections written by the D9 chunker and entity-link jobs, never by an ingestion intent). Structural edges carry evidence so the planner can cite the captured record. The asserter of edge.structural cannot be named in v1."
+}

@@ -1,0 +1,41 @@
+# Report view: the report, what it is about and a page of the assertions it cites.
+query ReportView($uid: String!, $first: Int = 10, $after: String) {
+  reports(where: { uid: { eq: $uid } }, limit: 1) {
+    uid
+    reportKind
+    skeletonKey
+    status
+    verdict
+    worldCorrectness
+    policyOutcome
+    policyVersion
+    bodyDigest
+    citationCompleteness
+    citationCorrectness
+    independentSourceFamilyCount
+    distinctSourceFamilyCount
+    unsupportedHighSeverityCount
+    publishedAt
+    recordedAt
+    about(limit: 10) {
+      ...SubjectRef
+    }
+    citesAssertionsConnection(first: $first, after: $after, sort: [{ node: { uid: ASC } }]) {
+      totalCount
+      pageInfo {
+        ...PageInfoFields
+      }
+      edges {
+        cursor
+        node {
+          uid
+          predicate
+          status
+          polarity
+          proposition
+          recordedAt
+        }
+      }
+    }
+  }
+}

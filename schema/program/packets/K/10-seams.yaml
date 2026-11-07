@@ -1,0 +1,61 @@
+version: 1
+module: K
+# A1 model stage, 2026-10-08; completed in the adversarial review (2026-10-08) from a field scan of every sibling 04 SDL
+# (A1 D10, A2 D1/D12, A3 D2/D4, A4 D3, A5 D5, A6 D6/D7, A7 D8/D13, A8 D9/D11) for relationship fields whose target is a
+# kernel type, plus the domain edges the K patterns read. The K SDL references no type outside the kernel: every kernel
+# edge that reaches a domain node targets the Subjectable or Entity interface. The entries below record (1) every edge
+# an OTHER module declares onto a kernel type (owner: other) and (2) the domain edges the K retrieval patterns read
+# (owner: other) or the kernel edges whose targets are domain types through Subjectable (owner: this), so the
+# synthesizer can check both sides. Question ids of other packets are listed in 02-questions.md "Ids referenced outside
+# the table". Rule for domains (published pattern): a domain lists here every kernel NODE type it targets outside the
+# packet-check allowlist (Claim, Assessment, Report); kernel edge-property types and enums it uses go under
+# sharedVocabularies (kernel-types), because packet-check keys seams by relationship type. Assertion.predicate values are
+# not seams: they go in the domain's 05 predicateOnly list (09 pattern, "Kernel types a domain may reference").
+seams:
+  # ---- D9 (A8): retrieval structure, containers, renditions
+  - { type: MENTIONS, from: D9.Chunk, to: K.Subjectable, questions: [Q-K-14, Q-K-05], direction: OUT, owner: other, note: "kernel meaning (derived, DerivedEdgeProperties, licensed by a RESOLUTION Assessment named in derivedFromAssessmentUids); since the adversarial review D9 Chunk.mentions is the only MENTIONS field (K Mention cut)" }
+  - { type: COVERS_LOCATOR, from: D9.Chunk, to: K.SourceLocator, questions: [Q-K-14, Q-K-20], direction: OUT, owner: other }
+  - { type: CHUNK_OF, from: D9.Chunk, to: K.SourceSnapshot, questions: [Q-K-14], direction: OUT, owner: other }
+  - { type: OCCURS_IN, from: K.Assertion, to: D9.MediaWork, questions: [Q-K-09, Q-K-21, CQ-CL-01, Q-D9-01, Q-D9-02], direction: "OUT (declared on D9.MediaWork.occurrences with direction IN)", owner: other, note: "the container of a claim occurrence (exactly one; the work where the act of asserting was first published). K Q-K-09 reads it as the container and Q-K-21 as the primary's source family (09 'Occurrence container and source family')" }
+  - { type: RENDITION_OF, from: K.Source, to: D9.MediaWork, questions: [Q-K-21], direction: "OUT (declared on D9.MediaWork.renditions with direction IN)", owner: other, note: "rendition grouping only: K uses it for the source family of evidence whose primary has no OCCURS_IN container; never as a second container path" }
+  # ---- D10 (A1): report composition, criteria, associations
+  - { type: HAS_ITEM, from: K.Report, to: D10.ReportItem, questions: [Q-K-17, Q-D10-02, Q-D10-14], direction: "OUT (declared on D10.ReportItem.report with direction IN)", owner: other }
+  - { type: USES_CRITERION, from: K.Report, to: D10.DecisionCriterion, questions: [Q-D10-02, CQ-RC-01], direction: "OUT (declared on D10.DecisionCriterion.usedByReports with direction IN)", owner: other }
+  - { type: ASSESSES, from: D10.ReportItem, to: K.Subjectable, questions: [Q-K-05], direction: OUT, owner: other, note: "kernel meaning (09 pattern item 11)" }
+  - { type: DERIVED_FROM, from: D10.ReportItem, to: K.Assertion, questions: [Q-K-06, Q-K-17], direction: OUT, owner: other }
+  - { type: DERIVED_FROM, from: D10.ReportItem, to: K.Assessment, questions: [Q-K-06, Q-K-17], direction: OUT, owner: other, note: "ReportItem.citesAssessments" }
+  - { type: DERIVED_FROM, from: D10.ReportItem, to: D10.Association, questions: [Q-K-06, CQ-AX-08], direction: OUT, owner: other, note: "ReportItem.citesAssociations: DERIVED_FROM may target a D10 Association (09 pattern item 11)" }
+  - { type: DERIVED_FROM, from: D10.Association, to: K.Assertion, questions: [Q-K-06, CQ-AX-08], direction: OUT, owner: other }
+  - { type: BLOCKED_BY, from: D10.ReportItem, to: K.Assertion, questions: [Q-K-17, Q-D10-08], direction: OUT, owner: other }
+  - { type: BLOCKED_BY, from: D10.ReportItem, to: K.Assessment, questions: [Q-K-17, Q-D10-08], direction: OUT, owner: other, note: "ReportItem.blockedByAssessments" }
+  - { type: ASSOCIATES, from: D10.Association, to: K.Subjectable, questions: [Q-D10-05, Q-D10-06], direction: OUT, owner: other, note: "derived projection; targets the kernel interface" }
+  # ---- D2 (A3), D5 (A5): domain context and constraint records hung on kernel Assertions
+  - { type: OBSERVED_IN_CONTEXT, from: K.Assertion, to: D2.MechanismEvidenceContext, questions: [Q-D2-04, CQ-MX-01], direction: "OUT (declared on D2.MechanismEvidenceContext.assertions with direction IN)", owner: other }
+  - { type: RESOLVES_TO_CONSTRAINT, from: K.Assertion, to: D5.UseConstraint, questions: [Q-D5-03, CQ-RC-06], direction: "OUT (declared on D5.UseConstraint.resolvedFrom with direction IN; derived)", owner: other }
+  # ---- D7 (A6), D6 (A6): asserters and their interests (read by Q-K-15, Q-K-23)
+  - { type: ASSERTED_BY, from: K.Assertion, to: "D7.Person | D7.Organization | D9.Channel (channelKind ACCOUNT) (through K.Subjectable)", questions: [Q-K-15, Q-K-23], direction: OUT, owner: this, note: "D9 ACCOUNT channels admitted as asserters in the adversarial review (D9 request K-6; executor change P20)" }
+  - { type: HOLDS_STAKE, from: "D7.Person | D7.Organization", to: D7.Organization, questions: [Q-K-15], direction: OUT, owner: other }
+  - { type: RECEIVES_VALUE_FROM, from: D7.Person, to: D7.Organization, questions: [Q-K-15], direction: OUT, owner: other }
+  - { type: OWNS_BRAND, from: D7.Organization, to: D7.Brand, questions: [Q-K-15], direction: "OUT (declared on D7.Brand.owners with direction IN)", owner: other }
+  - { type: SELLER_OF_RECORD, from: D6.Offer, to: D7.Organization, questions: [Q-K-15], direction: OUT, owner: other }
+  # ---- computed states of every domain, D11 lineage
+  - { type: DERIVED_FROM, from: "domain computed states (D1, D2, D6 …)", to: K.Assertion, questions: [Q-K-18], direction: OUT, owner: other }
+  - { type: ASSESSES, from: K.Assessment, to: "domain types through K.Subjectable (D3, D4, D5, D7, D9, D13 kinds)", questions: [Q-K-13, Q-K-21], direction: OUT, owner: this }
+  - { type: WAS_GENERATED_BY, from: D11.CaptureAttempt, to: K.Activity, questions: [CQ-AX-04, Q-K-04], direction: "OUT (declared once on K Activity.generated)", owner: this }
+sharedVocabularies:
+  - name: identifier-schemes
+    owner: K
+    file: packets/K/identifier-schemes.yaml
+    role: "K owns the register; every domain names its schemes in 06-node-register.yaml identifierSchemes; D11 (A8) supplies the bridge table"
+  - name: kernel-types
+    owner: K
+    file: packets/K/04-schema-proposal.graphql
+    role: "edge-property types (AssertedEdgeProperties, AssertedRecordedProperties, StateEpisodeProperties, DerivedEdgeProperties, StructuralEdgeProperties, IdentifierLinkProperties, EvidenceEdgeProperties) and enums (PrivacyClass, SemanticVerdict, EffectDirection, AssessmentKind, CertaintyLevel, BasisKind, ...); additive changes only, except the removals recorded in 09 'Kernel pattern changes' 10-11 (Mention, Adjudication.considers), which no domain SDL referenced"
+  - name: targets
+    owner: D5
+    file: C:\Users\Pinda\Proyectos\Biotech\biotech-knowledge-services-A5\schema\program\packets\D5\vocab-targets.yaml
+    role: "hosted, not consumed by K patterns: the closed target predicates (INTENDED_FOR_TARGET, IMPROVES_TARGET, WORSENS_TARGET, NO_EFFECT_ON_TARGET, MIXED_EFFECT_ON_TARGET) are values of K Assertion.predicate; weighed conclusions are K Assessments with effectDirection"
+  - name: frontiers
+    owner: D13
+    file: C:\Users\Pinda\Proyectos\Biotech\biotech-knowledge-services-A7\schema\program\packets\D13\vocab-frontiers.yaml
+    role: "hosted, not consumed by K patterns: a Frontier is an admissible Assertion subject/object and Assessment target through K.Subjectable; the classification Assertion carries the qualifier frontierVocabVersion"

@@ -1,0 +1,179 @@
+# Domain sidecar for the schema workspace, release biotech-schema-v2.0.0 (hand-authored upstream; FU-09).
+# Authority: biotech-meta/docs/schema/releases/biotech-schema-v2.0.0/workspace-inputs/ (this file). The pinned,
+# byte-verified copy is biotech-knowledge-services schema/pinned/release/workspace-inputs/. Edit only here, re-release
+# and run `pnpm schema:pin`.
+# A domain groups release modules (K, D1..D13 of sdl/assembled.manifest.json) into the top navigation layer.
+# Every module belongs to exactly one domain; the build fails when a module is unassigned or an entry type does not
+# exist in the release SDL. Old v1 domain and fragment ids (W00..W23, SEAM) resolve through aliases.yaml.
+version: 2
+domains:
+  - slug: kernel-and-provenance
+    title: Kernel, identity, time and provenance
+    modules: [K]
+    purpose: >-
+      The parts every other domain depends on: uid identity and archetype labels, bitemporal time, the Assertion that
+      authorizes every source-derived edge, the Source / SourceSnapshot / SourceLocator evidence chain, Claims and their
+      occurrences, Adjudications, Assessments, Reports, Activity / Agent lineage and Identifier records.
+    entryTypes: [Assertion, Source, SourceSnapshot, SourceLocator, Claim, Adjudication, Assessment, Report, Identifier, Activity, Agent]
+    questions:
+      - Which located source span supports this assertion (HAS_EVIDENCE role and origin), and who adjudicated it?
+      - Is this statement a claim occurrence (Assertion assertionKind CLAIM, OCCURRENCE_OF its Claim), and who repeated it?
+      - What external identifiers does this record carry, under which normalization rule and issuer?
+      - Which Mission Control run (Activity runId) wrote this record, and what did it read (DERIVED_FROM, ASSESSES)?
+    writeGuidance: >-
+      Never write an asserted edge without its Assertion (ASSERTED_BY, HAS_SUBJECT, HAS_OBJECT) and at least one
+      HAS_EVIDENCE to a SourceLocator. recordedAt / recordedFrom are service-assigned; nothing is deleted: a correction
+      is a superseding Assertion (supersedesUid, same asserter) and the old episode is closed with recordedTo. An
+      unresolved surface form is a SourceLocator cited by a RESOLUTION Assessment, never a node. Executor permissions
+      come from the node register (mutations.executor); the GraphQL API has no mutations.
+
+  - slug: substances-and-biology
+    title: Substances, materials, mechanisms and biology
+    modules: [D1, D2]
+    purpose: >-
+      Chemical substances (identity by structure), ingredient materials (branded, botanical, microbial, extracts),
+      taxa and strains, constituents and nutrients; mechanisms (pathways, processes, hallmarks), molecular entities,
+      conditions, outcomes and the measured-versus-inferred MechanismEvidenceContext.
+    entryTypes: [ChemicalSubstance, IngredientMaterial, Constituent, Taxon, Mechanism, MolecularEntity, MechanismEvidenceContext, Condition, Outcome]
+    questions:
+      - Which substance is the active moiety of this salt, and which substance does this branded material realize?
+      - Which mechanism assertions were measured (basisKind DIRECT_MEASUREMENT) and in which species / compartment context?
+      - Which conditions and outcomes is this mechanism linked to (derived AFFECTS_MECHANISM projections are never evidence)?
+    writeGuidance: >-
+      A salt is its own ChemicalSubstance (HAS_ACTIVE_MOIETY); a physical or branded form is an IngredientMaterial.
+      Mechanism effects are Assertions with basisKind and OBSERVED_IN_CONTEXT; AFFECTS_MECHANISM is derived and read-only.
+
+  - slug: studies-and-evidence
+    title: Clinical and preclinical evidence
+    modules: [D3]
+    purpose: >-
+      Studies with registry versions, arms, intervention components, populations, outcome definitions, results and
+      adverse-event results, publications and their renditions and revisions.
+    entryTypes: [Study, RegistrationVersion, StudyArm, InterventionComponent, StudyPopulation, OutcomeDefinition, StudyResult, Publication]
+    questions:
+      - What material did the study actually administer (ADMINISTERS), and does it match the commercial product?
+      - Which outcomes were primary, what do they measure (MEASURES), and what result was reported per arm?
+      - Was the registry record changed after the study started (HAS_REGISTRATION_VERSION episodes)?
+    writeGuidance: >-
+      RegistrationVersion and StudyResult are create-only (a changed registry version or result is a new record).
+      Applicability, endpoint classification and evidence strength are Assessments, never Study fields.
+
+  - slug: diagnostics-and-devices
+    title: Diagnostics, biomarkers, measurement and devices
+    modules: [D4]
+    purpose: >-
+      Biomarkers, metrics, lab tests, assay and algorithm versions, reference interval versions and devices; what a
+      test measures, which version produced a score and which inputs it requires.
+    entryTypes: [Biomarker, Metric, LabTest, AssayVersion, AlgorithmVersion, ReferenceIntervalVersion, Device]
+    questions:
+      - Are two results of the same metric comparable (same assay version, reference interval, specimen)?
+      - Which algorithm version produced this score, and which input metrics does it require (REQUIRES_INPUT_METRIC)?
+      - Which device or lab performs this test (RUNS_ON_DEVICE, PERFORMED_BY_LAB)?
+    writeGuidance: >-
+      Unreported assay, instrument or software details are listed in notReported (UNKNOWN), never invented. A vendor
+      implementation is a distinct AlgorithmVersion until an EQUIVALENCE Assessment says otherwise.
+
+  - slug: exposures-and-interventions
+    title: Interventions, protocols, safety, food and nutrition
+    modules: [D5, D12]
+    purpose: >-
+      Targets (what helps or hurts), interventions, protocols with editions and steps, use constraints (dose limits,
+      contraindications, interactions); foods, food categories and dietary patterns with their sourced content.
+    entryTypes: [Target, Intervention, Protocol, ProtocolEdition, ProtocolStep, UseConstraint, FoodItem, FoodCategory, DietaryPattern]
+    questions:
+      - What does edition N of this protocol prescribe, in what order, with which dose and timing?
+      - Which use constraints (upper limits, contraindications, interactions) apply to this substance in this population?
+      - What does this food contain per stated basis, and which source states it (FOOD_CONTAINS statementKind)?
+    writeGuidance: >-
+      Help and harm toward a Target are Assertions or Assessments (IMPROVES_TARGET, WORSENS_TARGET ...), never a typed
+      edge from a means to a Target. A changed protocol instruction is a new ProtocolEdition; disclosure-only changes are not.
+
+  - slug: products-and-commerce
+    title: Products, labels and commerce
+    modules: [D6]
+    purpose: >-
+      The enduring Product, its variants and packages, label versions with their declared component lines, merchant
+      listings and offers with the seller of record.
+    entryTypes: [Product, ProductVariant, Package, LabelVersion, MerchantListing, Offer]
+    questions:
+      - What does the current label version of this package declare per serving, and when was it observed?
+      - Which listings sell this package, at what observed price, and who is the seller of record?
+      - Did the label composition change between two versions (compositionDigest), or only the packaging?
+    writeGuidance: >-
+      Label history is HAS_LABEL_VERSION episodes (exclusive per package, slot and asserter); each label line is a
+      DECLARES_COMPONENT edge whose own Assertion carries the printed wording (declaredName:, form:, statement:).
+      A lab measurement of a sold product is MEASURED_CONTENT_IN_PRODUCT (OD-10 option A), never a declaration.
+
+  - slug: actors-and-institutions
+    title: Organizations, people and money
+    modules: [D7]
+    purpose: >-
+      Organizations (legal entities, groups), people (public actors only), brands and awards; roles, stakes, control,
+      brand ownership and financial interests as asserted, time-bounded edges.
+    entryTypes: [Organization, Person, Brand, Award]
+    questions:
+      - Who holds a role in, a stake in or control of this organization, and since when (HOLDS_ROLE, HOLDS_STAKE, PARENT_OF)?
+      - Is this brand owned (OWNS_BRAND, needs ownership evidence) or only operated by this organization?
+      - Does this speaker receive value from the organization whose product they talk about (RECEIVES_VALUE_FROM)?
+    writeGuidance: >-
+      No family relationships or private contact details. A role never implies a recommendation; a discount link alone
+      does not prove receipt of value (benefit NOT_STATED until the registered threshold is met).
+
+  - slug: manufacturing-quality-regulatory-ip
+    title: Manufacturing, quality, regulation and intellectual property
+    modules: [D8]
+    purpose: >-
+      Regulatory records (filings, letters, recalls, inspections, enforcement), legal status episodes, lots, quality
+      results with their stated verdicts, certification listings and patents.
+    entryTypes: [RegulatoryRecord, LegalStatus, Lot, QualityResult, CertificationListing, Patent]
+    questions:
+      - Which lot was tested by which lab, against which specification, and what verdict did the lab state?
+      - What legal status does this ingredient hold in this jurisdiction, and which record is it from (STATUS_FROM)?
+      - Which patent concerns this substance, who holds or licenses it, and is it still in force?
+    writeGuidance: >-
+      Filing is not capability and licence validity never implies market presence or approval (status non-implication
+      policy, rules/projection-rules.yaml). QualityResult.statedVerdict is the lab's statement; our conformance is an Assessment.
+
+  - slug: sources-documents-and-media
+    title: Sources, media, discourse and capture tooling
+    modules: [D9, D11]
+    purpose: >-
+      Channels (podcasts, video channels, accounts, event series), media works and the text chunks retrieval reads;
+      discourse metrics; capture attempts and the bio-medical tooling action space that produces captured evidence.
+    entryTypes: [Channel, MediaWork, Chunk, CaptureAttempt]
+    questions:
+      - Who said this claim, in which media work and segment, and is it a retelling (basisKind CITED_FROM_PRIOR_WORK, DERIVED_FROM)?
+      - Which chunk mentions this entity, and which located span (COVERS_LOCATOR) and accepted assertion does it lead to?
+      - Which tool captured this source, when, and did the attempt fail (CaptureAttempt outcome)?
+    writeGuidance: >-
+      A chunk never supports anything: support is HAS_EVIDENCE from a record to a SourceLocator. A segment (sponsor read,
+      editorial) is the `segment:` qualifier of the occurrence. Every capture attempt, including failures, is recorded.
+
+  - slug: derived-knowledge-and-reports
+    title: Derived knowledge, reports, rankings and recommendations
+    modules: [D10]
+    purpose: >-
+      Versioned decision criteria, report items of published reports, and regenerable associations; how BellLabs
+      derives and publishes knowledge from assertions and assessments without becoming a second source of truth.
+    entryTypes: [DecisionCriterion, ReportItem, Association, Report]
+    questions:
+      - Which criteria versions did this published comparison apply, and which rows were blocked by which constraint?
+      - Which report items cite an input that has since been superseded?
+      - What is the current support score of this association, under which method version and input set?
+    writeGuidance: >-
+      Reports and report items are insert-only (a revision is a new Report). Associations are projection-job output
+      (create, close, delete only when unreferenced). Cache fields carry method version and derivation time.
+
+  - slug: frontiers-and-events
+    title: Frontiers, breakthroughs and events
+    modules: [D13]
+    purpose: >-
+      Events (trial readouts, approvals, recalls, funding, retractions) with their own clocks, and the research frontiers
+      they move; leads-to and responds-to chains gated by a SUPPORT adjudication.
+    entryTypes: [Event, Frontier]
+    questions:
+      - What happened on frontier F, in order, and which events led to or responded to which (LEADS_TO, RESPONDS_TO)?
+      - Who was involved in this event, in which role (INVOLVES), and which regulatory record documents it?
+    writeGuidance: >-
+      No breakthrough or hype flag on an Event or Frontier; judgments are Assessments. Causal edges between events are
+      projected only after a SUPPORT adjudication.

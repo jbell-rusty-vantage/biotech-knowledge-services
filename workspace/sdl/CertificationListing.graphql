@@ -1,0 +1,44 @@
+"""
+Purpose: one listing record of a certifier (NSF Certified for Sport listing 1451522 'Basis'; an NSF/ANSI 173 listing
+row; an Informed Sport product page with its batch table). The listing states a programme, a standard and a scope;
+WHAT it covers and WHEN is the bitemporal episode on COVERS (a lot drops off the batch table = its episode closes).
+Merges pinned CertificationListing, CertificationProgram (programme and standard properties) and CertificationScope
+(scopeVerbatim + COVERS). Identity rule: (certifier Organization uid, programme, listingId; else canonical listing URL).
+uid token: `cert-listing`. Questions: CQ-PF-03a, Q-D8-08, Q-D8-19, CQ-MF-06.
+"""
+type CertificationListing implements Entity & Subjectable
+  @node(labels: ["CertificationListing", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Programme name as printed (e.g. NSF Certified for Sport, Informed Sport, USP Verified)."
+  programme: String!
+  "Standard or guideline (e.g. NSF/ANSI 173, NSF/ANSI 455-2, NSF Certification Guideline 306)."
+  standard: String
+  "Certifier's listing id when printed (e.g. 1451522)."
+  listingId: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "What the listing says it certifies."
+  coverageKind: CertifiedObjectKind!
+  "Scope sentence verbatim (e.g. 'contain the identity and quantity of dietary ingredients declared on the product label')."
+  scopeVerbatim: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "Date the certifier says the product was certified."
+  certifiedAt: DateTime
+  "Latest observed status (history: COVERS episodes and SourceSnapshots)."
+  status: CertificationListingStatus!
+  "Certifier's own category or goal labels, verbatim (e.g. 'Sleep Aid'); mapped to D5 targets only by Assertion."
+  categoryLabelsVerbatim: [String!] @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  """class: asserted; cardinality: exactly_one (the certifier); questions: CQ-PF-03a, Q-D8-19."""
+  issuedBy: [Organization!]!
+    @relationship(type: "ISSUED_BY", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: zero_or_more, many episodes (valid time = observed coverage window; a facility-level listing covers no typed target); questions: CQ-PF-03a, Q-D8-08, Q-D8-19."""
+  covers: [CertificationCoverageTarget!]!
+    @relationship(type: "COVERS", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

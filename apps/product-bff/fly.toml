@@ -1,0 +1,52 @@
+# Fly.io deployment of the reference product BFF (no deployment record in this repository). Deploy ON HOLD since
+# 2026-11-07 (owner): see docs/ENVIRONMENT.md first.
+# Run from the repository root:
+#   bash scripts/fly.sh deploy . --config apps/product-bff/fly.toml --dockerfile apps/product-bff/Dockerfile --remote-only
+# Secrets (names only, set by the operator; never in this file):
+#   GRAPHQL_API_KEY         service credential for bks-biotech-graphql-api (same value as that app's GRAPHQL_API_KEY)
+#   BFF_ACTOR_PRIVATE_KEY   Ed25519 PKCS8 PEM that signs the <= 120 s actor context; its public key is the
+#                           GraphQL app's GRAPHQL_ACTOR_PUBLIC_KEY
+# Configuration (non-secret) below; BKS_BIOTECH_DB_JWKS_URL and BFF_SESSION_ISSUER must name the product's Supabase project.
+app = "bks-biotech-bff"
+primary_region = "iad"
+
+[env]
+  PORT = "4020"
+  NODE_ENV = "production"
+  # Application session issuer (Supabase Auth); set to the product project's values before first deploy.
+  BKS_BIOTECH_DB_JWKS_URL = "https://<supabase-project-ref>.supabase.co/auth/v1/.well-known/jwks.json"
+  BFF_SESSION_ISSUER = "https://<supabase-project-ref>.supabase.co/auth/v1"
+  BFF_SESSION_AUDIENCE = "authenticated"
+  BFF_REQUIRED_ROLE = "authenticated"
+  BFF_INTERNAL_ENTITLEMENT = "biotech:internal"
+  # Actor context: must equal the GraphQL app's GRAPHQL_ACTOR_ISSUER / GRAPHQL_ACTOR_AUDIENCE.
+  BFF_ACTOR_ISSUER = "bks-product-bff"
+  BFF_ACTOR_AUDIENCE = "bks-graphql-api"
+  BFF_ACTOR_TTL_SECONDS = "60"
+  BFF_APP_ID = "bks-reference-bff"
+  # Private network address of the consumer API (Fly 6PN); https://bks-biotech-graphql-api.fly.dev/graphql also works.
+  GRAPHQL_URL = "http://bks-biotech-graphql-api.internal:4010/graphql"
+  BFF_UPSTREAM_DEADLINE_MS = "8000"
+
+[http_service]
+  internal_port = 4020
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 1
+  [http_service.concurrency]
+    type = "requests"
+    soft_limit = 100
+    hard_limit = 200
+
+[[http_service.checks]]
+  grace_period = "15s"
+  interval = "30s"
+  method = "GET"
+  path = "/healthz"
+  timeout = "5s"
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1

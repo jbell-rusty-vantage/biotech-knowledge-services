@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v2",
+  "intentId": "example-basis-label-2026-07-10-v2",
+  "pins": { "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74", "policyVersion": "bks-admission-policy/v1" },
+  "context": {
+    "actor": { "kind": "agent", "id": "ingestion-agent", "model": "claude-fable-5-1" },
+    "run": { "system": "mission-control", "runId": "example-run-001", "missionId": "example-mission", "operationId": "example-op-001" },
+    "activityKind": "INGESTION",
+    "operationKind": "knowledge.ingestion_apply"
+  },
+  "basis": { "creationOnly": { "reason": "Example: first capture of this label page; no prior read snapshot exists" } },
+  "sources": [
+    {
+      "ref": "label",
+      "source": { "canonicalUri": "https://www.elysiumhealth.com/pages/basis-supplement-facts", "title": "Basis Supplement Facts", "sourceKind": "WEB_PAGE", "genre": "MARKETING_PAGE" },
+      "snapshot": {
+        "retrievedAt": "2026-07-10T00:00:00Z",
+        "observedAt": "2026-07-10T00:00:00Z",
+        "contentHash": "sha256:283496a65daa5de294e80e62a549737b0e26936acc888565b666edb3b8f8e912",
+        "contentHashBasis": "SYNTHETIC_FIXTURE",
+        "captureMethod": "bks-fixture/1",
+        "captureMethodDescription": "Example only: replace with a real capture (contentHash over the raw bytes, contentHashBasis RAW_BYTES)",
+        "captureCompleteness": "UNKNOWN",
+        "mimeType": "text/html"
+      },
+      "locators": [
+        {
+          "ref": "panel",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": { "basis": "raw-capture/v1", "type": "TextQuoteSelector", "exact": "Elysium NR (Nicotinamide Riboside Chloride) 250 mg" },
+          "exact": "Elysium NR (Nicotinamide Riboside Chloride) 250 mg",
+          "reportsFields": []
+        },
+        {
+          "ref": "pt",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": { "basis": "raw-capture/v1", "type": "TextQuoteSelector", "exact": "PT (Pterostilbene)" },
+          "exact": "PT (Pterostilbene)"
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    { "ref": "elysium", "mode": "new", "nodeType": "Organization", "name": "Elysium Health", "properties": { "entityKind": "LEGAL_ENTITY", "legalName": "Elysium Health, Inc." }, "identifiers": [], "onMatch": "use_existing" },
+    { "ref": "basis", "mode": "new", "nodeType": "Product", "name": "Basis", "properties": { "productKind": "DIETARY_SUPPLEMENT", "marketedName": "Basis" }, "onMatch": "review" },
+    { "ref": "variant", "mode": "new", "nodeType": "ProductVariant", "name": "Basis US capsules", "properties": { "jurisdiction": "US", "strengthVerbatim": "250 mg" }, "onMatch": "review" },
+    { "ref": "package", "mode": "new", "nodeType": "Package", "name": "Basis US 60 capsules", "properties": { "packageKind": "CONTAINER", "unitCount": 60 }, "onMatch": "review" },
+    { "ref": "label-version", "mode": "new", "nodeType": "LabelVersion", "name": "Basis US supplement facts observed 2026-07-10", "uidSegment": "basis-us-2026-07-10", "properties": { "panelKind": "SUPPLEMENT_FACTS", "jurisdiction": "US", "contentDigest": "sha256:283496a65daa5de294e80e62a549737b0e26936acc888565b666edb3b8f8e912", "compositionDigest": "sha256:0d4b5c8b0c7f1e0f0e2f8c9a6e1b3d5c7a9f1e3d5b7c9a1e3f5d7b9c1e3a5f70" }, "onMatch": "create_anyway" },
+    { "ref": "nr", "mode": "new", "nodeType": "IngredientMaterial", "name": "Nicotinamide riboside chloride (as listed)", "properties": { "materialKind": "CHEMICALLY_DEFINED" }, "onMatch": "use_existing" }
+  ],
+  "proposals": [
+    { "proposalId": "p1-distributes", "kind": "assertion.relate", "subjectRef": "elysium", "objectRef": "basis", "asserterRef": "elysium", "evidence": ["panel"], "assertion": { "predicate": "DISTRIBUTES", "speechAct": "STATES", "basisKind": "MANUFACTURER_CLAIM", "validity": { "validObservedAt": "2026-07-10T00:00:00Z" } } },
+    { "proposalId": "p2-variant", "kind": "edge.structural", "relationshipType": "HAS_VARIANT", "fromRef": "basis", "toRef": "variant" },
+    { "proposalId": "p3-package", "kind": "edge.structural", "relationshipType": "HAS_PACKAGE", "fromRef": "variant", "toRef": "package" },
+    { "proposalId": "p4-label", "kind": "edge.assert", "relationshipType": "HAS_LABEL_VERSION", "fromRef": "package", "toRef": "label-version", "asserterRef": "elysium", "evidence": ["panel"], "assertion": { "speechAct": "STATES", "validity": { "validFromBasis": "OBSERVATION_ONLY", "validObservedAt": "2026-07-10T00:00:00Z" } } },
+    { "proposalId": "p5-amount", "kind": "edge.assert", "relationshipType": "DECLARES_COMPONENT", "fromRef": "label-version", "toRef": "nr", "asserterRef": "elysium", "evidence": ["panel"], "edgeProperties": { "lineRole": "DIETARY_INGREDIENT", "orderIndex": 1, "amount": 250, "unitCode": "mg", "amountReferent": "AS_NAMED", "amountBasis": "PER_SERVING" }, "assertion": { "speechAct": "STATES", "validity": {} } },
+    { "proposalId": "p6-mention", "kind": "mention.stage", "locator": "pt", "surfaceForm": "PT (Pterostilbene)", "typeHint": "IngredientMaterial", "reason": "material identity not resolvable from the label alone" }
+  ],
+  "notes": "Example only (v2 re-expression of ingestion-intent.example.json): MARKETS_PRODUCT -> DISTRIBUTES (predicate-only), HAS_FORMULATION_VERSION -> Package HAS_LABEL_VERSION LabelVersion, LABEL_DECLARED_AMOUNT -> DECLARES_COMPONENT line properties, Mention node -> RESOLUTION Assessment. Replace the source with a real capture."
+}

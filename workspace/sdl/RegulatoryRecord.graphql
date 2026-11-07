@@ -1,0 +1,82 @@
+"""
+Purpose: one document-backed act of an authority — regulator, court or patent tribunal — with a record number:
+an NDI or GRAS response, a citizen-petition response, a novel-food authorisation, an EFSA opinion, a Health Canada
+licence, a Drugs@FDA action, a device 510(k) / De Novo / PMA decision, a warning letter, a recall, a Form 483, a court
+or PTAB decision. It is the join point
+for "what did the authority say, to whom, about what, when" and the record a LegalStatus is established by.
+Enforcement actions are records of family ENFORCEMENT (the research-stage EnforcementAction type is folded in).
+Identity rule: (issuer Organization uid, recordKind, normalized recordNumber); a revised letter or a new response is
+a new record, never an edit (Q-D8-22 dedupes on this key). Identifiers (FDA_NDI, FDA_GRN, FDA_WARNING_LETTER,
+FDA_RECALL, FDA_DOCKET, CELEX, NPN, FDA_APPLICATION, COURT_DOCKET) attach through the kernel.
+uid token: `reg-record` (hu:reg-record:<issuer>-<kind>-<number>).
+Questions: CQ-MF-02, Q-D8-01, CQ-AX-23, CQ-MF-03, CQ-PF-04, Q-D8-02, Q-D8-03, Q-D8-04, Q-D8-12, Q-D8-13, Q-D8-15,
+Q-D8-16, Q-D8-17, Q-D8-18, Q-D8-20, Q-D8-22, Q-D8-23, CQ-EC-01, CQ-MF-06.
+"""
+type RegulatoryRecord implements Entity & Subjectable
+  @node(labels: ["RegulatoryRecord", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "What kind of act this is; fixes what it can and cannot establish."
+  recordKind: RegulatoryRecordKind!
+  "Coarse family of recordKind (stored for one-hop filtering)."
+  recordFamily: RegulatoryRecordFamily!
+  "Programme or legal basis the record sits under."
+  pathway: RegulatoryPathway
+  "ISO 3166-1 alpha-2 code, or EU."
+  jurisdiction: String!
+  "The issuer's own number, as normalized for identity (e.g. 1259, GRN 000635, 724610, H-0483-2026, 32020R0016, 80112429, 2022-1116)."
+  recordNumber: String!
+  "Docket the record belongs to (e.g. FDA-2023-P-0872, FDA-2022-S-0023)."
+  docketId: String
+  "Issuer's date of the act."
+  issuedAt: DateTime
+  "Issuing office within the authority (e.g. HFP Office of Dietary Supplement Programs, CDER, Fed. Cir.)."
+  issuingOffice: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "What the issuer decided or did, per the record."
+  outcome: RegulatoryRecordOutcome
+  "The record's own decisive sentence, verbatim (also a SourceLocator exact)."
+  outcomeVerbatim: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "The record's own scope-limiting sentence, verbatim (e.g. 'This letter is not an affirmation that ... is GRAS')."
+  scopeLimitVerbatim: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "Conditions of use, dose, food categories, population, as written."
+  conditionsVerbatim: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "Claims the record authorises (licence purposes), verbatim, one per entry."
+  authorisedClaimsVerbatim: [String!] @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "Statutory or regulatory citation the act rests on (e.g. 21 U.S.C. 321(ff)(3)(B)(ii)); replaces pinned RegulatoryPathwayVersion."
+  legalBasisCitation: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "ENFORCEMENT: violation categories cited."
+  violationCategories: [ViolationCategory!]
+  "ENFORCEMENT: inspection window the record reports (warning letters state it)."
+  inspectionStartedAt: DateTime @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  inspectionEndedAt: DateTime @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "ENFORCEMENT: inspected or cited facility as printed (address), and its FDA FEI when printed; stands in for the deferred Facility type."
+  facilityAddressVerbatim: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  facilityFei: String
+  "RECALL: classification and status as last stated; terminatedAt when stated."
+  recallClass: RecallClass
+  recallStatus: RecallStatus
+  terminatedAt: DateTime @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "RECALL / ENFORCEMENT: reason, product description and lot codes verbatim (openFDA reason_for_recall, product_description, code_info)."
+  reasonVerbatim: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  productDescriptionVerbatim: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  lotCodesVerbatim: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  """class: asserted; cardinality: exactly_one (the authority: regulator, court, tribunal, patent office); questions: CQ-MF-02, Q-D8-02, Q-D8-12, Q-D8-22."""
+  issuedBy: [Organization!]!
+    @relationship(type: "ISSUED_BY", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: one_or_more (notifier, applicant, petitioner, licence holder, warned or recalling firm, litigation party); questions: Q-D8-02, Q-D8-03, Q-D8-17, CQ-EC-01."""
+  addressedTo: [Organization!]!
+    @relationship(type: "ADDRESSED_TO", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (a lot only when the lot code resolves; the verbatim lot text stays in lotCodesVerbatim; a device record concerns the Product that DELIVERS the device, R-72); questions: Q-D8-02, Q-D8-04, Q-D8-16, Q-D8-17, Q-D8-18, Q-D8-23, CQ-EC-01."""
+  concerns: [RegulatoryRecordTopic!]!
+    @relationship(type: "CONCERNS", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

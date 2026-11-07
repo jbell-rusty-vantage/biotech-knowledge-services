@@ -1,0 +1,105 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v2",
+  "intentId": "skill-episode-2",
+  "pins": {
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+    "policyVersion": "bks-admission-policy/v1"
+  },
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "biotech-kg-ingest-examples",
+      "model": "example"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run-skill-episode-2",
+      "missionId": "mission-skill-episode",
+      "operationId": "op-skill-episode-2"
+    },
+    "activityKind": "INGESTION"
+  },
+  "basis": {
+    "creationOnly": {
+      "reason": "corrected press release from the same source",
+      "expectPresent": [
+        "${step:s1.subject.org}",
+        "${step:s1.subject.brand}"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "ref": "pr2",
+      "source": {
+        "canonicalUri": "https://examples.bks.test/episode/press-release-corrected",
+        "sourceKind": "WEB_PAGE"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-06T08:00:00Z",
+        "observedAt": "2026-10-06T08:00:00Z",
+        "contentHash": "sha256:722e239442e4d01c8524dbdc4332bb76cf6ab4e5d6a8391a03b24b0a675a178b",
+        "contentHashBasis": "SYNTHETIC_FIXTURE",
+        "captureMethod": "bks-example/1",
+        "captureCompleteness": "COMPLETE"
+      },
+      "locators": [
+        {
+          "ref": "l-owns2",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "raw-capture/v1",
+            "type": "TextQuoteSelector",
+            "exact": "Correction: the acquisition closed in May 2025",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 60,
+              "end": 106
+            }
+          },
+          "exact": "Correction: the acquisition closed in May 2025",
+          "startOffset": 60,
+          "endOffset": 106
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "org",
+      "mode": "resolved",
+      "uid": "${step:s1.subject.org}",
+      "nodeType": "Organization"
+    },
+    {
+      "ref": "brand",
+      "mode": "resolved",
+      "uid": "${step:s1.subject.brand}",
+      "nodeType": "Brand"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "owns-corrected",
+      "kind": "edge.assert",
+      "relationshipType": "OWNS_BRAND",
+      "fromRef": "org",
+      "toRef": "brand",
+      "asserterRef": "org",
+      "evidence": [
+        "l-owns2"
+      ],
+      "assertion": {
+        "speechAct": "STATES",
+        "supersedes": {
+          "uid": "${step:s1.mint.owns.assertion}"
+        },
+        "validity": {
+          "validFrom": "2025-05-01T00:00:00Z",
+          "validFromPrecision": "MONTH",
+          "validFromBasis": "STATED_BY_SOURCE"
+        }
+      }
+    }
+  ]
+}

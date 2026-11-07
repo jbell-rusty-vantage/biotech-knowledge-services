@@ -1,0 +1,55 @@
+# Release source configuration (read by scripts/release/generate.mjs).
+# Authored in biotech-knowledge-services schema/source/biotech-schema-v2.1.0 (owner decision SV-D10, R-SV10).
+format: bks-release-source.v1
+releaseId: biotech-schema-v2.1.0
+version: 2.1.0
+createdAt: "2026-10-24T00:00:00.000Z"
+description: "Minor release of biotech-schema-v2.0.2, the first authored in biotech-knowledge-services (owner decision SV-D10): additive, nullable verification/report binding fields on kernel Activity, Report, Assessment and Assertion plus enums RunSealKind and UseDisposition (Sprint V V07/V08, R-SV10). PostgreSQL (Knowledge Services common component) owns runs, sealed manifests and use decisions; the graph holds immutable references. No label, relationship type or DDL statement change."
+parentRelease:
+  releaseId: biotech-schema-v2.0.2
+  schemaDigest: sha256:fe2cc50afb4a48e16a2b5c3c37378b4d00a679a06d37bf312676c45c65c6589a
+  contentTreeDigest: sha256:521f923851417b34bb89ac721764b294140f4a8fadf7342c05aa8de4fb169bf7
+  schemaReleaseDigest: sha256:5fffb593c8ca94b289b768ac0a0b02df5739cb338b7a04ec88173589708c5a42
+releaseNotes:
+  - "authority (SV-D10): schema source moves to biotech-knowledge-services schema/source/biotech-schema-v2.1.0, initialized byte-for-byte from the verified pinned v2.0.2 inputs (the copied inputs regenerate v2.0.2's contentTreeDigest exactly); the absent biotech-meta checkout is historical provenance only"
+  - "kernel Activity: verificationRunRef, runManifestDigest, runSealKind (RunSealKind VERIFICATION_SNAPSHOT | DECISION_SNAPSHOT | ADMISSION_SNAPSHOT), useDecisionRef, boundEffectDigest, effectKey, originatingOrigin, revocationEpoch (all nullable)"
+  - "kernel Report: reportRevisionRef, reportSchema, reportKindRef, structuredBodyDigest, supersedesReportRevisionRef, custodyKind (all nullable; existing bodyDigest, bodyUri, ledgerDigest, reportKind and supersedesUid unchanged; Report has no time-coverage model, none added)"
+  - "kernel Assessment: rubricRef, policyRef, useDecisionRef, useDisposition (UseDisposition ADMITTED | HELD | REJECTED), revocationEpoch, expiresAt, reviewerAdjudicationRef (all nullable; the existing disposition stays the claim-vetting disposition)"
+  - "kernel Assertion: assertionVersionRef, logicalAssertionId, supportSetDigest, qualifiersDigest (all nullable; profile qualifiers are hashed, not modeled)"
+  - "registers/node-register.yaml: otherProperties counts and notes for the four kernel types; no new filter property, relationship or index"
+  - "workspace-inputs/task-routes.yaml: state.attach removed from ingest-product-label, ingest-study-publication and correct-a-stale-fact (not a biotech-knowledge-intent.v2 kind); the label-version step uses edge.assert"
+  - "query-catalog/explain.json: EXPLAIN evidence inherited unchanged from biotech-schema-v2.0.2 (Neo4j 5.26 community run of that release); no query source changed, so every template statement digest still matches; no new live-database EXPLAIN was run for v2.1.0"
+catalogCapabilityGates:
+  OD-44: vectors.native
+catalogPatch: query-catalog/sources/s4/catalog-patch.json
+questionStatus: query-catalog/sources/s4/question-status.json
+excludedFromFrozenDigestSet: {}
+provenance:
+  sourceRepository: biotech-knowledge-services
+  sourcePath: schema/source/biotech-schema-v2.1.0
+  bksCommit: d042678cb06de3c3c8b8f85e8ff9dff99858ad84
+  bksCommitRule: "base commit of biotech-knowledge-services when this source tree was authored (fixed here so generation stays deterministic); the tree was uncommitted at creation, so the release identity is the content-tree digest (sourceRevision.dirtySnapshotDigest)"
+  initializedFrom:
+    releaseId: biotech-schema-v2.0.2
+    path: schema/pinned/release
+    schemaReleaseDigest: sha256:5fffb593c8ca94b289b768ac0a0b02df5739cb338b7a04ec88173589708c5a42
+    historicalSource: biotech-meta/docs/schema/releases/biotech-schema-v2.0.2 (absent; not an edit destination)
+decisionLedger:
+  source: biotech-knowledge-services schema/source/biotech-schema-v2.1.0/decisions/DECISIONS.md
+  input: "v2.0.2 decisions/DECISIONS.md (160-entry v2 closeout ledger) plus the appended release decision R-SV10"
+additionalInputs:
+  legacyMap:
+    path: schema/program/final/migration/legacy-map.yaml
+    sha256: a78218f983379eaefd25bf1ed8952b41f01af693b6d4f0ac1267b3f84568f32b
+    author: S8 (migration / qualification)
+    note: "carried from v2.0.2 (migration/legacy-map.yaml, hosted verbatim); its target block still names an earlier release and a ${SCHEMA_RELEASE_DIGEST} placeholder: the binding authority is this release.json"
+  s4CatalogPatch:
+    source: docs/plans/schema-v2-service-release/reports/S4-catalog-patch.json
+    path: query-catalog/sources/s4/catalog-patch.json
+    sha256: ce344c25afce43559acdb8b00e7e24d5dd752395069aff5833a626f51f7bb95c
+    author: S4 (native reads)
+  s4QuestionStatus:
+    source: docs/plans/schema-v2-service-release/reports/S4-question-status.json
+    path: query-catalog/sources/s4/question-status.json
+    sha256: 83e72d55c6e9668e57b8a25a75daf09b6fa89684b6a5a9cf63e17207961613bd
+    author: S4 (native reads)

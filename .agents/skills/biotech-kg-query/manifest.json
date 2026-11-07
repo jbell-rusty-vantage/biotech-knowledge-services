@@ -1,0 +1,43 @@
+{
+  "format": "bks-skill-manifest.v1",
+  "skill": "biotech-kg-query",
+  "version": "2.0.0",
+  "entry": "SKILL.md",
+  "requires": {
+    "surfaces": {
+      "http": ["GET /describe", "POST /kg/read", "POST /kg/read/cypher", "POST /kg/read/explain", "GET /kg/catalog/templates"],
+      "mcp": ["describe", "kg_read_v2", "kg_read_cypher", "kg_read_explain", "kg_catalog_templates"],
+      "capabilities": ["read.typed", "read.templates", "read.cypher (only when a proven read-only principal is configured)"]
+    },
+    "contracts": {
+      "typedRead": "biotech-knowledge-read-intent.v2",
+      "officialRead": "biotech-knowledge-read-intent.v3 (result biotech-knowledge-read-result.v3, eligibility bks-read-eligibility.v1)",
+      "cypherRead": "biotech-cypher-read-intent.v1",
+      "result": "biotech-knowledge-read-result.v2",
+      "explain": "biotech-cypher-read-explain.v1",
+      "values": "bks-read-values.v1",
+      "canonicalJson": "bks-canonical-json.v2",
+      "snapshot": "bks-custody-snapshot.v1",
+      "legacyTypedRead": "biotech-knowledge-read-intent.v1 (decode only)"
+    },
+    "policies": { "visibility": "bks-read-visibility.v1", "cypher": "bks-cypher-read-policy.v1", "parser": "@neo4j-cypher/language-support 2.0.0-next.37" },
+    "release": { "releaseIdPattern": "^biotech-schema-v2\\.0\\.\\d+$", "binding": "pins.schemaReleaseDigest from /describe; read-compatible parent releases (same schemaDigest) accepted" },
+    "cypher": { "baseline": "5", "forbidden": "CYPHER 25" }
+  },
+  "references": [
+    "references/typed-operations.md",
+    "references/cypher-artifact.md",
+    "references/patterns.md",
+    "references/status-cookbook.md",
+    "references/serialization.md",
+    "references/vendor-overlay.md",
+    "references/advanced-examples.md"
+  ],
+  "examples": {
+    "file": "examples/examples.json",
+    "runners": ["packages/kg-ops/src/read/read.integration.test.ts (edition any)", "packages/kg-ops/src/read/read-enterprise.integration.test.ts (edition enterprise)"]
+  },
+  "dependencies": { "onDemand": ["neo4j-cypher-skill", "neo4j-query-tuning-skill"], "overridesFirst": ["OV-CYPHER-VERSION", "OV-SCHEMA-SOURCE", "OV-ELEMENT-ID", "OV-READ-ROUTING", "OV-GENERIC-WRITES"] },
+  "limits": { "rowCap": { "default": 100, "max": 2000 }, "byteCap": { "default": 1048576, "max": 4194304 }, "timeoutMs": { "default": 10000, "max": 30000 }, "maxDepth": { "default": 4, "max": 6 }, "listCap": { "default": 200, "max": 1000 }, "nestingCap": { "default": 6, "max": 8 }, "concurrency": { "service": 8, "perPrincipal": 4 } },
+  "grantsAuthority": false
+}

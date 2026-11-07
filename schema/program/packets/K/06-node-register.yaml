@@ -1,0 +1,150 @@
+version: 1
+module: K
+# A1 model stage, 2026-10-08; adversarial review 2026-10-08 (Mention cut). 11 node types (budget 12). otherProperties counts the type's own scalar properties that
+# are not filterProperties (the 7 Entity fields are excluded from both). mutations: the GraphQL API exposes none
+# (@mutation(operations: [])); the executor (ADR 0003) is the only writer — `executor` says what it may do.
+nodes:
+  - name: Source
+    uidToken: source
+    identityKeys: [canonicalUri]
+    identifierSchemes: [DOI, PMID, PMCID, NCT, SEC_ACCESSION, YOUTUBE_VIDEO, PODCAST_GUID, WIKIDATA]
+    whyNode: "Q-K-10 / Q-K-22 / Q-K-26 compare two snapshots of one endpoint and join revision-status assertions to it; Q-K-21 groups evidence by source family; Subjectable so identifiers and HAS_REVISION_STATUS assertions attach to it."
+    filterProperties: [canonicalUri, sourceKind, genre]
+    otherProperties: 1
+    archetype: Entity
+    mutations: { graphql: none, executor: "create; update logicalIdentity/genre; never delete" }
+  - name: SourceSnapshot
+    uidToken: snapshot
+    identityKeys: [source, contentHash, retrievedAt]
+    identifierSchemes: []
+    whyNode: "Every trace ends at captured bytes (Q-K-01, Q-K-14, Q-K-20); Q-K-10 / Q-K-17 / Q-K-26 filter on revisionKind and compare retrievedAt across captures."
+    filterProperties: [retrievedAt, publishedAt, contentHash, revisionKind, captureCompleteness]
+    otherProperties: 9
+    archetype: InformationArtifact
+    mutations: { graphql: none, executor: "create only (immutable)" }
+  - name: SourceLocator
+    uidToken: locator
+    identityKeys: [snapshot, selectorKind, selectorDigest]
+    identifierSchemes: []
+    whyNode: "The evidence currency (00-DIRECTIVE 3.8): HAS_EVIDENCE targets it from every record type, D9 chunks reach assertions through it (Q-K-14), reports cite it (Q-K-17), re-anchoring is checked on it (Q-K-10); a surface form awaiting entity resolution is a locator cited with role CONTEXT by competing RESOLUTION Assessments (Q-K-13)."
+    filterProperties: [selectorKind, selectorDigest, quoteHash, reanchorsLocatorUid]
+    otherProperties: 11
+    archetype: InformationArtifact
+    mutations: { graphql: none, executor: "create only (immutable)" }
+  - name: Assertion
+    uidToken: assertion
+    identityKeys: [subject, predicate, object or literal, asserter, locator set, validity]
+    identifierSchemes: []
+    whyNode: "The attributable proposition that authorizes every asserted edge; all as-of (Q-K-02), lineage (Q-K-04..07), claim-occurrence (Q-K-09, Q-K-11, Q-K-23), third-party verdict (Q-K-27) and revision-status (Q-K-22) questions filter and join through it."
+    filterProperties: [predicate, assertionKind, status, polarity, speechAct, basisKind, recordedAt, recordedTo, validFrom, validTo, supersedesUid, lastWriterRunId]
+    otherProperties: 17
+    archetype: Assertion
+    mutations: { graphql: none, executor: "create; close once (recordedTo, status SUPERSEDED / status from adjudication); never delete" }
+  - name: Adjudication
+    uidToken: adjudication
+    identityKeys: [judgmentId, "else (assertion, adjudicationKind, methodVersion, recordedAt)"]
+    identifierSchemes: []
+    whyNode: "verification.v1 judgments: Q-K-01 (verdict per assertion), Q-K-16 (rejected / disputed at capture fidelity), Q-K-25 (five orthogonal properties), Q-K-30 (does the cited work say it) filter on kind and verdict and traverse its evidence."
+    filterProperties: [adjudicationKind, verdict, policyOutcome, judgeKind, decision, recordedTo]
+    otherProperties: 14
+    archetype: EvidenceAssessment
+    mutations: { graphql: none, executor: "create; close once on supersession" }
+  - name: Claim
+    uidToken: claim
+    identityKeys: [propositionHash]
+    identifierSchemes: []
+    whyNode: "The unit of the scientific loop (00-DIRECTIVE 3.4): occurrences, vetting, the evidence mission and the report all meet at it (Q-K-08, Q-K-09, Q-K-11, Q-K-19, Q-K-21, Q-K-26, Q-K-27); write precheck by propositionHash (Q-K-28)."
+    filterProperties: [propositionHash, claimType, lifecycleState, latestVerdict, refinesClaimUid]
+    otherProperties: 1
+    archetype: Entity
+    mutations: { graphql: none, executor: "create; update projection caches (lifecycleState, latestVerdict, refinesClaimUid) only" }
+  - name: Assessment
+    uidToken: assessment
+    identityKeys: [assessmentKind, subjects, methodVersion, inputSetDigest, recordedAt]
+    identifierSchemes: []
+    whyNode: "Every BellLabs judgment that is not a verifier verdict (vetting with disposition, synthesis, safety signal, resolution, equivalence and claim refinement, source authority, retelling fidelity, comparability, event impact): Q-K-13, Q-K-19, Q-K-21, Q-K-30 filter on kind and disposition and traverse inputs; domain kinds reach it through seams."
+    filterProperties: [assessmentKind, assessmentSubkind, status, disposition, verdict, effectDirection, certainty, gradeScheme, grade, conclusionCode, facets, recordedTo]
+    otherProperties: 8
+    archetype: EvidenceAssessment
+    mutations: { graphql: none, executor: "create; close once on supersession" }
+  - name: Report
+    uidToken: report
+    identityKeys: [reportKind, bodyDigest]
+    identifierSchemes: []
+    whyNode: "The in-graph skeleton of every published artifact (evidence report, answer, comparison, profile): Q-K-08 / Q-K-11 / Q-K-23 filter on reportKind and verdict; Q-K-17 / Q-K-20 / Q-K-25 / Q-K-26 traverse its citation set."
+    filterProperties: [reportKind, skeletonKey, status, verdict, worldCorrectness, policyVersion, publishedAt, recordedTo]
+    otherProperties: 13
+    archetype: InformationArtifact
+    mutations: { graphql: none, executor: "create (report.publish); close once on revision or withdrawal" }
+  - name: Activity
+    uidToken: activity
+    identityKeys: [externalRunSystem, runId]
+    identifierSchemes: []
+    whyNode: "The single lineage spine (00-DIRECTIVE 4): the four lineage questions (Q-K-04..07), mission ↔ claim (Q-K-08, Q-K-19), replay (Q-K-03) and producer error rates (Q-K-24) filter on missionId / runId / activityKind and traverse it."
+    filterProperties: [activityKind, externalRunSystem, runId, missionId, activationId, operationKind, startedAt, endedAt, policyVersion]
+    otherProperties: 7
+    archetype: Occurrence
+    mutations: { graphql: none, executor: "create at run start; update endedAt, receiptIds, digests, policyOutcome at apply" }
+  - name: Agent
+    uidToken: agent
+    identityKeys: [agentKind, model, promptVersion, skillVersion, toolVersion]
+    identifierSchemes: []
+    whyNode: "Q-K-24 groups produced and rejected assertions by producer version; Q-K-03 names the model/prompt/skill of a run; an Agent can be an asserter (Subjectable)."
+    filterProperties: [agentKind, model, promptVersion, skillVersion]
+    otherProperties: 1
+    archetype: Entity
+    mutations: { graphql: none, executor: "create only" }
+  - name: Identifier
+    uidToken: identifier
+    identityKeys: [scheme, issuer, value]
+    identifierSchemes: [every scheme in identifier-schemes.yaml]
+    whyNode: "Q-K-12 reverse lookup by (scheme, issuer, value) and Q-K-29 conflict detection need the string as a node shared by its holders, with assignment episodes on HAS_IDENTIFIER."
+    filterProperties: [scheme, issuer, value]
+    otherProperties: 3
+    archetype: Entity
+    mutations: { graphql: none, executor: "create; never delete (deprecation is validTo)" }
+deferred:
+  - { name: Mention, reason: "cut in the adversarial review (SLIM): its identity (locator, surfaceForm) is the SourceLocator (surfaceForm = exact); Q-K-13 is value 2 and joins competing RESOLUTION / EQUIVALENCE Assessments through the shared span; Q-K-14 never touched it; its resolvedTo restated the accepted Assessment. typeHint / normalizedForm move to Assessment.facets. Promote when a value-1 question needs to filter unresolved surface forms in GraphQL" }
+  - { name: VerificationRun, reason: "PLAN 6.2 decision 1: the run is an Activity (VERIFICATION) with bundleDigest; a node would be a second lineage mechanism" }
+  - { name: Mission, reason: "missionId on Activity answers Q-K-04 / Q-K-05; a Mission node would be a hub over its runs with nothing a question traverses; the mission lives in Mission Control" }
+  - { name: ClaimReview / ThirdPartyVerdict, reason: "a RATES_CLAIM Assertion by the reviewer (third-party verdicts are never our Assessment)" }
+  - { name: RetractionNotice, reason: "the notice is a Source; status is a HAS_REVISION_STATUS Assertion per authority plus SourceSnapshot.revisionKind" }
+  - { name: EvidenceLine, reason: "Assessment EVIDENCE_SYNTHESIS (SEPIO EvidenceLine) with DERIVED_FROM inputs and HAS_EVIDENCE roles" }
+  - { name: ReportStatement, reason: "report sentences live in the sealed ledger (ledgerDigest); D10 ReportItem rows carry item-level citations" }
+  - { name: Nanopublication / Bundle, reason: "bundle and record digests are properties" }
+  - { name: Attempt, reason: "Mission Control internal; retries keep the run identity and the KsIntentMarker dedupes effects" }
+  - { name: PolicyVersion, reason: "string id on Report and Activity; D10 decides promotion" }
+mergedInto:
+  - { pinned: Source, into: "K.Source" }
+  - { pinned: SourceSnapshot, into: "K.SourceSnapshot" }
+  - { pinned: SourceLocator, into: "K.SourceLocator" }
+  - { pinned: SourceRevisionEvent, into: "K.SourceSnapshot.revisionKind + revisesSnapshotUid; status per authority = HAS_REVISION_STATUS Assertion" }
+  - { pinned: Assertion, into: "K.Assertion" }
+  - { pinned: Adjudication, into: "K.Adjudication (15-value verdict lattice, five orthogonal properties)" }
+  - { pinned: ResolutionHypothesis, into: "K.Assessment (assessmentKind RESOLUTION; HAS_EVIDENCE role CONTEXT to the surface-form SourceLocator; ASSESSES the candidate)" }
+  - { pinned: Agent, into: "K.Agent" }
+  - { pinned: Activity, into: "K.Activity (one per run; Mission Control identity)" }
+  - { pinned: Identifier, into: "K.Identifier" }
+  - { pinned: TradeItemIdentifier, into: "K.Identifier (schemes GTIN, ASIN, SKU)" }
+  - { pinned: Mention, into: "K.SourceLocator (the surface-form span) + K.Assessment RESOLUTION (surfaceForm / normalizedForm / typeHint in facets); derived D9 Chunk MENTIONS" }
+  - { pinned: EquivalenceAssessment, into: "K.Assessment (assessmentKind EQUIVALENCE)" }
+  - { pinned: SourceAuthorityAssessment, into: "K.Assessment (assessmentKind SOURCE_AUTHORITY, register content D9) + EvidenceEdgeProperties.authority/independence" }
+  - { pinned: SourceCoverageRequirement, into: "D11 action-space registry (deferred from the graph)" }
+  - { pinned: SourceDiscoveryRecord, into: "D11.CaptureAttempt (A8; lineage through the kernel WAS_GENERATED_BY)" }
+  - { pinned: Document, into: "D9 (MediaWork / Source)" }
+  - { pinned: DocumentTextVersion, into: "D9.Chunk properties (textVersionHash, extractorVersion)" }
+  - { pinned: Segmentation, into: "D9.Chunk.chunkerVersion" }
+  - { pinned: Chunk, into: "D9.Chunk" }
+  - { pinned: AnswerRecord, into: "K.Report (reportKind ANSWER, queryDigest)" }
+  - { pinned: PolicyVersion, into: "string id on K.Report / K.Activity; node decision D10" }
+  - { pinned: DecisionCriterion, into: "D10.DecisionCriterion" }
+  - { pinned: Claim, into: "K.Claim (pinned in W21, recorded also by D9)" }
+  - { pinned: ClaimOccurrence, into: "K.Assertion (assertionKind CLAIM, stored label ClaimOccurrence) + OCCURRENCE_OF (pinned in W21)" }
+  - { pinned: ClaimEvidenceAssessment, into: "K.Assessment (EVIDENCE_SYNTHESIS) / K.Report EVIDENCE_REPORT (pinned in W21)" }
+  - { pinned: RetellingFidelityAssessment, into: "K.Assessment (RETELLING_FIDELITY, subkind and questions D9)" }
+  - { pinned: ConflictRelevanceAssessment, into: "K.Assessment (CONFLICT_RELEVANCE, subkind and questions D7)" }
+  - { pinned: ComparabilityAssessment, into: "K.Assessment (COMPARABILITY, conclusionCode vocabulary D4)" }
+  - { pinned: EvidenceStrengthAssessment, into: "K.Assessment (EVIDENCE_SYNTHESIS with gradeScheme / grade / certainty; questions D3)" }
+  - { pinned: EventImpactAssessment, into: "K.Assessment (EVENT_IMPACT; questions D13)" }
+  - { pinned: "W00 archetype interfaces (EntityArchetype, VersionedStateArchetype, OccurrenceArchetype, InformationArtifactArchetype, AssertionArchetype, EvidenceAssessmentArchetype), SearchIndexable, TemporalSnapshot, ActorIdentity", into: "K.Entity + K.Subjectable; archetype kept as a stored label" }
+  - { pinned: "unions AssertionSubjectTarget, AsserterTarget, SupportedRecordTarget (W00), DocumentAuthorTarget (W20)", into: "K.Subjectable interface target (DocumentAuthorTarget → D9)" }

@@ -1,0 +1,4543 @@
+# Assertions for the cross-domain compound-profile fixture: nicotinamide riboside (D1 identity, D2 mechanism, D3 trials, D6 label).
+# Built by build_fixture.py from locators.yaml and checked against the final IR (typecheck: 0 errors; see _runlog/xfx-compound.md).
+# Type and edge names are the FINAL names (final/schema/final_biotech_schema_v2.graphql). Research, not medical advice.
+fixture: cross-domain/compound-profile
+compound: nicotinamide riboside (NR) as NR chloride in the branded material NIAGEN
+schema: "final/schema/final_biotech_schema_v2.graphql (IR digest sha256:d233930272c7aaa75d9aac21103e83448bd96a79d1106c4749fb807f257dd705)"
+builtAt: "2026-10-09T05:01:14Z"
+idNote: "FIXTURE ids (mission:ft-S-xfx-fixtures / run:ft-S-xfx-compound-*), not live Mission Control ids"
+producedBy:
+  missionId: "mission:ft-S-xfx-fixtures"
+  runId: "run:ft-S-xfx-compound-ingest"
+kernelPattern: "packets/K/09-reasoning.md: one Assertion = one subject, one object node or literal, one asserter (ASSERTED_BY), HAS_EVIDENCE -> SourceLocator {role, origin}; a typed\
+  \ asserted edge is the projection of an accepted Assertion (edge.relationshipUid / assertionUid); structural edges carry no Assertion; derived edges carry DerivedEdgeProperties."
+nodes:
+- ref: agent-s-xfx
+  module: K
+  type: Agent
+  uid: "hu:agent:xfx-cp-agent-s-xfx"
+  name: "agent:s-xfx-compound (claude-opus-5-5, S cross-domain fixture builder)"
+  properties: {agentKind: AUTOMATED_AGENT, model: claude-opus-5-5, toolVersion: build_locators.py + build_fixture.py (scratch synth/xfx-compound)}
+- ref: act-ingest
+  module: K
+  type: Activity
+  uid: "hu:activity:xfx-cp-act-ingest"
+  name: xfx compound-profile ingestion run
+  properties:
+    activityKind: INGESTION
+    externalRunSystem: mission-control
+    runId: "run:ft-S-xfx-compound-ingest"
+    missionId: "mission:ft-S-xfx-fixtures"
+    methodVersion: xfx-builder/1
+    startedAt: "2026-10-09T04:16:57Z"   # fix stage 2026-10-09: first capture (source.md retrieved 04:16:57Z); was the build time
+    endedAt: "2026-10-09T05:01:14Z"     # records written at builtAt
+- ref: act-project
+  module: K
+  type: Activity
+  uid: "hu:activity:xfx-cp-act-project"
+  name: xfx compound-profile projection run
+  properties:
+    activityKind: PROJECTION
+    externalRunSystem: mission-control
+    runId: "run:ft-S-xfx-compound-projection"
+    missionId: "mission:ft-S-xfx-fixtures"
+    methodVersion: "rule:mw-ratio.v1; rule:daily-max.v1; d2.affects-mechanism/v1; entity-link/v1; span-overlap/v1; fixture-chunker/1"
+    startedAt: "2026-10-09T05:01:14Z"
+    endedAt: "2026-10-09T05:01:14Z"     # fix stage 2026-10-09: every Activity carries both clocks
+- ref: act-verify
+  module: K
+  type: Activity
+  uid: "hu:activity:xfx-cp-act-verify"
+  name: xfx compound-profile capture-fidelity verification run
+  properties:
+    activityKind: VERIFICATION
+    externalRunSystem: mission-control
+    runId: "run:ft-S-xfx-compound-verify"
+    missionId: "mission:ft-S-xfx-fixtures"
+    methodVersion: "xfx-quote-reselect/1 (build_locators.py: snapshot[start:end] == exact and sha256(exact) == quoteHash)"
+    startedAt: "2026-10-09T05:01:14Z"
+    endedAt: "2026-10-09T05:01:14Z"     # fix stage 2026-10-09: every Activity carries both clocks
+- ref: org-fda
+  module: D7
+  type: Organization
+  uid: "hu:org:xfx-cp-org-fda"
+  name: U.S. Food and Drug Administration (Global Substance Registration System)
+  properties: {entityKind: PUBLIC_BODY, organizationKind: GOVERNMENT_OR_REGULATOR}
+- ref: org-nih-ods
+  module: D7
+  type: Organization
+  uid: "hu:org:xfx-cp-org-nih-ods"
+  name: NIH Office of Dietary Supplements (Dietary Supplement Label Database)
+  properties: {entityKind: PUBLIC_BODY, organizationKind: GOVERNMENT_OR_REGULATOR}
+- ref: org-embl-ebi
+  module: D7
+  type: Organization
+  uid: "hu:org:xfx-cp-org-embl-ebi"
+  name: "EMBL-EBI (ChEBI, QuickGO, OLS)"
+  properties: {entityKind: PUBLIC_BODY, organizationKind: ACADEMIC_OR_RESEARCH_INSTITUTE}
+  note: "asserter of reference-term identifiers with qualifier asserterBasis:PUBLISHER_DEFAULT (R-16)"
+- ref: org-kgk
+  module: D7
+  type: Organization
+  uid: "hu:org:xfx-cp-org-kgk"
+  name: KGK Science Inc.
+  properties: {entityKind: LEGAL_ENTITY, organizationKind: CONTRACT_SERVICE_PROVIDER}
+  note: "registry lead sponsor and responsible party (type SPONSOR) of NCT02712593, hence asserter of that record's content (R-16 rule 1)"
+- ref: org-uob
+  module: D7
+  type: Organization
+  uid: "hu:org:xfx-cp-org-uob"
+  name: University of Birmingham
+  properties: {entityKind: LEGAL_ENTITY, organizationKind: ACADEMIC_OR_RESEARCH_INSTITUTE}
+  note: registry lead sponsor and responsible party (type SPONSOR) of NCT02950441
+- ref: org-chromadex
+  module: D7
+  type: Organization
+  uid: "hu:org:xfx-cp-org-chromadex"
+  name: "ChromaDex, Inc."
+  properties: {entityKind: LEGAL_ENTITY, organizationKind: SUPPLEMENT_OR_CONSUMER_HEALTH}
+  note: "one node for the registry collaborator 'ChromaDex, Inc.', the label distributor 'ChromaDex, Inc' and the papers' 'ChromaDex' only through RESOLUTION r-chromadex (parent/subsidiary\
+    \ ambiguity kept open there)"
+- ref: person-brenner
+  module: D7
+  type: Person
+  uid: "hu:person:xfx-cp-person-brenner"
+  name: Charles Brenner
+  properties:
+    publicActorBasis: [AUTHOR_OR_INVESTIGATOR]
+  identifiers:
+  - scheme: ORCID
+    issuer: ORCID
+    value: 0000-0002-4955-3226
+    evidence: l-cz-brenner-orcid
+    asserter: pub-conze
+    normalizationRule: "strip http://orcid.org/"
+    note: "contrib-id inside Brenner's <contrib> in the Conze JATS"
+- ref: sub-nrcl
+  module: D1
+  type: ChemicalSubstance
+  uid: "hu:substance:xfx-cp-sub-nrcl"
+  name: NICOTINAMIDE RIBOSIDE CHLORIDE
+  properties: {substanceClass: CHEMICAL, molecularFormula: C11H15N2O5.Cl, molecularWeight: 290.7006, charge: 0}
+  identifiers:
+  - {scheme: UNII, issuer: FDA GSRS, value: 8XM2XT8VWI, evidence: l-gsrs-nrcl-unii, asserter: org-fda, isPrimary: true}
+  - scheme: CAS_RN
+    issuer: Chemical Abstracts Service
+    value: 23111-00-4
+    evidence: l-gsrs-nrcl-cas
+    asserter: org-fda
+    note: "as listed by GSRS (asserter), issuer CAS"
+  - {scheme: PUBCHEM_CID, issuer: NCBI PubChem, value: '90480033', evidence: l-gsrs-nrcl-pubchem, asserter: org-fda, note: as listed by GSRS}
+  propertyEvidence: {name: l-gsrs-nrcl-name, molecularFormula: l-gsrs-nrcl-formula, molecularWeight: l-gsrs-nrcl-mw, charge: l-gsrs-nrcl-mw}
+- ref: sub-nr
+  module: D1
+  type: ChemicalSubstance
+  uid: "hu:substance:xfx-cp-sub-nr"
+  name: NICOTINAMIDE RIBOSIDE
+  properties: {substanceClass: CHEMICAL, molecularWeight: 255.2476, charge: 1}
+  identifiers:
+  - {scheme: UNII, issuer: FDA GSRS, value: 0I8H2M0L7N, evidence: l-gsrs-nr-unii, asserter: org-fda, isPrimary: true}
+  - {scheme: CAS_RN, issuer: Chemical Abstracts Service, value: 1341-23-7, evidence: l-gsrs-nr-cas, asserter: org-fda}
+  - {scheme: PUBCHEM_CID, issuer: NCBI PubChem, value: '439924', evidence: l-gsrs-nr-pubchem, asserter: org-fda}
+  - scheme: CHEBI
+    issuer: EMBL-EBI
+    value: "CHEBI:15927"
+    evidence: l-gsrs-nr-chebi
+    asserter: org-fda
+    normalizationRule: upper-case prefix with colon (GSRS stores 15927)
+  - {scheme: DRUGBANK, issuer: DrugBank, value: DB14933, evidence: l-gsrs-nr-drugbank, asserter: org-fda}
+  note: the cation (GSRS charge 1); the subject of the D2 mechanism assertions and the object of MOIETY_EQUIVALENT_AMOUNT
+  propertyEvidence: {molecularWeight: l-gsrs-nr-mw, charge: l-gsrs-nr-mw}
+- ref: sub-nad
+  module: D1
+  type: ChemicalSubstance
+  uid: "hu:substance:xfx-cp-sub-nad"
+  name: NAD(+)
+  properties: {substanceClass: CHEMICAL}
+  identifiers:
+  - scheme: CHEBI
+    issuer: EMBL-EBI
+    value: "CHEBI:15846"
+    evidence: l-chebi-15846
+    asserter: org-embl-ebi
+  propertyEvidence: {name: l-chebi-15846-label}
+- ref: sub-naad
+  module: D1
+  type: ChemicalSubstance
+  uid: "hu:substance:xfx-cp-sub-naad"
+  name: deamido-NAD(+) (NAAD)
+  properties: {substanceClass: CHEMICAL}
+  identifiers:
+  - scheme: CHEBI
+    issuer: EMBL-EBI
+    value: "CHEBI:18304"
+    evidence: l-chebi-18304
+    asserter: org-embl-ebi
+  propertyEvidence: {name: l-chebi-18304-label, synonym NAAD: l-chebi-18304-naad}
+- ref: mat-niagen
+  module: D1
+  type: IngredientMaterial
+  uid: "hu:material:xfx-cp-mat-niagen"
+  name: NIAGEN (crystalline nicotinamide riboside chloride)
+  properties: {materialKind: CHEMICALLY_DEFINED, brandName: Niagen, physicalForm: CRYSTAL_FORM}
+  note: "same material as packets D1 nr-salt-moiety-us-canada#mat-niagen and nr-trial-unstructured#mat-niagen; physicalForm is the cache of FIELD f-physform (R-14)"
+  propertyEvidence: {physicalForm: l-cz-gras, brandName: l-dsld-row-name}
+- ref: mech-deacetylation
+  module: D2
+  type: Mechanism
+  uid: "hu:mechanism:xfx-cp-mech-deacetylation"
+  name: protein deacetylation
+  properties:
+    key: "go:GO:0006476"
+    mechanismKind: PROCESS
+    referenceScheme: GO
+    synonyms: [sirtuin-mediated deacetylation]
+  identifiers:
+  - scheme: GO
+    issuer: GO Consortium
+    value: "GO:0006476"
+    evidence: l-go-0006476
+    asserter: org-embl-ebi
+    note: QuickGO record (served by EMBL-EBI); isObsolete false
+  note: "synonym 'sirtuin-mediated deacetylation' is the paper's own phrase (Elhassan 2019 Results) carried from D2's fixture; the GO name is the authority"
+  propertyEvidence: {name: l-go-0006476}
+- ref: ctx-el-muscle
+  module: D2
+  type: MechanismEvidenceContext
+  uid: "hu:mech-context:xfx-cp-ctx-el-muscle"
+  name: "Elhassan 2019: 12 aged men, NR 1 g/day for 21 days, vastus lateralis biopsy"
+  properties:
+    groupLabel: 12 aged men with 1 g NR per day for 21 days
+    setting: HUMAN_INTERVENTIONAL
+    organism: HUMAN
+    ncbiTaxonId: '9606'
+    sexScope: MALE
+    ageDescriptor: aged men
+    sampleSize: 12
+    compartmentKind: TISSUE
+    compartmentOntologyId: "UBERON:0001379"
+    compartmentLabel: vastus lateralis muscle biopsy
+    geneticManipulation: NONE
+    assayText: targeted LC-MS/MS NAD+ metabolome; western blot pan-acetylation
+  note: "registered group: exposure fields empty, dose of record = D3 ic-el-nr via IN_STUDY_ARM (D2 rule); compartmentOntologyId UBERON:0001379 (vastus lateralis) from the OLS4 capture"
+  propertyEvidence: {compartmentOntologyId: l-uberon-0001379, compartmentOntologyId label: l-uberon-0001379-label, sampleSize: l-el-design, sexScope: l-el-design, ageDescriptor: l-el-design,
+    compartmentLabel: l-el-biopsy, assayText: l-el-naad}
+- ref: ctx-cz-blood
+  module: D2
+  type: MechanismEvidenceContext
+  uid: "hu:mech-context:xfx-cp-ctx-cz-blood"
+  name: "Conze 2019: overweight adults, NIAGEN 1000 mg/day arm, whole blood"
+  properties:
+    groupLabel: 1000 mg NIAGEN per day arm
+    setting: HUMAN_INTERVENTIONAL
+    organism: HUMAN
+    ncbiTaxonId: '9606'
+    compartmentKind: BODY_FLUID
+    compartmentOntologyId: "UBERON:0000178"
+    compartmentLabel: whole blood
+    geneticManipulation: NONE
+  note: registered group (IN_STUDY_ARM arm-cz-1000); sexScope and sampleSize left unset (per-arm completers with data not stated in the captured sentences)
+  propertyEvidence: {compartmentOntologyId: l-uberon-0000178, compartmentOntologyId label: l-uberon-0000178-label, compartmentLabel: l-cz-day14, groupLabel: l-cz-arms}
+- ref: pub-conze
+  module: D3
+  type: Publication
+  uid: "hu:publication:xfx-cp-pub-conze"
+  name: "Conze D, Brenner C, Kruger CL. Safety and Metabolism of Long-term Administration of NIAGEN (Nicotinamide Riboside Chloride) ... Sci Rep 2019;9:9772"
+  properties:
+    publicationKind: ARTICLE
+    publishedAt: "2019-07-05T00:00:00Z"
+    publishedAtPrecision: DAY
+  identifiers:
+  - {scheme: PMID, issuer: NLM, value: '31278280', evidence: l-cz-pmid, asserter: pub-conze}
+  - {scheme: DOI, issuer: Crossref, value: 10.1038/s41598-019-46120-z, evidence: l-cz-pmid, asserter: pub-conze}
+  - {scheme: PMCID, issuer: NLM, value: PMC6611812, evidence: l-cz-pmcid, asserter: pub-conze}
+  propertyEvidence: {publishedAt: l-cz-epub}
+- ref: study-cz
+  module: D3
+  type: Study
+  uid: "hu:study:xfx-cp-study-cz"
+  name: A Study Investigating the Effects of Niagen in Healthy Adults (NCT02712593)
+  properties:
+    studyKind: INTERVENTIONAL_RANDOMIZED
+    phase: [PHASE_2]
+    overallStatus: COMPLETED
+    primaryCompletionDate: "2017-03-17T00:00:00Z"
+    primaryCompletionDateType: ACTUAL
+    resultsPosted: false
+    projectionOfRegistrationVersionUid: "hu:registration-version:xfx-cp-rv-ct1"
+    projectionMethodVersion: xfx-builder/1 (registry fields copied from rv-ct1)
+    projectionDerivedAt: "2026-10-09T05:01:14Z"
+  identifiers:
+  - {scheme: NCT, issuer: NLM ClinicalTrials.gov, value: NCT02712593, evidence: l-ct1-nct, asserter: org-kgk, isPrimary: true}
+  propertyEvidence: {phase: l-ct1-phase, overallStatus: l-ct1-status, primaryCompletionDate: l-ct1-pcd, resultsPosted: l-ct1-hasresults}
+- ref: rv-ct1
+  module: D3
+  type: RegistrationVersion
+  uid: "hu:registration-version:xfx-cp-rv-ct1"
+  name: NCT02712593 as observed 2026-10-09 (last update posted 2018-04-11)
+  properties:
+    registry: CTGOV
+    registrationId: NCT02712593
+    versionDate: "2018-04-11T00:00:00Z"
+    versionDatePrecision: DAY
+    populatingMode: OBSERVED
+    payloadHash: "sha256:b4f637f2a707990d2b651a3c926982fdbc2e78a02be6ac5488f7d4c0ab1ffdaf"
+    overallStatus: COMPLETED
+    enrollmentCount: 140
+    enrollmentCountType: ACTUAL
+    startDate: "2016-03-21T00:00:00Z"
+    startDateType: ACTUAL
+    primaryCompletionDate: "2017-03-17T00:00:00Z"
+    primaryCompletionDatePrecision: DAY
+    primaryCompletionDateType: ACTUAL
+    resultsPosted: false
+    phase: [PHASE_2]
+    sponsorNameVerbatim: KGK Science Inc.
+    collaboratorNamesVerbatim:
+    - "ChromaDex, Inc."
+    interventionNamesVerbatim:
+    - "Niagen™ 100"
+    - "Niagen™ 300"
+    - "Niagen™ 1000"
+    - Placebo
+  note: "payloadHash = sha256 of the captured registry JSON bytes (RAW_BYTES); every field value is in that snapshot (locators l-ct1-*)"
+  propertyEvidence: {versionDate: l-ct1-lastupdate, overallStatus: l-ct1-status, enrollmentCount: l-ct1-enrollment, startDate: l-ct1-start, primaryCompletionDate: l-ct1-pcd, resultsPosted: l-ct1-hasresults,
+    phase: l-ct1-phase, sponsorNameVerbatim: l-ct1-lead, collaboratorNamesVerbatim: l-ct1-collab, interventionNamesVerbatim: l-ct1-int1000}
+- ref: arm-cz-100
+  module: D3
+  type: StudyArm
+  uid: "hu:arm:xfx-cp-arm-cz-100"
+  name: "NCT02712593 arm 'Niagen™ 100'"
+  properties:
+    armType: EXPERIMENTAL
+    armKey: "Niagen™ 100"
+    plannedSize: 35
+    payloadHash: "sha256:e78d694a8e93800b8dab09ba1b1bccf48e23d566fc2cbecd69c6b8e26a74e2d5"
+  propertyEvidence: {armKey: l-ct1-arm100, plannedSize: l-cz-groups}
+- ref: arm-cz-300
+  module: D3
+  type: StudyArm
+  uid: "hu:arm:xfx-cp-arm-cz-300"
+  name: "NCT02712593 arm 'Niagen™ 300'"
+  properties:
+    armType: EXPERIMENTAL
+    armKey: "Niagen™ 300"
+    plannedSize: 35
+    payloadHash: "sha256:47215196ee733d8dda95e0dcb65191898700a2bdcab6defb8c6ba7862e74caab"
+  propertyEvidence: {armKey: l-ct1-arm300, plannedSize: l-cz-groups}
+- ref: arm-cz-1000
+  module: D3
+  type: StudyArm
+  uid: "hu:arm:xfx-cp-arm-cz-1000"
+  name: "NCT02712593 arm 'Niagen™ 1000'"
+  properties:
+    armType: EXPERIMENTAL
+    armKey: "Niagen™ 1000"
+    plannedSize: 35
+    payloadHash: "sha256:96e87a9018f8570bd1830c316260a0d890419d101e6de2a22eb85b4ec3509418"
+  propertyEvidence: {armKey: l-ct1-arm1000, plannedSize: l-cz-groups}
+- ref: arm-cz-placebo
+  module: D3
+  type: StudyArm
+  uid: "hu:arm:xfx-cp-arm-cz-placebo"
+  name: "NCT02712593 arm 'Placebo'"
+  properties:
+    armType: EXPERIMENTAL
+    armKey: Placebo
+    plannedSize: 35
+    payloadHash: "sha256:cdd5a73967b369f407d230b21c6379c4c836209d47079dbe92bdfda2ebf7fdc6"
+  note: "the registry types the placebo arm EXPERIMENTAL (l-ct1-armplacebo); kept as stated, the paper calls it placebo"
+  propertyEvidence: {armKey: l-ct1-armplacebo, armType: l-ct1-armplacebo, plannedSize: l-cz-groups}
+- ref: ic-cz-1000
+  module: D3
+  type: InterventionComponent
+  uid: "hu:intervention-component:xfx-cp-ic-cz-1000"
+  name: "NCT02712593 1000 mg arm: NIAGEN component"
+  properties:
+    componentRole: ACTIVE
+    materialTextVerbatim: 1000 mg NR (4 capsules containing 250 mg NR)
+    interventionTypeVerbatim: DIETARY_SUPPLEMENT
+    quantity: 1000
+    unitCode: mg
+    quantityBasis: PER_DAY
+    massBasis: UNSPECIFIED
+    dosageForm: capsule
+    durationIso: P56D
+    verbatimDoseText: 1000 mg NR (4 capsules containing 250 mg NR)
+    payloadHash: "sha256:07bd95005eb903888982d43b3b438427bc68dfc43a0e856c7e93a44d052ccd1f"
+  note: "massBasis stays UNSPECIFIED as printed; APPLICABILITY ap-dose-basis states SALT_FORM (D1 rule, packet D1 nr-trial-unstructured)"
+  propertyEvidence: {materialTextVerbatim: l-cz-arms, quantity: l-cz-arms, durationIso: l-cz-56day, dosageForm: l-cz-capsule, interventionTypeVerbatim: l-ct1-int1000}
+- ref: ic-cz-100
+  module: D3
+  type: InterventionComponent
+  uid: "hu:intervention-component:xfx-cp-ic-cz-100"
+  name: "NCT02712593 arm 100: component (unresolved in this fixture)"
+  properties:
+    componentRole: ACTIVE
+    materialTextVerbatim: 100 mg NR (1 capsule containing 100 mg NR and three placebo capsules)
+    payloadHash: "sha256:20208fdbdda965c2e7a9dd6c8b1251ad7f358f4262b44328acf036cbb61d70af"
+  note: "kept unresolved (no ADMINISTERS): this fixture resolves the 1000 mg arm only"
+  propertyEvidence: {materialTextVerbatim: l-cz-arms}
+- ref: ic-cz-300
+  module: D3
+  type: InterventionComponent
+  uid: "hu:intervention-component:xfx-cp-ic-cz-300"
+  name: "NCT02712593 arm 300: component (unresolved in this fixture)"
+  properties:
+    componentRole: ACTIVE
+    materialTextVerbatim: 300 mg NR (3 capsules containing 100 mg NR and 1 capsule containing placebo)
+    payloadHash: "sha256:e172d580345d503f85d1c914cc5c3842c274a81c87e097a6770b4d7381dd53ab"
+  note: "kept unresolved (no ADMINISTERS): this fixture resolves the 1000 mg arm only"
+  propertyEvidence: {materialTextVerbatim: l-cz-arms}
+- ref: ic-cz-placebo
+  module: D3
+  type: InterventionComponent
+  uid: "hu:intervention-component:xfx-cp-ic-cz-placebo"
+  name: "NCT02712593 arm placebo: component (unresolved in this fixture)"
+  properties:
+    componentRole: PLACEBO
+    materialTextVerbatim: placebo (a total of 4 placebo capsules)
+    payloadHash: "sha256:02d9af44df4fbae254cf82320966802a0b0b3d53245d6cdcaf77b5e63feabb7b"
+  note: "kept unresolved (no ADMINISTERS): this fixture resolves the 1000 mg arm only"
+  propertyEvidence: {materialTextVerbatim: l-cz-arms}
+- ref: od-cz-blood-nad
+  module: D3
+  type: OutcomeDefinition
+  uid: "hu:outcome-definition:xfx-cp-od-cz-blood-nad"
+  name: "Whole blood NAD+ change from baseline (paper, secondary objective)"
+  properties:
+    outcomeKey: whole-blood-nad-change
+    priority: SECONDARY
+    measureKind: BIOMARKER
+    timepoint: day 14
+    description: "whole blood NAD+ relative to baseline (paper Results, Figure 3A); secondary objective 'other NR metabolites levels in blood'"
+  propertyEvidence: {description: l-cz-secondary-objective, timepoint: l-cz-day14}
+- ref: od-ct1-blood
+  module: D3
+  type: OutcomeDefinition
+  uid: "hu:outcome-definition:xfx-cp-od-ct1-blood"
+  name: Blood Nicotinamide Riboside Metabolites (registry secondary outcome)
+  properties:
+    outcomeKey: blood-nr-metabolites
+    priority: SECONDARY
+    measureKind: BIOMARKER
+    timepoint: "8 weeks: from baseline to end of study"
+    description: Change in levels
+  propertyEvidence: {name: l-ct1-secondary, timepoint: l-ct1-secondary}
+- ref: od-cz-ae
+  module: D3
+  type: OutcomeDefinition
+  uid: "hu:outcome-definition:xfx-cp-od-cz-ae"
+  name: Incidence of adverse events (paper safety objective)
+  properties: {outcomeKey: adverse-events, priority: SAFETY, measureKind: ADVERSE_EVENT, description: the difference in the incidence of adverse events between the placebo- and NIAGEN-treated
+      groups}
+  propertyEvidence: {description: l-cz-safety-objective}
+- ref: sr-cz-nad-d14
+  module: D3
+  type: StudyResult
+  uid: "hu:study-result:xfx-cp-sr-cz-nad-d14"
+  name: "Whole blood NAD+ at day 14, 1000 mg NIAGEN arm, % change from baseline"
+  properties:
+    resultKind: PERCENT_CHANGE
+    analysisKind: SECONDARY_PRESPECIFIED
+    comparisonKind: WITHIN_ARM_CHANGE
+    statisticalConclusion: SIGNIFICANT
+    direction: INCREASED
+    estimate: 142
+    estimateQualifier: AS_REPORTED
+    unitCode: "%"
+    dispersionKind: STANDARD_ERROR
+    dispersionValue: 14
+    timepointText: day 14
+    resultText: "142 ± 14% with respect to baseline blood NAD+"
+  note: "dispersionKind STANDARD_ERROR is read from the Figure 3 caption (l-cz-sem, role QUALIFIES): the Results sentence prints '±' without naming it"
+  propertyEvidence: {estimate: l-cz-day14, dispersionValue: l-cz-day14, dispersionKind: l-cz-sem, statisticalConclusion: l-cz-abstract-result, timepointText: l-cz-day14}
+- ref: sr-cz-ae-any
+  module: D3
+  type: StudyResult
+  uid: "hu:study-result:xfx-cp-sr-cz-ae-any"
+  name: "Adverse events, all arms (ITT): 95 AEs in 61 participants"
+  properties: {resultKind: ADVERSE_EVENT_COUNT, analysisKind: SAFETY, comparisonKind: ARM_DESCRIPTIVE, statisticalConclusion: NOT_TESTED, analysisPopulation: INTENTION_TO_TREAT, seriousness: ANY,
+    eventCount: 95, participantsAffected: 61, collectionMethod: NOT_DESCRIBED, resultText: Ninety-five AEs were reported by 61 participants}
+  propertyEvidence: {eventCount: l-cz-ae-count, participantsAffected: l-cz-ae-count, analysisPopulation: l-cz-tab2}
+- ref: sr-cz-ae-serious
+  module: D3
+  type: StudyResult
+  uid: "hu:study-result:xfx-cp-sr-cz-ae-serious"
+  name: "Serious adverse events, all arms (ITT): none"
+  properties: {resultKind: ADVERSE_EVENT_COUNT, analysisKind: SAFETY, comparisonKind: ARM_DESCRIPTIVE, statisticalConclusion: NOT_TESTED, analysisPopulation: INTENTION_TO_TREAT, seriousness: SERIOUS,
+    eventCount: 0, collectionMethod: NOT_DESCRIBED, resultText: There were no serious AEs or reports of flushing.}
+  propertyEvidence: {eventCount: l-cz-ae-serious, resultText: l-cz-ae-serious, analysisPopulation: l-cz-tab2}
+- ref: pub-elhassan
+  module: D3
+  type: Publication
+  uid: "hu:publication:xfx-cp-pub-elhassan"
+  name: "Elhassan YS et al. Nicotinamide Riboside Augments the Aged Human Skeletal Muscle NAD+ Metabolome and Induces Transcriptomic and Anti-inflammatory Signatures. Cell Rep 2019;28(7):1717"
+  properties:
+    publicationKind: ARTICLE
+    publishedAt: "2019-08-13T00:00:00Z"
+    publishedAtPrecision: DAY
+  identifiers:
+  - {scheme: PMID, issuer: NLM, value: '31412242', evidence: l-el-pmid, asserter: pub-elhassan}
+  - {scheme: DOI, issuer: Crossref, value: 10.1016/j.celrep.2019.07.043, evidence: l-el-pmid, asserter: pub-elhassan}
+  - {scheme: PMCID, issuer: NLM, value: PMC6702140, evidence: l-el-pmcid, asserter: pub-elhassan}
+  propertyEvidence: {publishedAt: l-el-epub}
+- ref: study-el
+  module: D3
+  type: Study
+  uid: "hu:study:xfx-cp-study-el"
+  name: "Nicotinamide Adenine Dinucleotide and Skeletal Muscle Metabolic Phenotype (NADMet, NCT02950441)"
+  properties:
+    studyKind: INTERVENTIONAL_RANDOMIZED
+    acronym: NADMet
+    phase: [PHASE_2]
+    overallStatus: UNKNOWN
+    projectionOfRegistrationVersionUid: "hu:registration-version:xfx-cp-rv-ct2"
+    projectionMethodVersion: xfx-builder/1
+    projectionDerivedAt: "2026-10-09T05:01:14Z"
+  identifiers:
+  - {scheme: NCT, issuer: NLM ClinicalTrials.gov, value: NCT02950441, evidence: l-ct2-nct, asserter: org-uob, isPrimary: true}
+  propertyEvidence: {phase: l-ct2-phase, overallStatus: l-ct2-status}
+- ref: rv-ct2
+  module: D3
+  type: RegistrationVersion
+  uid: "hu:registration-version:xfx-cp-rv-ct2"
+  name: NCT02950441 as observed 2026-10-09 (last update posted 2017-06-07)
+  properties:
+    registry: CTGOV
+    registrationId: NCT02950441
+    versionDate: "2017-06-07T00:00:00Z"
+    versionDatePrecision: DAY
+    populatingMode: OBSERVED
+    payloadHash: "sha256:79e06200c9ddbe0d461add746395259ea3995ddfee7f16bf235ee5b2c17fdf48"
+    overallStatus: UNKNOWN
+    overallStatusVerbatim: UNKNOWN (lastKnownStatus RECRUITING)
+    phase: [PHASE_2]
+    allocation: RANDOMIZED
+    interventionModel: CROSSOVER
+    sponsorNameVerbatim: University of Birmingham
+    interventionNamesVerbatim: [Nicotinamide Riboside, Placebo]
+  propertyEvidence: {versionDate: l-ct2-lastupdate, overallStatus: l-ct2-status, phase: l-ct2-phase, allocation: l-ct2-design, interventionModel: l-ct2-design, sponsorNameVerbatim: l-ct2-lead}
+- ref: arm-el-nr
+  module: D3
+  type: StudyArm
+  uid: "hu:arm:xfx-cp-arm-el-nr"
+  name: "NCT02950441 arm 'Nicotinamide Riboside'"
+  properties:
+    armType: EXPERIMENTAL
+    armKey: Nicotinamide Riboside
+    description: 1000mg (2x250mg tablets twice daily)
+    payloadHash: "sha256:afed287808b1ec8fe12b91485a6949ea9b092f592e692dbae658212f068466d9"
+  propertyEvidence: {armKey: l-ct2-armnr, description: l-ct2-armnr}
+- ref: ic-el-nr
+  module: D3
+  type: InterventionComponent
+  uid: "hu:intervention-component:xfx-cp-ic-el-nr"
+  name: "NCT02950441 NR arm: NIAGEN component"
+  properties:
+    componentRole: ACTIVE
+    materialTextVerbatim: NR chloride (Niagen)
+    quantity: 1
+    unitCode: g
+    quantityBasis: PER_DAY
+    massBasis: UNSPECIFIED
+    durationIso: P21D
+    verbatimDoseText: 1 g NR per day for 21 days
+    supplierNameVerbatim: ChromaDex
+    payloadHash: "sha256:3669af490e87624e58069fcd760c92393b16dca32a5c40f602d623f2f33138b7"
+  note: "dosageForm left unset on purpose: paper says capsules (f-el-form-paper), registry says tablets (f-el-form-registry); both FIELD Assertions are kept (Q-D3-15)"
+  propertyEvidence: {materialTextVerbatim: l-el-material, quantity: l-el-design, durationIso: l-el-design, supplierNameVerbatim: l-el-material}
+- ref: prod-tn
+  module: D6
+  type: Product
+  uid: "hu:product:xfx-cp-prod-tn"
+  name: Tru Niagen 300 mg
+  properties: {productKind: DIETARY_SUPPLEMENT, marketedName: Tru Niagen 300 mg, jurisdiction: US}
+  propertyEvidence: {marketedName: l-dsld-name}
+- ref: var-tn-300
+  module: D6
+  type: ProductVariant
+  uid: "hu:product-variant:xfx-cp-var-tn-300"
+  name: Tru Niagen 300 mg capsule (US)
+  properties: {dosageForm: CAPSULE, strengthVerbatim: 300 mg, jurisdiction: US}
+  propertyEvidence: {dosageForm: l-dsld-form}
+- ref: pkg-tn-30
+  module: D6
+  type: Package
+  uid: "hu:package:xfx-cp-pkg-tn-30"
+  name: "Tru Niagen 300 mg, 30 vegetarian capsules"
+  properties: {packageKind: CONTAINER, unitCount: 30, unitNoun: Vegetarian Capsule(s)}
+  identifiers:
+  - scheme: GTIN
+    issuer: GS1
+    value: 00850015311116
+    evidence: l-dsld-upc
+    asserter: org-nih-ods
+    normalizationRule: digits only; left-pad to 14; mod-10 check digit verified (6)
+    note: "printed '8 50015 31111 6'"
+  propertyEvidence: {unitCount: l-dsld-net, unitNoun: l-dsld-net}
+- ref: lv-tn-v12-3
+  module: D6
+  type: LabelVersion
+  uid: "hu:label-version:xfx-cp-lv-tn-v12-3"
+  name: Tru Niagen 300 mg label V12.3 (DSLD 323170)
+  properties:
+    panelKind: SUPPLEMENT_FACTS
+    labelVersionCode: V12.3
+    jurisdiction: US
+    contentDigest: "sha256:9cf4d6d2d6bad8d464467c8c6266d9fbbb58c22236885cad7618b6ecbef98729"
+    compositionDigest: "sha256:998c6b1532b4d8b27ae7428c6d02351bd595fe75490cfb71de404fe1f15e2632"
+    servingSizeValue: 1
+    servingSizeUnit: Vegetarian Capsule(s)
+    servingsPerContainer: 30
+    minDailyServings: 1
+    maxDailyServings: 3
+    directionsText: "Suggested use: Adults take one capsule 1-3 times daily as needed or as recommended by your healthcare professional."
+    responsiblePartyRole: DISTRIBUTED_BY
+    responsiblePartyVerbatim: "Distributed by ChromaDex, Inc"
+    firstObservedAt: "2026-10-09T04:17:03Z"
+    lastObservedAt: "2026-10-09T04:17:03Z"
+  identifiers:
+  - {scheme: DSLD, issuer: NIH ODS, value: '323170', evidence: l-dsld-id, asserter: org-nih-ods, isPrimary: true}
+  note: "contentDigest / compositionDigest computed by this builder (sha256 over canonical JSON of the DSLD panel fields, see source.md); not comparable with packet D6's digests (different\
+    \ canonicalization)"
+  propertyEvidence: {labelVersionCode: l-dsld-version, maxDailyServings: l-dsld-serving, minDailyServings: l-dsld-serving, directionsText: l-dsld-directions, responsiblePartyVerbatim: l-dsld-contact-name,
+    responsiblePartyRole: l-dsld-contact, servingsPerContainer: l-dsld-net}
+- ref: ident-person-brenner-orcid
+  module: K
+  type: Identifier
+  uid: "hu:identifier:xfx-cp-ident-person-brenner-orcid"
+  name: "ORCID:0000-0002-4955-3226"
+  properties:
+    scheme: ORCID
+    issuer: ORCID
+    value: 0000-0002-4955-3226
+    normalizationRule: "strip http://orcid.org/"
+- ref: ident-sub-nrcl-unii
+  module: K
+  type: Identifier
+  uid: "hu:identifier:xfx-cp-ident-sub-nrcl-unii"
+  name: "UNII:8XM2XT8VWI"
+  properties: {scheme: UNII, issuer: FDA GSRS, value: 8XM2XT8VWI}
+- ref: ident-sub-nrcl-cas_rn
+  module: K
+  type: Identifier
+  uid: "hu:identifier:xfx-cp-ident-sub-nrcl-cas_rn"
+  name: "CAS_RN:23111-00-4"
+  properties: {scheme: CAS_RN, issuer: Chemical Abstracts Service, value: 23111-00-4}
+- ref: ident-sub-nrcl-pubchem_cid
+  module: K
+  type: Identifier
+  uid: "hu:identifier:xfx-cp-ident-sub-nrcl-pubchem_cid"
+  name: "PUBCHEM_CID:90480033"
+  properties: {scheme: PUBCHEM_CID, issuer: NCBI PubChem, value: '90480033'}
+- ref: ident-sub-nr-unii
+  module: K
+  type: Identifier
+  uid: "hu:identifier:xfx-cp-ident-sub-nr-unii"
+  name: "UNII:0I8H2M0L7N"
+  properties: {scheme: UNII, issuer: FDA GSRS, value: 0I8H2M0L7N}
+- ref: ident-sub-nr-cas_rn
+  module: K
+  type: Identifier
+  uid: "hu:identifier:xfx-cp-ident-sub-nr-cas_rn"
+  name: "CAS_RN:1341-23-7"
+  properties: {scheme: CAS_RN, issuer: Chemical Abstracts Service, value: 1341-23-7}
+- ref: ident-sub-nr-pubchem_cid
+  module: K
+  type: Identifier
+  uid: "hu:identifier:xfx-cp-ident-sub-nr-pubchem_cid"
+  name: "PUBCHEM_CID:439924"
+  properties: {scheme: PUBCHEM_CID, issuer: NCBI PubChem, value: '439924'}
+- ref: ident-sub-nr-chebi
+  module: K
+  type: Identifier
+  uid: "hu:identifier:xfx-cp-ident-sub-nr-chebi"
+  name: "CHEBI:CHEBI:15927"
+  properties:
+    scheme: CHEBI
+    issuer: EMBL-EBI
+    value: "CHEBI:15927"
+    normalizationRule: upper-case prefix with colon (GSRS stores 15927)
+- ref: ident-sub-nr-drugbank
+  module: K
+  type: Identifier
+  uid: "hu:identifier:xfx-cp-ident-sub-nr-drugbank"
+  name: "DRUGBANK:DB14933"
+  properties: {scheme: DRUGBANK, issuer: DrugBank, value: DB14933}
+- ref: ident-sub-nad-chebi
+  module: K
+  type: Identifier
+  uid: "hu:identifier:xfx-cp-ident-sub-nad-chebi"
+  name: "CHEBI:CHEBI:15846"
+  properties:
+    scheme: CHEBI
+    issuer: EMBL-EBI
+    value: "CHEBI:15846"
+- ref: ident-sub-naad-chebi
+  module: K
+  type: Identifier
+  uid: "hu:identifier:xfx-cp-ident-sub-naad-chebi"
+  name: "CHEBI:CHEBI:18304"
+  properties:
+    scheme: CHEBI
+    issuer: EMBL-EBI
+    value: "CHEBI:18304"
+- ref: ident-mech-deacetylation-go
+  module: K
+  type: Identifier
+  uid: "hu:identifier:xfx-cp-ident-mech-deacetylation-go"
+  name: "GO:GO:0006476"
+  properties:
+    scheme: GO
+    issuer: GO Consortium
+    value: "GO:0006476"
+- ref: ident-pub-conze-pmid
+  module: K
+  type: Identifier
+  uid: "hu:identifier:xfx-cp-ident-pub-conze-pmid"
+  name: "PMID:31278280"
+  properties: {scheme: PMID, issuer: NLM, value: '31278280'}
+- ref: ident-pub-conze-doi
+  module: K
+  type: Identifier
+  uid: "hu:identifier:xfx-cp-ident-pub-conze-doi"
+  name: "DOI:10.1038/s41598-019-46120-z"
+  properties: {scheme: DOI, issuer: Crossref, value: 10.1038/s41598-019-46120-z}
+- ref: ident-pub-conze-pmcid
+  module: K
+  type: Identifier
+  uid: "hu:identifier:xfx-cp-ident-pub-conze-pmcid"
+  name: "PMCID:PMC6611812"
+  properties: {scheme: PMCID, issuer: NLM, value: PMC6611812}
+- ref: ident-study-cz-nct
+  module: K
+  type: Identifier
+  uid: "hu:identifier:xfx-cp-ident-study-cz-nct"
+  name: "NCT:NCT02712593"
+  properties: {scheme: NCT, issuer: NLM ClinicalTrials.gov, value: NCT02712593}
+- ref: ident-pub-elhassan-pmid
+  module: K
+  type: Identifier
+  uid: "hu:identifier:xfx-cp-ident-pub-elhassan-pmid"
+  name: "PMID:31412242"
+  properties: {scheme: PMID, issuer: NLM, value: '31412242'}
+- ref: ident-pub-elhassan-doi
+  module: K
+  type: Identifier
+  uid: "hu:identifier:xfx-cp-ident-pub-elhassan-doi"
+  name: "DOI:10.1016/j.celrep.2019.07.043"
+  properties: {scheme: DOI, issuer: Crossref, value: 10.1016/j.celrep.2019.07.043}
+- ref: ident-pub-elhassan-pmcid
+  module: K
+  type: Identifier
+  uid: "hu:identifier:xfx-cp-ident-pub-elhassan-pmcid"
+  name: "PMCID:PMC6702140"
+  properties: {scheme: PMCID, issuer: NLM, value: PMC6702140}
+- ref: ident-study-el-nct
+  module: K
+  type: Identifier
+  uid: "hu:identifier:xfx-cp-ident-study-el-nct"
+  name: "NCT:NCT02950441"
+  properties: {scheme: NCT, issuer: NLM ClinicalTrials.gov, value: NCT02950441}
+- ref: ident-pkg-tn-30-gtin
+  module: K
+  type: Identifier
+  uid: "hu:identifier:xfx-cp-ident-pkg-tn-30-gtin"
+  name: "GTIN:00850015311116"
+  properties: {scheme: GTIN, issuer: GS1, value: 00850015311116, normalizationRule: digits only; left-pad to 14; mod-10 check digit verified (6)}
+- ref: ident-lv-tn-v12-3-dsld
+  module: K
+  type: Identifier
+  uid: "hu:identifier:xfx-cp-ident-lv-tn-v12-3-dsld"
+  name: "DSLD:323170"
+  properties: {scheme: DSLD, issuer: NIH ODS, value: '323170'}
+sources:
+- ref: src-gsrs-8xm2xt8vwi
+  type: Source
+  canonicalUri: "https://gsrs.ncats.nih.gov/api/v1/substances(8XM2XT8VWI)?view=full"
+  sourceKind: API
+  hasSnapshot: snap-gsrs-8xm2xt8vwi
+- ref: src-gsrs-0i8h2m0l7n
+  type: Source
+  canonicalUri: "https://gsrs.ncats.nih.gov/api/v1/substances(0I8H2M0L7N)?view=full"
+  sourceKind: API
+  hasSnapshot: snap-gsrs-0i8h2m0l7n
+- ref: src-epmc-pmc6611812
+  type: Source
+  canonicalUri: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6611812/fullTextXML"
+  sourceKind: API
+  hasSnapshot: snap-epmc-pmc6611812
+  renditionOf: pub-conze
+  renditionAssertion: a-rendition-conze
+- ref: src-ctgov-nct02712593
+  type: Source
+  canonicalUri: "https://clinicaltrials.gov/api/v2/studies/NCT02712593"
+  sourceKind: REGISTRY
+  hasSnapshot: snap-ctgov-nct02712593
+- ref: src-ctgov-nct0271593
+  type: Source
+  canonicalUri: "https://clinicaltrials.gov/api/v2/studies/NCT0271593"
+  sourceKind: REGISTRY
+  hasSnapshot: snap-ctgov-nct0271593
+- ref: src-epmc-pmc6702140
+  type: Source
+  canonicalUri: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6702140/fullTextXML"
+  sourceKind: API
+  hasSnapshot: snap-epmc-pmc6702140
+  renditionOf: pub-elhassan
+  renditionAssertion: a-rendition-elhassan
+- ref: src-ctgov-nct02950441
+  type: Source
+  canonicalUri: "https://clinicaltrials.gov/api/v2/studies/NCT02950441"
+  sourceKind: REGISTRY
+  hasSnapshot: snap-ctgov-nct02950441
+- ref: src-dsld-323170
+  type: Source
+  canonicalUri: "https://api.ods.od.nih.gov/dsld/v9/label/323170"
+  sourceKind: API
+  hasSnapshot: snap-dsld-323170
+- ref: src-quickgo-go0006476
+  type: Source
+  canonicalUri: "https://www.ebi.ac.uk/QuickGO/services/ontology/go/terms/GO:0006476"
+  sourceKind: API
+  hasSnapshot: snap-quickgo-go0006476
+- ref: src-ols-chebi-15846
+  type: Source
+  canonicalUri: "https://www.ebi.ac.uk/ols4/api/ontologies/chebi/terms?obo_id=CHEBI:15846"
+  sourceKind: API
+  hasSnapshot: snap-ols-chebi-15846
+- ref: src-ols-uberon-0001379
+  type: Source
+  canonicalUri: "https://www.ebi.ac.uk/ols4/api/ontologies/uberon/terms?obo_id=UBERON:0001379"
+  sourceKind: API
+  hasSnapshot: snap-ols-uberon-0001379
+- ref: src-ols-uberon-0000178
+  type: Source
+  canonicalUri: "https://www.ebi.ac.uk/ols4/api/ontologies/uberon/terms?obo_id=UBERON:0000178"
+  sourceKind: API
+  hasSnapshot: snap-ols-uberon-0000178
+- ref: src-ols-chebi-18304
+  type: Source
+  canonicalUri: "https://www.ebi.ac.uk/ols4/api/ontologies/chebi/terms?obo_id=CHEBI:18304"
+  sourceKind: API
+  hasSnapshot: snap-ols-chebi-18304
+chunks:
+- ref: chunk-cz-sec6
+  snapshot: snap-epmc-pmc6611812
+  chunkIndex: 6
+  startOffset: 28532
+  endOffset: 30482
+  section: "Methods > Study product (<sec id=Sec6>)"
+  uid: "hu:chunk:xfx-cp-chunk-cz-sec6"
+  textBasis: JATS_XML
+  textVersionHash: "sha256:ae7b5a420c48282b6604bd3c6e22ac818dcd0fc5a9fbaba0d45abf62e34661d2"
+  spanDigest: "sha256:564450bdf895a217f0e67c08cfe56efa3ff2b0d86477285a7722d32d3473ff5f"
+  extractorVersion: europepmc-jats/raw
+  normalizationVersion: none (raw code points)
+  chunkerVersion: "fixture-chunker/1 (one <sec> or <p>)"
+  text: "@span (snapshot[startOffset:endOffset]; not inlined)"
+  coversLocator: [l-cz-arms, l-cz-capsule, l-cz-mention-nrcl]
+  mentions:
+  - to: sub-nrcl
+    surfaceLocator: l-cz-mention-nrcl
+    derivationRule: entity-link/v1
+    derivedFromAssessmentUids: &id001
+    - "hu:assessment:xfx-cp-r-mention-nrcl"
+- ref: chunk-cz-par26
+  snapshot: snap-epmc-pmc6611812
+  chunkIndex: 12
+  startOffset: 47473
+  endOffset: 49087
+  section: "Results > Blood NAD+ (<p id=Par26>, up to the Figure 3 float)"
+  uid: "hu:chunk:xfx-cp-chunk-cz-par26"
+  textBasis: JATS_XML
+  textVersionHash: "sha256:ae7b5a420c48282b6604bd3c6e22ac818dcd0fc5a9fbaba0d45abf62e34661d2"
+  spanDigest: "sha256:e70446bce358eb56ca5aa0f919ef3e49f4ef9b7e93ca5f41e8e50f4cbed05b74"
+  extractorVersion: europepmc-jats/raw
+  normalizationVersion: none (raw code points)
+  chunkerVersion: "fixture-chunker/1 (one <sec> or <p>)"
+  text: "@span (snapshot[startOffset:endOffset]; not inlined)"
+  coversLocator: [l-cz-day14, l-cz-significance]
+  mentions:
+  - {to: mat-niagen, surfaceForm: NIAGEN, derivationRule: entity-link/v1 (exact brand name)}
+  - to: sub-nad
+    surfaceForm: "NAD<sup>+</sup>"
+    derivationRule: entity-link/v1 (ChEBI synonym NAD+)
+assertions:
+- id: id-person-brenner-orcid
+  uid: "hu:assertion:xfx-cp-id-person-brenner-orcid"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_IDENTIFIER
+  subject: {ref: person-brenner, type: Person}
+  literal:
+    valueString: "ORCID:0000-0002-4955-3226"
+  asserter: {ref: pub-conze, type: Publication}
+  evidence:
+  - locator: l-cz-brenner-orcid
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:49ce04687b19164adc73bd9a58f589c60fd8eb6ba867c18c2d57f25a1640d2ed"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "issuer:ORCID"
+  edge:
+    type: HAS_IDENTIFIER
+    to: ident-person-brenner-orcid
+    properties: {isPrimary: false, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  note: "kernel convention: the HAS_IDENTIFIER Assertion has a literal object (Identifier is Entity-only, not Subjectable); the typed episode points at the Identifier node"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: id-sub-nrcl-unii
+  uid: "hu:assertion:xfx-cp-id-sub-nrcl-unii"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_IDENTIFIER
+  subject: {ref: sub-nrcl, type: ChemicalSubstance}
+  literal:
+    valueString: "UNII:8XM2XT8VWI"
+  asserter: {ref: org-fda, type: Organization}
+  evidence:
+  - locator: l-gsrs-nrcl-unii
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:bc89a61737b4b73afe09109ccf913adfd88b058d71581ec5231398afa3068732"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "issuer:FDA GSRS"
+  edge:
+    type: HAS_IDENTIFIER
+    to: ident-sub-nrcl-unii
+    properties: {isPrimary: true, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  note: "kernel convention: the HAS_IDENTIFIER Assertion has a literal object (Identifier is Entity-only, not Subjectable); the typed episode points at the Identifier node"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: id-sub-nrcl-cas_rn
+  uid: "hu:assertion:xfx-cp-id-sub-nrcl-cas_rn"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_IDENTIFIER
+  subject: {ref: sub-nrcl, type: ChemicalSubstance}
+  literal:
+    valueString: "CAS_RN:23111-00-4"
+  asserter: {ref: org-fda, type: Organization}
+  evidence:
+  - locator: l-gsrs-nrcl-cas
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:44d8b45f58f92eefc31aaedbc7979f99ff25d1e1929b505f6e9270e042f0f6a3"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "issuer:Chemical Abstracts Service"
+  edge:
+    type: HAS_IDENTIFIER
+    to: ident-sub-nrcl-cas_rn
+    properties: {isPrimary: false, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  note: "kernel convention: the HAS_IDENTIFIER Assertion has a literal object (Identifier is Entity-only, not Subjectable); the typed episode points at the Identifier node"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: id-sub-nrcl-pubchem_cid
+  uid: "hu:assertion:xfx-cp-id-sub-nrcl-pubchem_cid"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_IDENTIFIER
+  subject: {ref: sub-nrcl, type: ChemicalSubstance}
+  literal:
+    valueString: "PUBCHEM_CID:90480033"
+  asserter: {ref: org-fda, type: Organization}
+  evidence:
+  - locator: l-gsrs-nrcl-pubchem
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:253be8184d4eff824df5490d9bee95d791af19a0bcf863e3212caaa7f7a145e5"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "issuer:NCBI PubChem"
+  edge:
+    type: HAS_IDENTIFIER
+    to: ident-sub-nrcl-pubchem_cid
+    properties: {isPrimary: false, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  note: "kernel convention: the HAS_IDENTIFIER Assertion has a literal object (Identifier is Entity-only, not Subjectable); the typed episode points at the Identifier node"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: id-sub-nr-unii
+  uid: "hu:assertion:xfx-cp-id-sub-nr-unii"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_IDENTIFIER
+  subject: {ref: sub-nr, type: ChemicalSubstance}
+  literal:
+    valueString: "UNII:0I8H2M0L7N"
+  asserter: {ref: org-fda, type: Organization}
+  evidence:
+  - locator: l-gsrs-nr-unii
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:a99a08edf9fd276fd8f42101705134d12b18bbf46d1d6bbcc52dfa70819cb2ca"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "issuer:FDA GSRS"
+  edge:
+    type: HAS_IDENTIFIER
+    to: ident-sub-nr-unii
+    properties: {isPrimary: true, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  note: "kernel convention: the HAS_IDENTIFIER Assertion has a literal object (Identifier is Entity-only, not Subjectable); the typed episode points at the Identifier node"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: id-sub-nr-cas_rn
+  uid: "hu:assertion:xfx-cp-id-sub-nr-cas_rn"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_IDENTIFIER
+  subject: {ref: sub-nr, type: ChemicalSubstance}
+  literal:
+    valueString: "CAS_RN:1341-23-7"
+  asserter: {ref: org-fda, type: Organization}
+  evidence:
+  - locator: l-gsrs-nr-cas
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:3e475abbc003a726d5bfc7ff72b0cc2bdfc288b0e7905046e4a056ae36387b53"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "issuer:Chemical Abstracts Service"
+  edge:
+    type: HAS_IDENTIFIER
+    to: ident-sub-nr-cas_rn
+    properties: {isPrimary: false, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  note: "kernel convention: the HAS_IDENTIFIER Assertion has a literal object (Identifier is Entity-only, not Subjectable); the typed episode points at the Identifier node"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: id-sub-nr-pubchem_cid
+  uid: "hu:assertion:xfx-cp-id-sub-nr-pubchem_cid"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_IDENTIFIER
+  subject: {ref: sub-nr, type: ChemicalSubstance}
+  literal:
+    valueString: "PUBCHEM_CID:439924"
+  asserter: {ref: org-fda, type: Organization}
+  evidence:
+  - locator: l-gsrs-nr-pubchem
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:5b79cb684db22ce65a1ee0cbacf3a8b88b726bbea27d8d56a1e7baddb2827ebc"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "issuer:NCBI PubChem"
+  edge:
+    type: HAS_IDENTIFIER
+    to: ident-sub-nr-pubchem_cid
+    properties: {isPrimary: false, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  note: "kernel convention: the HAS_IDENTIFIER Assertion has a literal object (Identifier is Entity-only, not Subjectable); the typed episode points at the Identifier node"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: id-sub-nr-chebi
+  uid: "hu:assertion:xfx-cp-id-sub-nr-chebi"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_IDENTIFIER
+  subject: {ref: sub-nr, type: ChemicalSubstance}
+  literal:
+    valueString: "CHEBI:CHEBI:15927"
+  asserter: {ref: org-fda, type: Organization}
+  evidence:
+  - locator: l-gsrs-nr-chebi
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:51b565396c489c5fbd51f1ab08b950de702f318b63c4e451722581530c58b49b"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "issuer:EMBL-EBI"
+  edge:
+    type: HAS_IDENTIFIER
+    to: ident-sub-nr-chebi
+    properties: {isPrimary: false, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  note: "kernel convention: the HAS_IDENTIFIER Assertion has a literal object (Identifier is Entity-only, not Subjectable); the typed episode points at the Identifier node"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: id-sub-nr-drugbank
+  uid: "hu:assertion:xfx-cp-id-sub-nr-drugbank"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_IDENTIFIER
+  subject: {ref: sub-nr, type: ChemicalSubstance}
+  literal:
+    valueString: "DRUGBANK:DB14933"
+  asserter: {ref: org-fda, type: Organization}
+  evidence:
+  - locator: l-gsrs-nr-drugbank
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:98984c3548c3206bd50f7c69622df6e78a4d1fdfbd5f72a4ec4d3d919cdc4e85"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "issuer:DrugBank"
+  edge:
+    type: HAS_IDENTIFIER
+    to: ident-sub-nr-drugbank
+    properties: {isPrimary: false, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  note: "kernel convention: the HAS_IDENTIFIER Assertion has a literal object (Identifier is Entity-only, not Subjectable); the typed episode points at the Identifier node"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: id-sub-nad-chebi
+  uid: "hu:assertion:xfx-cp-id-sub-nad-chebi"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_IDENTIFIER
+  subject: {ref: sub-nad, type: ChemicalSubstance}
+  literal:
+    valueString: "CHEBI:CHEBI:15846"
+  asserter: {ref: org-embl-ebi, type: Organization}
+  evidence:
+  - locator: l-chebi-15846
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:9d3eed57f82effb0c0123eee241d0b36b96dcf0f7e2ea2fdc2606cbe5319a4d5"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "issuer:EMBL-EBI"
+  - "asserterBasis:PUBLISHER_DEFAULT"
+  edge:
+    type: HAS_IDENTIFIER
+    to: ident-sub-nad-chebi
+    properties: {isPrimary: false, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  note: "kernel convention: the HAS_IDENTIFIER Assertion has a literal object (Identifier is Entity-only, not Subjectable); the typed episode points at the Identifier node"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: id-sub-naad-chebi
+  uid: "hu:assertion:xfx-cp-id-sub-naad-chebi"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_IDENTIFIER
+  subject: {ref: sub-naad, type: ChemicalSubstance}
+  literal:
+    valueString: "CHEBI:CHEBI:18304"
+  asserter: {ref: org-embl-ebi, type: Organization}
+  evidence:
+  - locator: l-chebi-18304
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:4acfbfe41302a768ad61e7d342a854cdea41f1b16f1f8201fd55525e541135eb"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "issuer:EMBL-EBI"
+  - "asserterBasis:PUBLISHER_DEFAULT"
+  edge:
+    type: HAS_IDENTIFIER
+    to: ident-sub-naad-chebi
+    properties: {isPrimary: false, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  note: "kernel convention: the HAS_IDENTIFIER Assertion has a literal object (Identifier is Entity-only, not Subjectable); the typed episode points at the Identifier node"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: id-mech-deacetylation-go
+  uid: "hu:assertion:xfx-cp-id-mech-deacetylation-go"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_IDENTIFIER
+  subject: {ref: mech-deacetylation, type: Mechanism}
+  literal:
+    valueString: "GO:GO:0006476"
+  asserter: {ref: org-embl-ebi, type: Organization}
+  evidence:
+  - locator: l-go-0006476
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:ef5073b773eea3e26a124da70767e7b0407a3b4b1b70f28427eba276cc20b995"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "issuer:GO Consortium"
+  - "asserterBasis:PUBLISHER_DEFAULT"
+  edge:
+    type: HAS_IDENTIFIER
+    to: ident-mech-deacetylation-go
+    properties: {isPrimary: false, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  note: "kernel convention: the HAS_IDENTIFIER Assertion has a literal object (Identifier is Entity-only, not Subjectable); the typed episode points at the Identifier node"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: id-pub-conze-pmid
+  uid: "hu:assertion:xfx-cp-id-pub-conze-pmid"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_IDENTIFIER
+  subject: {ref: pub-conze, type: Publication}
+  literal:
+    valueString: "PMID:31278280"
+  asserter: {ref: pub-conze, type: Publication}
+  evidence:
+  - locator: l-cz-pmid
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:6c2760dd25f75e7e842db37fe16481c6ca0fa235359c98c7684764af105b0dea"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "issuer:NLM"
+  edge:
+    type: HAS_IDENTIFIER
+    to: ident-pub-conze-pmid
+    properties: {isPrimary: false, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  note: "kernel convention: the HAS_IDENTIFIER Assertion has a literal object (Identifier is Entity-only, not Subjectable); the typed episode points at the Identifier node"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: id-pub-conze-doi
+  uid: "hu:assertion:xfx-cp-id-pub-conze-doi"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_IDENTIFIER
+  subject: {ref: pub-conze, type: Publication}
+  literal:
+    valueString: "DOI:10.1038/s41598-019-46120-z"
+  asserter: {ref: pub-conze, type: Publication}
+  evidence:
+  - locator: l-cz-pmid
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:6c2760dd25f75e7e842db37fe16481c6ca0fa235359c98c7684764af105b0dea"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "issuer:Crossref"
+  edge:
+    type: HAS_IDENTIFIER
+    to: ident-pub-conze-doi
+    properties: {isPrimary: false, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  note: "kernel convention: the HAS_IDENTIFIER Assertion has a literal object (Identifier is Entity-only, not Subjectable); the typed episode points at the Identifier node"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: id-pub-conze-pmcid
+  uid: "hu:assertion:xfx-cp-id-pub-conze-pmcid"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_IDENTIFIER
+  subject: {ref: pub-conze, type: Publication}
+  literal:
+    valueString: "PMCID:PMC6611812"
+  asserter: {ref: pub-conze, type: Publication}
+  evidence:
+  - locator: l-cz-pmcid
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:ddb2b2bd3ba5204a8108d4a5e42dce34942f87f205efa7f5146667bbb871d8eb"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "issuer:NLM"
+  edge:
+    type: HAS_IDENTIFIER
+    to: ident-pub-conze-pmcid
+    properties: {isPrimary: false, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  note: "kernel convention: the HAS_IDENTIFIER Assertion has a literal object (Identifier is Entity-only, not Subjectable); the typed episode points at the Identifier node"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: id-study-cz-nct
+  uid: "hu:assertion:xfx-cp-id-study-cz-nct"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_IDENTIFIER
+  subject: {ref: study-cz, type: Study}
+  literal:
+    valueString: "NCT:NCT02712593"
+  asserter: {ref: org-kgk, type: Organization}
+  evidence:
+  - locator: l-ct1-nct
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:d456ca8c822e5ce6bed37aad57fad0fc5f8c84d80318c3c88526027a271a37c9"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "issuer:NLM ClinicalTrials.gov"
+  edge:
+    type: HAS_IDENTIFIER
+    to: ident-study-cz-nct
+    properties: {isPrimary: true, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  note: "kernel convention: the HAS_IDENTIFIER Assertion has a literal object (Identifier is Entity-only, not Subjectable); the typed episode points at the Identifier node"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: id-pub-elhassan-pmid
+  uid: "hu:assertion:xfx-cp-id-pub-elhassan-pmid"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_IDENTIFIER
+  subject: {ref: pub-elhassan, type: Publication}
+  literal:
+    valueString: "PMID:31412242"
+  asserter: {ref: pub-elhassan, type: Publication}
+  evidence:
+  - locator: l-el-pmid
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:ddf00e5c00d7ae42d41f55fa45440b034fef3b73e9e49a2496cf83bd5ac6598f"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "issuer:NLM"
+  edge:
+    type: HAS_IDENTIFIER
+    to: ident-pub-elhassan-pmid
+    properties: {isPrimary: false, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  note: "kernel convention: the HAS_IDENTIFIER Assertion has a literal object (Identifier is Entity-only, not Subjectable); the typed episode points at the Identifier node"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: id-pub-elhassan-doi
+  uid: "hu:assertion:xfx-cp-id-pub-elhassan-doi"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_IDENTIFIER
+  subject: {ref: pub-elhassan, type: Publication}
+  literal:
+    valueString: "DOI:10.1016/j.celrep.2019.07.043"
+  asserter: {ref: pub-elhassan, type: Publication}
+  evidence:
+  - locator: l-el-pmid
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:ddf00e5c00d7ae42d41f55fa45440b034fef3b73e9e49a2496cf83bd5ac6598f"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "issuer:Crossref"
+  edge:
+    type: HAS_IDENTIFIER
+    to: ident-pub-elhassan-doi
+    properties: {isPrimary: false, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  note: "kernel convention: the HAS_IDENTIFIER Assertion has a literal object (Identifier is Entity-only, not Subjectable); the typed episode points at the Identifier node"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: id-pub-elhassan-pmcid
+  uid: "hu:assertion:xfx-cp-id-pub-elhassan-pmcid"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_IDENTIFIER
+  subject: {ref: pub-elhassan, type: Publication}
+  literal:
+    valueString: "PMCID:PMC6702140"
+  asserter: {ref: pub-elhassan, type: Publication}
+  evidence:
+  - locator: l-el-pmcid
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:408ae8afd4788b3c78bebc640c01b9e4fa00c7a698c3c77c62f45ab8d5c7e9df"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "issuer:NLM"
+  edge:
+    type: HAS_IDENTIFIER
+    to: ident-pub-elhassan-pmcid
+    properties: {isPrimary: false, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  note: "kernel convention: the HAS_IDENTIFIER Assertion has a literal object (Identifier is Entity-only, not Subjectable); the typed episode points at the Identifier node"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: id-study-el-nct
+  uid: "hu:assertion:xfx-cp-id-study-el-nct"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_IDENTIFIER
+  subject: {ref: study-el, type: Study}
+  literal:
+    valueString: "NCT:NCT02950441"
+  asserter: {ref: org-uob, type: Organization}
+  evidence:
+  - locator: l-ct2-nct
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:f65d78f7c83a9cbcddbb898f844041fafaca56333412f6d89e40326f9d0ef5a9"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "issuer:NLM ClinicalTrials.gov"
+  edge:
+    type: HAS_IDENTIFIER
+    to: ident-study-el-nct
+    properties: {isPrimary: true, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  note: "kernel convention: the HAS_IDENTIFIER Assertion has a literal object (Identifier is Entity-only, not Subjectable); the typed episode points at the Identifier node"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: id-pkg-tn-30-gtin
+  uid: "hu:assertion:xfx-cp-id-pkg-tn-30-gtin"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_IDENTIFIER
+  subject: {ref: pkg-tn-30, type: Package}
+  literal:
+    valueString: "GTIN:00850015311116"
+  asserter: {ref: org-nih-ods, type: Organization}
+  evidence:
+  - locator: l-dsld-upc
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:5318fed213a615b4516fc222e54b6dcff751e952b9fdeee0e99575f67292d01d"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "issuer:GS1"
+  edge:
+    type: HAS_IDENTIFIER
+    to: ident-pkg-tn-30-gtin
+    properties: {isPrimary: false, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  note: "kernel convention: the HAS_IDENTIFIER Assertion has a literal object (Identifier is Entity-only, not Subjectable); the typed episode points at the Identifier node"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: id-lv-tn-v12-3-dsld
+  uid: "hu:assertion:xfx-cp-id-lv-tn-v12-3-dsld"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_IDENTIFIER
+  subject: {ref: lv-tn-v12-3, type: LabelVersion}
+  literal:
+    valueString: "DSLD:323170"
+  asserter: {ref: org-nih-ods, type: Organization}
+  evidence:
+  - locator: l-dsld-id
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:e2dc9530c218beef483c70483dd6ffbec5db8089ad409a710fd5d8148d6e674f"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "issuer:NIH ODS"
+  edge:
+    type: HAS_IDENTIFIER
+    to: ident-lv-tn-v12-3-dsld
+    properties: {isPrimary: true, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  note: "kernel convention: the HAS_IDENTIFIER Assertion has a literal object (Identifier is Entity-only, not Subjectable); the typed episode points at the Identifier node"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-mw-salt
+  uid: "hu:assertion:xfx-cp-a-mw-salt"
+  assertionKind: FIELD
+  predicate: MOLECULAR_WEIGHT
+  subject: {ref: sub-nrcl, type: ChemicalSubstance}
+  literal: {valueNumber: 290.7006, unitCode: g/mol}
+  asserter: {ref: org-fda, type: Organization}
+  evidence:
+  - locator: l-gsrs-nrcl-mw
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:848609fe185e35b18ea30b1a232519ea0bdad4a887597e3c07b2bd279f373b48"
+  - locator: l-gsrs-nrcl-version
+    role: CONTEXT
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:22b412e5c1672853727c58b42a04b5fe72996e5494c4b29afbd2d423f1fe930c"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "gsrsRecordVersion:18"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-formula-salt
+  uid: "hu:assertion:xfx-cp-a-formula-salt"
+  assertionKind: FIELD
+  predicate: MOLECULAR_FORMULA
+  subject: {ref: sub-nrcl, type: ChemicalSubstance}
+  literal: {valueString: C11H15N2O5.Cl}
+  asserter: {ref: org-fda, type: Organization}
+  evidence:
+  - locator: l-gsrs-nrcl-formula
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:20867c8468a975694295848c0f0c5f2580eb89b005a5819e361b5ff8bc37a198"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "gsrsRecordVersion:18"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-mw-nr
+  uid: "hu:assertion:xfx-cp-a-mw-nr"
+  assertionKind: FIELD
+  predicate: MOLECULAR_WEIGHT
+  subject: {ref: sub-nr, type: ChemicalSubstance}
+  literal: {valueNumber: 255.2476, unitCode: g/mol}
+  asserter: {ref: org-fda, type: Organization}
+  evidence:
+  - locator: l-gsrs-nr-mw
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:71a587e25003ca63d0f1b3abf210c2707f7529be8ae8a988c7003afc187d3568"
+  - locator: l-gsrs-nr-version
+    role: CONTEXT
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:488eba8faf80f933b4abfeff409dada9e636756021f81aea84721d3fa3a8ddb7"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "gsrsRecordVersion:24"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-moiety
+  uid: "hu:assertion:xfx-cp-a-moiety"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_ACTIVE_MOIETY
+  subject: {ref: sub-nrcl, type: ChemicalSubstance}
+  object: {ref: sub-nr, type: ChemicalSubstance}
+  asserter: {ref: org-fda, type: Organization}
+  evidence:
+  - locator: l-gsrs-nrcl-moiety
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:4355fb49d0fc716fcb9a5fc1f316b6f6f6df38a2503bfdaff6f9a5f959040630"
+  - locator: l-gsrs-nrcl-version
+    role: CONTEXT
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:22b412e5c1672853727c58b42a04b5fe72996e5494c4b29afbd2d423f1fe930c"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  edge:
+    type: HAS_ACTIVE_MOIETY
+    properties: {}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-realizes-dsld
+  uid: "hu:assertion:xfx-cp-a-realizes-dsld"
+  assertionKind: RELATIONSHIP
+  predicate: REALIZES_SUBSTANCE
+  subject: {ref: mat-niagen, type: IngredientMaterial}
+  object: {ref: sub-nrcl, type: ChemicalSubstance}
+  asserter: {ref: org-nih-ods, type: Organization}
+  evidence:
+  - locator: l-dsld-row-name
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:e7c63adedb9784fa2dbb417402e3e234d0553d72f2868159868614eb67cc379b"
+  - locator: l-dsld-row-form
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:3ab2094d64f65f8968c4d4780e3928c8a7f6b5a4116f07ce6f43eec919c5f6c1"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "declaredName:Niagen"
+  - "form:Nicotinamide Riboside Chloride (uniiCode 8XM2XT8VWI)"
+  edge:
+    type: REALIZES_SUBSTANCE
+    properties: {}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-realizes-conze
+  uid: "hu:assertion:xfx-cp-a-realizes-conze"
+  assertionKind: RELATIONSHIP
+  predicate: REALIZES_SUBSTANCE
+  subject: {ref: mat-niagen, type: IngredientMaterial}
+  object: {ref: sub-nrcl, type: ChemicalSubstance}
+  asserter: {ref: pub-conze, type: Publication}
+  evidence:
+  - locator: l-cz-gras
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:112ea19790db1fdc49082211892799e53c6c20c61a2772f15405f75aa22ce598"
+  speechAct: STATES
+  basisKind: CITED_FROM_PRIOR_WORK
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  edge:
+    type: REALIZES_SUBSTANCE
+    properties: {}
+  note: "second asserter of the same edge (one episode per (from,to,type,asserter), R-22)"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: f-physform
+  uid: "hu:assertion:xfx-cp-f-physform"
+  assertionKind: FIELD
+  predicate: PHYSICAL_FORM
+  subject: {ref: mat-niagen, type: IngredientMaterial}
+  literal: {valueString: CRYSTAL_FORM}
+  asserter: {ref: pub-conze, type: Publication}
+  evidence:
+  - locator: l-cz-gras
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:112ea19790db1fdc49082211892799e53c6c20c61a2772f15405f75aa22ce598"
+  speechAct: STATES
+  basisKind: CITED_FROM_PRIOR_WORK
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "formDescriptor:A crystal form of NR chloride"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-cz-reports-on
+  uid: "hu:assertion:xfx-cp-a-cz-reports-on"
+  assertionKind: RELATIONSHIP
+  predicate: REPORTS_ON
+  subject: {ref: pub-conze, type: Publication}
+  object: {ref: study-cz, type: Study}
+  asserter: {ref: agent-s-xfx, type: Agent}
+  evidence:
+  - locator: l-ct1-firstpost
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:bdfdf599a45c8e6bb635881f5538742569007601e0cc2e7f3f5407a0d2d6ad47"
+  - locator: l-ct1-int1000
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:45f447a8bfe77c327a3a6222fb69287ef9c76d459268d791dd1213775cf227d2"
+  - locator: l-ct1-collab
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:80fc0290b75a5d783c5f61a3aa1b9e66ac0f9c02882e806f8338e93275b32e1c"
+  - locator: l-cz-registry
+    role: CONTEXT
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:4aefe1b074ee7f6de378a17cd6ed7f914bc464236f67f6707fee8d09d0043111"
+  - locator: l-ct0-404
+    role: CONTRADICTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:9707cbeb19b1c589560a481b948ce6a043990896f5c6402c517123bc0cbef04e"
+  speechAct: STATES
+  basisKind: CURATOR_CLASSIFICATION
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  derivedFrom: [a-cz-printed-id]
+  edge:
+    type: REPORTS_ON
+    properties: {}
+  note: "the paper prints NCT0271593 (404); the link to NCT02712593 rests on RESOLUTION r-registry-id, so the BellLabs agent is the asserter, not the paper"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-cz-printed-id
+  uid: "hu:assertion:xfx-cp-a-cz-printed-id"
+  assertionKind: FIELD
+  predicate: REGISTRY_ID_AS_PRINTED
+  subject: {ref: pub-conze, type: Publication}
+  literal: {valueString: NCT0271593}
+  asserter: {ref: pub-conze, type: Publication}
+  evidence:
+  - locator: l-cz-registry
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:4aefe1b074ee7f6de378a17cd6ed7f914bc464236f67f6707fee8d09d0043111"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "printed:registered on clinicaltrials.org on March 18, 2016"
+  note: "kept as printed, never corrected (NCT pattern needs 8 digits). Predicate GAP: REGISTRY_ID_AS_PRINTED (packet D1) is not in the final predicate list; nearest registered is D8\
+    \ CITED_TRIAL_ID_AS_PARSED (RegulatoryRecord subject only)"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-ct1-hasrv
+  uid: "hu:assertion:xfx-cp-a-ct1-hasrv"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_REGISTRATION_VERSION
+  subject: {ref: study-cz, type: Study}
+  object: {ref: rv-ct1, type: RegistrationVersion}
+  asserter: {ref: org-kgk, type: Organization}
+  evidence:
+  - locator: l-ct1-nct
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:d456ca8c822e5ce6bed37aad57fad0fc5f8c84d80318c3c88526027a271a37c9"
+  - locator: l-ct1-lastupdate
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:64125c6cae5fa65947f55a1b1e2c04795f5258b32d871170efdfcab08824d889"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime:
+    validFrom: "2018-04-11T00:00:00Z"
+    validFromPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+    validTo: null
+    validToBasis: UNKNOWN
+  status: ACCEPTED
+  edge:
+    type: HAS_REGISTRATION_VERSION
+    properties:
+      validFrom: "2018-04-11T00:00:00Z"
+      validFromPrecision: DAY
+      validFromBasis: STATED_BY_SOURCE
+      validToBasis: UNKNOWN
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-arm-cz-100-rv
+  uid: "hu:assertion:xfx-cp-a-arm-cz-100-rv"
+  assertionKind: RELATIONSHIP
+  predicate: STATED_IN
+  subject: {ref: arm-cz-100, type: StudyArm}
+  object: {ref: rv-ct1, type: RegistrationVersion}
+  asserter: {ref: org-kgk, type: Organization}
+  evidence:
+  - locator: l-ct1-arm100
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:e78d694a8e93800b8dab09ba1b1bccf48e23d566fc2cbecd69c6b8e26a74e2d5"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  edge:
+    type: STATED_IN
+    properties: {}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-arm-cz-100-pub
+  uid: "hu:assertion:xfx-cp-a-arm-cz-100-pub"
+  assertionKind: RELATIONSHIP
+  predicate: STATED_IN
+  subject: {ref: arm-cz-100, type: StudyArm}
+  object: {ref: pub-conze, type: Publication}
+  asserter: {ref: pub-conze, type: Publication}
+  evidence:
+  - locator: l-cz-arms
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:a09157b574fd9aee53d0a562cc4379e2ebbd71caeb535e8e55948b25cbd2c2b5"
+  - locator: l-cz-groups
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:01a78be26a939b7177024db13c792047c76b4626cf1b098b2b3aa450173c7ff0"
+    reportsField: plannedSize
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  edge:
+    type: STATED_IN
+    properties: {}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-arm-cz-300-rv
+  uid: "hu:assertion:xfx-cp-a-arm-cz-300-rv"
+  assertionKind: RELATIONSHIP
+  predicate: STATED_IN
+  subject: {ref: arm-cz-300, type: StudyArm}
+  object: {ref: rv-ct1, type: RegistrationVersion}
+  asserter: {ref: org-kgk, type: Organization}
+  evidence:
+  - locator: l-ct1-arm300
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:47215196ee733d8dda95e0dcb65191898700a2bdcab6defb8c6ba7862e74caab"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  edge:
+    type: STATED_IN
+    properties: {}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-arm-cz-300-pub
+  uid: "hu:assertion:xfx-cp-a-arm-cz-300-pub"
+  assertionKind: RELATIONSHIP
+  predicate: STATED_IN
+  subject: {ref: arm-cz-300, type: StudyArm}
+  object: {ref: pub-conze, type: Publication}
+  asserter: {ref: pub-conze, type: Publication}
+  evidence:
+  - locator: l-cz-arms
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:a09157b574fd9aee53d0a562cc4379e2ebbd71caeb535e8e55948b25cbd2c2b5"
+  - locator: l-cz-groups
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:01a78be26a939b7177024db13c792047c76b4626cf1b098b2b3aa450173c7ff0"
+    reportsField: plannedSize
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  edge:
+    type: STATED_IN
+    properties: {}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-arm-cz-1000-rv
+  uid: "hu:assertion:xfx-cp-a-arm-cz-1000-rv"
+  assertionKind: RELATIONSHIP
+  predicate: STATED_IN
+  subject: {ref: arm-cz-1000, type: StudyArm}
+  object: {ref: rv-ct1, type: RegistrationVersion}
+  asserter: {ref: org-kgk, type: Organization}
+  evidence:
+  - locator: l-ct1-arm1000
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:96e87a9018f8570bd1830c316260a0d890419d101e6de2a22eb85b4ec3509418"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  edge:
+    type: STATED_IN
+    properties: {}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-arm-cz-1000-pub
+  uid: "hu:assertion:xfx-cp-a-arm-cz-1000-pub"
+  assertionKind: RELATIONSHIP
+  predicate: STATED_IN
+  subject: {ref: arm-cz-1000, type: StudyArm}
+  object: {ref: pub-conze, type: Publication}
+  asserter: {ref: pub-conze, type: Publication}
+  evidence:
+  - locator: l-cz-arms
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:a09157b574fd9aee53d0a562cc4379e2ebbd71caeb535e8e55948b25cbd2c2b5"
+  - locator: l-cz-groups
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:01a78be26a939b7177024db13c792047c76b4626cf1b098b2b3aa450173c7ff0"
+    reportsField: plannedSize
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  edge:
+    type: STATED_IN
+    properties: {}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-arm-cz-placebo-rv
+  uid: "hu:assertion:xfx-cp-a-arm-cz-placebo-rv"
+  assertionKind: RELATIONSHIP
+  predicate: STATED_IN
+  subject: {ref: arm-cz-placebo, type: StudyArm}
+  object: {ref: rv-ct1, type: RegistrationVersion}
+  asserter: {ref: org-kgk, type: Organization}
+  evidence:
+  - locator: l-ct1-armplacebo
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:cdd5a73967b369f407d230b21c6379c4c836209d47079dbe92bdfda2ebf7fdc6"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  edge:
+    type: STATED_IN
+    properties: {}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-arm-cz-placebo-pub
+  uid: "hu:assertion:xfx-cp-a-arm-cz-placebo-pub"
+  assertionKind: RELATIONSHIP
+  predicate: STATED_IN
+  subject: {ref: arm-cz-placebo, type: StudyArm}
+  object: {ref: pub-conze, type: Publication}
+  asserter: {ref: pub-conze, type: Publication}
+  evidence:
+  - locator: l-cz-arms
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:a09157b574fd9aee53d0a562cc4379e2ebbd71caeb535e8e55948b25cbd2c2b5"
+  - locator: l-cz-groups
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:01a78be26a939b7177024db13c792047c76b4626cf1b098b2b3aa450173c7ff0"
+    reportsField: plannedSize
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  edge:
+    type: STATED_IN
+    properties: {}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-adm-cz-paper
+  uid: "hu:assertion:xfx-cp-a-adm-cz-paper"
+  assertionKind: RELATIONSHIP
+  predicate: ADMINISTERS
+  subject: {ref: ic-cz-1000, type: InterventionComponent}
+  object: {ref: mat-niagen, type: IngredientMaterial}
+  asserter: {ref: pub-conze, type: Publication}
+  evidence:
+  - locator: l-cz-capsule
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:393e564005db71317d2f1f65162ec8390b728d417e30c95c15039d2c1046555e"
+  - locator: l-cz-arms
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:a09157b574fd9aee53d0a562cc4379e2ebbd71caeb535e8e55948b25cbd2c2b5"
+  - locator: l-cz-period
+    role: CONTEXT
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:e241f6630e01ede25ed8f9b84c402433e1a2d2cbe52f464a98a05858299e71f0"
+  speechAct: REPORTS_PRACTICE
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime:
+    validFrom: "2016-03-01T00:00:00Z"
+    validFromPrecision: DAY
+    validFromBasis: INFERRED
+    validTo: "2017-03-17T00:00:00Z"
+    validToPrecision: DAY
+    validToBasis: INFERRED
+  status: ACCEPTED
+  qualifiers:
+  - "inferredFrom:study period l-cz-period (first screening 2016-03-01, last visit 2017-03-17)"
+  edge:
+    type: ADMINISTERS
+    properties: {}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-adm-cz-registry
+  uid: "hu:assertion:xfx-cp-a-adm-cz-registry"
+  assertionKind: RELATIONSHIP
+  predicate: ADMINISTERS
+  subject: {ref: ic-cz-1000, type: InterventionComponent}
+  object: {ref: mat-niagen, type: IngredientMaterial}
+  asserter: {ref: org-kgk, type: Organization}
+  evidence:
+  - locator: l-ct1-int1000
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:45f447a8bfe77c327a3a6222fb69287ef9c76d459268d791dd1213775cf227d2"
+  - locator: l-ct1-start
+    role: CONTEXT
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:a875cb2c076735a2e2cb80c86fe017ee4c675b2042d7b333653d60fecc7b806a"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime:
+    validFrom: "2016-03-21T00:00:00Z"
+    validFromPrecision: DAY
+    validFromBasis: INFERRED
+    validTo: null
+    validToBasis: UNKNOWN
+  status: ACCEPTED
+  qualifiers:
+  - "registry intervention 'Niagen™ 1000', type DIETARY_SUPPLEMENT, no description"
+  edge:
+    type: ADMINISTERS
+    properties: {}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: f-cz-qty
+  uid: "hu:assertion:xfx-cp-f-cz-qty"
+  assertionKind: FIELD
+  predicate: QUANTITY
+  subject: {ref: ic-cz-1000, type: InterventionComponent}
+  literal: {valueNumber: 1000, unitCode: mg}
+  asserter: {ref: pub-conze, type: Publication}
+  evidence:
+  - locator: l-cz-arms
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:a09157b574fd9aee53d0a562cc4379e2ebbd71caeb535e8e55948b25cbd2c2b5"
+  speechAct: REPORTS_PRACTICE
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "quantityBasis:PER_DAY"
+  - "printed:1000 mg NR (mass basis not stated where printed)"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: f-cz-purity
+  uid: "hu:assertion:xfx-cp-f-cz-purity"
+  assertionKind: FIELD
+  predicate: ADMINISTERED_MATERIAL_PURITY
+  subject: {ref: ic-cz-1000, type: InterventionComponent}
+  literal:
+    valueNumber: 99
+    unitCode: "%"
+  asserter: {ref: pub-conze, type: Publication}
+  evidence:
+  - locator: l-cz-capsule
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:393e564005db71317d2f1f65162ec8390b728d417e30c95c15039d2c1046555e"
+  speechAct: REPORTS_PRACTICE
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "contentBasis:MASS_FRACTION_W_W"
+  - of NR chloride as administered; no method or lot stated
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: f-cz-duration
+  uid: "hu:assertion:xfx-cp-f-cz-duration"
+  assertionKind: FIELD
+  predicate: DURATION_ISO
+  subject: {ref: ic-cz-1000, type: InterventionComponent}
+  literal: {valueString: P56D}
+  asserter: {ref: pub-conze, type: Publication}
+  evidence:
+  - locator: l-cz-56day
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:ab15cf3a43f8b51a4a5622fdc7ecc79e4403318cfb6ba35d3b06f34580cc15f9"
+  speechAct: REPORTS_PRACTICE
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-od-cz-blood-pub
+  uid: "hu:assertion:xfx-cp-a-od-cz-blood-pub"
+  assertionKind: RELATIONSHIP
+  predicate: STATED_IN
+  subject: {ref: od-cz-blood-nad, type: OutcomeDefinition}
+  object: {ref: pub-conze, type: Publication}
+  asserter: {ref: pub-conze, type: Publication}
+  evidence:
+  - locator: l-cz-secondary-objective
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:2747ebcfcc85ad1d8a25da0f82b534ef35c432b96d658064462f3dbf48a6ae7e"
+  - locator: l-cz-day14
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:43df66508846b7b362dc30e242b20bf539aecd36ca2f136f8b20f371f5da2893"
+    reportsField: timepoint
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  edge:
+    type: STATED_IN
+    properties: {}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-od-ct1-blood-rv
+  uid: "hu:assertion:xfx-cp-a-od-ct1-blood-rv"
+  assertionKind: RELATIONSHIP
+  predicate: STATED_IN
+  subject: {ref: od-ct1-blood, type: OutcomeDefinition}
+  object: {ref: rv-ct1, type: RegistrationVersion}
+  asserter: {ref: org-kgk, type: Organization}
+  evidence:
+  - locator: l-ct1-secondary
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:18ad4c2873ec5e9c33908f0827fac5fe67db8a92c16498c2d227aaebf48fd43f"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  edge:
+    type: STATED_IN
+    properties: {}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-od-cz-ae-pub
+  uid: "hu:assertion:xfx-cp-a-od-cz-ae-pub"
+  assertionKind: RELATIONSHIP
+  predicate: STATED_IN
+  subject: {ref: od-cz-ae, type: OutcomeDefinition}
+  object: {ref: pub-conze, type: Publication}
+  asserter: {ref: pub-conze, type: Publication}
+  evidence:
+  - locator: l-cz-safety-objective
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:102120d5f03606df4a95f50ae09a0b821817a1ce56bf1cbc58e8e27c1d7e1ef8"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  edge:
+    type: STATED_IN
+    properties: {}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-sr-nad-d14
+  uid: "hu:assertion:xfx-cp-a-sr-nad-d14"
+  assertionKind: RELATIONSHIP
+  predicate: STATED_IN
+  claimType: MEASUREMENT
+  subject: {ref: sr-cz-nad-d14, type: StudyResult}
+  object: {ref: pub-conze, type: Publication}
+  asserter: {ref: pub-conze, type: Publication}
+  evidence:
+  - locator: l-cz-day14
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:43df66508846b7b362dc30e242b20bf539aecd36ca2f136f8b20f371f5da2893"
+    reportsField: estimate
+  - locator: l-cz-day14
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:43df66508846b7b362dc30e242b20bf539aecd36ca2f136f8b20f371f5da2893"
+    reportsField: dispersionValue
+  - locator: l-cz-sem
+    role: QUALIFIES
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:f8d4e7b28bda380f7a7fce57efdbab10c90d37c11f3ee8d6ac5713fd99683a95"
+    reportsField: dispersionKind
+  - locator: l-cz-abstract-result
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:9b6eeb36ca5e491ee659ac1a2822b24df68d0105fdcce44eb4cfd81c6e317fd4"
+    reportsField: statisticalConclusion
+  - locator: l-cz-significance
+    role: CONTEXT
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:8f048dc1242e325a545b1d229f34082bef9161431764b508781d321c524ddaac"
+    reportsField: statisticalConclusion
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  edge:
+    type: STATED_IN
+    properties: {}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-sr-ae-any
+  uid: "hu:assertion:xfx-cp-a-sr-ae-any"
+  assertionKind: RELATIONSHIP
+  predicate: STATED_IN
+  claimType: MEASUREMENT
+  subject: {ref: sr-cz-ae-any, type: StudyResult}
+  object: {ref: pub-conze, type: Publication}
+  asserter: {ref: pub-conze, type: Publication}
+  evidence:
+  - locator: l-cz-ae-count
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:736d90afe7cbd1f2230f211bea4d14e3cf41d674b31f5ae370a1bcdc17673d9a"
+    reportsField: eventCount
+  - locator: l-cz-ae-count
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:736d90afe7cbd1f2230f211bea4d14e3cf41d674b31f5ae370a1bcdc17673d9a"
+    reportsField: participantsAffected
+  - locator: l-cz-tab2
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:0d6281db571903b64768b1b7fa266650f5bb68395a11f098ce59fe28df008d62"
+    reportsField: analysisPopulation
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  edge:
+    type: STATED_IN
+    properties: {}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-sr-ae-serious
+  uid: "hu:assertion:xfx-cp-a-sr-ae-serious"
+  assertionKind: RELATIONSHIP
+  predicate: STATED_IN
+  claimType: MEASUREMENT
+  subject: {ref: sr-cz-ae-serious, type: StudyResult}
+  object: {ref: pub-conze, type: Publication}
+  asserter: {ref: pub-conze, type: Publication}
+  evidence:
+  - locator: l-cz-ae-serious
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:d8589814bc5568a70b6e85e0fe8955168c46f016967cb1f5d18a00aa7ffc41d3"
+    reportsField: eventCount
+  - locator: l-cz-abstract-safety
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:efdd622e3037675143a18565ae9725152de654ccb8585ee47b88b3ce53399d8b"
+    reportsField: resultText
+  - locator: l-cz-tab2
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:0d6281db571903b64768b1b7fa266650f5bb68395a11f098ce59fe28df008d62"
+    reportsField: analysisPopulation
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  edge:
+    type: STATED_IN
+    properties: {}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-cz-role-lead
+  uid: "hu:assertion:xfx-cp-a-cz-role-lead"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_STUDY_ROLE
+  subject: {ref: study-cz, type: Study}
+  object: {ref: org-kgk, type: Organization}
+  asserter: {ref: org-kgk, type: Organization}
+  evidence:
+  - locator: l-ct1-lead
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:5b6fd5fc676c594aeabb6eac1b62c0c743727101016b7a71cead55b7d40aedfe"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  edge:
+    type: HAS_STUDY_ROLE
+    properties: {roleKind: LEAD_SPONSOR, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-cz-role-collab
+  uid: "hu:assertion:xfx-cp-a-cz-role-collab"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_STUDY_ROLE
+  subject: {ref: study-cz, type: Study}
+  object: {ref: org-chromadex, type: Organization}
+  asserter: {ref: org-kgk, type: Organization}
+  evidence:
+  - locator: l-ct1-collab
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:80fc0290b75a5d783c5f61a3aa1b9e66ac0f9c02882e806f8338e93275b32e1c"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  edge:
+    type: HAS_STUDY_ROLE
+    properties: {roleKind: COLLABORATOR, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-cz-role-funder
+  uid: "hu:assertion:xfx-cp-a-cz-role-funder"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_STUDY_ROLE
+  subject: {ref: study-cz, type: Study}
+  object: {ref: org-chromadex, type: Organization}
+  asserter: {ref: pub-conze, type: Publication}
+  evidence:
+  - locator: l-cz-coi
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:b0bd3b7c148843552650de06d606268e182550489589152b7569667a55a52e7c"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "roleText:ChromaDex funded the study."
+  edge:
+    type: HAS_STUDY_ROLE
+    properties: {roleKind: FUNDER, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  note: "'ChromaDex' resolved to org-chromadex by r-chromadex"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-cz-funded-by
+  uid: "hu:assertion:xfx-cp-a-cz-funded-by"
+  assertionKind: RELATIONSHIP
+  predicate: FUNDED_BY
+  subject: {ref: pub-conze, type: Publication}
+  object: {ref: org-chromadex, type: Organization}
+  asserter: {ref: pub-conze, type: Publication}
+  evidence:
+  - locator: l-cz-coi
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:b0bd3b7c148843552650de06d606268e182550489589152b7569667a55a52e7c"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "roleText:ChromaDex funded the study."
+  note: "D3 predicate-only paper-level funding statement read beside HAS_STUDY_ROLE {FUNDER} (R-82)"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-el-reports-on
+  uid: "hu:assertion:xfx-cp-a-el-reports-on"
+  assertionKind: RELATIONSHIP
+  predicate: REPORTS_ON
+  subject: {ref: pub-elhassan, type: Publication}
+  object: {ref: study-el, type: Study}
+  asserter: {ref: pub-elhassan, type: Publication}
+  evidence:
+  - locator: l-el-nct
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:ca57cddb580abbc33bd25f165770cd5dc0e389a03654f89106fd9af5c44c3475"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  edge:
+    type: REPORTS_ON
+    properties: {}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-ct2-hasrv
+  uid: "hu:assertion:xfx-cp-a-ct2-hasrv"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_REGISTRATION_VERSION
+  subject: {ref: study-el, type: Study}
+  object: {ref: rv-ct2, type: RegistrationVersion}
+  asserter: {ref: org-uob, type: Organization}
+  evidence:
+  - locator: l-ct2-nct
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:f65d78f7c83a9cbcddbb898f844041fafaca56333412f6d89e40326f9d0ef5a9"
+  - locator: l-ct2-lastupdate
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:9d47e98244116add0d68dd1f8c2ee9affd5748f8b6e668cb58da986bdc101412"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime:
+    validFrom: "2017-06-07T00:00:00Z"
+    validFromPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+    validTo: null
+    validToBasis: UNKNOWN
+  status: ACCEPTED
+  edge:
+    type: HAS_REGISTRATION_VERSION
+    properties:
+      validFrom: "2017-06-07T00:00:00Z"
+      validFromPrecision: DAY
+      validFromBasis: STATED_BY_SOURCE
+      validToBasis: UNKNOWN
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-arm-el-rv
+  uid: "hu:assertion:xfx-cp-a-arm-el-rv"
+  assertionKind: RELATIONSHIP
+  predicate: STATED_IN
+  subject: {ref: arm-el-nr, type: StudyArm}
+  object: {ref: rv-ct2, type: RegistrationVersion}
+  asserter: {ref: org-uob, type: Organization}
+  evidence:
+  - locator: l-ct2-armnr
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:afed287808b1ec8fe12b91485a6949ea9b092f592e692dbae658212f068466d9"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  edge:
+    type: STATED_IN
+    properties: {}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-arm-el-pub
+  uid: "hu:assertion:xfx-cp-a-arm-el-pub"
+  assertionKind: RELATIONSHIP
+  predicate: STATED_IN
+  subject: {ref: arm-el-nr, type: StudyArm}
+  object: {ref: pub-elhassan, type: Publication}
+  asserter: {ref: pub-elhassan, type: Publication}
+  evidence:
+  - locator: l-el-design
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:84a9dad6c06c0625ef6e5a584a2b97eac033bb6beff43ebdfae14327d9cd2a7f"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  edge:
+    type: STATED_IN
+    properties: {}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-adm-el
+  uid: "hu:assertion:xfx-cp-a-adm-el"
+  assertionKind: RELATIONSHIP
+  predicate: ADMINISTERS
+  subject: {ref: ic-el-nr, type: InterventionComponent}
+  object: {ref: mat-niagen, type: IngredientMaterial}
+  asserter: {ref: pub-elhassan, type: Publication}
+  evidence:
+  - locator: l-el-material
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:f90916a2f6e098d7cab7e5803f25dcd0de3bdc3c79837ea112b960e3288162a6"
+  - locator: l-el-design
+    role: CONTEXT
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:84a9dad6c06c0625ef6e5a584a2b97eac033bb6beff43ebdfae14327d9cd2a7f"
+  speechAct: REPORTS_PRACTICE
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  edge:
+    type: ADMINISTERS
+    properties: {}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: f-el-qty
+  uid: "hu:assertion:xfx-cp-f-el-qty"
+  assertionKind: FIELD
+  predicate: QUANTITY
+  subject: {ref: ic-el-nr, type: InterventionComponent}
+  literal: {valueNumber: 1, unitCode: g}
+  asserter: {ref: pub-elhassan, type: Publication}
+  evidence:
+  - locator: l-el-design
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:84a9dad6c06c0625ef6e5a584a2b97eac033bb6beff43ebdfae14327d9cd2a7f"
+  speechAct: REPORTS_PRACTICE
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "quantityBasis:PER_DAY"
+  - "printed:1 g NR per day (mass basis not stated)"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: f-el-form-paper
+  uid: "hu:assertion:xfx-cp-f-el-form-paper"
+  assertionKind: FIELD
+  predicate: DOSAGE_FORM
+  subject: {ref: ic-el-nr, type: InterventionComponent}
+  literal: {valueString: capsule}
+  asserter: {ref: pub-elhassan, type: Publication}
+  evidence:
+  - locator: l-el-material
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:f90916a2f6e098d7cab7e5803f25dcd0de3bdc3c79837ea112b960e3288162a6"
+  speechAct: REPORTS_PRACTICE
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "printed:250-mg capsules"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: f-el-form-registry
+  uid: "hu:assertion:xfx-cp-f-el-form-registry"
+  assertionKind: FIELD
+  predicate: DOSAGE_FORM
+  subject: {ref: ic-el-nr, type: InterventionComponent}
+  literal: {valueString: tablet}
+  asserter: {ref: org-uob, type: Organization}
+  evidence:
+  - locator: l-ct2-armnr
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:afed287808b1ec8fe12b91485a6949ea9b092f592e692dbae658212f068466d9"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "printed:1000mg (2x250mg tablets twice daily)"
+  note: disagrees with f-el-form-paper (Q-D3-15); neither is corrected
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-el-role-lead
+  uid: "hu:assertion:xfx-cp-a-el-role-lead"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_STUDY_ROLE
+  subject: {ref: study-el, type: Study}
+  object: {ref: org-uob, type: Organization}
+  asserter: {ref: org-uob, type: Organization}
+  evidence:
+  - locator: l-ct2-lead
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:5852808f79b47ecad3a447a367a1c775768e5ac338808f669fe9981636025753"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  edge:
+    type: HAS_STUDY_ROLE
+    properties: {roleKind: LEAD_SPONSOR, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-el-role-material
+  uid: "hu:assertion:xfx-cp-a-el-role-material"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_STUDY_ROLE
+  subject: {ref: study-el, type: Study}
+  object: {ref: org-chromadex, type: Organization}
+  asserter: {ref: pub-elhassan, type: Publication}
+  evidence:
+  - locator: l-el-material
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:f90916a2f6e098d7cab7e5803f25dcd0de3bdc3c79837ea112b960e3288162a6"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  edge:
+    type: HAS_STUDY_ROLE
+    properties: {roleKind: MATERIAL_PROVIDER, validFromBasis: UNKNOWN, validToBasis: UNKNOWN}
+  note: "'(ChromaDex)' resolved to org-chromadex by r-chromadex"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: m-el-deacetylation
+  uid: "hu:assertion:xfx-cp-m-el-deacetylation"
+  assertionKind: RELATIONSHIP
+  predicate: NO_CHANGE_IN
+  claimType: MEASUREMENT
+  subject: {ref: sub-nr, type: ChemicalSubstance}
+  object: {ref: mech-deacetylation, type: Mechanism}
+  asserter: {ref: pub-elhassan, type: Publication}
+  evidence:
+  - locator: l-el-acetyl
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:5af2e3dddb98fb4ff2ff3c422efc690cfadd4ce88a65fbd69c72f06bc66e1d87"
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "readout: western blot pan-acetylation of muscle protein (proxy for sirtuin-mediated deacetylation)"
+  context: {ref: ctx-el-muscle, type: MechanismEvidenceContext}
+  note: "measured null: polarity POSITIVE (the source affirms no change); the disconfirmation of the marketed sirtuin step"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: m-el-naad
+  uid: "hu:assertion:xfx-cp-m-el-naad"
+  assertionKind: RELATIONSHIP
+  predicate: INCREASES_LEVEL_OF
+  claimType: MEASUREMENT
+  subject: {ref: sub-nr, type: ChemicalSubstance}
+  object: {ref: sub-naad, type: ChemicalSubstance}
+  asserter: {ref: pub-elhassan, type: Publication}
+  evidence:
+  - locator: l-el-naad
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:8f631855ca894530f93e7ec34cf899bc3cc40811e5180c2d8fc55f66f814fe5f"
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "2-fold vs placebo; NR 0.73 vs placebo 0.35 pmol/mg; p = 0.004 (muscle)"
+  context: {ref: ctx-el-muscle, type: MechanismEvidenceContext}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: m-el-nad
+  uid: "hu:assertion:xfx-cp-m-el-nad"
+  assertionKind: RELATIONSHIP
+  predicate: NO_CHANGE_IN
+  claimType: MEASUREMENT
+  subject: {ref: sub-nr, type: ChemicalSubstance}
+  object: {ref: sub-nad, type: ChemicalSubstance}
+  asserter: {ref: pub-elhassan, type: Publication}
+  evidence:
+  - locator: l-el-naad
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:8f631855ca894530f93e7ec34cf899bc3cc40811e5180c2d8fc55f66f814fe5f"
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "NR 210 vs 197 pmol/mg; p = 0.22 (muscle)"
+  context: {ref: ctx-el-muscle, type: MechanismEvidenceContext}
+  note: "disconfirmation: muscle NAD+ did not rise"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: m-cz-nad-blood
+  uid: "hu:assertion:xfx-cp-m-cz-nad-blood"
+  assertionKind: RELATIONSHIP
+  predicate: INCREASES_LEVEL_OF
+  claimType: MEASUREMENT
+  subject: {ref: sub-nr, type: ChemicalSubstance}
+  object: {ref: sub-nad, type: ChemicalSubstance}
+  asserter: {ref: pub-conze, type: Publication}
+  evidence:
+  - locator: l-cz-day14
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:43df66508846b7b362dc30e242b20bf539aecd36ca2f136f8b20f371f5da2893"
+  - locator: l-cz-abstract-result
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:9b6eeb36ca5e491ee659ac1a2822b24df68d0105fdcce44eb4cfd81c6e317fd4"
+  speechAct: STATES
+  basisKind: DIRECT_MEASUREMENT
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "whole blood, 1000 mg arm: 142 ± 14% vs baseline at day 14"
+  context: {ref: ctx-cz-blood, type: MechanismEvidenceContext}
+  note: same predicate and object as m-el-nad with the opposite finding in another compartment
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-brenner-stake
+  uid: "hu:assertion:xfx-cp-a-brenner-stake"
+  assertionKind: RELATIONSHIP
+  predicate: HOLDS_STAKE
+  subject: {ref: person-brenner, type: Person}
+  object: {ref: org-chromadex, type: Organization}
+  asserter: {ref: pub-elhassan, type: Publication}
+  evidence:
+  - locator: l-el-coi
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:05d9f9536ae39ee275e92378ea9e304ffda18e641e7b348166370d0291cbba63"
+  - locator: l-el-brenner
+    role: CONTEXT
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:38be90ff365f29de79d1a22fdbc524bb370b9c8ef469c7ff5e529823278c141d"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    validTo: null
+    validToBasis: UNKNOWN
+    validObservedAt: "2019-08-13T00:00:00Z"
+    validObservedAtPrecision: DAY
+  status: ACCEPTED
+  qualifiers:
+  - "printed:C.B. ... owns stock in ChromaDex"
+  - "observedAt = Elhassan epub date (l-el-epub)"
+  edge:
+    type: HOLDS_STAKE
+    properties: {stakeKind: EQUITY, validFromBasis: OBSERVATION_ONLY, validToBasis: UNKNOWN}
+  note: "'C.B.' -> person-brenner by r-cb"
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-brenner-role-el
+  uid: "hu:assertion:xfx-cp-a-brenner-role-el"
+  assertionKind: RELATIONSHIP
+  predicate: HOLDS_ROLE
+  subject: {ref: person-brenner, type: Person}
+  object: {ref: org-chromadex, type: Organization}
+  asserter: {ref: pub-elhassan, type: Publication}
+  evidence:
+  - locator: l-el-coi
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:05d9f9536ae39ee275e92378ea9e304ffda18e641e7b348166370d0291cbba63"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    validTo: null
+    validToBasis: UNKNOWN
+    validObservedAt: "2019-08-13T00:00:00Z"
+    validObservedAtPrecision: DAY
+  status: ACCEPTED
+  edge:
+    type: HOLDS_ROLE
+    properties: {roleKind: ADVISOR, validFromBasis: OBSERVATION_ONLY, validToBasis: UNKNOWN}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-brenner-role-cz
+  uid: "hu:assertion:xfx-cp-a-brenner-role-cz"
+  assertionKind: RELATIONSHIP
+  predicate: HOLDS_ROLE
+  subject: {ref: person-brenner, type: Person}
+  object: {ref: org-chromadex, type: Organization}
+  asserter: {ref: pub-conze, type: Publication}
+  evidence:
+  - locator: l-cz-coi
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:b0bd3b7c148843552650de06d606268e182550489589152b7569667a55a52e7c"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime:
+    validFrom: null
+    validFromBasis: OBSERVATION_ONLY
+    validTo: null
+    validToBasis: UNKNOWN
+    validObservedAt: "2019-07-05T00:00:00Z"
+    validObservedAtPrecision: DAY
+  status: ACCEPTED
+  qualifiers:
+  - "printed:serves as their chief scientific adviser"
+  edge:
+    type: HOLDS_ROLE
+    properties: {roleKind: ADVISOR, validFromBasis: OBSERVATION_ONLY, validToBasis: UNKNOWN}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-tn-label-version
+  uid: "hu:assertion:xfx-cp-a-tn-label-version"
+  assertionKind: RELATIONSHIP
+  predicate: HAS_LABEL_VERSION
+  subject: {ref: pkg-tn-30, type: Package}
+  object: {ref: lv-tn-v12-3, type: LabelVersion}
+  asserter: {ref: org-nih-ods, type: Organization}
+  evidence:
+  - locator: l-dsld-version
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:2d8e22d2409761b90bd66ec5dbedad3dd249a68005553b7b730034387db3b108"
+  - locator: l-dsld-upc
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:5318fed213a615b4516fc222e54b6dcff751e952b9fdeee0e99575f67292d01d"
+  - locator: l-dsld-entered
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:b77516655f6dd705bb96454167dadcb00a8ceacc20850daae1b8284ebd8fa114"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime:
+    validFrom: "2025-04-24T00:00:00Z"
+    validFromPrecision: DAY
+    validFromBasis: PUBLICATION_PROXY
+    validTo: null
+    validToBasis: UNKNOWN
+  status: ACCEPTED
+  edge:
+    type: HAS_LABEL_VERSION
+    properties:
+      validFrom: "2025-04-24T00:00:00Z"
+      validFromPrecision: DAY
+      validFromBasis: PUBLICATION_PROXY
+      validToBasis: UNKNOWN
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-tn-line-niagen
+  uid: "hu:assertion:xfx-cp-a-tn-line-niagen"
+  assertionKind: RELATIONSHIP
+  predicate: DECLARES_COMPONENT
+  subject: {ref: lv-tn-v12-3, type: LabelVersion}
+  object: {ref: mat-niagen, type: IngredientMaterial}
+  asserter: {ref: org-nih-ods, type: Organization}
+  evidence:
+  - locator: l-dsld-row-qty
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:5a2513e76f2905cb35917aea10a8e9e1883cc813c467d3d4b82d51e0e3e942cd"
+  - locator: l-dsld-row-name
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:e7c63adedb9784fa2dbb417402e3e234d0553d72f2868159868614eb67cc379b"
+  - locator: l-dsld-row-form
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:3ab2094d64f65f8968c4d4780e3928c8a7f6b5a4116f07ce6f43eec919c5f6c1"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "declaredName:Niagen"
+  - "form:Nicotinamide Riboside Chloride"
+  - "servingSize:1 Vegetarian Capsule(s)"
+  edge:
+    type: DECLARES_COMPONENT
+    properties: {orderIndex: 0, lineRole: DIETARY_INGREDIENT, amount: 300, unitCode: mg, amountReferent: AS_NAMED, massBasis: SALT_FORM, amountBasis: PER_SERVING}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: a-tn-responsible
+  uid: "hu:assertion:xfx-cp-a-tn-responsible"
+  assertionKind: RELATIONSHIP
+  predicate: NAMES_RESPONSIBLE_PARTY
+  subject: {ref: lv-tn-v12-3, type: LabelVersion}
+  object: {ref: org-chromadex, type: Organization}
+  asserter: {ref: org-nih-ods, type: Organization}
+  evidence:
+  - locator: l-dsld-contact
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:9e65261d580c6db002055677b1de5f332f33153e51de5359eddf1c199213fc87"
+  - locator: l-dsld-contact-name
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:c74f8a97418ba1ac1f43092fa286ec75adaad01d6e7d4fe618f4fe40e12ae04f"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "responsiblePartyRole:DISTRIBUTED_BY"
+  - "printed:ChromaDex, Inc"
+  edge:
+    type: NAMES_RESPONSIBLE_PARTY
+    properties: {}
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: f-tn-maxdaily
+  uid: "hu:assertion:xfx-cp-f-tn-maxdaily"
+  assertionKind: FIELD
+  predicate: MAX_DAILY_SERVINGS
+  subject: {ref: lv-tn-v12-3, type: LabelVersion}
+  literal: {valueNumber: 3}
+  asserter: {ref: org-nih-ods, type: Organization}
+  evidence:
+  - locator: l-dsld-serving
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:00c0a2be1bad8fde0974025bb70b36e5a3607a3851e419d68eb8faba7e0a42d1"
+  - locator: l-dsld-directions
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:8a434dda6b1a8a4b6d03b82146ecb2abc373d5b49ade45b4d66d96c58bd96046"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: f-tn-dosageform
+  uid: "hu:assertion:xfx-cp-f-tn-dosageform"
+  assertionKind: FIELD
+  predicate: DOSAGE_FORM
+  subject: {ref: var-tn-300, type: ProductVariant}
+  literal: {valueString: CAPSULE}
+  asserter: {ref: org-nih-ods, type: Organization}
+  evidence:
+  - locator: l-dsld-form
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:84ce4aea35ac89d123e3c7026c188b2a3479ecfe521338c921c85102f18a7dd9"
+  - locator: l-dsld-net
+    role: SUPPORTS
+    origin: DECLARED
+    expectedSelectedContentDigest: "sha256:f963de3459899cd92a103f914c1d5f9a6f0a250ca95f9e90a023ae99e453c5e9"
+  speechAct: STATES
+  basisKind: UNSTATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: c-moiety-trial
+  uid: "hu:assertion:xfx-cp-c-moiety-trial"
+  assertionKind: COMPUTATION
+  predicate: MOIETY_EQUIVALENT_AMOUNT
+  subject: {ref: ic-cz-1000, type: InterventionComponent}
+  object: {ref: sub-nr, type: ChemicalSubstance}
+  literal: {valueNumber: 878.04, unitCode: mg/d}
+  asserter: {ref: agent-s-xfx, type: Agent}
+  evidence: []
+  speechAct: STATES
+  basisKind: CALCULATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "1000 mg NR chloride x 255.2476 / 290.7006 = 878.04 mg NR cation per day"
+  - input massBasis SALT_FORM per ap-dose-basis
+  - "purity 99% not applied"
+  derivedFrom: [f-cz-qty, a-adm-cz-paper, a-realizes-dsld, a-moiety, a-mw-salt, a-mw-nr]
+  derivationRule: "rule:mw-ratio.v1"
+  generatedBy: act-project
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-projection"
+- id: c-label-max-salt
+  uid: "hu:assertion:xfx-cp-c-label-max-salt"
+  assertionKind: COMPUTATION
+  predicate: PER_MAX_DAILY_DOSE_AMOUNT
+  subject: {ref: lv-tn-v12-3, type: LabelVersion}
+  object: {ref: mat-niagen, type: IngredientMaterial}
+  literal: {valueNumber: 900, unitCode: mg/d}
+  asserter: {ref: agent-s-xfx, type: Agent}
+  evidence: []
+  speechAct: STATES
+  basisKind: CALCULATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - 300 mg per serving x maxDailyServings 3
+  - "massBasis:SALT_FORM"
+  derivedFrom: [a-tn-line-niagen, f-tn-maxdaily]
+  derivationRule: "rule:daily-max.v1"
+  generatedBy: act-project
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-projection"
+- id: c-label-max-moiety
+  uid: "hu:assertion:xfx-cp-c-label-max-moiety"
+  assertionKind: COMPUTATION
+  predicate: MOIETY_EQUIVALENT_AMOUNT
+  subject: {ref: lv-tn-v12-3, type: LabelVersion}
+  object: {ref: sub-nr, type: ChemicalSubstance}
+  literal: {valueNumber: 790.24, unitCode: mg/d}
+  asserter: {ref: agent-s-xfx, type: Agent}
+  evidence: []
+  speechAct: STATES
+  basisKind: CALCULATED
+  polarity: POSITIVE
+  validTime: {validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN}
+  status: ACCEPTED
+  qualifiers:
+  - "900 mg/d NR chloride x 255.2476 / 290.7006 = 790.24 mg/d NR cation"
+  derivedFrom: [c-label-max-salt, a-realizes-dsld, a-moiety, a-mw-salt, a-mw-nr]
+  derivationRule: "rule:mw-ratio.v1"
+  generatedBy: act-project
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-projection"
+assessments:
+- id: ap-dose-basis
+  uid: "hu:assessment:xfx-cp-ap-dose-basis"
+  assessmentKind: APPLICABILITY
+  assessmentSubkind: D1.dose-mass-basis
+  about:
+  - {ref: ic-cz-1000, type: InterventionComponent}
+  inputAssertions: [f-cz-qty, f-cz-purity, a-adm-cz-paper]
+  evidence:
+  - locator: l-cz-capsule
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:393e564005db71317d2f1f65162ec8390b728d417e30c95c15039d2c1046555e"
+  - locator: l-cz-arms
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:a09157b574fd9aee53d0a562cc4379e2ebbd71caeb535e8e55948b25cbd2c2b5"
+  verdict: SUPPORTED_WITH_QUALIFICATION
+  summary: "Conze 2019's '1000 mg NR' is NR chloride mass: each capsule held 100 or 250 mg of NR chloride (99% purity) and 1000 mg = 4 x 250 mg capsules. massBasis SALT_FORM; cation\
+    \ equivalent in c-moiety-trial."
+  methodVersion: d1-dose-basis/v1 (manual)
+  status: PROPOSED
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: ap-dose-basis-el
+  uid: "hu:assessment:xfx-cp-ap-dose-basis-el"
+  assessmentKind: APPLICABILITY
+  assessmentSubkind: D1.dose-mass-basis
+  about:
+  - {ref: ic-el-nr, type: InterventionComponent}
+  inputAssertions: [f-el-qty, a-adm-el]
+  evidence:
+  - locator: l-el-design
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:84a9dad6c06c0625ef6e5a584a2b97eac033bb6beff43ebdfae14327d9cd2a7f"
+  - locator: l-el-material
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:f90916a2f6e098d7cab7e5803f25dcd0de3bdc3c79837ea112b960e3288162a6"
+  verdict: INSUFFICIENT_EVIDENCE
+  summary: "Elhassan 2019 prints '1 g NR per day' and '250-mg capsules' of 'NR chloride (Niagen)' without saying whether 250 mg is salt or cation mass; massBasis stays UNSPECIFIED. Missing\
+    \ fact: the capsule specification."
+  methodVersion: d1-dose-basis/v1 (manual)
+  status: PROPOSED
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: ap-label-vs-trial
+  uid: "hu:assessment:xfx-cp-ap-label-vs-trial"
+  assessmentKind: APPLICABILITY
+  assessmentSubkind: D3.applicability
+  about:
+  - {ref: study-cz, type: Study}
+  - {ref: var-tn-300, type: ProductVariant}
+  inputAssertions: []
+  evidence:
+  - locator: l-dsld-row-form
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:3ab2094d64f65f8968c4d4780e3928c8a7f6b5a4116f07ce6f43eec919c5f6c1"
+  - locator: l-cz-capsule
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:393e564005db71317d2f1f65162ec8390b728d417e30c95c15039d2c1046555e"
+  verdict: SUPPORTED_WITH_QUALIFICATION
+  summary: "Use context = Tru Niagen 300 mg capsule (US), label V12.3 at its maximum of 3 capsules/day. Material and dose apply (same branded material NIAGEN; the label maximum of 900\
+    \ mg/d NR chloride is below the 1000 mg/d tested, both salt mass); population applies with adjustment (overweight but otherwise healthy adults vs adults); duration and outcome are\
+    \ unknown (the label states neither; the trial ran 56 days and measured a blood biomarker and adverse events). Parent = weakest dimension."
+  methodVersion: "d3-applicability/v1 (manual; parent conclusion = weakest dimension)"
+  status: PROPOSED
+  facets:
+  - "contextOfUse=product-on-sale"
+  conclusionCode: UNKNOWN_MISSING_FACTS
+  derivedFromAssessments: [ap-dim-material, ap-dim-dose, ap-dim-population, ap-dim-duration, ap-dim-outcome]
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: ap-dim-material
+  uid: "hu:assessment:xfx-cp-ap-dim-material"
+  assessmentKind: APPLICABILITY
+  assessmentSubkind: D3.applicability.dimension
+  about:
+  - {ref: study-cz, type: Study}
+  - {ref: var-tn-300, type: ProductVariant}
+  inputAssertions: [a-tn-line-niagen, a-adm-cz-paper, a-realizes-dsld, f-cz-purity]
+  evidence:
+  - locator: l-dsld-row-name
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:e7c63adedb9784fa2dbb417402e3e234d0553d72f2868159868614eb67cc379b"
+  - locator: l-dsld-row-form
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:3ab2094d64f65f8968c4d4780e3928c8a7f6b5a4116f07ce6f43eec919c5f6c1"
+  - locator: l-cz-capsule
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:393e564005db71317d2f1f65162ec8390b728d417e30c95c15039d2c1046555e"
+  - locator: l-cz-gras
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:112ea19790db1fdc49082211892799e53c6c20c61a2772f15405f75aa22ce598"
+  verdict: DIRECTLY_SUPPORTED
+  summary: "Same branded material: the label line and the trial component both resolve to NIAGEN (DECLARES_COMPONENT and ADMINISTERS target mat-niagen); trial capsules held NR chloride\
+    \ of 99% purity; the lot is stated on neither side."
+  methodVersion: d3-applicability/v1 (manual)
+  status: PROPOSED
+  facets:
+  - "dimension=material"
+  - "missing=lot"
+  conclusionCode: APPLIES
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: ap-dim-dose
+  uid: "hu:assessment:xfx-cp-ap-dim-dose"
+  assessmentKind: APPLICABILITY
+  assessmentSubkind: D3.applicability.dimension
+  about:
+  - {ref: study-cz, type: Study}
+  - {ref: var-tn-300, type: ProductVariant}
+  inputAssertions: [c-label-max-salt, f-cz-qty]
+  evidence:
+  - locator: l-dsld-row-qty
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:5a2513e76f2905cb35917aea10a8e9e1883cc813c467d3d4b82d51e0e3e942cd"
+  - locator: l-dsld-serving
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:00c0a2be1bad8fde0974025bb70b36e5a3607a3851e419d68eb8faba7e0a42d1"
+  - locator: l-cz-arms
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:a09157b574fd9aee53d0a562cc4379e2ebbd71caeb535e8e55948b25cbd2c2b5"
+  - locator: l-cz-capsule
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:393e564005db71317d2f1f65162ec8390b728d417e30c95c15039d2c1046555e"
+  verdict: DIRECTLY_SUPPORTED
+  summary: "Use 900 mg/d NR chloride (300 mg x 3, c-label-max-salt) vs study top arm 1000 mg/d NR chloride (salt basis per ap-dose-basis); score = study dose / use dose."
+  methodVersion: d3-applicability/v1 (manual)
+  status: PROPOSED
+  facets:
+  - "dimension=dose"
+  conclusionCode: APPLIES
+  score: 1.11
+  derivedFromAssessments: [ap-dose-basis]
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: ap-dim-population
+  uid: "hu:assessment:xfx-cp-ap-dim-population"
+  assessmentKind: APPLICABILITY
+  assessmentSubkind: D3.applicability.dimension
+  about:
+  - {ref: study-cz, type: Study}
+  - {ref: var-tn-300, type: ProductVariant}
+  inputAssertions: [a-arm-cz-1000-pub]
+  evidence:
+  - locator: l-cz-population
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:69d760002dce0f284f834e85374ff28f284f1ab32ef49a2969b82aa4529bbad7"
+  - locator: l-dsld-directions
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:8a434dda6b1a8a4b6d03b82146ecb2abc373d5b49ade45b4d66d96c58bd96046"
+  verdict: SUPPORTED_WITH_QUALIFICATION
+  summary: "Study: overweight, but otherwise healthy men and women; label: adults. The trial age range is not captured in this fixture."
+  methodVersion: d3-applicability/v1 (manual)
+  status: PROPOSED
+  facets:
+  - "dimension=population"
+  - "missing=age-range"
+  conclusionCode: APPLIES_WITH_ADJUSTMENT
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: ap-dim-duration
+  uid: "hu:assessment:xfx-cp-ap-dim-duration"
+  assessmentKind: APPLICABILITY
+  assessmentSubkind: D3.applicability.dimension
+  about:
+  - {ref: study-cz, type: Study}
+  - {ref: var-tn-300, type: ProductVariant}
+  inputAssertions: [f-cz-duration]
+  evidence:
+  - locator: l-cz-56day
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:ab15cf3a43f8b51a4a5622fdc7ecc79e4403318cfb6ba35d3b06f34580cc15f9"
+  - locator: l-dsld-directions
+    role: CONTEXT
+    expectedSelectedContentDigest: "sha256:8a434dda6b1a8a4b6d03b82146ecb2abc373d5b49ade45b4d66d96c58bd96046"
+  verdict: INSUFFICIENT_EVIDENCE
+  summary: Study 56 days (f-cz-duration); the label states no duration of use.
+  methodVersion: d3-applicability/v1 (manual)
+  status: PROPOSED
+  facets:
+  - "dimension=duration"
+  - "missing=use-duration"
+  conclusionCode: UNKNOWN_MISSING_FACTS
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: ap-dim-outcome
+  uid: "hu:assessment:xfx-cp-ap-dim-outcome"
+  assessmentKind: APPLICABILITY
+  assessmentSubkind: D3.applicability.dimension
+  about:
+  - {ref: study-cz, type: Study}
+  - {ref: var-tn-300, type: ProductVariant}
+  inputAssertions: [a-sr-nad-d14, a-sr-ae-serious]
+  evidence:
+  - locator: l-cz-day14
+    role: CONTEXT
+    expectedSelectedContentDigest: "sha256:43df66508846b7b362dc30e242b20bf539aecd36ca2f136f8b20f371f5da2893"
+  - locator: l-cz-ae-serious
+    role: CONTEXT
+    expectedSelectedContentDigest: "sha256:d8589814bc5568a70b6e85e0fe8955168c46f016967cb1f5d18a00aa7ffc41d3"
+  verdict: INSUFFICIENT_EVIDENCE
+  summary: "The study measured whole blood NAD+ (a biomarker) and adverse events; the label states no use-side outcome, so outcome applicability cannot be judged."
+  methodVersion: d3-applicability/v1 (manual)
+  status: PROPOSED
+  facets:
+  - "dimension=outcome"
+  - "missing=use-outcome"
+  conclusionCode: UNKNOWN_MISSING_FACTS
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: r-registry-id
+  uid: "hu:assessment:xfx-cp-r-registry-id"
+  assessmentKind: RESOLUTION
+  assessmentSubkind: D3.registry-id-resolution
+  about:
+  - {ref: study-cz, type: Study}
+  - {ref: pub-conze, type: Publication}
+  inputAssertions: [a-cz-printed-id]
+  evidence:
+  - locator: l-cz-registry
+    role: CONTEXT
+    expectedSelectedContentDigest: "sha256:4aefe1b074ee7f6de378a17cd6ed7f914bc464236f67f6707fee8d09d0043111"
+  - locator: l-ct0-404
+    role: CONTRADICTS
+    expectedSelectedContentDigest: "sha256:9707cbeb19b1c589560a481b948ce6a043990896f5c6402c517123bc0cbef04e"
+  - locator: l-ct1-nct
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:d456ca8c822e5ce6bed37aad57fad0fc5f8c84d80318c3c88526027a271a37c9"
+  - locator: l-ct1-firstpost
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:bdfdf599a45c8e6bb635881f5538742569007601e0cc2e7f3f5407a0d2d6ad47"
+  - locator: l-ct1-int1000
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:45f447a8bfe77c327a3a6222fb69287ef9c76d459268d791dd1213775cf227d2"
+  - locator: l-ct1-collab
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:80fc0290b75a5d783c5f61a3aa1b9e66ac0f9c02882e806f8338e93275b32e1c"
+  verdict: SUPPORTED_WITH_QUALIFICATION
+  summary: "Disconfirmation of the printed id: NCT0271593 returns HTTP 404 ('not found'). NCT02712593 matches the paper's registration date (first posted 2016-03-18 = 'March 18, 2016'),\
+    \ product (Niagen 1000), collaborator (ChromaDex, Inc.) and arms. The paper is linked to that Study through a-cz-reports-on; the printed value a-cz-printed-id is kept."
+  methodVersion: d3-registry-resolve/v1 (manual)
+  status: PROPOSED
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: r-chromadex
+  uid: "hu:assessment:xfx-cp-r-chromadex"
+  assessmentKind: RESOLUTION
+  assessmentSubkind: D7.organization-resolution
+  about:
+  - {ref: org-chromadex, type: Organization}
+  inputAssertions: []
+  evidence:
+  - locator: l-ct1-collab
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:80fc0290b75a5d783c5f61a3aa1b9e66ac0f9c02882e806f8338e93275b32e1c"
+  - locator: l-dsld-contact-name
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:c74f8a97418ba1ac1f43092fa286ec75adaad01d6e7d4fe618f4fe40e12ae04f"
+  - locator: l-cz-coi
+    role: CONTEXT
+    expectedSelectedContentDigest: "sha256:b0bd3b7c148843552650de06d606268e182550489589152b7569667a55a52e7c"
+  - locator: l-el-material
+    role: CONTEXT
+    expectedSelectedContentDigest: "sha256:f90916a2f6e098d7cab7e5803f25dcd0de3bdc3c79837ea112b960e3288162a6"
+  - locator: l-el-coi
+    role: CONTEXT
+    expectedSelectedContentDigest: "sha256:05d9f9536ae39ee275e92378ea9e304ffda18e641e7b348166370d0291cbba63"
+  verdict: SUPPORTED_WITH_QUALIFICATION
+  summary: "'ChromaDex, Inc.' (registry collaborator) and 'ChromaDex, Inc' (DSLD distributor) bind to one Organization. The papers print only 'ChromaDex'; they are bound to the same\
+    \ node with qualification: packet D6 records ChromaDex, Inc. as a subsidiary of Niagen Bioscience, Inc. (formerly ChromaDex Corporation), so a paper's 'ChromaDex' may mean the parent."
+  methodVersion: entity-link/v1 + manual
+  status: PROPOSED
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: r-cb
+  uid: "hu:assessment:xfx-cp-r-cb"
+  assessmentKind: RESOLUTION
+  assessmentSubkind: D7.person-resolution
+  about:
+  - {ref: person-brenner, type: Person}
+  inputAssertions: []
+  evidence:
+  - locator: l-el-coi
+    role: CONTEXT
+    expectedSelectedContentDigest: "sha256:05d9f9536ae39ee275e92378ea9e304ffda18e641e7b348166370d0291cbba63"
+  - locator: l-el-brenner
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:38be90ff365f29de79d1a22fdbc524bb370b9c8ef469c7ff5e529823278c141d"
+  - locator: l-cz-brenner-orcid
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:49ce04687b19164adc73bd9a58f589c60fd8eb6ba867c18c2d57f25a1640d2ed"
+  - locator: l-cz-coi
+    role: SUPPORTS
+    expectedSelectedContentDigest: "sha256:b0bd3b7c148843552650de06d606268e182550489589152b7569667a55a52e7c"
+  verdict: SUPPORTED_WITH_QUALIFICATION
+  summary: "'C.B.' in Elhassan 2019's Declaration of Interests is Charles Brenner: the only author with initials C.B. in that author list (l-el-brenner, initials 'C'), and Conze 2019\
+    \ names 'Charles Brenner' with the same ChromaDex relationship (l-cz-coi) and ORCID 0000-0002-4955-3226 (l-cz-brenner-orcid). Qualification: the author list was searched for surname\
+    \ Brenner, not exhaustively for every C.B."
+  methodVersion: manual
+  status: PROPOSED
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+- id: r-mention-nrcl
+  uid: "hu:assessment:xfx-cp-r-mention-nrcl"
+  assessmentKind: RESOLUTION
+  assessmentSubkind: D1.mention-resolution
+  about:
+  - {ref: sub-nrcl, type: ChemicalSubstance}
+  inputAssertions: []
+  evidence:
+  - locator: l-cz-mention-nrcl
+    role: CONTEXT
+    expectedSelectedContentDigest: "sha256:04069d193bd280adcb3f6c6c24f302565764f2e9c4ec22c4eacbac3bd261189a"
+  verdict: DIRECTLY_SUPPORTED
+  summary: "'NR chloride' -> NICOTINAMIDE RIBOSIDE CHLORIDE (UNII 8XM2XT8VWI): the salt is named explicitly; licenses the derived MENTIONS of chunk-cz-sec6."
+  methodVersion: entity-link/v1
+  status: PROPOSED
+  generatedBy: act-ingest
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-ingest"
+adjudications:
+- id: adj-id-person-brenner-orcid
+  uid: "hu:adjudication:xfx-cp-adj-id-person-brenner-orcid"
+  assesses: id-person-brenner-orcid
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-cz-brenner-orcid]
+  generatedBy: act-verify
+- id: adj-id-sub-nrcl-unii
+  uid: "hu:adjudication:xfx-cp-adj-id-sub-nrcl-unii"
+  assesses: id-sub-nrcl-unii
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-gsrs-nrcl-unii]
+  generatedBy: act-verify
+- id: adj-id-sub-nrcl-cas_rn
+  uid: "hu:adjudication:xfx-cp-adj-id-sub-nrcl-cas_rn"
+  assesses: id-sub-nrcl-cas_rn
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-gsrs-nrcl-cas]
+  generatedBy: act-verify
+- id: adj-id-sub-nrcl-pubchem_cid
+  uid: "hu:adjudication:xfx-cp-adj-id-sub-nrcl-pubchem_cid"
+  assesses: id-sub-nrcl-pubchem_cid
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-gsrs-nrcl-pubchem]
+  generatedBy: act-verify
+- id: adj-id-sub-nr-unii
+  uid: "hu:adjudication:xfx-cp-adj-id-sub-nr-unii"
+  assesses: id-sub-nr-unii
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-gsrs-nr-unii]
+  generatedBy: act-verify
+- id: adj-id-sub-nr-cas_rn
+  uid: "hu:adjudication:xfx-cp-adj-id-sub-nr-cas_rn"
+  assesses: id-sub-nr-cas_rn
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-gsrs-nr-cas]
+  generatedBy: act-verify
+- id: adj-id-sub-nr-pubchem_cid
+  uid: "hu:adjudication:xfx-cp-adj-id-sub-nr-pubchem_cid"
+  assesses: id-sub-nr-pubchem_cid
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-gsrs-nr-pubchem]
+  generatedBy: act-verify
+- id: adj-id-sub-nr-chebi
+  uid: "hu:adjudication:xfx-cp-adj-id-sub-nr-chebi"
+  assesses: id-sub-nr-chebi
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-gsrs-nr-chebi]
+  generatedBy: act-verify
+- id: adj-id-sub-nr-drugbank
+  uid: "hu:adjudication:xfx-cp-adj-id-sub-nr-drugbank"
+  assesses: id-sub-nr-drugbank
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-gsrs-nr-drugbank]
+  generatedBy: act-verify
+- id: adj-id-sub-nad-chebi
+  uid: "hu:adjudication:xfx-cp-adj-id-sub-nad-chebi"
+  assesses: id-sub-nad-chebi
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-chebi-15846]
+  generatedBy: act-verify
+- id: adj-id-sub-naad-chebi
+  uid: "hu:adjudication:xfx-cp-adj-id-sub-naad-chebi"
+  assesses: id-sub-naad-chebi
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-chebi-18304]
+  generatedBy: act-verify
+- id: adj-id-mech-deacetylation-go
+  uid: "hu:adjudication:xfx-cp-adj-id-mech-deacetylation-go"
+  assesses: id-mech-deacetylation-go
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-go-0006476]
+  generatedBy: act-verify
+- id: adj-id-pub-conze-pmid
+  uid: "hu:adjudication:xfx-cp-adj-id-pub-conze-pmid"
+  assesses: id-pub-conze-pmid
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-cz-pmid]
+  generatedBy: act-verify
+- id: adj-id-pub-conze-doi
+  uid: "hu:adjudication:xfx-cp-adj-id-pub-conze-doi"
+  assesses: id-pub-conze-doi
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-cz-pmid]
+  generatedBy: act-verify
+- id: adj-id-pub-conze-pmcid
+  uid: "hu:adjudication:xfx-cp-adj-id-pub-conze-pmcid"
+  assesses: id-pub-conze-pmcid
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-cz-pmcid]
+  generatedBy: act-verify
+- id: adj-id-study-cz-nct
+  uid: "hu:adjudication:xfx-cp-adj-id-study-cz-nct"
+  assesses: id-study-cz-nct
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-ct1-nct]
+  generatedBy: act-verify
+- id: adj-id-pub-elhassan-pmid
+  uid: "hu:adjudication:xfx-cp-adj-id-pub-elhassan-pmid"
+  assesses: id-pub-elhassan-pmid
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-el-pmid]
+  generatedBy: act-verify
+- id: adj-id-pub-elhassan-doi
+  uid: "hu:adjudication:xfx-cp-adj-id-pub-elhassan-doi"
+  assesses: id-pub-elhassan-doi
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-el-pmid]
+  generatedBy: act-verify
+- id: adj-id-pub-elhassan-pmcid
+  uid: "hu:adjudication:xfx-cp-adj-id-pub-elhassan-pmcid"
+  assesses: id-pub-elhassan-pmcid
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-el-pmcid]
+  generatedBy: act-verify
+- id: adj-id-study-el-nct
+  uid: "hu:adjudication:xfx-cp-adj-id-study-el-nct"
+  assesses: id-study-el-nct
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-ct2-nct]
+  generatedBy: act-verify
+- id: adj-id-pkg-tn-30-gtin
+  uid: "hu:adjudication:xfx-cp-adj-id-pkg-tn-30-gtin"
+  assesses: id-pkg-tn-30-gtin
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-dsld-upc]
+  generatedBy: act-verify
+- id: adj-id-lv-tn-v12-3-dsld
+  uid: "hu:adjudication:xfx-cp-adj-id-lv-tn-v12-3-dsld"
+  assesses: id-lv-tn-v12-3-dsld
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-dsld-id]
+  generatedBy: act-verify
+- id: adj-a-mw-salt
+  uid: "hu:adjudication:xfx-cp-adj-a-mw-salt"
+  assesses: a-mw-salt
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-gsrs-nrcl-mw, l-gsrs-nrcl-version]
+  generatedBy: act-verify
+- id: adj-a-formula-salt
+  uid: "hu:adjudication:xfx-cp-adj-a-formula-salt"
+  assesses: a-formula-salt
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-gsrs-nrcl-formula]
+  generatedBy: act-verify
+- id: adj-a-mw-nr
+  uid: "hu:adjudication:xfx-cp-adj-a-mw-nr"
+  assesses: a-mw-nr
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-gsrs-nr-mw, l-gsrs-nr-version]
+  generatedBy: act-verify
+- id: adj-a-moiety
+  uid: "hu:adjudication:xfx-cp-adj-a-moiety"
+  assesses: a-moiety
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-gsrs-nrcl-moiety, l-gsrs-nrcl-version]
+  generatedBy: act-verify
+- id: adj-a-realizes-dsld
+  uid: "hu:adjudication:xfx-cp-adj-a-realizes-dsld"
+  assesses: a-realizes-dsld
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-dsld-row-form, l-dsld-row-name]
+  generatedBy: act-verify
+- id: adj-a-realizes-conze
+  uid: "hu:adjudication:xfx-cp-adj-a-realizes-conze"
+  assesses: a-realizes-conze
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-cz-gras]
+  generatedBy: act-verify
+- id: adj-f-physform
+  uid: "hu:adjudication:xfx-cp-adj-f-physform"
+  assesses: f-physform
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-cz-gras]
+  generatedBy: act-verify
+- id: adj-a-cz-reports-on
+  uid: "hu:adjudication:xfx-cp-adj-a-cz-reports-on"
+  assesses: a-cz-reports-on
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-ct0-404, l-ct1-collab, l-ct1-firstpost, l-ct1-int1000, l-cz-registry]
+  generatedBy: act-verify
+- id: adj-a-cz-printed-id
+  uid: "hu:adjudication:xfx-cp-adj-a-cz-printed-id"
+  assesses: a-cz-printed-id
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-cz-registry]
+  generatedBy: act-verify
+- id: adj-a-ct1-hasrv
+  uid: "hu:adjudication:xfx-cp-adj-a-ct1-hasrv"
+  assesses: a-ct1-hasrv
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-ct1-lastupdate, l-ct1-nct]
+  generatedBy: act-verify
+- id: adj-a-arm-cz-100-rv
+  uid: "hu:adjudication:xfx-cp-adj-a-arm-cz-100-rv"
+  assesses: a-arm-cz-100-rv
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-ct1-arm100]
+  generatedBy: act-verify
+- id: adj-a-arm-cz-100-pub
+  uid: "hu:adjudication:xfx-cp-adj-a-arm-cz-100-pub"
+  assesses: a-arm-cz-100-pub
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-cz-arms, l-cz-groups]
+  generatedBy: act-verify
+- id: adj-a-arm-cz-300-rv
+  uid: "hu:adjudication:xfx-cp-adj-a-arm-cz-300-rv"
+  assesses: a-arm-cz-300-rv
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-ct1-arm300]
+  generatedBy: act-verify
+- id: adj-a-arm-cz-300-pub
+  uid: "hu:adjudication:xfx-cp-adj-a-arm-cz-300-pub"
+  assesses: a-arm-cz-300-pub
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-cz-arms, l-cz-groups]
+  generatedBy: act-verify
+- id: adj-a-arm-cz-1000-rv
+  uid: "hu:adjudication:xfx-cp-adj-a-arm-cz-1000-rv"
+  assesses: a-arm-cz-1000-rv
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-ct1-arm1000]
+  generatedBy: act-verify
+- id: adj-a-arm-cz-1000-pub
+  uid: "hu:adjudication:xfx-cp-adj-a-arm-cz-1000-pub"
+  assesses: a-arm-cz-1000-pub
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-cz-arms, l-cz-groups]
+  generatedBy: act-verify
+- id: adj-a-arm-cz-placebo-rv
+  uid: "hu:adjudication:xfx-cp-adj-a-arm-cz-placebo-rv"
+  assesses: a-arm-cz-placebo-rv
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-ct1-armplacebo]
+  generatedBy: act-verify
+- id: adj-a-arm-cz-placebo-pub
+  uid: "hu:adjudication:xfx-cp-adj-a-arm-cz-placebo-pub"
+  assesses: a-arm-cz-placebo-pub
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-cz-arms, l-cz-groups]
+  generatedBy: act-verify
+- id: adj-a-adm-cz-paper
+  uid: "hu:adjudication:xfx-cp-adj-a-adm-cz-paper"
+  assesses: a-adm-cz-paper
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-cz-arms, l-cz-capsule, l-cz-period]
+  generatedBy: act-verify
+- id: adj-a-adm-cz-registry
+  uid: "hu:adjudication:xfx-cp-adj-a-adm-cz-registry"
+  assesses: a-adm-cz-registry
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-ct1-int1000, l-ct1-start]
+  generatedBy: act-verify
+- id: adj-f-cz-qty
+  uid: "hu:adjudication:xfx-cp-adj-f-cz-qty"
+  assesses: f-cz-qty
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-cz-arms]
+  generatedBy: act-verify
+- id: adj-f-cz-purity
+  uid: "hu:adjudication:xfx-cp-adj-f-cz-purity"
+  assesses: f-cz-purity
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-cz-capsule]
+  generatedBy: act-verify
+- id: adj-f-cz-duration
+  uid: "hu:adjudication:xfx-cp-adj-f-cz-duration"
+  assesses: f-cz-duration
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-cz-56day]
+  generatedBy: act-verify
+- id: adj-a-od-cz-blood-pub
+  uid: "hu:adjudication:xfx-cp-adj-a-od-cz-blood-pub"
+  assesses: a-od-cz-blood-pub
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-cz-day14, l-cz-secondary-objective]
+  generatedBy: act-verify
+- id: adj-a-od-ct1-blood-rv
+  uid: "hu:adjudication:xfx-cp-adj-a-od-ct1-blood-rv"
+  assesses: a-od-ct1-blood-rv
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-ct1-secondary]
+  generatedBy: act-verify
+- id: adj-a-od-cz-ae-pub
+  uid: "hu:adjudication:xfx-cp-adj-a-od-cz-ae-pub"
+  assesses: a-od-cz-ae-pub
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-cz-safety-objective]
+  generatedBy: act-verify
+- id: adj-a-sr-nad-d14
+  uid: "hu:adjudication:xfx-cp-adj-a-sr-nad-d14"
+  assesses: a-sr-nad-d14
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-cz-abstract-result, l-cz-day14, l-cz-sem, l-cz-significance]
+  generatedBy: act-verify
+- id: adj-a-sr-ae-any
+  uid: "hu:adjudication:xfx-cp-adj-a-sr-ae-any"
+  assesses: a-sr-ae-any
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-cz-ae-count, l-cz-tab2]
+  generatedBy: act-verify
+- id: adj-a-sr-ae-serious
+  uid: "hu:adjudication:xfx-cp-adj-a-sr-ae-serious"
+  assesses: a-sr-ae-serious
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-cz-abstract-safety, l-cz-ae-serious, l-cz-tab2]
+  generatedBy: act-verify
+- id: adj-a-cz-role-lead
+  uid: "hu:adjudication:xfx-cp-adj-a-cz-role-lead"
+  assesses: a-cz-role-lead
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-ct1-lead]
+  generatedBy: act-verify
+- id: adj-a-cz-role-collab
+  uid: "hu:adjudication:xfx-cp-adj-a-cz-role-collab"
+  assesses: a-cz-role-collab
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-ct1-collab]
+  generatedBy: act-verify
+- id: adj-a-cz-role-funder
+  uid: "hu:adjudication:xfx-cp-adj-a-cz-role-funder"
+  assesses: a-cz-role-funder
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-cz-coi]
+  generatedBy: act-verify
+- id: adj-a-cz-funded-by
+  uid: "hu:adjudication:xfx-cp-adj-a-cz-funded-by"
+  assesses: a-cz-funded-by
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-cz-coi]
+  generatedBy: act-verify
+- id: adj-a-el-reports-on
+  uid: "hu:adjudication:xfx-cp-adj-a-el-reports-on"
+  assesses: a-el-reports-on
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-el-nct]
+  generatedBy: act-verify
+- id: adj-a-ct2-hasrv
+  uid: "hu:adjudication:xfx-cp-adj-a-ct2-hasrv"
+  assesses: a-ct2-hasrv
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-ct2-lastupdate, l-ct2-nct]
+  generatedBy: act-verify
+- id: adj-a-arm-el-rv
+  uid: "hu:adjudication:xfx-cp-adj-a-arm-el-rv"
+  assesses: a-arm-el-rv
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-ct2-armnr]
+  generatedBy: act-verify
+- id: adj-a-arm-el-pub
+  uid: "hu:adjudication:xfx-cp-adj-a-arm-el-pub"
+  assesses: a-arm-el-pub
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-el-design]
+  generatedBy: act-verify
+- id: adj-a-adm-el
+  uid: "hu:adjudication:xfx-cp-adj-a-adm-el"
+  assesses: a-adm-el
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-el-design, l-el-material]
+  generatedBy: act-verify
+- id: adj-f-el-qty
+  uid: "hu:adjudication:xfx-cp-adj-f-el-qty"
+  assesses: f-el-qty
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-el-design]
+  generatedBy: act-verify
+- id: adj-f-el-form-paper
+  uid: "hu:adjudication:xfx-cp-adj-f-el-form-paper"
+  assesses: f-el-form-paper
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-el-material]
+  generatedBy: act-verify
+- id: adj-f-el-form-registry
+  uid: "hu:adjudication:xfx-cp-adj-f-el-form-registry"
+  assesses: f-el-form-registry
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-ct2-armnr]
+  generatedBy: act-verify
+- id: adj-a-el-role-lead
+  uid: "hu:adjudication:xfx-cp-adj-a-el-role-lead"
+  assesses: a-el-role-lead
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-ct2-lead]
+  generatedBy: act-verify
+- id: adj-a-el-role-material
+  uid: "hu:adjudication:xfx-cp-adj-a-el-role-material"
+  assesses: a-el-role-material
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-el-material]
+  generatedBy: act-verify
+- id: adj-m-el-deacetylation
+  uid: "hu:adjudication:xfx-cp-adj-m-el-deacetylation"
+  assesses: m-el-deacetylation
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-el-acetyl]
+  generatedBy: act-verify
+- id: adj-m-el-naad
+  uid: "hu:adjudication:xfx-cp-adj-m-el-naad"
+  assesses: m-el-naad
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-el-naad]
+  generatedBy: act-verify
+- id: adj-m-el-nad
+  uid: "hu:adjudication:xfx-cp-adj-m-el-nad"
+  assesses: m-el-nad
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-el-naad]
+  generatedBy: act-verify
+- id: adj-m-cz-nad-blood
+  uid: "hu:adjudication:xfx-cp-adj-m-cz-nad-blood"
+  assesses: m-cz-nad-blood
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-cz-abstract-result, l-cz-day14]
+  generatedBy: act-verify
+- id: adj-a-brenner-stake
+  uid: "hu:adjudication:xfx-cp-adj-a-brenner-stake"
+  assesses: a-brenner-stake
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-el-brenner, l-el-coi]
+  generatedBy: act-verify
+- id: adj-a-brenner-role-el
+  uid: "hu:adjudication:xfx-cp-adj-a-brenner-role-el"
+  assesses: a-brenner-role-el
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-el-coi]
+  generatedBy: act-verify
+- id: adj-a-brenner-role-cz
+  uid: "hu:adjudication:xfx-cp-adj-a-brenner-role-cz"
+  assesses: a-brenner-role-cz
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-cz-coi]
+  generatedBy: act-verify
+- id: adj-a-tn-label-version
+  uid: "hu:adjudication:xfx-cp-adj-a-tn-label-version"
+  assesses: a-tn-label-version
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-dsld-entered, l-dsld-upc, l-dsld-version]
+  generatedBy: act-verify
+- id: adj-a-tn-line-niagen
+  uid: "hu:adjudication:xfx-cp-adj-a-tn-line-niagen"
+  assesses: a-tn-line-niagen
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-dsld-row-form, l-dsld-row-name, l-dsld-row-qty]
+  generatedBy: act-verify
+- id: adj-a-tn-responsible
+  uid: "hu:adjudication:xfx-cp-adj-a-tn-responsible"
+  assesses: a-tn-responsible
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-dsld-contact, l-dsld-contact-name]
+  generatedBy: act-verify
+- id: adj-f-tn-maxdaily
+  uid: "hu:adjudication:xfx-cp-adj-f-tn-maxdaily"
+  assesses: f-tn-maxdaily
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-dsld-directions, l-dsld-serving]
+  generatedBy: act-verify
+- id: adj-f-tn-dosageform
+  uid: "hu:adjudication:xfx-cp-adj-f-tn-dosageform"
+  assesses: f-tn-dosageform
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: xfx-quote-reselect/1
+  verdict: DIRECTLY_SUPPORTED
+  policyOutcome: PASS
+  evidence: [l-dsld-form, l-dsld-net]
+  generatedBy: act-verify
+- id: adj-c-moiety-trial
+  uid: "hu:adjudication:xfx-cp-adj-c-moiety-trial"
+  assesses: c-moiety-trial
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: "xfx-derivation-recompute/1 (inputs resolvable, value recomputed)"
+  verdict: DERIVED_VERIFIED
+  policyOutcome: PASS
+  evidence: []
+  generatedBy: act-verify
+- id: adj-c-label-max-salt
+  uid: "hu:adjudication:xfx-cp-adj-c-label-max-salt"
+  assesses: c-label-max-salt
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: "xfx-derivation-recompute/1 (inputs resolvable, value recomputed)"
+  verdict: DERIVED_VERIFIED
+  policyOutcome: PASS
+  evidence: []
+  generatedBy: act-verify
+- id: adj-c-label-max-moiety
+  uid: "hu:adjudication:xfx-cp-adj-c-label-max-moiety"
+  assesses: c-label-max-moiety
+  adjudicationKind: CAPTURE_FIDELITY
+  judgeKind: DETERMINISTIC
+  methodVersion: "xfx-derivation-recompute/1 (inputs resolvable, value recomputed)"
+  verdict: DERIVED_VERIFIED
+  policyOutcome: PASS
+  evidence: []
+  generatedBy: act-verify
+structuralEdges:
+- type: HAS_VARIANT
+  from: prod-tn
+  to: var-tn-300
+  properties: {}
+- type: HAS_PACKAGE
+  from: var-tn-300
+  to: pkg-tn-30
+  properties: {}
+- type: HAS_ARM
+  from: study-cz
+  to: arm-cz-100
+  properties: {}
+- type: HAS_COMPONENT
+  from: arm-cz-100
+  to: ic-cz-100
+  properties: {}
+- type: HAS_ARM
+  from: study-cz
+  to: arm-cz-300
+  properties: {}
+- type: HAS_COMPONENT
+  from: arm-cz-300
+  to: ic-cz-300
+  properties: {}
+- type: HAS_ARM
+  from: study-cz
+  to: arm-cz-1000
+  properties: {}
+- type: HAS_COMPONENT
+  from: arm-cz-1000
+  to: ic-cz-1000
+  properties: {}
+- type: HAS_ARM
+  from: study-cz
+  to: arm-cz-placebo
+  properties: {}
+- type: HAS_COMPONENT
+  from: arm-cz-placebo
+  to: ic-cz-placebo
+  properties: {}
+- type: HAS_ARM
+  from: study-el
+  to: arm-el-nr
+  properties: {}
+- type: HAS_COMPONENT
+  from: arm-el-nr
+  to: ic-el-nr
+  properties: {}
+- type: HAS_OUTCOME
+  from: study-cz
+  to: od-cz-blood-nad
+  properties: {}
+- type: HAS_OUTCOME
+  from: study-cz
+  to: od-ct1-blood
+  properties: {}
+- type: HAS_OUTCOME
+  from: study-cz
+  to: od-cz-ae
+  properties: {}
+- type: RESULT_FOR
+  from: sr-cz-nad-d14
+  to: od-cz-blood-nad
+  properties: {}
+- type: RESULT_FOR_ARM
+  from: sr-cz-nad-d14
+  to: arm-cz-1000
+  properties: {}
+- type: RESULT_FOR
+  from: sr-cz-ae-any
+  to: od-cz-ae
+  properties: {}
+- type: RESULT_FOR_ARM
+  from: sr-cz-ae-any
+  to: arm-cz-100
+  properties: {}
+- type: RESULT_FOR_ARM
+  from: sr-cz-ae-any
+  to: arm-cz-300
+  properties: {}
+- type: RESULT_FOR_ARM
+  from: sr-cz-ae-any
+  to: arm-cz-1000
+  properties: {}
+- type: RESULT_FOR_ARM
+  from: sr-cz-ae-any
+  to: arm-cz-placebo
+  properties: {}
+- type: RESULT_FOR
+  from: sr-cz-ae-serious
+  to: od-cz-ae
+  properties: {}
+- type: RESULT_FOR_ARM
+  from: sr-cz-ae-serious
+  to: arm-cz-100
+  properties: {}
+- type: RESULT_FOR_ARM
+  from: sr-cz-ae-serious
+  to: arm-cz-300
+  properties: {}
+- type: RESULT_FOR_ARM
+  from: sr-cz-ae-serious
+  to: arm-cz-1000
+  properties: {}
+- type: RESULT_FOR_ARM
+  from: sr-cz-ae-serious
+  to: arm-cz-placebo
+  properties: {}
+- type: EXPOSED_TO
+  from: ctx-el-muscle
+  to: mat-niagen
+  properties: {exposureRole: TESTED, orderIndex: 0}
+- type: IN_STUDY_ARM
+  from: ctx-el-muscle
+  to: arm-el-nr
+  properties: {}
+- type: EXPOSED_TO
+  from: ctx-cz-blood
+  to: mat-niagen
+  properties: {exposureRole: TESTED, orderIndex: 0}
+- type: IN_STUDY_ARM
+  from: ctx-cz-blood
+  to: arm-cz-1000
+  properties: {}
+- type: WAS_ASSOCIATED_WITH
+  from: act-ingest
+  to: agent-s-xfx
+  properties: {}
+- type: WAS_ASSOCIATED_WITH
+  from: act-project
+  to: agent-s-xfx
+  properties: {}
+- type: WAS_ASSOCIATED_WITH
+  from: act-verify
+  to: agent-s-xfx
+  properties: {}
+- type: WAS_INFORMED_BY
+  from: act-project
+  to: act-ingest
+  properties: {}
+- type: WAS_INFORMED_BY
+  from: act-verify
+  to: act-ingest
+  properties: {}
+derivedEdges:
+- type: AFFECTS_MECHANISM
+  from: sub-nr
+  to: mech-deacetylation
+  properties:
+    derivationRule: d2.affects-mechanism/v1
+    derivedFromAssertionUids:
+    - "hu:assertion:xfx-cp-m-el-deacetylation"
+    direction: NO_CHANGE
+    bestBasis: DIRECT_MEASUREMENT
+    highestSetting: HUMAN_INTERVENTIONAL
+    humanMeasured: true
+    nContexts: 1
+    nHumanContexts: 1
+    viaParticipant: false
+    score: null
+    derivedAt: "2026-10-09T05:01:14Z"
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-projection"
+- type: MENTIONS
+  from: chunk-cz-sec6
+  to: sub-nrcl
+  properties:
+    derivationRule: entity-link/v1
+    derivedFromAssessmentUids: *id001
+    derivedAt: "2026-10-09T05:01:14Z"
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-projection"
+- type: COVERS_LOCATOR
+  from: chunk-cz-sec6
+  to: l-cz-arms
+  properties:
+    derivationRule: span-overlap/v1
+    derivedAt: "2026-10-09T05:01:14Z"
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-projection"
+- type: COVERS_LOCATOR
+  from: chunk-cz-sec6
+  to: l-cz-capsule
+  properties:
+    derivationRule: span-overlap/v1
+    derivedAt: "2026-10-09T05:01:14Z"
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-projection"
+- type: COVERS_LOCATOR
+  from: chunk-cz-sec6
+  to: l-cz-mention-nrcl
+  properties:
+    derivationRule: span-overlap/v1
+    derivedAt: "2026-10-09T05:01:14Z"
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-projection"
+- type: MENTIONS
+  from: chunk-cz-par26
+  to: mat-niagen
+  properties:
+    derivationRule: entity-link/v1 (exact brand name)
+    derivedAt: "2026-10-09T05:01:14Z"
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-projection"
+- type: MENTIONS
+  from: chunk-cz-par26
+  to: sub-nad
+  properties:
+    derivationRule: entity-link/v1 (ChEBI synonym NAD+)
+    derivedAt: "2026-10-09T05:01:14Z"
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-projection"
+- type: COVERS_LOCATOR
+  from: chunk-cz-par26
+  to: l-cz-day14
+  properties:
+    derivationRule: span-overlap/v1
+    derivedAt: "2026-10-09T05:01:14Z"
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-projection"
+- type: COVERS_LOCATOR
+  from: chunk-cz-par26
+  to: l-cz-significance
+  properties:
+    derivationRule: span-overlap/v1
+    derivedAt: "2026-10-09T05:01:14Z"
+  producedBy:
+    missionId: "mission:ft-S-xfx-fixtures"
+    runId: "run:ft-S-xfx-compound-projection"
+renditionAssertions:
+- id: a-rendition-conze
+  predicate: RENDITION_OF
+  subject: src-epmc-pmc6611812
+  object: pub-conze
+  asserter: pub-conze
+  evidence:
+  - {locator: l-cz-pmid, role: SUPPORTS}
+  edge:
+    type: RENDITION_OF
+    properties: {}
+  adjudication: "adj-a-rendition-conze (CAPTURE_FIDELITY, DETERMINISTIC, DIRECTLY_SUPPORTED, PASS)"
+- id: a-rendition-elhassan
+  predicate: RENDITION_OF
+  subject: src-epmc-pmc6702140
+  object: pub-elhassan
+  asserter: pub-elhassan
+  evidence:
+  - {locator: l-el-pmid, role: SUPPORTS}
+  edge:
+    type: RENDITION_OF
+    properties: {}
+  adjudication: "adj-a-rendition-elhassan (CAPTURE_FIDELITY, DETERMINISTIC, DIRECTLY_SUPPORTED, PASS)"

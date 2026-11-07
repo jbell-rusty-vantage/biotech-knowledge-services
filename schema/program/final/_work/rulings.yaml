@@ -1,0 +1,407 @@
+# Merge rulings: machine-readable edits per module (chief synthesizer, 2026-10-08).
+# Source of truth for the reasoning: schema/program/final/decision-report.md, section "Merge rulings" (R-01 to R-94).
+# Each edit cites its ruling. Op vocabulary:
+#   add-field, remove-type, remove-enum, add-enum-values, remove-enum-values, retype-field, remove-field, rename-field,
+#   change-union, remove-union, change-edge-properties, change-edge-class, remove-edge-property-type,
+#   add-relationship-field, change-labels, change-interface, register-predicate, rename-predicate,
+#   remove-predicate, extend-predicate, add-seam, remove-seam, edit-seam, edit-docstring, edit-pattern,
+#   edit-register, edit-question, edit-text, edit-fixture, close-oq, request-fixture, confirm (no change).
+version: 1
+date: 2026-10-08
+rulings: 94
+ownerDecisions: [R-01, R-02, R-03, R-09, R-10, R-12, R-13, R-36, R-40]
+
+global:
+  rules:
+    - { ruling: R-01, rule: "Budget pairs on the collapsed count: unions expanded per member, interface targets once, inverse fields not doubled, kernel-meaning types (ASSESSES, DERIVED_FROM, MENTIONS, RENDITION_OF) once in K. size-report and 00-SUMMARY print collapsed and expanded counts; the pinned 3,940 is re-counted the same way. Owner decides." }
+    - { ruling: R-02, rule: "L1 @filterable(byAggregate:false) and L2 @mutation(operations:[]) stay on every type and relationship. L3 and excludeDeprecatedFields are not adopted unless the owner decides." }
+    - { ruling: R-03, rule: "nestedOperations: intra-module structural [CREATE, CONNECT]; structural edges to another module's or a kernel record [CONNECT]; asserted [CONNECT]; derived []. Node-register 'mutations' is read as { graphql: none, executor: [...] }." }
+    - { ruling: R-04, rule: "No @fulltext/@vector in any SDL; indexes live in deployment DDL listed in migration-notes and the handoff." }
+    - { ruling: R-05, rule: "A union is owned by the module declaring the relationship; foreign members are seam rows; width <= 6." }
+    - { ruling: R-06, rule: "A typed pair survives only with a fixture; an unfixtured pair whose deciding question is value 1 survives with a numbered request in final/requests.md; unfixtured value-2/3 pairs are cut (fall back to a predicate if a fixture needs the fact)." }
+    - { ruling: R-08, rule: "A shared catalog id has one row carrying the lowest value any packet declares; non-owners cite <packet>:<id>. CQ-PF-03 splits into CQ-PF-03a (D8, v1, retrieved) and CQ-PF-03b (D6, v2, assessment)." }
+    - { ruling: R-14, rule: "A node property read as a fact is written under a FIELD Assertion (registered field predicate, HAS_EVIDENCE, ASSERTED_BY issuer); the node value is a cache." }
+    - { ruling: R-16, rule: "Asserter defaults: the issuer the document presents; else the Source publisher with asserterBasis:PUBLISHER_DEFAULT; the BellLabs Agent only for BellLabs statements; inferred speakers asserterBasis:INFERRED + RESOLUTION Assessment." }
+    - { ruling: R-17, rule: "Stored label Entity only on Subjectable implementers and Identifier; lineage patterns traverse WAS_GENERATED_BY and never scan :Entity." }
+    - { ruling: R-18, rule: "Versioned state/record implements Entity & Subjectable only if it carries a registry identifier or is a subject/object of an Assertion or target of an Assessment; else Entity only." }
+    - { ruling: R-22, rule: "Edges project only from current POSITIVE Assertions; projectionGate: SUPPORT types also need a supporting Adjudication; one episode per (from,to,type,asserter)." }
+    - { ruling: R-23, rule: "supersedesUid links records of the same asserter only." }
+    - { ruling: R-26, rule: "Links between independently identified records are asserted; structural only for parts minted with their parent from the same capture and for citation sets." }
+    - { ruling: R-42, rule: "One (scheme, issuer, normalized value) identifies at most one Subjectable; no cross-type joins through a shared Identifier." }
+    - { ruling: R-45, rule: "A cache needs: authority reachable by edges, executor/projection-maintained, methodVersion + derivedAt, answers cite the authority, a question filters it; rewritten in the authority's transaction." }
+    - { ruling: R-46, rule: "uid-valued properties only as frozen identity keys, operational pointers outside the evidence chain, or caches; never the only provenance path." }
+    - { ruling: R-50, rule: "Answer kinds per packets/D10/answer-kind-table.md rulings; materialize only on p95 > 200 ms on the fixture graph or graph-global reuse by >= 2 questions." }
+    - { ruling: R-52, rule: "One predicate registry (final/vocabularies/predicates.yaml), SCREAMING_SNAKE, no module prefix; registrar = K for kernel conventions, else the owner of the controlled family, else the owner of the subject type (existing registrar when subjects span modules); executor rejects unregistered predicates." }
+    - { ruling: R-53, rule: "One meaning and one property schema per relationship type name; only kernel-meaning types (DERIVED_FROM, ASSESSES, MENTIONS, RENDITION_OF) are declared by several modules; no predicateOnly value equals a relationship type name (the authorizing predicate of a typed edge is not a predicateOnly entry)." }
+    - { ruling: R-54, rule: "One assessment-vocabularies register; OTHER only with a registered subkind." }
+    - { ruling: R-56, rule: "Each enum declared once; assembly runs an enum/type-name collision check." }
+    - { ruling: R-94, rule: "Final seams.yaml separates relationship seams from predicateSeams (checked against the predicate registry)." }
+  names:
+    relationshipTypes:
+      QUALITY_RESULT_FOR: { owner: D8, replaces: [RESULT_FOR (D8)], ruling: R-53 }
+      RENDITION_OF: { meaning: kernel, declaredBy: [D9, D3], properties: AssertedRecordedProperties, ruling: R-43 }
+      DERIVED_FROM: { meaning: kernel, declaredBy: [K, D10], replacesPinned: [DERIVED_FROM_ASSERTION, CONSIDERS_ASSESSMENT, CITES_ASSERTION, CITES_ASSESSMENT], ruling: R-11 }
+      ASSESSES: { meaning: kernel, declaredBy: [K, D10] }
+      MENTIONS: { meaning: kernel, declaredBy: [D9], ruling: R-27 }
+    edgePropertyTypes:
+      kernelBases: [AssertedEdgeProperties, AssertedRecordedProperties, StructuralEdgeProperties, DerivedEdgeProperties]
+      retired: { StateEpisodeProperties: "AssertedEdgeProperties + register exclusive: true (R-10)" }
+    enums:
+      QuantityComparator: { owner: D1, values: [EQ, APPROX, GT, GTE, LT, LTE, BETWEEN, OUTSIDE_REFERENCE_RANGE, ABSENT, CONFORMS_TO_DESCRIPTION, REFERENCE_ONLY, UNKNOWN], replaces: [ThresholdComparator (D5), SpecComparator (D8)], ruling: R-57 }
+      AmountBasis: { owner: D6, values: [PER_SERVING, PER_UNIT, PER_100G, PER_100ML, PER_PACKAGE, PER_ITEM, PER_DOSE, PER_DAY, PER_WEEK, PER_CYCLE, PER_KG_BODY_WEIGHT_PER_DAY, PER_KG_DIET, SINGLE_DOSE, MEDIUM_CONCENTRATION, NOT_STATED, OTHER], replaces: [QuantityBasis (D3), DosePeriod (D5)], ruling: R-58 }
+      EstimateDirection: { owner: D3, replaces: [MechanismDirection (D2)], ruling: R-59 }
+      RegulatoryPathway: { owner: D8, replaces: [ApprovalPathway (D13), DesignationType (D13)], ruling: R-66 }
+      SourceRevisionKind: { owner: K, replaces: [PublicationRevisionStatus (D3)], ruling: R-44 }
+      MassBasis: { owner: D1, ruling: R-56 }
+      ContentStatementKind: { owner: D1, ruling: R-56 }
+      SexScope: { owner: D3, ruling: R-56 }
+      ModelOrganism: { owner: D2, ruling: R-56 }
+      EffectDirection: { owner: K, note: "only judgment vocabulary", ruling: R-59 }
+    contentHashBasis: { values: [RAW_BYTES, CANONICAL_PROJECTION, TOOL_RENDITION, STORED_EXCERPT_TEXT, SYNTHETIC_FIXTURE], retired: { NORMALIZED_TEXT: CANONICAL_PROJECTION, EXTRACTOR_TEXT: TOOL_RENDITION, EXTRACTED_TEXT_BYTES: TOOL_RENDITION }, ruling: R-35 }
+    predicates:
+      # registrar per R-52; aliases are retired spellings that S maps in fixtures and patterns
+      MANUFACTURES: { registrar: D7, aliases: [MANUFACTURES_MATERIAL], ruling: R-68 }
+      CONTRACT_MANUFACTURES_FOR: { registrar: D7, ruling: R-68 }
+      SUPPLIES_MATERIAL: { registrar: D7, qualifiers: ["exclusivity=SOLE|NON_EXCLUSIVE|UNSTATED", "buyer="], aliases: [SUPPLIES_INGREDIENT, EXCLUSIVE_SUPPLIER_OF, SOLE_SUPPLIER_OF], ruling: R-68 }
+      MANUFACTURER_UNNAMED: { registrar: D7, aliases: [MANUFACTURER_STATEMENT], ruling: R-68 }
+      DISTRIBUTES: { registrar: D7, note: "non-label sources; label distributor = NAMES_RESPONSIBLE_PARTY", ruling: R-68 }
+      AUTHORED_BY: { registrar: D3, subjects: [D3.Publication, D5.Protocol, D5.ProtocolEdition], objects: [D7.Person, D7.Organization], aliases: [AUTHORED (inverse), PROTOCOL_AUTHORED_BY], ruling: R-80 }
+      RECOMMENDS_USE: { registrar: D9, subject: "recommended means", aliases: [RECOMMENDS_FOR, ENDORSES_PRODUCT], ruling: R-83 }
+      RECOMMENDS_AGAINST: { registrar: D9, subject: "means (never a Target object)", ruling: R-83 }
+      DISCLOSES_INTEREST: { registrar: D9, aliases: [COMPETING_INTEREST_STATED, DISCLOSES_SUPPORT_FROM, "DECLARES_NO_COMPETING_INTEREST (polarity NEGATIVE, speechAct DENIES)"], ruling: R-82 }
+      DISCLOSES_INTERESTS_OF: { registrar: D7, note: "third-party lists only", ruling: R-82 }
+      FUNDED_BY: { registrar: D3, aliases: [FUNDER_ROLE_STATEMENT, "FUNDED_BY (D11)"], ruling: R-82 }
+      CAUSES_ADVERSE_EFFECT: { registrar: D5, object: D2.Condition, aliases: [REPORTS_ADVERSE_EXPERIENCE], ruling: R-84 }
+      INTENDED_FOR_TARGET: { registrar: D5, ruling: R-52 }
+      IMPROVES_TARGET: { registrar: D5, ruling: R-52 }
+      WORSENS_TARGET: { registrar: D5, ruling: R-52 }
+      NO_EFFECT_ON_TARGET: { registrar: D5, ruling: R-52 }
+      MIXED_EFFECT_ON_TARGET: { registrar: D5, ruling: R-52 }
+      HAS_RECIPE_INGREDIENT: { registrar: D12, subjects: [D12.FoodItem, D6.Product], aliases: [PREPARED_WITH], ruling: R-62 }
+      OPERATED_BY: { registrar: D9, subject: D9.Channel, aliases: [OPERATES_CHANNEL (inverse)], ruling: R-79 }
+      REPUBLISHES: { registrar: D9, ruling: R-79 }
+      RECORDING_OF: { registrar: D9, subject: D9.MediaWork, object: D13.Event, ruling: R-52 }
+      PRESENTED_AT_CONFERENCE: { registrar: D13, object: D9.Channel, ruling: R-65 }
+      FINANCING_AMOUNT: { registrar: D13, ruling: R-92 }
+      DATE_OF_FIRST_SALE: { registrar: D13, ruling: R-92 }
+      INVESTOR_COUNT: { registrar: D13, ruling: R-92 }
+      OFFERS_INTERVENTION: { registrar: D6, ruling: R-52 }
+      SUCCEEDED_BY: { registrar: D6, contributors: { D7: "Organization -> Organization" }, ruling: R-52 }
+      SAMPLE_TESTED_POSITIVE_FOR: { registrar: D8, subjects: [D6.Product, D8.Lot], object: D1.Taxon, aliases: [SAMPLE_POSITIVE_OUTBREAK_STRAIN], ruling: R-73 }
+      HAS_ACTION_LEVEL: { registrar: D8, ruling: R-93 }
+      HAS_CLAIM_CONDITION: { registrar: D8, ruling: R-93 }
+      HAS_APPROVED_INDICATION: { registrar: D8, subjects: [D6.Product, D1.ChemicalSubstance], object: D2.Condition, ruling: R-88 }
+      FOOD_FROM_TAXON: { registrar: D12, aliases: [DERIVED_FROM_TAXON], ruling: R-53 }
+      ADMINISTERED_MATERIAL_PURITY: { registrar: D3, ruling: R-52 }
+      SOURCED_FROM_COUNTRY: { registrar: D1, ruling: R-52 }
+      kernelConventions: { registrar: K, names: [FIELD_NOT_REPORTED, HAS_REVISION_STATUS, RATES_CLAIM, CORRECTS, HAS_IDENTIFIER, CITES_AS_SUPPORT, HAS_CREDENTIAL], ruling: R-52 }
+    qualifiers:
+      asserterBasis: [PUBLISHER_DEFAULT, INFERRED]   # R-16
+      sourceRecordRemovedAt: "source's own record time (R-24)"
+      input: "input:<uid>=SUPPORTS|CONTRADICTS|QUALIFIES (R-34)"
+    vocabularyPins: { targets: "0.2.2", frontiers: "0.2.1", ruling: R-60 }
+  noModuleEdit:
+    # rulings that change no module file; they bind the synthesizer's own outputs or wait on the owner
+    R-11: "migration-notes.md maps DERIVED_FROM_ASSERTION, CONSIDERS_ASSESSMENT, CITES_ASSERTION, CITES_ASSESSMENT -> DERIVED_FROM"
+    R-32: "confirm: Report.verdict uses the verification.v1 lattice + worldCorrectness"
+    R-33: "confirm: PolicyVersion stays a string"
+    R-34: "S registers input:<uid>= facets in final/vocabularies/assessment-vocabularies.yaml"
+    R-36: "owner decision (tool-rendition evidence policy)"
+    R-40: "owner decision (contracts v2); fixtures stay the record of truth"
+    R-61: "confirm: keep the node name Target"
+    R-64: "query-patterns.md carries [:MATERIAL_CONTAINS|FOOD_CONTAINS]"
+    R-77: "confirm: four role edge-property types kept; PartyRole merge recorded as a lever"
+    R-90: "confirm: species joins on ncbiTaxonId"
+    R-91: "confirm: only Event and Study attach to Frontier"
+    retiredNames: [StateEpisodeProperties, PublicationRevisionStatus, ApprovalPathway, DesignationType, MechanismDirection, ThresholdComparator, SpecComparator, QuantityBasis, DosePeriod, QualityResultFor, PatentTopic, Mention, MANUFACTURES_MATERIAL, MANUFACTURER_STATEMENT, SUPPLIES_INGREDIENT, EXCLUSIVE_SUPPLIER_OF, SOLE_SUPPLIER_OF, PROTOCOL_AUTHORED_BY, AUTHORED, SPEAKS_AT, ENDORSES_PRODUCT, RECOMMENDS_FOR, REPORTS_ADVERSE_EXPERIENCE, OPERATES_CHANNEL, PREPARED_WITH, DISCLOSES_SUPPORT_FROM, DECLARES_NO_COMPETING_INTEREST, COMPETING_INTEREST_STATED, FUNDER_ROLE_STATEMENT, SAMPLE_POSITIVE_OUTBREAK_STRAIN, DERIVED_FROM_TAXON, FINANCING_AMOUNT_SOLD, "D8.* prefixed predicates"]
+
+modules:
+  K:
+    - { ruling: R-09, op: edit-text, file: 09-reasoning.md, where: "Ownership map, row 'Editorial containers'", change: "Publication -> D3 (scholarly works); D9 keeps Channel/MediaWork; drop the Mention row" }
+    - { ruling: R-09, op: edit-docstring, file: 04-schema-proposal.graphql, where: "Source docstring (line ~521)", change: "name D9 containers only; scholarly publications are D3 Publications" }
+    - { ruling: R-09, op: edit-pattern, file: 03-retrieval-patterns.md, question: CQ-AX-04, change: "drop EMPTY_RESULT branch; 'not reported' = FIELD_NOT_REPORTED; CaptureAttempt PARTIAL|FAILED only for 'blocked'" }
+    - { ruling: R-09, op: remove-seam, file: 10-seams.yaml, rows: ["DERIVED_FROM ReportItem -> Association", "BLOCKED_BY ReportItem -> Assertion"] }
+    - { ruling: R-09, op: edit-seam, file: 10-seams.yaml, change: "vocabulary references point at final/vocabularies/ (not sibling worktrees)" }
+    - { ruling: R-09, op: edit-text, file: 11-open-questions.md, change: "record owner confirmation pending for non-additive removals (Mention, Adjudication.considers, StateEpisodeProperties)" }
+    - { ruling: R-10, op: remove-edge-property-type, type: StateEpisodeProperties }
+    - { ruling: R-10, op: edit-text, file: 09-reasoning.md, where: "M11 verbatim-base list; state-episode text", change: "drop StateEpisodeProperties; exclusivity rule = register field 'exclusive: true' enforced by relationship type" }
+    - { ruling: R-14, op: edit-text, file: 09-reasoning.md, where: "pattern item 12", change: "node properties read as facts are written under FIELD Assertions; node value is a cache; lastWriterRunId = last touched by" }
+    - { ruling: R-15, op: edit-text, file: 09-reasoning.md, change: "executor P20: ASSERTED_BY admits D3.Publication and D9.MediaWork (multi-author works)" }
+    - { ruling: R-15, op: edit-pattern, questions: [Q-K-15, Q-K-23], change: "add branch asserter -[AUTHORED_BY predicate]-> Person -> D7 interest edges; Q-K-15 also HOLDS_ROLE" }
+    - { ruling: R-16, op: edit-text, file: 09-reasoning.md, change: "asserter default rules 1-5; FIELD_NOT_REPORTED subject = entity the field describes" }
+    - { ruling: R-17, op: edit-text, file: 09-reasoning.md, change: "Entity label rule; Chunk exception; lineage never scans :Entity" }
+    - { ruling: R-18, op: edit-text, file: 09-reasoning.md, where: "Kernel pattern changes", change: "adopt D6 wording on versioned states implementing Subjectable; subject = most specific record; evidence rolls up through state episodes" }
+    - { ruling: R-19, op: edit-pattern, question: Q-K-09, change: "OCCURS_IN on every Assertion whose evidence is in a MediaWork (not only CLAIM); typed-edge authorizations are RELATIONSHIP" }
+    - { ruling: R-20, op: edit-text, file: 09-reasoning.md, change: "kernel conventions: assess an occurrence via ASSESSES Claim + DERIVED_FROM occurrence + facets; CORRECTS predicate + DERIVED_FROM; HAS_EVIDENCE{QUALIFIES}" }
+    - { ruling: R-22, op: edit-text, file: 09-reasoning.md, change: "projection gate rule and one episode per (from,to,type,asserter); 05 field projectionGate" }
+    - { ruling: R-23, op: edit-text, file: 09-reasoning.md, change: "supersedesUid same-asserter only" }
+    - { ruling: R-24, op: add-field, type: Assertion, field: "validObservedAtPrecision: TimePrecision" }
+    - { ruling: R-24, op: edit-text, file: 09-reasoning.md, change: "rules 2-6 of R-24 (sourceRecordRemovedAt, exclusive-gap reads, INFERRED, payload Dates, DecisionCriterion policy validity)" }
+    - { ruling: R-25, op: add-enum-values, enum: BasisKind, values: [CURATOR_CLASSIFICATION] }
+    - { ruling: R-25, op: edit-text, file: 09-reasoning.md, change: "publish one basis order; decline FIRST_PARTY_STATEMENT and per-part basis" }
+    - { ruling: R-26, op: edit-text, file: 09-reasoning.md, change: "structural vs asserted rule; curation files are kernel Sources with a snapshot per version; edge.structural intent comment drops 'curated reference links'" }
+    - { ruling: R-27, op: edit-text, file: 09-reasoning.md, change: "MENTIONS licensed by entity-link/vN derivationRule; RESOLUTION Assessment only when a binding rests on the surface form (P8 narrowed)" }
+    - { ruling: R-28, op: edit-text, file: 09-reasoning.md, where: "The two interfaces", change: "domain exceptions targeting Subjectable: D10 ASSOCIATES, D5 STEP_USES" }
+    - { ruling: R-29, op: edit-text, file: 09-reasoning.md, change: "verification.v1 mapping adds entityBinding roles container and context" }
+    - { ruling: R-31, op: edit-text, file: 09-reasoning.md, change: "RATES_CLAIM: subject Claim, asserter rater, valueString rating, optional HAS_OBJECT = rating instrument; lattice mapping is a versioned D10 query-time rule" }
+    - { ruling: R-35, op: edit-docstring, where: "SourceSnapshot.contentHashBasis", change: "five values per global.names.contentHashBasis" }
+    - { ruling: R-37, op: edit-text, file: 09-reasoning.md, change: "contentHash identity vs canonicalProjectionHash change detection; archive admission rule; durable storageUri" }
+    - { ruling: R-38, op: edit-text, file: 09-reasoning.md, change: "selectorJson.basis mandatory (projection id@version); normalization is part of the projection" }
+    - { ruling: R-41, op: confirm, change: "CaptureAttempt is not a second lineage mechanism (11-OQ 25 closed)" }
+    - { ruling: R-42, op: edit-register, file: identifier-schemes.yaml, change: "state uniqueness rule; add SPL_SET_ID, EIN, ORG_STUDY_ID and the seven D12 food schemes; normalizationRule ids; decline Identifier.registrationStatus" }
+    - { ruling: R-43, op: edit-text, file: 09-reasoning.md, where: "Occurrence container and source family; item 11 kernel-meaning types", change: "RENDITION_OF has kernel meaning (Source -> MediaWork | Publication), asserted recorded-only; family = OCCURS_IN work, else RENDITION_OF work, else Source" }
+    - { ruling: R-43, op: edit-pattern, questions: [Q-K-21], change: "family step uses RENDITION_OF to D3 Publication; Report.distinctSourceFamilyCount docstring" }
+    - { ruling: R-44, op: edit-pattern, questions: [Q-K-10, Q-K-17, Q-K-22], change: "add branch Source -RENDITION_OF-> Publication <-REVISES- notice; HAS_REVISION_STATUS only for non-scholarly Sources / flags without notice, one per authority" }
+    - { ruling: R-45, op: edit-text, file: 09-reasoning.md, change: "cache rule (5 conditions), generalizing P18" }
+    - { ruling: R-46, op: edit-text, file: 09-reasoning.md, change: "uid-valued property rule (11-OQ 21, 25)" }
+    - { ruling: R-47, op: edit-text, file: 09-reasoning.md, where: M11, change: "add DerivedEdgeProperties to the base list" }
+    - { ruling: R-47, op: edit-docstring, type: DerivedEdgeProperties, field: score, change: "retrieval score only; never on an edge between two domain entities (directive 3.6)" }
+    - { ruling: R-48, op: edit-text, file: 09-reasoning.md, change: "derived records (Associations) may be removed when superseded and uncited; pattern item 11 without citesAssociations" }
+    - { ruling: R-49, op: close-oq, oq: "11-OQ 34", change: "discourse metrics = projection-cache properties (Claim additive), PROJECTION Activity, methodVersion + derivedAt" }
+    - { ruling: R-50, op: edit-question, file: 02-questions.md, questions: [CQ-AX-08, Q-K-24], change: "answer kind materialized -> retrieved" }
+    - { ruling: R-52, op: edit-register, file: 05-relationship-register.yaml, change: "kernel conventions registered once by K (FIELD_NOT_REPORTED, HAS_REVISION_STATUS, RATES_CLAIM, CORRECTS, HAS_IDENTIFIER, CITES_AS_SUPPORT, HAS_CREDENTIAL)" }
+    - { ruling: R-76, op: edit-text, file: 09-reasoning.md, where: "Ownership map", change: "add row 'UseConstraint (D5): projection-minted grouping of safety Assertions; not a Claim; never vetted'" }
+    - { ruling: R-12, op: confirm, change: "Activity ASSESSES Claim for EVIDENCE_MISSION (owner confirms 11-OQ 12)" }
+    - { ruling: R-13, op: confirm, change: "one Activity per run (owner confirms 11-OQ 11)" }
+  D1:
+    - { ruling: R-57, op: add-enum-values, enum: QuantityComparator, values: [OUTSIDE_REFERENCE_RANGE, ABSENT, CONFORMS_TO_DESCRIPTION, REFERENCE_ONLY, UNKNOWN], note: "D1 owns the single comparator enum; docstring lists consumers D5, D8, D12" }
+    - { ruling: R-68, op: rename-predicate, from: MANUFACTURES_MATERIAL, to: MANUFACTURES, note: "registered by D7; D1 removes its registration and re-keys fixtures/seams" }
+    - { ruling: R-68, op: remove-predicate, name: SUPPLIES_MATERIAL, note: "registered by D7" }
+    - { ruling: R-52, op: remove-predicate, names: [INTENDED_FOR_TARGET, IMPROVES_TARGET, WORSENS_TARGET, NO_EFFECT_ON_TARGET, MIXED_EFFECT_ON_TARGET], note: "D5 registers; D1 lists them under sharedVocabularies/predicateSeams" }
+    - { ruling: R-52, op: register-predicate, name: SOURCED_FROM_COUNTRY, subject: IngredientMaterial }
+    - { ruling: R-14, op: edit-register, file: 05-relationship-register.yaml, change: "PHYSICAL_FORM, MATERIAL_GRADE, PLANT_PART, EXTRACT_RATIO registered as FIELD predicates of IngredientMaterial properties (OQ-D1-26)" }
+    - { ruling: R-73, op: edit-register, file: 05-relationship-register.yaml, change: "MEASURED_CONTENT_IN_PRODUCT / CONTAINS_UNDECLARED_SUBSTANCE: surveys without lot identification only (subject D6 Product | ProductVariant); lot-identified results are D8 QualityResult" }
+    - { ruling: R-85, op: edit-register, change: "EXCEEDS_DOSE_THRESHOLD is not stored; written only inside a published Report; Q-D1-03 retrieved" }
+    - { ruling: R-50, op: edit-question, file: 02-questions.md, questions: [Q-D1-03, Q-D1-19, CQ-ST-02], change: "kinds per D10 (retrieved; retrieved + published variant; assessment)" }
+    - { ruling: R-94, op: edit-seam, file: 10-seams.yaml, changes: ["MENTIONS from D9.Chunk", "D12 predicate FOOD_FROM_TAXON (not DERIVED_FROM_TAXON)", "remove AFFECTS_MECHANISM -> MolecularEntity row", "union StepMeans -> Subjectable", "ADMINISTERS note: AssertedRecordedProperties"] }
+    - { ruling: R-94, op: edit-seam, change: "Assertion.predicate rows move to predicateSeams" }
+  D2:
+    - { ruling: R-47, op: remove-field, type: MechanismProjectionProperties, field: nNoChangeContexts, note: "Q-D2-18 reads Associations instead" }
+    - { ruling: R-47, op: edit-docstring, type: MechanismProjectionProperties, change: "superset of kernel DerivedEdgeProperties (now an M11 base); score stays null (executor-validated)" }
+    - { ruling: R-47, op: edit-pattern, question: Q-D2-18, change: "rank on D10 Association {EVIDENCE_AGGREGATE, modulator x mechanism}" }
+    - { ruling: R-59, op: remove-enum, enum: MechanismDirection }
+    - { ruling: R-59, op: retype-field, type: MechanismProjectionProperties, field: direction, to: EstimateDirection, note: "D3-owned; values INCREASED/DECREASED/NO_CHANGE/MIXED/UNKNOWN; update patterns and fixtures" }
+    - { ruling: R-42, op: edit-register, file: 06-node-register.yaml, type: Outcome, change: "drop LOINC from identifierSchemes" }
+    - { ruling: R-70, op: add-seam, row: "{ type: OPERATIONALIZED_BY, from: D5.Target, to: D2.Outcome, direction: IN, owner: other }" }
+    - { ruling: R-70, op: add-seam, row: "{ type: OPERATIONALIZED_BY, from: D5.Target, to: D2.Condition, direction: IN, owner: other }" }
+    - { ruling: R-70, op: edit-docstring, types: [Outcome, Condition], change: "Outcome reached by D5 OPERATIONALIZED_BY (declared); Condition is a TargetMeasure member (incidence measures the target)" }
+    - { ruling: R-89, op: edit-pattern, question: Q-D2-21, change: "(who)-[r:HOLDS_STAKE|HOLDS_ROLE|RECEIVES_VALUE_FROM]->(org) with stakeKind EQUITY, roleKind ADVISOR|CONSULTANT, valueKind INVENTOR_ON_LICENSED_IP, episode overlap" }
+    - { ruling: R-17, op: change-labels, type: MechanismEvidenceContext, labels: ["MechanismEvidenceContext"] }
+    - { ruling: R-15, op: edit-fixture, change: "replace first-author asserters with the D3 Publication" }
+    - { ruling: R-58, op: edit-fixture, change: "fill cell-free context route (IN_MEDIUM) and basis (MEDIUM_CONCENTRATION) from D3/D6 vocabularies" }
+    - { ruling: R-26, op: edit-text, change: "hallmark-mapping curation file is a kernel Source with a snapshot per version; mapping Assertions use basis CURATOR_CLASSIFICATION (D2 #33)" }
+    - { ruling: R-50, op: edit-question, questions: [Q-D2-14], change: "materialized -> retrieved" }
+    - { ruling: R-60, op: edit-seam, change: "re-pin frontiers @0.2.1" }
+    - { ruling: R-86, op: confirm, change: "ContextExposure unchanged (ChemicalSubstance | IngredientMaterial | Intervention)" }
+  D3:
+    - { ruling: R-44, op: remove-enum, enum: PublicationRevisionStatus }
+    - { ruling: R-44, op: retype-field, type: Publication, field: revisionStatus, to: SourceRevisionKind, note: "nullable; null = none known; single work-level cache over REVISES and HAS_REVISION_STATUS" }
+    - { ruling: R-44, op: edit-docstring, where: REVISES, change: "record when the revising work is identified; revisionKind = K SourceRevisionKind; per asserter" }
+    - { ruling: R-58, op: remove-enum, enum: QuantityBasis, note: "fields retype to D6 AmountBasis (values added there)" }
+    - { ruling: R-58, op: add-enum-values, enum: AdministrationRoute, values: [IN_MEDIUM, INTRAPERITONEAL] }
+    - { ruling: R-72, op: change-union, union: AdministeredMaterial, to: "IngredientMaterial | ProductVariant | Intervention | FoodItem | DietaryPattern" }
+    - { ruling: R-72, op: remove-seam, row: "ADMINISTERS -> D4.Device" }
+    - { ruling: R-70, op: edit-docstring, where: "OutcomeDefinition (lines ~703-704)", change: "drop 'D2 Condition terms do not reach a Target'; TargetMeasure = Biomarker | Metric | Outcome | Condition" }
+    - { ruling: R-70, op: edit-seam, change: "OPERATIONALIZED_BY row lists D2.Outcome and D2.Condition" }
+    - { ruling: R-71, op: edit-docstring, type: Publication, field: venueName, change: "venue name only, no container node" }
+    - { ruling: R-80, op: register-predicate, name: AUTHORED_BY, subjects: [Publication, D5.Protocol, D5.ProtocolEdition], objects: [D7.Person, D7.Organization] }
+    - { ruling: R-82, op: rename-predicate, from: FUNDER_ROLE_STATEMENT, to: FUNDED_BY, note: "FUNDED_BY (paper-level) registered by D3; role text in qualifiers" }
+    - { ruling: R-82, op: rename-predicate, from: COMPETING_INTEREST_STATED, to: DISCLOSES_INTEREST, note: "registered by D9" }
+    - { ruling: R-52, op: register-predicate, name: ADMINISTERED_MATERIAL_PURITY, subject: InterventionComponent }
+    - { ruling: R-07, op: edit-register, file: 05-relationship-register.yaml, type: INVESTIGATES, change: "questions: [Q-D3-10, Q-D2-06]" }
+    - { ruling: R-43, op: add-relationship-field, type: Publication, field: "renditions: [Source!]!", relationship: "RENDITION_OF, direction IN, properties AssertedRecordedProperties, nestedOperations [CONNECT], aggregate false", class: asserted, questions: [Q-K-21, CQ-EV-05] }
+    - { ruling: R-43, op: add-seam, row: "{ type: RENDITION_OF, from: K.Source, to: D3.Publication, direction: IN, owner: this, questions: [Q-K-21] }" }
+    - { ruling: R-43, op: edit-register, file: 05-relationship-register.yaml, change: "RENDITION_OF entry (kernel meaning) with fixture = K resveratrol PMC/PubMed renditions" }
+    - { ruling: R-10, op: change-edge-properties, field: "HAS_REGISTRATION_VERSION", from: StateEpisodeProperties, to: AssertedEdgeProperties }
+    - { ruling: R-10, op: edit-register, type: HAS_REGISTRATION_VERSION, change: "exclusive: true" }
+    - { ruling: R-15, op: confirm, change: "Publication is the asserter of what a multi-author paper states (D3 #37 closed)" }
+    - { ruling: R-56, op: confirm, change: "SexScope owner; MassBasis consumed from D1" }
+  D4:
+    - { ruling: R-26, op: change-edge-class, relationship: PERFORMED_BY_LAB, from: structural, to: "asserted (AssertedRecordedProperties, [CONNECT])", note: "curator inference uses basis CURATOR_CLASSIFICATION; answers D4 #42" }
+    - { ruling: R-26, op: edit-text, change: "identity-defining structural components stay structural only if the attach Assertion cites the defining span" }
+    - { ruling: R-52, op: remove-predicate, name: FIELD_NOT_REPORTED, note: "kernel convention registered by K" }
+    - { ruling: R-72, op: close-oq, oq: "#12", change: "devices reached through D6 Product -DELIVERS->; mark D8 rows resolved" }
+    - { ruling: R-94, op: edit-seam, changes: ["HAS_ITEM from K.Report", "drop union StepMeans", "RESOLUTION note: 'surface-form SourceLocator'"] }
+    - { ruling: R-94, op: edit-pattern, question: Q-D4-10, change: "rename 'RegulatoryStatus' to D8 names" }
+    - { ruling: R-50, op: edit-question, questions: [Q-D4-08], change: "retrieved -> assessment" }
+    - { ruling: R-55, op: edit-text, change: "test-and-sell reuses D7.conflict-relevance codes" }
+  D5:
+    - { ruling: R-57, op: remove-enum, enum: ThresholdComparator }
+    - { ruling: R-57, op: retype-field, type: ProtocolStep, field: thresholdComparator, to: QuantityComparator }
+    - { ruling: R-57, op: retype-field, type: UseConstraint, field: doseComparator, to: QuantityComparator }
+    - { ruling: R-58, op: remove-enum, enum: DosePeriod, note: "fields retype to D6 AmountBasis" }
+    - { ruling: R-63, op: edit-docstring, where: "LIFESTYLE_PRACTICE (lines 44, 285)", change: "remove time-restricted eating; eating patterns are D12 DietaryPattern" }
+    - { ruling: R-70, op: change-union, union: TargetMeasure, to: "Biomarker | Metric | Outcome | Condition" }
+    - { ruling: R-70, op: add-seam, row: "{ type: OPERATIONALIZED_BY, from: D5.Target, to: D2.Condition, direction: OUT, owner: this, questions: [Q-D3-04, Q-D3-05, Q-D5-20] }" }
+    - { ruling: R-70, op: request-fixture, change: "condition-coded target join (ASPREE hemorrhage / incident dementia -> a Target)" }
+    - { ruling: R-10, op: change-edge-properties, field: HAS_EDITION, from: StateEpisodeProperties, to: AssertedEdgeProperties }
+    - { ruling: R-10, op: edit-register, type: HAS_EDITION, change: "exclusive: true" }
+    - { ruling: R-26, op: change-edge-class, relationship: OPERATIONALIZED_BY, from: structural, to: "asserted (AssertedRecordedProperties)", note: "basis CURATOR_CLASSIFICATION" }
+    - { ruling: R-75, op: close-oq, oq: OQ-D5-39, change: "reversed: BLOCKED_BY -> D5.UseConstraint (owner other)" }
+    - { ruling: R-75, op: remove-seam, row: "K.Report ASSESSES D5.UseConstraint (CQ-RC-06)" }
+    - { ruling: R-76, op: edit-docstring, type: UseConstraint, change: "scope descriptors only, no level, no verdict; not a Claim; never vetted" }
+    - { ruling: R-80, op: rename-predicate, from: PROTOCOL_AUTHORED_BY, to: AUTHORED_BY, note: "registered by D3; edit 03 Q-D5-13 and fixtures" }
+    - { ruling: R-52, op: register-predicate, names: [INTENDED_FOR_TARGET, IMPROVES_TARGET, WORSENS_TARGET, NO_EFFECT_ON_TARGET, MIXED_EFFECT_ON_TARGET, CAUSES_ADVERSE_EFFECT, HAS_UPPER_LIMIT, HAS_AUTHORIZED_DOSE_RANGE, USE_CONSTRAINED_IN, INTERACTS_WITH], note: "sole registrar" }
+    - { ruling: R-84, op: remove-predicate, name: REPORTS_ADVERSE_EXPERIENCE }
+    - { ruling: R-83, op: remove-predicate, name: RECOMMENDS_AGAINST, note: "registered by D9; keep the 'rejected with a Target object' row as a rule note" }
+    - { ruling: R-52, op: remove-predicate, name: OFFERS_INTERVENTION, note: "registered by D6" }
+    - { ruling: R-53, op: remove-predicate, names: [HOLDS_ROLE, HOLDS_STAKE, RECEIVES_VALUE_FROM], note: "D7 typed relationship types; cite them in seams" }
+    - { ruling: R-85, op: extend-predicate, name: HAS_UPPER_LIMIT, subjects: [D1.Constituent], limitKind: [SCHEDULING_THRESHOLD, LABEL_WARNING_THRESHOLD] }
+    - { ruling: R-85, op: extend-predicate, name: HAS_AUTHORIZED_DOSE_RANGE, subjects: [D1.Constituent] }
+    - { ruling: R-85, op: extend-predicate, name: CAUSES_ADVERSE_EFFECT, subjects: [D12.FoodItem, D12.FoodCategory], sourceKind: [REFERENCE_MONOGRAPH, SPONTANEOUS_REPORT] }
+    - { ruling: R-85, op: extend-predicate, name: INTERACTS_WITH, subjects: [D12.FoodCategory] }
+    - { ruling: R-85, op: extend-predicate, names: [INTENDED_FOR_TARGET, IMPROVES_TARGET, WORSENS_TARGET, NO_EFFECT_ON_TARGET, MIXED_EFFECT_ON_TARGET], subjects: [D12.FoodCategory] }
+    - { ruling: R-88, op: extend-predicate, name: USE_CONSTRAINED_IN, qualifier: "section=BOXED_WARNING" }
+    - { ruling: R-85, op: edit-seam, change: "remove D11 from the targets consumer list" }
+    - { ruling: R-78, op: edit-seam, change: "HAS_INTEREST_IN -> HOLDS_ROLE | HOLDS_STAKE | RECEIVES_VALUE_FROM; Q-D5-13 pattern renamed (OQ-D7-29)" }
+    - { ruling: R-94, op: edit-seam, change: "OFFERS_INTERVENTION is predicate-only, registered by D6 (moves to predicateSeams)" }
+    - { ruling: R-23, op: edit-fixture, change: "Greenstone -> Mylan label versions: no cross-asserter supersedesUid; old Assertions leave 'current' when the label-version episode closes" }
+    - { ruling: R-35, op: edit-fixture, change: "contentHashBasis EXTRACTED_TEXT_BYTES -> TOOL_RENDITION" }
+    - { ruling: R-28, op: edit-register, type: STEP_USES, change: "list admissible target types (incl. D12 DietaryPattern, FoodCategory); executor-enforced" }
+    - { ruling: R-50, op: edit-question, questions: [Q-D5-18, Q-D5-25], change: "kinds per D10 (retrieved + published variant; assessment)" }
+    - { ruling: R-84, op: close-oq, oq: OQ-D5-03, change: "adverse effect = D2 Condition; no AdverseEffect node" }
+  D6:
+    - { ruling: R-58, op: add-enum-values, enum: AmountBasis, values: [PER_DOSE, PER_DAY, PER_WEEK, PER_CYCLE, PER_KG_BODY_WEIGHT_PER_DAY, PER_KG_DIET, SINGLE_DOSE, MEDIUM_CONCENTRATION, NOT_STATED, OTHER], note: "D6 owns the single amount-basis enum; consumers D3, D5, D12" }
+    - { ruling: R-62, op: remove-predicate, name: PREPARED_WITH, note: "use D12 HAS_RECIPE_INGREDIENT (subject Product admitted)" }
+    - { ruling: R-68, op: remove-predicate, name: MANUFACTURES, note: "registered by D7" }
+    - { ruling: R-68, op: rename-predicate, from: MANUFACTURER_STATEMENT, to: MANUFACTURER_UNNAMED, note: "registered by D7; re-key filing fixtures" }
+    - { ruling: R-52, op: remove-predicate, name: INTENDED_FOR_TARGET, note: "registered by D5" }
+    - { ruling: R-52, op: register-predicate, name: OFFERS_INTERVENTION, note: "sole registrar; subjects Offer | Product(SERVICE) | D7.Organization" }
+    - { ruling: R-52, op: extend-predicate, name: SUCCEEDED_BY, note: "registrar; add D7 Organization -> Organization pair" }
+    - { ruling: R-73, op: rename-predicate, from: SAMPLE_POSITIVE_OUTBREAK_STRAIN, to: SAMPLE_TESTED_POSITIVE_FOR, note: "registered by D8; fixture recall-moringa-mogo" }
+    - { ruling: R-52, op: confirm, change: "fixtures keep SOURCED_FROM_COUNTRY (now registered by D1)" }
+    - { ruling: R-30, op: remove-field, type: ComponentLineProperties, fields: [declaredNameVerbatim, formVerbatim, statementVerbatim], note: "move to authorizing Assertion: locator exact text / qualifiers declaredName:, form:, statement:" }
+    - { ruling: R-88, op: add-enum-values, enum: ProductKind, values: [PRESCRIPTION_DRUG] }
+    - { ruling: R-88, op: add-enum-values, enum: PanelKind, values: [PRESCRIBING_INFORMATION] }
+    - { ruling: R-88, op: add-enum-values, enum: ComponentLineRole, values: [ACTIVE_INGREDIENT] }
+    - { ruling: R-10, op: change-edge-properties, field: HAS_LABEL_VERSION, from: StateEpisodeProperties, to: AssertedEdgeProperties }
+    - { ruling: R-10, op: edit-register, type: HAS_LABEL_VERSION, change: "exclusive: true" }
+    - { ruling: R-18, op: close-oq, oq: OQ-D6-02, change: "K adopts the wording; LabelVersion keeps Subjectable" }
+    - { ruling: R-67, op: close-oq, oq: OQ-D6-29, change: "NAMES_RESPONSIBLE_PARTY stays typed" }
+    - { ruling: R-87, op: close-oq, oq: OQ-D6-30, change: "asserted label lines accepted" }
+    - { ruling: R-74, op: close-oq, oq: OQ-D6-13, change: "declined; package scope stays verbatim + recall/certification-scope Assessments" }
+    - { ruling: R-94, op: edit-seam, changes: ["RESULT_FOR -> QUALITY_RESULT_FOR", "COVERS has no Organization member", "CONCERNS has neither Device nor Patent", "OFFERS_INTERVENTION / CONSTRAINS_USE_OF rows refreshed (OQ-D6-25/28)"] }
+    - { ruling: R-94, op: edit-text, changes: ["03 line ~812: drop DocumentTextVersion", "05 line ~249: an image is a MediaWork, not a MediaAsset"] }
+    - { ruling: R-50, op: edit-question, questions: [Q-D6-03, Q-D6-09, Q-D6-22, CQ-AX-19], change: "kinds per D10" }
+    - { ruling: R-08, op: edit-question, questions: [CQ-PF-03], change: "becomes CQ-PF-03b (assessment, v2)" }
+  D7:
+    - { ruling: R-68, op: register-predicate, name: DISTRIBUTES, note: "moved from D8; non-label sources" }
+    - { ruling: R-68, op: edit-register, change: "MANUFACTURES, CONTRACT_MANUFACTURES_FOR, SUPPLIES_MATERIAL{exclusivity, buyer}, MANUFACTURER_UNNAMED{manufacturingKind}: sole registrar with aliases" }
+    - { ruling: R-79, op: remove-seam, row: "OPERATED_BY D9.Channel -> D7.Person | D7.Organization (union ChannelOperator)" }
+    - { ruling: R-79, op: remove-predicate, name: OPERATES_CHANNEL }
+    - { ruling: R-80, op: remove-predicate, name: AUTHORED }
+    - { ruling: R-81, op: remove-predicate, name: SPEAKS_AT, note: "use D13 INVOLVES {PRESENTER}" }
+    - { ruling: R-83, op: remove-predicate, names: [ENDORSES_PRODUCT, RECOMMENDS_USE], note: "RECOMMENDS_USE registered by D9" }
+    - { ruling: R-82, op: edit-register, change: "accept the D5 denial convention (DISCLOSES_INTEREST polarity NEGATIVE, speechAct DENIES); DISCLOSES_INTERESTS_OF third-party lists only" }
+    - { ruling: R-92, op: remove-predicate, names: [FINANCING_AMOUNT, DATE_OF_FIRST_SALE, INVESTOR_COUNT, FINANCING_AMOUNT_SOLD], note: "registered by D13; re-key fixtures amountKind/amountBasis" }
+    - { ruling: R-30, op: remove-field, type: RoleEdgeProperties, field: roleTitleVerbatim, note: "qualifier roleText:" }
+    - { ruling: R-30, op: remove-field, type: StakeEdgeProperties, field: stakeClassVerbatim, note: "qualifier stakeClass:" }
+    - { ruling: R-30, op: rename-field, type: ValueEdgeProperties, from: currency, to: unitCode, note: "value iso4217:<CODE>" }
+    - { ruling: R-67, op: remove-seam, row: "COVERS D8.CertificationListing -> D7.Organization" }
+    - { ruling: R-67, op: edit-seam, change: "drop CQ-MF-01 citations on ISSUED_BY rows" }
+    - { ruling: R-67, op: close-oq, oq: OQ-D7-05, change: "no Facility node; D8 future owner" }
+    - { ruling: R-69, op: close-oq, oqs: [OQ-D7-32, OQ-D7-33] }
+    - { ruling: R-19, op: edit-pattern, questions: [CQ-CL-05, Q-D7-06], change: "T = OCCURS_IN MediaWork.publishedAt, snapshot fallback; in-container disclosure via Source -RENDITION_OF-> work; OVERLAP reads a.validObservedAt via r.assertionUid" }
+    - { ruling: R-55, op: register-predicate, note: "assessment subkind, not a predicate", name: "D7.conflict-relevance", conclusionCodes: [DIRECT, INDIRECT, NOT_RELEVANT, UNDETERMINED], facets: { relevanceBasis: D7, temporalOverlap: D7, disclosureFinding: "D9-contributed (union of D7 and D9 lists)", disclosurePlacement: D9-contributed, completeness: D9-contributed } }
+    - { ruling: R-46, op: close-oq, oq: OQ-D7-34 }
+    - { ruling: R-20, op: close-oq, oq: OQ-D7-15 }
+    - { ruling: R-50, op: edit-question, questions: [Q-D7-22], change: "materialized -> retrieved" }
+    - { ruling: R-60, op: edit-seam, change: "re-pin frontiers @0.2.1" }
+  D8:
+    - { ruling: R-57, op: remove-enum, enum: SpecComparator, note: "fields retype to D1 QuantityComparator; map NOT_LESS_THAN->GTE, NOT_MORE_THAN->LTE, RANGE->BETWEEN, EQUALS->EQ, ABSENT_IN->ABSENT" }
+    - { ruling: R-72, op: change-union, union: RegulatoryRecordTopic, to: "ChemicalSubstance | IngredientMaterial | Product | Lot" }
+    - { ruling: R-72, op: change-union, union: LegalStatusSubject, to: "ChemicalSubstance | IngredientMaterial | Product | Patent" }
+    - { ruling: R-72, op: edit-pattern, question: Q-D8-23, change: "STATUS_OF Product -DELIVERS-> Device" }
+    - { ruling: R-72, op: close-oq, oq: OQ-D8-29, change: "Device left both unions; two free slots" }
+    - { ruling: R-73, op: remove-union, union: QualityResultFor, note: "QualityResult.resultFor typed Lot" }
+    - { ruling: R-73, op: remove-union, union: PatentTopic, note: "Patent.concerns typed ChemicalSubstance" }
+    - { ruling: R-73, op: register-predicate, name: SAMPLE_TESTED_POSITIVE_FOR, subjects: [D6.Product, Lot], object: D1.Taxon }
+    - { ruling: R-73, op: request-fixture, items: ["COVERS -> ProductVariant (NSF variant listing, CQ-PF-03a)", "STATUS_OF -> Product (LNHPD NPN, CQ-MF-02)"] }
+    - { ruling: R-68, op: rename-predicate, from: SUPPLIES_INGREDIENT, to: SUPPLIES_MATERIAL, note: "registered by D7" }
+    - { ruling: R-68, op: rename-predicate, from: EXCLUSIVE_SUPPLIER_OF, to: SUPPLIES_MATERIAL, qualifier: "exclusivity=SOLE" }
+    - { ruling: R-68, op: remove-predicate, names: [MANUFACTURES, CONTRACT_MANUFACTURES_FOR, DISTRIBUTES], note: "registered by D7" }
+    - { ruling: R-52, op: rename-predicate, from: "D8.<NAME>", to: "<NAME>", note: "drop module prefix on all D8.* entries (D8.CGMP_FINDING, D8.INSPECTION_WINDOW, D8.ISSUED_AT, ...)" }
+    - { ruling: R-52, op: remove-predicate, names: [RATES_CLAIM, INTENDED_FOR_TARGET], note: "registered by K / D5" }
+    - { ruling: R-88, op: add-enum-values, enum: LegalStatusKind, values: [PRESCRIPTION_ONLY] }
+    - { ruling: R-88, op: extend-predicate, name: HAS_APPROVED_INDICATION, subjects: [D6.Product, D1.ChemicalSubstance], object: D2.Condition }
+    - { ruling: R-93, op: register-predicate, name: HAS_ACTION_LEVEL, subject: D1.ChemicalSubstance, objects: [D12.FoodCategory, D12.FoodItem], qualifiers: ["status=PROPOSED|ADOPTED", jurisdiction, basis] }
+    - { ruling: R-93, op: register-predicate, name: HAS_CLAIM_CONDITION, subject: RegulatoryRecord, note: "product-class conditions take the Claim as subject with productClass=" }
+    - { ruling: R-23, op: close-oq, oq: OQ-D8-34, change: "asserter = labeler of record; supersession same-asserter only" }
+    - { ruling: R-31, op: close-oq, oq: OQ-D8-31, change: "RATES_CLAIM HAS_OBJECT optional = rating instrument record" }
+    - { ruling: R-16, op: edit-fixture, change: "COA assertions asserted by the issuing lab, not the executor agent" }
+    - { ruling: R-50, op: edit-question, questions: [Q-D8-19], change: "published -> retrieved (+ published variant)" }
+    - { ruling: R-08, op: edit-question, questions: [CQ-PF-03], change: "becomes CQ-PF-03a (retrieved, v1)" }
+    - { ruling: R-66, op: edit-text, change: "RegulatoryPathway consumed by D13 (sharedVocabularies); publish the OQ-D8-02 mapping in final/vocabularies" }
+  D9:
+    - { ruling: R-43, op: change-edge-properties, field: "MediaWork.renditions (RENDITION_OF)", from: StructuralEdgeProperties, to: AssertedRecordedProperties, note: "class asserted; kernel meaning; docstring" }
+    - { ruling: R-52, op: register-predicate, names: [RECORDING_OF, RECOMMENDS_USE, RECOMMENDS_AGAINST, DISCLOSES_INTEREST, OPERATED_BY, REPUBLISHES], note: "sole registrar" }
+    - { ruling: R-65, op: edit-register, file: 06-node-register.yaml, where: "mergedInto row 'Conference'", change: "Conference -> D9 Channel EVENT_SERIES + D13 DATA_PRESENTATION Events (edition/session qualifiers on PRESENTED_AT_CONFERENCE)" }
+    - { ruling: R-65, op: close-oq, oq: D13-2 }
+    - { ruling: R-19, op: edit-docstring, where: "MediaWork.occurrences (OCCURS_IN)", change: "every Assertion whose evidence is in this work, not only CLAIM" }
+    - { ruling: R-20, op: close-oq, oqs: [K-2, K-3], change: "kernel conventions recorded" }
+    - { ruling: R-49, op: edit-fixture, change: "remove interim OTHER discourse-metric Assessments; metrics are projection-cache properties" }
+    - { ruling: R-17, op: confirm, change: "Chunk keeps labels ['Chunk'] (close C-6, C-10)" }
+    - { ruling: R-79, op: confirm, change: "OPERATED_BY / REPUBLISHES predicate-only (close C-9)" }
+    - { ruling: R-15, op: edit-text, change: "bylined web article asserted by its single named author, else the site owner" }
+    - { ruling: R-94, op: edit-text, change: "04 header: drop Mention from the kernel types list" }
+    - { ruling: R-55, op: edit-text, change: "disclosure facets contributed to D7.conflict-relevance; re-key fixtures to merged disclosureFinding list" }
+    - { ruling: R-50, op: edit-question, questions: [CQ-CL-07], change: "retrieved -> assessment" }
+  D10:
+    - { ruling: R-47, op: edit-text, change: "withdraw 'Association replaces AFFECTS_MECHANISM' (#15, #37); Q-D2-18 ranking reads Association EVIDENCE_AGGREGATE" }
+    - { ruling: R-46, op: edit-docstring, type: DecisionCriterion, field: publisherUid, change: "cache only; Q-D10-10 reaches the publisher via the criterion set's authorizing Assertion ASSERTED_BY" }
+    - { ruling: R-48, op: change-labels, type: Association, labels: ["Association"] }
+    - { ruling: R-48, op: edit-docstring, where: ASSOCIATES, change: "no score on the edge; score on the node only; superseded uncited Associations may be removed" }
+    - { ruling: R-83, op: rename-predicate, from: RECOMMENDS_FOR, to: RECOMMENDS_USE, note: "registered by D9" }
+    - { ruling: R-83, op: remove-predicate, name: RECOMMENDS_AGAINST, note: "registered by D9" }
+    - { ruling: R-83, op: edit-pattern, questions: [Q-D10-08, Q-D10-03], change: "guideline branches: WORSENS_TARGET | NO_EFFECT_ON_TARGET (or USE_CONSTRAINED_IN) with speechAct CAUTIONS | RECOMMENDS; no RECOMMENDS_AGAINST -> Target" }
+    - { ruling: R-75, op: close-oq, oq: "#19", change: "BLOCKED_BY -> UseConstraint | Assessment confirmed" }
+    - { ruling: R-60, op: edit-seam, change: "re-pin targets @0.2.2 and frontiers @0.2.1; acknowledge DecisionCriterion.targetKeys exception (OQ-D5-47)" }
+    - { ruling: R-94, op: remove-seam, row: "ASSOCIATES -> D12.FoodItem (Q-D12-20 citation; OQ-D12-29)" }
+    - { ruling: R-94, op: edit-text, change: "03 line ~744: container from OCCURS_IN" }
+    - { ruling: R-50, op: edit-text, file: answer-kind-table.md, change: "final kinds; CQ-PF-03 split per R-08; re-run full table" }
+    - { ruling: R-15, op: edit-fixture, change: "replace first-author asserters with the D3 Publication" }
+    - { ruling: R-51, op: edit-text, change: "projection rule: rule-based per-record classifications are CALCULATED Assertions (NOVA pattern)" }
+    - { ruling: R-49, op: edit-text, change: "discourse metrics are projection-cache properties, not Associations (no DISCOURSE_METRIC kind)" }
+  D11:
+    - { ruling: R-82, op: remove-predicate, names: [FUNDED_BY, DISCLOSES_SUPPORT_FROM, DECLARES_NO_COMPETING_INTEREST], note: "use D3 FUNDED_BY and D9 DISCLOSES_INTEREST (denial = polarity NEGATIVE, speechAct DENIES)" }
+    - { ruling: R-52, op: rename-predicate, from: "lowercase entries", to: SCREAMING_SNAKE }
+    - { ruling: R-17, op: change-labels, type: CaptureAttempt, labels: ["CaptureAttempt", "Occurrence"] }
+    - { ruling: R-41, op: confirm, change: "CaptureAttempt kept: FAILED|PARTIAL only, privacyClass INTERNAL, not Subjectable" }
+    - { ruling: R-39, op: edit-text, change: "captureMethod = <action-space id>/<tool version>; CaptureAttempt.toolId = registry id; provide the 402-alias rewrite map" }
+    - { ruling: R-35, op: edit-text, change: "projection registry (h2t-v1, xml-textcontent/v1, canonical-json, EDGAR tag strip) in the action space; TOOL_RENDITION code" }
+    - { ruling: R-50, op: edit-question, questions: [Q-D11-22], change: "materialized by a PROJECTION Activity; Report{PROFILE} only when BellLabs publishes coverage" }
+    - { ruling: R-44, op: edit-fixture, change: "resveratrol revision statuses -> REVISES by those asserters" }
+    - { ruling: R-42, op: close-oq, change: "Identifier.registrationStatus declined" }
+  D12:
+    - { ruling: R-62, op: extend-predicate, name: HAS_RECIPE_INGREDIENT, subjects: [FoodItem, D6.Product] }
+    - { ruling: R-52, op: remove-predicate, names: [INTENDED_FOR_TARGET, IMPROVES_TARGET, WORSENS_TARGET, NO_EFFECT_ON_TARGET, MIXED_EFFECT_ON_TARGET, CAUSES_ADVERSE_EFFECT], note: "registered by D5" }
+    - { ruling: R-63, op: edit-docstring, type: DietaryPattern, change: "only node for eating patterns incl. TRE and fasting-mimicking; admissible STEP_USES target" }
+    - { ruling: R-63, op: close-oq, oq: OQ-D12-03 }
+    - { ruling: R-94, op: edit-seam, changes: ["RESULT_FOR -> QUALITY_RESULT_FOR", "drop StepMeans note; DietaryPattern and FoodCategory are admissible STEP_USES targets"] }
+    - { ruling: R-87, op: close-oq, oq: OQ-D12-32 }
+    - { ruling: R-93, op: edit-pattern, questions: [Q-D12-06, Q-D12-18], change: "use D8 HAS_ACTION_LEVEL / HAS_CLAIM_CONDITION (close OQ-D12-31)" }
+    - { ruling: R-51, op: edit-pattern, question: Q-D12-14, change: "return basisKind and derivationRule; NOVA = CALCULATED Assertion authorizing IN_FOOD_CATEGORY" }
+    - { ruling: R-60, op: edit-seam, change: "re-pin targets @0.2.2" }
+    - { ruling: R-44, op: edit-fixture, change: "PREDIMED revision status -> REVISES" }
+    - { ruling: R-50, op: edit-question, questions: [Q-D12-08], change: "assessment -> retrieved (+ published variant)" }
+  D13:
+    - { ruling: R-44, op: remove-enum-values, enum: EventKind, values: [PUBLICATION] }
+    - { ruling: R-44, op: remove-enum-values, enum: EventRole, values: [AUTHOR, PUBLISHER] }
+    - { ruling: R-44, op: edit-text, change: "RETRACTION Event only as a curated frontier milestone: EVENT_ABOUT -> D3.Publication, clock cites the notice locator, no second date Assertion" }
+    - { ruling: R-44, op: edit-fixture, fixture: lesne-2006-retraction, change: "drop INVOLVES PUBLISHER/AUTHOR rows (authors via D3 AUTHORED_BY on the Publication); a09-a11 statuses -> REVISES" }
+    - { ruling: R-66, op: remove-enum, enums: [ApprovalPathway, DesignationType] }
+    - { ruling: R-66, op: retype-field, type: Event, fields: [approvalPathway, designationType], to: RegulatoryPathway, note: "map per D8 OQ-D8-02; remap vocab-frontiers breakthroughCriteria and FIELD Assertions" }
+    - { ruling: R-66, op: edit-text, change: "INVOLVES {REGULATOR, APPLICANT, ISSUER} only when no DOCUMENTED_BY_RECORD (executor-enforced); never re-assert a D3/D8 date; process chains from the D8 application identifier, not LEADS_TO" }
+    - { ruling: R-69, op: edit-text, files: [05-relationship-register.yaml, 09-reasoning.md], change: "Award-record rule (AWARD Event is a milestone, EVENT_ABOUT -> D7.Award, no amount) and investor rule (INVOLVES INVESTOR; HOLDS_STAKE only when stated)" }
+    - { ruling: R-69, op: add-seam, row: "{ type: EVENT_ABOUT (Assertion.predicate), from: D13.Event, to: D7.Award }", note: "predicateSeams list" }
+    - { ruling: R-92, op: extend-predicate, name: FINANCING_AMOUNT, amountKind: [ROUND_TOTAL], amountBasis: [REMAINING] }
+    - { ruling: R-92, op: register-predicate, names: [DATE_OF_FIRST_SALE, INVESTOR_COUNT], subject: Event }
+    - { ruling: R-52, op: remove-predicate, names: [HAS_REVISION_STATUS, RECORDING_OF], note: "registered by K / D9" }
+    - { ruling: R-21, op: edit-fixture, fixtures: ["lesne-2006-retraction (a10, a11)", bioage], change: "derivedFrom= qualifier -> (a)-[:DERIVED_FROM]->(primary), basisKind CITED_FROM_PRIOR_WORK" }
+    - { ruling: R-21, op: edit-pattern, question: Q-D13-22, change: "count origins by collapsing DERIVED_FROM chains" }
+    - { ruling: R-22, op: edit-register, types: [LEADS_TO, RESPONDS_TO], change: "projectionGate: SUPPORT" }
+    - { ruling: R-25, op: edit-register, type: ON_FRONTIER, change: "basis CURATOR_CLASSIFICATION" }
+    - { ruling: R-35, op: edit-fixture, change: "contentHashBasis NORMALIZED_TEXT -> CANONICAL_PROJECTION (h2t-v1)" }
+    - { ruling: R-94, op: edit-text, change: "03 line ~188: drop DocumentTextVersion / Episode" }
+    - { ruling: R-60, op: edit-seam, change: "re-pin targets @0.2.2" }
+    - { ruling: R-65, op: confirm, change: "PRESENTED_AT_CONFERENCE -> D9.Channel; no Event per edition" }

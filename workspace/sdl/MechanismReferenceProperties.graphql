@@ -1,0 +1,21 @@
+"""
+Asserted reference statement (PART_OF_MECHANISM, PARTICIPATES_IN), recorded time only: one relationship per
+recorded-time episode, authorized by exactly one Assertion per authority record and release (asserter = the authority
+or, for BELLLABS_CURATED, the curation Agent; locator = JSON_POINTER into the authority record or the curation record).
+The BellLabs hallmark mapping is a curation file held as a kernel Source with one snapshot per version; its mapping
+Assertions use basisKind CURATOR_CLASSIFICATION (R-25, R-26).
+The kernel AssertedRecordedProperties fields come first, verbatim (K rule M11). `referenceRelease` is the authority
+release the authorizing Assertion read (e.g. Reactome stIdVersion R-HSA-196807.8, GO release date, GenAge build 21);
+when a new release no longer states the edge, its episode is closed (`recordedTo`), never deleted.
+Questions: Q-D2-11, Q-D2-02, Q-D2-12.
+"""
+type MechanismReferenceProperties @relationshipProperties {
+  relationshipUid: String!
+  assertionUid: String!
+  recordedFrom: DateTime!
+  recordedTo: DateTime
+  lastWriterRunId: String
+  referenceScheme: MechanismReferenceScheme
+  referenceRelease: String
+  participantRole: ParticipantRole
+}

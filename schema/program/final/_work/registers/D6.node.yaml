@@ -1,0 +1,137 @@
+version: 1
+module: D6
+# Source: packets/D6/06-node-register.yaml (sha256 b27093a8…), edited by the S module editor for D6 on 2026-10-08 per
+# final/decision-report.md and final/_work/rulings.yaml (global + modules.D6). Every entry keeps the 01-PACKET-CONTRACT
+# fields and adds `module: D6`. Synthesis edits:
+#   R-03  `mutations` read as { graphql: none, executor: … } (GraphQL exposes none; the executor is the only writer).
+#   R-18  LabelVersion keeps Subjectable under the kernel versioned-state rule (OQ-D6-02 closed).
+#   R-08  CQ-PF-03 in D6 is CQ-PF-03b.  R-74  Package is not added to D8 unions (OQ-D6-13 closed).
+#   R-94  an image is a D9 MediaWork, not a MediaAsset.
+# Node types unchanged (6). identifierSchemes now resolve in final/vocabularies/identifier-schemes.yaml.
+# Packet header (A6 model stage, 2026-10-08; adversarial-review stage 2026-10-08), kept:
+# identifierSchemes use codes from packets/K/identifier-schemes.yaml (A1 worktree); codes marked (requested) are asked
+# for in 11-open-questions.md (OQ-D6-05). Identifiers attach through the kernel (Identifier.identifies, HAS_IDENTIFIER
+# episodes with IdentifierLinkProperties); nothing is declared on D6 types.
+# All six types implement Entity & Subjectable (assertion subject/object, identifier holder, assessment target).
+# mutations: none on any type (@mutation(operations: [])); the executor is the only writer (ADR 0003). "create/update"
+# below names what the executor's intents may do; delete is never allowed (nothing is deleted).
+
+nodes:
+  - name: Product
+    module: D6
+    uidToken: product
+    identityKeys: [firstCapturedBrandUid (the brand the product was first captured under; fixed at minting), marketedName (normalized), jurisdiction (only when the marketed name differs by market)]
+    identityNote: "later BRANDED_AS episodes (acquisition, relaunch under another brand) never re-key or re-mint the Product; the brand history lives on BRANDED_AS episodes, not in the key (adversarial-review stage)"
+    identifierSchemes: [STOREFRONT_PRODUCT_ID (requested), WIKIDATA]
+    whyNode: >-
+      Q-D6-16 / Q-D6-20 (organization → brand → products, by role), Q-D6-03 and Q-D6-22 (rank / avoid products marketed
+      for target T: target claims are Assertions whose subject is the product line), Q-D6-18 (marketing claims across
+      channels), CQ-AX-25 (products containing C), and the inbound seams D8 (recall, certification, regulatory status),
+      D12 (HAS_REFERENCE_FOOD for prepared foods), D5 (protocol step uses, use constraints) all join through it.
+    filterProperties: [productKind, marketedName, jurisdiction]
+    otherProperties: 0
+    archetype: enduring identity (catalog entity)
+    mutations: { graphql: none, executor: "create; update; never delete" }
+
+  - name: ProductVariant
+    module: D6
+    uidToken: product-variant
+    identityKeys: [productUid, strengthVerbatim, dosageForm, flavor, jurisdiction]
+    identifierSchemes: [SKU, STOREFRONT_VARIANT_ID (requested), NPN, NDC]
+    whyNode: >-
+      CQ-ID-01 / CQ-ID-02 / CQ-AX-17 (is the studied material the sold variant; which label was effective when it was
+      administered — D3 ADMINISTERS points here), D8 LOT_OF points here, and CQ-ID-05 compares label versions within
+      one variant. Capsule vs stick pack, 300 mg vs 500 mg, US vs Canada are filters every ranking question applies.
+    filterProperties: [dosageForm, jurisdiction, flavor]
+    otherProperties: 1
+    archetype: enduring identity (realization)
+    mutations: { graphql: none, executor: "create; update; never delete" }
+
+  - name: Package
+    module: D6
+    uidToken: package
+    identityKeys: [variantUid, packageKind, unitCount, netQuantityValue, netQuantityUnit]
+    identifierSchemes: [GTIN, SKU, DSLD (via its label versions), FDC_ID]
+    whyNode: >-
+      Q-D6-02 (price per dose divides by unitCount and joins offers to labels here), Q-D6-15 (GTIN/UPC/ASIN clusters and
+      replacement over time are identifier episodes on the package), Q-D6-04 / Q-D6-05 (recall and lot scope), Q-D6-01 /
+      CQ-ID-02 (labels attach to packages over time), CQ-CM-02 (listings resolve to packages), Q-D6-14 (kits).
+    filterProperties: [packageKind, unitCount, netQuantityValue, netQuantityUnit]
+    otherProperties: 2
+    archetype: enduring identity (sellable configuration)
+    mutations: { graphql: none, executor: "create; update; never delete" }
+
+  - name: LabelVersion
+    module: D6
+    uidToken: label-version
+    identityKeys: [responsibleBrandOrOrgUid (as printed on this version), panelKind, jurisdiction, labelVersionCode (when printed) else contentDigest]
+    identityNote: "a label version is immutable, so its key never changes; a later re-resolution of the printed party changes the NAMES_RESPONSIBLE_PARTY assertion, not the LabelVersion"
+    identifierSchemes: [DSLD]
+    whyNode: >-
+      Q-D6-01 and CQ-ID-05 ask about label versions (what is declared, since when, what changed), not about each capture:
+      one version is seen in four sources (DSLD, iHerb table, Amazon text, brand page). CQ-AX-25, CQ-PF-01, Q-D6-08,
+      Q-D6-09, Q-D6-12 and Q-D6-21 filter and traverse through its component lines; Q-D6-10 filters its allergen lists;
+      CQ-PF-03b checks its seals; change-kind, certification-scope and max-intake Assessments are ABOUT it and D1's
+      CALCULATED amounts have it as subject — which is why it implements Subjectable: the kernel adopted D6's wording
+      (a versioned state that carries a registry identifier, or is the subject/object of an Assertion or the target of
+      an Assessment, implements Entity & Subjectable; R-18, OQ-D6-02 closed).
+    filterProperties: [panelKind, labelVersionCode, jurisdiction, compositionDigest, contentDigest, maxDailyServings, servingsPerContainer, containsAllergens, mayContainAllergens, seals, responsiblePartyRole, lastObservedAt]
+    otherProperties: 10
+    archetype: versioned state (content payload; time on the HAS_LABEL_VERSION episode)
+    mutations: { graphql: none, executor: "create; update observation cache fields only (content is immutable); never delete" }
+
+  - name: MerchantListing
+    module: D6
+    uidToken: listing
+    identityKeys: [hostDomain, hostItemId]
+    identifierSchemes: [ASIN, RETAILER_ITEM_ID (requested), STOREFRONT_PRODUCT_ID (requested)]
+    whyNode: >-
+      CQ-CM-02 (which listings/offers existed for a package on date D; is the match resolved or proposed), Q-D6-05
+      (which current listings may sell a recalled package), Q-D6-06 / Q-D6-20 (channels by host), Q-D6-19 (retailer
+      discontinued/successor statements are made on listings), CQ-PF-02 (listing copy vs label).
+    filterProperties: [listingKind, hostDomain, hostItemId, parentHostItemId, lastObservedAt]
+    otherProperties: 3
+    archetype: enduring identity (host catalog entry)
+    mutations: { graphql: none, executor: "create; update; never delete" }
+
+  - name: Offer
+    module: D6
+    uidToken: offer
+    identityKeys: [listingUid, sellerAccountIdVerbatim or 'host', purchaseMode, jurisdiction, condition]
+    identifierSchemes: [MARKETPLACE_SELLER_ID (requested, attached to the seller Organization by D7 and echoed here)]
+    whyNode: >-
+      CQ-CM-01 (seller of record vs fulfiller vs host per offer), CQ-CM-03 / Q-D6-02 / Q-D6-13 (every price and
+      availability Assertion has an Offer as subject; one-time vs subscription are separate offers), CQ-CM-05 / CQ-AX-06
+      (offer ended vs observation stopped), Q-D6-06 (authorized-channel Assessments are about offers), CQ-CM-04 (D9
+      tracked links point at offers).
+    filterProperties: [purchaseMode, jurisdiction, fulfillmentKind, lastObservedAt]
+    otherProperties: 6
+    archetype: enduring identity (commercial proposition; prices are Assertions about it)
+    mutations: { graphql: none, executor: "create; update; never delete" }
+
+# Types considered and cut (research-stage candidates and pinned types not absorbed).
+deferred:
+  - { name: InventoryItem, reason: "no public source exposes merchant inventory records; no question ≥ value 2" }
+  - { name: IndividualUnit, reason: "a physically tested unit is a D8 sample (QualityResult on Lot or Product)" }
+  - { name: AffiliateLink, reason: "D9 owns tracked links as media/occurrence artifacts (they are published inside pages and episodes); D9 declares the edge into D6 Offer/MerchantListing (OQ-D6-07)" }
+  - { name: CommerceMatch, reason: "kernel Assessment (assessmentKind EQUIVALENCE or OTHER; subkinds D6.listing-to-package, D6.identifier-equivalence, D6.recall-scope, D6.authorized-channel, D6.change-kind, D6.seller-account-to-organization; claim-vs-label verdicts are kernel SUPPORT Adjudications, no D6 subkind); directive 3.6 and A1's ownership map" }
+  - { name: ProductLot, reason: "D8 owns Lot (coordinator default; D8's recall/COA/certification questions all join on it); D8 declares LOT_OF → Product | ProductVariant (Package declined, R-74; OQ-D6-13 closed)" }
+
+# Pinned types from W04 and W15 absorbed into a D6 type (every pinned W04/W15 type appears here or under deferred).
+mergedInto:
+  - { name: Product, into: Product, how: "kept; status (pinned ProductStatus, a drug-pipeline vocabulary) dropped; ProductKind rewritten (adds PREPARED_FOOD, BEVERAGE, OTC_DRUG, SERVICE)" }
+  - { name: ProductVariant, into: ProductVariant, how: "kept" }
+  - { name: PackageConfiguration, into: Package, how: "renamed; packageKind added" }
+  - { name: Bundle, into: Package, how: "packageKind KIT/MULTIPACK/BUNDLE + componentSummary; components via predicate-only CONTAINS_PACKAGE" }
+  - { name: BundleComponent, into: Package, how: "CONTAINS_PACKAGE assertion qualifiers (quantity, role)" }
+  - { name: ProductSnapshot, into: LabelVersion, how: "compatibility payload dropped (R1); product facts that change over time are label versions or Assertions" }
+  - { name: FormulationVersion, into: LabelVersion, how: "compositionDigest + DECLARES_COMPONENT lines; time on HAS_LABEL_VERSION. Our only evidence of composition is a declaration; equal compositionDigest = same formulation; measured content is D8. Promote back to a node if D3 must point a study arm at a composition no label declared (brand-supplied trial material)." }
+  - { name: IngredientComponent, into: LabelVersion, how: "DECLARES_COMPONENT edge with ComponentLineProperties (role, order, parent, amount, unit, referent, basis, %DV, form)" }
+  - { name: LabelSnapshot, into: LabelVersion, how: "content part becomes LabelVersion; the capture stays a kernel SourceSnapshot (+ D9 MediaWork for images, R-94); many snapshots evidence one version" }
+  - { name: LabelDeclaration, into: LabelVersion, how: "composition rows → component lines; statements (directions, warnings, allergens, seals) → LabelVersion properties; anything else → Assertions with locators" }
+  - { name: QuantityDeclaration, into: LabelVersion, how: "amount, unitCode, amountBasis, amountReferent, dailyValuePercent on ComponentLineProperties" }
+  - { name: ServingDefinition, into: LabelVersion, how: "servingSizeValue/Unit/Verbatim, servingsPerContainer, min/maxDailyServings" }
+  - { name: MerchantListing, into: MerchantListing, how: "kept; host as hostDomain property" }
+  - { name: Offer, into: Offer, how: "kept; fulfiller as fulfillmentKind; subscription fields absorbed" }
+  - { name: SubscriptionPlan, into: Offer, how: "purchaseMode + subscriptionTermsVerbatim + subscriptionApp; term history via OFFER_SUBSCRIPTION_TERMS assertions" }
+  - { name: PriceObservation, into: Offer, how: "kernel typed-literal Assertions with the Offer as subject (predicate OFFER_PRICE_<KIND>, valueNumber, unitCode iso4217:<CODE>, validFrom / validObservedAt / snapshot observedAt = observed instant, asserter = merchant/tracker/index, one locator). A published index price (no seller) is MARKET_REFERENCE_PRICE on the Product/Variant/Package and a tracker aggregate over third-party sellers is on the MerchantListing — never an Offer (adversarial-review stage). Promote back to a node if CQ-CM-03/Q-D6-02 need typed per-observation fields the Assertion lacks or price scans exceed budget (05 predicateOnly)." }

@@ -1,0 +1,149 @@
+# Identifier scheme register — SEED (K, Wave 0, 2026-10-08; model stage additions 2026-10-08, version 2).
+# Kernel rule: an Identifier is (scheme, issuer, normalized value); the same (scheme, value) from two issuers is two
+# Identifiers and never establishes identity; names never establish identity. `code` is what Identifier.scheme stores
+# (upper case) and what a domain lists in 06-node-register.yaml identifierSchemes.
+# Patterns are validation hints for the executor's normalizer, not authority; the authority is the issuer's registry.
+# A8 / D11 supplies the bridge table (which tool maps which scheme to which, with what readiness) and may amend rows;
+# domains request new schemes in their 11-open-questions.md (owner: kernel).
+version: 2
+status: seed
+# Rows added in version 2 carry `status: requested` (asked for by a domain or the K research stage; patterns marked
+# null are left for D11/A8 to verify against Bioregistry or the issuer). `crosswalk` (end of file) holds the Bioregistry
+# prefix and Wikidata property only where a capture verified them.
+fields: [code, name, issuer, pattern, normalization, resolver, domains, bridgesTo, status, requestedBy]
+schemes:
+  # literature and sources
+  - { code: PMID, name: PubMed identifier, issuer: NLM, pattern: '^[1-9][0-9]{0,8}$', normalization: 'strip "PMID:" prefix and whitespace', resolver: 'https://pubmed.ncbi.nlm.nih.gov/{value}/', domains: [D3, D9], bridgesTo: [DOI, PMCID] }
+  - { code: PMCID, name: PubMed Central identifier, issuer: NLM, pattern: '^PMC[0-9]+$', normalization: 'upper case; add "PMC" prefix if missing', resolver: 'https://pmc.ncbi.nlm.nih.gov/articles/{value}/', domains: [D3, D9], bridgesTo: [PMID, DOI] }
+  - { code: DOI, name: Digital Object Identifier, issuer: 'DOI registration agency (Crossref, DataCite, ...)', pattern: '^10\.[0-9]{4,9}/\S+$', normalization: 'strip "https://doi.org/", "doi:"; lower case (DOIs are case-insensitive)', resolver: 'https://doi.org/{value}', domains: [D3, D9], bridgesTo: [PMID, OPENALEX] }
+  - { code: OPENALEX, name: OpenAlex work / author / institution id, issuer: OpenAlex, pattern: '^[WAISFCP][0-9]+$', normalization: 'strip "https://openalex.org/"; upper-case prefix letter', resolver: 'https://openalex.org/{value}', domains: [D3, D7, D9], bridgesTo: [DOI, ORCID, ROR] }
+  - { code: ISSN, name: International Standard Serial Number, issuer: ISSN International Centre, pattern: '^[0-9]{4}-[0-9]{3}[0-9X]$', normalization: 'insert hyphen; upper-case check character X', resolver: 'https://portal.issn.org/resource/ISSN/{value}', domains: [D9], bridgesTo: [] }
+  - { code: ISBN, name: International Standard Book Number (13), issuer: ISBN agency, pattern: '^97[89][0-9]{10}$', normalization: 'remove hyphens and spaces; convert ISBN-10 to ISBN-13', resolver: null, domains: [D9], bridgesTo: [] }
+  # trials
+  - { code: NCT, name: ClinicalTrials.gov NCT number, issuer: NLM ClinicalTrials.gov, pattern: '^NCT[0-9]{8}$', normalization: upper case, resolver: 'https://clinicaltrials.gov/study/{value}', domains: [D3], bridgesTo: [EUCT, ISRCTN, PMID] }
+  - { code: EUCT, name: EU CT number (CTIS), issuer: European Medicines Agency, pattern: '^[0-9]{4}-[0-9]{6}-[0-9]{2}-[0-9]{2}$', normalization: as published, resolver: null, domains: [D3], bridgesTo: [EUDRACT, NCT] }
+  - { code: EUDRACT, name: EudraCT number, issuer: European Medicines Agency, pattern: '^[0-9]{4}-[0-9]{6}-[0-9]{2}$', normalization: as published, resolver: null, domains: [D3], bridgesTo: [EUCT, NCT] }
+  - { code: ISRCTN, name: ISRCTN registry number, issuer: ISRCTN registry, pattern: '^ISRCTN[0-9]{8}$', normalization: 'upper case; add prefix if missing', resolver: 'https://www.isrctn.com/{value}', domains: [D3], bridgesTo: [NCT] }
+  # substances and compounds
+  - { code: UNII, name: FDA Unique Ingredient Identifier, issuer: FDA GSRS, pattern: '^[0-9A-Z]{10}$', normalization: upper case, resolver: 'https://precision.fda.gov/uniisearch/srs/unii/{value}', domains: [D1, D8], bridgesTo: [CAS_RN, PUBCHEM_CID, INCHIKEY] }
+  - { code: CAS_RN, name: CAS Registry Number, issuer: Chemical Abstracts Service, pattern: '^[0-9]{2,7}-[0-9]{2}-[0-9]$', normalization: 'insert hyphens; validate check digit', resolver: null, domains: [D1], bridgesTo: [UNII, PUBCHEM_CID] }
+  - { code: PUBCHEM_CID, name: PubChem compound id, issuer: NCBI PubChem, pattern: '^[1-9][0-9]*$', normalization: 'strip "CID" prefix', resolver: 'https://pubchem.ncbi.nlm.nih.gov/compound/{value}', domains: [D1], bridgesTo: [INCHIKEY, CAS_RN, UNII, CHEBI] }
+  - { code: CHEBI, name: ChEBI id, issuer: EMBL-EBI, pattern: '^CHEBI:[0-9]+$', normalization: 'upper-case prefix with colon', resolver: 'https://www.ebi.ac.uk/chebi/searchId.do?chebiId={value}', domains: [D1, D2], bridgesTo: [PUBCHEM_CID, INCHIKEY] }
+  - { code: INCHIKEY, name: InChIKey (computed structure key), issuer: InChI Trust algorithm, pattern: '^[A-Z]{14}-[A-Z]{10}-[A-Z]$', normalization: upper case, resolver: null, domains: [D1], bridgesTo: [PUBCHEM_CID, CHEBI] }
+  - { code: DRUGBANK, name: DrugBank accession, issuer: DrugBank, pattern: '^DB[0-9]{5}$', normalization: upper case, resolver: 'https://go.drugbank.com/drugs/{value}', domains: [D1, D5], bridgesTo: [UNII, RXCUI] }
+  - { code: RXCUI, name: RxNorm concept unique id, issuer: NLM RxNorm, pattern: '^[0-9]+$', normalization: digits only, resolver: null, domains: [D1, D5], bridgesTo: [UNII, NDC] }
+  # biology and conditions
+  - { code: MESH, name: MeSH descriptor or supplementary concept, issuer: NLM, pattern: '^[DC][0-9]{6,9}$', normalization: upper case, resolver: 'https://meshb.nlm.nih.gov/record/ui?ui={value}', domains: [D1, D2, D3, D5], bridgesTo: [] }
+  - { code: UNIPROT, name: UniProtKB accession, issuer: UniProt, pattern: '^[A-Z0-9]{6}([A-Z0-9]{4})?$', normalization: upper case; drop isoform suffix into a qualifier, resolver: 'https://www.uniprot.org/uniprotkb/{value}', domains: [D2], bridgesTo: [HGNC, NCBI_GENE, ENSEMBL_GENE] }
+  - { code: HGNC, name: HGNC gene id, issuer: HUGO Gene Nomenclature Committee, pattern: '^HGNC:[0-9]+$', normalization: 'upper-case prefix with colon', resolver: 'https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/{value}', domains: [D2], bridgesTo: [NCBI_GENE, ENSEMBL_GENE, UNIPROT] }
+  - { code: NCBI_GENE, name: NCBI Gene id, issuer: NCBI, pattern: '^[1-9][0-9]*$', normalization: digits only, resolver: 'https://www.ncbi.nlm.nih.gov/gene/{value}', domains: [D2], bridgesTo: [HGNC, ENSEMBL_GENE] }
+  - { code: ENSEMBL_GENE, name: Ensembl gene id, issuer: Ensembl, pattern: '^ENS[A-Z]*G[0-9]{11}$', normalization: 'upper case; drop version suffix into a qualifier', resolver: 'https://www.ensembl.org/id/{value}', domains: [D2], bridgesTo: [HGNC, NCBI_GENE] }
+  - { code: REACTOME, name: Reactome stable id, issuer: Reactome, pattern: '^R-[A-Z]{3}-[0-9]+$', normalization: 'upper case; drop version suffix', resolver: 'https://reactome.org/content/detail/{value}', domains: [D2], bridgesTo: [GO] }
+  - { code: GO, name: Gene Ontology term, issuer: GO Consortium, pattern: '^GO:[0-9]{7}$', normalization: 'upper-case prefix with colon', resolver: 'https://amigo.geneontology.org/amigo/term/{value}', domains: [D2], bridgesTo: [] }
+  - { code: MONDO, name: Mondo disease id, issuer: Monarch Initiative, pattern: '^MONDO:[0-9]{7}$', normalization: 'upper-case prefix with colon', resolver: 'https://monarchinitiative.org/{value}', domains: [D2, D5], bridgesTo: [ICD10CM, MESH] }
+  - { code: HPO, name: Human Phenotype Ontology term, issuer: HPO, pattern: '^HP:[0-9]{7}$', normalization: 'upper-case prefix with colon', resolver: 'https://hpo.jax.org/browse/term/{value}', domains: [D2, D4], bridgesTo: [] }
+  - { code: ICD10CM, name: ICD-10-CM code, issuer: CDC NCHS, pattern: '^[A-Z][0-9][0-9A-Z](\.[0-9A-Z]{1,4})?$', normalization: 'upper case; insert dot after 3rd character', resolver: null, domains: [D2, D5], bridgesTo: [MONDO, SNOMEDCT] }
+  - { code: SNOMEDCT, name: SNOMED CT concept id, issuer: SNOMED International, pattern: '^[0-9]{6,18}$', normalization: digits only, resolver: null, domains: [D2, D4, D5], bridgesTo: [ICD10CM, LOINC] }
+  # measurement
+  - { code: LOINC, name: LOINC code, issuer: Regenstrief Institute, pattern: '^[0-9]{1,7}-[0-9]$', normalization: 'as published (with check digit)', resolver: 'https://loinc.org/{value}', domains: [D4], bridgesTo: [SNOMEDCT] }
+  # products, labels, regulation, IP
+  - { code: GTIN, name: GS1 Global Trade Item Number (UPC-A, EAN-13, GTIN-8/14 normalized to GTIN-14), issuer: GS1, pattern: '^[0-9]{14}$', normalization: 'digits only; left-pad to 14; validate mod-10 check digit; keep the printed form in Identifier.name', resolver: null, domains: [D6, D12], bridgesTo: [ASIN, DSLD] }
+  - { code: ASIN, name: Amazon Standard Identification Number, issuer: 'Amazon (per marketplace: issuer = marketplace host)', pattern: '^[0-9A-Z]{10}$', normalization: upper case, resolver: 'https://{issuer}/dp/{value}', domains: [D6], bridgesTo: [GTIN] }
+  - { code: SKU, name: seller stock-keeping unit, issuer: 'the seller (issuer = seller uid)', pattern: null, normalization: 'as printed; never compared across issuers', resolver: null, domains: [D6], bridgesTo: [] }
+  - { code: DSLD, name: NIH ODS Dietary Supplement Label Database label id, issuer: NIH ODS, pattern: '^[0-9]+$', normalization: digits only, resolver: 'https://dsld.od.nih.gov/label/{value}', domains: [D6, D8], bridgesTo: [GTIN] }
+  - { code: FDC_ID, name: USDA FoodData Central id, issuer: USDA ARS, pattern: '^[0-9]+$', normalization: digits only, resolver: 'https://fdc.nal.usda.gov/food-details/{value}/nutrients', domains: [D12], bridgesTo: [GTIN] }
+  - { code: NDC, name: FDA National Drug Code, issuer: FDA, pattern: '^[0-9]{4,5}-[0-9]{3,4}-[0-9]{1,2}$', normalization: 'keep the labeler-product-package hyphenation as printed; derive the 11-digit 5-4-2 form as a qualifier', resolver: null, domains: [D6, D8], bridgesTo: [RXCUI] }
+  - { code: FDA_APPLICATION, name: 'FDA application number (NDA, ANDA, BLA)', issuer: FDA, pattern: '^(NDA|ANDA|BLA)[0-9]{6}$', normalization: 'upper case; remove spaces and hyphens', resolver: null, domains: [D8], bridgesTo: [NDC] }
+  - { code: NPN, name: Health Canada Natural Product Number, issuer: Health Canada, pattern: '^[0-9]{8}$', normalization: digits only, resolver: null, domains: [D8], bridgesTo: [] }
+  - { code: PATENT_PUB, name: patent publication number, issuer: 'the patent office named by the country code (USPTO, EPO, WIPO, ...)', pattern: '^[A-Z]{2}[0-9A-Z]+[A-Z][0-9]?$', normalization: 'country code + number + kind code; remove spaces, commas and slashes', resolver: null, domains: [D8], bridgesTo: [] }
+  # organizations and people
+  - { code: LEI, name: Legal Entity Identifier, issuer: GLEIF, pattern: '^[0-9A-Z]{18}[0-9]{2}$', normalization: upper case, resolver: 'https://search.gleif.org/#/record/{value}', domains: [D7], bridgesTo: [SEC_CIK] }
+  - { code: SEC_CIK, name: SEC Central Index Key, issuer: US SEC, pattern: '^[0-9]{10}$', normalization: 'left-pad to 10 digits', resolver: 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={value}', domains: [D7, D13], bridgesTo: [LEI] }
+  - { code: ROR, name: Research Organization Registry id, issuer: ROR, pattern: '^0[0-9a-z]{6}[0-9]{2}$', normalization: 'strip "https://ror.org/"; lower case', resolver: 'https://ror.org/{value}', domains: [D7], bridgesTo: [WIKIDATA] }
+  - { code: ORCID, name: ORCID iD, issuer: ORCID, pattern: '^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$', normalization: 'strip "https://orcid.org/"; validate ISO 7064 mod 11-2', resolver: 'https://orcid.org/{value}', domains: [D7, D9], bridgesTo: [OPENALEX] }
+  - { code: NPI, name: US National Provider Identifier, issuer: CMS NPPES, pattern: '^[0-9]{10}$', normalization: 'digits only; validate Luhn with prefix 80840', resolver: null, domains: [D7], bridgesTo: [] }
+  - { code: WIKIDATA, name: Wikidata item, issuer: Wikimedia Foundation, pattern: '^Q[1-9][0-9]*$', normalization: upper-case Q, resolver: 'https://www.wikidata.org/wiki/{value}', domains: [D1, D2, D7, D9, D13], bridgesTo: [] }
+  # media
+  - { code: YOUTUBE_VIDEO, name: YouTube video id, issuer: YouTube, pattern: '^[0-9A-Za-z_-]{11}$', normalization: as published (case-sensitive), resolver: 'https://www.youtube.com/watch?v={value}', domains: [D9], bridgesTo: [] }
+  - { code: PODCAST_GUID, name: podcast episode RSS guid, issuer: 'the feed (issuer = feed URL)', pattern: null, normalization: 'as published; never compared across feeds', resolver: null, domains: [D9], bridgesTo: [] }
+  - { code: PODCAST_INDEX_FEED, name: Podcast Index feed id, issuer: Podcast Index, pattern: '^[0-9]+$', normalization: digits only, resolver: null, domains: [D9], bridgesTo: [] }
+  # ---- version 2 additions (model stage, 2026-10-08) ----
+  # evidence integrity and literature (K research stage)
+  - { code: RW_RECORD, name: "Retraction Watch database record id", issuer: "Retraction Watch (distributed by Crossref)", pattern: '^[0-9]+$', normalization: "digits only", resolver: null, domains: [K, D9], bridgesTo: [DOI], status: requested, requestedBy: "K" }
+  - { code: NIHMS, name: "NIH author manuscript id", issuer: "NIH", pattern: '^NIHMS[0-9]+$', normalization: "upper case", resolver: null, domains: [K, D9], bridgesTo: [PMCID, PMID], status: requested, requestedBy: "K" }
+  - { code: NANOPUB, name: "nanopublication trusty URI artifact code", issuer: "the signing agent", pattern: '^RA[A-Za-z0-9_-]{43}$', normalization: "strip https://w3id.org/np/", resolver: null, domains: [K], bridgesTo: [], status: requested, requestedBy: "K" }
+  - { code: UMLS_CUI, name: "UMLS concept unique id", issuer: "NLM UMLS", pattern: '^C[0-9]{7}$', normalization: "upper case", resolver: null, domains: [D1, D2], bridgesTo: [MESH, SNOMEDCT], status: requested, requestedBy: "K" }
+  - { code: CHEMBL, name: "ChEMBL id (compounds and targets share the namespace)", issuer: "EMBL-EBI ChEMBL", pattern: '^CHEMBL[0-9]+$', normalization: "upper case", resolver: null, domains: [D1, D2], bridgesTo: [PUBCHEM_CID, UNIPROT], status: requested, requestedBy: "K; D2 (CHEMBL_TARGET folded in)" }
+  - { code: CHEMSPIDER, name: "ChemSpider id", issuer: "Royal Society of Chemistry", pattern: '^[0-9]+$', normalization: "digits only", resolver: null, domains: [D1], bridgesTo: [INCHIKEY], status: requested, requestedBy: "K" }
+  # substances, ingredients, taxa (D1, D12)
+  - { code: NCBI_TAXON, name: "NCBI Taxonomy id", issuer: "NCBI", pattern: '^[1-9][0-9]*$', normalization: "digits only", resolver: null, domains: [D1, D12], bridgesTo: [], status: requested, requestedBy: "D1" }
+  - { code: CULTURE_COLLECTION, name: "strain deposit number", issuer: "the culture collection (ATCC, DSMZ, LMG, CCUG, NRRL, JCM)", pattern: null, normalization: "collection prefix + number as published; equal deposits across collections are resolved by assessment, never by string", resolver: null, domains: [D1], bridgesTo: [], status: requested, requestedBy: "D1" }
+  - { code: DSLD_INGREDIENT, name: "DSLD ingredient id", issuer: "NIH ODS", pattern: '^[0-9]+$', normalization: "digits only", resolver: null, domains: [D1, D6], bridgesTo: [DSLD], status: requested, requestedBy: "D1" }
+  - { code: LNHPD_INGREDIENT, name: "Health Canada LNHPD medicinal ingredient id", issuer: "Health Canada", pattern: null, normalization: "as published", resolver: null, domains: [D1], bridgesTo: [], status: requested, requestedBy: "D1" }
+  - { code: SUPPLIER_CODE, name: "supplier material code", issuer: "the supplier (issuer = supplier uid)", pattern: null, normalization: "as printed; never compared across issuers", resolver: null, domains: [D1], bridgesTo: [], status: requested, requestedBy: "D1" }
+  - { code: FDC_NUTRIENT, name: "FoodData Central nutrient id or number", issuer: "USDA ARS", pattern: '^[0-9]+$', normalization: "digits only", resolver: null, domains: [D1, D12], bridgesTo: [FDC_ID], status: requested, requestedBy: "D1" }
+  # mechanisms and conditions (D2)
+  - { code: WIKIPATHWAYS, name: "WikiPathways id", issuer: "WikiPathways", pattern: '^WP[0-9]+$', normalization: "upper-case prefix", resolver: null, domains: [D2], bridgesTo: [REACTOME], status: requested, requestedBy: "D2" }
+  - { code: ORPHANET, name: "Orphanet disease id (ORPHA code)", issuer: "Orphanet", pattern: '^[0-9]+$', normalization: "strip ORPHA: prefix", resolver: null, domains: [D2], bridgesTo: [MONDO, OMIM], status: requested, requestedBy: "D2" }
+  - { code: OMIM, name: "OMIM entry number", issuer: "Johns Hopkins University (OMIM)", pattern: '^[0-9]{6}$', normalization: "digits only", resolver: null, domains: [D2], bridgesTo: [MONDO], status: requested, requestedBy: "D2" }
+  - { code: EFO, name: "Experimental Factor Ontology term", issuer: "EMBL-EBI", pattern: '^EFO_[0-9]{7}$', normalization: "underscore form", resolver: null, domains: [D2], bridgesTo: [MONDO], status: requested, requestedBy: "D2" }
+  - { code: KEGG_PATHWAY, name: "KEGG pathway id (licence-gated)", issuer: "Kanehisa Laboratories", pattern: '^[a-z]{2,4}[0-9]{5}$', normalization: "lower-case organism prefix", resolver: null, domains: [D2], bridgesTo: [REACTOME], status: requested, requestedBy: "D2" }
+  # measurement and devices (D4, D8)
+  - { code: LAB_TEST_CODE, name: "laboratory test order code", issuer: "the laboratory (issuer = lab uid)", pattern: null, normalization: "as published; never compared across issuers", resolver: null, domains: [D4], bridgesTo: [LOINC], status: requested, requestedBy: "D4" }
+  - { code: CPT, name: "AMA CPT code (storage subject to licence)", issuer: "American Medical Association", pattern: '^[0-9]{4}[0-9A-Z]$', normalization: "as published", resolver: null, domains: [D4], bridgesTo: [], status: requested, requestedBy: "D4" }
+  - { code: UDI_DI, name: "device identifier part of a UDI", issuer: "the issuing agency (GS1, HIBCC, ICCBBA)", pattern: null, normalization: "as published by the issuing agency", resolver: null, domains: [D4, D8], bridgesTo: [GTIN], status: requested, requestedBy: "D4" }
+  - { code: FDA_510K, name: "FDA 510(k) number", issuer: "FDA CDRH", pattern: '^K[0-9]{6}$', normalization: "upper case", resolver: null, domains: [D4, D8], bridgesTo: [], status: requested, requestedBy: "D4" }
+  - { code: FDA_PRODUCT_CODE, name: "FDA device product code", issuer: "FDA CDRH", pattern: '^[A-Z]{3}$', normalization: "upper case", resolver: null, domains: [D4, D8], bridgesTo: [], status: requested, requestedBy: "D4" }
+  # products and commerce (D6)
+  - { code: RETAILER_ITEM_ID, name: "retailer item id", issuer: "the retailer host domain", pattern: null, normalization: "as published; never compared across issuers", resolver: null, domains: [D6], bridgesTo: [], status: requested, requestedBy: "D6" }
+  - { code: STOREFRONT_PRODUCT_ID, name: "storefront product id (e.g. Shopify)", issuer: "the store domain", pattern: null, normalization: "as published", resolver: null, domains: [D6], bridgesTo: [], status: requested, requestedBy: "D6" }
+  - { code: STOREFRONT_VARIANT_ID, name: "storefront variant id (e.g. Shopify)", issuer: "the store domain", pattern: null, normalization: "as published", resolver: null, domains: [D6], bridgesTo: [], status: requested, requestedBy: "D6" }
+  - { code: MARKETPLACE_SELLER_ID, name: "marketplace seller id", issuer: "the marketplace host", pattern: null, normalization: "as published (case-sensitive)", resolver: null, domains: [D6, D7], bridgesTo: [], status: requested, requestedBy: "D6" }
+  - { code: WEB_DOMAIN, name: "registrable web domain", issuer: "DNS (public suffix list)", pattern: null, normalization: "lower case; punycode; registrable domain only", resolver: null, domains: [D6, D7, D9], bridgesTo: [], status: requested, requestedBy: "D6; D7" }
+  # organizations, people, funding, markets (D7, D13)
+  - { code: COMPANY_NUMBER, name: "national company registry number", issuer: "the registry (Companies House, Delaware Division of Corporations, ...)", pattern: null, normalization: "as published by the registry", resolver: null, domains: [D7], bridgesTo: [LEI], status: requested, requestedBy: "D7" }
+  - { code: UEI, name: "SAM.gov Unique Entity ID", issuer: "US GSA SAM.gov", pattern: '^[A-Z0-9]{12}$', normalization: "upper case", resolver: null, domains: [D7], bridgesTo: [], status: requested, requestedBy: "D7" }
+  - { code: CROSSREF_FUNDER, name: "Crossref Funder Registry id", issuer: "Crossref", pattern: '^[0-9]+$', normalization: "strip the 10.13039/ prefix", resolver: null, domains: [D7], bridgesTo: [ROR], status: requested, requestedBy: "D7" }
+  - { code: AWARD_NUMBER, name: "grant or award number", issuer: "the funder (issuer = funder uid)", pattern: null, normalization: "per funder", resolver: null, domains: [D7], bridgesTo: [], status: requested, requestedBy: "D7" }
+  - { code: NIH_PROJECT, name: "NIH core project number", issuer: "NIH", pattern: '^[A-Z][0-9]{2}[A-Z]{2}[0-9]{6}$', normalization: "upper case; drop support year and suffix", resolver: null, domains: [D7], bridgesTo: [AWARD_NUMBER], status: requested, requestedBy: "D7" }
+  - { code: NIH_PROFILE_ID, name: "NIH RePORTER PI profile id", issuer: "NIH RePORTER", pattern: '^[0-9]+$', normalization: "digits only", resolver: null, domains: [D7], bridgesTo: [ORCID], status: requested, requestedBy: "D7" }
+  - { code: TICKER, name: "exchange ticker symbol", issuer: "the exchange (issuer = exchange MIC)", pattern: null, normalization: "upper case; validity per listing period", resolver: null, domains: [D7, D13], bridgesTo: [SEC_CIK], status: requested, requestedBy: "D7" }
+  - { code: SEC_ACCESSION, name: "SEC EDGAR filing accession number", issuer: "US SEC", pattern: '^[0-9]{10}-[0-9]{2}-[0-9]{6}$', normalization: "insert hyphens", resolver: null, domains: [D13, D7], bridgesTo: [SEC_CIK], status: requested, requestedBy: "D13" }
+  # regulation, quality, IP (D8)
+  - { code: FDA_NDI, name: "FDA new dietary ingredient notification number", issuer: "FDA", pattern: null, normalization: "as published", resolver: null, domains: [D8], bridgesTo: [], status: requested, requestedBy: "D8" }
+  - { code: FDA_GRN, name: "FDA GRAS notice number", issuer: "FDA", pattern: '^[0-9]+$', normalization: "digits only", resolver: null, domains: [D8], bridgesTo: [], status: requested, requestedBy: "D8" }
+  - { code: FDA_WARNING_LETTER, name: "FDA warning letter (CMS/MARCS) number", issuer: "FDA", pattern: null, normalization: "as published", resolver: null, domains: [D8], bridgesTo: [], status: requested, requestedBy: "D8" }
+  - { code: FDA_RECALL, name: "FDA recall number", issuer: "FDA", pattern: null, normalization: "as published", resolver: null, domains: [D8], bridgesTo: [FDA_RECALL_EVENT], status: requested, requestedBy: "D8" }
+  - { code: FDA_RECALL_EVENT, name: "FDA recall event id", issuer: "FDA", pattern: '^[0-9]+$', normalization: "digits only", resolver: null, domains: [D8], bridgesTo: [FDA_RECALL], status: requested, requestedBy: "D8" }
+  - { code: FDA_DOCKET, name: "regulations.gov FDA docket id", issuer: "FDA", pattern: '^FDA-[0-9]{4}-[A-Z]-[0-9]{4}$', normalization: "upper case", resolver: null, domains: [D8], bridgesTo: [], status: requested, requestedBy: "D8" }
+  - { code: FDA_FEI, name: "FDA Establishment Identifier", issuer: "FDA", pattern: '^[0-9]{7,10}$', normalization: "digits only", resolver: null, domains: [D8], bridgesTo: [], status: requested, requestedBy: "D8" }
+  - { code: CELEX, name: "EUR-Lex CELEX number", issuer: "Publications Office of the EU", pattern: null, normalization: "as published", resolver: null, domains: [D8], bridgesTo: [], status: requested, requestedBy: "D8" }
+  - { code: LNHPD_ID, name: "Health Canada LNHPD product record id", issuer: "Health Canada", pattern: null, normalization: "as published", resolver: null, domains: [D8], bridgesTo: [NPN], status: requested, requestedBy: "D8" }
+  - { code: COURT_DOCKET, name: "court docket number", issuer: "the court (issuer = court uid)", pattern: null, normalization: "as published; never compared across courts", resolver: null, domains: [D8], bridgesTo: [], status: requested, requestedBy: "D8" }
+  - { code: PTAB_TRIAL, name: "USPTO PTAB trial number", issuer: "USPTO", pattern: null, normalization: "as published", resolver: null, domains: [D8], bridgesTo: [PATENT_PUB], status: requested, requestedBy: "D8" }
+  - { code: PATENT_APPLICATION, name: "patent application number", issuer: "the patent office", pattern: null, normalization: "office code + number as published", resolver: null, domains: [D8], bridgesTo: [PATENT_PUB], status: requested, requestedBy: "D8" }
+  - { code: CERT_LISTING, name: "certification listing id", issuer: "the certifier (issuer = certifier uid)", pattern: null, normalization: "as published", resolver: null, domains: [D8], bridgesTo: [], status: requested, requestedBy: "D8" }
+  - { code: LAB_REPORT, name: "laboratory report / COA number", issuer: "the laboratory (issuer = lab uid)", pattern: null, normalization: "as published", resolver: null, domains: [D8], bridgesTo: [], status: requested, requestedBy: "D8" }
+  - { code: LOT_CODE, name: "lot or batch code", issuer: "the brand or manufacturer (issuer = organization uid)", pattern: null, normalization: "as printed", resolver: null, domains: [D8, D6], bridgesTo: [], status: requested, requestedBy: "D8" }
+  # media (D9)
+  - { code: YOUTUBE_CHANNEL, name: "YouTube channel id", issuer: "YouTube", pattern: '^UC[0-9A-Za-z_-]{22}$', normalization: "as published (case-sensitive)", resolver: null, domains: [D9], bridgesTo: [], status: requested, requestedBy: "D9" }
+  - { code: APPLE_PODCAST, name: "Apple Podcasts collection or track id", issuer: "Apple", pattern: '^[0-9]+$', normalization: "digits only", resolver: null, domains: [D9], bridgesTo: [], status: requested, requestedBy: "D9" }
+  - { code: SPOTIFY, name: "Spotify show or episode id", issuer: "Spotify", pattern: '^[0-9A-Za-z]{22}$', normalization: "as published", resolver: null, domains: [D9], bridgesTo: [], status: requested, requestedBy: "D9" }
+  - { code: X_ACCOUNT, name: "X (Twitter) account id", issuer: "X Corp", pattern: '^[0-9]+$', normalization: "numeric id; the handle is a name, never identity", resolver: null, domains: [D9, D7], bridgesTo: [], status: requested, requestedBy: "D9" }
+  - { code: X_POST, name: "X (Twitter) post id", issuer: "X Corp", pattern: '^[0-9]+$', normalization: "digits only", resolver: null, domains: [D9], bridgesTo: [], status: requested, requestedBy: "D9" }
+  - { code: SUBSTACK_POST, name: "Substack post id or slug", issuer: "the publication (issuer = publication domain)", pattern: null, normalization: "as published", resolver: null, domains: [D9], bridgesTo: [], status: requested, requestedBy: "D9" }
+crosswalk:
+  # verified only: Bioregistry captures (br-*.json) and the Wikidata item capture wd-Q407329.json (scratch ft/K/raw, MANIFEST.sha256)
+  - { code: UNII, bioregistryPrefix: unii, wikidataProperty: P652, verifiedBy: [br-unii.json, wd-Q407329.json] }
+  - { code: PUBCHEM_CID, bioregistryPrefix: pubchem.compound, wikidataProperty: P662, verifiedBy: [br-pubchem.compound.json, wd-Q407329.json] }
+  - { code: NCT, bioregistryPrefix: clinicaltrials, wikidataProperty: null, verifiedBy: [br-clinicaltrials.json] }
+  - { code: CAS_RN, bioregistryPrefix: null, wikidataProperty: P231, verifiedBy: [wd-Q407329.json] }
+  - { code: CHEBI, bioregistryPrefix: null, wikidataProperty: P683, verifiedBy: [wd-Q407329.json] }
+  - { code: CHEMBL, bioregistryPrefix: null, wikidataProperty: P592, verifiedBy: [wd-Q407329.json] }
+  - { code: DRUGBANK, bioregistryPrefix: null, wikidataProperty: P715, verifiedBy: [wd-Q407329.json] }
+  - { code: INCHIKEY, bioregistryPrefix: null, wikidataProperty: P235, verifiedBy: [wd-Q407329.json] }
+  - { code: MESH, bioregistryPrefix: null, wikidataProperty: P486, verifiedBy: [wd-Q407329.json] }
+  - { code: RXCUI, bioregistryPrefix: null, wikidataProperty: P3345, verifiedBy: [wd-Q407329.json] }
+  - { code: UMLS_CUI, bioregistryPrefix: null, wikidataProperty: P2892, verifiedBy: [wd-Q407329.json] }
+  - { code: CHEMSPIDER, bioregistryPrefix: null, wikidataProperty: P661, verifiedBy: [wd-Q407329.json] }
+  - { code: OPENALEX, bioregistryPrefix: null, wikidataProperty: P10283, verifiedBy: [wd-Q407329.json] }

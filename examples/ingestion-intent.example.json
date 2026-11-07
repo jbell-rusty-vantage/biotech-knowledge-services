@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v1",
+  "intentId": "example-basis-label-2026-07-10",
+  "context": {
+    "actor": { "kind": "agent", "id": "ingestion-agent", "model": "claude-fable-5-1" },
+    "run": { "system": "mission-control", "runId": "example-run-001", "missionId": "example-mission" },
+    "activityKind": "EXTRACTION"
+  },
+  "onStale": "fail",
+  "sources": [
+    {
+      "ref": "label",
+      "source": {
+        "canonicalUri": "https://www.elysiumhealth.com/pages/basis-supplement-facts",
+        "title": "Basis Supplement Facts",
+        "sourceKind": "MANUFACTURER_LABEL_PAGE"
+      },
+      "snapshot": {
+        "observedAt": "2026-07-10T00:00:00Z",
+        "contentHash": "sha256:283496a65daa5de294e80e62a549737b0e26936acc888565b666edb3b8f8e912",
+        "contentHashBasis": "SYNTHETIC_FIXTURE",
+        "captureCompleteness": "UNKNOWN"
+      },
+      "locators": [
+        { "ref": "panel", "selectorKind": "SECTION", "section": "Supplement Facts", "quote": "Elysium NR (Nicotinamide Riboside Chloride) 250 mg" }
+      ]
+    }
+  ],
+  "subjects": [
+    { "ref": "elysium", "mode": "new", "nodeType": "Organization", "name": "Elysium Health", "properties": { "organizationType": "COMPANY", "legalName": "Elysium Health, Inc." }, "identifiers": [ { "scheme": "DOMAIN", "issuer": "DNS", "value": "elysiumhealth.com" } ], "onMatch": "use_existing" },
+    { "ref": "basis", "mode": "new", "nodeType": "Product", "name": "Basis", "properties": { "productKind": "DIETARY_SUPPLEMENT" }, "onMatch": "review" },
+    { "ref": "variant", "mode": "new", "nodeType": "ProductVariant", "name": "Basis — US capsules", "properties": { "jurisdiction": "US" }, "onMatch": "review" },
+    { "ref": "form", "mode": "new", "nodeType": "FormulationVersion", "name": "Basis US label observed 2026-07-10", "uidSegment": "basis-us-2026-07-10", "properties": { "jurisdiction": "US" }, "onMatch": "create_anyway" },
+    { "ref": "nr", "mode": "new", "nodeType": "ChemicalSubstance", "name": "Nicotinamide riboside chloride", "identifiers": [ { "scheme": "UNII", "issuer": "FDA GSRS", "value": "8XM2XT8VWI" } ], "onMatch": "use_existing" }
+  ],
+  "proposals": [
+    { "proposalId": "p1-markets", "kind": "edge.assert", "relationshipType": "MARKETS_PRODUCT", "fromRef": "elysium", "toRef": "basis", "evidence": ["panel"], "assertion": { "assertionBasis": "MANUFACTURER_CLAIM", "speechAct": "STATES", "validity": {} } },
+    { "proposalId": "p2-variant", "kind": "edge.assert", "relationshipType": "HAS_VARIANT", "fromRef": "basis", "toRef": "variant", "evidence": ["panel"], "assertion": { "validity": { "validFrom": "2026-07-10T00:00:00Z", "validFromBasis": "OBSERVATION_ONLY" } } },
+    { "proposalId": "p3-formulation", "kind": "state.attach", "subjectRef": "variant", "stateRef": "form", "relationshipType": "HAS_FORMULATION_VERSION", "evidence": ["panel"], "assertion": { "validity": { "validFrom": "2026-07-10T00:00:00Z", "validFromBasis": "OBSERVATION_ONLY" } } },
+    { "proposalId": "p4-amount", "kind": "assertion.literal", "subjectRef": "variant", "predicate": "LABEL_DECLARED_AMOUNT", "valueNumber": 250, "unitCode": "mg", "quantityBasis": "PER_SERVING", "amountReferent": "LISTED_INGREDIENT_AS_LISTED", "evidence": ["panel"], "assertion": { "validity": {} } },
+    { "proposalId": "p5-mention", "kind": "mention.stage", "locatorRef": "panel", "surfaceForm": "PT (Pterostilbene)", "candidateNodeType": "IngredientMaterial", "reason": "material identity not resolvable from the label alone" }
+  ],
+  "notes": "Example only. Replace sources with a real capture (contentHash over the bytes, contentHashBasis RAW_BYTES) and cite a read snapshot in inputSnapshot/preconditions."
+}

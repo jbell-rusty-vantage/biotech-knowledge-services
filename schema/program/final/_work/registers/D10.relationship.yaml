@@ -1,0 +1,286 @@
+version: 1
+module: D10
+# Source: packets/D10/05-relationship-register.yaml (sha256 771da5d8…), edited by the S module editor for D10 on
+# 2026-10-08 per final/decision-report.md and final/_work/rulings.yaml (global, modules.D10). Every entry keeps the
+# 01-PACKET-CONTRACT fields (type, class, from, to, edgeProperties, cardinality, temporal, questions, pattern,
+# populatedBy, fixture, nestedOperations, aggregate, rationale) and adds `module: D10`. `fixture` and `exercisedIn`
+# point at final/fixtures/D10/<folder> (same folder names as packets/D10/07-fixtures/). Synthesis edits:
+#   R-11/R-53 ASSESSES and DERIVED_FROM are kernel-meaning types declared by K and D10; one meaning, no edge properties
+#         (matches final/schema/kernel.graphql). Budget counts them once, in K (R-01); D10 is charged its pairs only.
+#   R-48  ASSOCIATES carries no score (score on the Association node only); superseded uncited Associations may be
+#         removed; ReportItem.citesAssociations stays cut.
+#   R-28  ASSOCIATES is one of the two registered domain edges that target Subjectable.
+#   R-75  BLOCKED_BY -> D5.UseConstraint | K.Assessment confirmed; R-26: BLOCKED_BY and DERIVED_FROM are citation sets
+#         (structural).
+#   R-47  deferred AFFECTS_MECHANISM row: the "Association replaces AFFECTS_MECHANISM" half is withdrawn.
+#   R-52  predicateOnly entries carry `registrar: D10`; R-83: RECOMMENDS_FOR merged into RECOMMENDS_USE and
+#         RECOMMENDS_AGAINST dropped (both registered by D9; see `mergedInto`).
+#   R-03  nestedOperations unchanged: every D10 structural edge reaches another module's or a kernel record ([CONNECT]),
+#         the derived ASSOCIATES is [].
+# No relationship type, pair, class or edge-property type changed: 6 types declared (4 new to the assembled schema),
+# 9 from→to pairs collapsed (R-01), 0 unions.
+# populatedBy ids are stable tool/source ids, each a row of packets/D10/08-sources-and-tools.md.
+relationships:
+  - type: HAS_ITEM
+    module: D10
+    class: structural
+    from: K.Report
+    to: ReportItem
+    declaredOn: ReportItem.report (direction IN)
+    edgeProperties: StructuralEdgeProperties
+    cardinality: "Report → many ReportItems; ReportItem → exactly_one Report"
+    temporal: recorded-only
+    questions: [CQ-AX-01, CQ-RC-01, Q-D10-02, Q-D10-14]
+    pattern: "03#CQ-RC-01"
+    populatedBy: [bks-report-publish, mission-control]
+    fixture: final/fixtures/D10/mg-rankings-criteria-comparison
+    exercisedIn: [final/fixtures/D10/mg-rankings-criteria-comparison, final/fixtures/D10/mg-bisglycinate-rct-unstructured, final/fixtures/D10/fda-qhc-magnesium-disconfirmation, final/fixtures/D10/livertox-green-tea-extract-harm]
+    nestedOperations: [CONNECT]   # declared on the item side (direction IN): CREATE there would mean creating a Report from an item (R-03: structural edge to a kernel record)
+    aggregate: false
+    rationale: >-
+      The composition of a published artifact belongs to D10 (kernel ownership map). Items are written in the same
+      transaction as their Report by the composing Activity (report.publish) and never change (insert-only). orderIndex on the edge
+      is the item's position in the skeleton. Alternative rejected: citations on the Report only, with row data in
+      the body — fails CQ-RC-06 (filter BLOCKED rows) and Q-D10-13 (which row is stale) without parsing the body.
+
+  - type: ASSESSES
+    module: D10
+    class: structural
+    from: ReportItem
+    to: Subjectable
+    declaredOn: ReportItem.about (direction OUT)
+    edgeProperties: null
+    cardinality: "ROW → exactly_one (its option); SECTION → one_or_more (what the section is about, including target or population context)"
+    temporal: recorded-only
+    questions: [CQ-RC-01, CQ-RC-06, Q-D10-02, Q-D10-16]
+    pattern: "03#CQ-RC-01"
+    populatedBy: [bks-report-publish, bks-comparison-engine]
+    fixture: final/fixtures/D10/mg-rankings-criteria-comparison
+    exercisedIn: [final/fixtures/D10/mg-rankings-criteria-comparison, final/fixtures/D10/mg-bisglycinate-rct-unstructured, final/fixtures/D10/fda-qhc-magnesium-disconfirmation, final/fixtures/D10/livertox-green-tea-extract-harm]
+    nestedOperations: [CONNECT]
+    aggregate: false
+    kernelType: true
+    kernelMeaning: { declaredBy: [K, D10], ruling: R-53 }
+    rationale: >-
+      Kernel relationship type with kernel meaning ("judges / is about"), extended to ReportItem (one meaning and one
+      property schema per type name, R-53; counted once in K for the type budget, R-01). Answers "which
+      option was rejected or blocked" and "which comparisons include product P" at row level. Using the kernel type
+      means the kernel lineage query Q-K-05 (which missions touched X) and any (x)<-[:ASSESSES]-() read pick up report
+      rows with no extra type. Target is the Subjectable interface (no union; cost ≈ 0 per implementer). Row rule
+      (adversarial-review stage): a ROW ASSESSES exactly its option, so `(row {itemKind:'ROW'})-[:ASSESSES]->(opt)` never
+      returns a target or population as an option; context sits on the SECTION or the Report, a blocking scope on the UseConstraint.
+
+  - type: DERIVED_FROM
+    module: D10
+    class: structural
+    from: [ReportItem, Association]
+    to: [Assertion, K.Assessment]
+    pairs:
+      - ReportItem → Assertion (citesAssertions)
+      - ReportItem → K.Assessment (citesAssessments)
+      - Association → Assertion (inputs)
+    edgeProperties: null
+    cardinality: "many per item; Association → many inputs (bounded by inputCount; > 5,000 inputs keep only inputSetDigest)"
+    temporal: recorded-only
+    questions: [CQ-AX-01, CQ-AX-08, CQ-AX-11, CQ-RC-02, Q-D10-05, Q-D10-13, Q-D10-16]
+    pattern: "03#Q-D10-13"
+    populatedBy: [bks-report-publish, bks-projection-job]
+    fixture: final/fixtures/D10/fda-qhc-magnesium-disconfirmation
+    exercisedIn: [final/fixtures/D10/fda-qhc-magnesium-disconfirmation, final/fixtures/D10/mg-bisglycinate-rct-unstructured, final/fixtures/D10/mg-rankings-criteria-comparison, final/fixtures/D10/livertox-green-tea-extract-harm, final/fixtures/D10/opentargets-association-signal]
+    pairsExercised: ["ReportItem -> Assertion", "ReportItem -> K.Assessment", "Association -> Assertion"]   # all three declared pairs
+    nestedOperations: [CONNECT]
+    aggregate: false
+    kernelType: true
+    kernelMeaning: { declaredBy: [K, D10], replacesPinned: [DERIVED_FROM_ASSERTION, CONSIDERS_ASSESSMENT, CITES_ASSERTION, CITES_ASSESSMENT], ruling: R-11 }
+    rationale: >-
+      Kernel dependency edge (PROV wasDerivedFrom; one DERIVED_FROM, R-11). Using it for item citations and association
+      inputs keeps "what depends on mission M / on assertion A" (Q-K-06, CQ-AX-11) a single variable-length DERIVED_FROM
+      pattern across kernel and D10 records. Replaces pinned CITES_ASSERTION and CITES_ASSESSMENT (W23) and the pinned
+      association input arrays (migration-notes maps the pinned citation types, R-11). A citation set, so structural
+      (R-26). No role property: support vs contradiction lives on HAS_EVIDENCE {role} of the
+      cited records; blocking is its own type (BLOCKED_BY); the section kind (EVIDENCE_FOR / EVIDENCE_AGAINST) says
+      how the item uses the input. ReportItem → Association (citesAssociations) stays cut (R-48).
+
+  - type: BLOCKED_BY
+    module: D10
+    class: structural
+    from: ReportItem
+    to: [D5.UseConstraint, K.Assessment]
+    pairs:
+      - ReportItem → D5.UseConstraint (blockedBy; seam, owner this)
+      - ReportItem → K.Assessment (blockedByAssessments)
+    edgeProperties: StructuralEdgeProperties
+    cardinality: "one_or_more when disposition = BLOCKED; none otherwise"
+    temporal: recorded-only
+    questions: [CQ-RC-06, Q-D10-08]
+    pattern: "03#CQ-RC-06"
+    populatedBy: [bks-comparison-engine, bks-report-publish]
+    fixture: final/fixtures/D10/livertox-green-tea-extract-harm
+    exercisedIn: [final/fixtures/D10/livertox-green-tea-extract-harm, final/fixtures/D10/mg-rankings-criteria-comparison]
+    pairsExercised: ["ReportItem -> D5.UseConstraint", "ReportItem -> K.Assessment"]
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      CQ-RC-06 (value 1 per R-08) asks whether a contraindication or interaction can block an option rather than lower its
+      score, and the answer must trace the blocking fact to its locator:
+      (row)-[:BLOCKED_BY]->(uc:UseConstraint)<-[:RESOLVES_TO_CONSTRAINT]-(a:Assertion)-[:HAS_EVIDENCE]->(loc). Confirmed by
+      R-75: BLOCKED_BY → D5.UseConstraint | K.Assessment; a row's ASSESSES means only its option, and the row cites the
+      resolving Assertion through DERIVED_FROM; D5 reverses OQ-D5-39 and drops its `K.Report ASSESSES D5.UseConstraint`
+      row. A citation set, so structural (R-26). The Assertion pair was retargeted to D5.UseConstraint, the shared
+      identity D5 declares for exactly this use ("recommendations and answers cite its uid as the blocking constraint"),
+      so two reports blocked by the same concern join on one node and a re-adjudicated source statement updates every
+      block through the resolution; the row still cites the resolving Assertion and the triggering product fact with
+      DERIVED_FROM. A role property on DERIVED_FROM was rejected (the kernel type carries no properties and gaining one
+      would change every kernel citation); a uid list property was rejected because the avoid-list query (Q-D10-08) and the
+      stale-block check traverse it. Targets: the D5 UseConstraint (upper limit, contraindication, interaction) or a
+      D5/D10 harm Assessment (interaction risk, harm causality) when no source states a use concern (LiverTox grades
+      green tea extract's causality but states no avoidance for it).
+
+  - type: USES_CRITERION
+    module: D10
+    class: structural
+    from: K.Report
+    to: DecisionCriterion
+    declaredOn: DecisionCriterion.usedByReports (direction IN)
+    edgeProperties: StructuralEdgeProperties
+    cardinality: "Report (COMPARISON, RECOMMENDATION, PROFILE with an OPTIONS section) → one_or_more criteria versions"
+    temporal: recorded-only
+    questions: [CQ-RC-01, CQ-RC-02, CQ-RC-07, Q-D10-02]
+    pattern: "03#Q-D10-02"
+    populatedBy: [bks-report-publish, bks-criteria-registry]
+    fixture: final/fixtures/D10/mg-rankings-criteria-comparison
+    exercisedIn: [final/fixtures/D10/mg-rankings-criteria-comparison]
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      A published comparison must name the exact criterion versions it applied (directive 3.5) so that CQ-RC-07 can
+      recompute it under current inputs and so that a superseded criterion finds every report that used it. Replaces
+      pinned DECLARES_CRITERION (PolicyVersion → DecisionCriterion): PolicyVersion is not a node (R-33); a comparison may use
+      a subset of a policy's criteria. A property list of criterion uids on the Report is impossible (kernel type) and
+      would not be traversable from the criterion side.
+
+  - type: ASSOCIATES
+    module: D10
+    class: derived
+    from: Association
+    to: Subjectable
+    declaredOn: Association.members (direction OUT)
+    edgeProperties: DerivedEdgeProperties
+    cardinality: "exactly_two per Association (anchorUid names the oriented-from member)"
+    temporal: recorded-only
+    questions: [Q-D10-05, Q-D10-06, Q-D10-19, CQ-EV-02]
+    pattern: "03#Q-D10-05"
+    populatedBy: [bks-projection-job, neo4j-gds]
+    fixture: final/fixtures/D10/opentargets-association-signal
+    exercisedIn: [final/fixtures/D10/opentargets-association-signal]
+    nestedOperations: []
+    aggregate: false
+    subjectableException: { ruling: R-28, note: "one of the two registered domain edges to Subjectable (with D5 STEP_USES); listed in the K interface docstring" }
+    rationale: >-
+      Directive 3.6: an association is a materialized projection, never a plain edge between two domain entities with
+      a confidence. An intermediate node is required because the record carries method version, input digest,
+      breakdown, statistic and supersession (Q-D10-05) and its inputs are audited (CQ-AX-08). Only BellLabs-computed
+      projections are Associations (fixture: a FAERS PRR computed from four openFDA counts); external scores stay
+      Assertions by their producer. One relationship type with an anchorUid property replaces two typed endpoint edges
+      (ASSOCIATION_FROM / ASSOCIATION_TO): saves one type and one pair. Read-only; DerivedEdgeProperties names the
+      derivationRule and derivedAt. The edge carries no score: DerivedEdgeProperties.score stays null (executor-validated,
+      R-47) and the score lives on the Association node only (R-48). The Association is WAS_GENERATED_BY a PROJECTION
+      Activity with its methodVersion; a superseded Association is kept while any Report or ReportItem cites it,
+      otherwise the projection job may remove it and its ASSOCIATES edges (R-48, extending K's derived-edge rule).
+
+predicateOnly:
+  # Third-party derived knowledge captured as evidence: Assertion.predicate values, never typed edges. Registrar D10
+  # (owner of the subject type or of the controlled family, R-52); final/vocabularies/predicates.yaml is generated from
+  # these lists. No value equals a relationship type name (R-53; checked against every packet SDL).
+  - predicate: ASSIGNS_GRADE
+    registrar: D10
+    meaning: "a grading body assigns a grade/certainty to a claim or recommendation (USPSTF grade D, Examine grade, GRADE certainty)"
+    promoteWhen: "Q-D10-03 or CQ-AX-24 must list every body that graded X under scheme S at value-1 latency without the predicate index"
+  - predicate: ASSIGNS_LIKELIHOOD_SCORE
+    registrar: D10
+    meaning: "LiverTox-style causality likelihood category for a preparation"
+    promoteWhen: "Q-D10-07 traverses grade → preparation for every product containing the preparation (a D6/D1 join that the Assertion already serves)"
+  - predicate: REQUIRES_QUALIFIED_CLAIM_WORDING
+    registrar: D10
+    meaning: "a regulator permits a claim only with mandated qualifying language (FDA QHC enforcement discretion)"
+    promoteWhen: "Q-D10-09 needs to list all qualified claims per regulator across jurisdictions"
+  - predicate: CHARACTERIZES_EVIDENCE_STRENGTH
+    registrar: D10
+    meaning: "a party characterizes the evidence for a claim ('supportive'; 'inconsistent and inconclusive'); subject = Claim, asserter = petitioner or regulator"
+    promoteWhen: "Q-D10-09 disagreement detection needs a typed pair edge (it does not: two Assertions on one Claim)"
+  - predicate: RANKS_OPTION
+    registrar: D10
+    meaning: "a third-party ranking row: list, rank, score, list date (Labdoor, U.S. News); asserter = the ranker"
+    promoteWhen: "Q-D10-11 compares many third-party lists per category at value-1 latency"
+  - predicate: USES_RANKING_CRITERION
+    registrar: D10
+    meaning: "a ranker states that its ranking uses criterion C with weight w (subject = the DecisionCriterion record of the ranker)"
+    promoteWhen: "never as an edge: the criterion itself is the node"
+  - predicate: REPORTS_ASSOCIATION_SCORE
+    registrar: D10
+    meaning: "an external platform reports an association score with release version and breakdown (Open Targets)"
+    promoteWhen: "never as an Association (external scores stay Assertions by their producer, 04 AssociationKind); a typed edge only if a value-1 question lists every external score for a pair at a latency the predicate index cannot meet"
+  - predicate: REPORTS_DISPROPORTIONALITY_SIGNAL
+    registrar: D10
+    meaning: "an external pharmacovigilance source reports a signal statistic for drug–event (openFDA/Open Targets FAERS LRT)"
+    promoteWhen: "same as REPORTS_ASSOCIATION_SCORE"
+  - predicate: REPORTS_REPORT_COUNT
+    registrar: D10
+    meaning: "a pharmacovigilance or registry source reports how many reports match a query (openFDA FAERS meta.results.total); the inputs of a BellLabs disproportionality projection (bl-assoc/faers-prr@1)"
+    promoteWhen: "never: counts are literals read by the projection job"
+  - predicate: CHARACTERIZES_INCIDENCE
+    registrar: D10
+    meaning: "a source characterizes how common a harm is relative to use (LiverTox: prevalence 'not known, but undoubtedly low'); D5/D2 may own the name"
+    promoteWhen: "a question ranks harms by stated incidence across sources at value-1 latency"
+  - predicate: CLASSIFIES_CITATION_STANCE
+    registrar: D10
+    meaning: "a citation-stance service classifies a citing statement (scite-style); only if ever ingested"
+    promoteWhen: "a question traverses citing → cited stance; none today"
+
+mergedInto:
+  # Predicates D10 registered in the packet that synthesis moved to another registrar (R-83). S maps the retired
+  # spelling in fixtures and patterns.
+  - predicate: RECOMMENDS_FOR
+    into: RECOMMENDS_USE
+    registrar: D9
+    ruling: R-83
+    note: "a guideline body recommends X (USPSTF A/B); subject = the recommended means, never a Target; a goal goes in the qualifier target:<key>; a claim occurrence with speechAct RECOMMENDS"
+  - predicate: RECOMMENDS_AGAINST
+    into: RECOMMENDS_AGAINST
+    registrar: D9
+    ruling: R-83
+    note: "D10's registration dropped; D9 registers it with subject = the means, never a Target object. Q-D10-08 and Q-D10-03 guideline branches read WORSENS_TARGET | NO_EFFECT_ON_TARGET (or USE_CONSTRAINED_IN for population guidance) with speechAct CAUTIONS | RECOMMENDS; no RECOMMENDS_AGAINST -> Target"
+
+deferred:
+  - type: RECOMMENDS
+    reason: "Kernel map: a recommendation by a person is a claim occurrence (speechAct RECOMMENDS) and any RECOMMENDS edge would be a D10 derived projection. Q-D10-21 is answered by a 2-hop read (Person ← ASSERTED_BY – Assertion{speechAct RECOMMENDS} – HAS_SUBJECT → X); a stored projection would need a field on D7 Person (not D10's type) or a Subjectable→Subjectable edge no type can declare. Promote only if a latency measurement on the fixture graph fails. No stored RECOMMENDS edge (R-83, directive 3.9)."
+  - type: CONSIDERS / CONSIDERS_ASSESSMENT / INCLUDES_RESULT / BASED_ON_EVIDENCE (W10)
+    reason: "Kernel Assessment.inputAssertions / inputAssessments (DERIVED_FROM, R-11). D10 adds nothing."
+  - type: CITES_ASSERTION / CITES_ASSESSMENT (W23)
+    reason: "DERIVED_FROM on Report (kernel) and on ReportItem (D10); migration-notes maps them (R-11)."
+  - type: DECLARES_CRITERION (W23)
+    reason: "PolicyVersion is not a node (R-33); criteria group by (criteriaSetKey, criteriaSetVersion); reports name criteria with USES_CRITERION."
+  - type: AUTHORIZED_BY (W23)
+    reason: "Use authorization is Activity.policyVersion / Report.policyVersion (kernel strings, R-33); no question traverses a policy."
+  - type: SUPERSEDES (W10, criteria, reports, associations)
+    reason: "Kernel decision: supersedesUid property (same asserter only, R-23) + recordedTo on the older record; no question traverses chains deeper than one hop."
+  - type: ASSESSED_BY (W10)
+    reason: "Kernel: the assessor is the generating Activity's Agent (WAS_ASSOCIATED_WITH)."
+  - type: FOR_TARGET (Report/Assessment/Criterion → D5 Target)
+    reason: "Reports and assessments reach a Target through kernel ASSESSES (Target implements Subjectable); criteria carry targetKeys (D5 vocabulary keys, targets@0.2.2, R-60) as a property. Zero D10 pairs."
+  - type: AFFECTS_MECHANISM / INFLUENCES_OUTCOME / ASSOCIATED_WITH_* / INCREASES_RISK_FOR (pinned derived shortcuts)
+    reason: "Not declared by D10. A scored association is an Association record (kind EVIDENCE_AGGREGATE) read through ASSOCIATES. R-47 (option b): D2 keeps AFFECTS_MECHANISM as an unscored facet shortcut (MechanismProjectionProperties without a method score; DerivedEdgeProperties.score null, executor-validated); Q-D2-18's ranking reads D10 Association records (EVIDENCE_AGGREGATE, one per modulator × mechanism); D10 withdraws the claim that Association replaces AFFECTS_MECHANISM. D2 cut INFLUENCES_OUTCOME (mechanism → outcome scores are Associations)."
+  - type: DERIVED_FROM ReportItem -> Association (citesAssociations)
+    reason: "Cut in the adversarial-review stage and kept cut (R-48): no question, pattern or fixture traversed it (CQ-AX-08 and Q-D10-05 read Association -> inputs); saves 1 pair, about 4.6 KB and 4 input types in the printed schema (packet-reported). Promote when a published row must quote a BellLabs association (then add the question, a 03 pattern that starts from the row, and a fixture row)."
+  - type: SUPPORTED_BY_CHUNK / MENTIONS_ENTITY
+    reason: "Directive 3.8 and kernel: a chunk is never a locator; MENTIONS is the kernel-meaning D9 derived projection (R-27)."
+  - type: SCORED_ON (ReportItem → DecisionCriterion with value)
+    reason: "Per-cell values are ReportItem.cellValues strings citing criterion uid and assertion uid; no question traverses criterion → cell (CQ-RC-07 works at report level through USES_CRITERION). Promote if cell-level recomputation becomes a value-1 question."
+  - type: APPLIES_CRITERION (Assessment → DecisionCriterion)
+    reason: "Assessments that apply a criteria set (e.g. D13 breakthrough judgment Q-D13-30) carry criteriaSetKey@version in Assessment.methodVersion; property join. Promote if D13 needs the traversal (11-open-questions)."
+  - type: ITEM_EVIDENCE (ReportItem → SourceLocator)
+    reason: "Kernel Report.evidence (HAS_EVIDENCE) holds every quoted span; item-level spans are reached through the cited Assertions' HAS_EVIDENCE."
+  - type: DISCOURSE_METRIC (AssociationKind value) / one-member Association
+    reason: "R-49: discourse metrics (CQ-CL-06, Q-D9-08, Q-D9-19) are materialized as projection-cache properties on the measured node (methodVersion, derivedAt, PROJECTION Activity, R-45), never an Assessment and never an Association; no AssociationKind value added."
+  - type: COMPUTED_FOOD_CATEGORY (derived classification edge)
+    reason: "R-51: rule-based per-record classifications (NOVA) are CALCULATED Assertions (derivationRule nova-markers/vN, DERIVED_FROM inputs) authorizing an asserted edge; graph-global scores stay Associations."

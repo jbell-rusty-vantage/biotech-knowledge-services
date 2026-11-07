@@ -1,0 +1,155 @@
+version: 1
+module: D6
+# Source: packets/D6/10-seams.yaml (sha256 2a867d1e…), edited by the S module editor for D6 on 2026-10-08 per
+# final/decision-report.md and final/_work/rulings.yaml (global + modules.D6). Every entry keeps the 01-PACKET-CONTRACT
+# fields (type, from, to, questions, direction, owner) and adds `module: D6`, `status` (accepted | cut) and `ruling`.
+# Rows checked against the final SDLs present on 2026-10-08 (final/schema/D1, D3, D4, D5, D7, D8, D12 .graphql).
+# Synthesis edits:
+#   R-94  relationship seams and predicate seams are separate lists (`seams`, `predicateSeams`): OFFERS_INTERVENTION and
+#         LINKS_TO_OFFER move to predicateSeams; RESULT_FOR is QUALITY_RESULT_FOR; COVERS has no Organization member;
+#         CONCERNS has neither Device nor Patent; OFFERS_INTERVENTION / CONSTRAINS_USE_OF rows refreshed (OQ-D6-25/28).
+#   R-73  QUALITY_RESULT_FOR -> D6.Product cut (no fixture; QualityResult.resultFor typed Lot); COVERS -> ProductVariant
+#         and STATUS_OF -> Product kept with fixture requests in final/requests.md.
+#   R-72  RegulatoryRecordTopic and LegalStatusSubject lose Device; Device is reached through D6.Product -DELIVERS->.
+#   R-74  D6.Package is not added to D8 unions (OQ-D6-13 closed).
+#   R-18  ASSESSES -> LabelVersion: LabelVersion keeps Subjectable (OQ-D6-02 closed).
+#   R-28  STEP_USES targets K.Subjectable; D6.Product is one of the admitted types D5 05 lists (executor-enforced).
+#   R-08  D6's CQ-PF-03 is CQ-PF-03b (assessment, v2); D8 owns CQ-PF-03a.
+#   R-52, R-62, R-68, R-73, R-88, R-18  predicateSeams name the registrar of every predicate D6 uses or whose subject
+#         is a D6 type; retired spellings are listed as aliases.
+#   R-60  vocabulary pins targets 0.2.2, frontiers 0.2.1; vocabulary files point at final/vocabularies/.
+# direction is from D6's point of view: out = D6 declares the field on its own type pointing at the other module;
+# in = the other module declares the edge on its type pointing at a D6 type. owner: this = D6 declares and registers it;
+# other = the named module declares and registers it. Kernel allowlist types need no seam; kernel types outside it that
+# D6 questions traverse (Claim, Assessment, Report) are listed.
+
+seams:
+  # ---- declared by D6 (out) ----
+  - { type: BRANDED_AS, module: D6, from: D6.Product, to: D7.Brand, questions: [Q-D6-16, Q-D6-20, Q-D6-11, Q-D6-12], direction: out, owner: this, status: accepted, ruling: R-94, note: "two-sided: D7 10-seams lists it with field Product.brand; D7 owns Brand and OWNS_BRAND (Organization → Brand, episode). AssertedEdgeProperties, [CONNECT]." }
+  - { type: SELLER_OF_RECORD, module: D6, from: D6.Offer, to: D7.Organization, questions: [CQ-CM-01, Q-D6-06, Q-D6-16, Q-D6-20], direction: out, owner: this, status: accepted, ruling: R-67, note: "role edges live on the asking module's type; no inverse field on Organization. Also read by K Q-K-15 (K.seams) and D5 Q-D5-13." }
+  - { type: NAMES_RESPONSIBLE_PARTY, module: D6, from: D6.LabelVersion, to: D7.Organization, questions: [Q-D6-16, Q-D6-04], direction: out, owner: this, status: accepted, ruling: R-67, note: "stays typed (OQ-D6-29 closed); role on LabelVersion.responsiblePartyRole; no inverse field on Organization; non-label distributor statements are the D7 predicate DISTRIBUTES (R-68)" }
+  - { type: DECLARES_COMPONENT, module: D6, from: D6.LabelVersion, to: D1.IngredientMaterial, questions: [CQ-AX-25, CQ-PF-01, Q-D6-02, Q-D6-08, Q-D6-21], direction: out, owner: this, status: accepted, ruling: R-87, note: "member of D6 union DeclaredComponentTarget (D6 owns the union, foreign members are seam rows, R-05); includes D1's unresolved-material sentinel. One Assertion per line (R-87, OQ-D6-30 closed); ComponentLineProperties = kernel AssertedRecordedProperties + line qualifiers incl. massBasis (D1 MassBasis) and amountBasis (D6 AmountBasis, R-58); the printed row, form and statement are locator text + qualifiers declaredName:, form:, statement: (R-30). D1 CALCULATED amounts cite the line Assertion in DERIVED_FROM." }
+  - { type: DECLARES_COMPONENT, module: D6, from: D6.LabelVersion, to: D1.Constituent, questions: [CQ-PF-01, Q-D6-09, Q-D6-11, Q-D6-12], direction: out, owner: this, status: accepted, ruling: R-87, note: "nutrient lines (Vitamin D, sodium, energy); D1's final type name is Constituent (final/schema/D1.graphql); union member (R-05)" }
+  - { type: DECLARES_COMPONENT, module: D6, from: D6.LabelVersion, to: D12.FoodItem, questions: [Q-D6-11, Q-D6-10, Q-D6-21], direction: out, owner: this, status: accepted, ruling: R-62, note: "prepared-food ingredient statements (beef patty, pickle slices); FoodItem stays a standalone D12 type, so the union stays at 3 (R-62; OQ-D6-04 resolved). Product composition comes only from these lines; reference composition is never copied onto the Product." }
+
+  # ---- declared by other modules into D6 (in) ----
+  - { type: OWNS_BRAND, module: D6, from: D7.Organization, to: D7.Brand, questions: [Q-D6-16, Q-D6-11], direction: in, owner: other, status: accepted, ruling: R-94, note: "not a D6 edge; Q-D6-16 traverses Product → BRANDED_AS → Brand ← OWNS_BRAND ← Organization (declared on D7 Brand.owners, direction IN)" }
+  - { type: HAS_REFERENCE_FOOD, module: D6, from: D6.Product, to: D12.FoodItem, questions: [Q-D6-11], direction: in, owner: other, status: accepted, ruling: R-62, note: "the only link between a sold Product and a reference FoodItem (never merged); asserted (AssertedEdgeProperties, episode), licensed by a RESOLUTION Assessment when a resolver chose it; D12 declares FoodItem.referencedByProducts (direction IN)" }
+  - { type: IN_FOOD_CATEGORY, module: D6, from: D6.Product, to: D12.FoodCategory, questions: [], direction: in, owner: other, status: accepted, ruling: R-94, note: "D12 declares FoodCategory.memberProducts (direction IN, AssertedEdgeProperties); rule-based classifications such as NOVA are CALCULATED Assertions authorizing it (R-51); no D6 pattern traverses it (Q-D6-12 filters declared %DV)" }
+  - { type: LOT_OF, module: D6, from: D8.Lot, to: D6.ProductVariant, questions: [Q-D6-04, CQ-AX-19], direction: in, owner: other, status: accepted, ruling: R-74, note: "D8 Lot.lotOf, AssertedRecordedProperties, union LotOfTarget = Product | ProductVariant (final D8 SDL); D6.Package not added (R-74, OQ-D6-13 closed)" }
+  - { type: LOT_OF, module: D6, from: D8.Lot, to: D6.Product, questions: [Q-D6-04], direction: in, owner: other, status: accepted, ruling: R-74, note: "second member of D8's LotOfTarget (recalls naming only the product)" }
+  - { type: CONCERNS, module: D6, from: D8.RegulatoryRecord, to: D6.Product, questions: [Q-D6-04, Q-D6-05], direction: in, owner: other, status: accepted, ruling: R-72, note: "D8 RegulatoryRecord (recordFamily ENFORCEMENT), union RegulatoryRecordTopic = ChemicalSubstance | IngredientMaterial | Product | Lot (final D8 SDL; neither Device nor Patent, R-72/R-94), AssertedRecordedProperties. Regulatory acts concern the Product, which DELIVERS the D4 Device (R-72). Q-D6-21 traverses the IngredientMaterial member, not this row. Package scope: verbatim fields + D6.recall-scope Assessments (R-74)." }
+  - { type: QUALITY_RESULT_FOR, module: D6, from: D8.QualityResult, to: D6.Product, questions: [], direction: in, owner: other, status: cut, ruling: R-73, note: "renamed from RESULT_FOR (R-53, R-94) and cut: no fixture writes QUALITY_RESULT_FOR → Product; QualityResult.resultFor is typed Lot. A survey row naming no lot is the D1 predicate MEASURED_CONTENT_IN_PRODUCT / CONTAINS_UNDECLARED_SUBSTANCE (predicateSeams); CQ-AX-19 reads the Lot member" }
+  - { type: COVERS, module: D6, from: D8.CertificationListing, to: D6.Product, questions: [CQ-PF-03b], direction: in, owner: other, status: accepted, ruling: R-94, note: "D8 union CertificationCoverageTarget = Product | ProductVariant | Lot (final D8 SDL; no Organization member, R-67/R-94), AssertedEdgeProperties. NSF 'Package Size 30, 60, 90' stays in scopeVerbatim + D6.certification-scope Assessments (R-74). D6's question is CQ-PF-03b (assessment, v2); D8's CQ-PF-03a (retrieved, v1) reads the same edge (R-08)" }
+  - { type: COVERS, module: D6, from: D8.CertificationListing, to: D6.ProductVariant, questions: [CQ-PF-03b], direction: in, owner: other, status: accepted, ruling: R-73, note: "kept unfixtured with a numbered fixture request in final/requests.md (NSF variant listing, CQ-PF-03a v1)" }
+  - { type: STATUS_OF, module: D6, from: D8.LegalStatus, to: D6.Product, questions: [], direction: in, owner: other, status: accepted, ruling: R-73, note: "D8 LegalStatus.statusOf, union LegalStatusSubject = ChemicalSubstance | IngredientMaterial | Product | Patent (final D8 SDL; Device removed, R-72), AssertedEdgeProperties (episode); kept with a fixture request (LNHPD NPN, CQ-MF-02 v1). Q-D8-23 reads STATUS_OF Product -DELIVERS-> Device; prescription-only status is LegalStatusKind PRESCRIPTION_ONLY (R-88). No D6 pattern traverses it (D10 may when composing Q-D6-22)" }
+  - { type: ADMINISTERS, module: D6, from: D3.InterventionComponent, to: D6.ProductVariant, questions: [CQ-ID-02], direction: in, owner: other, status: accepted, ruling: R-72, note: "D3 InterventionComponent, union AdministeredMaterial = IngredientMaterial | ProductVariant | Intervention | FoodItem | DietaryPattern (final D3 SDL; Device removed, a trial device is a ProductVariant or a D5 Intervention, R-72); study material vs sold variant is a kernel EQUIVALENCE Assessment (D6.study-material-match)" }
+  - { type: STEP_USES, module: D6, from: D5.ProtocolStep, to: "K.Subjectable (admitted type D6.Product)", questions: [], direction: in, owner: other, status: accepted, ruling: R-28, note: "D5 ProtocolStep.uses targets the kernel interface Subjectable (one of the two registered domain exceptions, R-28); D5 05 lists D6.Product among the admitted types and the executor enforces the list. No D6 pattern traverses it (D5 questions do)" }
+  - { type: DELIVERS, module: D6, from: D6.Product, to: D4.LabTest, questions: [], direction: in, owner: other, status: accepted, ruling: R-94, note: "D4 declares LabTest.products (direction IN; stored Product → LabTest, AssertedRecordedProperties); a consumer test kit or service is a D6 Product of kind SERVICE/DEVICE; D6 adds no field to Product (OQ-D6-28, D4 #8). CONSTRAINS_USE_OF (D5) is not a seam: product constraints are Assertions with the product as subject (D5 USE_CONSTRAINED_IN, R-94 OQ-D6-25/28 refresh)" }
+  - { type: DELIVERS, module: D6, from: D6.Product, to: D4.Device, questions: [], direction: in, owner: other, status: accepted, ruling: R-72, note: "D4 declares Device.products (direction IN); the one path from regulatory acts to a device: D8 record → Product -DELIVERS-> Device (R-72); replaces pinned EMBODIES_MODEL" }
+
+  # ---- kernel types outside the allowlist that D6 uses (no D6 SDL field) ----
+  - { type: ASSESSES, module: D6, from: K.Assessment, to: D6.LabelVersion, questions: [CQ-ID-05, CQ-PF-03b, Q-D6-09], direction: in, owner: other, status: accepted, ruling: R-18, note: "kernel meaning; assessmentKind OTHER / APPLICABILITY with subkinds D6.change-kind, D6.certification-scope, D6.max-intake-vs-reference, D6.blend-disclosure-rule (final/vocabularies/assessment-vocabularies.yaml, R-54); LabelVersion implements Subjectable (R-18, OQ-D6-02 closed)" }
+  - { type: ASSESSES, module: D6, from: K.Assessment, to: D6.MerchantListing, questions: [CQ-CM-02, Q-D6-05], direction: in, owner: other, status: accepted, ruling: R-54, note: "EQUIVALENCE subkind D6.listing-to-package; OTHER subkind D6.recall-scope" }
+  - { type: ASSESSES, module: D6, from: K.Assessment, to: D6.Package, questions: [CQ-CM-02, Q-D6-15], direction: in, owner: other, status: accepted, ruling: R-54, note: "EQUIVALENCE subkinds D6.listing-to-package, D6.identifier-equivalence; also D6.change-kind (fixture as01, as10) and SAFETY_SIGNAL D6.recalled-product-harm (as50)" }
+  - { type: ASSESSES, module: D6, from: K.Assessment, to: D6.Product, questions: [], direction: in, owner: other, status: accepted, ruling: R-54, note: "SAFETY_SIGNAL D6.recalled-product-harm (as50) and OTHER D6.authorized-channel (as52) in fixture recall-moringa-mogo; read by D10 when it composes Q-D6-22 rows" }
+  - { type: ASSESSES, module: D6, from: K.Assessment, to: D6.Offer, questions: [Q-D6-06], direction: in, owner: other, status: accepted, ruling: R-54, note: "OTHER subkind D6.authorized-channel" }
+  - { type: ASSESSES, module: D6, from: K.Assessment, to: D6.ProductVariant, questions: [CQ-ID-01, CQ-AX-17], direction: in, owner: other, status: accepted, ruling: R-54, note: "EQUIVALENCE subkind D6.study-material-match (with D3)" }
+  - { type: ASSESSES, module: D6, from: D10.ReportItem, to: D6.Product, questions: [Q-D6-03, Q-D6-22], direction: in, owner: other, status: accepted, ruling: R-94, note: "kernel meaning, declared by D10 on ReportItem.about → K.Subjectable (K.seams); D10 option rows (COMPARISON report, rank products for target T) and HARMS_AND_AVOIDANCE rows (Q-D6-22); ProductVariant, Package and Offer are reachable too (OQ-D6-10 resolved). Answer kinds per D10's table (R-50)" }
+  - { type: OCCURRENCE_OF, module: D6, from: K.Assertion, to: K.Claim, questions: [Q-D6-07, Q-D6-18, CQ-PF-02], direction: in, owner: other, status: accepted, ruling: R-94, note: "marketing, retailer and company claims about D6 types are claim occurrences (assertionKind CLAIM) with a D6 type as subject; container via OCCURS_IN when the evidence is in a MediaWork (R-19); the verdict is the kernel SUPPORT Adjudication" }
+  - { type: HAS_IDENTIFIER, module: D6, from: K.Identifier, to: D6.Package, questions: [Q-D6-15], direction: in, owner: other, status: accepted, ruling: R-42, note: "IdentifierLinkProperties episodes (GTIN 850015311116 → 850015311857); one (scheme, issuer, normalized value) identifies at most one Subjectable, so a GTIN never identifies both a Package and a Variant (R-42); schemes per D6.node.yaml identifierSchemes" }
+
+predicateSeams:
+  # Assertion.predicate values whose subject or object is a D6 type, or that D6 fixtures use, with their registrar
+  # (R-52; checked against final/vocabularies/predicates.yaml). owner: this = D6 registers; other = registrar named.
+  - { predicate: OFFERS_INTERVENTION, module: D6, registrar: D6, subjects: [D6.Offer, "D6.Product (productKind SERVICE)", D7.Organization], objects: [D5.Intervention], questions: [Q-D5-17, Q-D7-10], owner: this, status: accepted, ruling: R-52, note: "moved from seams (R-94); sole registrar D6 (D5 removes its registration); D7.Organization subject admitted for a clinic operator. Answers D5 OQ-D5-20 (OQ-D6-25). No typed edge: no D6 question traverses it; promotion trigger in D6.relationship.yaml" }
+  - { predicate: SUCCEEDED_BY, module: D6, registrar: D6, subjects: [D6.Product, D6.Package, D6.MerchantListing, D7.Organization], objects: [D6.Product, D6.Package, D6.MerchantListing, D7.Organization], questions: [Q-D6-19], owner: this, status: accepted, ruling: R-52, note: "registrar D6; D7 contributes the Organization → Organization pair (D7 removes its registration)" }
+  - { predicate: LINKS_TO_OFFER, module: D6, registrar: D9, subjects: [D9.MediaWork], objects: [D6.Offer, D6.MerchantListing], questions: [CQ-CM-04], owner: other, status: accepted, ruling: R-94, note: "moved from seams; D9 keeps tracked/affiliate links predicate-only (OQ-D6-07 resolved): MerchantListing when the link lands on a product or store page with no displayed price, Offer when it carries a specific purchasable offer" }
+  - { predicate: INTENDED_FOR_TARGET, module: D6, registrar: D5, aliasesFamily: [IMPROVES_TARGET, WORSENS_TARGET, NO_EFFECT_ON_TARGET, MIXED_EFFECT_ON_TARGET], subjects: [D6.Product], objects: [D5.Target], questions: [Q-D6-03, Q-D6-22], owner: other, status: accepted, ruling: R-52, note: "D5 is the sole registrar of the five target predicates; D6 removes its INTENDED_FOR_TARGET registration. Mandatory population qualifier; vocabulary targets 0.2.2 (R-60)" }
+  - { predicate: MANUFACTURES, module: D6, registrar: D7, subjects: [D7.Organization], objects: [D6.Product, D1.IngredientMaterial], questions: [], owner: other, status: accepted, ruling: R-68, note: "named manufacturer; D6 deletes its duplicate registration (fixture recall-moringa-mogo)" }
+  - { predicate: MANUFACTURER_UNNAMED, module: D6, registrar: D7, aliases: [MANUFACTURER_STATEMENT], subjects: [D7.Organization], objects: [literal], questions: [], owner: other, status: accepted, ruling: R-68, note: "unnamed manufacturer described in a filing ('third-party, FDA-registered contract manufacturers'): subject the brand owner or registrant, object a literal (packet D7 05 line 178), qualifier manufacturingKind=CONTRACT|INGREDIENT|PACKAGING; fixture filing-channels-niagen-10k re-keys MANUFACTURER_STATEMENT" }
+  - { predicate: SUPPLIES_MATERIAL, module: D6, registrar: D7, aliases: [SOLE_SUPPLIER_OF], subjects: [D7.Organization], objects: [D1.IngredientMaterial], questions: [], owner: other, status: accepted, ruling: R-68, note: "qualifiers exclusivity=SOLE|NON_EXCLUSIVE|UNSTATED, buyer=; fixture filing-channels-niagen-10k f08 (exclusivity=SOLE)" }
+  - { predicate: HAS_RECIPE_INGREDIENT, module: D6, registrar: D12, aliases: [PREPARED_WITH], subjects: [D12.FoodItem, D6.Product], objects: [D12.FoodItem], questions: [], owner: other, status: accepted, ruling: R-62, note: "D6 removes PREPARED_WITH; fixture prepared-food-bigmac-mcdonalds re-keys it" }
+  - { predicate: SAMPLE_TESTED_POSITIVE_FOR, module: D6, registrar: D8, aliases: [SAMPLE_POSITIVE_OUTBREAK_STRAIN], subjects: [D6.Product, D8.Lot], objects: [D1.Taxon], questions: [Q-D6-07], owner: other, status: accepted, ruling: R-73, note: "agency-reported sample positive for a strain; fixture recall-moringa-mogo e14, e15, e19 re-key (OQ-D6-27)" }
+  - { predicate: SOURCED_FROM_COUNTRY, module: D6, registrar: D1, subjects: [D1.IngredientMaterial], objects: [literal], questions: [], owner: other, status: accepted, ruling: R-52, note: "material origin; fixture recall-moringa-mogo e17 keeps the name (OQ-D6-27)" }
+  - { predicate: "MEASURED_CONTENT_IN_PRODUCT | CONTAINS_UNDECLARED_SUBSTANCE", module: D6, registrar: D1, subjects: [D6.Product, D6.ProductVariant], objects: [D1.ChemicalSubstance], questions: [], owner: other, status: accepted, ruling: R-73, note: "survey rows that name no lot only; a lot-identified measurement is a D8 QualityResult on the Lot; added in synthesis (R-73 names the D6 subjects)" }
+  - { predicate: "MOIETY_EQUIVALENT_AMOUNT | NUTRIENT_EQUIVALENT_AMOUNT | PER_MAX_DAILY_DOSE_AMOUNT", module: D6, registrar: D1, subjects: [D6.LabelVersion, D3.InterventionComponent], objects: [D1.ChemicalSubstance, D1.Constituent], questions: [CQ-PF-01, Q-D6-09], owner: other, status: accepted, ruling: R-18, note: "D1 CALCULATED amounts with the LabelVersion as subject cite the DECLARES_COMPONENT line Assertion in DERIVED_FROM (R-87); added in synthesis (R-18 names this dependency)" }
+  - { predicate: HAS_APPROVED_INDICATION, module: D6, registrar: D8, subjects: [D6.Product, D1.ChemicalSubstance], objects: [D2.Condition], questions: [], owner: other, status: accepted, ruling: R-88, note: "prescription drugs are D6 Products (ProductKind PRESCRIPTION_DRUG, PanelKind PRESCRIBING_INFORMATION, line role ACTIVE_INGREDIENT); added in synthesis" }
+
+sharedVocabularies:
+  - name: kernel-types
+    owner: K
+    file: final/schema/kernel.graphql
+    types: [AssertedEdgeProperties, AssertedRecordedProperties, StructuralEdgeProperties, IdentifierLinkProperties, PrivacyClass, TimePrecision]
+    use: >-
+      AssertedEdgeProperties is the edge-property type of HAS_LABEL_VERSION (with register field exclusive: true; R-10,
+      StateEpisodeProperties retired), BRANDED_AS, LISTING_FOR and SELLER_OF_RECORD. AssertedRecordedProperties is the
+      type of NAMES_RESPONSIBLE_PARTY and the M11 base of D6's ComponentLineProperties on DECLARES_COMPONENT.
+      IdentifierLinkProperties carries the GTIN/ASIN/SKU episodes of kernel HAS_IDENTIFIER (Q-D6-15). Kernel Assertion
+      fields D6 relies on: unitCode `iso4217:<CODE>` for prices, validObservedAt and validObservedAtPrecision for "as of"
+      statements (R-24; closes OQ-D6-31 and the precision part of OQ-D6-19), qualifiers declaredName:, form:, statement:
+      on DECLARES_COMPONENT line Assertions (R-30). Kernel Assessment conclusionCode carries D6 subkind outcomes.
+  - name: MassBasis
+    owner: D1
+    file: final/schema/D1.graphql
+    use: >-
+      ComponentLineProperties.massBasis: SALT_FORM | ACTIVE_MOIETY | NUTRIENT_EQUIVALENT | MATERIAL_AS_IS | UNSPECIFIED.
+      Declared once by D1 (R-56; OQ-D6-26 closed); D3 and D6 reference it.
+  - name: AmountBasis
+    owner: D6
+    file: final/schema/D6.graphql
+    use: >-
+      Provided by D6 (R-58): the one amount-basis enum, consumed by D3 (InterventionComponent.quantityBasis, replaces
+      QuantityBasis), D5 (dosePeriod, replaces DosePeriod), D12 and D2 (MEDIUM_CONCENTRATION). Values: PER_SERVING,
+      PER_UNIT, PER_100G, PER_100ML, PER_PACKAGE, PER_ITEM, PER_DOSE, PER_DAY, PER_WEEK, PER_CYCLE,
+      PER_KG_BODY_WEIGHT_PER_DAY, PER_KG_DIET, SINGLE_DOSE, MEDIUM_CONCENTRATION, NOT_STATED, OTHER.
+  - name: targets
+    owner: D5
+    file: final/vocabularies/targets.yaml
+    version: "0.2.2"
+    use: >-
+      What a product is for or does to a target: kernel Assertion with subject D6.Product, object the Target node
+      (hu:target:<slug>), predicate from the closed list INTENDED_FOR_TARGET, IMPROVES_TARGET, WORSENS_TARGET,
+      NO_EFFECT_ON_TARGET, MIXED_EFFECT_ON_TARGET (registrar D5, R-52), one asserter, a locator, a valid time and a
+      mandatory population qualifier. Weighed conclusions are D10 assessments with effectDirection. D6 declares no typed
+      edge to Target. Questions: Q-D6-03, Q-D6-22. Pin R-60.
+  - name: frontiers
+    owner: D13
+    file: final/vocabularies/frontiers.yaml
+    version: "0.2.1"
+    use: >-
+      Not consumed directly. Products never point at a frontier; a product reaches one only through D13 Events whose
+      predicate-only EVENT_ABOUT assertions name it and through studies that test it (only Event and Study attach to a
+      Frontier, R-91). D6 declares nothing. Pin R-60.
+  - name: identifier-schemes
+    owner: K
+    file: final/vocabularies/identifier-schemes.yaml
+    use: >-
+      GTIN, ASIN, SKU, DSLD, NDC, NPN, FDC_ID, WIKIDATA; RETAILER_ITEM_ID, STOREFRONT_PRODUCT_ID, STOREFRONT_VARIANT_ID,
+      MARKETPLACE_SELLER_ID (OQ-D6-05). One (scheme, issuer, normalized value) identifies at most one Subjectable (R-42).
+  - name: predicates
+    owner: S
+    file: final/vocabularies/predicates.yaml
+    use: >-
+      D6 registers the values in D6.relationship.yaml predicateOnly (OFFER_PRICE_*, MARKET_REFERENCE_PRICE,
+      OFFER_AVAILABILITY, OFFER_SUBSCRIPTION_TERMS, CONTAINS_PACKAGE, HOSTED_BY, FULFILLED_BY, SOLD_THROUGH_CHANNEL,
+      AUTHORIZES_CHANNEL, RETAILER_DISCONTINUED, SUCCEEDED_BY, RETAILER_REFORMULATION_STATEMENT, BEARS_SEAL,
+      CALCULATED_DAILY_MAX_INTAKE, OFF_MARKET, OFFERS_INTERVENTION, PRICE_SERIES_METHOD_CHANGE, PRICE_SCOPE_STATEMENT,
+      LISTING_PACKAGE_SIZES, LISTING_LOT_SCOPE, PRODUCT_SAFETY_STATEMENT, RETAINED_SAMPLE_TEST_RESULT,
+      STOREFRONT_CATALOG_ITEM_COUNT, CALCULATED_SERVING_MASS_TOTAL). Predicates registered elsewhere are the
+      predicateSeams rows above and D6.relationship.yaml registeredElsewhere (R-52, R-62, R-68, R-73).
+  - name: assessment-vocabularies
+    owner: S
+    file: final/vocabularies/assessment-vocabularies.yaml
+    use: >-
+      D6 subkinds and their conclusionCode vocabularies (R-54): D6.change-kind (OTHER): LABEL_ONLY | PACKAGE_ONLY |
+      FORMULATION | IDENTITY | UNKNOWN. D6.listing-to-package (EQUIVALENCE): DIRECTLY_SUPPORTED | PROPOSED_MATCH |
+      INSUFFICIENT_EVIDENCE | NOT_SAME. D6.identifier-equivalence (EQUIVALENCE): SAME_PACKAGE | DIFFERENT_PACKAGE |
+      INSUFFICIENT_EVIDENCE. D6.recall-scope (OTHER): IN_SCOPE | NOT_IN_SCOPE | UNKNOWN. D6.authorized-channel (OTHER):
+      AUTHORIZED | UNAUTHORIZED | UNKNOWN. D6.certification-scope (OTHER): SUPPORTED | SUPPORTED_WITH_QUALIFICATION |
+      NOT_SUPPORTED | UNKNOWN. D6.max-intake-vs-reference (OTHER): EXCEEDS_REFERENCE | WITHIN_REFERENCE | NO_REFERENCE
+      (effectDirection HARM only when the assessment is also ABOUT a D5 target). D6.study-material-match (EQUIVALENCE,
+      with D3): SAME_MATERIAL | DIFFERENT_MATERIAL | UNKNOWN. D6.seller-account-to-organization (RESOLUTION): RESOLVED |
+      PROPOSED_MATCH | UNRESOLVED. D6.blend-disclosure-rule (APPLICABILITY): BLEND_TOTAL_ONLY_PERMITTED |
+      NON_COMPLIANT_DISCLOSURE | NOT_APPLICABLE. D6.recalled-product-harm (SAFETY_SIGNAL): CONTAMINATION_CONFIRMED |
+      CONTAMINATION_SUSPECTED | NOT_CONFIRMED.

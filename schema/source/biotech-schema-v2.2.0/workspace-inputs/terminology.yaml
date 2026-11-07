@@ -1,0 +1,134 @@
+# Terminology sidecar, release biotech-schema-v2.0.0 (hand-authored upstream; FU-09): domain vocabulary an agent is
+# likely to search for, mapped to live v2 workspace ids. Ids: node:<Type>, rel:<TYPE>, enum:<Enum>, union:<Union>,
+# edge:<EdgeProperties>, iface:<Interface>, dom:<slug>, frag:<module id>, task:<slug>. Unknown ids fail the build.
+# Old v1 names (FormulationVersion, ClaimOccurrence, Mention, ...) are listed as search aliases here and resolved to
+# their v2 targets or migration explanations by aliases.yaml.
+version: 2
+terms:
+  - term: supplement
+    aliases: [dietary supplement, nutraceutical, product, formulation, formulation version, SKU]
+    ids: [node:Product, node:ProductVariant, node:Package, node:LabelVersion, dom:products-and-commerce]
+    definition: An enduring commercial Product; the sold thing is a ProductVariant in a Package whose label content over time is a series of LabelVersions (HAS_LABEL_VERSION episodes). The v1 FormulationVersion is folded into LabelVersion.
+  - term: ingredient
+    aliases: [raw material, branded ingredient, extract, botanical, probiotic, strain, label line, ingredient component]
+    ids: [node:IngredientMaterial, node:Taxon, rel:DECLARES_COMPONENT, rel:MATERIAL_CONTAINS, rel:REALIZES_SUBSTANCE, edge:ComponentLineProperties]
+    definition: What a label line declares is a DECLARES_COMPONENT edge (LabelVersion to material, constituent or food); what the material is made of is MATERIAL_CONTAINS; the substance it delivers is REALIZES_SUBSTANCE.
+  - term: compound
+    aliases: [molecule, substance, chemical, salt, active moiety, NR, NMN, NAD+, nicotinamide riboside, chemical form]
+    ids: [node:ChemicalSubstance, node:Constituent, rel:HAS_ACTIVE_MOIETY, rel:REALIZES_SUBSTANCE, rel:COUNTS_TOWARD_NUTRIENT]
+    definition: ChemicalSubstance is identity by structure (UNII / InChIKey); a salt is its own substance with HAS_ACTIVE_MOIETY; a physical or branded form is an IngredientMaterial (v1 ChemicalForm merged there).
+  - term: company
+    aliases: [organization, manufacturer, brand owner, vendor, sponsor, CRO, lab, legal entity, parent company, subsidiary]
+    ids: [node:Organization, node:Brand, rel:OWNS_BRAND, rel:PARENT_OF, rel:HOLDS_STAKE, dom:actors-and-institutions]
+    definition: One Organization type (legal entity, corporate group or other kind); brands are their own Brand records; control is PARENT_OF, ownership stakes HOLDS_STAKE.
+  - term: brand
+    aliases: [consumer brand, trademark, DBA, brand name]
+    ids: [node:Brand, rel:OWNS_BRAND, rel:BRANDED_AS]
+    definition: A Brand is a marketing identity; OWNS_BRAND needs ownership evidence, operating a brand is the OPERATED_BY predicate (MD-D7-08).
+  - term: person
+    aliases: [founder, scientist, podcaster, guest, author, investigator, board member, advisor, employee, speaker]
+    ids: [node:Person, rel:HOLDS_ROLE, rel:HOLDS_STAKE, rel:RECEIVES_VALUE_FROM, rel:APPEARS_IN, rel:HAS_STUDY_ROLE]
+    definition: Public actors only; roles (employee, advisor, founder, board) are one HOLDS_ROLE edge with roleKind; authorship is the AUTHORED_BY predicate.
+  - term: clinical trial
+    aliases: [trial, RCT, study, NCT, registration, trial registration, arm, placebo, intervention component]
+    ids: [node:Study, node:RegistrationVersion, node:StudyArm, node:InterventionComponent, node:StudyPopulation, node:StudyResult, rel:HAS_REGISTRATION_VERSION, rel:ADMINISTERS]
+  - term: paper
+    aliases: [publication, article, PMID, DOI, preprint, journal, retraction, erratum]
+    ids: [node:Publication, node:Source, rel:REPORTS_ON, rel:RENDITION_OF, rel:REVISES]
+  - term: biomarker
+    aliases: [marker, metric, lab value, analyte, blood test, panel, LOINC, epigenetic clock, biological age]
+    ids: [node:Biomarker, node:Metric, node:LabTest, node:AssayVersion, node:AlgorithmVersion, node:ReferenceIntervalVersion, rel:MEASURES_METRIC]
+  - term: mechanism
+    aliases: [pathway, target gene, protein, enzyme, sirtuin, mTOR, AMPK, autophagy, senescence, hallmark]
+    ids: [node:Mechanism, node:MolecularEntity, node:MechanismEvidenceContext, rel:AFFECTS_MECHANISM, rel:PARTICIPATES_IN, rel:PART_OF_MECHANISM, rel:OBSERVED_IN_CONTEXT]
+    definition: A Pathway is a Mechanism (mechanismKind); measured effects are Assertions observed in a MechanismEvidenceContext; AFFECTS_MECHANISM is a derived projection.
+  - term: condition
+    aliases: [disease, disorder, indication, risk factor, outcome, endpoint, adverse effect]
+    ids: [node:Condition, node:Outcome, node:OutcomeDefinition, rel:MEASURES, rel:INVESTIGATES]
+  - term: target
+    aliases: [goal, health goal, benefit, harm, helps, hurts, sleep, longevity]
+    ids: [node:Target, rel:OPERATIONALIZED_BY, enum:EffectDirection]
+    definition: What helps or hurts a Target is an Assertion (IMPROVES_TARGET, WORSENS_TARGET, ...) or an Assessment with effectDirection, never a typed edge from a product to a Target.
+  - term: label
+    aliases: [supplement facts, serving size, per serving, declared amount, label panel, label snapshot]
+    ids: [node:LabelVersion, rel:DECLARES_COMPONENT, rel:HAS_LABEL_VERSION, edge:ComponentLineProperties, enum:AmountBasis]
+  - term: price
+    aliases: [offer, listing, subscription, Amazon, storefront, ASIN, GTIN, in stock, price observation]
+    ids: [node:MerchantListing, node:Offer, rel:LISTING_FOR, rel:HAS_OFFER, rel:SELLER_OF_RECORD]
+    definition: A price observation is a typed-literal Assertion on the Offer at a located capture; hosting a listing is not selling the product.
+  - term: certificate of analysis
+    aliases: [COA, third-party tested, lot test, NSF, Informed Sport, USP verified, certification, lab result]
+    ids: [node:QualityResult, node:Lot, node:CertificationListing, rel:QUALITY_RESULT_FOR, rel:COVERS, rel:MEASURES_ANALYTE]
+  - term: measured content
+    aliases: [lab measurement, measured amount, undeclared substance, contamination, measured versus declared]
+    ids: [node:QualityResult, rel:MEASURES_ANALYTE, rel:DECLARES_COMPONENT, task:measured-versus-declared-content]
+    definition: Measured content of a sold product is the MEASURED_CONTENT_IN_PRODUCT predicate with provenance (OD-10 option A); a declaration is DECLARES_COMPONENT; one never becomes the other.
+  - term: regulatory
+    aliases: [FDA, EFSA, GRAS, NDI, 510(k), approval, orphan designation, novel food, warning letter, inspection, recall]
+    ids: [node:RegulatoryRecord, node:LegalStatus, rel:STATUS_OF, rel:STATUS_FROM, rel:ADDRESSED_TO, enum:RegulatoryPathway]
+  - term: patent
+    aliases: [IP, license, patent claim, granted patent, patent family]
+    ids: [node:Patent, rel:ASSIGNED_TO, rel:LICENSED_TO, rel:CONCERNS]
+  - term: manufacturing
+    aliases: [cGMP, specification, process, facility, capacity, contract manufacturer, lot]
+    ids: [node:Lot, node:RegulatoryRecord, rel:LOT_OF, dom:manufacturing-quality-regulatory-ip]
+    definition: Manufacturing capability is the HAS_CAPABILITY_STAGE predicate (OD-34); a facility is the facility fields of a RegulatoryRecord (no Facility node in v2).
+  - term: protocol
+    aliases: [regimen, stack, routine, dose schedule, cadence, step, morning routine, edition]
+    ids: [node:Protocol, node:ProtocolEdition, node:ProtocolStep, node:UseConstraint, rel:HAS_EDITION, rel:HAS_STEP, rel:STEP_USES]
+  - term: treatment
+    aliases: [therapy, intervention, procedure, modality, peptide, HBOT, sauna, cold plunge, lifestyle, exposure]
+    ids: [node:Intervention, node:DietaryPattern, enum:InterventionKind]
+  - term: food
+    aliases: [diet, nutrition, food item, recipe, ultra-processed, food category, dietary pattern, Mediterranean]
+    ids: [node:FoodItem, node:FoodCategory, node:DietaryPattern, rel:FOOD_CONTAINS, rel:IN_FOOD_CATEGORY, rel:PATTERN_COMPONENT]
+  - term: safety
+    aliases: [side effect, adverse event, contraindication, interaction, warning, caution, upper limit, harm]
+    ids: [node:UseConstraint, node:Assessment, node:StudyResult, rel:STATES_CONSTRAINT, rel:RESOLVES_TO_CONSTRAINT]
+    definition: Contraindications, interactions and dose limits are UseConstraints stated by sourced Assertions; safety signals are SAFETY_SIGNAL Assessments; adverse-event counts are StudyResults.
+  - term: podcast
+    aliases: [episode, show, channel, YouTube, transcript, segment, speaker, host, guest, video]
+    ids: [node:Channel, node:MediaWork, node:Chunk, rel:PUBLISHES, rel:APPEARS_IN, rel:OCCURS_IN]
+  - term: claim
+    aliases: [statement, assertion, says that, recommends, retelling, quote, claim occurrence]
+    ids: [node:Claim, node:Assertion, rel:OCCURRENCE_OF, rel:DERIVED_FROM, task:ingest-podcast-claims, task:claim-to-evidence-report]
+    definition: A claim occurrence is an Assertion with assertionKind CLAIM and one OCCURRENCE_OF edge to its Claim; a retelling has basisKind CITED_FROM_PRIOR_WORK and DERIVED_FROM the primary occurrence; a recommendation is speechAct RECOMMENDS.
+  - term: evidence
+    aliases: [source, citation, locator, snapshot, provenance, support, trace, span]
+    ids: [node:Source, node:SourceSnapshot, node:SourceLocator, node:Assertion, node:Adjudication, rel:HAS_EVIDENCE, edge:EvidenceEdgeProperties, task:trace-answer-to-source]
+    definition: Support and contradiction are HAS_EVIDENCE edges (role SUPPORTS / CONTRADICTS / CONTEXT / QUALIFIES, origin) from a record to a SourceLocator on a captured SourceSnapshot.
+  - term: assessment
+    aliases: [judgment, evaluation, resolution, equivalence, applicability, quality, safety signal, retelling fidelity, conflict relevance]
+    ids: [node:Assessment, rel:ASSESSES, enum:AssessmentKind, node:Adjudication]
+    definition: Every BellLabs judgment is an Assessment of a registered kind/subkind (vocabularies/assessments.yaml) that ASSESSES its target and is DERIVED_FROM its inputs.
+  - term: identifier
+    aliases: [UNII, CAS, InChIKey, PubChem, ORCID, ROR, LEI, NCT, DOI, PMID, LOINC, GTIN, UPC, EAN, ASIN, HGNC, UniProt, Reactome]
+    ids: [node:Identifier, rel:HAS_IDENTIFIER, edge:IdentifierLinkProperties, task:attach-identifier]
+    definition: One Identifier type (scheme, issuer, normalized value) for every scheme including trade identifiers; one key identifies at most one Subjectable (R-42).
+  - term: document
+    aliases: [PDF, webpage, chunk, text version, page, section, transcript]
+    ids: [node:Source, node:SourceSnapshot, node:Chunk, rel:CHUNK_OF, rel:COVERS_LOCATOR]
+  - term: media
+    aliases: [image, figure, photo, video, diagram, label photo, media asset]
+    ids: [node:MediaWork, node:SourceLocator, enum:WorkKind]
+    definition: Image works are MediaWorks; a region of an image is a SourceLocator (BOUNDING_BOX selector); depiction is a predicate-only Assertion.
+  - term: event
+    aliases: [conference, launch, recall, acquisition, funding round, readout, approval event, breakthrough]
+    ids: [node:Event, node:Frontier, rel:LEADS_TO, rel:RESPONDS_TO, rel:INVOLVES, rel:ON_FRONTIER, dom:frontiers-and-events]
+  - term: report
+    aliases: [answer, published answer, comparison, ranking, evidence report, recommendation, decision criteria]
+    ids: [node:Report, node:ReportItem, node:DecisionCriterion, rel:HAS_ITEM, rel:USES_CRITERION, dom:derived-knowledge-and-reports]
+  - term: run
+    aliases: [mission, activation, Mission Control, research run, mongoResearchRunId, lastWriterRunId, lineage, agent]
+    ids: [node:Activity, node:Agent, rel:WAS_GENERATED_BY, rel:WAS_INFORMED_BY, rel:WAS_ASSOCIATED_WITH, dom:kernel-and-provenance]
+    definition: >-
+      One Activity per Mission Control run (externalRunSystem + runId, OD-07); every record a run writes is
+      WAS_GENERATED_BY it. lastWriterRunId (replaces mongoResearchRunId) is only the last-writer pointer.
+  - term: time
+    aliases: [as of, valid from, valid to, recorded, episode, bitemporal, history, snapshot state, exclusivity]
+    ids: [enum:TimePrecision, enum:ValidTimeBasis, edge:AssertedEdgeProperties, edge:AssertedRecordedProperties, task:correct-a-stale-fact]
+    definition: Valid time is on the Assertion and on episode edges (AssertedEdgeProperties); recorded-only edges (AssertedRecordedProperties) carry recordedFrom / recordedTo. v1 StateEpisodeProperties and HAS_STATE are gone; exclusivity is a register flag scoped per (subject, slot, asserter).
+  - term: privacy
+    aliases: [private, personal, user context, PUBLIC, INTERNAL, access tier]
+    ids: [enum:PrivacyClass, dom:kernel-and-provenance]
+    definition: The shared graph holds no private-personal node; privacyClass is per record; a null class is not public.

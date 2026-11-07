@@ -1,0 +1,296 @@
+# ---- fragment D10 ----
+# Module D10 — derived knowledge: comparisons and rankings, report composition, materialized associations.
+# Model stage (Wave 2) by A1, 2026-10-08. Kernel pattern: packets/K/09-reasoning.md (published 2026-10-08).
+# Adversarial-review stage, 2026-10-08: ReportItem.citesAssociations cut (no question, pattern or fixture); BLOCKED_BY's
+# Assertion pair retargeted to D5.UseConstraint (the shared blocking identity); Association no longer implements
+# Subjectable (no record is about an Association); the HAS_ITEM inverse is [CONNECT]; a ROW ASSESSES exactly its option.
+#
+# What D10 does NOT declare (kernel owns it; see 09-reasoning.md "Ownership"):
+#   Claim, Assessment (vetting, insight, synthesis, strength, harm causality, signal interpretation, source fidelity
+#   are assessmentKind / assessmentSubkind values), Report (evidence report, answer record, comparison report,
+#   profile, published recommendation are reportKind values), Activity, PolicyVersion (a string id on Report and
+#   Activity). Recommendations by people are kernel claim occurrences (speechAct RECOMMENDS); no RECOMMENDS edge here.
+#
+# What D10 declares: 3 node types (DecisionCriterion, ReportItem, Association), 6 relationship types of which two are
+# kernel types used with kernel meaning (ASSESSES, DERIVED_FROM), 9 from→to pairs, no unions.
+#
+# Discipline: every @node has @query(aggregate: false) @mutation(operations: []); every @relationship has
+# aggregate: false, nestedOperations, @filterable(byValue: true, byAggregate: false); the derived field is
+# @settable(onCreate: false, onUpdate: false) with nestedOperations: []. No good/bad/score property on any domain
+# entity: a criterion has a direction, a row has a rank under a named criteria set, an association has a method score
+# that is documented as not a confidence and not evidence.
+
+# =====================================================================================================
+# Enums (D10 controlled vocabularies)
+# =====================================================================================================
+
+"Role of a DecisionCriterion in a ranking method (directive 3.5). BLOCK removes an option with a reason (rank null) instead of lowering its score (CQ-RC-06)."
+enum CriterionKind {
+  SCORE
+  BLOCK
+  FILTER
+  TIEBREAK
+}
+
+"How a criterion's value orders options. NOT_ORDERED for BLOCK and FILTER criteria."
+enum CriterionDirection {
+  HIGHER_IS_BETTER
+  LOWER_IS_BETTER
+  WITHIN_RANGE
+  NOT_ORDERED
+}
+
+"Granularity of a ReportItem. Sentences are not graph nodes: they stay in the sealed report ledger (verification.v1 report_assertion with offsets) and are reached through the item's body offsets."
+enum ReportItemKind {
+  SECTION
+  ROW
+}
+
+"Section of a report skeleton (packets/D10/report-skeletons.md). One skeleton = an ordered subset of these values."
+enum ReportSectionKind {
+  SCOPE
+  IDENTITY
+  USES_BY_TARGET
+  EVIDENCE_FOR
+  EVIDENCE_AGAINST
+  HARMS_AND_AVOIDANCE
+  INTERACTIONS
+  CRITERIA
+  OPTIONS
+  PRODUCTS_AND_QUALITY
+  PROTOCOL_STEP
+  CLAIM_UNDER_TEST
+  VERDICT
+  MISSING_OR_DISPUTED
+  INTERESTS
+  OPEN_QUESTIONS
+  CHANGES
+}
+
+"Outcome of one option row in a published comparison (CQ-RC-01, CQ-RC-06). BLOCKED rows have rank null and BLOCKED_BY edges; NOT_EVALUATED rows are candidates the method could not score (missing facts)."
+enum OptionDisposition {
+  SELECTED
+  ALTERNATIVE
+  REJECTED
+  BLOCKED
+  NOT_EVALUATED
+}
+
+"Kind of materialized association (PLAN 6.1, directive 3.6). External scores (Open Targets, FAERS signals, third-party rankings) are not Associations: they are captured as Assertions by their producer."
+enum AssociationKind {
+  EVIDENCE_AGGREGATE
+  SIGNAL_DISPROPORTIONALITY
+  CO_OCCURRENCE
+  SIMILARITY
+  LINK_PREDICTION
+}
+
+# =====================================================================================================
+# DecisionCriterion — versioned ranking criteria (directive 3.5)
+# =====================================================================================================
+
+"""
+Purpose: one versioned criterion of a ranking or comparison method ("elemental magnesium per maximum daily dose",
+"block if the daily dose exceeds the supplemental upper limit stated for the population", Labdoor's "Label Accuracy"
+weight). A ranking is a function of (candidate set, criteria set @ version, inputs as recorded at R); the criteria are
+the only stored part of an unpublished ranking (Q-D10-01 is computed at query time from them). Criteria of a
+third-party ranker are DecisionCriterion records too (publisherUid = the ranker), so two rankings can be compared
+criterion by criterion (Q-D10-11); the ranker's method statement is a kernel Assertion whose subject is the criterion.
+A criteria set is the group of records sharing (criteriaSetKey, criteriaSetVersion); no separate node.
+Identity rule: (criterionKey, version); a changed definition, weight, input predicate or direction is a new version
+naming `supersedesUid`; nothing is edited after publication. uid token: `decision-criterion`
+(hu:decision-criterion:<opaque>). Questions: CQ-RC-01, CQ-RC-02, CQ-RC-07, Q-D10-01, Q-D10-02, Q-D10-10, Q-D10-11,
+Q-D10-22.
+"""
+type DecisionCriterion implements Entity & Subjectable
+  @node(labels: ["DecisionCriterion", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Stable controlled key shared by all versions (e.g. bl:mg-sleep:elemental-mg-per-max-daily-dose)."
+  criterionKey: String!
+  "Version of this criterion; part of identity."
+  version: String!
+  "Ranking method family this criterion belongs to (e.g. bl:compare:mg-forms-for-sleep, labdoor:score)."
+  criteriaSetKey: String!
+  criteriaSetVersion: String!
+  criterionKind: CriterionKind!
+  direction: CriterionDirection!
+  "Weight inside its criteria set (SCORE criteria); null for BLOCK, FILTER, TIEBREAK."
+  weight: Float
+  "Tie-break or evaluation order inside the set."
+  evaluationOrder: Int
+  "Human-readable definition, as published."
+  definition: String!
+  "Machine rule (expression over input values) the comparison engine evaluates; versioned with the criterion."
+  rule: String
+  "Assertion.predicate values the criterion reads (e.g. DECLARES_AMOUNT, IMPROVES_TARGET, HAS_UPPER_LIMIT)."
+  inputPredicates: [String!]
+  "Assessment kinds/subkinds the criterion reads (e.g. EVIDENCE_SYNTHESIS/D10.strength)."
+  inputAssessmentKinds: [String!]
+  "UCUM unit of the criterion value when it is a quantity."
+  valueUnitCode: String
+  "D5 Target keys the criteria set serves (shared vocabulary targets@0.1.0, e.g. target:sleep); a property, not an edge. Q-D10-01 filters criteria on it."
+  targetKeys: [String!]
+  "uid of the Organization or Agent that defines the criterion (BellLabs, or a third-party ranker)."
+  publisherUid: String
+  "Valid time of the publisher's method version (e.g. a ranker's method change date)."
+  validFrom: DateTime
+  validTo: DateTime
+  recordedAt: DateTime!
+  recordedTo: DateTime
+  supersedesUid: String
+  """class: structural (inverse; stored Report → DecisionCriterion); cardinality: many (every published comparison or ranking that applied this criterion version); questions: CQ-RC-01, CQ-RC-02, CQ-RC-07, Q-D10-02."""
+  usedByReports: [Report!]!
+    @relationship(type: "USES_CRITERION", direction: IN, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+# =====================================================================================================
+# ReportItem — the composed part of a published Report (section or row)
+# =====================================================================================================
+
+"""
+Purpose: one section or one option row of a published kernel Report (comparison, profile, protocol review, evidence
+report, published answer). It exists because questions filter and traverse below the report level: which rows were
+BLOCKED and by which use constraint or assessment (CQ-RC-06), which option was rejected and why (CQ-RC-01), which row or section of a
+report cites an input that has since been superseded (Q-D10-13, CQ-AX-11), and which sections carry uncited
+sentences (CQ-AX-01, Q-D10-14). The Report keeps the kernel minimum citation set; each item cites the subset its own
+content rests on, so one row can be re-checked without parsing the body. Sentences stay in the sealed report ledger;
+an item points into the body with offsets. Insert-only with its Report: a revision is a new Report with new items.
+Row rule: a ROW ASSESSES exactly one entity, its option; the target, population or other context of a row is on the
+enclosing SECTION's or the Report's ASSESSES, and a blocking scope is the UseConstraint's (report-skeletons.md rule 9).
+Identity rule: (report uid, itemKey). uid token: `report-item` (hu:report-item:<opaque>).
+Questions: CQ-AX-01, CQ-AX-11, CQ-RC-01, CQ-RC-02, CQ-RC-03, CQ-RC-06, CQ-RC-07, Q-D10-02, Q-D10-08, Q-D10-13,
+Q-D10-14, Q-D10-16.
+"""
+type ReportItem implements Entity
+  @node(labels: ["ReportItem", "InformationArtifact"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  "Heading of the section, or display label of the option row."
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  itemKind: ReportItemKind!
+  sectionKind: ReportSectionKind
+  "Stable key inside the report (e.g. sec:evidence-against, row:mg-bisglycinate); with the report uid, identity."
+  itemKey: String!
+  "itemKey of the enclosing section for a row (rows live inside an OPTIONS, HARMS_AND_AVOIDANCE or PROTOCOL_STEP section)."
+  parentItemKey: String
+  "ROW only."
+  disposition: OptionDisposition
+  "ROW only; null when BLOCKED or NOT_EVALUATED. Rank under the report's criteria set, never a property of the option."
+  rank: Int
+  "ROW only: one entry per criterion cell, '<criterion uid>=<value>[ <unit>]|<assertion or assessment uid>,…'."
+  cellValues: [String!]
+  "Rejection or blocking reason as published."
+  reason: String
+  "Fact keys the method needed and could not find for this item (CQ-RC-03)."
+  missingFactKeys: [String!]
+  "Character offsets of the item in the registered report body (bodyDigest), so ledger sentences resolve to items."
+  bodyStartOffset: Int
+  bodyEndOffset: Int
+  "verification.v1 claim-weighted citation completeness over the sentences in this item's span."
+  citationCompleteness: Float
+  "Sentences in the span with no ledger citation (CQ-AX-01)."
+  uncitedSentenceCount: Int
+  recordedAt: DateTime!
+  """class: structural (inverse; stored Report → ReportItem, orderIndex = position; written with its Report by report.publish, so the item side only CONNECTs); cardinality: exactly_one; questions: CQ-AX-01, CQ-RC-01, Q-D10-02, Q-D10-14."""
+  report: [Report!]!
+    @relationship(type: "HAS_ITEM", direction: IN, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural (kernel ASSESSES, kernel meaning "is about"); cardinality: exactly_one for a ROW (its option: product, form, compound, protocol step), one_or_more for a SECTION (the entities and context the section is about); questions: CQ-RC-01, CQ-RC-06, Q-D10-02, Q-D10-16."""
+  about: [Subjectable!]!
+    @relationship(type: "ASSESSES", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural (kernel DERIVED_FROM); cardinality: many (every Assertion the item's sentences or cells rest on); questions: CQ-AX-01, CQ-AX-11, CQ-RC-02, Q-D10-13."""
+  citesAssertions: [Assertion!]!
+    @relationship(type: "DERIVED_FROM", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural (kernel DERIVED_FROM); cardinality: many (verdicts, harm and strength assessments the item cites); questions: CQ-AX-11, CQ-RC-02, Q-D10-13, Q-D10-16."""
+  citesAssessments: [Assessment!]!
+    @relationship(type: "DERIVED_FROM", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: one_or_more when disposition is BLOCKED (with blockedByAssessments), else none (the D5 UseConstraint, the shared identity of a scoped use concern such as an upper limit, a contraindication or an interaction, that blocks the option; trace: UseConstraint <- RESOLVES_TO_CONSTRAINT <- Assertion -> HAS_EVIDENCE -> locator; the row also cites the resolving Assertion with DERIVED_FROM); questions: CQ-RC-06, Q-D10-08."""
+  blockedBy: [UseConstraint!]!
+    @relationship(type: "BLOCKED_BY", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: many (a D5 interaction-risk or a D10 harm-causality Assessment that blocks the option when no use constraint states the concern); questions: CQ-RC-06, Q-D10-08."""
+  blockedByAssessments: [Assessment!]!
+    @relationship(type: "BLOCKED_BY", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+# =====================================================================================================
+# Association — materialized projection record (directive 3.6)
+# =====================================================================================================
+
+"""
+Purpose: a regenerable score between two entities computed by a projection Activity under a method version (PLAN 6.1
+"materialized"): evidence aggregate (compound X ↔ outcome or target Y with a per-evidence-kind breakdown),
+surveillance disproportionality signal, co-occurrence, similarity, link-prediction lead. It is a retrieval and
+ranking aid, never evidence, never a confidence, never an asserted edge between the two entities; any answer that
+uses it shows the method version and its inputs. BellLabs-computed only: an external score (Open Targets, a producer's
+FAERS statistic, a third-party ranking) is an Assertion by its producer and is never copied into an Association. It
+implements Entity only: no question makes an Association the subject of an Assertion or an Assessment (a signal
+interpretation ASSESSES the drug and the event and cites the signal's inputs). Only the projection job writes it
+(WAS_GENERATED_BY a PROJECTION Activity whose methodVersion equals `methodVersion`); a recompute writes a new record
+naming `supersedesUid` and closes the old one with `recordedTo`.
+Identity rule: (associationKind, sorted member uids, methodVersion, inputSetDigest). uid token: `association`
+(hu:association:<opaque>). Questions: CQ-EV-02, CQ-AX-08, Q-D10-05, Q-D10-06, Q-D10-19.
+"""
+type Association implements Entity
+  @node(labels: ["Association", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  associationKind: AssociationKind!
+  "uid of the member the score is oriented from (exposure, drug, compound); the other member is the partner. For symmetric kinds, the lower uid."
+  anchorUid: String!
+  "The method's own score. Not a confidence, not a probability, not evidence (Open Targets states the same of its score)."
+  score: Float!
+  "Breakdown by evidence kind or data source, '<kind>=<value>' (e.g. literature=0.99, clinical=0.61)."
+  components: [String!]
+  "Named statistic for SIGNAL_DISPROPORTIONALITY (e.g. LLR, PRR, ROR), its value and the method's threshold."
+  statistic: String
+  statisticValue: Float
+  threshold: Float
+  "Number of input records (assertions, studies, reports) behind the score."
+  inputCount: Int
+  "sha256:<hex> over the sorted input uids and their contentHashes."
+  inputSetDigest: String!
+  "Method and version (derivationRule), e.g. bl-assoc/evidence-aggregate@1, gds-nodesimilarity/jaccard@1."
+  methodVersion: String!
+  computedAt: DateTime!
+  "Staleness bound: after this time the record must be recomputed before an answer uses it."
+  staleAfter: DateTime
+  recordedAt: DateTime!
+  recordedTo: DateTime
+  supersedesUid: String
+  """class: derived (projection job; read-only, regenerable); cardinality: exactly_two (anchor and partner; anchorUid says which); questions: Q-D10-05, Q-D10-06, Q-D10-19, CQ-EV-02."""
+  members: [Subjectable!]!
+    @relationship(type: "ASSOCIATES", direction: OUT, properties: "DerivedEdgeProperties", nestedOperations: [], aggregate: false)
+    @settable(onCreate: false, onUpdate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural (kernel DERIVED_FROM; the projection's citation set, written with the record); cardinality: many (bounded by inputCount; above 5,000 inputs only inputSetDigest is kept); questions: CQ-AX-08, Q-D10-05."""
+  inputs: [Assertion!]!
+    @relationship(type: "DERIVED_FROM", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

@@ -1,0 +1,633 @@
+{
+  "$id": "https://belllabs.dev/contracts/mc.knowledge_request.v1.json",
+  "title": "mc.knowledge_request.v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "mc.knowledge_request.v1"
+    },
+    "identity": {
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,199}$"
+        },
+        "installationId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "applicationId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "correlationId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,199}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "mission": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "missionId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,199}$"
+                },
+                "runId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,199}$"
+                },
+                "activationId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,199}$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "attempt": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "missionId",
+                "runId",
+                "activationId",
+                "attempt"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "nativeRun": {
+          "type": "object",
+          "properties": {
+            "system": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9.-]{0,59}$"
+            },
+            "runId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,199}$"
+            }
+          },
+          "required": [
+            "system",
+            "runId"
+          ],
+          "additionalProperties": false
+        },
+        "generation": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "effectKey": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,199}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "requestId",
+        "installationId",
+        "applicationId",
+        "tenantId",
+        "correlationId",
+        "mission",
+        "nativeRun",
+        "generation",
+        "effectKey"
+      ],
+      "additionalProperties": false
+    },
+    "target": {
+      "type": "object",
+      "properties": {
+        "capabilityBinding": {
+          "type": "object",
+          "properties": {
+            "bindingId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,199}$"
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "digest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "bindingId",
+            "revision",
+            "digest"
+          ],
+          "additionalProperties": false
+        },
+        "audience": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "operation": {
+          "type": "string",
+          "enum": [
+            "knowledge.describe",
+            "knowledge.capture_prepare",
+            "knowledge.verify",
+            "knowledge.classify_propose",
+            "knowledge.classify_admit",
+            "knowledge.query",
+            "knowledge.retrieve",
+            "knowledge.ingestion_plan",
+            "knowledge.ingestion_apply",
+            "knowledge.receipt_get",
+            "knowledge.verify_result"
+          ]
+        },
+        "nativeOperation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "executorVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "schemaReleaseDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "capabilityBinding",
+        "audience",
+        "operation",
+        "nativeOperation",
+        "executorVersion",
+        "schemaReleaseDigest"
+      ],
+      "additionalProperties": false
+    },
+    "input": {
+      "type": "object",
+      "properties": {
+        "nativeContract": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_.-]{0,119}$"
+            },
+            "version": {
+              "type": "string",
+              "pattern": "^v[0-9]+$"
+            }
+          },
+          "required": [
+            "name",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "payloadRef": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 400
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "payloadDigest": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "payloadBytes": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "mediaType": {
+          "type": "string",
+          "const": "application/json"
+        },
+        "canonicalization": {
+          "type": "string",
+          "const": "bks-canonical-json.v2"
+        },
+        "nativeDigest": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "upstreamRefs": {
+          "maxItems": 200,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              },
+              "ref": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 400
+              },
+              "digest": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "kind",
+              "ref",
+              "digest"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "nativeContract",
+        "payloadRef",
+        "payloadDigest",
+        "payloadBytes",
+        "mediaType",
+        "canonicalization",
+        "nativeDigest",
+        "upstreamRefs"
+      ],
+      "additionalProperties": false
+    },
+    "authority": {
+      "type": "object",
+      "properties": {
+        "actor": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "agent",
+                "human",
+                "service"
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": [
+            "kind",
+            "id"
+          ],
+          "additionalProperties": false
+        },
+        "requestedScopes": {
+          "maxItems": 50,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_.:-]{0,119}$"
+          }
+        },
+        "admissionRef": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 400
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "grantRef": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 400
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "actor",
+        "requestedScopes",
+        "admissionRef",
+        "grantRef"
+      ],
+      "additionalProperties": false
+    },
+    "preconditions": {
+      "type": "object",
+      "properties": {
+        "releasePins": {
+          "type": "object",
+          "properties": {
+            "schemaReleaseDigest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "policyVersion": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 120
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "workspaceFingerprint": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "schemaReleaseDigest",
+            "policyVersion",
+            "workspaceFingerprint"
+          ],
+          "additionalProperties": false
+        },
+        "snapshotRef": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "ref": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 400
+                },
+                "digest": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              },
+              "required": [
+                "ref",
+                "digest"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "graphRevision": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "planRef": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "expectedPlanDigest": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "approvalRefs": {
+          "maxItems": 50,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ref": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 400
+              },
+              "digest": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "ref",
+              "digest"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "releasePins",
+        "snapshotRef",
+        "graphRevision",
+        "planRef",
+        "expectedPlanDigest",
+        "approvalRefs"
+      ],
+      "additionalProperties": false
+    },
+    "governors": {
+      "type": "object",
+      "properties": {
+        "reservationRef": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 400
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "deadline": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "timeoutMs": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "maxItems": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "partialPolicy": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "all"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "include": {
+                      "minItems": 1,
+                      "maxItems": 500,
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+                      }
+                    }
+                  },
+                  "required": [
+                    "include"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "reservationRef",
+        "deadline",
+        "timeoutMs",
+        "maxItems",
+        "partialPolicy"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "identity",
+    "target",
+    "input",
+    "authority",
+    "preconditions",
+    "governors"
+  ],
+  "additionalProperties": false
+}

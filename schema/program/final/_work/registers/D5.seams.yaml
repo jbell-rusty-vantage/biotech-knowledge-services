@@ -1,0 +1,119 @@
+version: 1
+module: D5
+# Source: packets/D5/10-seams.yaml (sha256 f729977e…), edited by the S module editor for D5 2026-10-08 per
+# final/decision-report.md and final/_work/rulings.yaml (global, modules.D5). Every entry keeps the 01-PACKET-CONTRACT
+# fields (type, from, to, questions, direction, owner), adds `module: D5`, and is marked `status: accepted | cut` with the
+# ruling that decides it (rows no ruling changes cite R-94, the seam-hygiene pass that checked them against the final
+# SDLs: final/schema/{kernel,D3,D7}.graphql and packets D2, D4, D6, D9, D10, D12 where no final module exists yet).
+# Synthesis edits:
+#   R-94  relationship seams (`seams`) and Assertion.predicate seams (`predicateSeams`) are separate lists; the latter
+#         are checked against final/vocabularies/predicates.yaml (R-52). OFFERS_INTERVENTION moves to predicateSeams.
+#   R-70  new row OPERATIONALIZED_BY D5.Target -> D2.Condition (owner this; fixture requested); the Outcome row is now
+#         two-sided (D2 adds the IN row; D3 lists Outcome and Condition) - OQ-D5-43 closed.
+#   R-75  BLOCKED_BY reversed: D10.ReportItem -> D5.UseConstraint (owner other); the old -> K.Assertion row is cut, and
+#         K.Report ASSESSES D5.UseConstraint (CQ-RC-06) is cut (OQ-D5-39 reversed).
+#   R-78  HOLDS_ROLE | HOLDS_STAKE | RECEIVES_VALUE_FROM replace HAS_INTEREST_IN (OQ-D7-29; OQ-D5-42 closed).
+#   R-80  PROTOCOL_AUTHORED_BY -> AUTHORED_BY (registrar D3; subjects include D5.Protocol, D5.ProtocolEdition).
+#   R-82  a stated non-affiliation is DISCLOSES_INTEREST (registrar D9) with polarity NEGATIVE, speechAct DENIES
+#         (OQ-D5-44 closed).
+#   R-83  RECOMMENDS_AGAINST registered by D9 (never with a Target object); MEDIATES_TARGET (D2) admitted.
+#   R-84  CAUSES_ADVERSE_EFFECT object D2.Condition (OQ-D5-03, OQ-D5-41 closed).
+#   R-85  subjects added (D1.Constituent, D12.FoodItem, D12.FoodCategory); D11 removed from the targets consumer list.
+#   R-88  USE_CONSTRAINED_IN section BOXED_WARNING.
+#   R-28  STEP_USES -> Subjectable is a registered domain exception; the admitted list is executor-enforced; D1, D4, D12
+#         notes no longer say "union StepMeans" (OQ-D5-48 closed by R-94).
+#   R-60  vocabulary pins: targets 0.2.2, frontiers 0.2.1.
+#   R-10  kernel edge-property types: StateEpisodeProperties removed; HAS_EDITION uses AssertedEdgeProperties.
+seams:
+  # ---- declared by D5 (owner: this) ----
+  - {type: STEP_USES, module: D5, from: D5.ProtocolStep, to: D1.ChemicalSubstance, questions: [Q-D5-06, Q-D5-10, Q-D5-11, Q-D5-12, Q-D5-19], direction: OUT, owner: this, via: "Subjectable (admissible type, executor-validated)", status: accepted, ruling: R-28}
+  - {type: STEP_USES, module: D5, from: D5.ProtocolStep, to: D1.IngredientMaterial, questions: [Q-D5-10, Q-D5-12, Q-D5-19], direction: OUT, owner: this, via: "Subjectable (admissible type)", status: accepted, ruling: R-28}
+  - {type: STEP_USES, module: D5, from: D5.ProtocolStep, to: D6.Product, questions: [Q-D5-10, Q-D5-12, Q-D5-13], direction: OUT, owner: this, via: "Subjectable (admissible type)", status: accepted, ruling: R-28}
+  - {type: STEP_USES, module: D5, from: D5.ProtocolStep, to: D12.FoodItem, questions: [Q-D5-10, Q-D5-12, Q-D5-04], direction: OUT, owner: this, via: "Subjectable (admissible type)", status: accepted, ruling: R-28}
+  - {type: STEP_USES, module: D5, from: D5.ProtocolStep, to: D12.FoodCategory, questions: [Q-D5-10, Q-D5-11], direction: OUT, owner: this, via: "Subjectable (admissible type; Blueprint pregnancy 'avoid raw meat, processed meat ...')", status: accepted, ruling: "R-28, R-94"}
+  - {type: STEP_USES, module: D5, from: D5.ProtocolStep, to: D12.DietaryPattern, questions: [Q-D5-10, Q-D5-12], direction: OUT, owner: this, via: "Subjectable (admissible type; the only node for an eating pattern incl. time-restricted eating and fasting-mimicking, R-63)", status: accepted, ruling: "R-28, R-63, R-94"}
+  - {type: STEP_USES, module: D5, from: D5.ProtocolStep, to: D4.Metric, questions: [Q-D5-10, CQ-PR-04], direction: OUT, owner: this, via: "Subjectable (admissible type; MEASURE steps)", status: accepted, ruling: R-28}
+  - {type: STEP_USES, module: D5, from: D5.ProtocolStep, to: D4.Device, questions: [Q-D5-10], direction: OUT, owner: this, via: "Subjectable (admissible type; device-based steps such as red-light panels)", status: accepted, ruling: R-28}
+  - {type: OPERATIONALIZED_BY, module: D5, from: D5.Target, to: D4.Biomarker, questions: [Q-D5-01, Q-D5-14, Q-D5-20], direction: OUT, owner: this, via: "union TargetMeasure (asserted, AssertedRecordedProperties, basis CURATOR_CLASSIFICATION, R-26)", status: accepted, ruling: "R-70, R-26"}
+  - {type: OPERATIONALIZED_BY, module: D5, from: D5.Target, to: D4.Metric, questions: [Q-D5-01, Q-D5-14], direction: OUT, owner: this, via: "union TargetMeasure", status: accepted, ruling: "R-70, R-26"}
+  - {type: OPERATIONALIZED_BY, module: D5, from: D5.Target, to: D2.Outcome, questions: [Q-D5-01, Q-D5-14], direction: OUT, owner: this, via: "union TargetMeasure; fixture antioxidant-exercise-disconfirmation target:endurance -> hu:outcome:endurance-running-performance. Two-sided since R-70 (D2 adds the IN row; D3 lists Outcome and Condition; OQ-D5-43 closed)", status: accepted, ruling: "R-70, R-26"}
+  - {type: OPERATIONALIZED_BY, module: D5, from: D5.Target, to: D2.Condition, questions: [Q-D3-04, Q-D3-05, Q-D5-20], direction: OUT, owner: this, via: "union TargetMeasure (4th member): incidence of this condition measures the target; direction in the vocab-targets rule; replaces the shared-Identifier join of Q-D5-20 (R-42). Unfixtured value-1 pair kept with a fixture request in final/requests.md (R-06): ASPREE hemorrhage or incident dementia -> a Target", status: accepted, ruling: "R-70, R-06"}
+  # ---- kernel node types outside the packet-check allowlist ----
+  - {type: ASSESSES, module: D5, from: K.Assessment, to: "D5.Target | D5.Intervention | D5.ProtocolEdition | D5.ProtocolStep | D5.UseConstraint (via Subjectable)", questions: [Q-D5-08, Q-D5-14, CQ-EV-04, CQ-PR-06, Q-D5-22], direction: IN, owner: other, note: "kernel meaning; D5 assessment subkinds and their conclusionCode / gradeScheme vocabularies are registered in final/vocabularies/assessment-vocabularies.yaml (R-54); effectDirection = kernel EffectDirection (R-59)", status: accepted, ruling: "R-94, R-54"}
+  - {type: ASSESSES, module: D5, from: K.Report, to: "D5.Target | D5.Intervention (via Subjectable)", questions: [Q-D5-18], direction: IN, owner: other, note: "comparison reports and published recommendations (D10 composes); a row's ASSESSES means only its option; a blocked option is ReportItem -BLOCKED_BY-> UseConstraint (R-75)", status: accepted, ruling: R-75}
+  - {type: ASSESSES, module: D5, from: K.Report, to: D5.UseConstraint, questions: [CQ-RC-06], direction: IN, owner: other, note: "cut: the blocking constraint is reached by D10 BLOCKED_BY -> UseConstraint, and the row cites the resolving Assertion through DERIVED_FROM", status: cut, ruling: R-75}
+  - {type: ASSESSES, module: D5, from: K.Activity, to: K.Claim, questions: [Q-D5-14], direction: n/a, owner: other, note: "kernel claim lifecycle: the EVIDENCE_MISSION Activity ASSESSES the Claim it tries to disqualify; the EVIDENCE_REPORT Report ASSESSES it with the lattice verdict (fixture antioxidant-exercise-disconfirmation); owner confirms (R-12)", status: accepted, ruling: R-12}
+  - {type: OCCURRENCE_OF, module: D5, from: K.Assertion, to: K.Claim, questions: [Q-D5-14, Q-D5-27], direction: OUT, owner: other, note: "popular 'helps T' claims and community practices are claim occurrences (speechAct RECOMMENDS / REPORTS_PRACTICE)", status: accepted, ruling: R-94}
+  # ---- declared by other modules, pointing at D5 types (owner: other) ----
+  - {type: ADMINISTERS, module: D5, from: D3.InterventionComponent, to: D5.Intervention, questions: [Q-D5-25, CQ-EV-04], direction: IN, owner: other, note: "declared by D3 on InterventionComponent (union AdministeredMaterial = IngredientMaterial | ProductVariant | Intervention | FoodItem | DietaryPattern, R-72; AssertedRecordedProperties, verified in final/schema/D3.graphql); path StudyArm -HAS_COMPONENT-> InterventionComponent -ADMINISTERS-> Intervention", status: accepted, ruling: "R-72, R-94"}
+  - {type: AFFECTS_MECHANISM, module: D5, from: D5.Intervention, to: D2.Mechanism, questions: [], direction: OUT, owner: other, note: "no D5 question traverses it (listed so D2 keeps the member); declared by D2 on Mechanism.affectedBy (union MechanismModulator, derived; unscored facet shortcut, scores on D10 Associations, R-47); non-substance means such as exercise or fasting", status: accepted, ruling: R-47}
+  - {type: EXPOSED_TO, module: D5, from: D2.MechanismEvidenceContext, to: D5.Intervention, questions: [Q-D5-02], direction: IN, owner: other, note: "declared by D2 (union ContextExposure unchanged, R-86); BACKGROUND co-exposure (exercise training) of a mechanism observation, the same co-exposure D5 writes as coExposure:<uid>", status: accepted, ruling: R-86}
+  - {type: MENTIONS, module: D5, from: D9.Chunk, to: "D5.* (via Subjectable)", questions: [Q-D5-01, Q-D5-10], direction: IN, owner: other, note: "kernel meaning, derived, declared by D9 on Chunk; licensed by its entity-link/vN derivationRule (R-27); entity linking of goal phrases uses the fulltext index TargetSearch, which lives in deployment DDL (R-04)", status: accepted, ruling: "R-27, R-04"}
+  - {type: HOLDS_ROLE, module: D5, from: "D7.Person", to: "D7.Organization", questions: [Q-D5-13], direction: n/a, owner: other, note: "D7 SDL (RoleEdgeProperties.roleKind; role text in qualifier roleText:, R-30); traversed from the protocol author (AUTHORED_BY object, R-80) with valid-time overlap against HAS_EDITION episodes", status: accepted, ruling: R-78}
+  - {type: HOLDS_STAKE, module: D5, from: "D7.Person | D7.Organization", to: "D7.Organization", questions: [Q-D5-13], direction: n/a, owner: other, note: "D7 SDL (StakeEdgeProperties.stakeKind)", status: accepted, ruling: R-78}
+  - {type: RECEIVES_VALUE_FROM, module: D5, from: "D7.Person", to: "D7.Organization", questions: [Q-D5-13], direction: n/a, owner: other, note: "D7 SDL (ValueEdgeProperties.valueKind); fixture sleep-toolkit-unstructured a08/a09 (POSITIVE). The stated non-affiliation (a10) is DISCLOSES_INTEREST polarity NEGATIVE, speechAct DENIES (R-82; predicateSeams) and authorizes no episode. Replaces HAS_INTEREST_IN (D7 Shape A, never declared; OQ-D7-29)", status: accepted, ruling: "R-78, R-82"}
+  - {type: BRANDED_AS, module: D5, from: D6.Product, to: D7.Brand, questions: [Q-D5-13], direction: n/a, owner: other, note: "D6 SDL; with D7 OWNS_BRAND (Brand <- Organization) the 'counterparty owns the brand of a step's product' path of Q-D5-13", status: accepted, ruling: R-94}
+  - {type: OWNS_BRAND, module: D5, from: D7.Organization, to: D7.Brand, questions: [Q-D5-13], direction: n/a, owner: other, note: "D7 SDL (declared on Brand, direction IN)", status: accepted, ruling: R-94}
+  - {type: SELLER_OF_RECORD, module: D5, from: D6.Offer, to: D7.Organization, questions: [Q-D5-13], direction: n/a, owner: other, note: "D6 SDL; seller path Product -HAS_VARIANT-> ProductVariant -HAS_PACKAGE-> Package <-LISTING_FOR- MerchantListing -HAS_OFFER-> Offer -SELLER_OF_RECORD-> Organization", status: accepted, ruling: R-94}
+  - {type: BLOCKED_BY, module: D5, from: D10.ReportItem, to: D5.UseConstraint, questions: [CQ-RC-06, Q-D10-24], direction: IN, owner: other, note: "D10 SDL (ReportItem.blockedBy, structural citation set, R-26); a BLOCKED item points at the blocking UseConstraint and cites the resolving Assertion with DERIVED_FROM; BLOCKED_BY -> K.Assessment covers concerns no constraint states (OQ-D5-39 reversed)", status: accepted, ruling: R-75}
+  - {type: BLOCKED_BY, module: D5, from: D10.ReportItem, to: K.Assertion, questions: [CQ-RC-06], direction: n/a, owner: other, note: "cut: D10 declares BLOCKED_BY -> UseConstraint | Assessment, not -> Assertion", status: cut, ruling: R-75}
+  - {type: ASSOCIATES, module: D5, from: D10.Association, to: "D5 means (Subjectable)", questions: [Q-D5-19], direction: n/a, owner: other, note: "D10 SDL (derived, DerivedEdgeProperties, no score on the edge, R-48); the other registered domain exception targeting Subjectable (R-28); the GDS co-occurrence output d5-stack-cooccurrence/v1, if materialized, is a D10 Association with method version (OQ-D5-21)", status: accepted, ruling: "R-28, R-48"}
+  - {type: OFFERS_INTERVENTION, module: D5, from: "D6.Offer | D7.Organization", to: D5.Intervention, questions: [Q-D5-17], direction: IN, owner: other, note: "cut as a relationship seam: predicate-only, registered by D6; moved to predicateSeams", status: cut, ruling: "R-94, R-52"}
+
+  # added by the S integrator 2026-10-09 (contract rule 8): the RESOLVES_TO_CONSTRAINT row was only under kernelReferences
+  - {type: RESOLVES_TO_CONSTRAINT, module: D5, from: K.Assertion, to: D5.UseConstraint, declaredOn: D5.UseConstraint.resolvedFrom (direction IN), questions: [Q-D5-03, Q-D5-04, Q-D5-05, Q-D5-21, Q-D5-23, CQ-RC-06, Q-D5-24, Q-D5-26], direction: IN, owner: this, status: accepted, ruling: "R-29; integration (decision-report I-01)", note: "derived (DerivedEdgeProperties); never feeds adjudication (R-29)"}
+
+# Assertion-level seams (R-94): Assertion.predicate values whose subject or object is another module's type (kernel
+# HAS_SUBJECT / HAS_OBJECT against Subjectable, so no typed edge and no union is spent). Checked against
+# final/vocabularies/predicates.yaml (R-52). Listed so owners keep the types Subjectable.
+predicateSeams:
+  - {predicate: "INTENDED_FOR_TARGET | IMPROVES_TARGET | WORSENS_TARGET | NO_EFFECT_ON_TARGET | MIXED_EFFECT_ON_TARGET", module: D5, registrar: D5, owner: this, subjects: [D1.ChemicalSubstance, D1.IngredientMaterial, D6.Product, D12.FoodItem, D12.FoodCategory, D12.DietaryPattern, D5.Intervention, D5.Protocol, D5.ProtocolEdition, D4.Device], object: D5.Target, requiredQualifiers: [population], status: accepted, ruling: "R-52, R-85"}
+  - {predicate: USE_CONSTRAINED_IN, module: D5, registrar: D5, owner: this, subjects: [D1.ChemicalSubstance, D1.IngredientMaterial, D6.Product, D12.FoodItem, D12.FoodCategory, D5.Intervention], object: D2.Condition, qualifiers: "section incl. BOXED_WARNING (R-88)", requiredQualifiers: [population], status: accepted, ruling: "R-52, R-88"}
+  - {predicate: INTERACTS_WITH, module: D5, registrar: D5, owner: this, subjects: [D1.ChemicalSubstance, D1.IngredientMaterial, D6.Product, D12.FoodCategory, D5.Intervention], objects: [D1.ChemicalSubstance, D1.IngredientMaterial, D6.Product, D12.FoodItem, D5.Intervention], requiredQualifiers: [population], status: accepted, ruling: "R-52, R-85"}
+  - {predicate: CAUSES_ADVERSE_EFFECT, module: D5, registrar: D5, owner: this, subjects: [D1.ChemicalSubstance, D1.IngredientMaterial, D6.Product, D12.FoodItem, D12.FoodCategory, D5.Intervention], object: D2.Condition, requiredQualifiers: [population], aliases: [REPORTS_ADVERSE_EXPERIENCE], note: "the only adverse-effect predicate; object conditionKind PHENOTYPE | DISEASE; community experience reports use it with basisKind PERSONAL_EXPERIENCE and sourceKind:COMMUNITY; sourceKind REFERENCE_MONOGRAPH added, SPONTANEOUS_REPORT confirmed (CAERS)", status: accepted, ruling: "R-52, R-84, R-85"}
+  - {predicate: "HAS_UPPER_LIMIT | HAS_AUTHORIZED_DOSE_RANGE", module: D5, registrar: D5, owner: this, subjects: [D1.ChemicalSubstance, D1.IngredientMaterial, D1.Constituent], object: none, note: "HAS_UPPER_LIMIT limitKind adds SCHEDULING_THRESHOLD, LABEL_WARNING_THRESHOLD; EXCEEDS_DOSE_THRESHOLD is never stored", requiredQualifiers: [population], status: accepted, ruling: "R-52, R-85"}
+  - {predicate: INTERVENTION_INCLUDES, module: D5, registrar: D5, owner: this, subjects: [D5.Intervention], objects: [D1.ChemicalSubstance, D6.Product, D5.Intervention], note: "renamed from HAS_COMPONENT in the adversarial review", status: accepted, ruling: "R-52"}
+  - {predicate: AUTHORED_BY, module: D5, registrar: D3, owner: other, subjects: [D3.Publication, D5.Protocol, D5.ProtocolEdition], objects: [D7.Person, D7.Organization], questions: [Q-D5-13], aliases: [PROTOCOL_AUTHORED_BY], note: "replaces D5's PROTOCOL_AUTHORED_BY; author identity through D7 RESOLUTION Assessments", status: accepted, ruling: R-80}
+  - {predicate: PROTOCOL_AUTHORED_BY, module: D5, registrar: none, owner: this, subjects: [D5.Protocol], objects: [D7.Person, D7.Organization], note: "retired spelling of AUTHORED_BY", status: cut, ruling: R-80}
+  - {predicate: OFFERS_INTERVENTION, module: D5, registrar: D6, owner: other, subjects: [D6.Offer, "D6.Product (kind SERVICE)", D7.Organization], object: D5.Intervention, questions: [Q-D5-17], note: "moved from seams (R-94); listed so D6 does not re-mint an intervention concept", status: accepted, ruling: "R-52, R-94"}
+  - {predicate: DISCLOSES_INTEREST, module: D5, registrar: D9, owner: other, subjects: "discloser or the work (D7.Person | D7.Organization | D5 protocol author)", object: D7.Organization, questions: [Q-D5-13], note: "a stated non-affiliation ('we have no affiliation to Swanson') is this predicate with polarity NEGATIVE, speechAct DENIES; it authorizes no episode and Q-D5-13 returns it as DENIED (OQ-D5-44 closed)", status: accepted, ruling: R-82}
+  - {predicate: RECOMMENDS_AGAINST, module: D5, registrar: D9, owner: other, note: "never with a D5.Target object: a goal statement uses WORSENS_TARGET | NO_EFFECT_ON_TARGET (or USE_CONSTRAINED_IN) with speechAct RECOMMENDS | CAUTIONS; the goal of a RECOMMENDS_USE / RECOMMENDS_AGAINST statement goes in the qualifier target:<key> (OQ-D5-40 closed)", status: accepted, ruling: R-83}
+  - {predicate: "population qualifier (Assertion.qualifiers population:<uid>)", module: D5, registrar: D5, owner: this, references: [D3.StudyPopulation], status: accepted, ruling: R-52}
+  - {predicate: MEDIATES_TARGET, module: D5, registrar: D2, owner: other, subjects: [D2.Mechanism], object: D5.Target, note: "inbound; admitted as a D2-owned predicate with a Target object (a mechanism is not a means; not a typed edge); OQ-D5-37", status: accepted, ruling: R-83}
+
+kernelReferences:   # allowlisted, no seam required; listed for the synthesizer's cross-check
+  - {type: RESOLVES_TO_CONSTRAINT, from: K.Assertion, to: D5.UseConstraint, edgeProperties: DerivedEdgeProperties, declaredOn: D5.UseConstraint (direction IN), note: "R-29: declared IN on the domain type; never feeds adjudication"}
+  - {type: STATES_CONSTRAINT, from: D5.ProtocolStep, to: D5.UseConstraint, edgeProperties: DerivedEdgeProperties, note: "derived (projection use-constraint-key/v2); score stays null (R-47)"}
+  - {edgeProperties: [AssertedEdgeProperties, AssertedRecordedProperties, StructuralEdgeProperties, DerivedEdgeProperties], note: "the four M11 bases (R-47); StateEpisodeProperties removed (R-10)"}
+  - {interfaces: [Entity, Subjectable]}
+
+sharedVocabularies:
+  - name: kernel-types
+    ref: final/schema/kernel.graphql (sha256 ec981e2a…6c71)
+    role: consumer
+    uses: "enums SpeechAct (ProtocolStep.speechAct; Q-D5-27, CQ-PR-02), PrivacyClass (Entity field on every D5 type), BasisKind CURATOR_CLASSIFICATION (OPERATIONALIZED_BY authorizing Assertions, R-25); interface Subjectable as the STEP_USES target (R-28); edge-property types AssertedEdgeProperties (HAS_EDITION, R-10), AssertedRecordedProperties (OPERATIONALIZED_BY, R-26), StructuralEdgeProperties, DerivedEdgeProperties"
+  - name: quantity-comparator
+    ref: "D1 enum QuantityComparator (final/schema/D1.graphql)"
+    role: consumer (ProtocolStep.thresholdComparator, UseConstraint.doseComparator; replaces D5 ThresholdComparator, R-57)
+  - name: amount-basis
+    ref: "D6 enum AmountBasis (final/schema/D6.graphql)"
+    role: consumer (ProtocolStep.dosePeriod, UseConstraint.dosePeriod; replaces D5 DosePeriod, R-58)
+  - name: targets
+    ref: final/vocabularies/targets.yaml
+    version: "0.2.2"
+    role: owner (D5 publishes; consumed by K, D1, D2, D3, D4, D6, D7, D8, D9, D10, D12, D13; D11 removed from the consumer list, R-85)
+    seamRule: "Assertion.predicate (5 closed predicates, registrar D5) for every means; Target-[OPERATIONALIZED_BY]->(D4 Biomarker | D4 Metric | D2 Outcome | D2 Condition) for measures (R-70); ProtocolStep.targetKeys for captured protocol purpose (D5-internal, 0.2.0 amendment); targetKeys string properties are also used by D13 Frontier.targetKeys and D10 DecisionCriterion.targetKeys (vocab-targets.yaml exception; D10 acknowledges, R-60)"
+    ruling: R-60
+  - name: identifier-schemes
+    ref: final/vocabularies/identifier-schemes.yaml
+    role: "consumer (MESH, WIKIDATA, SNOMEDCT, ISBN, DOI; MESH and SNOMEDCT with domain D5, OQ-D5-11 closed); one (scheme, issuer, normalized value) identifies at most one Subjectable (R-42)"
+  - name: predicates
+    ref: final/vocabularies/predicates.yaml
+    role: "registrar of INTENDED_FOR_TARGET, IMPROVES_TARGET, WORSENS_TARGET, NO_EFFECT_ON_TARGET, MIXED_EFFECT_ON_TARGET, CAUSES_ADVERSE_EFFECT, HAS_UPPER_LIMIT, HAS_AUTHORIZED_DOSE_RANGE, USE_CONSTRAINED_IN, INTERACTS_WITH, INTERVENTION_INCLUDES and the required qualifier population: (R-52)"
+  - name: assessment-vocabularies
+    ref: final/vocabularies/assessment-vocabularies.yaml
+    role: "D5 subkinds (D5.safety-signal, D5.surveillance-trend, D5.applicability, D5.step-evidence, D5.target-effect, D5.interaction-risk) and their conclusionCode / gradeScheme values (R-54)"
+  - name: frontiers
+    ref: final/vocabularies/frontiers.yaml
+    version: "0.2.1"
+    role: not consumed by D5 types; D13 Frontier.targetKeys references D5 target keys (D13 is the consumer; R-60)

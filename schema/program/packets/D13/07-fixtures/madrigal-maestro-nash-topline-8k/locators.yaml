@@ -1,0 +1,242 @@
+# madrigal-maestro-nash-topline-8k — locators (fixtures stage, A7, 2026-10-08; adversarial-review pass same day). Generated and re-verified against fresh captures by _notes/tools/build_fixtures.py.
+# selectorKind values are the kernel SelectorKind enum (verification.v1 kinds + WHOLE_SNAPSHOT; EDGAR index fields use API_RECORD with rule edgar-accession/v1); offsets are code points (see snapshots[].offsetBasis); EDGAR HTML snapshots are identified by their h2t-v1 projection hash (contentHashBasis NORMALIZED_TEXT).
+fixture: madrigal-maestro-nash-topline-8k
+snapshots:
+- ref: s-mdgl-8k-2022-12-19
+  uid: hu:snapshot:fx-d13-mdgl-8k-2022-12-19
+  source:
+    canonicalUri: https://www.sec.gov/Archives/edgar/data/1157601/000119312522307935/d423141d8k.htm
+    sourceKind: WEB_PAGE
+    genre: REGULATORY_FILING
+    name: Madrigal Pharmaceuticals, Inc. Form 8-K (Items 7.01, 8.01), accession 0001193125-22-307935
+  retrievedAt: '2026-10-08'
+  publishedAt: '2022-12-19'
+  contentHash: sha256:41658369e5dfdec68371222e9d10dd46128991b965909913d1836f2128fa4694
+  contentHashBasis: NORMALIZED_TEXT
+  captureMethod: curl -> SEC EDGAR Archives (User-Agent from EDGAR_IDENTITY) + h2t-v1 projection
+  captureTool: tool:sec-edgar-archives
+  captureCompleteness: COMPLETE
+  rawCaptureFile: scratch ft/D13/fx/raw/mdgl-000119312522307935_d423141d8k.htm (not committed; durable blob storage is an open item, 11-open-questions.md)
+  refetchReproducible: 'raw bytes do NOT reproduce: sec.gov injects a per-client <script src="/<random path>"> before </body> (re-fetch 2026-10-08: sha256 024ba839... vs capture fea92312... for d423141d8k.htm,
+    the only diff that line); the h2t-v1 projection reproduces (verified on d423141d8k.htm and d434336dex991.htm), so it is the snapshot identity'
+  canonicalProjection:
+    method: h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)
+    hash: sha256:41658369e5dfdec68371222e9d10dd46128991b965909913d1836f2128fa4694
+  rawBytesHashSessionOnly: sha256:fea923127626521e465d528b3bcca911fba9c9626d1bd20d74434f0add314d21
+  offsetBasis: Unicode code points of the h2t-v1 projection
+- ref: s-mdgl-edgar-submissions
+  uid: hu:snapshot:fx-d13-mdgl-edgar-submissions
+  source:
+    canonicalUri: https://data.sec.gov/submissions/CIK0001157601.json
+    sourceKind: API
+    genre: REGISTRY_RECORD
+    name: SEC EDGAR submissions index, CIK 0001157601 (Madrigal Pharmaceuticals)
+  retrievedAt: '2026-10-08'
+  publishedAt: null
+  contentHash: sha256:6b23ab5df12518ae53921769482dfaf108cc4336e22136b8f944aad7c0297860
+  contentHashBasis: RAW_BYTES
+  captureMethod: curl -> data.sec.gov submissions API (User-Agent from EDGAR_IDENTITY)
+  captureTool: tool:sec-edgar-submissions
+  captureCompleteness: COMPLETE
+  rawCaptureFile: scratch ft/D13/fx/raw/madrigal-submissions.json (not committed; durable blob storage is an open item, 11-open-questions.md)
+  refetchReproducible: 'live API record: content changes as the registry, index or metadata is updated; the stored artifact is the evidence'
+- ref: s-ctgov-nct03900429
+  uid: hu:snapshot:fx-d13-ctgov-nct03900429
+  source:
+    canonicalUri: https://clinicaltrials.gov/api/v2/studies/NCT03900429
+    sourceKind: REGISTRY
+    genre: TRIAL_REGISTRY_RECORD
+    name: ClinicalTrials.gov record NCT03900429 (MAESTRO-NASH)
+  retrievedAt: '2026-10-08'
+  publishedAt: '2026-06-01'
+  contentHash: sha256:3cc365aad247c845bb0d55538bc1eace2c735d9b0b28634de35802f42843f45f
+  contentHashBasis: RAW_BYTES
+  captureMethod: curl -> ClinicalTrials.gov API v2 (adversarial-review pass)
+  captureTool: tool:clinicaltrials-gov-v2
+  captureCompleteness: COMPLETE
+  rawCaptureFile: scratch ft/D13/fx/raw/ctgov-NCT03900429.json (not committed; durable blob storage is an open item, 11-open-questions.md)
+  refetchReproducible: 'live API record: content changes as the registry, index or metadata is updated; the stored artifact is the evidence'
+locators:
+- ref: l01
+  uid: hu:locator:fx-d13-mnt-l01
+  snapshot: s-mdgl-8k-2022-12-19
+  selectorKind: TEXT_QUOTE
+  section: Cover
+  exact: 'Date of Report (Date of earliest event reported): December 19, 2022'
+  prefix: "ecurities Exchange Act of 1934\n\n"
+  suffix: "\n\nMADRIGAL PHARMACEUTICALS, INC."
+  startOffset: 232
+  endOffset: 299
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:f58e2eea95f896aec143f2170e0c66c44d7c9a44707877505a91fd5edc76b592
+  selectorJson: '{"basis":"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)","exact":"Date of Report (Date of earliest event reported): December 19, 2022","prefix":"ecurities Exchange Act of 1934\n\n","refinedBy":{"end":299,"start":232,"type":"TextPositionSelector"},"suffix":"\n\nMADRIGAL
+    PHARMACEUTICALS, INC.","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:c2ab49be7da8f93eea7f03ff53e4092426817a1f3e9b34f668f0be4c849a8c26
+  verified:
+    'on': '2026-10-08'
+    against: sha256:41658369e5dfdec68371222e9d10dd46128991b965909913d1836f2128fa4694
+    result: exact match at [232,299) of the fresh capture
+- ref: l02
+  uid: hu:locator:fx-d13-mnt-l02
+  snapshot: s-mdgl-8k-2022-12-19
+  selectorKind: TEXT_QUOTE
+  section: Item 7.01 Regulation FD Disclosure
+  exact: On December 19, 2022, Madrigal Pharmaceuticals, Inc. (“Madrigal” or the “Company”) issued a press release announcing Phase 3 MAESTRO-NASH clinical trial topline results
+  prefix: " | \nRegulation FD Disclosure. \n\n"
+  suffix: ', which are summarized under Ite'
+  startOffset: 2338
+  endOffset: 2506
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:b93e267b1e0f68f920e2654fede6ea96a16237de20c8c010b610519bee7d2268
+  selectorJson: '{"basis":"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)","exact":"On December 19, 2022, Madrigal Pharmaceuticals, Inc. (“Madrigal” or the “Company”) issued a press release announcing Phase
+    3 MAESTRO-NASH clinical trial topline results","prefix":" | \nRegulation FD Disclosure. \n\n","refinedBy":{"end":2506,"start":2338,"type":"TextPositionSelector"},"suffix":", which are summarized under
+    Ite","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:253ac3b173077653bed51e43ccc2585fd5f1e0d75772a3718f7ffd8d4f289722
+  verified:
+    'on': '2026-10-08'
+    against: sha256:41658369e5dfdec68371222e9d10dd46128991b965909913d1836f2128fa4694
+    result: exact match at [2338,2506) of the fresh capture
+- ref: l03
+  uid: hu:locator:fx-d13-mnt-l03
+  snapshot: s-mdgl-8k-2022-12-19
+  selectorKind: TEXT_QUOTE
+  section: Item 8.01 Other Events
+  exact: Madrigal is conducting a pivotal Phase 3 MAESTRO-NASH clinical trial of resmetirom for the treatment of nonalcoholic steatohepatitis (NASH).
+  prefix: "| Item 8.01\n | \nOther Events. \n\n"
+  suffix: ' On December 19, 2022, Madrigal '
+  startOffset: 2678
+  endOffset: 2818
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:348c2d8eeac5bff0f2fabb749c12b6c7f0e00bc2891760d8fa1e2cae6e7f370a
+  selectorJson: '{"basis":"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)","exact":"Madrigal is conducting a pivotal Phase 3 MAESTRO-NASH clinical trial of resmetirom for the treatment of nonalcoholic steatohepatitis
+    (NASH).","prefix":"| Item 8.01\n | \nOther Events. \n\n","refinedBy":{"end":2818,"start":2678,"type":"TextPositionSelector"},"suffix":" On December 19, 2022, Madrigal ","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:6a151ba7c2ffd2aebb24238ea418edb5e4e590d2b42d24ec2bf9ef21407a848d
+  verified:
+    'on': '2026-10-08'
+    against: sha256:41658369e5dfdec68371222e9d10dd46128991b965909913d1836f2128fa4694
+    result: exact match at [2678,2818) of the fresh capture
+- ref: l04
+  uid: hu:locator:fx-d13-mnt-l04
+  snapshot: s-mdgl-8k-2022-12-19
+  selectorKind: TEXT_QUOTE
+  section: Item 8.01 Other Events
+  exact: On December 19, 2022, Madrigal announced topline results, which are summarized below.
+  prefix: 'coholic steatohepatitis (NASH). '
+  suffix: " \n\nEfficacy Data \n\nDual Primary "
+  startOffset: 2819
+  endOffset: 2904
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:2b56c41cfab846da43ff8d17d69f8ec5d909d321a6f8758f709aa1e8647f9d0e
+  selectorJson: '{"basis":"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)","exact":"On December 19, 2022, Madrigal announced topline results, which are summarized below.","prefix":"coholic steatohepatitis (NASH).
+    ","refinedBy":{"end":2904,"start":2819,"type":"TextPositionSelector"},"suffix":" \n\nEfficacy Data \n\nDual Primary ","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:57ccf98bff9c458c1d5e472013df3a3aabfa7891bb5955c13e18699ec5e9fd13
+  verified:
+    'on': '2026-10-08'
+    against: sha256:41658369e5dfdec68371222e9d10dd46128991b965909913d1836f2128fa4694
+    result: exact match at [2819,2904) of the fresh capture
+- ref: l05
+  uid: hu:locator:fx-d13-mnt-l05
+  snapshot: s-mdgl-8k-2022-12-19
+  selectorKind: TEXT_QUOTE
+  section: Item 8.01 / Efficacy Data
+  exact: Dual Primary Endpoints (52 Weeks) and Key Secondary Endpoint (24 weeks) Were Met
+  prefix: "arized below. \n\nEfficacy Data \n\n"
+  suffix: " \n\n | \n\n | \n | \n | \n | \n\n | \n | "
+  startOffset: 2923
+  endOffset: 3003
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:f57996fce6a749da7641f37891cb0f650e39373615b1add3274b6dfa796984a4
+  selectorJson: '{"basis":"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)","exact":"Dual Primary Endpoints (52 Weeks) and Key Secondary Endpoint (24 weeks) Were Met","prefix":"arized below. \n\nEfficacy Data
+    \n\n","refinedBy":{"end":3003,"start":2923,"type":"TextPositionSelector"},"suffix":" \n\n | \n\n | \n | \n | \n | \n\n | \n | ","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:d4741241fe2320f18addac20b001b893347ef862b2d44517da1717a38e074b1e
+  verified:
+    'on': '2026-10-08'
+    against: sha256:41658369e5dfdec68371222e9d10dd46128991b965909913d1836f2128fa4694
+    result: exact match at [2923,3003) of the fresh capture
+- ref: l06
+  uid: hu:locator:fx-d13-mnt-l06
+  snapshot: s-mdgl-8k-2022-12-19
+  selectorKind: TEXT_QUOTE
+  section: Item 8.01 / New Drug Application Planning
+  exact: In the first half of 2023, Madrigal Pharmaceuticals intends to file a new drug application seeking Subpart H accelerated approval of resmetirom.
+  prefix: "New Drug Application Planning \n\n"
+  suffix: " \n\nOther MAESTRO-NASH Study Deta"
+  startOffset: 5605
+  endOffset: 5749
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:d848b2d743fe4cb7e71dfde1185e0318f28afac261cbf5731930a074ddd137db
+  selectorJson: '{"basis":"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)","exact":"In the first half of 2023, Madrigal Pharmaceuticals intends to file a new drug application seeking Subpart H accelerated approval
+    of resmetirom.","prefix":"New Drug Application Planning \n\n","refinedBy":{"end":5749,"start":5605,"type":"TextPositionSelector"},"suffix":" \n\nOther MAESTRO-NASH Study Deta","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:71870472f7fcf43f45d61f2cfd3b41f81b9ebd7602193c25aebc3abd68f3a1a8
+  verified:
+    'on': '2026-10-08'
+    against: sha256:41658369e5dfdec68371222e9d10dd46128991b965909913d1836f2128fa4694
+    result: exact match at [5605,5749) of the fresh capture
+- ref: l07
+  uid: hu:locator:fx-d13-mnt-l07
+  snapshot: s-mdgl-edgar-submissions
+  selectorKind: API_RECORD
+  rule: 'edgar-accession/v1: in /filings/recent, take the index i where accessionNumber[i] = 0001193125-22-307935, return filingDate[i]'
+  exact: '2022-12-19'
+  quoteHash: sha256:313f782c8beaff0e78b2bcdd74a2d395ac988815f7b25cdcb19a0fee0cc3882e
+  selectorJson: '{"arrayRoot":"/filings/recent","field":"filingDate","recordKey":{"accessionNumber":"0001193125-22-307935"},"rule":"edgar-accession/v1","type":"RecordFieldSelector"}'
+  selectorDigest: sha256:89d55e93ac6a21ac60b2f8dccaf659a24f810663c9385336600fce009aa315b0
+  note: filing date of accession 0001193125-22-307935 = SourceSnapshot.publishedAt of the 8-K (document time, not an Event clock; CQ-TM-03)
+  verified:
+    'on': '2026-10-08'
+    against: sha256:6b23ab5df12518ae53921769482dfaf108cc4336e22136b8f944aad7c0297860
+    result: 'rule re-run over the fresh capture: index 383 in this capture (positions shift with every new filing; the accession number is the anchor); value equals exact'
+- ref: l08
+  uid: hu:locator:fx-d13-mnt-l08
+  snapshot: s-mdgl-edgar-submissions
+  selectorKind: API_RECORD
+  rule: 'edgar-accession/v1: in /filings/recent, take the index i where accessionNumber[i] = 0001193125-22-307935, return items[i]'
+  exact: 7.01,8.01
+  quoteHash: sha256:ef93a26f94b860c015580d8c9ec07b14393f5388e36986563d877580b6c02045
+  selectorJson: '{"arrayRoot":"/filings/recent","field":"items","recordKey":{"accessionNumber":"0001193125-22-307935"},"rule":"edgar-accession/v1","type":"RecordFieldSelector"}'
+  selectorDigest: sha256:83728625a1d5e4f25ebd9ab2143c0339e1805157eb7365d3a8a5bcc4c64ed49a
+  note: 'EDGAR item codes: a free structured event-type signal (8.01 other events)'
+  verified:
+    'on': '2026-10-08'
+    against: sha256:6b23ab5df12518ae53921769482dfaf108cc4336e22136b8f944aad7c0297860
+    result: 'rule re-run over the fresh capture: index 383 in this capture (positions shift with every new filing; the accession number is the anchor); value equals exact'
+- ref: l09
+  uid: hu:locator:fx-d13-mnt-l09
+  snapshot: s-ctgov-nct03900429
+  selectorKind: JSON_POINTER
+  pointer: /protocolSection/identificationModule/briefTitle
+  exact: A Phase 3 Study to Evaluate the Efficacy and Safety of MGL-3196 (Resmetirom) in Patients With NASH and Fibrosis
+  quoteHash: sha256:32117e3f89f5e9bd24f0dde0eea951192adb51893d0bd1fad5a6ea3a3dc46300
+  selectorJson: '{"pointer":"/protocolSection/identificationModule/briefTitle","type":"JsonPointerSelector","valueSerialization":"string value as-is; objects as canonical JSON (sorted keys, no whitespace)"}'
+  selectorDigest: sha256:080d8986b20011704ecf65fdc65410374f4aeff0f690ffffd56f8f39a6f2c0dc
+  verified:
+    'on': '2026-10-08'
+    against: sha256:3cc365aad247c845bb0d55538bc1eace2c735d9b0b28634de35802f42843f45f
+    result: pointer resolves in the fresh capture; value equals exact
+- ref: l10
+  uid: hu:locator:fx-d13-mnt-l10
+  snapshot: s-ctgov-nct03900429
+  selectorKind: JSON_POINTER
+  pointer: /protocolSection/designModule/phases
+  exact: '["PHASE3"]'
+  quoteHash: sha256:be338bbc78eb159c9450a02b69ba98531d0fbcee3cc11dac5ea2532964550dbe
+  selectorJson: '{"pointer":"/protocolSection/designModule/phases","type":"JsonPointerSelector","valueSerialization":"string value as-is; objects as canonical JSON (sorted keys, no whitespace)"}'
+  selectorDigest: sha256:527e91fdb20da0a6ca94e82cd9462d66d0264e6024635c7533802bd479be7959
+  verified:
+    'on': '2026-10-08'
+    against: sha256:3cc365aad247c845bb0d55538bc1eace2c735d9b0b28634de35802f42843f45f
+    result: pointer resolves in the fresh capture; value equals exact
+- ref: l11
+  uid: hu:locator:fx-d13-mnt-l11
+  snapshot: s-ctgov-nct03900429
+  selectorKind: JSON_POINTER
+  pointer: /protocolSection/identificationModule/acronym
+  exact: MAESTRO-NASH
+  quoteHash: sha256:5987e687f1e31953d373f5b54a7e2d8766e8ecf895a1249a8874d42de5938a9f
+  selectorJson: '{"pointer":"/protocolSection/identificationModule/acronym","type":"JsonPointerSelector","valueSerialization":"string value as-is; objects as canonical JSON (sorted keys, no whitespace)"}'
+  selectorDigest: sha256:1d3cabfdddea0e218aa008ddf71024962255c40ecad5c04ec16a5d87a6a8111a
+  note: resolves the 8-K's 'MAESTRO-NASH' to NCT03900429 (identifier of the D3 Study)
+  verified:
+    'on': '2026-10-08'
+    against: sha256:3cc365aad247c845bb0d55538bc1eace2c735d9b0b28634de35802f42843f45f
+    result: pointer resolves in the fresh capture; value equals exact

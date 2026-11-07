@@ -1,0 +1,66 @@
+"""
+Purpose: one version of what a package's label (or a menu item's declaration) states — the panel, serving definition,
+directions with min/max daily servings, warnings, allergens, seals and the declared composition lines — as a content
+node that many kernel SourceSnapshots evidence (DSLD record, retailer Supplement Facts table, brand page). Absorbs the
+pinned FormulationVersion (composition = DECLARES_COMPONENT lines + compositionDigest), LabelSnapshot (content part; the
+capture stays a kernel SourceSnapshot), LabelDeclaration, QuantityDeclaration, IngredientComponent, ServingDefinition.
+Time lives on the HAS_LABEL_VERSION episode, never on this node (except the observation cache fields).
+Identity rule: (responsible brand/org uid as printed on this version, panelKind, jurisdiction, labelVersionCode when
+printed — DSLD productVersionCode 'V12.3' — else contentDigest of the normalized panel); a label version is immutable, so
+its key never changes. Two label versions with equal compositionDigest declare the same
+formulation (FC-1: label-only change).
+uid token: `label-version` (hu:label-version:<opaque>).
+Implements Subjectable under the kernel rule for versioned states (R-18): DSLD identifiers identify it, D1 CALCULATED
+amounts have it as subject, D6 change-kind and certification-scope Assessments target it.
+Questions: Q-D6-01, CQ-ID-05, CQ-ID-02, CQ-PF-01, CQ-AX-25, Q-D6-08, Q-D6-09, Q-D6-10, Q-D6-11, Q-D6-12, CQ-PF-03b, CQ-PF-02, Q-D6-21.
+"""
+type LabelVersion implements Entity & Subjectable
+  @node(labels: ["LabelVersion", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  panelKind: PanelKind!
+  "Version code printed on the label or registered by DSLD (productVersionCode)."
+  labelVersionCode: String
+  jurisdiction: String
+  "sha256:<hex> over the normalized panel (all fields and lines); identity fallback."
+  contentDigest: String!
+  "sha256:<hex> over the normalized composition lines only (resolved target uid, amount, unit, referent, basis, parent); equal digest = same formulation (CQ-ID-05)."
+  compositionDigest: String!
+  servingSizeValue: Float
+  "UCUM or annotated unit ({capsule}, g)."
+  servingSizeUnit: String
+  servingSizeVerbatim: String
+  servingsPerContainer: Float
+  minDailyServings: Float
+  "Maximum suggested daily servings from the directions (Q-D6-09: max declared daily intake = this × line amount)."
+  maxDailyServings: Float
+  directionsText: String
+  warningsText: String
+  containsAllergens: [AllergenCode!]
+  mayContainAllergens: [AllergenCode!]
+  allergenStatementVerbatim: String
+  "Seals and certification marks as printed ('NSF Certified for Sport', 'Alkemist Assured'); scope checks are CQ-PF-03b assessments."
+  seals: [String!]
+  responsiblePartyRole: ResponsiblePartyRole
+  responsiblePartyVerbatim: String
+  "Declared as-of statement ('correct as of January 2022'), verbatim; the parsed date bounds the episode's valid time."
+  asOfStatementVerbatim: String
+  "Observation cache (executor-maintained from evidencing snapshots; read-only semantics): first and last retrievedAt."
+  firstObservedAt: DateTime
+  lastObservedAt: DateTime
+  """class: asserted; cardinality: many (one per declared panel line, each authorized by its own Assertion; ordered, nested via parentOrderIndex); recorded time only (ComponentLineProperties is an AssertedRecordedProperties superset; the HAS_LABEL_VERSION episode carries valid time); questions: CQ-AX-25, CQ-PF-01, Q-D6-02, Q-D6-08, Q-D6-09, Q-D6-11, Q-D6-12, Q-D6-21."""
+  components: [DeclaredComponentTarget!]!
+    @relationship(type: "DECLARES_COMPONENT", direction: OUT, properties: "ComponentLineProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: zero_or_one (the party the label names; role on responsiblePartyRole); recorded time only (AssertedRecordedProperties: the HAS_LABEL_VERSION episode carries valid time); questions: Q-D6-16, Q-D6-04."""
+  responsibleParty: [Organization!]!
+    @relationship(type: "NAMES_RESPONSIBLE_PARTY", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

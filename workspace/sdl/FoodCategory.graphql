@@ -1,0 +1,40 @@
+"""
+Purpose: a food group as one classification system defines it (NOVA group 4 "ultra-processed food and drink products";
+IARC agent "processed meat"; WWEIA 3702 "Burgers"; FDC food category "Fast Foods"; a guideline group such as DGA
+"highly processed foods"). It is the subject of hazard classifications and of target-effect assertions that are made
+about a group rather than one food (UPF and cardiometabolic outcomes; processed meat and colorectal cancer), and it
+lets a question expand from a food or product to the evidence about its group. Hierarchy is the property parentCode
+(no edge). Membership is IN_FOOD_CATEGORY (asserted when a source states it; a CALCULATED Assertion with a method
+version when we compute it, e.g. NOVA from ingredient markers).
+Identity rule: (system, systemVersion, code); label is presentation.
+uid token: `food-category` (hu:food-category:<system>-<code>).
+Questions: Q-D12-08, Q-D12-14, Q-D12-15, Q-D12-26, Q-D12-31, Q-D12-11.
+"""
+type FoodCategory implements Entity & Subjectable
+  @node(labels: ["FoodCategory", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Classification system (identity key; filter: Q-D12-14 NOVA, Q-D12-15 IARC_AGENT)."
+  system: FoodCategorySystem!
+  "Code within the system ('4' for NOVA group 4; '3702' for WWEIA; 'processed-meat' for an IARC agent) (identity key)."
+  code: String!
+  "Version or edition of the system definition (identity key; 'NOVA-2019', 'IARC Vol 114', 'WWEIA 2021-2023')."
+  systemVersion: String
+  "Label as the system prints it."
+  label: String
+  "Definition text of the system, verbatim (the locator lives on the defining Assertion)."
+  definitionVerbatim: String
+  "Parent code in the same system (hierarchy as a property; no relationship type spent)."
+  parentCode: String
+  """class: asserted; cardinality: many (stored Product -> FoodCategory; OFF categories, stated or computed NOVA of a sold item); questions: Q-D12-14, Q-D12-31, Q-D12-08."""
+  memberProducts: [Product!]!
+    @relationship(type: "IN_FOOD_CATEGORY", direction: IN, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

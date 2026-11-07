@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://belllabs.local/schemas/bks-migration-accounting.v1.schema.json",
+  "title": "bks-migration-accounting.v1",
+  "description": "Every input node and relationship of the export classified exactly once as migrated | unchanged-retained | held | excluded, with the retained source and a reason; totals reconcile to the export counts. Per-record rows live in accounting-records.jsonl (custody); this summary carries no record values and may be reproduced in sanitized documents.",
+  "type": "object",
+  "required": ["format", "migrationRunId", "exportId", "exportDigest", "mapDigest", "totals", "reconcile", "byLabel", "byTriple", "heldReasons", "identityCandidates", "heldWork", "properties", "v2Created", "recordsFile"],
+  "additionalProperties": false,
+  "$defs": {
+    "digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "categoryTotals": {
+      "type": "object",
+      "required": ["migrated", "unchanged-retained", "held", "excluded"],
+      "properties": {
+        "migrated": { "type": "integer", "minimum": 0 },
+        "unchanged-retained": { "type": "integer", "minimum": 0 },
+        "held": { "type": "integer", "minimum": 0 },
+        "excluded": { "type": "integer", "minimum": 0 },
+        "total": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "reconcileRow": {
+      "type": "object",
+      "required": ["input", "accounted", "ok"],
+      "properties": { "input": { "type": "integer" }, "accounted": { "type": "integer" }, "ok": { "const": true } }
+    },
+    "record": {
+      "description": "one line of accounting-records.jsonl",
+      "type": "object",
+      "required": ["record", "elementId", "category", "disposition", "code", "retainedAs"],
+      "properties": {
+        "record": { "enum": ["node", "relationship"] },
+        "elementId": { "type": "string" },
+        "legacyLabel": { "type": "string" },
+        "legacyType": { "type": "string" },
+        "triple": { "type": "string" },
+        "category": { "enum": ["migrated", "unchanged-retained", "held", "excluded"] },
+        "disposition": { "enum": ["migrate", "retain-legacy", "quarantine"] },
+        "code": { "enum": ["MIGRATED", "RETAIN_LEGACY", "MAP_QUARANTINE", "CONDITION_UNMET", "ENUM_UNMAPPED", "ENDPOINT_HELD", "IDENTITY_UNRESOLVED", "IDENTITY_CONFLICT"] },
+        "reason": { "type": ["string", "null"] },
+        "v2": { "type": ["object", "null"] },
+        "retainedAs": { "type": "string", "description": "where the untouched source element remains (LegacyV0_<Label>, tagged label, or legacy relationship)" }
+      }
+    }
+  },
+  "properties": {
+    "format": { "const": "bks-migration-accounting.v1" },
+    "migrationRunId": { "type": "string", "pattern": "^mig-[0-9a-f]{12}$" },
+    "exportId": { "type": "string" },
+    "exportDigest": { "$ref": "#/$defs/digest" },
+    "mapDigest": { "$ref": "#/$defs/digest" },
+    "totals": { "type": "object", "required": ["nodes", "relationships"], "properties": { "nodes": { "$ref": "#/$defs/categoryTotals" }, "relationships": { "$ref": "#/$defs/categoryTotals" } } },
+    "reconcile": { "type": "object", "required": ["nodes", "relationships"], "properties": { "nodes": { "$ref": "#/$defs/reconcileRow" }, "relationships": { "$ref": "#/$defs/reconcileRow" } } },
+    "byLabel": { "type": "object", "additionalProperties": { "$ref": "#/$defs/categoryTotals" } },
+    "byTriple": { "type": "object", "additionalProperties": { "$ref": "#/$defs/categoryTotals" } },
+    "heldReasons": { "type": "object", "additionalProperties": { "type": "integer" } },
+    "identityCandidates": { "type": "array", "items": { "type": "object", "required": ["v2Type", "uids", "code"], "properties": { "code": { "const": "IDENTITY_CANDIDATE" } } } },
+    "heldWork": { "type": "object", "additionalProperties": { "type": "integer" } },
+    "properties": {
+      "type": "object",
+      "description": "<label or triple>.<property> -> {disposition: count}; dispositions migrate | retain-legacy | quarantine | exclude | retained-with-node | held-with-node | retained-with-relationship | held-with-relationship",
+      "additionalProperties": { "type": "object", "additionalProperties": { "type": "integer" } }
+    },
+    "v2Created": { "type": "object", "required": ["nodes", "provenance", "relationships", "assertionsByPredicate"] },
+    "recordsFile": { "type": "object", "required": ["name", "sha256", "lines"], "properties": { "name": { "const": "accounting-records.jsonl" }, "sha256": { "type": "string" }, "lines": { "type": "integer" } } }
+  }
+}

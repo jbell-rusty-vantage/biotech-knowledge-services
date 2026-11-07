@@ -1,0 +1,6535 @@
+{
+  "schemaVersion": "qualia-native-vocabulary.v1",
+  "releaseId": "biotech-schema-v2.2.0",
+  "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+  "schemaDigest": "sha256:de8ab942f3b2fac85011938adcddd75244bc9b5e7c53df07ebc7490b888f6576",
+  "rules": [
+    "Navigation generated from the verified pinned release; not evidence about any Qualia entity.",
+    "Choose a predicate only when its meaning, subject, object, literal and qualifiers match actual evidence.",
+    "No generic source-report predicate exists. Never attach a proposition to an unrelated predicate to satisfy a report citation.",
+    "Authorizing predicates require the corresponding edge.assert shape; executor-owned relationships cannot be authored as structural edges."
+  ],
+  "nodes": {
+    "Activity": {
+      "labels": [
+        "Activity",
+        "Occurrence"
+      ],
+      "kernelRecord": true,
+      "executorOps": [
+        "create",
+        "update"
+      ],
+      "properties": {
+        "activationId": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "activityKind": {
+          "type": "ActivityKind!",
+          "required": true,
+          "description": "",
+          "enumValues": [
+            "ANSWER",
+            "EVIDENCE_MISSION",
+            "INGESTION",
+            "PROJECTION",
+            "RESEARCH",
+            "VERIFICATION",
+            "VETTING"
+          ]
+        },
+        "boundEffectDigest": {
+          "type": "String",
+          "required": false,
+          "description": "sha256:<hex> of the exact normalized native effect the use decision bound (R-SV10); the apply verifies it before writing."
+        },
+        "bundleDigest": {
+          "type": "String",
+          "required": false,
+          "description": "verification.v1 sealed audit bundle digest, when the run produced one."
+        },
+        "createdAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "effectKey": {
+          "type": "String",
+          "required": false,
+          "description": "Effect key of the applied effect (the KsIntentMarker scope key, R-SV10)."
+        },
+        "endedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "externalRunSystem": {
+          "type": "String!",
+          "required": true,
+          "description": "mission-control | ks-verification | projection | manual."
+        },
+        "id": {
+          "type": "ID!",
+          "required": true,
+          "description": ""
+        },
+        "intentDigests": {
+          "type": "[String!]",
+          "required": false,
+          "description": "biotech-knowledge-intent.v1 digests and plan digests of the intents the run applied (ADR 0003), in apply order."
+        },
+        "lastWriterRunId": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "methodVersion": {
+          "type": "String",
+          "required": false,
+          "description": "Executor or method version that makes outputs interpretable."
+        },
+        "missionId": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "operationIds": {
+          "type": "[String!]",
+          "required": false,
+          "description": "Operation intent ids (Mission Control) or the Knowledge Services operation id(s) this run executed."
+        },
+        "operationKind": {
+          "type": "String",
+          "required": false,
+          "description": "The run's main step: knowledge.ingestion_apply, verification_claims, entity-link projection, ..."
+        },
+        "originatingOrigin": {
+          "type": "String",
+          "required": false,
+          "description": "Canonical JSON digest (or compact string) of the admitted original invocation (origin) the effect descends from (R-SV10)."
+        },
+        "planDigests": {
+          "type": "[String!]",
+          "required": false,
+          "description": ""
+        },
+        "policyOutcome": {
+          "type": "PolicyOutcome",
+          "required": false,
+          "description": "verification.v1 policy outcome of the run, and the PolicyVersion id applied.",
+          "enumValues": [
+            "ABSTAIN",
+            "FAIL",
+            "PASS",
+            "PASS_WITH_WARNINGS",
+            "REVIEW"
+          ]
+        },
+        "policyVersion": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "privacyClass": {
+          "type": "PrivacyClass",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "INTERNAL",
+            "PUBLIC"
+          ]
+        },
+        "receiptIds": {
+          "type": "[String!]",
+          "required": false,
+          "description": "biotech-knowledge-receipt.v1 ids (the references Mission Control stores), in apply order."
+        },
+        "revocationEpoch": {
+          "type": "Int",
+          "required": false,
+          "description": "Revocation epoch checked at admission under the native transaction (R-SV10)."
+        },
+        "runId": {
+          "type": "String!",
+          "required": true,
+          "description": "Mission Control run.runId (or verification run UUID); replaces externalRunId / mongoResearchRunId."
+        },
+        "runManifestDigest": {
+          "type": "String",
+          "required": false,
+          "description": "sha256:<hex> of the canonical unsigned sealed run manifest this Activity references (R-SV10)."
+        },
+        "runSealKind": {
+          "type": "RunSealKind",
+          "required": false,
+          "description": "Which seal runManifestDigest names (verification, decision or admission snapshot, R-SV10).",
+          "enumValues": [
+            "ADMISSION_SNAPSHOT",
+            "DECISION_SNAPSHOT",
+            "VERIFICATION_SNAPSHOT"
+          ]
+        },
+        "startedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "uid": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "updatedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "useDecisionDigest": {
+          "type": "String",
+          "required": false,
+          "description": "sha256:<hex> digest of that use decision record (R-SV11); official reads compare it with the authority's record before serving."
+        },
+        "useDecisionRef": {
+          "type": "String",
+          "required": false,
+          "description": "Immutable reference to the Knowledge Services use decision the applied effect was admitted under (R-SV10)."
+        },
+        "verificationRunRef": {
+          "type": "String",
+          "required": false,
+          "description": "Knowledge Services verification run id (the common operational run; PostgreSQL owns the run and its manifests, R-SV10)."
+        }
+      }
+    },
+    "Assertion": {
+      "labels": [
+        "Assertion"
+      ],
+      "kernelRecord": true,
+      "executorOps": [
+        "close",
+        "create"
+      ],
+      "properties": {
+        "assertionKind": {
+          "type": "AssertionKind!",
+          "required": true,
+          "description": "",
+          "enumValues": [
+            "CLAIM",
+            "COMPUTATION",
+            "FIELD",
+            "METRIC",
+            "RELATIONSHIP"
+          ]
+        },
+        "assertionVersionRef": {
+          "type": "String",
+          "required": false,
+          "description": "Immutable reference to the Knowledge Services AssertionVersion this record materializes (R-SV10); the version store is PostgreSQL, not the graph."
+        },
+        "basisKind": {
+          "type": "BasisKind",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "CALCULATED",
+            "CITED_FROM_PRIOR_WORK",
+            "CURATOR_CLASSIFICATION",
+            "DIRECT_MEASUREMENT",
+            "EXPERT_OPINION",
+            "HYPOTHESIS",
+            "INFERRED_FROM_MEASUREMENT",
+            "MANUFACTURER_CLAIM",
+            "MECHANISM_REASONING",
+            "PERSONAL_EXPERIENCE",
+            "THIRD_PARTY_ANECDOTE",
+            "UNSTATED"
+          ]
+        },
+        "claimType": {
+          "type": "ClaimType",
+          "required": false,
+          "description": "Required when assertionKind is CLAIM (verification.v1 rule).",
+          "enumValues": [
+            "ATTRIBUTE",
+            "CAPABILITY",
+            "CAUSAL",
+            "COMPARATIVE",
+            "COMPATIBILITY",
+            "DEFINITION",
+            "EVENT",
+            "MEASUREMENT",
+            "METHODOLOGICAL",
+            "OTHER",
+            "PROVENANCE",
+            "RECOMMENDATION",
+            "RELATIONSHIP",
+            "TEMPORAL"
+          ]
+        },
+        "contentHash": {
+          "type": "String",
+          "required": false,
+          "description": "sha256:<hex> over the canonical immutable content."
+        },
+        "createdAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "derivationRule": {
+          "type": "String",
+          "required": false,
+          "description": "Named rule for a CALCULATED assertion or an INFERRED bound."
+        },
+        "extractionConfidence": {
+          "type": "Float",
+          "required": false,
+          "description": "Extraction dimension of confidence; interpretable only with the generating Activity's methodVersion."
+        },
+        "id": {
+          "type": "ID!",
+          "required": true,
+          "description": ""
+        },
+        "lastWriterRunId": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "logicalAssertionId": {
+          "type": "String",
+          "required": false,
+          "description": "Logical assertion id shared by every version of the same proposition (Knowledge Services AssertionVersion.logicalId, R-SV10)."
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "polarity": {
+          "type": "Polarity",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "MIXED",
+            "NEGATIVE",
+            "POSITIVE",
+            "UNKNOWN"
+          ]
+        },
+        "predicate": {
+          "type": "String!",
+          "required": true,
+          "description": "Registered predicate (release vocabularies/predicates.yaml, status registered; an alias-of name is re-keyed to its target before ingest, a retired or unknown name is rejected, R-52, MD-X-02); equals the edge type for an asserted edge."
+        },
+        "privacyClass": {
+          "type": "PrivacyClass",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "INTERNAL",
+            "PUBLIC"
+          ]
+        },
+        "proposition": {
+          "type": "String",
+          "required": false,
+          "description": "Natural-language proposition (verification.v1 proposition) when the record is not a typed literal."
+        },
+        "qualifiers": {
+          "type": "[String!]",
+          "required": false,
+          "description": "verification.v1 qualifiers (population, dose, condition) that must survive any retelling; registered prefixes such as `segment:<KIND>` (D9 segment of a media work: SPONSOR_READ, EDITORIAL, ...), `population:<code>`, `rendition:<source uid>`, `target:<key>` (a D5 Target key, R-83), `comparatorArm:<arm uid>` and `comparator:<QuantityComparator>` (MD-D12-02), `asserterBasis:PUBLISHER_DEFAULT|INFERRED` (R-16), `sourceRecordRemovedAt:<date>` (the source's own record time, R-24). The name, separator and value grammar of every registered qualifier is the release qualifier registry vocabularies/qualifiers.yaml (bks-qualifier-grammar.v1); an unregistered qualifier name is rejected by the executor."
+        },
+        "qualifiersDigest": {
+          "type": "String",
+          "required": false,
+          "description": "sha256:<hex> over the canonical JSON of the profile-specific qualifiers of the AssertionVersion (R-SV10). The graph does not model profile qualifier schemas; a qualifier change is a new digest and invalidates reuse."
+        },
+        "recordedAt": {
+          "type": "DateTime!",
+          "required": true,
+          "description": "Service-assigned commit time (recorded-time start); never before the cited snapshot's retrievedAt."
+        },
+        "recordedTo": {
+          "type": "DateTime",
+          "required": false,
+          "description": "Written once on supersession."
+        },
+        "riskClass": {
+          "type": "String",
+          "required": false,
+          "description": "verification.v1 riskClass (low|medium|high|critical) when the producer declared one."
+        },
+        "speechAct": {
+          "type": "SpeechAct",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "CAUTIONS",
+            "DENIES",
+            "QUESTIONS",
+            "RECOMMENDS",
+            "REPORTS_PRACTICE",
+            "SPECULATES",
+            "STATES"
+          ]
+        },
+        "status": {
+          "type": "AssertionStatus!",
+          "required": true,
+          "description": "",
+          "enumValues": [
+            "ACCEPTED",
+            "DISPUTED",
+            "EXTRACTED",
+            "PROPOSED",
+            "REJECTED",
+            "SUPERSEDED",
+            "UNRESOLVED"
+          ]
+        },
+        "supersedesUid": {
+          "type": "String",
+          "required": false,
+          "description": "uid of the Assertion this one supersedes (newer → older); same asserter only (R-23)."
+        },
+        "supportSetDigest": {
+          "type": "String",
+          "required": false,
+          "description": "sha256:<hex> of the selected support set (conjunctive required premises and their evidence fragments) the use decision bound (R-SV10)."
+        },
+        "uid": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "unitCode": {
+          "type": "String",
+          "required": false,
+          "description": "UCUM unit of valueNumber, or an ISO 4217 currency written `iso4217:<CODE>` for a price."
+        },
+        "updatedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "validFrom": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "validFromBasis": {
+          "type": "ValidTimeBasis",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "INFERRED",
+            "OBSERVATION_ONLY",
+            "PUBLICATION_PROXY",
+            "STATED_BY_SOURCE",
+            "UNKNOWN"
+          ]
+        },
+        "validFromPrecision": {
+          "type": "TimePrecision",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "DAY",
+            "DECADE",
+            "INSTANT",
+            "MONTH",
+            "QUARTER",
+            "YEAR"
+          ]
+        },
+        "validObservedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": "Date at which the source states the fact held when it gives no bounds (validFromBasis OBSERVATION_ONLY keeps validFrom null)."
+        },
+        "validObservedAtPrecision": {
+          "type": "TimePrecision",
+          "required": false,
+          "description": "Precision of validObservedAt (R-24).",
+          "enumValues": [
+            "DAY",
+            "DECADE",
+            "INSTANT",
+            "MONTH",
+            "QUARTER",
+            "YEAR"
+          ]
+        },
+        "validTo": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "validToBasis": {
+          "type": "ValidTimeBasis",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "INFERRED",
+            "OBSERVATION_ONLY",
+            "PUBLICATION_PROXY",
+            "STATED_BY_SOURCE",
+            "UNKNOWN"
+          ]
+        },
+        "validToPrecision": {
+          "type": "TimePrecision",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "DAY",
+            "DECADE",
+            "INSTANT",
+            "MONTH",
+            "QUARTER",
+            "YEAR"
+          ]
+        },
+        "valueBoolean": {
+          "type": "Boolean",
+          "required": false,
+          "description": ""
+        },
+        "valueNumber": {
+          "type": "Float",
+          "required": false,
+          "description": ""
+        },
+        "valueString": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "verificationAssertionId": {
+          "type": "String",
+          "required": false,
+          "description": "verification.v1 assertionId when the verifier saw this record."
+        }
+      }
+    },
+    "Assessment": {
+      "labels": [
+        "Assessment",
+        "EvidenceAssessment"
+      ],
+      "kernelRecord": true,
+      "executorOps": [
+        "close",
+        "create"
+      ],
+      "properties": {
+        "assessmentKind": {
+          "type": "AssessmentKind!",
+          "required": true,
+          "description": "",
+          "enumValues": [
+            "APPLICABILITY",
+            "BREAKTHROUGH_JUDGMENT",
+            "COMPARABILITY",
+            "CONFLICT_RELEVANCE",
+            "EQUIVALENCE",
+            "EVENT_IMPACT",
+            "EVIDENCE_SYNTHESIS",
+            "INSIGHT",
+            "OTHER",
+            "QUALITY",
+            "RESOLUTION",
+            "RETELLING_FIDELITY",
+            "SAFETY_SIGNAL",
+            "SOURCE_AUTHORITY",
+            "VETTING"
+          ]
+        },
+        "assessmentSubkind": {
+          "type": "String",
+          "required": false,
+          "description": "Domain detail of the kind, registered by the owning domain (e.g. D5.interaction-risk)."
+        },
+        "certainty": {
+          "type": "CertaintyLevel",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "HIGH",
+            "LOW",
+            "MODERATE",
+            "NOT_GRADED",
+            "VERY_LOW"
+          ]
+        },
+        "conclusionCode": {
+          "type": "String",
+          "required": false,
+          "description": "Categorical outcome from the vocabulary registered for assessmentSubkind by the owning domain."
+        },
+        "createdAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "disposition": {
+          "type": "ClaimDisposition",
+          "required": false,
+          "description": "VETTING only.",
+          "enumValues": [
+            "IGNORE",
+            "MONITOR",
+            "RESEARCH"
+          ]
+        },
+        "effectDirection": {
+          "type": "EffectDirection",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "BENEFIT",
+            "HARM",
+            "MIXED",
+            "NO_EFFECT",
+            "UNKNOWN"
+          ]
+        },
+        "evidenceCutoffAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": "Latest evidence the assessment considered (as-of cutoff)."
+        },
+        "expiresAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": "Expiry of the use decision, when it has one (R-SV10)."
+        },
+        "facets": {
+          "type": "[String!]",
+          "required": false,
+          "description": "Registered `<facet>=<value>` codes for further categorical facets (filter with includes)."
+        },
+        "grade": {
+          "type": "String",
+          "required": false,
+          "description": "Grade under gradeScheme, as the scheme spells it."
+        },
+        "gradeScheme": {
+          "type": "String",
+          "required": false,
+          "description": "Named grading scheme (GRADE, OCEBM-2011, USPSTF-2012, CTCAE_V5, LIVERTOX-LIKELIHOOD, BELLLABS-<name>@<version>)."
+        },
+        "id": {
+          "type": "ID!",
+          "required": true,
+          "description": ""
+        },
+        "inputSetDigest": {
+          "type": "String",
+          "required": false,
+          "description": "sha256:<hex> over the sorted input uids and their contentHashes."
+        },
+        "lastWriterRunId": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "methodVersion": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "policyRef": {
+          "type": "String",
+          "required": false,
+          "description": "Versioned policy reference the use decision was taken under (R-SV10)."
+        },
+        "privacyClass": {
+          "type": "PrivacyClass",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "INTERNAL",
+            "PUBLIC"
+          ]
+        },
+        "rationale": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "recordedAt": {
+          "type": "DateTime!",
+          "required": true,
+          "description": ""
+        },
+        "recordedTo": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "reviewerAdjudicationRef": {
+          "type": "String",
+          "required": false,
+          "description": "Reference to the qualified human reviewer adjudication that signed the exact bindings, when one did (R-SV10)."
+        },
+        "revocationEpoch": {
+          "type": "Int",
+          "required": false,
+          "description": "Revocation epoch (authoritative per-scope high-water mark) the decision was checked against (R-SV10). A projection never authorizes use after an observed later epoch; official reads revalidate eligibility."
+        },
+        "rubricRef": {
+          "type": "String",
+          "required": false,
+          "description": "Versioned rubric reference (assessment kind version) the judgment applied (R-SV10)."
+        },
+        "score": {
+          "type": "Float",
+          "required": false,
+          "description": "The method's own score (e.g. resolution score); never a truth value."
+        },
+        "status": {
+          "type": "AssessmentStatus!",
+          "required": true,
+          "description": "",
+          "enumValues": [
+            "ACCEPTED",
+            "PROPOSED",
+            "SUPERSEDED",
+            "WITHDRAWN"
+          ]
+        },
+        "summary": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "supersedesUid": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "uid": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "updatedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "useDecisionDigest": {
+          "type": "String",
+          "required": false,
+          "description": "sha256:<hex> digest of that use decision record (R-SV11); official reads compare it with the authority's record before serving."
+        },
+        "useDecisionRef": {
+          "type": "String",
+          "required": false,
+          "description": "Immutable reference to the Knowledge Services use decision (PostgreSQL authority) this assessment records (R-SV10)."
+        },
+        "useDisposition": {
+          "type": "UseDisposition",
+          "required": false,
+          "description": "Disposition of that use decision for the exact effect, use and audience (R-SV10). Separate from disposition (claim vetting).",
+          "enumValues": [
+            "ADMITTED",
+            "HELD",
+            "REJECTED"
+          ]
+        },
+        "verdict": {
+          "type": "SemanticVerdict",
+          "required": false,
+          "description": "When the assessment judges support of a proposition.",
+          "enumValues": [
+            "CONTEXT_ONLY",
+            "CONTRADICTED",
+            "DERIVED_FAILED",
+            "DERIVED_VERIFIED",
+            "DIRECTLY_SUPPORTED",
+            "INSUFFICIENT_EVIDENCE",
+            "LOCATOR_ERROR",
+            "MIXED_OR_CONFLICTING",
+            "NOT_SUPPORTED",
+            "PARSER_ERROR",
+            "PARTIALLY_SUPPORTED",
+            "PENDING_SEMANTIC_REVIEW",
+            "SOURCE_UNAVAILABLE",
+            "SUPPORTED_WITH_QUALIFICATION",
+            "UNVERIFIABLE"
+          ]
+        }
+      }
+    },
+    "Brand": {
+      "labels": [
+        "Brand",
+        "Entity"
+      ],
+      "kernelRecord": false,
+      "executorOps": [
+        "create",
+        "update"
+      ],
+      "properties": {
+        "brandKind": {
+          "type": "BrandKind!",
+          "required": true,
+          "description": "",
+          "enumValues": [
+            "CLINIC_OR_SERVICE",
+            "CONSUMER_PRODUCT",
+            "FOOD_OR_RESTAURANT",
+            "MEDIA",
+            "OTHER"
+          ]
+        },
+        "createdAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "description": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "id": {
+          "type": "ID!",
+          "required": true,
+          "description": ""
+        },
+        "lastWriterRunId": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "privacyClass": {
+          "type": "PrivacyClass",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "INTERNAL",
+            "PUBLIC"
+          ]
+        },
+        "uid": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "updatedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        }
+      }
+    },
+    "ChemicalSubstance": {
+      "labels": [
+        "ChemicalSubstance",
+        "Entity"
+      ],
+      "kernelRecord": false,
+      "executorOps": [
+        "create",
+        "update"
+      ],
+      "properties": {
+        "charge": {
+          "type": "Int",
+          "required": false,
+          "description": "Net formal charge of the defining structure."
+        },
+        "createdAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "id": {
+          "type": "ID!",
+          "required": true,
+          "description": ""
+        },
+        "lastWriterRunId": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "molecularFormula": {
+          "type": "String",
+          "required": false,
+          "description": "Hill formula as the authority prints it, counter-ions included ('C11H15N2O5.Cl')."
+        },
+        "molecularWeight": {
+          "type": "Float",
+          "required": false,
+          "description": "Average molecular weight of the defining record (g/mol). A derivation cites the FIELD Assertion that recorded it (authority snapshot + record version), never this cache."
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "privacyClass": {
+          "type": "PrivacyClass",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "INTERNAL",
+            "PUBLIC"
+          ]
+        },
+        "searchText": {
+          "type": "String",
+          "required": false,
+          "description": "Normalized preferred name, synonyms and label spellings joined for the fulltext index d1_identity_fulltext (Q-D1-26)."
+        },
+        "substanceClass": {
+          "type": "SubstanceClass",
+          "required": false,
+          "description": "GSRS substance class of the defining record.",
+          "enumValues": [
+            "CHEMICAL",
+            "CONCEPT",
+            "MIXTURE",
+            "NUCLEIC_ACID",
+            "OTHER",
+            "POLYMER",
+            "PROTEIN",
+            "STRUCTURALLY_DIVERSE"
+          ]
+        },
+        "uid": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "updatedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        }
+      }
+    },
+    "Claim": {
+      "labels": [
+        "Claim",
+        "Entity"
+      ],
+      "kernelRecord": false,
+      "executorOps": [
+        "create",
+        "update"
+      ],
+      "properties": {
+        "claimType": {
+          "type": "ClaimType!",
+          "required": true,
+          "description": "",
+          "enumValues": [
+            "ATTRIBUTE",
+            "CAPABILITY",
+            "CAUSAL",
+            "COMPARATIVE",
+            "COMPATIBILITY",
+            "DEFINITION",
+            "EVENT",
+            "MEASUREMENT",
+            "METHODOLOGICAL",
+            "OTHER",
+            "PROVENANCE",
+            "RECOMMENDATION",
+            "RELATIONSHIP",
+            "TEMPORAL"
+          ]
+        },
+        "createdAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "discourseDerivedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": "When the PROJECTION Activity derived the discourse cache (R-45 condition 3)."
+        },
+        "discourseFirstHandCount": {
+          "type": "Int",
+          "required": false,
+          "description": "Discourse projection cache (R-49, CQ-CL-06): occurrences of this Claim whose asserter states it first-hand. Written by a PROJECTION Activity under discourseMethodVersion; authority is the occurrences (OCCURRENCE_OF) and their DERIVED_FROM / OCCURS_IN chains, never this value."
+        },
+        "discourseFirstOccurrenceAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": "Discourse projection cache (R-49, Q-D9-08): earliest valid time among the occurrences (first assertion)."
+        },
+        "discourseIndependentCount": {
+          "type": "Int",
+          "required": false,
+          "description": "Discourse projection cache (R-49, CQ-CL-06): independent source families among the occurrences, under discourseMethodVersion."
+        },
+        "discourseMethodVersion": {
+          "type": "String",
+          "required": false,
+          "description": "Method version of the discourse projection cache (R-45 condition 3)."
+        },
+        "discourseRecutCount": {
+          "type": "Int",
+          "required": false,
+          "description": "Discourse projection cache (R-49, CQ-CL-06, Q-D9-08): occurrences in re-published cuts of an earlier work."
+        },
+        "discourseRetellingCount": {
+          "type": "Int",
+          "required": false,
+          "description": "Discourse projection cache (R-49, CQ-CL-06, Q-D9-08): occurrences that retell an earlier occurrence."
+        },
+        "id": {
+          "type": "ID!",
+          "required": true,
+          "description": ""
+        },
+        "lastWriterRunId": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "latestVerdict": {
+          "type": "SemanticVerdict",
+          "required": false,
+          "description": "Projection cache of the latest published evidence report's verdict.",
+          "enumValues": [
+            "CONTEXT_ONLY",
+            "CONTRADICTED",
+            "DERIVED_FAILED",
+            "DERIVED_VERIFIED",
+            "DIRECTLY_SUPPORTED",
+            "INSUFFICIENT_EVIDENCE",
+            "LOCATOR_ERROR",
+            "MIXED_OR_CONFLICTING",
+            "NOT_SUPPORTED",
+            "PARSER_ERROR",
+            "PARTIALLY_SUPPORTED",
+            "PENDING_SEMANTIC_REVIEW",
+            "SOURCE_UNAVAILABLE",
+            "SUPPORTED_WITH_QUALIFICATION",
+            "UNVERIFIABLE"
+          ]
+        },
+        "lifecycleState": {
+          "type": "ClaimLifecycleState",
+          "required": false,
+          "description": "Projection cache maintained by the lifecycle projection; authority is the Assessments and Reports.",
+          "enumValues": [
+            "EXTRACTED",
+            "IGNORED",
+            "MONITORED",
+            "QUEUED_FOR_RESEARCH",
+            "REPORTED",
+            "UNDER_RESEARCH"
+          ]
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "description": "Short label."
+        },
+        "privacyClass": {
+          "type": "PrivacyClass",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "INTERNAL",
+            "PUBLIC"
+          ]
+        },
+        "proposition": {
+          "type": "String!",
+          "required": true,
+          "description": "Normalized proposition text."
+        },
+        "propositionHash": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "refinesClaimUid": {
+          "type": "String",
+          "required": false,
+          "description": "Projection cache: uid of the broader Claim this one refines (authority: the accepted EQUIVALENCE Assessment with conclusionCode REFINES)."
+        },
+        "uid": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "updatedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        }
+      }
+    },
+    "IngredientMaterial": {
+      "labels": [
+        "IngredientMaterial",
+        "Entity"
+      ],
+      "kernelRecord": false,
+      "executorOps": [
+        "create",
+        "update"
+      ],
+      "properties": {
+        "brandName": {
+          "type": "String",
+          "required": false,
+          "description": "Brand or trade name of a branded material as printed ('Niagen', 'KSM-66', 'LGG'); null for unbranded materials. Mark ownership is a predicate-only Assertion (D8 trademark)."
+        },
+        "createdAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "extractionSolvent": {
+          "type": "String",
+          "required": false,
+          "description": "Extraction solvent as stated ('water', 'ethanol 70% v/v', 'milk' for KSM-66)."
+        },
+        "extractRatioHigh": {
+          "type": "Float",
+          "required": false,
+          "description": "DER upper bound (equal to extractRatioLow for a single ratio)."
+        },
+        "extractRatioLow": {
+          "type": "Float",
+          "required": false,
+          "description": "Native herbal substance : preparation ratio (DER), lower bound (5 means 5:1)."
+        },
+        "formDescriptor": {
+          "type": "String",
+          "required": false,
+          "description": "Polymorph or form designation as the source states it ('crystalline form', 'micronized')."
+        },
+        "grade": {
+          "type": "MaterialGrade",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "COMPENDIAL",
+            "FOOD_GRADE",
+            "PHARMACEUTICAL_GRADE",
+            "TECHNICAL",
+            "UNSPECIFIED"
+          ]
+        },
+        "id": {
+          "type": "ID!",
+          "required": true,
+          "description": ""
+        },
+        "lastWriterRunId": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "materialKind": {
+          "type": "MaterialKind!",
+          "required": true,
+          "description": "",
+          "enumValues": [
+            "BOTANICAL_PREPARATION",
+            "CHEMICALLY_DEFINED",
+            "MATERIAL_MIXTURE",
+            "MICROBIAL_PREPARATION",
+            "OTHER",
+            "PROTEIN_OR_ENZYME",
+            "UNRESOLVED"
+          ]
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "physicalForm": {
+          "type": "PhysicalFormKind",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "AMORPHOUS_FORM",
+            "CRYSTAL_FORM",
+            "OTHER_PHYSICAL_FORM",
+            "PARTICLE_SIZE_GRADE"
+          ]
+        },
+        "plantPart": {
+          "type": "PlantPart",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "AERIAL_PARTS",
+            "BARK",
+            "FLOWER",
+            "FRUIT",
+            "FRUITING_BODY",
+            "LEAF",
+            "MYCELIUM",
+            "OTHER_PART",
+            "RESIN_OR_EXUDATE",
+            "RHIZOME",
+            "ROOT",
+            "SEED",
+            "STEM",
+            "WHOLE_PLANT"
+          ]
+        },
+        "preparationType": {
+          "type": "BotanicalPreparationType",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "DRY_EXTRACT",
+            "ESSENTIAL_OIL",
+            "EXPRESSED_JUICE",
+            "FATTY_OIL",
+            "LIQUID_EXTRACT",
+            "OTHER_PREPARATION",
+            "POWDERED_HERBAL_SUBSTANCE",
+            "SOFT_EXTRACT",
+            "TINCTURE"
+          ]
+        },
+        "privacyClass": {
+          "type": "PrivacyClass",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "INTERNAL",
+            "PUBLIC"
+          ]
+        },
+        "searchText": {
+          "type": "String",
+          "required": false,
+          "description": "Names, brand spellings, label strings and synonyms joined for the fulltext index d1_identity_fulltext (Q-D1-26)."
+        },
+        "uid": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "updatedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "viabilityState": {
+          "type": "ViabilityState",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "CELL_FRACTION_OR_LYSATE",
+            "INACTIVATED",
+            "VIABLE",
+            "VIABLE_SPORES"
+          ]
+        }
+      }
+    },
+    "InterventionComponent": {
+      "labels": [
+        "InterventionComponent",
+        "Entity"
+      ],
+      "kernelRecord": false,
+      "executorOps": [
+        "create",
+        "update"
+      ],
+      "properties": {
+        "componentRole": {
+          "type": "ComponentRole!",
+          "required": true,
+          "description": "",
+          "enumValues": [
+            "ACTIVE",
+            "ACTIVE_COMPARATOR",
+            "BACKGROUND",
+            "CO_INTERVENTION",
+            "PLACEBO",
+            "SHAM"
+          ]
+        },
+        "createdAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "dosageForm": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "durationIso": {
+          "type": "String",
+          "required": false,
+          "description": "ISO 8601 duration of administration (P20W)."
+        },
+        "id": {
+          "type": "ID!",
+          "required": true,
+          "description": ""
+        },
+        "interventionTypeVerbatim": {
+          "type": "String",
+          "required": false,
+          "description": "Registry intervention type as stated (DRUG, DIETARY_SUPPLEMENT, DEVICE, BEHAVIORAL, ...)."
+        },
+        "lastWriterRunId": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "lotCodeVerbatim": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "massBasis": {
+          "type": "MassBasis",
+          "required": false,
+          "description": "D1 enum MassBasis (owner D1; 10-seams.yaml sharedVocabularies).",
+          "enumValues": [
+            "ACTIVE_MOIETY",
+            "MATERIAL_AS_IS",
+            "NUTRIENT_EQUIVALENT",
+            "SALT_FORM",
+            "UNSPECIFIED"
+          ]
+        },
+        "materialTextVerbatim": {
+          "type": "String!",
+          "required": true,
+          "description": "What the source named (e.g. 'Nicotinamide riboside chloride, ChromaDex')."
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "payloadHash": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "privacyClass": {
+          "type": "PrivacyClass",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "INTERNAL",
+            "PUBLIC"
+          ]
+        },
+        "quantity": {
+          "type": "Float",
+          "required": false,
+          "description": ""
+        },
+        "quantityBasis": {
+          "type": "AmountBasis",
+          "required": false,
+          "description": "D6 enum AmountBasis (owner D6, R-58; e.g. PER_DOSE, PER_DAY, PER_KG_DIET, MEDIUM_CONCENTRATION).",
+          "enumValues": [
+            "MEDIUM_CONCENTRATION",
+            "NOT_STATED",
+            "OTHER",
+            "PER_100G",
+            "PER_100ML",
+            "PER_CYCLE",
+            "PER_DAY",
+            "PER_DOSE",
+            "PER_ITEM",
+            "PER_KG_BODY_WEIGHT_PER_DAY",
+            "PER_KG_DIET",
+            "PER_PACKAGE",
+            "PER_SERVING",
+            "PER_UNIT",
+            "PER_WEEK",
+            "SINGLE_DOSE"
+          ]
+        },
+        "route": {
+          "type": "AdministrationRoute",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "DIETARY_ADMIXTURE",
+            "INHALED",
+            "INTRAMUSCULAR",
+            "INTRANASAL",
+            "INTRAPERITONEAL",
+            "INTRAVENOUS",
+            "INTRAVITREAL",
+            "IN_MEDIUM",
+            "NOT_REPORTED",
+            "ORAL",
+            "OTHER",
+            "SUBCUTANEOUS",
+            "SUBLINGUAL",
+            "TOPICAL"
+          ]
+        },
+        "scheduleText": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "supplierNameVerbatim": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "uid": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "unitCode": {
+          "type": "String",
+          "required": false,
+          "description": "UCUM unit of quantity (mg, mg/kg, [ppm])."
+        },
+        "updatedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "verbatimDoseText": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        }
+      }
+    },
+    "LabelVersion": {
+      "labels": [
+        "LabelVersion",
+        "Entity"
+      ],
+      "kernelRecord": false,
+      "executorOps": [
+        "create",
+        "update"
+      ],
+      "properties": {
+        "allergenStatementVerbatim": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "asOfStatementVerbatim": {
+          "type": "String",
+          "required": false,
+          "description": "Declared as-of statement ('correct as of January 2022'), verbatim; the parsed date bounds the episode's valid time."
+        },
+        "compositionDigest": {
+          "type": "String!",
+          "required": true,
+          "description": "sha256:<hex> over the normalized composition lines only (resolved target uid, amount, unit, referent, basis, parent); equal digest = same formulation (CQ-ID-05)."
+        },
+        "containsAllergens": {
+          "type": "[AllergenCode!]",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "CELERY",
+            "CEREALS_CONTAINING_GLUTEN",
+            "CRUSTACEAN_SHELLFISH",
+            "EGG",
+            "FISH",
+            "LUPIN",
+            "MILK",
+            "MOLLUSCS",
+            "MUSTARD",
+            "OTHER",
+            "PEANUTS",
+            "SESAME",
+            "SOYBEANS",
+            "SULPHITES",
+            "TREE_NUTS",
+            "WHEAT"
+          ]
+        },
+        "contentDigest": {
+          "type": "String!",
+          "required": true,
+          "description": "sha256:<hex> over the normalized panel (all fields and lines); identity fallback."
+        },
+        "createdAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "directionsText": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "firstObservedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": "Observation cache (executor-maintained from evidencing snapshots; read-only semantics): first and last retrievedAt."
+        },
+        "id": {
+          "type": "ID!",
+          "required": true,
+          "description": ""
+        },
+        "jurisdiction": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "labelVersionCode": {
+          "type": "String",
+          "required": false,
+          "description": "Version code printed on the label or registered by DSLD (productVersionCode)."
+        },
+        "lastObservedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "lastWriterRunId": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "maxDailyServings": {
+          "type": "Float",
+          "required": false,
+          "description": "Maximum suggested daily servings from the directions (Q-D6-09: max declared daily intake = this × line amount)."
+        },
+        "mayContainAllergens": {
+          "type": "[AllergenCode!]",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "CELERY",
+            "CEREALS_CONTAINING_GLUTEN",
+            "CRUSTACEAN_SHELLFISH",
+            "EGG",
+            "FISH",
+            "LUPIN",
+            "MILK",
+            "MOLLUSCS",
+            "MUSTARD",
+            "OTHER",
+            "PEANUTS",
+            "SESAME",
+            "SOYBEANS",
+            "SULPHITES",
+            "TREE_NUTS",
+            "WHEAT"
+          ]
+        },
+        "minDailyServings": {
+          "type": "Float",
+          "required": false,
+          "description": ""
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "panelKind": {
+          "type": "PanelKind!",
+          "required": true,
+          "description": "",
+          "enumValues": [
+            "DRUG_FACTS",
+            "INGREDIENT_STATEMENT",
+            "MENU_DECLARATION",
+            "NUTRITION_FACTS",
+            "OTHER",
+            "PRESCRIBING_INFORMATION",
+            "SUPPLEMENT_FACTS"
+          ]
+        },
+        "privacyClass": {
+          "type": "PrivacyClass",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "INTERNAL",
+            "PUBLIC"
+          ]
+        },
+        "responsiblePartyRole": {
+          "type": "ResponsiblePartyRole",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "DISTRIBUTED_BY",
+            "IMPORTED_BY",
+            "MANUFACTURED_BY",
+            "MANUFACTURED_FOR",
+            "MARKETED_BY",
+            "PACKED_FOR",
+            "UNSTATED"
+          ]
+        },
+        "responsiblePartyVerbatim": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "seals": {
+          "type": "[String!]",
+          "required": false,
+          "description": "Seals and certification marks as printed ('NSF Certified for Sport', 'Alkemist Assured'); scope checks are CQ-PF-03b assessments."
+        },
+        "servingSizeUnit": {
+          "type": "String",
+          "required": false,
+          "description": "UCUM or annotated unit ({capsule}, g)."
+        },
+        "servingSizeValue": {
+          "type": "Float",
+          "required": false,
+          "description": ""
+        },
+        "servingSizeVerbatim": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "servingsPerContainer": {
+          "type": "Float",
+          "required": false,
+          "description": ""
+        },
+        "uid": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "updatedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "warningsText": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        }
+      }
+    },
+    "Organization": {
+      "labels": [
+        "Organization",
+        "Entity"
+      ],
+      "kernelRecord": false,
+      "executorOps": [
+        "create",
+        "update"
+      ],
+      "properties": {
+        "createdAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "description": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "entityKind": {
+          "type": "OrganizationEntityKind!",
+          "required": true,
+          "description": "LEGAL_ENTITY, CORPORATE_GROUP, DIVISION_OR_UNIT, PUBLIC_BODY (Q-D7-01, Q-D7-14, Q-D7-19 filter on it).",
+          "enumValues": [
+            "CORPORATE_GROUP",
+            "DIVISION_OR_UNIT",
+            "LEGAL_ENTITY",
+            "PUBLIC_BODY",
+            "UNSPECIFIED"
+          ]
+        },
+        "id": {
+          "type": "ID!",
+          "required": true,
+          "description": ""
+        },
+        "jurisdiction": {
+          "type": "String",
+          "required": false,
+          "description": "ISO 3166-1/-2 code of formation (LEGAL_ENTITY) or of authority (PUBLIC_BODY)."
+        },
+        "lastWriterRunId": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "legalFormVerbatim": {
+          "type": "String",
+          "required": false,
+          "description": "Legal form as printed (Delaware corporation, LLC, Limited, S.A., P.A.)."
+        },
+        "legalName": {
+          "type": "String",
+          "required": false,
+          "description": "Current registered legal name (display projection of the latest LEGAL_NAME Assertion); null when not a LEGAL_ENTITY."
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "organizationKind": {
+          "type": "OrganizationKind",
+          "required": false,
+          "description": "Coarse kind for filtering (Q-D7-11, Q-D7-13, Q-D7-22); never a role.",
+          "enumValues": [
+            "ACADEMIC_OR_RESEARCH_INSTITUTE",
+            "BIOTECH_OR_PHARMA",
+            "CLINIC_OR_HEALTHCARE_PROVIDER",
+            "CONTRACT_SERVICE_PROVIDER",
+            "DIAGNOSTICS_OR_DEVICE",
+            "FOOD_OR_BEVERAGE",
+            "GOVERNMENT_OR_REGULATOR",
+            "INVESTOR_OR_FUND",
+            "MEDIA_OR_CREATOR_BUSINESS",
+            "NONPROFIT_OR_FOUNDATION",
+            "OTHER",
+            "RETAILER_OR_MARKETPLACE",
+            "SUPPLEMENT_OR_CONSUMER_HEALTH",
+            "TESTING_OR_CERTIFICATION_BODY",
+            "TRADE_OR_PROFESSIONAL_ASSOCIATION"
+          ]
+        },
+        "privacyClass": {
+          "type": "PrivacyClass",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "INTERNAL",
+            "PUBLIC"
+          ]
+        },
+        "status": {
+          "type": "OrganizationStatus",
+          "required": false,
+          "description": "Registry or self-declared status (projection of the latest ORGANIZATION_STATUS Assertion).",
+          "enumValues": [
+            "ACTIVE",
+            "DISSOLVED",
+            "INACTIVE",
+            "MERGED_OR_ACQUIRED",
+            "UNKNOWN"
+          ]
+        },
+        "uid": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "updatedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        }
+      }
+    },
+    "OutcomeDefinition": {
+      "labels": [
+        "OutcomeDefinition",
+        "Entity"
+      ],
+      "kernelRecord": false,
+      "executorOps": [
+        "create",
+        "update"
+      ],
+      "properties": {
+        "createdAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "description": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "id": {
+          "type": "ID!",
+          "required": true,
+          "description": ""
+        },
+        "lastWriterRunId": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "measureKind": {
+          "type": "MeasureKind!",
+          "required": true,
+          "description": "",
+          "enumValues": [
+            "ADVERSE_EVENT",
+            "BIOMARKER",
+            "CLINICAL_EVENT",
+            "CLINICIAN_REPORTED_OUTCOME",
+            "OBSERVER_REPORTED_OUTCOME",
+            "PATIENT_REPORTED_OUTCOME",
+            "PERFORMANCE_OUTCOME",
+            "SURVIVAL"
+          ]
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "description": "Measure title as first stated."
+        },
+        "outcomeKey": {
+          "type": "String!",
+          "required": true,
+          "description": "Normalized measure + timepoint; equal across sources and versions for the same measure."
+        },
+        "priority": {
+          "type": "OutcomePriority!",
+          "required": true,
+          "description": "",
+          "enumValues": [
+            "EXPLORATORY",
+            "OTHER_PRESPECIFIED",
+            "POST_HOC",
+            "PRIMARY",
+            "SAFETY",
+            "SECONDARY"
+          ]
+        },
+        "privacyClass": {
+          "type": "PrivacyClass",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "INTERNAL",
+            "PUBLIC"
+          ]
+        },
+        "timepoint": {
+          "type": "String",
+          "required": false,
+          "description": "Timepoint or time frame as stated ('20 weeks', 'median 4.7 years')."
+        },
+        "uid": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "updatedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        }
+      }
+    },
+    "Package": {
+      "labels": [
+        "Package",
+        "Entity"
+      ],
+      "kernelRecord": false,
+      "executorOps": [
+        "create",
+        "update"
+      ],
+      "properties": {
+        "componentSummary": {
+          "type": "String",
+          "required": false,
+          "description": "Kits and multipacks: component summary as printed ('2 x 90 capsules'); component edges are predicate-only CONTAINS_PACKAGE."
+        },
+        "createdAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "id": {
+          "type": "ID!",
+          "required": true,
+          "description": ""
+        },
+        "lastWriterRunId": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "netQuantityUnit": {
+          "type": "String",
+          "required": false,
+          "description": "UCUM unit of netQuantityValue (g, mL)."
+        },
+        "netQuantityValue": {
+          "type": "Float",
+          "required": false,
+          "description": ""
+        },
+        "packageKind": {
+          "type": "PackageKind!",
+          "required": true,
+          "description": "",
+          "enumValues": [
+            "BUNDLE",
+            "CONTAINER",
+            "KIT",
+            "MULTIPACK",
+            "OTHER",
+            "SERVED_PORTION"
+          ]
+        },
+        "privacyClass": {
+          "type": "PrivacyClass",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "INTERNAL",
+            "PUBLIC"
+          ]
+        },
+        "uid": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "unitCount": {
+          "type": "Int",
+          "required": false,
+          "description": "Count of dosage units or served items (30 capsules; 1 sandwich); denominator of price per unit and per dose."
+        },
+        "unitNoun": {
+          "type": "String",
+          "required": false,
+          "description": "Unit noun as printed ('Vegetarian Capsules', 'sandwich')."
+        },
+        "updatedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        }
+      }
+    },
+    "Person": {
+      "labels": [
+        "Person",
+        "Entity"
+      ],
+      "kernelRecord": false,
+      "executorOps": [
+        "create",
+        "update"
+      ],
+      "properties": {
+        "createdAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "credentialsVerbatim": {
+          "type": "String",
+          "required": false,
+          "description": "Post-nominal credentials as printed (MD, PhD, RD); display and filter only, never a role fact."
+        },
+        "description": {
+          "type": "String",
+          "required": false,
+          "description": "Display headline; facts in it are not queryable until asserted."
+        },
+        "id": {
+          "type": "ID!",
+          "required": true,
+          "description": ""
+        },
+        "influenceDerivedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": "When the PROJECTION Activity derived the influence cache (R-45 condition 3)."
+        },
+        "influenceMethodVersion": {
+          "type": "String",
+          "required": false,
+          "description": "Method version of the influence cache, e.g. d9-influence/pagerank-v1 (R-45 condition 3)."
+        },
+        "influenceScore": {
+          "type": "Float",
+          "required": false,
+          "description": "Discourse projection cache (R-49, Q-D9-19): influence score of this person over the retelling graph (PageRank class), graph-wide, under influenceMethodVersion. A per-topic or per-frontier score is not stored here (open-questions FU-11). Authority: the occurrences and retellings it was computed from."
+        },
+        "lastWriterRunId": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "privacyClass": {
+          "type": "PrivacyClass",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "INTERNAL",
+            "PUBLIC"
+          ]
+        },
+        "publicActorBasis": {
+          "type": "[PublicActorBasis!]",
+          "required": false,
+          "description": "Why this person is a public actor (privacy gate; Q-D7-18, Q-D7-24 filter on it).",
+          "enumValues": [
+            "AUTHOR_OR_INVESTIGATOR",
+            "CLINICIAN_PUBLIC_COMMENTATOR",
+            "ENDORSER_NAMED_BY_REGULATOR",
+            "FOUNDER_OR_INVESTOR",
+            "OFFICER_OR_DIRECTOR",
+            "OTHER_PUBLIC_ROLE",
+            "SPEAKER_OR_CREATOR"
+          ]
+        },
+        "uid": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "updatedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        }
+      }
+    },
+    "Product": {
+      "labels": [
+        "Product",
+        "Entity"
+      ],
+      "kernelRecord": false,
+      "executorOps": [
+        "create",
+        "update"
+      ],
+      "properties": {
+        "createdAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "id": {
+          "type": "ID!",
+          "required": true,
+          "description": ""
+        },
+        "jurisdiction": {
+          "type": "String",
+          "required": false,
+          "description": "ISO 3166 code when the product is market-specific; null for multi-market products."
+        },
+        "lastWriterRunId": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "marketedName": {
+          "type": "String!",
+          "required": true,
+          "description": "Marketed name as the brand prints it (identity key with the brand)."
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "privacyClass": {
+          "type": "PrivacyClass",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "INTERNAL",
+            "PUBLIC"
+          ]
+        },
+        "productKind": {
+          "type": "ProductKind!",
+          "required": true,
+          "description": "Filter for every ranking and avoidance question (Q-D6-03, Q-D6-12, Q-D6-22).",
+          "enumValues": [
+            "BEVERAGE",
+            "CONSUMER_DEVICE",
+            "CONVENTIONAL_FOOD",
+            "COSMETIC",
+            "DIAGNOSTIC_TEST_SERVICE",
+            "DIETARY_SUPPLEMENT",
+            "MEDICAL_DEVICE",
+            "OTC_DRUG",
+            "OTHER",
+            "PREPARED_FOOD",
+            "PRESCRIPTION_DRUG",
+            "SERVICE"
+          ]
+        },
+        "uid": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "updatedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        }
+      }
+    },
+    "ProductVariant": {
+      "labels": [
+        "ProductVariant",
+        "Entity"
+      ],
+      "kernelRecord": false,
+      "executorOps": [
+        "create",
+        "update"
+      ],
+      "properties": {
+        "createdAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "dosageForm": {
+          "type": "DosageForm",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "BAR",
+            "CAPSULE",
+            "DEVICE",
+            "GUMMY",
+            "KIT",
+            "LIQUID",
+            "MEAL_ITEM",
+            "OTHER",
+            "POWDER",
+            "SOFTGEL",
+            "STICK_PACK",
+            "TABLET"
+          ]
+        },
+        "flavor": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "id": {
+          "type": "ID!",
+          "required": true,
+          "description": ""
+        },
+        "jurisdiction": {
+          "type": "String",
+          "required": false,
+          "description": "ISO 3166 market of this variant (US vs UK fries; '500mg (Canada)')."
+        },
+        "lastWriterRunId": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "privacyClass": {
+          "type": "PrivacyClass",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "INTERNAL",
+            "PUBLIC"
+          ]
+        },
+        "strengthVerbatim": {
+          "type": "String",
+          "required": false,
+          "description": "Strength as printed ('300 mg', '12 g scoop'); the typed amount lives on label component lines."
+        },
+        "uid": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "updatedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        }
+      }
+    },
+    "Publication": {
+      "labels": [
+        "Publication",
+        "Entity"
+      ],
+      "kernelRecord": false,
+      "executorOps": [
+        "create",
+        "update"
+      ],
+      "properties": {
+        "citationText": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "createdAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "id": {
+          "type": "ID!",
+          "required": true,
+          "description": ""
+        },
+        "lastWriterRunId": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "description": "Title."
+        },
+        "privacyClass": {
+          "type": "PrivacyClass",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "INTERNAL",
+            "PUBLIC"
+          ]
+        },
+        "publicationKind": {
+          "type": "PublicationKind!",
+          "required": true,
+          "description": "",
+          "enumValues": [
+            "ANALYSIS_PLAN",
+            "ARTICLE",
+            "COMMENT",
+            "CONFERENCE_ABSTRACT",
+            "CORRECTION_NOTICE",
+            "EXPRESSION_OF_CONCERN",
+            "OTHER",
+            "PREPRINT",
+            "PROTOCOL",
+            "RETRACTION_NOTICE",
+            "SYSTEMATIC_REVIEW",
+            "WITHDRAWAL_NOTICE"
+          ]
+        },
+        "publishedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "publishedAtPrecision": {
+          "type": "TimePrecision",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "DAY",
+            "DECADE",
+            "INSTANT",
+            "MONTH",
+            "QUARTER",
+            "YEAR"
+          ]
+        },
+        "revisionStatus": {
+          "type": "SourceRevisionKind",
+          "required": false,
+          "description": "Read-only projection cache over incoming REVISES and kernel HAS_REVISION_STATUS Assertions (method publication-revision-status/v2), typed by the kernel SourceRevisionKind; null = none known (R-44). The single work-level cache; authority stays with those per-asserter Assertions. Filter to exclude retracted work.",
+          "enumValues": [
+            "CORRECTED_AND_REPUBLISHED",
+            "ERRATUM",
+            "EXPRESSION_OF_CONCERN",
+            "NEW_VERSION",
+            "REINSTATEMENT",
+            "RETRACTION",
+            "SILENT_CONTENT_CHANGE",
+            "WITHDRAWAL"
+          ]
+        },
+        "revisionStatusDerivedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "revisionStatusMethodVersion": {
+          "type": "String",
+          "required": false,
+          "description": "Method version of the revisionStatus cache (directive rule 8), e.g. publication-revision-status/v2."
+        },
+        "uid": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "updatedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "venueName": {
+          "type": "String",
+          "required": false,
+          "description": "Journal or server name as printed: venue name only, no container node (R-71)."
+        },
+        "versionLabel": {
+          "type": "String",
+          "required": false,
+          "description": "Version label (v1…v4 for medRxiv, pub2 for Cochrane)."
+        }
+      }
+    },
+    "Report": {
+      "labels": [
+        "Report",
+        "InformationArtifact"
+      ],
+      "kernelRecord": true,
+      "executorOps": [
+        "close",
+        "create"
+      ],
+      "properties": {
+        "bodyDigest": {
+          "type": "String!",
+          "required": true,
+          "description": "sha256:<hex> of the registered report bytes (verification-report-ledger.v1 reportArtifact)."
+        },
+        "bodyUri": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "bundleDigest": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "citationCompleteness": {
+          "type": "Float",
+          "required": false,
+          "description": "verification.v1 report-wide metrics: claimWeightedCitationCompleteness, citationCorrectness (nullable in v1)."
+        },
+        "citationCorrectness": {
+          "type": "Float",
+          "required": false,
+          "description": ""
+        },
+        "createdAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "custodyKind": {
+          "type": "String",
+          "required": false,
+          "description": "Custody kind of bodyUri (e.g. supabase-knowledge-artifacts, content-addressed and immutable; OD-14) (R-SV10)."
+        },
+        "distinctSourceFamilyCount": {
+          "type": "Int",
+          "required": false,
+          "description": ""
+        },
+        "id": {
+          "type": "ID!",
+          "required": true,
+          "description": ""
+        },
+        "independentSourceFamilyCount": {
+          "type": "Int",
+          "required": false,
+          "description": "verification.v1 reportWide independentSourceFamilyCount / distinctSourceFamilyCount (independence of the cited evidence). Source family = the evidence's OCCURS_IN work, else its Source's RENDITION_OF work (D9 MediaWork or D3 Publication), else the Source (R-43)."
+        },
+        "lastWriterRunId": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "ledgerDigest": {
+          "type": "String",
+          "required": false,
+          "description": "sha256:<hex> of the verification report ledger and of the sealed audit bundle."
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "description": "Title."
+        },
+        "policyOutcome": {
+          "type": "PolicyOutcome",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "ABSTAIN",
+            "FAIL",
+            "PASS",
+            "PASS_WITH_WARNINGS",
+            "REVIEW"
+          ]
+        },
+        "policyVersion": {
+          "type": "String!",
+          "required": true,
+          "description": "PolicyVersion id the publication was admitted under (node in D10 if promoted)."
+        },
+        "privacyClass": {
+          "type": "PrivacyClass",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "INTERNAL",
+            "PUBLIC"
+          ]
+        },
+        "publishedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "queryDigest": {
+          "type": "String",
+          "required": false,
+          "description": "ANSWER: digest of the read intent (query shape) that produced it, for replay."
+        },
+        "recordedAt": {
+          "type": "DateTime!",
+          "required": true,
+          "description": ""
+        },
+        "recordedTo": {
+          "type": "DateTime",
+          "required": false,
+          "description": "Written once when a revision (a new Report naming supersedesUid) or a withdrawal replaces this one."
+        },
+        "reportKind": {
+          "type": "ReportKind!",
+          "required": true,
+          "description": "",
+          "enumValues": [
+            "ANSWER",
+            "COMPARISON",
+            "EVIDENCE_REPORT",
+            "PROFILE",
+            "RECOMMENDATION",
+            "STUDY_APPRAISAL"
+          ]
+        },
+        "reportKindRef": {
+          "type": "String",
+          "required": false,
+          "description": "Versioned report-kind reference of the revision (R-SV10); refines reportKind without new enum values."
+        },
+        "reportRevisionRef": {
+          "type": "String",
+          "required": false,
+          "description": "Immutable reference to the Knowledge Services report revision (ReportRevision) this Report materializes (R-SV10)."
+        },
+        "reportSchema": {
+          "type": "String",
+          "required": false,
+          "description": "Report contract of that revision, e.g. research-report.v2 (R-SV10)."
+        },
+        "skeletonKey": {
+          "type": "String",
+          "required": false,
+          "description": "D10 skeleton name and version (e.g. d10.compound-profile@1, d10.frontier-brief@1); refines reportKind without new enum values."
+        },
+        "status": {
+          "type": "AssessmentStatus!",
+          "required": true,
+          "description": "",
+          "enumValues": [
+            "ACCEPTED",
+            "PROPOSED",
+            "SUPERSEDED",
+            "WITHDRAWN"
+          ]
+        },
+        "structuredBodyDigest": {
+          "type": "String",
+          "required": false,
+          "description": "sha256:<hex> of the structured report body the rendered body (bodyDigest) was compiled from (R-SV10)."
+        },
+        "supersedesReportRevisionRef": {
+          "type": "String",
+          "required": false,
+          "description": "Report revision this one supersedes (R-SV10); the graph-level revision link stays supersedesUid."
+        },
+        "supersedesUid": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "uid": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "unsupportedHighSeverityCount": {
+          "type": "Int",
+          "required": false,
+          "description": "Count of verification.v1 reportWide.unsupportedHighSeverityAssertionIds (a publication gate input)."
+        },
+        "updatedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "verdict": {
+          "type": "SemanticVerdict",
+          "required": false,
+          "description": "EVIDENCE_REPORT: the verification.v1 lattice verdict on the Claim it ASSESSES (the exact proposition: that Claim's propositionHash), after the mission tried to disqualify it.",
+          "enumValues": [
+            "CONTEXT_ONLY",
+            "CONTRADICTED",
+            "DERIVED_FAILED",
+            "DERIVED_VERIFIED",
+            "DIRECTLY_SUPPORTED",
+            "INSUFFICIENT_EVIDENCE",
+            "LOCATOR_ERROR",
+            "MIXED_OR_CONFLICTING",
+            "NOT_SUPPORTED",
+            "PARSER_ERROR",
+            "PARTIALLY_SUPPORTED",
+            "PENDING_SEMANTIC_REVIEW",
+            "SOURCE_UNAVAILABLE",
+            "SUPPORTED_WITH_QUALIFICATION",
+            "UNVERIFIABLE"
+          ]
+        },
+        "worldCorrectness": {
+          "type": "PropertyStatus",
+          "required": false,
+          "description": "EVIDENCE_REPORT: verification.v1 world-correctness of the judged Claim (orthogonal to verdict; no aggregate erases either).",
+          "enumValues": [
+            "NOT_ASSESSED",
+            "NOT_SATISFIED",
+            "SATISFIED",
+            "UNKNOWN"
+          ]
+        }
+      }
+    },
+    "Study": {
+      "labels": [
+        "Study",
+        "Entity"
+      ],
+      "kernelRecord": false,
+      "executorOps": [
+        "create",
+        "update"
+      ],
+      "properties": {
+        "acronym": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "createdAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "id": {
+          "type": "ID!",
+          "required": true,
+          "description": ""
+        },
+        "lastWriterRunId": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "overallStatus": {
+          "type": "RegistryStatus",
+          "required": false,
+          "description": "Projection cache: status of the latest registry version (Q-D3-02, Q-D3-10, Q-D3-18).",
+          "enumValues": [
+            "ACTIVE_NOT_RECRUITING",
+            "COMPLETED",
+            "ENROLLING_BY_INVITATION",
+            "NOT_YET_RECRUITING",
+            "OTHER",
+            "RECRUITING",
+            "SUSPENDED",
+            "TERMINATED",
+            "UNKNOWN",
+            "WITHDRAWN"
+          ]
+        },
+        "phase": {
+          "type": "[TrialPhase!]",
+          "required": false,
+          "description": "Projection cache: phase of the latest registry version (Q-D3-10).",
+          "enumValues": [
+            "EARLY_PHASE_1",
+            "NOT_APPLICABLE",
+            "PHASE_1",
+            "PHASE_1_2",
+            "PHASE_2",
+            "PHASE_2_3",
+            "PHASE_3",
+            "PHASE_4"
+          ]
+        },
+        "primaryCompletionDate": {
+          "type": "DateTime",
+          "required": false,
+          "description": "Projection cache: expected or actual primary completion of the latest version (Q-D3-02, Q-D3-10)."
+        },
+        "primaryCompletionDateType": {
+          "type": "RegistryDateType",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "ACTUAL",
+            "ANTICIPATED"
+          ]
+        },
+        "privacyClass": {
+          "type": "PrivacyClass",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "INTERNAL",
+            "PUBLIC"
+          ]
+        },
+        "projectionDerivedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "projectionMethodVersion": {
+          "type": "String",
+          "required": false,
+          "description": "Method version of the projection cache (directive rule 8)."
+        },
+        "projectionOfRegistrationVersionUid": {
+          "type": "String",
+          "required": false,
+          "description": "uid of the RegistrationVersion the cache was projected from."
+        },
+        "resultsPosted": {
+          "type": "Boolean",
+          "required": false,
+          "description": "Projection cache: true when the latest registry version has posted results (Q-D3-02)."
+        },
+        "studyKind": {
+          "type": "StudyKind!",
+          "required": true,
+          "description": "Design (filter: Q-D3-04 ranking, Q-D3-06 preclinical, CQ-ST-07).",
+          "enumValues": [
+            "CASE_REPORT",
+            "CASE_SERIES",
+            "CROSS_SECTIONAL",
+            "INTERVENTIONAL_NONRANDOMIZED",
+            "INTERVENTIONAL_RANDOMIZED",
+            "INTERVENTIONAL_SINGLE_GROUP",
+            "META_ANALYSIS",
+            "OBSERVATIONAL_CASE_CONTROL",
+            "OBSERVATIONAL_COHORT",
+            "OTHER",
+            "PRECLINICAL_IN_VITRO",
+            "PRECLINICAL_IN_VIVO",
+            "SYSTEMATIC_REVIEW"
+          ]
+        },
+        "uid": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "updatedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        }
+      }
+    },
+    "StudyArm": {
+      "labels": [
+        "StudyArm",
+        "Entity"
+      ],
+      "kernelRecord": false,
+      "executorOps": [
+        "create",
+        "update"
+      ],
+      "properties": {
+        "armKey": {
+          "type": "String!",
+          "required": true,
+          "description": "Normalized label used to match arms across sources (never identity across sources)."
+        },
+        "armType": {
+          "type": "ArmType",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "ACTIVE_COMPARATOR",
+            "EXPERIMENTAL",
+            "NO_INTERVENTION",
+            "OTHER",
+            "PLACEBO_COMPARATOR",
+            "SHAM_COMPARATOR"
+          ]
+        },
+        "createdAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "description": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "id": {
+          "type": "ID!",
+          "required": true,
+          "description": ""
+        },
+        "lastWriterRunId": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "description": "Arm label as stated (e.g. 'Fisetin Treatment Group')."
+        },
+        "payloadHash": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "plannedSize": {
+          "type": "Int",
+          "required": false,
+          "description": ""
+        },
+        "privacyClass": {
+          "type": "PrivacyClass",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "INTERNAL",
+            "PUBLIC"
+          ]
+        },
+        "uid": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "updatedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        }
+      }
+    },
+    "StudyPopulation": {
+      "labels": [
+        "StudyPopulation",
+        "Entity"
+      ],
+      "kernelRecord": false,
+      "executorOps": [
+        "create",
+        "update"
+      ],
+      "properties": {
+        "ageText": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "analysisSet": {
+          "type": "AnalysisSetKind",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "COMPLETERS",
+            "INTENTION_TO_TREAT",
+            "MODIFIED_INTENTION_TO_TREAT",
+            "NOT_REPORTED",
+            "OTHER",
+            "PER_PROTOCOL",
+            "SAFETY_SET"
+          ]
+        },
+        "createdAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "eligibilityCriteriaText": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "enrichmentText": {
+          "type": "String",
+          "required": false,
+          "description": "Enrichment as stated (e.g. 'highest tertile of p16 expression')."
+        },
+        "healthyVolunteers": {
+          "type": "Boolean",
+          "required": false,
+          "description": ""
+        },
+        "id": {
+          "type": "ID!",
+          "required": true,
+          "description": ""
+        },
+        "lastWriterRunId": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "maxAgeYears": {
+          "type": "Float",
+          "required": false,
+          "description": ""
+        },
+        "minAgeYears": {
+          "type": "Float",
+          "required": false,
+          "description": ""
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "ncbiTaxonId": {
+          "type": "String",
+          "required": false,
+          "description": "NCBI Taxonomy id (9606 human, 10090 mouse)."
+        },
+        "payloadHash": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "populationKind": {
+          "type": "StudyPopulationKind!",
+          "required": true,
+          "description": "",
+          "enumValues": [
+            "ANALYZED",
+            "ELIGIBLE",
+            "ENROLLED",
+            "RANDOMIZED"
+          ]
+        },
+        "privacyClass": {
+          "type": "PrivacyClass",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "INTERNAL",
+            "PUBLIC"
+          ]
+        },
+        "sexScope": {
+          "type": "SexScope",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "ALL",
+            "FEMALE",
+            "MALE",
+            "NOT_REPORTED"
+          ]
+        },
+        "size": {
+          "type": "Int",
+          "required": false,
+          "description": ""
+        },
+        "sizeText": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "strainOrLine": {
+          "type": "String",
+          "required": false,
+          "description": "Strain or line (UM-HET3, C57BL/6J)."
+        },
+        "uid": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "updatedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        }
+      }
+    },
+    "StudyResult": {
+      "labels": [
+        "StudyResult",
+        "Entity"
+      ],
+      "kernelRecord": false,
+      "executorOps": [
+        "create"
+      ],
+      "properties": {
+        "analysisKind": {
+          "type": "AnalysisKind!",
+          "required": true,
+          "description": "",
+          "enumValues": [
+            "EXPLORATORY",
+            "PRIMARY_PRESPECIFIED",
+            "SAFETY",
+            "SECONDARY_PRESPECIFIED",
+            "SUBGROUP_POST_HOC",
+            "SUBGROUP_PRESPECIFIED"
+          ]
+        },
+        "analysisPopulation": {
+          "type": "AnalysisSetKind",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "COMPLETERS",
+            "INTENTION_TO_TREAT",
+            "MODIFIED_INTENTION_TO_TREAT",
+            "NOT_REPORTED",
+            "OTHER",
+            "PER_PROTOCOL",
+            "SAFETY_SET"
+          ]
+        },
+        "ciLevel": {
+          "type": "Float",
+          "required": false,
+          "description": "Confidence level of a CI (0.95)."
+        },
+        "collectionMethod": {
+          "type": "AeCollectionMethod",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "NOT_DESCRIBED",
+            "SPONTANEOUS",
+            "SYSTEMATIC"
+          ]
+        },
+        "comparatorArmKey": {
+          "type": "String",
+          "required": false,
+          "description": "armKey of the reference arm of a BETWEEN_ARM comparison."
+        },
+        "comparisonKind": {
+          "type": "ComparisonKind!",
+          "required": true,
+          "description": "",
+          "enumValues": [
+            "ARM_DESCRIPTIVE",
+            "BETWEEN_ARM",
+            "WITHIN_ARM_CHANGE"
+          ]
+        },
+        "createdAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "direction": {
+          "type": "EstimateDirection",
+          "required": false,
+          "description": "Direction of the point estimate (EstimateDirection: neutral, never benefit / harm).",
+          "enumValues": [
+            "DECREASED",
+            "INCREASED",
+            "MIXED",
+            "NO_CHANGE",
+            "UNKNOWN"
+          ]
+        },
+        "dispersionKind": {
+          "type": "DispersionKind",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "CONFIDENCE_INTERVAL",
+            "FULL_RANGE",
+            "INTERQUARTILE_RANGE",
+            "NOT_REPORTED",
+            "STANDARD_DEVIATION",
+            "STANDARD_ERROR"
+          ]
+        },
+        "dispersionValue": {
+          "type": "Float",
+          "required": false,
+          "description": "SD or SE value when dispersionKind is STANDARD_DEVIATION or STANDARD_ERROR."
+        },
+        "estimate": {
+          "type": "Float",
+          "required": false,
+          "description": ""
+        },
+        "estimateQualifier": {
+          "type": "EstimateQualifier",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "APPROXIMATE",
+            "AS_REPORTED",
+            "CALCULATED_BY_BELLLABS",
+            "READ_FROM_FIGURE"
+          ]
+        },
+        "eventCount": {
+          "type": "Int",
+          "required": false,
+          "description": ""
+        },
+        "id": {
+          "type": "ID!",
+          "required": true,
+          "description": ""
+        },
+        "intervalLower": {
+          "type": "Float",
+          "required": false,
+          "description": "Bounds of a CI, IQR or full range (pinned ciLower / ciUpper)."
+        },
+        "intervalUpper": {
+          "type": "Float",
+          "required": false,
+          "description": ""
+        },
+        "lastWriterRunId": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "multiplicityAdjusted": {
+          "type": "Boolean",
+          "required": false,
+          "description": ""
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "participantsAffected": {
+          "type": "Int",
+          "required": false,
+          "description": ""
+        },
+        "participantsAtRisk": {
+          "type": "Int",
+          "required": false,
+          "description": ""
+        },
+        "privacyClass": {
+          "type": "PrivacyClass",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "INTERNAL",
+            "PUBLIC"
+          ]
+        },
+        "pValue": {
+          "type": "Float",
+          "required": false,
+          "description": ""
+        },
+        "pValueText": {
+          "type": "String",
+          "required": false,
+          "description": "p as printed ('<0.001', '0.611')."
+        },
+        "resultKind": {
+          "type": "StudyResultKind!",
+          "required": true,
+          "description": "",
+          "enumValues": [
+            "ADVERSE_EVENT_COUNT",
+            "AREA_UNDER_CURVE",
+            "HAZARD_RATIO",
+            "MEAN",
+            "MEAN_DIFFERENCE",
+            "MEDIAN",
+            "ODDS_RATIO",
+            "OTHER",
+            "PERCENT_CHANGE",
+            "PROPORTION",
+            "RATE",
+            "RATIO",
+            "RISK_DIFFERENCE",
+            "RISK_RATIO"
+          ]
+        },
+        "resultText": {
+          "type": "String",
+          "required": false,
+          "description": "Verbatim result sentence or cell text."
+        },
+        "sampleSize": {
+          "type": "Int",
+          "required": false,
+          "description": ""
+        },
+        "seriousness": {
+          "type": "AeSeriousness",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "ANY",
+            "NON_SERIOUS",
+            "SERIOUS"
+          ]
+        },
+        "statisticalConclusion": {
+          "type": "StatisticalConclusion!",
+          "required": true,
+          "description": "",
+          "enumValues": [
+            "NOT_REPORTED",
+            "NOT_SIGNIFICANT",
+            "NOT_TESTED",
+            "SIGNIFICANT"
+          ]
+        },
+        "subgroupLabel": {
+          "type": "String",
+          "required": false,
+          "description": "Subgroup the result is restricted to, as stated ('female', 'site: UM', 'highest p16 tertile'); null = the whole analysis population (replaces pinned HAS_ANALYZED_COHORT for sex-, site- and enrichment-limited results)."
+        },
+        "timepointText": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "uid": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "unitCode": {
+          "type": "String",
+          "required": false,
+          "description": "UCUM unit of estimate and interval."
+        },
+        "updatedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        }
+      }
+    },
+    "Target": {
+      "labels": [
+        "Target",
+        "Entity"
+      ],
+      "kernelRecord": false,
+      "executorOps": [
+        "create",
+        "update"
+      ],
+      "properties": {
+        "createdAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "definition": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "id": {
+          "type": "ID!",
+          "required": true,
+          "description": ""
+        },
+        "key": {
+          "type": "String!",
+          "required": true,
+          "description": "Stable vocabulary key, e.g. target:sleep (unique)."
+        },
+        "label": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "lastWriterRunId": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "level": {
+          "type": "Int",
+          "required": false,
+          "description": ""
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "parentKey": {
+          "type": "String",
+          "required": false,
+          "description": "Parent key for a level-2 target (target:fat-loss -> target:body-composition); null at top level."
+        },
+        "privacyClass": {
+          "type": "PrivacyClass",
+          "required": false,
+          "description": "",
+          "enumValues": [
+            "INTERNAL",
+            "PUBLIC"
+          ]
+        },
+        "replacedBy": {
+          "type": "String",
+          "required": false,
+          "description": ""
+        },
+        "status": {
+          "type": "TargetStatus!",
+          "required": true,
+          "description": "",
+          "enumValues": [
+            "ACTIVE",
+            "DEPRECATED"
+          ]
+        },
+        "synonyms": {
+          "type": "[String!]",
+          "required": false,
+          "description": "Feeds the fulltext index TargetSearch(label, synonyms, definition) used for entity linking of goal phrases."
+        },
+        "uid": {
+          "type": "String!",
+          "required": true,
+          "description": ""
+        },
+        "updatedAt": {
+          "type": "DateTime",
+          "required": false,
+          "description": ""
+        },
+        "vocabVersion": {
+          "type": "String!",
+          "required": true,
+          "description": "vocab-targets.yaml version at creation or last edit."
+        }
+      }
+    }
+  },
+  "predicates": {
+    "ACTIVATES": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "ChemicalSubstance"
+      ],
+      "objectTypes": [
+        "MolecularEntity"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "ADMINISTERED_AMOUNT": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "InterventionComponent"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueNumber"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "ADMINISTERED_MATERIAL_PURITY": {
+      "status": "registered",
+      "kind": "field",
+      "subjectTypes": [
+        "InterventionComponent"
+      ],
+      "objectTypes": [
+        "Assertion"
+      ],
+      "valueFields": [
+        "valueNumber"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "ADMINISTERS": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "InterventionComponent"
+      ],
+      "objectTypes": [
+        "DietaryPattern",
+        "FoodItem",
+        "IngredientMaterial",
+        "Intervention",
+        "ProductVariant"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "APPEARS_IN": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "Person"
+      ],
+      "objectTypes": [
+        "MediaWork"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "ARM_DROPPED_REASON": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "StudyArm"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "ASSIGNS_LIKELIHOOD_SCORE": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "IngredientMaterial"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "ATTENUATES_INDUCTION_OF": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "ChemicalSubstance",
+        "Intervention"
+      ],
+      "objectTypes": [
+        "Mechanism"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "AUTHORED_BY": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "Protocol",
+        "ProtocolEdition",
+        "Publication"
+      ],
+      "objectTypes": [
+        "Organization",
+        "Person"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "AUTHORIZES_CHANNEL": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Brand",
+        "Organization"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "BEARS_SEAL": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "LabelVersion"
+      ],
+      "objectTypes": [
+        "CertificationListing",
+        "LabelVersion",
+        "Organization"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "BINDS": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "ChemicalSubstance"
+      ],
+      "objectTypes": [
+        "MolecularEntity"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "BRANDED_AS": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "Product"
+      ],
+      "objectTypes": [
+        "Brand"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "CALCULATED_DAILY_MAX_INTAKE": {
+      "status": "registered",
+      "kind": "computation",
+      "subjectTypes": [
+        "LabelVersion"
+      ],
+      "objectTypes": [
+        "ChemicalSubstance",
+        "Constituent",
+        "IngredientMaterial"
+      ],
+      "valueFields": [
+        "valueNumber"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "CALCULATED_SERVING_MASS_TOTAL": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "LabelVersion"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueNumber"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "CAUSES_ADVERSE_EFFECT": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "ChemicalSubstance",
+        "FoodCategory",
+        "FoodItem",
+        "IngredientMaterial",
+        "Intervention",
+        "Product"
+      ],
+      "objectTypes": [
+        "Condition"
+      ],
+      "valueFields": [
+        "valueNumber",
+        "valueString"
+      ],
+      "qualifiers": [
+        "context",
+        "dose",
+        "population",
+        "route",
+        "schedule",
+        "scheme",
+        "severity",
+        "sourceKind"
+      ],
+      "requiredQualifiers": [
+        "population"
+      ],
+      "field": null
+    },
+    "CHARACTERIZES_ABSORPTION": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "IngredientMaterial"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "CHARACTERIZES_EVIDENCE_STRENGTH": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Claim"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "CHARACTERIZES_INCIDENCE": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "IngredientMaterial"
+      ],
+      "objectTypes": [
+        "Condition"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "CITED_BY_COUNT": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Publication"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueNumber"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "CLAIMS_TO_MEASURE": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "Device",
+        "LabTest",
+        "Product"
+      ],
+      "objectTypes": [
+        "Metric"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "CLINICALLY_MEANINGFUL": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "StudyResult"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueBoolean"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "COMMISSIONED_TEST": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "Organization"
+      ],
+      "objectTypes": [
+        "QualityResult"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "CONTAINS_PACKAGE": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "Package"
+      ],
+      "objectTypes": [
+        "Package"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "CONTAINS_UNDECLARED_SUBSTANCE": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "Product",
+        "ProductVariant"
+      ],
+      "objectTypes": [
+        "ChemicalSubstance"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "CONTRACT_MANUFACTURES_FOR": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "Organization"
+      ],
+      "objectTypes": [
+        "Organization"
+      ],
+      "valueFields": [],
+      "qualifiers": [
+        "product"
+      ],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "CORRECTS": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "ChemicalSubstance"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueNumber"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "COUNTS_TOWARD_NUTRIENT": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "ChemicalSubstance"
+      ],
+      "objectTypes": [
+        "Constituent"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "DECLARATION_STOICHIOMETRY_CHECK": {
+      "status": "registered",
+      "kind": "computation",
+      "subjectTypes": [
+        "LabelVersion"
+      ],
+      "objectTypes": [
+        "ChemicalSubstance",
+        "Constituent",
+        "Taxon"
+      ],
+      "valueFields": [
+        "valueBoolean"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "DECLARES_COMPONENT": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "LabelVersion"
+      ],
+      "objectTypes": [
+        "Constituent",
+        "FoodItem",
+        "IngredientMaterial"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "DECREASES_ACTIVITY_OF": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "ChemicalSubstance",
+        "IngredientMaterial",
+        "Intervention"
+      ],
+      "objectTypes": [
+        "Mechanism",
+        "MolecularEntity"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "DECREASES_LEVEL_OF": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "ChemicalSubstance",
+        "Intervention",
+        "Mechanism",
+        "MolecularEntity"
+      ],
+      "objectTypes": [
+        "Biomarker",
+        "ChemicalSubstance",
+        "Mechanism",
+        "MolecularEntity",
+        "Outcome"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "DELIVERS": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "Product"
+      ],
+      "objectTypes": [
+        "Device",
+        "LabTest"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "DERIVED_FROM_TAXON": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "IngredientMaterial"
+      ],
+      "objectTypes": [
+        "Taxon"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "DEVELOPS_THERAPY_TARGETING": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "Organization"
+      ],
+      "objectTypes": [
+        "Mechanism",
+        "MolecularEntity"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "DISCLOSES_INTEREST": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "MediaWork",
+        "Organization",
+        "Person",
+        "Publication"
+      ],
+      "objectTypes": [
+        "Organization"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "DISTRIBUTES": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "Organization"
+      ],
+      "objectTypes": [
+        "Product"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "DOING_BUSINESS_AS": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Organization"
+      ],
+      "objectTypes": [],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "DOSAGE_FORM": {
+      "status": "registered",
+      "kind": "field",
+      "subjectTypes": [
+        "InterventionComponent",
+        "ProductVariant"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": "InterventionComponent.dosageForm"
+    },
+    "DOSE_EQUIVALENT_TO": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "InterventionComponent"
+      ],
+      "objectTypes": [
+        "InterventionComponent"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "DOSE_EXCEEDS_LABEL_RECOMMENDATION": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "InterventionComponent"
+      ],
+      "objectTypes": [],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "DURATION_ISO": {
+      "status": "registered",
+      "kind": "field",
+      "subjectTypes": [
+        "InterventionComponent"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": "InterventionComponent.durationIso"
+    },
+    "EXTRACT_RATIO": {
+      "status": "registered",
+      "kind": "field",
+      "subjectTypes": [
+        "IngredientMaterial"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "FAMILY_OR_PERSONAL_RELATIONSHIP": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "Person"
+      ],
+      "objectTypes": [
+        "Person"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "FIELD_NOT_REPORTED": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "AlgorithmVersion",
+        "AssayVersion",
+        "LabelVersion",
+        "Metric",
+        "Source",
+        "Study"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "FORMER_NAME": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Organization"
+      ],
+      "objectTypes": [],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "FORMS_DURING_PREPARATION": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "ChemicalSubstance"
+      ],
+      "objectTypes": [
+        "FoodCategory",
+        "FoodItem"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "FUNDED_BY": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "Publication"
+      ],
+      "objectTypes": [
+        "Organization"
+      ],
+      "valueFields": [],
+      "qualifiers": [
+        "roleText"
+      ],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "HAS_ACTION_LEVEL": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "ChemicalSubstance"
+      ],
+      "objectTypes": [
+        "FoodCategory",
+        "FoodItem"
+      ],
+      "valueFields": [
+        "valueNumber"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "HAS_ACTIVE_MOIETY": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "ChemicalSubstance"
+      ],
+      "objectTypes": [
+        "ChemicalSubstance"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "HAS_APPROVED_INDICATION": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "ChemicalSubstance",
+        "Product"
+      ],
+      "objectTypes": [
+        "Condition"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "HAS_CAPABILITY_STAGE": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Organization"
+      ],
+      "objectTypes": [],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "HAS_CLAIM_CONDITION": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Claim",
+        "RegulatoryRecord"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "HAS_DATA_QUALITY_WARNING": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "FoodItem",
+        "Product"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "HAS_IDENTIFIER": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "Agent",
+        "AlgorithmVersion",
+        "AssayVersion",
+        "Award",
+        "Biomarker",
+        "Brand",
+        "CertificationListing",
+        "Channel",
+        "ChemicalSubstance",
+        "Claim",
+        "Condition",
+        "Constituent",
+        "DecisionCriterion",
+        "Device",
+        "DietaryPattern",
+        "Event",
+        "FoodCategory",
+        "FoodItem",
+        "Frontier",
+        "IngredientMaterial",
+        "Intervention",
+        "InterventionComponent",
+        "LabTest",
+        "LabelVersion",
+        "LegalStatus",
+        "Lot",
+        "Mechanism",
+        "MediaWork",
+        "MerchantListing",
+        "Metric",
+        "MolecularEntity",
+        "Offer",
+        "Organization",
+        "Outcome",
+        "OutcomeDefinition",
+        "Package",
+        "Patent",
+        "Person",
+        "Product",
+        "ProductVariant",
+        "Protocol",
+        "ProtocolEdition",
+        "ProtocolStep",
+        "Publication",
+        "QualityResult",
+        "ReferenceIntervalVersion",
+        "RegistrationVersion",
+        "RegulatoryRecord",
+        "Source",
+        "Study",
+        "StudyArm",
+        "StudyPopulation",
+        "StudyResult",
+        "Target",
+        "Taxon",
+        "UseConstraint"
+      ],
+      "objectTypes": [
+        "Identifier"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "HAS_LABEL_VERSION": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "Package"
+      ],
+      "objectTypes": [
+        "LabelVersion"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "HAS_MIXTURE_COMPONENT": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "IngredientMaterial"
+      ],
+      "objectTypes": [
+        "IngredientMaterial"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "HAS_RECIPE_INGREDIENT": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "FoodItem",
+        "LabelVersion",
+        "Product"
+      ],
+      "objectTypes": [
+        "FoodItem"
+      ],
+      "valueFields": [
+        "valueNumber"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "HAS_REFERENCE_FOOD": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "Product"
+      ],
+      "objectTypes": [
+        "FoodItem"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "HAS_REGISTRATION_VERSION": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "Study"
+      ],
+      "objectTypes": [
+        "RegistrationVersion"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "HAS_STUDY_ROLE": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "Study"
+      ],
+      "objectTypes": [
+        "Award",
+        "Organization",
+        "Person"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "HAS_UPPER_LIMIT": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "ChemicalSubstance",
+        "Constituent"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueNumber",
+        "valueString"
+      ],
+      "qualifiers": [
+        "ageBand",
+        "e.g.",
+        "intakeScope",
+        "limitKind",
+        "population"
+      ],
+      "requiredQualifiers": [
+        "population"
+      ],
+      "field": null
+    },
+    "HAS_VARIANT": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "Product"
+      ],
+      "objectTypes": [
+        "ProductVariant"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "HIGHER_BIOAVAILABILITY_THAN": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "IngredientMaterial"
+      ],
+      "objectTypes": [
+        "IngredientMaterial"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "HOLDS_ROLE": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "Person"
+      ],
+      "objectTypes": [
+        "Organization"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "HOLDS_STAKE": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "Organization",
+        "Person"
+      ],
+      "objectTypes": [
+        "Organization"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "IMPROVES_TARGET": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "ChemicalSubstance",
+        "DietaryPattern",
+        "FoodCategory",
+        "Intervention"
+      ],
+      "objectTypes": [
+        "Target"
+      ],
+      "valueFields": [],
+      "qualifiers": [
+        "coExposure",
+        "dose",
+        "duration",
+        "outcomeUid",
+        "population"
+      ],
+      "requiredQualifiers": [
+        "population"
+      ],
+      "field": null
+    },
+    "IN_FOOD_CATEGORY": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "FoodItem",
+        "Product"
+      ],
+      "objectTypes": [
+        "FoodCategory"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "INCLUDED_STUDY_COUNT": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Publication"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueNumber"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "INCREASES_ACTIVITY_OF": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "ChemicalSubstance",
+        "IngredientMaterial",
+        "Intervention"
+      ],
+      "objectTypes": [
+        "Mechanism",
+        "MolecularEntity"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "INCREASES_LEVEL_OF": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "ChemicalSubstance",
+        "IngredientMaterial",
+        "Mechanism",
+        "MolecularEntity"
+      ],
+      "objectTypes": [
+        "Biomarker",
+        "ChemicalSubstance",
+        "MolecularEntity",
+        "Outcome"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "INHIBITS": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "ChemicalSubstance"
+      ],
+      "objectTypes": [
+        "MolecularEntity"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "INTENDED_FOR_TARGET": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "ChemicalSubstance",
+        "Device",
+        "DietaryPattern",
+        "FoodCategory",
+        "FoodItem",
+        "IngredientMaterial",
+        "Intervention",
+        "Protocol",
+        "ProtocolEdition"
+      ],
+      "objectTypes": [
+        "Target"
+      ],
+      "valueFields": [],
+      "qualifiers": [
+        "claimClass",
+        "population"
+      ],
+      "requiredQualifiers": [
+        "population"
+      ],
+      "field": null
+    },
+    "INTERACTS_WITH": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "ChemicalSubstance",
+        "FoodCategory",
+        "Intervention"
+      ],
+      "objectTypes": [
+        "ChemicalSubstance",
+        "FoodItem",
+        "IngredientMaterial",
+        "Intervention"
+      ],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [
+        "e.g.",
+        "exposureChange",
+        "mechanism",
+        "never",
+        "population",
+        "stance",
+        "window"
+      ],
+      "requiredQualifiers": [
+        "population"
+      ],
+      "field": null
+    },
+    "INTERPRETATION_CAVEAT": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "StudyResult"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "INTERPRETS_RESULT": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "ChemicalSubstance",
+        "StudyResult"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "INVENTOR_ON_PATENT_ASSIGNED_TO": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "Person"
+      ],
+      "objectTypes": [
+        "Organization"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "INVESTIGATES": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "Study"
+      ],
+      "objectTypes": [
+        "Condition"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "IS_MOST_ADVANCED_AGING_TEST": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Product"
+      ],
+      "objectTypes": [],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "LEGAL_NAME": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Organization"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "MANUFACTURER_UNNAMED": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Organization",
+        "Product"
+      ],
+      "objectTypes": [],
+      "valueFields": [],
+      "qualifiers": [
+        "manufacturingKind"
+      ],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "MANUFACTURES": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "Organization"
+      ],
+      "objectTypes": [
+        "IngredientMaterial",
+        "Product"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "MARKED_WITH_PATENT": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "Product"
+      ],
+      "objectTypes": [
+        "Patent"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "MARKET_REFERENCE_PRICE": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Package",
+        "Product",
+        "ProductVariant"
+      ],
+      "objectTypes": [],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "MARKETED_UNDER_MARK": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "IngredientMaterial"
+      ],
+      "objectTypes": [
+        "Organization"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "MASKING_STATED": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Study"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "MATERIAL_CONNECTION_NOT_ADEQUATELY_DISCLOSED": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Organization",
+        "Person"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "MATERIAL_CONTAINS": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "IngredientMaterial"
+      ],
+      "objectTypes": [
+        "ChemicalSubstance",
+        "Constituent"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "MATERIAL_GRADE": {
+      "status": "registered",
+      "kind": "field",
+      "subjectTypes": [
+        "IngredientMaterial"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "MATERIAL_PROVIDED_BY": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "InterventionComponent"
+      ],
+      "objectTypes": [
+        "Organization"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "MAX_DAILY_SERVINGS": {
+      "status": "registered",
+      "kind": "field",
+      "subjectTypes": [
+        "LabelVersion"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueNumber"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": "LabelVersion.maxDailyServings"
+    },
+    "MEASURED_CONTENT_IN_PRODUCT": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "Product",
+        "ProductVariant"
+      ],
+      "objectTypes": [
+        "ChemicalSubstance"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "MEASURED_DELIVERY_FRACTION": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "InterventionComponent"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueNumber"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "MEASURES": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "OutcomeDefinition"
+      ],
+      "objectTypes": [
+        "Biomarker",
+        "Condition",
+        "Metric",
+        "Outcome"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "MEMBER_OF_CLASS": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "ChemicalSubstance"
+      ],
+      "objectTypes": [
+        "Constituent"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "MOIETY_EQUIVALENT_AMOUNT": {
+      "status": "registered",
+      "kind": "computation",
+      "subjectTypes": [
+        "InterventionComponent",
+        "LabelVersion",
+        "StudyArm"
+      ],
+      "objectTypes": [
+        "ChemicalSubstance"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "MOLECULAR_FORMULA": {
+      "status": "registered",
+      "kind": "field",
+      "subjectTypes": [
+        "ChemicalSubstance"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": "ChemicalSubstance.molecularFormula"
+    },
+    "MOLECULAR_WEIGHT": {
+      "status": "registered",
+      "kind": "field",
+      "subjectTypes": [
+        "ChemicalSubstance"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueNumber"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": "ChemicalSubstance.molecularWeight"
+    },
+    "NAMES_RESPONSIBLE_PARTY": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "LabelVersion"
+      ],
+      "objectTypes": [
+        "Organization"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "NO_CHANGE_IN": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "ChemicalSubstance",
+        "Intervention",
+        "Mechanism",
+        "MolecularEntity"
+      ],
+      "objectTypes": [
+        "Biomarker",
+        "ChemicalSubstance",
+        "Mechanism",
+        "MolecularEntity",
+        "Outcome"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "NOMINATES_DIRECTOR": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "Organization"
+      ],
+      "objectTypes": [
+        "Person"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "NUTRIENT_EQUIVALENT_AMOUNT": {
+      "status": "registered",
+      "kind": "computation",
+      "subjectTypes": [
+        "LabelVersion"
+      ],
+      "objectTypes": [
+        "Constituent"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "OFF_MARKET": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "LabelVersion",
+        "Product"
+      ],
+      "objectTypes": [],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "OFFERS_INTERVENTION": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "Offer",
+        "Organization",
+        "Product"
+      ],
+      "objectTypes": [
+        "Intervention"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "ON_FRONTIER": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "Event",
+        "Study"
+      ],
+      "objectTypes": [
+        "Frontier"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "OPERATIONALIZED_BY": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "Target"
+      ],
+      "objectTypes": [
+        "Biomarker",
+        "Condition",
+        "Metric",
+        "Outcome"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "ORGANIZATION_STATUS": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Organization"
+      ],
+      "objectTypes": [],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "OUTCOME_MEASURED_WITH": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "OutcomeDefinition"
+      ],
+      "objectTypes": [
+        "AlgorithmVersion",
+        "AssayVersion"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "OWNS_BRAND": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "Organization"
+      ],
+      "objectTypes": [
+        "Brand"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "PARENT_OF": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "Organization"
+      ],
+      "objectTypes": [
+        "Organization"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "PARTICIPATES_IN": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "ChemicalSubstance",
+        "MolecularEntity"
+      ],
+      "objectTypes": [
+        "Mechanism"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "PHYSICAL_FORM": {
+      "status": "registered",
+      "kind": "field",
+      "subjectTypes": [
+        "IngredientMaterial"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "PLANT_PART": {
+      "status": "registered",
+      "kind": "field",
+      "subjectTypes": [
+        "IngredientMaterial"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "PRICE_SERIES_METHOD_CHANGE": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "MerchantListing",
+        "Offer",
+        "Package",
+        "Product",
+        "ProductVariant"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "PROCESS_ALLERGEN_NOTE": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "IngredientMaterial"
+      ],
+      "objectTypes": [],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "PRODUCT_SAFETY_STATEMENT": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Product"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "PROSPECTIVE_REGISTRATION_FLAG": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Study"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueBoolean"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "PUBLICATION_DATE_STATED": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Publication"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "QUANTITY": {
+      "status": "registered",
+      "kind": "field",
+      "subjectTypes": [
+        "InterventionComponent"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueNumber"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": "InterventionComponent.quantity"
+    },
+    "RANKS_OPTION": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Product"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueNumber",
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "RATES_CLAIM": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Claim",
+        "RegulatoryRecord"
+      ],
+      "objectTypes": [
+        "RegulatoryRecord"
+      ],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "REALIZES_SUBSTANCE": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "IngredientMaterial"
+      ],
+      "objectTypes": [
+        "ChemicalSubstance"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "RECEIVES_VALUE_FROM": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "Person"
+      ],
+      "objectTypes": [
+        "Organization"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "RECOMMENDS_RETEST_INTERVAL": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "LabTest",
+        "Organization"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "RECOMMENDS_USE": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "ChemicalSubstance",
+        "Device",
+        "FoodItem",
+        "Organization",
+        "Product",
+        "Protocol"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "REGISTERED_RETROSPECTIVELY": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Study"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueBoolean"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "REGISTRY_ID_AS_PRINTED": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Publication",
+        "Source"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "REPORTS_CONCLUSION": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "ChemicalSubstance"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "REPORTS_DISPROPORTIONALITY_SIGNAL": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "ChemicalSubstance"
+      ],
+      "objectTypes": [
+        "Condition"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "REPORTS_DOSE_RANGE_STUDIED": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "ChemicalSubstance",
+        "Claim"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "REPORTS_ON": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "Publication"
+      ],
+      "objectTypes": [
+        "Study"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "REPORTS_REPORT_COUNT": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "ChemicalSubstance",
+        "Condition",
+        "Organization"
+      ],
+      "objectTypes": [
+        "Condition"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "REQUIRES_QUALIFIED_CLAIM_WORDING": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Claim"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "RETAINED_SAMPLE_TEST_RESULT": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Product"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "REVISES": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "Publication"
+      ],
+      "objectTypes": [
+        "Publication"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "SAMPLE_TESTED_POSITIVE_FOR": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "Lot",
+        "Product"
+      ],
+      "objectTypes": [
+        "Taxon"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "SETS_REFERENCE_RANGE": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Organization",
+        "ReferenceIntervalVersion"
+      ],
+      "objectTypes": [],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "SHARES_PARTICIPANTS_WITH": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "Study"
+      ],
+      "objectTypes": [
+        "Study"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "SOLD_THROUGH_CHANNEL": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "Organization",
+        "Product"
+      ],
+      "objectTypes": [
+        "Organization"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "SOURCED_FROM_COUNTRY": {
+      "status": "registered",
+      "kind": "field",
+      "subjectTypes": [
+        "IngredientMaterial"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "STATED_IN": {
+      "status": "registered",
+      "kind": "authorizing",
+      "subjectTypes": [
+        "OutcomeDefinition",
+        "StudyArm",
+        "StudyPopulation",
+        "StudyResult"
+      ],
+      "objectTypes": [
+        "Publication",
+        "RegistrationVersion"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "STATES_ATTRIBUTION_CAVEAT": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "IngredientMaterial"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "STATES_METHOD_CAVEAT": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Organization"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "STOPPED_EARLY_REASON": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Study"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "STOREFRONT_CATALOG_ITEM_COUNT": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Organization"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueNumber"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "SUCCEEDED_BY": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "MerchantListing",
+        "Organization",
+        "Package",
+        "Product"
+      ],
+      "objectTypes": [
+        "MerchantListing",
+        "Organization",
+        "Package",
+        "Product"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "SUPPLIES_MATERIAL": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "Organization"
+      ],
+      "objectTypes": [
+        "IngredientMaterial"
+      ],
+      "valueFields": [],
+      "qualifiers": [
+        "buyer",
+        "exclusivity"
+      ],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "TAKES": {
+      "status": "registered",
+      "kind": "relationship",
+      "subjectTypes": [
+        "Channel",
+        "Person"
+      ],
+      "objectTypes": [
+        "ChemicalSubstance"
+      ],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "TITLE_AS_DEPOSITED": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Publication"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "UNIT_DOSE_AMOUNT": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "InterventionComponent"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueNumber"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "USE_CONSTRAINED_IN": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "ChemicalSubstance",
+        "FoodCategory",
+        "FoodItem",
+        "IngredientMaterial",
+        "Product"
+      ],
+      "objectTypes": [
+        "Condition"
+      ],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [
+        "jurisdiction",
+        "population",
+        "route",
+        "section",
+        "window"
+      ],
+      "requiredQualifiers": [
+        "population"
+      ],
+      "field": null
+    },
+    "USED_COMPOSITION_DATABASE": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Study"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "USED_FOOD_CLASSIFICATION": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Study"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "WARNING_LETTERS_SENT": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "Organization"
+      ],
+      "objectTypes": [],
+      "valueFields": [],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    },
+    "WELL_TOLERATED_AT_DOSE": {
+      "status": "registered",
+      "kind": "literal",
+      "subjectTypes": [
+        "InterventionComponent"
+      ],
+      "objectTypes": [],
+      "valueFields": [
+        "valueString"
+      ],
+      "qualifiers": [],
+      "requiredQualifiers": [],
+      "field": null
+    }
+  },
+  "relationships": {
+    "ADMINISTERS": {
+      "class": "asserted",
+      "executorOwned": false,
+      "triples": [
+        "InterventionComponent|DietaryPattern",
+        "InterventionComponent|FoodItem",
+        "InterventionComponent|IngredientMaterial",
+        "InterventionComponent|Intervention",
+        "InterventionComponent|ProductVariant"
+      ],
+      "profiles": [
+        "AssertedRecordedProperties"
+      ]
+    },
+    "ASSERTED_BY": {
+      "class": "structural",
+      "executorOwned": true,
+      "triples": [
+        "Assertion|Agent",
+        "Assertion|AlgorithmVersion",
+        "Assertion|AssayVersion",
+        "Assertion|Award",
+        "Assertion|Biomarker",
+        "Assertion|Brand",
+        "Assertion|CertificationListing",
+        "Assertion|Channel",
+        "Assertion|ChemicalSubstance",
+        "Assertion|Claim",
+        "Assertion|Condition",
+        "Assertion|Constituent",
+        "Assertion|DecisionCriterion",
+        "Assertion|Device",
+        "Assertion|DietaryPattern",
+        "Assertion|Event",
+        "Assertion|FoodCategory",
+        "Assertion|FoodItem",
+        "Assertion|Frontier",
+        "Assertion|IngredientMaterial",
+        "Assertion|Intervention",
+        "Assertion|InterventionComponent",
+        "Assertion|LabTest",
+        "Assertion|LabelVersion",
+        "Assertion|LegalStatus",
+        "Assertion|Lot",
+        "Assertion|Mechanism",
+        "Assertion|MediaWork",
+        "Assertion|MerchantListing",
+        "Assertion|Metric",
+        "Assertion|MolecularEntity",
+        "Assertion|Offer",
+        "Assertion|Organization",
+        "Assertion|Outcome",
+        "Assertion|OutcomeDefinition",
+        "Assertion|Package",
+        "Assertion|Patent",
+        "Assertion|Person",
+        "Assertion|Product",
+        "Assertion|ProductVariant",
+        "Assertion|Protocol",
+        "Assertion|ProtocolEdition",
+        "Assertion|ProtocolStep",
+        "Assertion|Publication",
+        "Assertion|QualityResult",
+        "Assertion|ReferenceIntervalVersion",
+        "Assertion|RegistrationVersion",
+        "Assertion|RegulatoryRecord",
+        "Assertion|Source",
+        "Assertion|Study",
+        "Assertion|StudyArm",
+        "Assertion|StudyPopulation",
+        "Assertion|StudyResult",
+        "Assertion|Target",
+        "Assertion|Taxon",
+        "Assertion|UseConstraint"
+      ],
+      "profiles": []
+    },
+    "ASSESSES": {
+      "class": "structural",
+      "executorOwned": true,
+      "triples": [
+        "Activity|Agent",
+        "Activity|AlgorithmVersion",
+        "Activity|AssayVersion",
+        "Activity|Award",
+        "Activity|Biomarker",
+        "Activity|Brand",
+        "Activity|CertificationListing",
+        "Activity|Channel",
+        "Activity|ChemicalSubstance",
+        "Activity|Claim",
+        "Activity|Condition",
+        "Activity|Constituent",
+        "Activity|DecisionCriterion",
+        "Activity|Device",
+        "Activity|DietaryPattern",
+        "Activity|Event",
+        "Activity|FoodCategory",
+        "Activity|FoodItem",
+        "Activity|Frontier",
+        "Activity|IngredientMaterial",
+        "Activity|Intervention",
+        "Activity|InterventionComponent",
+        "Activity|LabTest",
+        "Activity|LabelVersion",
+        "Activity|LegalStatus",
+        "Activity|Lot",
+        "Activity|Mechanism",
+        "Activity|MediaWork",
+        "Activity|MerchantListing",
+        "Activity|Metric",
+        "Activity|MolecularEntity",
+        "Activity|Offer",
+        "Activity|Organization",
+        "Activity|Outcome",
+        "Activity|OutcomeDefinition",
+        "Activity|Package",
+        "Activity|Patent",
+        "Activity|Person",
+        "Activity|Product",
+        "Activity|ProductVariant",
+        "Activity|Protocol",
+        "Activity|ProtocolEdition",
+        "Activity|ProtocolStep",
+        "Activity|Publication",
+        "Activity|QualityResult",
+        "Activity|ReferenceIntervalVersion",
+        "Activity|RegistrationVersion",
+        "Activity|RegulatoryRecord",
+        "Activity|Source",
+        "Activity|Study",
+        "Activity|StudyArm",
+        "Activity|StudyPopulation",
+        "Activity|StudyResult",
+        "Activity|Target",
+        "Activity|Taxon",
+        "Activity|UseConstraint",
+        "Adjudication|Assertion",
+        "Assessment|Agent",
+        "Assessment|AlgorithmVersion",
+        "Assessment|AssayVersion",
+        "Assessment|Award",
+        "Assessment|Biomarker",
+        "Assessment|Brand",
+        "Assessment|CertificationListing",
+        "Assessment|Channel",
+        "Assessment|ChemicalSubstance",
+        "Assessment|Claim",
+        "Assessment|Condition",
+        "Assessment|Constituent",
+        "Assessment|DecisionCriterion",
+        "Assessment|Device",
+        "Assessment|DietaryPattern",
+        "Assessment|Event",
+        "Assessment|FoodCategory",
+        "Assessment|FoodItem",
+        "Assessment|Frontier",
+        "Assessment|IngredientMaterial",
+        "Assessment|Intervention",
+        "Assessment|InterventionComponent",
+        "Assessment|LabTest",
+        "Assessment|LabelVersion",
+        "Assessment|LegalStatus",
+        "Assessment|Lot",
+        "Assessment|Mechanism",
+        "Assessment|MediaWork",
+        "Assessment|MerchantListing",
+        "Assessment|Metric",
+        "Assessment|MolecularEntity",
+        "Assessment|Offer",
+        "Assessment|Organization",
+        "Assessment|Outcome",
+        "Assessment|OutcomeDefinition",
+        "Assessment|Package",
+        "Assessment|Patent",
+        "Assessment|Person",
+        "Assessment|Product",
+        "Assessment|ProductVariant",
+        "Assessment|Protocol",
+        "Assessment|ProtocolEdition",
+        "Assessment|ProtocolStep",
+        "Assessment|Publication",
+        "Assessment|QualityResult",
+        "Assessment|ReferenceIntervalVersion",
+        "Assessment|RegistrationVersion",
+        "Assessment|RegulatoryRecord",
+        "Assessment|Source",
+        "Assessment|Study",
+        "Assessment|StudyArm",
+        "Assessment|StudyPopulation",
+        "Assessment|StudyResult",
+        "Assessment|Target",
+        "Assessment|Taxon",
+        "Assessment|UseConstraint",
+        "ReportItem|Agent",
+        "ReportItem|AlgorithmVersion",
+        "ReportItem|AssayVersion",
+        "ReportItem|Award",
+        "ReportItem|Biomarker",
+        "ReportItem|Brand",
+        "ReportItem|CertificationListing",
+        "ReportItem|Channel",
+        "ReportItem|ChemicalSubstance",
+        "ReportItem|Claim",
+        "ReportItem|Condition",
+        "ReportItem|Constituent",
+        "ReportItem|DecisionCriterion",
+        "ReportItem|Device",
+        "ReportItem|DietaryPattern",
+        "ReportItem|Event",
+        "ReportItem|FoodCategory",
+        "ReportItem|FoodItem",
+        "ReportItem|Frontier",
+        "ReportItem|IngredientMaterial",
+        "ReportItem|Intervention",
+        "ReportItem|InterventionComponent",
+        "ReportItem|LabTest",
+        "ReportItem|LabelVersion",
+        "ReportItem|LegalStatus",
+        "ReportItem|Lot",
+        "ReportItem|Mechanism",
+        "ReportItem|MediaWork",
+        "ReportItem|MerchantListing",
+        "ReportItem|Metric",
+        "ReportItem|MolecularEntity",
+        "ReportItem|Offer",
+        "ReportItem|Organization",
+        "ReportItem|Outcome",
+        "ReportItem|OutcomeDefinition",
+        "ReportItem|Package",
+        "ReportItem|Patent",
+        "ReportItem|Person",
+        "ReportItem|Product",
+        "ReportItem|ProductVariant",
+        "ReportItem|Protocol",
+        "ReportItem|ProtocolEdition",
+        "ReportItem|ProtocolStep",
+        "ReportItem|Publication",
+        "ReportItem|QualityResult",
+        "ReportItem|ReferenceIntervalVersion",
+        "ReportItem|RegistrationVersion",
+        "ReportItem|RegulatoryRecord",
+        "ReportItem|Source",
+        "ReportItem|Study",
+        "ReportItem|StudyArm",
+        "ReportItem|StudyPopulation",
+        "ReportItem|StudyResult",
+        "ReportItem|Target",
+        "ReportItem|Taxon",
+        "ReportItem|UseConstraint",
+        "Report|Agent",
+        "Report|AlgorithmVersion",
+        "Report|AssayVersion",
+        "Report|Award",
+        "Report|Biomarker",
+        "Report|Brand",
+        "Report|CertificationListing",
+        "Report|Channel",
+        "Report|ChemicalSubstance",
+        "Report|Claim",
+        "Report|Condition",
+        "Report|Constituent",
+        "Report|DecisionCriterion",
+        "Report|Device",
+        "Report|DietaryPattern",
+        "Report|Event",
+        "Report|FoodCategory",
+        "Report|FoodItem",
+        "Report|Frontier",
+        "Report|IngredientMaterial",
+        "Report|Intervention",
+        "Report|InterventionComponent",
+        "Report|LabTest",
+        "Report|LabelVersion",
+        "Report|LegalStatus",
+        "Report|Lot",
+        "Report|Mechanism",
+        "Report|MediaWork",
+        "Report|MerchantListing",
+        "Report|Metric",
+        "Report|MolecularEntity",
+        "Report|Offer",
+        "Report|Organization",
+        "Report|Outcome",
+        "Report|OutcomeDefinition",
+        "Report|Package",
+        "Report|Patent",
+        "Report|Person",
+        "Report|Product",
+        "Report|ProductVariant",
+        "Report|Protocol",
+        "Report|ProtocolEdition",
+        "Report|ProtocolStep",
+        "Report|Publication",
+        "Report|QualityResult",
+        "Report|ReferenceIntervalVersion",
+        "Report|RegistrationVersion",
+        "Report|RegulatoryRecord",
+        "Report|Source",
+        "Report|Study",
+        "Report|StudyArm",
+        "Report|StudyPopulation",
+        "Report|StudyResult",
+        "Report|Target",
+        "Report|Taxon",
+        "Report|UseConstraint"
+      ],
+      "profiles": []
+    },
+    "BRANDED_AS": {
+      "class": "asserted",
+      "executorOwned": false,
+      "triples": [
+        "Product|Brand"
+      ],
+      "profiles": [
+        "AssertedEdgeProperties"
+      ]
+    },
+    "DECLARES_COMPONENT": {
+      "class": "asserted",
+      "executorOwned": false,
+      "triples": [
+        "LabelVersion|Constituent",
+        "LabelVersion|FoodItem",
+        "LabelVersion|IngredientMaterial"
+      ],
+      "profiles": [
+        "ComponentLineProperties"
+      ]
+    },
+    "DERIVED_FROM": {
+      "class": "structural",
+      "executorOwned": true,
+      "triples": [
+        "Assertion|Assertion",
+        "Assessment|Assertion",
+        "Assessment|Assessment",
+        "Association|Assertion",
+        "ReportItem|Assertion",
+        "ReportItem|Assessment",
+        "Report|Assertion",
+        "Report|Assessment"
+      ],
+      "profiles": []
+    },
+    "HAS_ACTIVE_MOIETY": {
+      "class": "asserted",
+      "executorOwned": false,
+      "triples": [
+        "ChemicalSubstance|ChemicalSubstance"
+      ],
+      "profiles": [
+        "AssertedRecordedProperties"
+      ]
+    },
+    "HAS_ARM": {
+      "class": "structural",
+      "executorOwned": false,
+      "triples": [
+        "Study|StudyArm"
+      ],
+      "profiles": [
+        "StructuralEdgeProperties"
+      ]
+    },
+    "HAS_COMPONENT": {
+      "class": "structural",
+      "executorOwned": false,
+      "triples": [
+        "StudyArm|InterventionComponent"
+      ],
+      "profiles": [
+        "StructuralEdgeProperties"
+      ]
+    },
+    "HAS_LABEL_VERSION": {
+      "class": "asserted",
+      "executorOwned": false,
+      "triples": [
+        "Package|LabelVersion"
+      ],
+      "profiles": [
+        "AssertedEdgeProperties"
+      ]
+    },
+    "HAS_OBJECT": {
+      "class": "structural",
+      "executorOwned": true,
+      "triples": [
+        "Assertion|Agent",
+        "Assertion|AlgorithmVersion",
+        "Assertion|AssayVersion",
+        "Assertion|Award",
+        "Assertion|Biomarker",
+        "Assertion|Brand",
+        "Assertion|CertificationListing",
+        "Assertion|Channel",
+        "Assertion|ChemicalSubstance",
+        "Assertion|Claim",
+        "Assertion|Condition",
+        "Assertion|Constituent",
+        "Assertion|DecisionCriterion",
+        "Assertion|Device",
+        "Assertion|DietaryPattern",
+        "Assertion|Event",
+        "Assertion|FoodCategory",
+        "Assertion|FoodItem",
+        "Assertion|Frontier",
+        "Assertion|IngredientMaterial",
+        "Assertion|Intervention",
+        "Assertion|InterventionComponent",
+        "Assertion|LabTest",
+        "Assertion|LabelVersion",
+        "Assertion|LegalStatus",
+        "Assertion|Lot",
+        "Assertion|Mechanism",
+        "Assertion|MediaWork",
+        "Assertion|MerchantListing",
+        "Assertion|Metric",
+        "Assertion|MolecularEntity",
+        "Assertion|Offer",
+        "Assertion|Organization",
+        "Assertion|Outcome",
+        "Assertion|OutcomeDefinition",
+        "Assertion|Package",
+        "Assertion|Patent",
+        "Assertion|Person",
+        "Assertion|Product",
+        "Assertion|ProductVariant",
+        "Assertion|Protocol",
+        "Assertion|ProtocolEdition",
+        "Assertion|ProtocolStep",
+        "Assertion|Publication",
+        "Assertion|QualityResult",
+        "Assertion|ReferenceIntervalVersion",
+        "Assertion|RegistrationVersion",
+        "Assertion|RegulatoryRecord",
+        "Assertion|Source",
+        "Assertion|Study",
+        "Assertion|StudyArm",
+        "Assertion|StudyPopulation",
+        "Assertion|StudyResult",
+        "Assertion|Target",
+        "Assertion|Taxon",
+        "Assertion|UseConstraint"
+      ],
+      "profiles": []
+    },
+    "HAS_OUTCOME": {
+      "class": "structural",
+      "executorOwned": false,
+      "triples": [
+        "Study|OutcomeDefinition"
+      ],
+      "profiles": [
+        "StructuralEdgeProperties"
+      ]
+    },
+    "HAS_PACKAGE": {
+      "class": "structural",
+      "executorOwned": false,
+      "triples": [
+        "ProductVariant|Package"
+      ],
+      "profiles": [
+        "StructuralEdgeProperties"
+      ]
+    },
+    "HAS_POPULATION": {
+      "class": "structural",
+      "executorOwned": false,
+      "triples": [
+        "Study|StudyPopulation"
+      ],
+      "profiles": [
+        "StructuralEdgeProperties"
+      ]
+    },
+    "HAS_STUDY_ROLE": {
+      "class": "asserted",
+      "executorOwned": false,
+      "triples": [
+        "Study|Award",
+        "Study|Organization",
+        "Study|Person"
+      ],
+      "profiles": [
+        "StudyRoleEdgeProperties"
+      ]
+    },
+    "HAS_SUBJECT": {
+      "class": "structural",
+      "executorOwned": true,
+      "triples": [
+        "Assertion|Agent",
+        "Assertion|AlgorithmVersion",
+        "Assertion|AssayVersion",
+        "Assertion|Award",
+        "Assertion|Biomarker",
+        "Assertion|Brand",
+        "Assertion|CertificationListing",
+        "Assertion|Channel",
+        "Assertion|ChemicalSubstance",
+        "Assertion|Claim",
+        "Assertion|Condition",
+        "Assertion|Constituent",
+        "Assertion|DecisionCriterion",
+        "Assertion|Device",
+        "Assertion|DietaryPattern",
+        "Assertion|Event",
+        "Assertion|FoodCategory",
+        "Assertion|FoodItem",
+        "Assertion|Frontier",
+        "Assertion|IngredientMaterial",
+        "Assertion|Intervention",
+        "Assertion|InterventionComponent",
+        "Assertion|LabTest",
+        "Assertion|LabelVersion",
+        "Assertion|LegalStatus",
+        "Assertion|Lot",
+        "Assertion|Mechanism",
+        "Assertion|MediaWork",
+        "Assertion|MerchantListing",
+        "Assertion|Metric",
+        "Assertion|MolecularEntity",
+        "Assertion|Offer",
+        "Assertion|Organization",
+        "Assertion|Outcome",
+        "Assertion|OutcomeDefinition",
+        "Assertion|Package",
+        "Assertion|Patent",
+        "Assertion|Person",
+        "Assertion|Product",
+        "Assertion|ProductVariant",
+        "Assertion|Protocol",
+        "Assertion|ProtocolEdition",
+        "Assertion|ProtocolStep",
+        "Assertion|Publication",
+        "Assertion|QualityResult",
+        "Assertion|ReferenceIntervalVersion",
+        "Assertion|RegistrationVersion",
+        "Assertion|RegulatoryRecord",
+        "Assertion|Source",
+        "Assertion|Study",
+        "Assertion|StudyArm",
+        "Assertion|StudyPopulation",
+        "Assertion|StudyResult",
+        "Assertion|Target",
+        "Assertion|Taxon",
+        "Assertion|UseConstraint"
+      ],
+      "profiles": []
+    },
+    "HAS_VARIANT": {
+      "class": "structural",
+      "executorOwned": false,
+      "triples": [
+        "Product|ProductVariant"
+      ],
+      "profiles": [
+        "StructuralEdgeProperties"
+      ]
+    },
+    "HOLDS_ROLE": {
+      "class": "asserted",
+      "executorOwned": false,
+      "triples": [
+        "Person|Organization"
+      ],
+      "profiles": [
+        "RoleEdgeProperties"
+      ]
+    },
+    "HOLDS_STAKE": {
+      "class": "asserted",
+      "executorOwned": false,
+      "triples": [
+        "Organization|Organization",
+        "Person|Organization"
+      ],
+      "profiles": [
+        "StakeEdgeProperties"
+      ]
+    },
+    "MATERIAL_CONTAINS": {
+      "class": "asserted",
+      "executorOwned": false,
+      "triples": [
+        "IngredientMaterial|ChemicalSubstance",
+        "IngredientMaterial|Constituent"
+      ],
+      "profiles": [
+        "ContentEdgeProperties"
+      ]
+    },
+    "NAMES_RESPONSIBLE_PARTY": {
+      "class": "asserted",
+      "executorOwned": false,
+      "triples": [
+        "LabelVersion|Organization"
+      ],
+      "profiles": [
+        "AssertedRecordedProperties"
+      ]
+    },
+    "OCCURRENCE_OF": {
+      "class": "structural",
+      "executorOwned": true,
+      "triples": [
+        "Assertion|Claim"
+      ],
+      "profiles": []
+    },
+    "OWNS_BRAND": {
+      "class": "asserted",
+      "executorOwned": false,
+      "triples": [
+        "Organization|Brand"
+      ],
+      "profiles": [
+        "AssertedEdgeProperties"
+      ]
+    },
+    "PARENT_OF": {
+      "class": "asserted",
+      "executorOwned": false,
+      "triples": [
+        "Organization|Organization"
+      ],
+      "profiles": [
+        "ControlEdgeProperties"
+      ]
+    },
+    "REALIZES_SUBSTANCE": {
+      "class": "asserted",
+      "executorOwned": false,
+      "triples": [
+        "IngredientMaterial|ChemicalSubstance"
+      ],
+      "profiles": [
+        "AssertedRecordedProperties"
+      ]
+    },
+    "RECEIVES_VALUE_FROM": {
+      "class": "asserted",
+      "executorOwned": false,
+      "triples": [
+        "Person|Organization"
+      ],
+      "profiles": [
+        "ValueEdgeProperties"
+      ]
+    },
+    "REPORTS_ON": {
+      "class": "asserted",
+      "executorOwned": false,
+      "triples": [
+        "Publication|Study"
+      ],
+      "profiles": [
+        "AssertedRecordedProperties"
+      ]
+    },
+    "RESULT_FOR": {
+      "class": "structural",
+      "executorOwned": false,
+      "triples": [
+        "StudyResult|OutcomeDefinition"
+      ],
+      "profiles": [
+        "StructuralEdgeProperties"
+      ]
+    },
+    "RESULT_FOR_ARM": {
+      "class": "structural",
+      "executorOwned": false,
+      "triples": [
+        "StudyResult|StudyArm"
+      ],
+      "profiles": [
+        "StructuralEdgeProperties"
+      ]
+    },
+    "REVISES": {
+      "class": "asserted",
+      "executorOwned": false,
+      "triples": [
+        "Publication|Publication"
+      ],
+      "profiles": [
+        "RevisionEdgeProperties"
+      ]
+    },
+    "STATED_IN": {
+      "class": "asserted",
+      "executorOwned": false,
+      "triples": [
+        "OutcomeDefinition|Publication",
+        "OutcomeDefinition|RegistrationVersion",
+        "StudyArm|Publication",
+        "StudyArm|RegistrationVersion",
+        "StudyPopulation|Publication",
+        "StudyPopulation|RegistrationVersion",
+        "StudyResult|Publication",
+        "StudyResult|RegistrationVersion"
+      ],
+      "profiles": [
+        "AssertedRecordedProperties"
+      ]
+    },
+    "WAS_GENERATED_BY": {
+      "class": "structural",
+      "executorOwned": true,
+      "triples": [
+        "Activity|Activity",
+        "Adjudication|Activity",
+        "Agent|Activity",
+        "AlgorithmVersion|Activity",
+        "AssayVersion|Activity",
+        "Assertion|Activity",
+        "Assessment|Activity",
+        "Association|Activity",
+        "Award|Activity",
+        "Biomarker|Activity",
+        "Brand|Activity",
+        "CaptureAttempt|Activity",
+        "CertificationListing|Activity",
+        "Channel|Activity",
+        "ChemicalSubstance|Activity",
+        "Chunk|Activity",
+        "Claim|Activity",
+        "Condition|Activity",
+        "Constituent|Activity",
+        "DecisionCriterion|Activity",
+        "Device|Activity",
+        "DietaryPattern|Activity",
+        "Event|Activity",
+        "FoodCategory|Activity",
+        "FoodItem|Activity",
+        "Frontier|Activity",
+        "Identifier|Activity",
+        "IngredientMaterial|Activity",
+        "InterventionComponent|Activity",
+        "Intervention|Activity",
+        "LabTest|Activity",
+        "LabelVersion|Activity",
+        "LegalStatus|Activity",
+        "Lot|Activity",
+        "MechanismEvidenceContext|Activity",
+        "Mechanism|Activity",
+        "MediaWork|Activity",
+        "MerchantListing|Activity",
+        "Metric|Activity",
+        "MolecularEntity|Activity",
+        "Offer|Activity",
+        "Organization|Activity",
+        "OutcomeDefinition|Activity",
+        "Outcome|Activity",
+        "Package|Activity",
+        "Patent|Activity",
+        "Person|Activity",
+        "ProductVariant|Activity",
+        "Product|Activity",
+        "ProtocolEdition|Activity",
+        "ProtocolStep|Activity",
+        "Protocol|Activity",
+        "Publication|Activity",
+        "QualityResult|Activity",
+        "ReferenceIntervalVersion|Activity",
+        "RegistrationVersion|Activity",
+        "RegulatoryRecord|Activity",
+        "ReportItem|Activity",
+        "Report|Activity",
+        "SourceLocator|Activity",
+        "SourceSnapshot|Activity",
+        "Source|Activity",
+        "StudyArm|Activity",
+        "StudyPopulation|Activity",
+        "StudyResult|Activity",
+        "Study|Activity",
+        "Target|Activity",
+        "Taxon|Activity",
+        "UseConstraint|Activity"
+      ],
+      "profiles": []
+    },
+    "WAS_INFORMED_BY": {
+      "class": "structural",
+      "executorOwned": true,
+      "triples": [
+        "Activity|Activity"
+      ],
+      "profiles": []
+    }
+  }
+}

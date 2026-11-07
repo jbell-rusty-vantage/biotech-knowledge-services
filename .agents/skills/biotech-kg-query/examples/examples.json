@@ -1,0 +1,174 @@
+{
+  "format": "bks-skill-examples.v1",
+  "skill": "biotech-kg-query",
+  "note": "Executable examples. Placeholders are filled from the fixture graph by the test runners: {{uid.<ref>}} subject uids, {{mint.<proposalId>.<kind>}} minted record uids, {{loc.<ref>}} locator uids, {{digest.<templateId>}} catalog statement digests, {{release}} the pinned schemaReleaseDigest. edition 'any' runs in packages/kg-ops/src/read/read.integration.test.ts (Community, scope internal, typed + templates); 'enterprise' runs in read-enterprise.integration.test.ts (reader principals with database roles, governed ad hoc Cypher).",
+  "examples": [
+    {
+      "id": "resolve-by-uid-with-identifier-chain",
+      "kind": "positive",
+      "route": "typed",
+      "edition": "any",
+      "artifact": { "schemaVersion": "biotech-knowledge-read-intent.v2", "intentId": "ex-resolve", "pins": { "schemaReleaseDigest": "{{release}}" }, "purpose": "Resolve the substance and list its identifiers", "bindingRef": "internal", "operations": [{ "opId": "r", "op": "resolve", "mentions": [{ "mentionId": "nr", "uid": "{{uid.nr}}" }, { "mentionId": "org", "nodeType": "Organization", "name": "Synthetic Test Co {{stamp}}" }] }] },
+      "expect": [
+        { "path": "status", "equals": "ok" },
+        { "path": "parts.0.rows.0.resolution", "equals": "unique" },
+        { "path": "parts.0.rows.0.identifiers", "contains": "UNII" },
+        { "path": "parts.0.rows.1.resolution", "equals": "candidate" }
+      ]
+    },
+    {
+      "id": "claim-provenance-two-asserters-disagree",
+      "kind": "positive",
+      "route": "typed",
+      "edition": "any",
+      "artifact": { "schemaVersion": "biotech-knowledge-read-intent.v2", "intentId": "ex-claims", "pins": { "schemaReleaseDigest": "{{release}}" }, "purpose": "Who says the substance activates the protein, on which spans, adjudicated how", "bindingRef": "internal", "operations": [{ "opId": "a", "op": "assertion", "about": { "uid": "{{uid.nr}}", "role": "SUBJECT", "predicate": "ACTIVATES" } }] },
+      "expect": [
+        { "path": "status", "equals": "ok" },
+        { "path": "parts.0.rowCount", "gte": 3 },
+        { "path": "parts.0.rows", "contains": "NEGATIVE" },
+        { "path": "parts.0.rows", "contains": "DIRECTLY_SUPPORTED" },
+        { "path": "parts.0.annotations.rule", "contains": "never truth" }
+      ]
+    },
+    {
+      "id": "label-version-history",
+      "kind": "positive",
+      "route": "typed",
+      "edition": "any",
+      "artifact": { "schemaVersion": "biotech-knowledge-read-intent.v2", "intentId": "ex-history", "pins": { "schemaReleaseDigest": "{{release}}" }, "purpose": "Label versions of the package, open and closed", "bindingRef": "internal", "operations": [{ "opId": "h", "op": "history", "uid": "{{uid.package}}", "relationshipType": "HAS_LABEL_VERSION" }] },
+      "expect": [
+        { "path": "parts.0.rows.0.recordedState", "equals": "CLOSED" },
+        { "path": "parts.0.rows.0.assertion.status", "equals": "SUPERSEDED" },
+        { "path": "parts.0.rows.1.recordedState", "equals": "OPEN" },
+        { "path": "parts.0.rows.1.target.uid", "equals": "{{uid.lv2}}" }
+      ]
+    },
+    {
+      "id": "report-trace",
+      "kind": "positive",
+      "route": "typed",
+      "edition": "any",
+      "artifact": { "schemaVersion": "biotech-knowledge-read-intent.v2", "intentId": "ex-report", "pins": { "schemaReleaseDigest": "{{release}}" }, "purpose": "What the evidence report rests on", "bindingRef": "internal", "operations": [{ "opId": "r", "op": "report", "reportUid": "{{mint.r-report.report}}" }] },
+      "expect": [
+        { "path": "parts.0.rows.0.report.verdict", "equals": "NOT_SUPPORTED" },
+        { "path": "parts.0.rows.0.citesAssertions", "contains": "{{mint.p-claim-occ.assertion}}" },
+        { "path": "parts.0.rows.0.sentenceTrace.state", "oneOf": ["NO_LEDGER", "LEDGER_IN_REPORT_CUSTODY"] }
+      ]
+    },
+    {
+      "id": "evidence-states",
+      "kind": "positive",
+      "route": "typed",
+      "edition": "any",
+      "artifact": { "schemaVersion": "biotech-knowledge-read-intent.v2", "intentId": "ex-evidence", "pins": { "schemaReleaseDigest": "{{release}}" }, "purpose": "Spans the claim occurrence cites and whether their captures are current", "bindingRef": "internal", "operations": [{ "opId": "e", "op": "evidence", "uid": "{{mint.p-claim-occ.assertion}}" }] },
+      "expect": [
+        { "path": "status", "equals": "ok" },
+        { "path": "parts.0.rows.0.evidenceState", "oneOf": ["CURRENT", "HISTORICAL", "REVISED", "UNKNOWN"] },
+        { "path": "parts.0.rows.0.edge.role", "equals": "SUPPORTS" }
+      ]
+    },
+    {
+      "id": "truncated-is-a-prefix",
+      "kind": "negative",
+      "route": "typed",
+      "edition": "any",
+      "artifact": { "schemaVersion": "biotech-knowledge-read-intent.v2", "intentId": "ex-trunc", "pins": { "schemaReleaseDigest": "{{release}}" }, "purpose": "List assertions with a small page", "bindingRef": "internal", "operations": [{ "opId": "l", "op": "list", "nodeType": "Assertion", "limit": 2 }] },
+      "expect": [
+        { "path": "status", "equals": "truncated" },
+        { "path": "parts.0.reasons.0.code", "equals": "ROW_CAP" },
+        { "path": "parts.0.rowCount", "equals": 2 }
+      ]
+    },
+    {
+      "id": "template-provenance-trace",
+      "kind": "positive",
+      "route": "cypher",
+      "edition": "any",
+      "artifact": { "schemaVersion": "biotech-cypher-read-intent.v1", "intentId": "ex-p01b", "pins": { "schemaReleaseDigest": "{{release}}" }, "purpose": "P-01b provenance trace of one assertion", "bindingRef": "internal", "template": { "id": "QP/P-01b", "statementDigest": "{{digest.QP/P-01b}}" }, "parameters": { "assertionUid": "{{mint.p-claim-occ.assertion}}" } },
+      "expect": [
+        { "path": "status", "equals": "ok" },
+        { "path": "parts.0.rows.0.asserterUid", "equals": "{{uid.org}}" },
+        { "path": "parts.0.columns.0", "equals": "a.uid" }
+      ]
+    },
+    {
+      "id": "unknown-release-pin-is-stale",
+      "kind": "negative",
+      "route": "typed",
+      "edition": "any",
+      "artifact": { "schemaVersion": "biotech-knowledge-read-intent.v2", "intentId": "ex-stale", "pins": { "schemaReleaseDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000" }, "purpose": "A wrong pin", "bindingRef": "internal", "operations": [{ "opId": "c", "op": "card", "uid": "{{uid.package}}" }] },
+      "expect": [
+        { "path": "status", "equals": "stale" },
+        { "path": "reasons.0.code", "equals": "RELEASE_MISMATCH" }
+      ]
+    },
+    {
+      "id": "artifact-accepted",
+      "kind": "positive",
+      "route": "cypher",
+      "edition": "enterprise",
+      "artifact": { "schemaVersion": "biotech-cypher-read-intent.v1", "intentId": "ex-lv", "pins": { "schemaReleaseDigest": "{{release}}" }, "purpose": "Label versions of a package", "bindingRef": "ee-internal", "statement": "MATCH (p:Package {uid: $uid})-[:HAS_LABEL_VERSION]->(v:LabelVersion) RETURN v.uid AS uid ORDER BY uid LIMIT $limit", "parameters": { "uid": "{{uid.package}}", "limit": 25 }, "parameterSchema": { "uid": { "type": "string", "pattern": "^hu:" }, "limit": { "type": "integer" } }, "resultSchema": { "columns": [{ "name": "uid" }] }, "ordering": "statement", "limits": { "rowCap": 25, "byteCap": 262144, "timeoutMs": 5000 } },
+      "expect": [
+        { "path": "status", "equals": "ok" },
+        { "path": "parts.0.rowCount", "equals": 2 }
+      ]
+    },
+    {
+      "id": "artifact-refused-write",
+      "kind": "negative",
+      "route": "cypher",
+      "edition": "enterprise",
+      "artifact": { "schemaVersion": "biotech-cypher-read-intent.v1", "intentId": "ex-write", "pins": { "schemaReleaseDigest": "{{release}}" }, "purpose": "A write disguised as a read", "bindingRef": "ee-internal", "statement": "MATCH (o:Organization {uid: $u}) SET o.name = 'x' RETURN o.uid AS uid", "parameters": { "u": "{{uid.org}}" }, "parameterSchema": { "u": { "type": "string" } } },
+      "expect": [
+        { "path": "status", "equals": "forbidden" },
+        { "path": "parts.0.reasons", "contains": "CLAUSE_FORBIDDEN" }
+      ]
+    },
+    {
+      "id": "artifact-refused-procedure",
+      "kind": "negative",
+      "route": "cypher",
+      "edition": "enterprise",
+      "artifact": { "schemaVersion": "biotech-cypher-read-intent.v1", "intentId": "ex-proc", "pins": { "schemaReleaseDigest": "{{release}}" }, "purpose": "A network procedure", "bindingRef": "ee-internal", "statement": "CALL apoc.load.json($url) YIELD value RETURN value", "parameters": { "url": "https://example.invalid/x" }, "parameterSchema": { "url": { "type": "string" } } },
+      "expect": [
+        { "path": "status", "equals": "forbidden" },
+        { "path": "parts.0.reasons", "contains": "PROCEDURE_FORBIDDEN" }
+      ]
+    },
+    {
+      "id": "artifact-refused-unlabelled",
+      "kind": "negative",
+      "route": "cypher",
+      "edition": "enterprise",
+      "artifact": { "schemaVersion": "biotech-cypher-read-intent.v1", "intentId": "ex-unlabelled", "pins": { "schemaReleaseDigest": "{{release}}" }, "purpose": "An unlabelled scan", "bindingRef": "ee-internal", "statement": "MATCH (n) WHERE n.uid = $u RETURN n.name AS name", "parameters": { "u": "{{uid.org}}" }, "parameterSchema": { "u": { "type": "string" } } },
+      "expect": [
+        { "path": "status", "equals": "forbidden" },
+        { "path": "parts.0.reasons", "contains": "LABEL_FORBIDDEN" }
+      ]
+    },
+    {
+      "id": "explain-before-running",
+      "kind": "positive",
+      "route": "explain",
+      "edition": "enterprise",
+      "artifact": { "schemaVersion": "biotech-cypher-read-intent.v1", "intentId": "ex-explain", "pins": { "schemaReleaseDigest": "{{release}}" }, "purpose": "Plan check", "bindingRef": "ee-internal", "statement": "MATCH (o:Organization {uid: $u})<-[:ASSERTED_BY]-(a:Assertion) RETURN a.predicate AS p, count(*) AS n ORDER BY n DESC", "parameters": { "u": "{{uid.org}}" }, "parameterSchema": { "u": { "type": "string" } }, "ordering": "statement" },
+      "expect": [
+        { "path": "accepted", "equals": true },
+        { "path": "policy.facts.labels", "contains": "Organization" }
+      ]
+    },
+    {
+      "id": "advanced-maker-claims-with-denials",
+      "kind": "positive",
+      "route": "cypher",
+      "edition": "enterprise",
+      "artifact": { "schemaVersion": "biotech-cypher-read-intent.v1", "intentId": "ex-advanced", "pins": { "schemaReleaseDigest": "{{release}}" }, "purpose": "Claims a maker states, with how many other asserters deny them", "bindingRef": "ee-internal", "statement": "MATCH (o:Organization {uid: $org})<-[:ASSERTED_BY]-(a:Assertion {assertionKind: 'CLAIM'})-[:OCCURRENCE_OF]->(c:Claim) WHERE a.recordedTo IS NULL RETURN c.uid AS claim, a.polarity AS stated, COUNT { (c)<-[:OCCURRENCE_OF]-(x:Assertion) WHERE x.polarity = 'NEGATIVE' AND x.recordedTo IS NULL } AS denials ORDER BY claim", "parameters": { "org": "{{uid.org}}" }, "parameterSchema": { "org": { "type": "string", "pattern": "^hu:" } }, "resultSchema": { "columns": [{ "name": "claim" }, { "name": "stated" }, { "name": "denials" }] }, "ordering": "statement", "consistency": { "mode": "stable_revision" } },
+      "expect": [
+        { "path": "status", "equals": "ok" },
+        { "path": "parts.0.rows.0.claim", "equals": "{{uid.claim}}" },
+        { "path": "parts.0.rows.0.denials", "equals": 1 },
+        { "path": "consistency.snapshotClaim", "equals": true }
+      ]
+    }
+  ]
+}

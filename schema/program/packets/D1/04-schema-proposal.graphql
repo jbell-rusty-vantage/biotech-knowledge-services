@@ -1,0 +1,401 @@
+# ---- fragment D1 ----
+# Module D1 — compounds and ingredients. MODEL stage (Wave 2), A2, 2026-10-08; CHECK stage 2026-10-08 (kernel sha256 790e7244);
+# ADVERSARIAL-REVIEW stage 2026-10-08 (NUTRIENT_EXPRESSED_AS predicate-only; ContentEdgeProperties cut to the four
+# qualifiers Q-D1-11 filters on; ContentBasis removed; QuantityComparator GE/LE renamed GTE/LTE; MassBasis kept as the one
+# shared mass-basis vocabulary of D1, D3 and D6 — see 09-reasoning.md "Adversarial review changes").
+# Follows the kernel pattern published by A1 (packets/K/09-reasoning.md "Kernel pattern for subject, object, identifier
+# and mention edges"; template packets/K/domain-template.graphql). Kernel types are referenced, never re-declared.
+# Every node type: implements Entity & Subjectable, lists the 7 Entity fields verbatim,
+#   @node(labels: [<Primary>, "Entity"]) @query(aggregate: false) @mutation(operations: []).
+# Every @relationship: aggregate: false, nestedOperations declared, @filterable(byValue: true, byAggregate: false),
+#   docstring "class: …; cardinality: …; questions: …".
+# Subject/object of assertions, identifiers (UNII, INCHIKEY, PUBCHEM_CID, CAS_RN, CHEBI, NCBI taxon, deposits), mentions,
+# assessments (EQUIVALENCE, RESOLUTION, APPLICABILITY) and lineage are kernel edges against Subjectable/Entity: nothing
+# is declared for them here.
+# Declared amounts on labels (D6), administered doses (D3) and food composition (D12) are edges the OTHER module declares
+# into IngredientMaterial / ChemicalSubstance / Constituent (10-seams.yaml). Moiety-equivalent, nutrient-equivalent and
+# per-maximum-daily-dose amounts are CALCULATED kernel Assertions (derivationRule + DERIVED_FROM inputs) written by a
+# PROJECTION Activity; they are never edges or properties here.
+# Nothing in this module encodes good/bad/safe (00-DIRECTIVE 3.2): harm is a D5 Assessment/Assertion about these nodes.
+# Edge-property types: the episode edge PARENT_TAXON uses AssertedEdgeProperties; recorded-only asserted edges
+# (HAS_ACTIVE_MOIETY, COUNTS_TOWARD_NUTRIENT, REALIZES_SUBSTANCE, DERIVED_FROM_TAXON) use the kernel
+# AssertedRecordedProperties (kernel M10, 00-DIRECTIVE rule 9); MATERIAL_CONTAINS uses the D1-local superset
+# ContentEdgeProperties (kernel M11: base fields verbatim first, then only the qualifiers a question filters on).
+# Range bounds, content basis (w/w, v/v) and mass basis of a content statement live in the authorizing Assertion's
+# qualifiers (no question filters on them).
+
+# =====================================================================================================
+# Edge-property type (one, D1-local; superset of kernel AssertedEdgeProperties per kernel M11; OQ-D1-01 resolved)
+# =====================================================================================================
+
+"""
+Asserted, bitemporal episode of MATERIAL_CONTAINS: the eleven AssertedEdgeProperties fields verbatim (executor-set,
+copied from the one authorizing Assertion; half-open valid interval; nothing deleted) plus the four qualifiers Q-D1-11
+filters on ("preparations of taxon T standardized to at least X % of marker M": statementKind = STANDARDIZATION_CLAIM,
+comparator in GTE/GT/EQ/APPROX, quantity >= X, unitCode = '%'). The same number is the Assertion's valueNumber/unitCode
+(copied by the executor). QUALITATIVE_PROVIDES statements carry no quantity (non-inference rule: "provides" never implies
+an amount); a BETWEEN statement keeps quantity null and its bounds in the Assertion qualifier "range:<low>-<high>";
+content basis (w/w, v/v) and mass basis are Assertion qualifiers ("contentBasis:MASS_FRACTION_W_W"). D12
+FoodContentProperties uses the same statementKind / quantity / unitCode names.
+"""
+type ContentEdgeProperties @relationshipProperties {
+  relationshipUid: String!
+  assertionUid: String!
+  validFrom: DateTime
+  validTo: DateTime
+  validFromPrecision: TimePrecision
+  validToPrecision: TimePrecision
+  validFromBasis: ValidTimeBasis!
+  validToBasis: ValidTimeBasis!
+  recordedFrom: DateTime!
+  recordedTo: DateTime
+  lastWriterRunId: String
+  "Filter: Q-D1-11 (STANDARDIZATION_CLAIM), CQ-ID-03 / Q-D1-13 (declared vs measured vs qualitative)."
+  statementKind: ContentStatementKind!
+  "Point value for EQ, APPROX, GTE, GT, LTE, LT; null for BETWEEN and QUALITATIVE_PROVIDES (filter: Q-D1-11 quantity >= X)."
+  quantity: Float
+  "Filter: Q-D1-11 (a minimum or point claim satisfies 'at least X'; LT/LTE limits never do)."
+  comparator: QuantityComparator
+  "UCUM unit ('%', 'mg/g', '{CFU}/g'); null only for QUALITATIVE_PROVIDES (filter: Q-D1-11 unitCode = '%')."
+  unitCode: String
+}
+
+# =====================================================================================================
+# Enums (controlled vocabularies owned by D1; MassBasis is consumed by D3 and D6, ContentStatementKind by D12)
+# =====================================================================================================
+
+"FDA GSRS substance class of the defining record (structurally diverse covers plant parts and extracts GSRS registers, e.g. WITHANIA SOMNIFERA ROOT)."
+enum SubstanceClass {
+  CHEMICAL
+  PROTEIN
+  NUCLEIC_ACID
+  POLYMER
+  STRUCTURALLY_DIVERSE
+  MIXTURE
+  CONCEPT
+  OTHER
+}
+
+"What kind of actual material an IngredientMaterial is (absorbs the pinned Branded/Botanical/Microbial/Mixture subtypes; branded = brandName set)."
+enum MaterialKind {
+  CHEMICALLY_DEFINED
+  BOTANICAL_PREPARATION
+  MICROBIAL_PREPARATION
+  MATERIAL_MIXTURE
+  PROTEIN_OR_ENZYME
+  UNRESOLVED
+  OTHER
+}
+
+"Physical (solid-state or particle) form the structure authority does not register as a separate substance (absorbs the pinned ChemicalForm node)."
+enum PhysicalFormKind {
+  CRYSTAL_FORM
+  AMORPHOUS_FORM
+  PARTICLE_SIZE_GRADE
+  OTHER_PHYSICAL_FORM
+}
+
+"Grade under which a material is sold (10-K: food-grade vs pharmaceutical-grade Niagen)."
+enum MaterialGrade {
+  FOOD_GRADE
+  PHARMACEUTICAL_GRADE
+  COMPENDIAL
+  TECHNICAL
+  UNSPECIFIED
+}
+
+"Plant or fungal part a botanical preparation is made from (21 CFR 101.36 requires it; TGA ashwagandha leaf vs root)."
+enum PlantPart {
+  ROOT
+  RHIZOME
+  LEAF
+  AERIAL_PARTS
+  FLOWER
+  FRUIT
+  SEED
+  BARK
+  STEM
+  WHOLE_PLANT
+  RESIN_OR_EXUDATE
+  FRUITING_BODY
+  MYCELIUM
+  OTHER_PART
+}
+
+"Preparation type of a botanical material (Ph. Eur. / EMA herbal preparation categories; LNHPD extract_type_desc)."
+enum BotanicalPreparationType {
+  POWDERED_HERBAL_SUBSTANCE
+  DRY_EXTRACT
+  SOFT_EXTRACT
+  LIQUID_EXTRACT
+  TINCTURE
+  ESSENTIAL_OIL
+  FATTY_OIL
+  EXPRESSED_JUICE
+  OTHER_PREPARATION
+}
+
+"Viability of a microbial preparation as stated."
+enum ViabilityState {
+  VIABLE
+  VIABLE_SPORES
+  INACTIVATED
+  CELL_FRACTION_OR_LYSATE
+}
+
+"Kind of Constituent (absorbs the pinned Nutrient node as NUTRIENT)."
+enum ConstituentKind {
+  NUTRIENT
+  CHEMICAL_CLASS
+  ANALYTICAL_MEASURAND
+  NON_SPECIFIC_FRACTION
+}
+
+"Nutrient family (NUTRIENT constituents only)."
+enum NutrientKind {
+  VITAMIN
+  MINERAL
+  MACRONUTRIENT
+  FATTY_ACID
+  AMINO_ACID
+  OTHER_NUTRIENT
+}
+
+"Taxonomic rank (NCBI Taxonomy treats a strain as rank 'strain', e.g. taxid 568703 under species 47715)."
+enum TaxonRank {
+  FAMILY
+  GENUS
+  SPECIES
+  SUBSPECIES
+  VARIETY
+  FORMA
+  CULTIVAR
+  STRAIN
+  OTHER_RANK
+}
+
+"Coarse organism group of a Taxon (filters botanical vs microbial vs animal-source materials)."
+enum OrganismGroup {
+  PLANT
+  FUNGUS
+  ALGA
+  BACTERIUM
+  ANIMAL
+  OTHER_ORGANISM
+}
+
+"Comparator of a stated quantity. Spelling aligned with D5 ThresholdComparator (GTE/LTE; adversarial review). BETWEEN keeps quantity null and the bounds in the Assertion qualifier range:<low>-<high>."
+enum QuantityComparator {
+  EQ
+  APPROX
+  GTE
+  GT
+  LTE
+  LT
+  BETWEEN
+}
+
+"What kind of content statement a MATERIAL_CONTAINS episode records (declared vs measured vs calculated stay distinct)."
+enum ContentStatementKind {
+  STANDARDIZATION_CLAIM
+  DEFINITIONAL_COMPOSITION
+  TYPICAL_COMPOSITION_REPORTED
+  MEASURED_IN_SAMPLE
+  QUALITATIVE_PROVIDES
+  CALCULATED
+}
+
+"""
+Mass basis of a stated mass — the one shared vocabulary (owner D1; consumed by D3 InterventionComponent.massBasis and D6
+ComponentLineProperties.massBasis, adversarial-review stage): the listed salt/ester/hydrate form as named, its active
+moiety, a nutrient equivalent (e.g. 'as pyridoxine'), the material as is, or not stated. Conversions between bases are
+CALCULATED Assertions, never a re-declaration. No D1 field uses it since the review (content mass basis is a qualifier).
+"""
+enum MassBasis {
+  SALT_FORM
+  ACTIVE_MOIETY
+  NUTRIENT_EQUIVALENT
+  MATERIAL_AS_IS
+  UNSPECIFIED
+}
+
+# =====================================================================================================
+# Node types (4)
+# =====================================================================================================
+
+"""
+Purpose: a chemical substance at the granularity of its FDA GSRS substance record — salts, esters, hydrates and the
+free moiety are DIFFERENT substances (NR chloride UNII 8XM2XT8VWI vs NR 0I8H2M0L7N; pyridoxine HCl vs pyridoxine vs
+P5P), and GSRS "structurally diverse" records (WITHANIA SOMNIFERA ROOT, V038D626IF) are substances too. It is the join
+point across labels (D6), trials (D3), foods (D12), analytes (D4), mechanisms (D2) and safety (D5); the salt→moiety and
+form→nutrient edges below are what make "every form that converts to M" one traversal.
+Identity rule: UNII when GSRS registers one; else InChIKey (structure-defined) ; else (normalized preferred name,
+substanceClass) as a provisional record. Identifiers (UNII, INCHIKEY, PUBCHEM_CID, CAS_RN, CHEBI, DRUGBANK, RXCUI,
+MESH, WIKIDATA) attach through the kernel HAS_IDENTIFIER, never as fields. A PubChem name→CID hit is never accepted
+without a salt-vs-moiety check (the "Niagen" → CID 439924 trap).
+uid token: `substance` (hu:substance:<opaque>).
+Questions: CQ-PF-01, Q-D1-01, Q-D1-02, Q-D1-03, Q-D1-04, Q-D1-05, CQ-ID-03, CQ-ID-04, Q-D1-06, CQ-ST-02, Q-D1-08,
+Q-D1-10, Q-D1-18, Q-D1-19, Q-D1-20, Q-D1-22, Q-D1-24, Q-D1-26, Q-D1-28.
+"""
+type ChemicalSubstance implements Entity & Subjectable
+  @node(labels: ["ChemicalSubstance", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "GSRS substance class of the defining record."
+  substanceClass: SubstanceClass
+  "Hill formula as the authority prints it, counter-ions included ('C11H15N2O5.Cl')."
+  molecularFormula: String
+  "Average molecular weight of the defining record (g/mol). A derivation cites the FIELD Assertion that recorded it (authority snapshot + record version), never this cache."
+  molecularWeight: Float
+  "Net formal charge of the defining structure."
+  charge: Int
+  "Normalized preferred name, synonyms and label spellings joined for the fulltext index d1_identity_fulltext (Q-D1-26)."
+  searchText: String
+  """class: asserted; cardinality: zero_or_more (a salt of two moieties has two; a moiety has none); questions: Q-D1-01, Q-D1-03, Q-D1-04, Q-D1-05, Q-D1-24."""
+  activeMoieties: [ChemicalSubstance!]!
+    @relationship(type: "HAS_ACTIVE_MOIETY", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: zero_or_more (a vitamer counts toward its nutrient; conversion factors live in the versioned rule nutrient-equivalent, not on the edge); questions: Q-D1-03, Q-D1-04, Q-D1-19, Q-D1-22, Q-D1-28."""
+  nutrients: [Constituent!]!
+    @relationship(type: "COUNTS_TOWARD_NUTRIENT", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+"""
+Purpose: the canonical identity of an actual material used as an ingredient or administered in a study — a supplier's
+grade of one substance, a branded material (NIAGEN: a crystal form of NR chloride, food grade, one exclusive
+manufacturer), a botanical preparation (KSM-66: root-only full-spectrum dry extract), a microbial preparation (LGG), a
+material mixture — or an UNRESOLVED material known only as what a source says was used. Labels and trial methods name
+materials as often as substances, and the harm-relevant facts (plant part, preparation, grade, viability) are material
+facts, so D6 (DECLARES_COMPONENT) and D3 (ADMINISTERS) point here. Absorbs BrandedIngredientMaterial,
+BotanicalPreparation, MicrobialPreparation, MaterialMixture and ChemicalForm (kind + properties).
+Identity rule: (materialKind, defining substance or source taxon, brandName, specification owner, physicalForm,
+formDescriptor, grade, plantPart, preparationType, extract ratio, extractionSolvent, viabilityState); a change of any of
+these is a new material, a supplier change under the same specification is an Assertion (D7/D8), and "same material?"
+across records is a kernel EQUIVALENCE Assessment, never a merge. UNRESOLVED materials stay valid; competing identities
+are RESOLUTION Assessments.
+uid token: `material` (hu:material:<opaque>; pinned BrandedIngredientMaterial/BotanicalPreparation/MicrobialPreparation/
+MaterialMixture uids keep the same token).
+Questions: Q-D1-05, Q-D1-07, CQ-ID-03, CQ-ID-06, CQ-ST-02, Q-D1-08, Q-D1-11, Q-D1-12, Q-D1-13, Q-D1-14, Q-D1-15,
+Q-D1-16, Q-D1-17, Q-D1-26, Q-D1-27.
+"""
+type IngredientMaterial implements Entity & Subjectable
+  @node(labels: ["IngredientMaterial", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  materialKind: MaterialKind!
+  "Brand or trade name of a branded material as printed ('Niagen', 'KSM-66', 'LGG'); null for unbranded materials. Mark ownership is a predicate-only Assertion (D8 trademark)."
+  brandName: String
+  physicalForm: PhysicalFormKind
+  "Polymorph or form designation as the source states it ('crystalline form', 'micronized')."
+  formDescriptor: String
+  grade: MaterialGrade
+  plantPart: PlantPart
+  preparationType: BotanicalPreparationType
+  "Native herbal substance : preparation ratio (DER), lower bound (5 means 5:1)."
+  extractRatioLow: Float
+  "DER upper bound (equal to extractRatioLow for a single ratio)."
+  extractRatioHigh: Float
+  "Extraction solvent as stated ('water', 'ethanol 70% v/v', 'milk' for KSM-66)."
+  extractionSolvent: String
+  viabilityState: ViabilityState
+  "Names, brand spellings, label strings and synonyms joined for the fulltext index d1_identity_fulltext (Q-D1-26)."
+  searchText: String
+  """class: asserted; cardinality: zero_or_more (one for a chemically defined material; a botanical may realize its GSRS plant-part record); questions: Q-D1-05, Q-D1-07, CQ-ID-03, CQ-ID-06, CQ-ST-02, Q-D1-17, Q-D1-26."""
+  substances: [ChemicalSubstance!]!
+    @relationship(type: "REALIZES_SUBSTANCE", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: zero_or_more (one open episode per statement; specification changes close and open episodes); questions: CQ-ID-03, Q-D1-11, Q-D1-13."""
+  containsSubstances: [ChemicalSubstance!]!
+    @relationship(type: "MATERIAL_CONTAINS", direction: OUT, properties: "ContentEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: zero_or_more (marker classes, measurands and nutrients a material is said to provide or contain); questions: CQ-ID-03, Q-D1-11, Q-D1-13."""
+  containsConstituents: [Constituent!]!
+    @relationship(type: "MATERIAL_CONTAINS", direction: OUT, properties: "ContentEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: zero_or_more (botanical source organism, or each strain of a microbial preparation / consortium); questions: Q-D1-11, Q-D1-12, Q-D1-14, Q-D1-15."""
+  sourceTaxa: [Taxon!]!
+    @relationship(type: "DERIVED_FROM_TAXON", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+"""
+Purpose: a component concept with no single defined structure — a NUTRIENT with its own declaration convention
+("vitamin B6" = six vitamers, declared "as pyridoxine"; "magnesium" as elemental Mg), a CHEMICAL_CLASS ("total
+withanolides"), an ANALYTICAL_MEASURAND ("flavonoids calculated as flavone glycosides") or a NON_SPECIFIC_FRACTION. It is
+the join point for nutrient-basis harm thresholds (TGA B6 > 50 mg per maximum daily dose; UL 100 mg), for "every form of
+M" expansion, for marker standardization and for food composition (D12). Absorbs the pinned Nutrient node.
+Identity rule: (constituentKind, normalized name); nutrients by the authority nutrient list they are declared under
+(21 CFR 101.9 / 101.36 nutrient names; NIH ODS); classes by ChEBI class id when one exists (identifier through the
+kernel).
+uid token: `constituent` (hu:constituent:<opaque>; pinned hu:nutrient: uids migrate here).
+Questions: CQ-PF-01, Q-D1-02, Q-D1-03, Q-D1-04, CQ-ID-03, Q-D1-13, Q-D1-19, Q-D1-20, Q-D1-22, Q-D1-28.
+"""
+type Constituent implements Entity & Subjectable
+  @node(labels: ["Constituent", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  constituentKind: ConstituentKind!
+  nutrientKind: NutrientKind
+  "UCUM unit the nutrient is conventionally declared in ('mg', 'ug{RAE}', 'mg{NE}', 'ug{DFE}'); NUTRIENT only."
+  referenceUnitCode: String
+  "Names and label spellings joined for the fulltext index d1_identity_fulltext (Q-D1-26)."
+  searchText: String
+}
+
+"""
+Purpose: an organism taxon a material is derived from — botanical source species (Withania somnifera, NCBI 126910),
+microbial species (Lacticaseibacillus rhamnosus, 47715) and microbial strain (rank STRAIN: L. rhamnosus GG, 568703,
+deposits ATCC 53103 = LMG 18243). One type, because NCBI Taxonomy itself treats a strain as a taxon and the questions
+traverse strain → species → genus uniformly (strain-matched vs species-only evidence; legacy genus names). Absorbs
+BotanicalTaxon, MicrobialTaxon and MicrobialStrain.
+Identity rule: NCBI Taxonomy taxid when one exists; a strain without a taxid by its culture-collection deposits
+(identifiers through the kernel; equal deposits in two collections are one strain); otherwise (accepted scientific
+name, rank) provisionally. Renaming never changes the uid: legacy names stay searchable in searchText and as
+Identifier/Assertion history; reclassification is a PARENT_TAXON episode change.
+uid token: `taxon` (hu:taxon:<opaque>; pinned botanical-taxon, microbial-taxon and microbial-strain uids migrate here).
+Questions: Q-D1-11, Q-D1-12, Q-D1-14, Q-D1-15, Q-D1-26.
+"""
+type Taxon implements Entity & Subjectable
+  @node(labels: ["Taxon", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Currently accepted scientific name (with strain designation for rank STRAIN)."
+  scientificName: String
+  rank: TaxonRank!
+  organismGroup: OrganismGroup
+  "Accepted name, legacy names (e.g. Lactobacillus rhamnosus GG), common names and deposit strings for the fulltext index."
+  searchText: String
+  """class: asserted; cardinality: zero_or_one open episode (reclassification closes it and opens a new one, e.g. the 2020 Lactobacillus split); questions: Q-D1-14, Q-D1-15, Q-D1-11."""
+  parents: [Taxon!]!
+    @relationship(type: "PARENT_TAXON", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

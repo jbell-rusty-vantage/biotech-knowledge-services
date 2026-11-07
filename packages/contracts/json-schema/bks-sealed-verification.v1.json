@@ -1,0 +1,301 @@
+{
+  "$id": "https://belllabs.dev/contracts/bks-sealed-verification.v1.json",
+  "title": "bks-sealed-verification.v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "body": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "type": "string",
+          "const": "bks-sealed-verification.v1"
+        },
+        "ref": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+        },
+        "issuer": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "judgmentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "assertionUid": {
+          "type": "string",
+          "pattern": "^hu:[a-z0-9-]+:[A-Za-z0-9][A-Za-z0-9._\\-/]*$"
+        },
+        "adjudicationKind": {
+          "type": "string",
+          "enum": [
+            "CAPTURE_FIDELITY",
+            "SUPPORT"
+          ]
+        },
+        "verdict": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z_]*$"
+        },
+        "mechanicalStatus": {
+          "type": "string",
+          "enum": [
+            "passed",
+            "failed",
+            "review_required"
+          ]
+        },
+        "policyOutcome": {
+          "type": "string",
+          "enum": [
+            "PASS",
+            "PASS_WITH_WARNINGS",
+            "REVIEW",
+            "FAIL",
+            "ABSTAIN"
+          ]
+        },
+        "judgeKind": {
+          "type": "string",
+          "enum": [
+            "DETERMINISTIC",
+            "NLI",
+            "LLM",
+            "HUMAN",
+            "POLICY",
+            "STATISTICAL"
+          ]
+        },
+        "methodVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "properties": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "evidenceSupport": {
+              "type": "string"
+            },
+            "worldCorrectness": {
+              "type": "string"
+            },
+            "attributionFaithfulness": {
+              "type": "string"
+            },
+            "sourceAuthority": {
+              "type": "string"
+            },
+            "provenanceIntegrity": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "unsupportedFacets": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "calibratedProbability": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "rationale": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "decision": {
+          "type": "string",
+          "enum": [
+            "AFFIRM",
+            "REJECT",
+            "DEFER"
+          ]
+        },
+        "decisionProvenance": {
+          "type": "string",
+          "enum": [
+            "HUMAN_ORIGIN",
+            "SYNTHETIC_ENGINEERING"
+          ]
+        },
+        "supersedesAdjudicationUid": {
+          "type": "string",
+          "pattern": "^hu:[a-z0-9-]+:[A-Za-z0-9][A-Za-z0-9._\\-/]*$"
+        },
+        "evidence": {
+          "default": [],
+          "maxItems": 200,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "locatorUid": {
+                "type": "string",
+                "pattern": "^hu:[a-z0-9-]+:[A-Za-z0-9][A-Za-z0-9._\\-/]*$"
+              },
+              "selectorDigest": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              },
+              "role": {
+                "type": "string",
+                "enum": [
+                  "SUPPORTS",
+                  "CONTRADICTS",
+                  "QUALIFIES",
+                  "CONTEXT"
+                ]
+              },
+              "origin": {
+                "type": "string",
+                "enum": [
+                  "DECLARED",
+                  "VERIFIER_FOUND"
+                ]
+              },
+              "authority": {
+                "type": "string"
+              },
+              "independence": {
+                "type": "string"
+              },
+              "facet": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "locatorUid",
+              "selectorDigest",
+              "role",
+              "origin"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "run": {
+          "type": "object",
+          "properties": {
+            "system": {
+              "default": "ks-verification",
+              "type": "string"
+            },
+            "runId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "bundleDigest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "policyVersion": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "runId"
+          ],
+          "additionalProperties": false
+        },
+        "policy": {
+          "default": {
+            "toolRenditionException": false
+          },
+          "type": "object",
+          "properties": {
+            "toolRenditionException": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        "sealedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+        },
+        "extra": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/__schema0"
+          }
+        }
+      },
+      "required": [
+        "format",
+        "ref",
+        "issuer",
+        "judgmentId",
+        "assertionUid",
+        "adjudicationKind",
+        "verdict",
+        "policyOutcome",
+        "judgeKind",
+        "methodVersion",
+        "run",
+        "sealedAt"
+      ],
+      "additionalProperties": false
+    },
+    "kid": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "signature": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]+$"
+    }
+  },
+  "required": [
+    "body",
+    "kid",
+    "signature"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "__schema0": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema0"
+          }
+        },
+        {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/__schema0"
+          }
+        }
+      ]
+    }
+  }
+}

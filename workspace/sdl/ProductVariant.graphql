@@ -1,0 +1,30 @@
+"""
+Purpose: a consumer-distinguishable realization of a Product — strength per unit, dosage form, flavor or jurisdiction
+(round-0001 Candidate B) — the level a study administers (D3 seam), a lot belongs to (D8 seam) and a reformulation is
+compared within. A label-only change (FC-1: directions, seals) or a GTIN/package change (FC-2) never mints a variant.
+Identity rule: (product uid, strengthVerbatim, dosageForm, flavor, jurisdiction) with nulls as explicit 'unspecified'.
+uid token: `product-variant` (hu:product-variant:<opaque>).
+Questions: CQ-ID-01, CQ-ID-02, CQ-ID-05, CQ-AX-17, CQ-AX-25, Q-D6-02.
+"""
+type ProductVariant implements Entity & Subjectable
+  @node(labels: ["ProductVariant", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  dosageForm: DosageForm
+  "Strength as printed ('300 mg', '12 g scoop'); the typed amount lives on label component lines."
+  strengthVerbatim: String
+  flavor: String
+  "ISO 3166 market of this variant (US vs UK fries; '500mg (Canada)')."
+  jurisdiction: String
+  """class: structural; cardinality: one_or_more; questions: Q-D6-02, Q-D6-04, CQ-ID-02."""
+  packages: [Package!]!
+    @relationship(type: "HAS_PACKAGE", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

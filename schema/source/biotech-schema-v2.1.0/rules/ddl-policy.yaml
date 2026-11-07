@@ -1,0 +1,22 @@
+# DDL installer phases and exceptions, release biotech-schema-v2.0.2 (read by scripts/release/generate.mjs; authored upstream).
+format: bks-ddl-policy.v1
+releaseId: biotech-schema-v2.0.2
+rule: "Pre-migration: every statement that holds on a graph that still carries preserved legacy rows. Post-migration: constraints that cannot hold while legacy rows still carry the label or relationship type: uid_exists_<Label> for the legacy labels that are also stored v2 labels (legacy rows keep them until the migration relabels them to LegacyV0_<Label>) and the rel_<TYPE>_assertion_exists family (preserved legacy edges of a v2 type carry no assertionUid). Everything else is pre-migration."
+decision: lead, migration rehearsal on biotech-schema-v2.0.1 (both editions, 59/59 invariants, rollback byte-identical)
+postMigration:
+  uidExistsLabels:
+    - Biomarker
+    - Event
+    - LabTest
+    - Organization
+    - Person
+    - Product
+    - Study
+  relationshipFamilies:
+    - rel_<TYPE>_assertion_exists
+exceptions:
+  - name: rel_MEASURES_assertion_exists
+    status: blocked-by-legacy-data
+    reason: 45 preserved legacy MEASURES edges (LabTest -> Biomarker) carry no assertionUid; a relationship type cannot change without deleting the edge, and legacy data is never deleted in this release
+    enforcedInstead: the native executor requires assertionUid on every new MEASURES write (asserted class, AssertedRecordedProperties)
+    enablingCondition: retirement of the 45 legacy MEASURES edges by a later admitted migration (legacy edge retirement with retained export and lineage); then the constraint is installed in the post-migration phase

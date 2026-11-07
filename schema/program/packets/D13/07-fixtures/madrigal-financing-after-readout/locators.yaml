@@ -1,0 +1,317 @@
+# madrigal-financing-after-readout — locators (fixtures stage, A7, 2026-10-08; adversarial-review pass same day). Generated and re-verified against fresh captures by _notes/tools/build_fixtures.py.
+# selectorKind values are the kernel SelectorKind enum (verification.v1 kinds + WHOLE_SNAPSHOT; EDGAR index fields use API_RECORD with rule edgar-accession/v1); offsets are code points (see snapshots[].offsetBasis); EDGAR HTML snapshots are identified by their h2t-v1 projection hash (contentHashBasis NORMALIZED_TEXT).
+fixture: madrigal-financing-after-readout
+snapshots:
+- ref: s-mdgl-8k-2022-12-23
+  uid: hu:snapshot:fx-d13-mdgl-8k-2022-12-23
+  source:
+    canonicalUri: https://www.sec.gov/Archives/edgar/data/1157601/000119312522311537/d434336d8k.htm
+    sourceKind: WEB_PAGE
+    genre: REGULATORY_FILING
+    name: Madrigal Form 8-K (Items 1.01, 5.03, 7.01, 8.01, 9.01), accession 0001193125-22-311537
+  retrievedAt: '2026-10-08'
+  publishedAt: '2022-12-23'
+  contentHash: sha256:e67b4342dc932400f5149353f2573b039778ef546d61b66299d42929cebbe459
+  contentHashBasis: NORMALIZED_TEXT
+  captureMethod: curl -> SEC EDGAR Archives (User-Agent from EDGAR_IDENTITY) + h2t-v1 projection
+  captureTool: tool:sec-edgar-archives
+  captureCompleteness: COMPLETE
+  rawCaptureFile: scratch ft/D13/fx/raw/mdgl-000119312522311537_d434336d8k.htm (not committed; durable blob storage is an open item, 11-open-questions.md)
+  refetchReproducible: 'raw bytes do NOT reproduce: sec.gov injects a per-client <script src="/<random path>"> before </body> (re-fetch 2026-10-08: sha256 024ba839... vs capture fea92312... for d423141d8k.htm,
+    the only diff that line); the h2t-v1 projection reproduces (verified on d423141d8k.htm and d434336dex991.htm), so it is the snapshot identity'
+  canonicalProjection:
+    method: h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)
+    hash: sha256:e67b4342dc932400f5149353f2573b039778ef546d61b66299d42929cebbe459
+  rawBytesHashSessionOnly: sha256:416740c759506ea973ec4ae242b6a8707c51972c879a6656be1cdb36e0333536
+  offsetBasis: Unicode code points of the h2t-v1 projection
+- ref: s-mdgl-ex991-2022-12-21
+  uid: hu:snapshot:fx-d13-mdgl-ex991-2022-12-21
+  source:
+    canonicalUri: https://www.sec.gov/Archives/edgar/data/1157601/000119312522311537/d434336dex991.htm
+    sourceKind: WEB_PAGE
+    genre: PRESS_RELEASE
+    name: Exhibit 99.1 'Madrigal Pharmaceuticals Announces $300+ Million in Financing Events to Advance Resmetirom Program'
+  retrievedAt: '2026-10-08'
+  publishedAt: '2022-12-23'
+  contentHash: sha256:3fdd41e2668e4bac47ea9abaa78f9d503a3ef1afa89be727b2e3a440155579cc
+  contentHashBasis: NORMALIZED_TEXT
+  captureMethod: curl -> SEC EDGAR Archives (User-Agent from EDGAR_IDENTITY) + h2t-v1 projection
+  captureTool: tool:sec-edgar-archives
+  captureCompleteness: COMPLETE
+  rawCaptureFile: scratch ft/D13/fx/raw/mdgl-000119312522311537_d434336dex991.htm (not committed; durable blob storage is an open item, 11-open-questions.md)
+  refetchReproducible: 'raw bytes do NOT reproduce: sec.gov injects a per-client <script src="/<random path>"> before </body> (re-fetch 2026-10-08: sha256 024ba839... vs capture fea92312... for d423141d8k.htm,
+    the only diff that line); the h2t-v1 projection reproduces (verified on d423141d8k.htm and d434336dex991.htm), so it is the snapshot identity'
+  canonicalProjection:
+    method: h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)
+    hash: sha256:3fdd41e2668e4bac47ea9abaa78f9d503a3ef1afa89be727b2e3a440155579cc
+  rawBytesHashSessionOnly: sha256:ef32efcdb18957c0f7f254c78fa16b7d703fa4f4222142162d3c8748008b20e5
+  offsetBasis: Unicode code points of the h2t-v1 projection
+- ref: s-mdgl-edgar-submissions
+  uid: hu:snapshot:fx-d13-mdgl-edgar-submissions
+  source:
+    canonicalUri: https://data.sec.gov/submissions/CIK0001157601.json
+    sourceKind: API
+    genre: REGISTRY_RECORD
+    name: SEC EDGAR submissions index, CIK 0001157601 (Madrigal Pharmaceuticals)
+  retrievedAt: '2026-10-08'
+  publishedAt: null
+  contentHash: sha256:6b23ab5df12518ae53921769482dfaf108cc4336e22136b8f944aad7c0297860
+  contentHashBasis: RAW_BYTES
+  captureMethod: curl -> data.sec.gov submissions API (User-Agent from EDGAR_IDENTITY)
+  captureTool: tool:sec-edgar-submissions
+  captureCompleteness: COMPLETE
+  rawCaptureFile: scratch ft/D13/fx/raw/madrigal-submissions.json (not committed; durable blob storage is an open item, 11-open-questions.md)
+  refetchReproducible: 'live API record: content changes as the registry, index or metadata is updated; the stored artifact is the evidence'
+locators:
+- ref: l01
+  uid: hu:locator:fx-d13-mfin-l01
+  snapshot: s-mdgl-8k-2022-12-23
+  selectorKind: TEXT_QUOTE
+  section: Item 8.01 / Borrowing Availability Under Loan Agreement
+  exact: On December 19, 2022, as a result of the Company’s announcement of Phase 3 MAESTRO-NASH clinical trial topline results, the Company received confirmation from Hercules Capital, Inc. (“Hercules”)
+    that it has satisfied the clinical development milestone under the Company’s previously disclosed Loan and Security Agreement
+  prefix: "lability Under Loan Agreement \n\n"
+  suffix: ', dated May 9, 2022, among the C'
+  startOffset: 10401
+  endOffset: 10721
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:1bec06820c6a4f6bf39084e97654992735bea9bf5305d10e4ae7b0d14aa9589f
+  selectorJson: '{"basis":"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)","exact":"On December 19, 2022, as a result of the Company’s announcement of Phase 3 MAESTRO-NASH clinical trial topline results, the
+    Company received confirmation from Hercules Capital, Inc. (“Hercules”) that it has satisfied the clinical development milestone under the Company’s previously disclosed Loan and Security Agreement","prefix":"lability
+    Under Loan Agreement \n\n","refinedBy":{"end":10721,"start":10401,"type":"TextPositionSelector"},"suffix":", dated May 9, 2022, among the C","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:b203c12cd0b216c3182c9b73e8932ef11d997b7469d8974fcf5e3e9f8a4bdbc8
+  verified:
+    'on': '2026-10-08'
+    against: sha256:e67b4342dc932400f5149353f2573b039778ef546d61b66299d42929cebbe459
+    result: exact match at [10401,10721) of the fresh capture
+- ref: l02
+  uid: hu:locator:fx-d13-mfin-l02
+  snapshot: s-mdgl-8k-2022-12-23
+  selectorKind: TEXT_QUOTE
+  section: Item 8.01 / Borrowing Availability Under Loan Agreement
+  exact: As a result of the achievement of the clinical development milestone, the Company is now eligible to borrow up to an additional $50 million under the Loan Agreement.
+  prefix: 'thereto (the “Loan Agreement”). '
+  suffix: " \n\nATM Program Update \n\nOn Decem"
+  startOffset: 10923
+  endOffset: 11088
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:839f598a181d3f8020313dd6d7e3be079cc753fc49a08f923cb369510db0b512
+  selectorJson: '{"basis":"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)","exact":"As a result of the achievement of the clinical development milestone, the Company is now eligible to borrow up to an additional
+    $50 million under the Loan Agreement.","prefix":"thereto (the “Loan Agreement”). ","refinedBy":{"end":11088,"start":10923,"type":"TextPositionSelector"},"suffix":" \n\nATM Program Update \n\nOn Decem","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:3b442ddb320d513b554a6ff3541a89aeb5c7695466a425da63db582870bc1316
+  verified:
+    'on': '2026-10-08'
+    against: sha256:e67b4342dc932400f5149353f2573b039778ef546d61b66299d42929cebbe459
+    result: exact match at [10923,11088) of the fresh capture
+- ref: l03
+  uid: hu:locator:fx-d13-mfin-l03
+  snapshot: s-mdgl-8k-2022-12-23
+  selectorKind: TEXT_QUOTE
+  section: Item 1.01 / Securities Purchase Agreement
+  exact: On December 21, 2022, Madrigal Pharmaceuticals, Inc. (the “Company” or “Madrigal”) entered into a Securities Purchase Agreement (the “Securities Purchase Agreement”) with a group of institutional
+    investors
+  prefix: "Securities Purchase Agreement \n\n"
+  suffix: ' (collectively, the “Investors”)'
+  startOffset: 2396
+  endOffset: 2601
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:f4722dfeda9f70fd1da70dadac78f15e3905ee30a1a82ca5fbf345a7350b1221
+  selectorJson: '{"basis":"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)","exact":"On December 21, 2022, Madrigal Pharmaceuticals, Inc. (the “Company” or “Madrigal”) entered into a Securities Purchase Agreement
+    (the “Securities Purchase Agreement”) with a group of institutional investors","prefix":"Securities Purchase Agreement \n\n","refinedBy":{"end":2601,"start":2396,"type":"TextPositionSelector"},"suffix":"
+    (collectively, the “Investors”)","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:07611da8337894f92a2c129f839724e315f1c619e16757663e4bd27696673b46
+  verified:
+    'on': '2026-10-08'
+    against: sha256:e67b4342dc932400f5149353f2573b039778ef546d61b66299d42929cebbe459
+    result: exact match at [2396,2601) of the fresh capture
+- ref: l04
+  uid: hu:locator:fx-d13-mfin-l04
+  snapshot: s-mdgl-8k-2022-12-23
+  selectorKind: TEXT_QUOTE
+  section: Item 1.01 / Securities Purchase Agreement
+  exact: The gross proceeds from the transaction will be $100 million in the aggregate before estimated transaction expenses
+  prefix: "(“Series A Preferred Stock”). \n\n"
+  suffix: ', which gross proceeds are compr'
+  startOffset: 3502
+  endOffset: 3617
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:1b431c6bc7ce70f798915d6d3195f952873352c4dc0a319cc78c584ba688be65
+  selectorJson: '{"basis":"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)","exact":"The gross proceeds from the transaction will be $100 million in the aggregate before estimated transaction expenses","prefix":"(“Series
+    A Preferred Stock”). \n\n","refinedBy":{"end":3617,"start":3502,"type":"TextPositionSelector"},"suffix":", which gross proceeds are compr","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:7b51d199cf310dbca784ecf77e6526265f555973f377a4107e2701e8ced500ca
+  verified:
+    'on': '2026-10-08'
+    against: sha256:e67b4342dc932400f5149353f2573b039778ef546d61b66299d42929cebbe459
+    result: exact match at [3502,3617) of the fresh capture
+- ref: l05
+  uid: hu:locator:fx-d13-mfin-l05
+  snapshot: s-mdgl-8k-2022-12-23
+  selectorKind: TEXT_QUOTE
+  section: Item 7.01 Regulation FD Disclosure
+  exact: On December 21, 2022, the Company issued a press release announcing the Offering and other financing updates.
+  prefix: " | \nRegulation FD Disclosure. \n\n"
+  suffix: " \n\nThe press release is furnishe"
+  startOffset: 9669
+  endOffset: 9778
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:6263be53658c1a6badf2a317b7a2f684edeb84bc304dc2e421db7b32d1ce572c
+  selectorJson: '{"basis":"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)","exact":"On December 21, 2022, the Company issued a press release announcing the Offering and other financing updates.","prefix":"
+    | \nRegulation FD Disclosure. \n\n","refinedBy":{"end":9778,"start":9669,"type":"TextPositionSelector"},"suffix":" \n\nThe press release is furnishe","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:a27bae1e790e4079fe51299ede8a5414bcde876f110aef39343e2b4f5f8ab4fc
+  verified:
+    'on': '2026-10-08'
+    against: sha256:e67b4342dc932400f5149353f2573b039778ef546d61b66299d42929cebbe459
+    result: exact match at [9669,9778) of the fresh capture
+- ref: l06
+  uid: hu:locator:fx-d13-mfin-l06
+  snapshot: s-mdgl-ex991-2022-12-21
+  selectorKind: TEXT_QUOTE
+  section: EX-99.1, CEO quote (Paul Friedman, M.D.)
+  exact: "The financings secured following the positive topline readout of our\nPhase 3 MAESTRO-NASH trial reflect the strong support that Madrigal has established with long-standing strategic and institutional\
+    \ investors."
+  prefix: 'e Officer of Madrigal, stated: “'
+  suffix: ' The funds provide a solid found'
+  startOffset: 809
+  endOffset: 1019
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:4dc873b423c91576eb2e08cb59c0343f07d038af3afd5e76f333cd89e88dce8c
+  selectorJson: '{"basis":"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)","exact":"The financings secured following the positive topline readout of our\nPhase 3 MAESTRO-NASH trial reflect the strong support
+    that Madrigal has established with long-standing strategic and institutional investors.","prefix":"e Officer of Madrigal, stated: “","refinedBy":{"end":1019,"start":809,"type":"TextPositionSelector"},"suffix":"
+    The funds provide a solid found","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:e7b3ad7adb06be0b61abb8fa95dae3aef41ede822e9a58b438d7b9b88cd8b54c
+  verified:
+    'on': '2026-10-08'
+    against: sha256:3fdd41e2668e4bac47ea9abaa78f9d503a3ef1afa89be727b2e3a440155579cc
+    result: exact match at [809,1019) of the fresh capture
+- ref: l07
+  uid: hu:locator:fx-d13-mfin-l07
+  snapshot: s-mdgl-ex991-2022-12-21
+  selectorKind: TEXT_QUOTE
+  section: EX-99.1 body
+  exact: "In connection with Madrigal’s December 19, 2022 announcement of positive topline data from its pivotal Phase 3 MAESTRO-NASH clinical trial of\nresmetirom, Hercules Capital, Inc. (NYSE:HTGC) confirmed\
+    \ that Madrigal has achieved its clinical milestone under the Company’s Credit Facility with Hercules"
+  prefix: "344 common equivalent shares. \n\n"
+  suffix: ', thereby enabling Madrigal to d'
+  startOffset: 2196
+  endOffset: 2494
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:875ff4ec84c9a6b855e4e2c45849828c53bff08ad7471d842f139051ffaa15fb
+  selectorJson: '{"basis":"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)","exact":"In connection with Madrigal’s December 19, 2022 announcement of positive topline data from its pivotal Phase 3 MAESTRO-NASH
+    clinical trial of\nresmetirom, Hercules Capital, Inc. (NYSE:HTGC) confirmed that Madrigal has achieved its clinical milestone under the Company’s Credit Facility with Hercules","prefix":"344 common
+    equivalent shares. \n\n","refinedBy":{"end":2494,"start":2196,"type":"TextPositionSelector"},"suffix":", thereby enabling Madrigal to d","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:051ec807315ff4faf76ca862d07b58587b39f1fff8c082cc6b9c78588f9152fe
+  verified:
+    'on': '2026-10-08'
+    against: sha256:3fdd41e2668e4bac47ea9abaa78f9d503a3ef1afa89be727b2e3a440155579cc
+    result: exact match at [2196,2494) of the fresh capture
+- ref: l08
+  uid: hu:locator:fx-d13-mfin-l08
+  snapshot: s-mdgl-8k-2022-12-23
+  selectorKind: TEXT_QUOTE
+  section: Cover
+  exact: 'Date of Report (Date of earliest event reported): December 19, 2022'
+  prefix: "ecurities Exchange Act of 1934\n\n"
+  suffix: "\n\nMADRIGAL PHARMACEUTICALS, INC."
+  startOffset: 240
+  endOffset: 307
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:f58e2eea95f896aec143f2170e0c66c44d7c9a44707877505a91fd5edc76b592
+  selectorJson: '{"basis":"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)","exact":"Date of Report (Date of earliest event reported): December 19, 2022","prefix":"ecurities Exchange Act of 1934\n\n","refinedBy":{"end":307,"start":240,"type":"TextPositionSelector"},"suffix":"\n\nMADRIGAL
+    PHARMACEUTICALS, INC.","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:8e5f04b772ebf45b0ad0565ed2ae5ec38ce3c8767735632ad57472421fa8a155
+  verified:
+    'on': '2026-10-08'
+    against: sha256:e67b4342dc932400f5149353f2573b039778ef546d61b66299d42929cebbe459
+    result: exact match at [240,307) of the fresh capture
+- ref: l09
+  uid: hu:locator:fx-d13-mfin-l09
+  snapshot: s-mdgl-edgar-submissions
+  selectorKind: API_RECORD
+  rule: 'edgar-accession/v1: in /filings/recent, take the index i where accessionNumber[i] = 0001193125-22-311537, return filingDate[i]'
+  exact: '2022-12-23'
+  quoteHash: sha256:1f5783141cf42c9ad40dc5f1cfedcbe900776a598d84aa858db3466bc7069f8b
+  selectorJson: '{"arrayRoot":"/filings/recent","field":"filingDate","recordKey":{"accessionNumber":"0001193125-22-311537"},"rule":"edgar-accession/v1","type":"RecordFieldSelector"}'
+  selectorDigest: sha256:1c9cda7d008584e70845537fd2a6f4c6b07b6d3d202448230b71c92aa96c2cc1
+  note: 'filed 2022-12-23 while the earliest event reported is 2022-12-19 (l08): filing time is SourceSnapshot.publishedAt, never an Event clock'
+  verified:
+    'on': '2026-10-08'
+    against: sha256:6b23ab5df12518ae53921769482dfaf108cc4336e22136b8f944aad7c0297860
+    result: 'rule re-run over the fresh capture: index 382 in this capture (positions shift with every new filing; the accession number is the anchor); value equals exact'
+- ref: l10
+  uid: hu:locator:fx-d13-mfin-l10
+  snapshot: s-mdgl-8k-2022-12-23
+  selectorKind: TEXT_QUOTE
+  section: Item 8.01 / ATM Program Update
+  exact: On December 19, 2022, the Company sold 738,900 shares of Common Stock under its “at-the-market” sales program (“ATM Program”) pursuant to the Sales Agreement, dated June 1, 2021 with Cowen and
+    Company, LLC (“Cowen”), for $159.1 million in gross proceeds before any discounts and fees, under the Sales Agreement.
+  prefix: "reement. \n\nATM Program Update \n\n"
+  suffix: ' Cowen and Company, LLC, acted a'
+  startOffset: 11112
+  endOffset: 11423
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:92b03eefb13479dd5c07cea4679862e1eb514ba12d9e83bd55fd2e3aff1dda4d
+  selectorJson: '{"basis":"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)","exact":"On December 19, 2022, the Company sold 738,900 shares of Common Stock under its “at-the-market” sales program (“ATM Program”)
+    pursuant to the Sales Agreement, dated June 1, 2021 with Cowen and Company, LLC (“Cowen”), for $159.1 million in gross proceeds before any discounts and fees, under the Sales Agreement.","prefix":"reement.
+    \n\nATM Program Update \n\n","refinedBy":{"end":11423,"start":11112,"type":"TextPositionSelector"},"suffix":" Cowen and Company, LLC, acted a","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:851ad849ab4ae8a9184d14fc7b332a8ad43e62b50890132a601bd433a7bb960b
+  verified:
+    'on': '2026-10-08'
+    against: sha256:e67b4342dc932400f5149353f2573b039778ef546d61b66299d42929cebbe459
+    result: exact match at [11112,11423) of the fresh capture
+- ref: l11
+  uid: hu:locator:fx-d13-mfin-l11
+  snapshot: s-mdgl-ex991-2022-12-21
+  selectorKind: TEXT_QUOTE
+  section: EX-99.1 body
+  exact: "Madrigal has completed $159 million in gross sales of\ncommon stock under its ATM Program (“ATM Sales”)"
+  prefix: "al of resmetirom in the U.S.” \n\n"
+  suffix: ' and has separately entered into'
+  startOffset: 1215
+  endOffset: 1317
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:45be5c6b823442b7555b145c00d832be220e45b9f29151441dc3258396d46e31
+  selectorJson: '{"basis":"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)","exact":"Madrigal has completed $159 million in gross sales of\ncommon stock under its ATM Program (“ATM Sales”)","prefix":"al of resmetirom
+    in the U.S.” \n\n","refinedBy":{"end":1317,"start":1215,"type":"TextPositionSelector"},"suffix":" and has separately entered into","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:07272937c88f3c552c302ff08d79d028a3f27e9ac4a23cb05cbae72c0362f3f5
+  verified:
+    'on': '2026-10-08'
+    against: sha256:3fdd41e2668e4bac47ea9abaa78f9d503a3ef1afa89be727b2e3a440155579cc
+    result: exact match at [1215,1317) of the fresh capture
+- ref: l12
+  uid: hu:locator:fx-d13-mfin-l12
+  snapshot: s-mdgl-8k-2022-12-23
+  selectorKind: TEXT_QUOTE
+  section: Item 8.01 / ATM Program Update
+  exact: Cowen and Company, LLC, acted as sales agent under the ATM Program.
+  prefix: 'ees, under the Sales Agreement. '
+  suffix: ' The $159.1 million in gross pro'
+  startOffset: 11424
+  endOffset: 11491
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:cc3aa86f846edef4176b43a08395b0bde75dd461cf199912f5b31d88b2278c76
+  selectorJson: '{"basis":"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)","exact":"Cowen and Company, LLC, acted as sales agent under the ATM Program.","prefix":"ees, under the Sales Agreement. ","refinedBy":{"end":11491,"start":11424,"type":"TextPositionSelector"},"suffix":"
+    The $159.1 million in gross pro","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:cf43cd9d6fae543901eebb6abd01990efaf631e9b5f331131fae5aad6fc939a6
+  verified:
+    'on': '2026-10-08'
+    against: sha256:e67b4342dc932400f5149353f2573b039778ef546d61b66299d42929cebbe459
+    result: exact match at [11424,11491) of the fresh capture
+- ref: l13
+  uid: hu:locator:fx-d13-mfin-l13
+  snapshot: s-mdgl-ex991-2022-12-21
+  selectorKind: TEXT_QUOTE
+  section: EX-99.1 sub-headline
+  exact: $259 Million in Equity Securities Sales and $50 Million in Additional Debt Financing Capacity
+  prefix: "tirom Program\n\n | \n | •\n | \n | \n"
+  suffix: "\n\n | \n | •\n | \n | \nMadrigal inte"
+  startOffset: 178
+  endOffset: 271
+  occurrencesInSnapshot: 1
+  quoteHash: sha256:c27e6507a30457fbfd7d3e165b3178dda7b07b0de817214d5249cb7d92ab80b5
+  selectorJson: '{"basis":"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)","exact":"$259 Million in Equity Securities Sales and $50 Million in Additional Debt Financing Capacity","prefix":"tirom Program\n\n
+    | \n | •\n | \n | \n","refinedBy":{"end":271,"start":178,"type":"TextPositionSelector"},"suffix":"\n\n | \n | •\n | \n | \nMadrigal inte","type":"TextQuoteSelector"}'
+  selectorDigest: sha256:f983fd17e38e0233b0869681c8c0496db69469abaad23643aea146baa7436c83
+  verified:
+    'on': '2026-10-08'
+    against: sha256:3fdd41e2668e4bac47ea9abaa78f9d503a3ef1afa89be727b2e3a440155579cc
+    result: exact match at [178,271) of the fresh capture

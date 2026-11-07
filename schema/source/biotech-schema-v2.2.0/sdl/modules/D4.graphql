@@ -1,0 +1,606 @@
+# ---- fragment D4 ----
+# Module D4 — diagnostics, biomarkers and measurement. Model stage (Wave 2) by A3, 2026-10-08.
+# Kernel pattern: packets/K/09-reasoning.md (A1, published 2026-10-08). Kernel types are referenced, never re-declared.
+# Every @node: implements Entity & Subjectable, lists the 7 Entity fields verbatim, @query(aggregate: false) @mutation(operations: []).
+# Every @relationship: aggregate: false, nestedOperations declared, @filterable(byValue: true, byAggregate: false).
+# Not declared here (kernel does it once, against Subjectable): subject/object/asserter, identifiers (LOINC, UNIPROT, CHEBI, ...),
+# mentions, lineage, assessments. Comparability (pinned ComparabilityAssessment) is a kernel Assessment
+# (assessmentKind COMPARABILITY, assessmentSubkind "D4.comparability", verdict in conclusionCode; see 09-reasoning.md).
+# Check stage (A3, 2026-10-08): asserted edges no question reads by valid time use the kernel AssertedRecordedProperties.
+# Seam targets (stubs only in the scratch compile file): D1 ChemicalSubstance, D2 Mechanism, D2 MolecularEntity, D6 Product, D7 Organization.
+# 7 node types · 13 relationship types · 17 from→to pairs · no unions (widest target 1).
+# Adversarial-review pass (A3, 2026-10-08): Biomarker carries no identifier schemes (one (scheme, value) identifies one entity; analyte ids
+# live on the D1/D2 analyte reached by HAS_ANALYTE); ReferenceIntervalVersion.sex uses D3's population enum SexScope (shared vocabulary,
+# declared by D3, not re-declared here) with D3's field names minAgeYears / maxAgeYears; D8 records reach Device through the D6 Product.
+# Synthesis (S module editor, 2026-10-08; final/decision-report.md, final/_work/rulings.yaml modules.D4 + global):
+#   R-26  PERFORMED_BY_LAB is asserted (AssertedRecordedProperties, [CONNECT]); a curator inference of the performing
+#         organization uses basisKind CURATOR_CLASSIFICATION (answers D4 11 #42). The remaining structural edges
+#         (QUANTIFIES, HAS_ANALYTE, OUTPUTS_METRIC, REQUIRES_INPUT_METRIC, INTERVAL_FOR) are identity-defining
+#         components and stay structural only if the record's attach Assertion cites the defining span.
+#   R-72  one Device path: D8 records concern the D6 Product, which DELIVERS the Device (D4 11 #12 closed).
+#   R-52  FIELD_NOT_REPORTED is a kernel convention (registrar K); D4 no longer registers it.
+#   No type, field or pair is added or removed: 7 node types, 13 relationship types, 17 from->to pairs (packet-check count).
+
+# =====================================================================================================
+# Enums (controlled vocabularies; none encodes good/bad)
+# =====================================================================================================
+
+"""
+Which descriptive fields a source was checked for and did NOT report (00-DIRECTIVE finding: 'not reported' is the
+normal value on public artifacts). A field listed here is null by design; a null field not listed is not yet
+extracted. Two records whose identity fields are NOT_REPORTED never merge (identity includes the source capture).
+PERFORMING_LAB means no captured source names the performing laboratory (site); an organization-level PERFORMED_BY_LAB
+edge may still exist as a curator inference: an asserted edge whose Assertion names the asserter and the rule, basisKind
+CURATOR_CLASSIFICATION (R-26).
+Shared by every D4 type: `notReported: [MeasurementField!]`.
+"""
+enum MeasurementField {
+  METHOD_PRINCIPLE
+  INSTRUMENT_MODEL
+  REAGENT_KIT
+  SOFTWARE_VERSION
+  SPECIMEN
+  CALIBRATION_TRACEABILITY
+  PERFORMING_LAB
+  UNIT
+  MEASURAND_SYSTEM
+  METRIC_METHOD
+  VERSION_LABEL
+  INPUT_PLATFORM
+  INPUT_FEATURES
+  TRAINING_POPULATION
+  RELIABILITY
+  INTERVAL_DERIVATION
+  INTERVAL_PARTITION
+  EFFECTIVE_DATE
+  FIRMWARE_VERSION
+}
+
+"What kind of biological referent a Biomarker is."
+enum BiomarkerKind {
+  METABOLITE
+  PROTEIN
+  PROTEIN_MODIFICATION
+  CELL_POPULATION
+  DNA_METHYLATION_PATTERN
+  GLYCAN_PROFILE
+  PHYSIOLOGICAL_SIGNAL
+  COMPOSITE_AGING_INDEX
+  OTHER
+}
+
+"What a Metric defines: a terminology measurand, an algorithm output, a device estimate, a calculated quantity or a model feature."
+enum MetricKind {
+  MEASURAND
+  ALGORITHM_OUTPUT
+  DEVICE_ESTIMATE
+  CALCULATED_QUANTITY
+  MODEL_FEATURE
+}
+
+"Pinned DiagnosticResultKind: is a value measured, calculated from other values, or inferred by a model (DNAm surrogates, PPG-derived estimates)."
+enum DiagnosticResultKind {
+  MEASURED
+  CALCULATED
+  INFERRED
+}
+
+"Who defines the Metric: a terminology (LOINC), a vendor, a publication, or BellLabs (when no standard code exists)."
+enum MetricDefinitionSource {
+  LOINC
+  VENDOR
+  PUBLICATION
+  BELLLABS
+}
+
+"LOINC scale."
+enum MetricScale {
+  QUANTITATIVE
+  ORDINAL
+  NOMINAL
+  NARRATIVE
+}
+
+"An orderable/purchasable test as offered: one analyte, a panel of tests, or a report computed by algorithms."
+enum LabTestKind {
+  SINGLE
+  PANEL
+  ALGORITHM_REPORT
+}
+
+"How a test is ordered."
+enum OrderChannel {
+  CLINICIAN_ORDERED
+  DIRECT_TO_CONSUMER
+  BOTH
+  RESEARCH_USE_ONLY
+}
+
+"How the specimen is collected."
+enum CollectionMode {
+  VENIPUNCTURE
+  CAPILLARY_FINGERPRICK
+  DRIED_BLOOD_SPOT
+  SALIVA
+  BUCCAL_SWAB
+  URINE
+  STOOL
+  CONTINUOUS_SENSOR
+  OTHER
+}
+
+"Method principle (absorbs pinned MeasurementMethod)."
+enum MethodPrinciple {
+  IMMUNOASSAY_TURBIDIMETRIC
+  IMMUNOASSAY_OTHER
+  ION_EXCHANGE_HPLC
+  BORONATE_AFFINITY
+  ENZYMATIC
+  CAPILLARY_ELECTROPHORESIS
+  LC_MS
+  DNA_METHYLATION_ARRAY
+  DNA_METHYLATION_SEQUENCING
+  GLYCAN_CHROMATOGRAPHY
+  ELECTROCHEMICAL_SENSOR
+  OPTICAL_SENSOR
+  OTHER
+}
+
+"Technology platform of a measurement or of an algorithm's required input (absorbs pinned TechnologyPlatform)."
+enum MeasurementPlatform {
+  ILLUMINA_450K
+  ILLUMINA_EPIC_V1
+  ILLUMINA_EPIC_V2
+  ILLUMINA_MSA
+  TARGETED_BISULFITE_SEQUENCING
+  WHOLE_GENOME_BISULFITE_SEQUENCING
+  LC_MS_TARGETED
+  CLINICAL_CHEMISTRY_ANALYZER
+  WEARABLE_PPG
+  CGM_SENSOR
+  OTHER
+}
+
+"Specimen type (absorbs pinned Specimen; ontology ids ride beside it in specimenOntologyIds)."
+enum SpecimenKind {
+  WHOLE_BLOOD
+  SERUM
+  PLASMA
+  RED_BLOOD_CELLS
+  PBMC
+  DRIED_BLOOD_SPOT
+  CAPILLARY_BLOOD
+  SALIVA
+  BUCCAL_CELLS
+  URINE
+  STOOL
+  INTERSTITIAL_FLUID
+  TISSUE_BIOPSY
+  OTHER
+}
+
+"Metrological traceability the calibration claims (absorbs pinned ReferenceSystem)."
+enum CalibrationTraceability {
+  NGSP
+  IFCC_RMP
+  JDS_JSCC
+  CDC_CRMLN
+  MANUFACTURER_ONLY
+  NONE_STATED
+}
+
+"Kind of algorithm (absorbs pinned Algorithm family kind and FirmwareVersion)."
+enum AlgorithmKind {
+  EPIGENETIC_CLOCK
+  BLOOD_CHEMISTRY_CLOCK
+  GLYCAN_CLOCK
+  RISK_SCORE
+  WEARABLE_SCORE
+  SIGNAL_PROCESSING
+  FIRMWARE
+  OTHER
+}
+
+"Which realization of an algorithm family a version is."
+enum AlgorithmRealization {
+  PUBLICATION_REFERENCE
+  VENDOR_IMPLEMENTATION
+  DEVICE_SOFTWARE
+  SERVICE_ENDPOINT
+}
+
+"Pinned AlgorithmVersionBasis plus CHANGE_EVENT_UNLABELED (a vendor-announced change with no version label, pinned by its change date)."
+enum AlgorithmVersionBasis {
+  VENDOR_VERSION_STRING
+  PUBLICATION_VERSION
+  SERVICE_ENDPOINT_UNVERSIONED
+  CHANGE_EVENT_UNLABELED
+  UNKNOWN
+}
+
+"Pinned AlgorithmOutputKind."
+enum AlgorithmOutputKind {
+  AGE_ESTIMATE
+  PACE
+  RISK_SCORE
+  FEATURE_MEASURE
+  CLASSIFICATION
+  CALCULATED_QUANTITY
+}
+
+"Pinned ReferenceIntervalKind plus VENDOR_TARGET (a seller-defined 'optimal' band)."
+enum ReferenceIntervalKind {
+  REFERENCE_INTERVAL
+  DECISION_LIMIT
+  GUIDELINE_TARGET
+  VENDOR_TARGET
+}
+
+"Pinned ReferenceIntervalDerivation plus VENDOR_DEFINED."
+enum ReferenceIntervalDerivation {
+  ESTABLISHED
+  TRANSFERRED
+  VERIFIED
+  ADOPTED_FROM_MANUFACTURER
+  ADOPTED_FROM_GUIDELINE
+  VENDOR_DEFINED
+  NOT_REPORTED
+}
+
+"Kind of device or instrument MODEL (absorbs pinned ToolOrInstrument)."
+enum DeviceKind {
+  WEARABLE_RING
+  WEARABLE_WRIST
+  WEARABLE_CHEST_STRAP
+  CGM_SENSOR
+  HOME_METER
+  SMART_SCALE
+  LAB_ANALYZER
+  ARRAY_SCANNER
+  SEQUENCER
+  OTHER
+}
+
+"Sensing modality (absorbs pinned Modality and Sensor)."
+enum SensingModality {
+  PPG
+  ECG
+  ACCELEROMETRY
+  SKIN_TEMPERATURE
+  ELECTRODERMAL
+  BIOIMPEDANCE
+  ELECTROCHEMICAL_GLUCOSE
+  OPTICAL_ABSORBANCE
+  FLUORESCENCE
+  OTHER
+}
+
+# =====================================================================================================
+# Node types
+# =====================================================================================================
+
+"""
+Purpose: the biological referent a measurement is about (NAD+, glycated hemoglobin, IgG glycan profile, pace of
+biological aging). The join point of the compound → mechanism → biomarker → test path: D1 analytes and D2 mechanisms
+attach here, D3 outcome definitions and D5 targets (OPERATIONALIZED_BY) point here, and several Metrics QUANTIFY one
+Biomarker without ever being merged into one series (HbA1c % vs DNAm logA1C).
+Identity rule: curated BellLabs slug (`hu:biomarker:<slug>`). No identifiers of its own: a (scheme, value) such as a
+ChEBI or UniProt id identifies the analyte (D1 ChemicalSubstance / D2 MolecularEntity, reached by HAS_ANALYTE), never
+the Biomarker too. uid token: `biomarker`.
+Questions: Q-D4-01, Q-D4-02, Q-D4-16, Q-D4-17, Q-D4-03, CQ-DX-01.
+"""
+type Biomarker implements Entity & Subjectable
+  @node(labels: ["Biomarker", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  biomarkerKind: BiomarkerKind!
+  description: String
+  "Names, synonyms and analyte names for fulltext entity linking (Q-D4-22)."
+  searchText: String
+  """class: structural; cardinality: zero_or_one (the chemical analyte when the referent is a defined substance: NAD+, NAAD, 25-OH vitamin D); questions: Q-D4-01, Q-D4-16."""
+  analytes: [ChemicalSubstance!]!
+    @relationship(type: "HAS_ANALYTE", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: zero_or_one (the gene product when the referent is a protein or protein modification: IL-6, HbA1c's hemoglobin beta; D2 Q-D2-03 'analyte-participant' branch); questions: Q-D4-01, Q-D4-16."""
+  analyteEntities: [MolecularEntity!]!
+    @relationship(type: "HAS_ANALYTE", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (one Assertion each, citing the paper that establishes the marker, e.g. NAAD for NR utilization); questions: Q-D4-01."""
+  reflectsMechanisms: [Mechanism!]!
+    @relationship(type: "REFLECTS_MECHANISM", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+"""
+Purpose: the measurand or feature definition — what exactly a number is: LOINC 4548-4 (HbA1c mass fraction in
+blood), 'NAD+ in red blood cells (µM)', WHOOP 'hrv_rmssd_milli', Apple 'heartRateVariabilitySDNN', 'DunedinPACE
+pace of aging'. Compartment (`systemOntologyId`) and method (`methodText`: RMSSD vs SDNN) live here, so two
+measurements are comparable only if they share a Metric (or a COMPARABLE_WITH_CONVERSION assessment links them).
+Identity rule: LOINC code when one exists (kernel Identifier, scheme LOINC); else (definitionSource,
+definitionIssuerName, verbatim name, canonicalUnitCode). uid token: `metric`.
+Questions: CQ-DX-01, CQ-DX-02, Q-D4-01, Q-D4-02, Q-D4-07, Q-D4-16, Q-D4-17, Q-D4-21, Q-D4-22, Q-D4-26.
+"""
+type Metric implements Entity & Subjectable
+  @node(labels: ["Metric", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  metricKind: MetricKind!
+  defaultResultKind: DiagnosticResultKind!
+  definitionSource: MetricDefinitionSource!
+  "Issuer named by the definition (LOINC, WHOOP, Apple, Belsky et al. 2022, BellLabs); presentation and identity only."
+  definitionIssuerName: String
+  "Verbatim definition text from the defining source."
+  definitionText: String
+  "LOINC property (e.g. MFr, SCnc) or the source's equivalent."
+  propertyText: String
+  "LOINC system / compartment as written (Bld, RBC, PBMC, Ser/Plas, wrist skin)."
+  systemText: String
+  "UBERON / CL id of the compartment (e.g. CL:0000232 erythrocyte, CL:0000842 PBMC); equality join with D2 contexts."
+  systemOntologyId: String
+  scale: MetricScale
+  "LOINC time aspect or window (Pt, night, 24H)."
+  timeAspect: String
+  "Method inside the definition when it changes the number (RMSSD, SDNN, NGSP %, IFCC mmol/mol)."
+  methodText: String
+  "UCUM code of the canonical unit."
+  canonicalUnitCode: String
+  notReported: [MeasurementField!]
+  "Names, LOINC long/short/consumer names, vendor field names and definition text for fulltext and vector linking (Q-D4-22)."
+  searchText: String
+  """class: structural; cardinality: one (curated; several Metrics may quantify one Biomarker); questions: CQ-DX-01, Q-D4-01, Q-D4-16, Q-D4-17."""
+  quantifies: [Biomarker!]!
+    @relationship(type: "QUANTIFIES", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+"""
+Purpose: the orderable or purchasable test as a laboratory or vendor offers it (Labcorp 001453 'Hemoglobin (Hb) A1c',
+Quest 496, Jinfiniti Intracellular NAD test, TruAge report). Panels are LabTests of kind PANEL that INCLUDE other
+LabTests (absorbs pinned PanelDefinition; composition changes are episodes). What it measures (MEASURES_METRIC) and
+how (PERFORMED_WITH_VERSION) change over time and are therefore episodes; price and offers are D6.
+Identity rule: (issuer, issuer's test code) via the kernel Identifier (scheme LAB_TEST_CODE, requested); else
+(issuer, verbatim test name). uid token: `lab-test`.
+Questions: CQ-DX-01, Q-D4-01, Q-D4-03, Q-D4-04, Q-D4-12, Q-D4-13, Q-D4-18, Q-D4-19, Q-D4-23, Q-D4-24, Q-D4-25.
+"""
+type LabTest implements Entity & Subjectable
+  @node(labels: ["LabTest", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  testKind: LabTestKind!
+  orderChannel: OrderChannel
+  collectionModes: [CollectionMode!]
+  "Specimen requirements as written (tube, volume, container)."
+  specimenText: String
+  "Patient preparation, stability and rejection criteria as written (Q-D4-19)."
+  preAnalyticalText: String
+  notReported: [MeasurementField!]
+  """class: asserted; cardinality: one_or_more (episode: labs remap result codes to LOINC); questions: CQ-DX-01, Q-D4-01, Q-D4-03, Q-D4-17, Q-D4-25."""
+  metrics: [Metric!]!
+    @relationship(type: "MEASURES_METRIC", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (episode: a method or instrument change closes one and opens the next; several open when regional labs differ); questions: CQ-DX-01, CQ-DX-03, Q-D4-01, Q-D4-02, Q-D4-11, Q-D4-23."""
+  assayVersions: [AssayVersion!]!
+    @relationship(type: "PERFORMED_WITH_VERSION", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (episode: a report's algorithm implementation changes); questions: CQ-DX-02, CQ-DX-04, Q-D4-04, Q-D4-06, Q-D4-20, Q-D4-23."""
+  algorithmVersions: [AlgorithmVersion!]!
+    @relationship(type: "PERFORMED_WITH_VERSION", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (PANEL only; episode = panel composition version); questions: Q-D4-03, Q-D4-25."""
+  components: [LabTest!]!
+    @relationship(type: "INCLUDES_TEST", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (stored Product → LabTest; D6 Product is the purchasable item that delivers this test); questions: Q-D4-01, Q-D4-10, Q-D4-13, Q-D4-18, Q-D4-24."""
+  products: [Product!]!
+    @relationship(type: "DELIVERS", direction: IN, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+"""
+Purpose: how one laboratory ran one measurement procedure — performing lab (exactly one), method principle,
+instrument model, reagent kit, software version, specimen types, calibration traceability, reported unit — each
+field null and listed in `notReported` when the source is silent. The unit a comparability judgment
+(kernel Assessment, subkind D4.comparability) is about; absorbs pinned MeasurementMethod, Specimen and
+ReferenceSystem as properties and the instrument as text.
+Identity rule: payloadHash over the identity fields plus the performing lab uid; when any identity field is
+NOT_REPORTED the capture's snapshot digest joins the hash, so two NOT_REPORTED versions never merge.
+uid token: `assay-version`.
+Questions: CQ-DX-01, CQ-DX-03, CQ-DX-06, CQ-AX-21, Q-D4-02, Q-D4-11, Q-D4-19, Q-D4-23.
+"""
+type AssayVersion implements Entity & Subjectable
+  @node(labels: ["AssayVersion", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  methodPrinciple: MethodPrinciple
+  "Method as written (e.g. 'Turbidimetric Inhibition Immunoassay', 'Roche Tina Quant')."
+  methodText: String
+  instrumentModelText: String
+  "Reagent kit / package insert as written (e.g. 'Tina-quant Hemoglobin A1c Gen.3')."
+  reagentKitText: String
+  softwareVersion: String
+  platform: MeasurementPlatform
+  specimenKinds: [SpecimenKind!]
+  "UBERON / CL ids of the specimen compartment(s); equality with Metric.systemOntologyId and D2 contexts."
+  specimenOntologyIds: [String!]
+  calibrationTraceability: CalibrationTraceability
+  "UCUM code of the unit the lab reports."
+  reportedUnitCode: String
+  notReported: [MeasurementField!]
+  "sha256:<hex> identity digest (see Identity rule)."
+  payloadHash: String!
+  """class: asserted (R-26: links two independently identified records; recorded time only); cardinality: exactly_one (part of the version's identity: two labs = two assay versions; a curator inference of the performing organization uses basisKind CURATOR_CLASSIFICATION); questions: CQ-DX-01, CQ-DX-03, Q-D4-04."""
+  performingLab: [Organization!]!
+    @relationship(type: "PERFORMED_BY_LAB", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+"""
+Purpose: one fixed realization of a clock, risk score, wearable score, signal-processing or firmware build:
+the publication reference version (DunedinPACE, Belsky 2022), a vendor implementation ('DunedinPACE™' in TruAge,
+version not stated), a device software state pinned by a vendor change date (WHOOP heart-rate algorithm of
+2026-07-06, CHANGE_EVENT_UNLABELED), or an unversioned service endpoint pinned by retrieval date. Absorbs the
+pinned Algorithm family (`algorithmFamily`, `familyKey`) and FirmwareVersion (algorithmKind FIRMWARE).
+Identity rule: (familyKey, realization, versionLabel) when a label exists; else (familyKey, realization, issuer,
+versionPinnedAt) with versionBasis saying why. uid token: `algorithm-version`.
+Questions: CQ-DX-02, CQ-DX-04, CQ-DX-05, CQ-DX-07, CQ-DX-09, Q-D4-04, Q-D4-05, Q-D4-06, Q-D4-14, Q-D4-15, Q-D4-20, Q-D4-23, Q-D4-26.
+"""
+type AlgorithmVersion implements Entity & Subjectable
+  @node(labels: ["AlgorithmVersion", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Family name as sources write it (DunedinPACE, GrimAge, InnerAge, WHOOP heart rate)."
+  algorithmFamily: String!
+  "Normalized family slug (dunedinpace, grimage, innerage); questions group and filter by family."
+  familyKey: String!
+  algorithmKind: AlgorithmKind!
+  realization: AlgorithmRealization!
+  versionLabel: String
+  versionBasis: AlgorithmVersionBasis!
+  "Source-stated date of the change or release that pins this version (payload, not query validity)."
+  versionPinnedAt: Date
+  outputKind: AlgorithmOutputKind
+  inputPlatforms: [MeasurementPlatform!]
+  "Number of input features (173 CpG sites for DunedinPACE)."
+  inputFeatureCount: Int
+  trainingPopulationText: String
+  "Component a device software state applies to (heart rate, sleep staging, firmware)."
+  componentLabel: String
+  notReported: [MeasurementField!]
+  """class: structural; cardinality: one_or_more; questions: CQ-DX-02, CQ-DX-04, Q-D4-07, Q-D4-16, Q-D4-17, Q-D4-26."""
+  outputs: [Metric!]!
+    @relationship(type: "OUTPUTS_METRIC", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: many (ordered by orderIndex when the source orders components); questions: CQ-DX-04, CQ-DX-07, Q-D4-26 (traversed in reverse: which scores inherit a HARM signal on an input metric)."""
+  inputs: [Metric!]!
+    @relationship(type: "REQUIRES_INPUT_METRIC", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: zero_or_one (vendor implementation → publication version; successor → predecessor); questions: Q-D4-06, Q-D4-20, CQ-DX-04."""
+  derivedFrom: [AlgorithmVersion!]!
+    @relationship(type: "DERIVED_FROM_ALGORITHM_VERSION", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (episode: which software state ran on a device model when); questions: CQ-DX-09, Q-D4-07, Q-D4-09, Q-D4-17, Q-D4-23."""
+  devices: [Device!]!
+    @relationship(type: "RUNS_ON_DEVICE", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+"""
+Purpose: one interval or limit a laboratory or vendor applies for one Metric on one AssayVersion and one population
+partition, with its kind (reference interval, decision limit, guideline target, vendor 'optimal' target) and
+derivation (usually NOT_REPORTED), the verbatim interval text, and the source-stated effective period as payload.
+Absorbs the pinned legacy ReferenceRange (derivation NOT_REPORTED, partition as text). A Labcorp HbA1c page yields
+four of these from one list. Insert-only; a change is a new version.
+Identity rule: payloadHash over (assay version uid, metric uid, intervalKind, partition, bounds, unit, intervalText).
+uid token: `ri-version`.
+Questions: CQ-DX-06, Q-D4-12, Q-D4-02.
+"""
+type ReferenceIntervalVersion implements Entity & Subjectable
+  @node(labels: ["ReferenceIntervalVersion", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  intervalKind: ReferenceIntervalKind!
+  derivation: ReferenceIntervalDerivation!
+  "Interval exactly as printed ('4.8% to 5.6%', 'Optimal 40–100 μM')."
+  intervalText: String!
+  lowerBound: Float
+  upperBound: Float
+  lowerInclusive: Boolean
+  upperInclusive: Boolean
+  "UCUM code of the bounds."
+  unitCode: String
+  "D3 population vocabulary (shared enum SexScope: ALL, FEMALE, MALE, NOT_REPORTED)."
+  sex: SexScope
+  minAgeYears: Float
+  maxAgeYears: Float
+  "Other partition as written (pregnancy, fasting state, ancestry)."
+  partitionText: String
+  "Source-stated effective period (payload; query validity is the publishing source's snapshot time)."
+  effectiveFrom: Date
+  effectiveTo: Date
+  notReported: [MeasurementField!]
+  payloadHash: String!
+  """class: structural; cardinality: zero_or_one (null only for a vendor target published without any test procedure); questions: CQ-DX-06, Q-D4-12."""
+  assayVersions: [AssayVersion!]!
+    @relationship(type: "INTERVAL_FOR", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: exactly_one; questions: CQ-DX-06, Q-D4-12."""
+  metrics: [Metric!]!
+    @relationship(type: "INTERVAL_FOR", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+"""
+Purpose: a device or instrument MODEL as its maker designates it, in its role as a measuring instrument (Oura Ring
+Gen3, WHOOP MG, Dexcom G7, FreeStyle Libre 3 sensor, Roche cobas c513, Illumina iScan). Software states attach by
+RUNS_ON_DEVICE episodes; the purchasable item is a D6 Product (DELIVERS); clearances, recalls and adverse-event
+records are D8 records about that Product (D8 CONCERNS / STATUS_OF -> Product), reached from here through DELIVERS. Absorbs pinned ToolOrInstrument, Modality, Sensor and TechnologyPlatform as enums.
+Identity rule: (maker, model designation, generation); UDI-DI / 510(k) numbers attach through the kernel
+(schemes UDI_DI, FDA_510K requested). uid token: `device`.
+Questions: CQ-DX-09, Q-D4-07, Q-D4-08, Q-D4-09, Q-D4-10, Q-D4-17, Q-D4-18, Q-D4-24.
+"""
+type Device implements Entity & Subjectable
+  @node(labels: ["Device", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  deviceKind: DeviceKind!
+  sensingModalities: [SensingModality!]
+  "Model family as written (Oura Ring, WHOOP, FreeStyle Libre)."
+  deviceFamily: String
+  generationLabel: String
+  "Maker as written on the source (identity of the Organization is a D6/D7 join)."
+  makerName: String
+  notReported: [MeasurementField!]
+  """class: asserted; cardinality: many (stored Product → Device; the D6 Product that is or contains this model); questions: Q-D4-08, Q-D4-09, Q-D4-10, Q-D4-18, Q-D4-24."""
+  products: [Product!]!
+    @relationship(type: "DELIVERS", direction: IN, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

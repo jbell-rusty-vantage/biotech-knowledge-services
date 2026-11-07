@@ -1,0 +1,43 @@
+# Label/version history: product -> variants -> packages -> HAS_LABEL_VERSION episodes (bitemporal edge properties).
+query ProductLabelHistory($uid: String!, $first: Int = 5) {
+  products(where: { uid: { eq: $uid } }, limit: 1) {
+    uid
+    name
+    variants(limit: 5, sort: [{ uid: ASC }]) {
+      uid
+      name
+      packages(limit: 3, sort: [{ uid: ASC }]) {
+        uid
+        name
+        packageKind
+        labelVersionsConnection(first: $first, sort: [{ edge: { validFrom: DESC } }, { node: { uid: ASC } }]) {
+          totalCount
+          pageInfo {
+            ...PageInfoFields
+          }
+          edges {
+            cursor
+            properties {
+              validFrom
+              validTo
+              validFromPrecision
+              validToPrecision
+              recordedFrom
+              recordedTo
+            }
+            node {
+              uid
+              labelVersionCode
+              panelKind
+              jurisdiction
+              contentDigest
+              servingSizeVerbatim
+              firstObservedAt
+              lastObservedAt
+            }
+          }
+        }
+      }
+    }
+  }
+}

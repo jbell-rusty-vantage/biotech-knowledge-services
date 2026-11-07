@@ -1,0 +1,344 @@
+# Assertions for fixture nr-trial-jats-unstructured (FIXTURES stage, A8, 2026-10-08) — 00-DIRECTIVE 3.8 path.
+# Kernel Assertion shape (final/schema/kernel.graphql, A1): one subject, one object or one typed literal, one asserter,
+# locators = HAS_EVIDENCE {role SUPPORTS, origin DECLARED} to the SourceLocators in locators.yaml (verified offsets).
+# producedBy ids are FIXTURE ids (mission:ft-D11-fixtures / run:ft-D11-<fixture>), not live Mission Control ids.
+# uids are fixture uids (hu:<uidToken>:<opaque>); "sameAs" names the node of another packet's fixture it must resolve to.
+# Seam types (not declared by D11): D3 Study / Publication / InterventionComponent / ADMINISTERS / REPORTS_ON / HAS_STUDY_ROLE
+# (A4), D1 IngredientMaterial / ChemicalSubstance / REALIZES_SUBSTANCE (A2), D7 Person / Organization (A6), D9 Chunk /
+# CHUNK_OF / COVERS_LOCATOR / MENTIONS (A8). No D11 type here since the adversarial review (the empty PubMed [si] search is a kernel snapshot + FIELD_NOT_REPORTED a07).
+fixture: nr-trial-jats-unstructured
+producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured" }
+activities:
+  - { ref: act-ingest, activityKind: INGESTION, agent: agent-a8-fixtures, missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured", note: "captures (4 snapshots) + source-stated assertions" }
+  - { ref: act-chunk, activityKind: PROJECTION, agent: agent-d9-chunker, methodVersion: "fixture-chunker/1 (one leaf JATS <sec>, else one <p>; <ack> and COI <notes> blocks)", missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured" }
+  - { ref: act-link, activityKind: PROJECTION, agent: agent-entity-linker, methodVersion: "entity-link/v1 (exact name + identifier-scheme check against GSRS / CT.gov)", missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured" }
+  - { ref: act-verify, activityKind: VERIFICATION, agent: agent-fixture-verifier, methodVersion: "fixture-reselect/v1 (deterministic re-selection of exact at [start,end) + quoteHash; simulates verification.v1 CAPTURE_FIDELITY, not produced by it)", missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured" }
+
+nodes:
+  - { ref: study-nr, module: D3, type: Study, uid: "hu:study:nct02921659", name: "Safety & Efficacy of Nicotinamide Riboside Supplementation for Improving Physiological Function in Middle-Aged and Older Adults", identifiers: [ { scheme: NCT, issuer: "NLM ClinicalTrials.gov", value: "NCT02921659", evidence: l-ctgov-nct } ] }
+  - { ref: ic-nr, module: D3, type: InterventionComponent, uid: "hu:intervention-component:nct02921659-niagen-500-bid", name: "Niagen (NR chloride) 500 mg twice daily, 6 weeks", properties: { componentRole: ACTIVE, materialTextVerbatim: "nicotinamide riboside chloride (NIAGEN®; 500 mg, twice per day; ChromaDex, Inc.)", interventionTypeVerbatim: DIETARY_SUPPLEMENT, quantity: 500, unitCode: "mg", quantityBasis: PER_DOSE, massBasis: SALT_FORM, route: ORAL, scheduleText: "twice per day", durationIso: "P6W", verbatimDoseText: "500 mg, twice per day", supplierNameVerbatim: "ChromaDex, Inc." }, note: "massBasis SALT_FORM because the paper names the salt ('nicotinamide riboside chloride') at the dose; contrast D1 nr-trial-unstructured where the basis had to be inferred" }
+  - { ref: mat-niagen, module: D1, type: IngredientMaterial, uid: "hu:material:niagen", name: "NIAGEN (crystalline nicotinamide riboside chloride)", sameAs: "final/fixtures/D1/nr-salt-moiety-us-canada#mat-niagen" }
+  - { ref: sub-nrcl, module: D1, type: ChemicalSubstance, uid: "hu:substance:unii-8xm2xt8vwi", name: "NICOTINAMIDE RIBOSIDE CHLORIDE", sameAs: "final/fixtures/D1/nr-salt-moiety-us-canada#sub-nrcl", identifiers: [ { scheme: UNII, issuer: "FDA GSRS", value: "8XM2XT8VWI", evidence: "nr-chloride-gsrs-identifier-bridge#l-gsrs8-unii" } ] }
+  - { ref: pub-martens2018, module: D3, type: Publication, uid: "hu:publication:pmid-29599478", name: "Chronic nicotinamide riboside supplementation is well-tolerated and elevates NAD+ in healthy middle-aged and older adults", properties: { publicationKind: ARTICLE } }
+  - { ref: src-jats, module: K, type: Source, name: "Europe PMC fullTextXML PMC5876407", properties: { canonicalUri: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC5876407/fullTextXML", sourceKind: API, genre: PEER_REVIEWED_PUBLICATION }, snapshots: [snap-jats-pmc5876407] }
+  - { ref: src-ctgov, module: K, type: Source, name: "ClinicalTrials.gov API v2 NCT02921659", properties: { canonicalUri: "https://clinicaltrials.gov/api/v2/studies/NCT02921659", sourceKind: REGISTRY, genre: TRIAL_REGISTRY_RECORD }, snapshots: [snap-ctgov-nct02921659] }
+  - { ref: src-pubmed-si, module: K, type: Source, name: "PubMed esearch NCT02921659[si]", properties: { canonicalUri: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=NCT02921659%5Bsi%5D&retmode=json", sourceKind: API, genre: BIBLIOGRAPHIC_INDEX_QUERY }, snapshots: [snap-pubmed-si-nct02921659] }
+  - { ref: src-idconv, module: K, type: Source, name: "PMC ID Converter, PMID 29599478", properties: { canonicalUri: "https://pmc.ncbi.nlm.nih.gov/tools/idconv/api/v1/articles/?ids=29599478&format=json", sourceKind: API, genre: IDENTIFIER_SERVICE_RECORD }, snapshots: [snap-idconv-29599478] }
+  - { ref: person-martens, module: D7, type: Person, name: "Christopher R. Martens", identifiers: [ { scheme: ORCID, issuer: ORCID, value: "0000-0003-0578-2948", evidence: l-jats-author, note: "printed with authenticated=false; attach as an unverified identifier episode" } ], note: "first and corresponding author. R-15: no longer the asserter; the multi-author paper (pub-martens2018, D3 Publication) asserts what it states in its own voice; the author is reached through AUTHORED_BY" }
+  - { ref: org-cu-boulder, module: D7, type: Organization, name: "University of Colorado, Boulder (registry lead sponsor; responsible party SPONSOR)" }
+  - { ref: org-chromadex, module: D7, type: Organization, name: "ChromaDex, Inc.", sameAs: "final/fixtures/D1/nr-salt-moiety-us-canada#org-chromadex" }
+  - { ref: org-nlm, module: D7, type: Organization, name: "U.S. National Library of Medicine (PubMed, PMC ID Converter)" }
+  - { ref: agent-a8-fixtures, module: K, type: Agent, name: "agent:a8-d11-fixtures", properties: { agentKind: AUTOMATED_AGENT } }
+  - { ref: agent-entity-linker, module: K, type: Agent, name: "agent:entity-linker (entity-link/v1)", properties: { agentKind: TEXT_MINING_AGENT } }
+  - { ref: agent-fixture-verifier, module: K, type: Agent, name: "agent:fixture-verifier (fixture-reselect/v1)", properties: { agentKind: AUTOMATED_AGENT } }
+  - { ref: claim-nr-tolerated, module: K, type: Claim, name: "Nicotinamide riboside chloride 1000 mg/day for 6 weeks is well tolerated in healthy middle-aged and older adults (no serious adverse events)" }
+
+# ------------------------------------------------------------------------------------------------------------
+# Directive 3.8: question -> chunk (MENTIONS or vector) -> assertion(s) -> SourceLocator -> SourceSnapshot bytes
+# ------------------------------------------------------------------------------------------------------------
+retrievalPath:
+  question: "Q-D11-03 — What material, form and dose did NCT02921659 administer, quoted from the paper with its locator?"
+  snapshot: { ref: snap-jats-pmc5876407, contentHash: "sha256:dd620181966f862df7030f4bb7b09811befd90e8e67c2b94fc90f9c212664794", contentHashBasis: RAW_BYTES }
+  chunks: "locators.yaml#chunks (6 D9 Chunks over the raw JATS: chunk-sec-design covers l-jats-dose and l-jats-mention-nrcl; chunk-sec-ethics covers l-jats-registered and l-jats-mention-nct)"
+  chunkProperties: { textBasis: JATS_XML, extractorVersion: "europepmc-jats/raw", normalizationVersion: "none (raw code points; U+2009 and U+00A0 kept)", chunkerVersion: "fixture-chunker/1", embeddingModel: "(not computed in the fixture)", generatedBy: act-chunk }
+  mentions:   # R-09/R-27: no surface-form node; span = SourceLocator cited by a RESOLUTION Assessment (role CONTEXT) + D9 Chunk -[:MENTIONS {DerivedEdgeProperties}]-> entity, licensed by that Assessment
+    - { surfaceForm: "nicotinamide riboside chloride", locator: l-jats-mention-nrcl, chunk: chunk-sec-design, resolvedTo: { ref: sub-nrcl, type: ChemicalSubstance }, licensedBy: r01-resolve-nrcl, edge: "Chunk -[:MENTIONS {derivationRule: 'entity-link/v1', derivedFromAssessmentUids: [r01-resolve-nrcl]}]-> ChemicalSubstance" }
+    - { surfaceForm: "NIAGEN", locator: l-jats-dose, chunk: chunk-sec-design, resolvedTo: { ref: mat-niagen, type: IngredientMaterial }, licensedBy: r02-resolve-niagen }
+    - { surfaceForm: "NCT02921659", locator: l-jats-mention-nct, chunk: chunk-sec-ethics, resolvedTo: { ref: study-nr, type: Study }, licensedBy: r03-resolve-nct, note: "the identifier resolves by scheme NCT; the trial is reachable from the paper text only (CT.gov and PubMed hold no link, a06/a07)" }
+  vectorEntry: { index: "chunk_embedding (D9 vector index over Chunk embeddings)", queryText: "nicotinamide riboside chloride dose twice per day capsules randomized crossover", expectedTopChunk: chunk-sec-design, note: "scores are not stored; the MENTIONS hop from the Study (via NCT) or the substance (via UNII) is the deterministic entry" }
+  coversLocator: { chunk-sec-design: [l-jats-dose, l-jats-mention-nrcl], chunk-sec-ethics: [l-jats-registered, l-jats-mention-nct], chunk-sec-ae: [l-jats-ae], chunk-par-discussion: [l-jats-dose-caution], chunk-ack: [l-jats-ack], chunk-coi: [l-jats-coi] }
+  assertionsReached: { l-jats-dose: [a01-administers, a02-dose-amount, a03-realizes], l-jats-registered: [a05-reports-on], l-jats-ae: [c01-tolerated], l-jats-dose-caution: [c02-dose-caution], l-jats-ack: [a08-role-material-provider, a09-role-funder], l-jats-coi: [a10-no-competing-interest] }
+  verifierReselect: "for every locator: snapshot_text[startOffset:endOffset] == exact and sha256(exact) == quoteHash (offsetBasis CODE_POINT); re-run 2026-10-08 by build_locators.py on a fresh capture whose sha256 equals the research capture; adjudication ad01 records the result for a01"
+  cypher: |
+    // entry by MENTIONS from the Study (deterministic) — or replace the first MATCH with the vector SEARCH over chunk_embedding
+    MATCH (st:Study)-[:HAS_IDENTIFIER]-(:Identifier {scheme: 'NCT', value: 'NCT02921659'})
+    MATCH (st)<-[:MENTIONS]-(c0:Chunk)-[:CHUNK_OF]->(snap:SourceSnapshot)<-[:CHUNK_OF]-(c:Chunk)
+    MATCH (c)-[:COVERS_LOCATOR]->(loc:SourceLocator)<-[ev:HAS_EVIDENCE]-(a:Assertion)
+    WHERE a.recordedTo IS NULL AND ev.role = 'SUPPORTS' AND a.predicate IN ['ADMINISTERS', 'ADMINISTERED_AMOUNT']
+    OPTIONAL MATCH (a)<-[:ASSESSES]-(adj:Adjudication {adjudicationKind: 'CAPTURE_FIDELITY'})
+    OPTIONAL MATCH (a)-[:HAS_OBJECT]->(m:IngredientMaterial)-[:REALIZES_SUBSTANCE]->(s:ChemicalSubstance)
+    RETURN a.predicate, a.valueNumber, a.unitCode, m.name, s.name, loc.exact, loc.startOffset, loc.endOffset,
+           snap.contentHash, snap.retrievedAt, adj.verdict
+    ORDER BY loc.startOffset
+
+assertions:
+  # ---------- the administered material and dose (Q-D11-03) ----------
+  - id: a01-administers
+    predicate: ADMINISTERS
+    assertionKind: RELATIONSHIP
+    subject: { ref: ic-nr, type: InterventionComponent, module: D3 }
+    object: { ref: mat-niagen, type: IngredientMaterial, module: D1 }
+    asserter: { ref: pub-martens2018, type: Publication, module: D3 }   # R-15: multi-author paper asserts in its own voice
+    locators: [l-jats-dose]
+    speechAct: REPORTS_PRACTICE
+    polarity: POSITIVE
+    basisKind: UNSTATED
+    validTime: { validFrom: "2015-04-01T00:00:00Z", validFromPrecision: MONTH, validFromBasis: INFERRED, validTo: "2016-10-31T00:00:00Z", validToPrecision: MONTH, validToBasis: INFERRED, inferredFrom: "registry startDateStruct 2015-04 (l-ctgov-start) and completionDateStruct 2016-10 ACTUAL (l-ctgov-completion)" }
+    edge: { type: ADMINISTERS, module: D3, properties: AssertedRecordedProperties, episode: "asserted episode; recordedFrom service-assigned at commit (>= snapshot retrievedAt 2026-10-08T21:54:48Z)" }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured" }
+  - id: a02-dose-amount
+    predicate: ADMINISTERED_AMOUNT
+    assertionKind: FIELD
+    subject: { ref: ic-nr, type: InterventionComponent, module: D3 }
+    literal: { valueNumber: 500, unitCode: "mg" }
+    qualifiers: ["per dose", "twice per day (1000 mg/day)", "of nicotinamide riboside chloride (salt form named in the sentence)", "6 weeks, crossover with placebo"]
+    asserter: { ref: pub-martens2018, type: Publication, module: D3 }   # R-15: multi-author paper asserts in its own voice
+    locators: [l-jats-dose]
+    speechAct: REPORTS_PRACTICE
+    basisKind: UNSTATED
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured" }
+  - id: a03-realizes
+    predicate: REALIZES_SUBSTANCE
+    assertionKind: RELATIONSHIP
+    subject: { ref: mat-niagen, type: IngredientMaterial, module: D1 }
+    object: { ref: sub-nrcl, type: ChemicalSubstance, module: D1 }
+    asserter: { ref: pub-martens2018, type: Publication, module: D3 }   # R-15: multi-author paper asserts in its own voice
+    locators: [l-jats-dose]
+    speechAct: STATES
+    polarity: POSITIVE
+    basisKind: UNSTATED
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    edge: { type: REALIZES_SUBSTANCE, module: D1, properties: AssertedRecordedProperties, episode: "corroborates final/fixtures/D1/nr-salt-moiety-us-canada#a01-realizes-dsld (same edge); no new episode" }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured" }
+  - id: a04-administers-registry
+    predicate: ADMINISTERS
+    assertionKind: RELATIONSHIP
+    subject: { ref: ic-nr, type: InterventionComponent, module: D3 }
+    object: { ref: mat-niagen, type: IngredientMaterial, module: D1 }
+    asserter: { ref: org-cu-boulder, type: Organization, module: D7 }
+    locators: [l-ctgov-arm]
+    speechAct: STATES
+    basisKind: UNSTATED
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    note: "registry arm description 'Niagen™ (nicotinamide riboside chloride, ChromaDex, Inc.) 500mg, 2x/day for 6 weeks.' corroborates a01 (same episode; the registry asserter is the responsible party)"
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured" }
+
+  # ---------- trial link, one-sided (Q-D11-02) ----------
+  - id: a05-reports-on
+    predicate: REPORTS_ON
+    assertionKind: RELATIONSHIP
+    subject: { ref: pub-martens2018, type: Publication, module: D3 }
+    object: { ref: study-nr, type: Study, module: D3 }
+    asserter: { ref: pub-martens2018, type: Publication, module: D3 }   # R-15: multi-author paper asserts in its own voice
+    locators: [l-jats-registered]
+    speechAct: STATES
+    polarity: POSITIVE
+    basisKind: UNSTATED
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    edge: { type: REPORTS_ON, module: D3, properties: AssertedRecordedProperties }
+    note: "the only side that links: the publisher tagged the id as ext-link-type pmc:clinical-trial; see a06 (registry) and a07 (PubMed)"
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured" }
+  - id: a06-registry-no-reference
+    predicate: FIELD_NOT_REPORTED
+    assertionKind: FIELD
+    subject: { ref: src-ctgov, type: Source, module: K }
+    literal: { valueString: "referencesModule.references (publication citing NCT02921659)" }
+    asserter: { ref: agent-a8-fixtures, type: Agent, module: K }
+    locators: [l-ctgov-refs]
+    speechAct: STATES
+    basisKind: DIRECT_MEASUREMENT
+    validTime: { validObservedAt: "2026-10-08T21:54:48Z", validFromBasis: OBSERVATION_ONLY }
+    note: "kernel convention FIELD_NOT_REPORTED (subject = the record read; locator = the section read). Not a denial: the registry is silent"
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured" }
+  - id: a07-pubmed-no-databank-link
+    predicate: FIELD_NOT_REPORTED
+    assertionKind: FIELD
+    subject: { ref: study-nr, type: Study, module: D3 }
+    literal: { valueString: "PubMed secondary-source id [si] (DataBank ClinicalTrials.gov) linking a PubMed record to NCT02921659" }
+    asserter: { ref: org-nlm, type: Organization, module: D7 }
+    locators: [l-esearch-count0, l-esearch-notfound]
+    speechAct: STATES
+    basisKind: DIRECT_MEASUREMENT
+    validTime: { validObservedAt: "2026-10-08T21:54:49Z", validFromBasis: OBSERVATION_ONLY }
+    note: "kernel FIELD_NOT_REPORTED on the COMPLETE snapshot snap-pubmed-si-nct02921659 (count 0; no CaptureAttempt since the adversarial review): CQ-AX-04 reads this as NOT_REPORTED_BY_SOURCE for PubMed, never as 'no publication exists' (a05 shows one)"
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured" }
+
+  # ---------- material provider, funder, competing interests (Q-D11-08) ----------
+  - id: a08-role-material-provider
+    predicate: HAS_STUDY_ROLE
+    assertionKind: RELATIONSHIP
+    subject: { ref: study-nr, type: Study, module: D3 }
+    object: { ref: org-chromadex, type: Organization, module: D7 }
+    asserter: { ref: pub-martens2018, type: Publication, module: D3 }   # R-15: multi-author paper asserts in its own voice
+    locators: [l-jats-ack]
+    speechAct: STATES
+    basisKind: UNSTATED
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    qualifiers: ["roleText: Study pills, NR standards for metabolite analyses ... were provided by ChromaDex, Inc."]   # R-30: verbatim role text on the authorizing Assertion, not on the edge
+    edge: { type: HAS_STUDY_ROLE, module: D3, properties: StudyRoleEdgeProperties, roleKind: MATERIAL_PROVIDER }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured" }
+  - id: a09-role-funder
+    predicate: HAS_STUDY_ROLE
+    assertionKind: RELATIONSHIP
+    subject: { ref: study-nr, type: Study, module: D3 }
+    object: { ref: org-chromadex, type: Organization, module: D7 }
+    asserter: { ref: pub-martens2018, type: Publication, module: D3 }   # R-15: multi-author paper asserts in its own voice
+    locators: [l-jats-ack]
+    speechAct: STATES
+    basisKind: UNSTATED
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    qualifiers: ["roleText: partial funding support were provided by ChromaDex, Inc."]   # R-30
+    edge: { type: HAS_STUDY_ROLE, module: D3, properties: StudyRoleEdgeProperties, roleKind: FUNDER }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured" }
+  - id: a10-no-competing-interest
+    predicate: DISCLOSES_INTEREST
+    assertionKind: CLAIM
+    claimType: PROVENANCE
+    subject: { ref: pub-martens2018, type: Publication, module: D3 }
+    literal: { valueString: "The authors declare no competing interests." }
+    polarity: NEGATIVE
+    asserter: { ref: pub-martens2018, type: Publication, module: D3 }   # R-15: multi-author paper asserts in its own voice
+    locators: [l-jats-coi]
+    speechAct: DENIES
+    basisKind: UNSTATED
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    note: "predicate-only (05-relationship-register predicateOnly, owner D7). Compared with a08/a09 and a11 this is the disclosure disagreement Q-D11-08 surfaces; D11 does not judge it (a D7 financial-interest assessment would). R-15: the collective statement 'The authors declare' is the paper's own voice (no individual author is named), so the Publication asserts it; a statement naming one author would stay with that D7 Person. R-82: DISCLOSES_INTEREST denial = polarity NEGATIVE, speechAct DENIES"
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured" }
+  - id: a11-role-collaborator-registry
+    predicate: HAS_STUDY_ROLE
+    assertionKind: RELATIONSHIP
+    subject: { ref: study-nr, type: Study, module: D3 }
+    object: { ref: org-chromadex, type: Organization, module: D7 }
+    asserter: { ref: org-cu-boulder, type: Organization, module: D7 }
+    locators: [l-ctgov-collab]
+    speechAct: STATES
+    basisKind: UNSTATED
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    qualifiers: ["roleText: collaborators: ChromaDex, Inc. (class INDUSTRY)"]   # R-30
+    edge: { type: HAS_STUDY_ROLE, module: D3, properties: StudyRoleEdgeProperties, roleKind: COLLABORATOR }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured" }
+
+  # ---------- identifiers (kernel identifier.attach; CQ-ID-04-style bridge PMID <-> PMCID <-> DOI, row B01) ----------
+  - id: i01-pmid-doi-jats
+    predicate: HAS_IDENTIFIER
+    assertionKind: FIELD
+    subject: { ref: pub-martens2018, type: Publication, module: D3 }
+    identifiers: [ { scheme: PMID, issuer: NLM, value: "29599478" }, { scheme: DOI, issuer: Crossref, value: "10.1038/s41467-018-03421-7" } ]
+    asserter: { ref: org-nlm, type: Organization, module: D7 }
+    locators: [l-jats-ids]
+    note: "one HAS_IDENTIFIER Assertion + IdentifierLinkProperties episode per identifier (executor writes two); the JATS article-meta is PMC's deposit"
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, note: "identifier and composition statements carry no valid time of their own; the episode is recorded-time only" }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured" }
+  - id: i02-pmcid-idconv
+    predicate: HAS_IDENTIFIER
+    assertionKind: FIELD
+    subject: { ref: pub-martens2018, type: Publication, module: D3 }
+    identifiers: [ { scheme: PMCID, issuer: NLM, value: "PMC5876407" } ]
+    asserter: { ref: org-nlm, type: Organization, module: D7 }
+    locators: [l-idconv, l-jats-pmcid]
+    note: "authority bridge B01 (pmc-idconv). R-42/R-43: the PMCID identifies the work only; the Europe PMC JATS Source src-jats is grouped with the work by the asserted RENDITION_OF i03 (no shared Identifier, no identifier->identifier edge)"
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, note: "identifier and composition statements carry no valid time of their own; the episode is recorded-time only" }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured" }
+  - id: i03-rendition-of
+    predicate: RENDITION_OF
+    assertionKind: RELATIONSHIP
+    subject: { ref: src-jats, type: Source, module: K }
+    object: { ref: pub-martens2018, type: Publication, module: D3 }
+    asserter: { ref: org-nlm, type: Organization, module: D7 }
+    locators: [l-jats-pmcid, l-jats-ids]
+    speechAct: STATES
+    polarity: POSITIVE
+    basisKind: UNSTATED
+    qualifiers: ["rendition-rule: the record prints the work's PMCID / PMID / DOI"]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    edge: { type: RENDITION_OF, module: D3, properties: AssertedRecordedProperties }
+    note: "R-42/R-43 (was i03-source-pmcid: HAS_IDENTIFIER PMCID on the Source, an Identifier shared with the work): the JATS rendition is grouped with the work by an asserted RENDITION_OF, recorded time only, so regrouping is a supersession"
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured" }
+
+  # ---------- claim occurrences carried by the paper (harm-adjacent) ----------
+  - id: c01-tolerated
+    predicate: WELL_TOLERATED_AT_DOSE
+    assertionKind: CLAIM
+    claimType: CAUSAL
+    occurrenceOf: { ref: claim-nr-tolerated, type: Claim }
+    subject: { ref: ic-nr, type: InterventionComponent, module: D3 }
+    proposition: "NR was well tolerated at the dose tested, and no serious adverse events occurred."
+    qualifiers: ["1000 mg/day NR chloride (2 x 500 mg)", "6 weeks", "30 participants enrolled (same paragraph: 'reported by 7 of the 30 participants enrolled')", "healthy middle-aged and older adults"]
+    asserter: { ref: pub-martens2018, type: Publication, module: D3 }   # R-15: multi-author paper asserts in its own voice
+    locators: [l-jats-ae]
+    speechAct: STATES
+    polarity: POSITIVE
+    basisKind: DIRECT_MEASUREMENT
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured" }
+  - id: c02-dose-caution
+    predicate: DOSE_EXCEEDS_LABEL_RECOMMENDATION
+    assertionKind: CLAIM
+    claimType: COMPARATIVE
+    subject: { ref: ic-nr, type: InterventionComponent, module: D3 }
+    proposition: "the dose tested in the present study exceeds the label-recommended dose and should be considered investigational until further work can be performed to confirm the safety and efficacy of higher doses for use by the general population"
+    asserter: { ref: pub-martens2018, type: Publication, module: D3 }   # R-15: multi-author paper asserts in its own voice
+    locators: [l-jats-dose-caution]
+    speechAct: CAUTIONS
+    polarity: POSITIVE
+    basisKind: UNSTATED
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    note: "the paper's own caution; with D6 label versions (DSLD 323170 '1-3 times daily' of 300 mg) it feeds CQ-PV-04 / Q-D11-21 — the label amount's mass basis is unstated, so any comparison stays a qualified assessment"
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured" }
+
+assessments:
+  - id: r01-resolve-nrcl
+    assessmentKind: RESOLUTION
+    assessmentSubkind: "D1.mention-resolution"
+    about: [ { ref: sub-nrcl, type: ChemicalSubstance, module: D1 } ]
+    evidence: [ { locator: l-jats-mention-nrcl, role: CONTEXT }, { locator: "nr-chloride-gsrs-identifier-bridge#l-gsrs8-unii", role: SUPPORTS } ]
+    score: 1.0
+    summary: "'nicotinamide riboside chloride' -> NICOTINAMIDE RIBOSIDE CHLORIDE (UNII 8XM2XT8VWI): the salt is named explicitly, so not the cation 0I8H2M0L7N"
+    methodVersion: "entity-link/v1"
+    status: ACCEPTED
+    generatedBy: act-link
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured" }
+  - id: r02-resolve-niagen
+    assessmentKind: RESOLUTION
+    assessmentSubkind: "D1.mention-resolution"
+    about: [ { ref: mat-niagen, type: IngredientMaterial, module: D1 } ]
+    evidence: [ { locator: l-jats-dose, role: SUPPORTS }, { locator: l-ctgov-arm, role: SUPPORTS } ]
+    score: 0.95
+    summary: "'NIAGEN®' (paper) and 'Niagen™' (registry arm) -> the NIAGEN branded material; the paper names supplier ChromaDex, Inc."
+    methodVersion: "entity-link/v1"
+    status: ACCEPTED
+    generatedBy: act-link
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured" }
+  - id: r03-resolve-nct
+    assessmentKind: RESOLUTION
+    assessmentSubkind: "D3.registry-id-resolution"
+    about: [ { ref: study-nr, type: Study, module: D3 } ]
+    evidence: [ { locator: l-jats-mention-nct, role: CONTEXT }, { locator: l-ctgov-nct, role: SUPPORTS } ]
+    score: 1.0
+    summary: "NCT02921659 matches the kernel NCT pattern and resolves to the CT.gov v2 record (HTTP 200)"
+    methodVersion: "entity-link/v1 (scheme-pattern + registry fetch)"
+    status: ACCEPTED
+    generatedBy: act-link
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured" }
+
+adjudications:
+  - id: ad01-capture-fidelity-a01
+    adjudicationKind: CAPTURE_FIDELITY
+    about: a01-administers
+    verdict: DIRECTLY_SUPPORTED
+    mechanicalStatus: passed
+    policyOutcome: PASS
+    judgeKind: DETERMINISTIC
+    methodVersion: "fixture-reselect/v1"
+    evidence: [ { locator: l-jats-dose, role: SUPPORTS, expectedSelectedContentDigest: "sha256:0a70fe559367fe4302272c72d3647fd81d6b1612c8bd9eaef9ca4e410498ae53" } ]
+    resultingStatus: ACCEPTED
+    note: "fixture simulation of the verification.v1 CAPTURE_FIDELITY check (verdict -> status mapping in packets/K/09-reasoning.md); a SUPPORT adjudication of c01 is out of scope here"
+    generatedBy: act-verify
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-nr-trial-jats-unstructured" }

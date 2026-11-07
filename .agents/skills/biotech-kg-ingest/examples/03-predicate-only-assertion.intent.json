@@ -1,0 +1,108 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v2",
+  "intentId": "skill-relate-1",
+  "pins": {
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+    "policyVersion": "bks-admission-policy/v1"
+  },
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "biotech-kg-ingest-examples",
+      "model": "example"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run-skill-relate-1",
+      "missionId": "mission-skill-relate",
+      "operationId": "op-skill-relate-1"
+    },
+    "activityKind": "INGESTION"
+  },
+  "basis": {
+    "creationOnly": {
+      "reason": "biotech-kg-ingest example relate: first capture of synthetic example entities"
+    }
+  },
+  "sources": [
+    {
+      "ref": "page",
+      "source": {
+        "canonicalUri": "https://examples.bks.test/relate/supplier-page",
+        "sourceKind": "WEB_PAGE"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-03T08:00:00Z",
+        "observedAt": "2026-10-03T08:00:00Z",
+        "contentHash": "sha256:0cf4643e60a4ccc2499bf1e9c95ca4a82874237f7e84d6190656770763cb417b",
+        "contentHashBasis": "SYNTHETIC_FIXTURE",
+        "captureMethod": "bks-example/1",
+        "captureCompleteness": "COMPLETE"
+      },
+      "locators": [
+        {
+          "ref": "l-supply",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "raw-capture/v1",
+            "type": "TextQuoteSelector",
+            "exact": "Example Supplier Inc. exclusively supplies the extract",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 40,
+              "end": 94
+            }
+          },
+          "exact": "Example Supplier Inc. exclusively supplies the extract",
+          "startOffset": 40,
+          "endOffset": 94
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "supplier",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "Example Supplier Inc.",
+      "uidSegment": "skill-relate-supplier",
+      "properties": {
+        "entityKind": "LEGAL_ENTITY"
+      },
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "mat",
+      "mode": "new",
+      "nodeType": "IngredientMaterial",
+      "name": "Example botanical extract",
+      "uidSegment": "skill-relate-material",
+      "properties": {
+        "materialKind": "BOTANICAL_PREPARATION"
+      },
+      "onMatch": "use_existing"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "supplies",
+      "kind": "assertion.relate",
+      "subjectRef": "supplier",
+      "objectRef": "mat",
+      "asserterRef": "supplier",
+      "evidence": [
+        "l-supply"
+      ],
+      "assertion": {
+        "predicate": "SUPPLIES_MATERIAL",
+        "speechAct": "STATES",
+        "basisKind": "MANUFACTURER_CLAIM",
+        "qualifiers": [
+          "exclusivity=EXCLUSIVE"
+        ],
+        "validity": {}
+      }
+    }
+  ]
+}

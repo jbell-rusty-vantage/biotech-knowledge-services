@@ -1,0 +1,1745 @@
+{
+  "format": "bks-digest-golden.v2",
+  "description": "Normalized v2 example intent and its offline plan body with their bks-canonical-json.v2 digests. Regenerate with BKS_UPDATE_GOLDEN=1.",
+  "intent": {
+    "normalized": {
+      "schemaVersion": "biotech-knowledge-intent.v2",
+      "intentId": "example-basis-label-2026-07-10-v2",
+      "pins": {
+        "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+        "policyVersion": "bks-admission-policy/v1"
+      },
+      "context": {
+        "actor": {
+          "kind": "agent",
+          "id": "ingestion-agent",
+          "model": "claude-fable-5-1"
+        },
+        "run": {
+          "system": "mission-control",
+          "runId": "example-run-001",
+          "missionId": "example-mission",
+          "operationId": "example-op-001"
+        },
+        "activityKind": "INGESTION",
+        "operationKind": "knowledge.ingestion_apply"
+      },
+      "basis": {
+        "creationOnly": {
+          "reason": "Example: first capture of this label page; no prior read snapshot exists",
+          "expectAbsent": [],
+          "expectPresent": []
+        }
+      },
+      "defaults": {
+        "privacyClass": "PUBLIC"
+      },
+      "sources": [
+        {
+          "ref": "label",
+          "source": {
+            "canonicalUri": "https://www.elysiumhealth.com/pages/basis-supplement-facts",
+            "title": "Basis Supplement Facts",
+            "sourceKind": "WEB_PAGE",
+            "genre": "MARKETING_PAGE"
+          },
+          "snapshot": {
+            "retrievedAt": "2026-07-10T00:00:00Z",
+            "observedAt": "2026-07-10T00:00:00Z",
+            "contentHash": "sha256:283496a65daa5de294e80e62a549737b0e26936acc888565b666edb3b8f8e912",
+            "contentHashBasis": "SYNTHETIC_FIXTURE",
+            "captureMethod": "bks-fixture/1",
+            "captureMethodDescription": "Example only: replace with a real capture (contentHash over the raw bytes, contentHashBasis RAW_BYTES)",
+            "captureCompleteness": "UNKNOWN",
+            "mimeType": "text/html",
+            "metadata": {}
+          },
+          "captureAttempts": [],
+          "locators": [
+            {
+              "ref": "panel",
+              "selectorKind": "TEXT_QUOTE",
+              "selector": {
+                "basis": "raw-capture/v1",
+                "type": "TextQuoteSelector",
+                "exact": "Elysium NR (Nicotinamide Riboside Chloride) 250 mg"
+              },
+              "exact": "Elysium NR (Nicotinamide Riboside Chloride) 250 mg",
+              "reportsFields": []
+            },
+            {
+              "ref": "pt",
+              "selectorKind": "TEXT_QUOTE",
+              "selector": {
+                "basis": "raw-capture/v1",
+                "type": "TextQuoteSelector",
+                "exact": "PT (Pterostilbene)"
+              },
+              "exact": "PT (Pterostilbene)",
+              "reportsFields": []
+            }
+          ]
+        }
+      ],
+      "subjects": [
+        {
+          "ref": "elysium",
+          "mode": "new",
+          "nodeType": "Organization",
+          "name": "Elysium Health",
+          "properties": {
+            "entityKind": "LEGAL_ENTITY",
+            "legalName": "Elysium Health, Inc."
+          },
+          "identifiers": [],
+          "onMatch": "use_existing"
+        },
+        {
+          "ref": "basis",
+          "mode": "new",
+          "nodeType": "Product",
+          "name": "Basis",
+          "properties": {
+            "productKind": "DIETARY_SUPPLEMENT",
+            "marketedName": "Basis"
+          },
+          "identifiers": [],
+          "onMatch": "review"
+        },
+        {
+          "ref": "variant",
+          "mode": "new",
+          "nodeType": "ProductVariant",
+          "name": "Basis US capsules",
+          "properties": {
+            "jurisdiction": "US",
+            "strengthVerbatim": "250 mg"
+          },
+          "identifiers": [],
+          "onMatch": "review"
+        },
+        {
+          "ref": "package",
+          "mode": "new",
+          "nodeType": "Package",
+          "name": "Basis US 60 capsules",
+          "properties": {
+            "packageKind": "CONTAINER",
+            "unitCount": 60
+          },
+          "identifiers": [],
+          "onMatch": "review"
+        },
+        {
+          "ref": "label-version",
+          "mode": "new",
+          "nodeType": "LabelVersion",
+          "name": "Basis US supplement facts observed 2026-07-10",
+          "uidSegment": "basis-us-2026-07-10",
+          "properties": {
+            "panelKind": "SUPPLEMENT_FACTS",
+            "jurisdiction": "US",
+            "contentDigest": "sha256:283496a65daa5de294e80e62a549737b0e26936acc888565b666edb3b8f8e912",
+            "compositionDigest": "sha256:0d4b5c8b0c7f1e0f0e2f8c9a6e1b3d5c7a9f1e3d5b7c9a1e3f5d7b9c1e3a5f70"
+          },
+          "identifiers": [],
+          "onMatch": "create_anyway"
+        },
+        {
+          "ref": "nr",
+          "mode": "new",
+          "nodeType": "IngredientMaterial",
+          "name": "Nicotinamide riboside chloride (as listed)",
+          "properties": {
+            "materialKind": "CHEMICALLY_DEFINED"
+          },
+          "identifiers": [],
+          "onMatch": "use_existing"
+        }
+      ],
+      "proposals": [
+        {
+          "proposalId": "p1-distributes",
+          "dependsOn": [],
+          "kind": "assertion.relate",
+          "subjectRef": "elysium",
+          "objectRef": "basis",
+          "assertion": {
+            "predicate": "DISTRIBUTES",
+            "speechAct": "STATES",
+            "basisKind": "MANUFACTURER_CLAIM",
+            "qualifiers": [],
+            "validity": {
+              "validObservedAt": "2026-07-10T00:00:00Z"
+            }
+          },
+          "evidence": [
+            "panel"
+          ],
+          "asserterRef": "elysium"
+        },
+        {
+          "proposalId": "p2-variant",
+          "dependsOn": [],
+          "kind": "edge.structural",
+          "relationshipType": "HAS_VARIANT",
+          "fromRef": "basis",
+          "toRef": "variant",
+          "properties": {}
+        },
+        {
+          "proposalId": "p3-package",
+          "dependsOn": [],
+          "kind": "edge.structural",
+          "relationshipType": "HAS_PACKAGE",
+          "fromRef": "variant",
+          "toRef": "package",
+          "properties": {}
+        },
+        {
+          "proposalId": "p4-label",
+          "dependsOn": [],
+          "kind": "edge.assert",
+          "relationshipType": "HAS_LABEL_VERSION",
+          "fromRef": "package",
+          "toRef": "label-version",
+          "assertion": {
+            "speechAct": "STATES",
+            "qualifiers": [],
+            "validity": {
+              "validFromBasis": "OBSERVATION_ONLY",
+              "validObservedAt": "2026-07-10T00:00:00Z"
+            }
+          },
+          "edgeProperties": {},
+          "evidence": [
+            "panel"
+          ],
+          "asserterRef": "elysium"
+        },
+        {
+          "proposalId": "p5-amount",
+          "dependsOn": [],
+          "kind": "edge.assert",
+          "relationshipType": "DECLARES_COMPONENT",
+          "fromRef": "label-version",
+          "toRef": "nr",
+          "assertion": {
+            "speechAct": "STATES",
+            "qualifiers": [],
+            "validity": {}
+          },
+          "edgeProperties": {
+            "lineRole": "DIETARY_INGREDIENT",
+            "orderIndex": 1,
+            "amount": 250,
+            "unitCode": "mg",
+            "amountReferent": "AS_NAMED",
+            "amountBasis": "PER_SERVING"
+          },
+          "evidence": [
+            "panel"
+          ],
+          "asserterRef": "elysium"
+        },
+        {
+          "proposalId": "p6-mention",
+          "dependsOn": [],
+          "kind": "mention.stage",
+          "locator": "pt",
+          "surfaceForm": "PT (Pterostilbene)",
+          "typeHint": "IngredientMaterial",
+          "candidates": [],
+          "reason": "material identity not resolvable from the label alone"
+        }
+      ],
+      "notes": "Example only (v2 re-expression of ingestion-intent.example.json): MARKETS_PRODUCT -> DISTRIBUTES (predicate-only), HAS_FORMULATION_VERSION -> Package HAS_LABEL_VERSION LabelVersion, LABEL_DECLARED_AMOUNT -> DECLARES_COMPONENT line properties, Mention node -> RESOLUTION Assessment. Replace the source with a real capture."
+    },
+    "profile": {
+      "sets": [
+        "proposals[].dependsOn",
+        "proposals[].assertion.qualifiers",
+        "proposals[].qualifiers",
+        "proposals[].facets",
+        "basis.creationOnly.expectAbsent",
+        "basis.creationOnly.expectPresent",
+        "sources[].locators[].reportsFields"
+      ]
+    },
+    "digest": "sha256:398ad9deda5a0924d542c4f8fb3d94ee921392f0eb00f4b38947f5dc8d4c75b3"
+  },
+  "plan": {
+    "body": {
+      "binding": {
+        "intentId": "example-basis-label-2026-07-10-v2",
+        "intentDigest": "sha256:398ad9deda5a0924d542c4f8fb3d94ee921392f0eb00f4b38947f5dc8d4c75b3",
+        "observationsDigest": "sha256:c330ff2b44347ad0495421c275b9e576561180ca6410173859df8ecb2039dde9",
+        "observedGraphRevision": 0,
+        "plannedAt": "2026-10-11T12:00:00Z",
+        "executorVersion": "bks-kg-ops/2.0.0",
+        "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+        "schemaDigest": "sha256:de8ab942f3b2fac85011938adcddd75244bc9b5e7c53df07ebc7490b888f6576",
+        "rulesDigest": "sha256:a337a6ba8cd1e440eee674c7ed5e7d8ec7f6e2e94728086e411002ef9d692249",
+        "policyVersion": "bks-admission-policy/v1",
+        "canonicalJson": "bks-canonical-json.v2",
+        "basis": {
+          "kind": "creationOnly",
+          "dependencyCheck": "not-applicable",
+          "reason": "Example: first capture of this label page; no prior read snapshot exists"
+        },
+        "principal": {
+          "principalId": "gate-b-writer",
+          "installationId": "local-test",
+          "applicationId": "bks-gate-b",
+          "tenantId": "tenant-a",
+          "grants": []
+        },
+        "custodyRefs": [],
+        "evidenceDigest": "sha256:bfd093347ee6100dd75de1744635719480f83bd6aa92ce9c0d08cd2046b77491"
+      },
+      "outcome": "applicable",
+      "activity": {
+        "uid": "hu:activity:mission-control-example-run-001-fdaecd53",
+        "agentUid": "hu:agent:bks-executor",
+        "system": "mission-control",
+        "runId": "example-run-001",
+        "exists": false
+      },
+      "sources": [
+        {
+          "ref": "label",
+          "sourceUid": "hu:source:elysiumhealth-com-pages-basis-supplement-facts-c85df727ac89edbc",
+          "canonicalUri": "https://www.elysiumhealth.com/pages/basis-supplement-facts",
+          "snapshotUid": "hu:snapshot:9d272f4812144b1c7fcf",
+          "locators": [
+            {
+              "ref": "panel",
+              "uid": "hu:locator:39743aea66d804a05140",
+              "selectorDigest": "sha256:47473616f5e6939ed6d1bee42cc9baad37a5ed2a23f13003f8ea1778fc3a420f",
+              "exists": false
+            },
+            {
+              "ref": "pt",
+              "uid": "hu:locator:0a8fd0e82a018c36061c",
+              "selectorDigest": "sha256:d0c0bb864a4da042f9344d7f0c88f8372278ab4998b6fcce4aaab371a72f5e8b",
+              "exists": false
+            }
+          ],
+          "captureAttempts": [],
+          "retainedMetadata": {}
+        }
+      ],
+      "subjects": [
+        {
+          "ref": "elysium",
+          "nodeType": "Organization",
+          "disposition": "create",
+          "uid": "hu:org:elysium-health",
+          "labels": [
+            "Organization",
+            "Entity"
+          ],
+          "matches": [],
+          "reasons": [],
+          "rewrites": []
+        },
+        {
+          "ref": "basis",
+          "nodeType": "Product",
+          "disposition": "create",
+          "uid": "hu:product:basis",
+          "labels": [
+            "Product",
+            "Entity"
+          ],
+          "matches": [],
+          "reasons": [],
+          "rewrites": []
+        },
+        {
+          "ref": "variant",
+          "nodeType": "ProductVariant",
+          "disposition": "create",
+          "uid": "hu:product-variant:basis-us-capsules",
+          "labels": [
+            "ProductVariant",
+            "Entity"
+          ],
+          "matches": [],
+          "reasons": [],
+          "rewrites": []
+        },
+        {
+          "ref": "package",
+          "nodeType": "Package",
+          "disposition": "create",
+          "uid": "hu:package:basis-us-60-capsules",
+          "labels": [
+            "Package",
+            "Entity"
+          ],
+          "matches": [],
+          "reasons": [],
+          "rewrites": []
+        },
+        {
+          "ref": "label-version",
+          "nodeType": "LabelVersion",
+          "disposition": "create",
+          "uid": "hu:label-version:basis-us-2026-07-10",
+          "labels": [
+            "LabelVersion",
+            "Entity"
+          ],
+          "matches": [],
+          "reasons": [],
+          "rewrites": []
+        },
+        {
+          "ref": "nr",
+          "nodeType": "IngredientMaterial",
+          "disposition": "create",
+          "uid": "hu:material:nicotinamide-riboside-chloride-as-listed",
+          "labels": [
+            "IngredientMaterial",
+            "Entity"
+          ],
+          "matches": [],
+          "reasons": [],
+          "rewrites": []
+        }
+      ],
+      "proposals": [
+        {
+          "proposalId": "p1-distributes",
+          "kind": "assertion.relate",
+          "disposition": "admitted",
+          "reasons": [],
+          "warnings": [],
+          "rewrites": [],
+          "mints": {
+            "assertion": "hu:assertion:6c35cb2139f6442794463898"
+          },
+          "dependsOn": [],
+          "statementIds": [
+            "s0017"
+          ]
+        },
+        {
+          "proposalId": "p2-variant",
+          "kind": "edge.structural",
+          "disposition": "admitted",
+          "reasons": [],
+          "warnings": [],
+          "rewrites": [],
+          "mints": {},
+          "dependsOn": [],
+          "statementIds": [
+            "s0018"
+          ]
+        },
+        {
+          "proposalId": "p3-package",
+          "kind": "edge.structural",
+          "disposition": "admitted",
+          "reasons": [],
+          "warnings": [],
+          "rewrites": [],
+          "mints": {},
+          "dependsOn": [],
+          "statementIds": [
+            "s0019"
+          ]
+        },
+        {
+          "proposalId": "p4-label",
+          "kind": "edge.assert",
+          "disposition": "admitted",
+          "reasons": [],
+          "warnings": [],
+          "rewrites": [],
+          "mints": {
+            "assertion": "hu:assertion:c89636821ec6d1b8cc83d8fa",
+            "relationship": "hu:rel:has-label-version-e6cb1bb830a1aa4f"
+          },
+          "dependsOn": [],
+          "statementIds": [
+            "s0020",
+            "s0021"
+          ]
+        },
+        {
+          "proposalId": "p5-amount",
+          "kind": "edge.assert",
+          "disposition": "admitted",
+          "reasons": [],
+          "warnings": [],
+          "rewrites": [],
+          "mints": {
+            "assertion": "hu:assertion:5b964c0448ab0fa37811415f",
+            "relationship": "hu:rel:declares-component-30892cfac234040d"
+          },
+          "dependsOn": [],
+          "statementIds": [
+            "s0022",
+            "s0023"
+          ]
+        },
+        {
+          "proposalId": "p6-mention",
+          "kind": "mention.stage",
+          "disposition": "admitted",
+          "reasons": [],
+          "warnings": [],
+          "rewrites": [],
+          "mints": {
+            "assessment": "hu:assessment:cfaec0630a23555f04b07ea5"
+          },
+          "dependsOn": [],
+          "statementIds": [
+            "s0024",
+            "s0025",
+            "s0026"
+          ]
+        }
+      ],
+      "effects": {
+        "nodes": [
+          {
+            "uid": "hu:activity:mission-control-example-run-001-fdaecd53",
+            "label": "Activity",
+            "op": "create",
+            "statementId": "s0001",
+            "properties": [
+              "activityKind",
+              "runId",
+              "externalRunSystem"
+            ]
+          },
+          {
+            "uid": "hu:agent:bks-executor",
+            "label": "Agent",
+            "op": "create",
+            "statementId": "s0002",
+            "properties": [
+              "agentKind"
+            ]
+          },
+          {
+            "uid": "hu:source:elysiumhealth-com-pages-basis-supplement-facts-c85df727ac89edbc",
+            "label": "Source",
+            "op": "create",
+            "statementId": "s0004",
+            "properties": [
+              "canonicalUri",
+              "genre",
+              "name",
+              "sourceKind"
+            ]
+          },
+          {
+            "uid": "hu:snapshot:9d272f4812144b1c7fcf",
+            "label": "SourceSnapshot",
+            "op": "create",
+            "statementId": "s0005",
+            "properties": [
+              "captureCompleteness",
+              "captureMethod",
+              "contentHash",
+              "contentHashBasis",
+              "mimeType",
+              "name",
+              "observedAt",
+              "retrievedAt"
+            ]
+          },
+          {
+            "uid": "hu:locator:39743aea66d804a05140",
+            "label": "SourceLocator",
+            "op": "create",
+            "statementId": "s0007",
+            "properties": [
+              "exact",
+              "name",
+              "selectorDigest",
+              "selectorJson",
+              "selectorKind"
+            ]
+          },
+          {
+            "uid": "hu:locator:0a8fd0e82a018c36061c",
+            "label": "SourceLocator",
+            "op": "create",
+            "statementId": "s0009",
+            "properties": [
+              "exact",
+              "name",
+              "selectorDigest",
+              "selectorJson",
+              "selectorKind"
+            ]
+          },
+          {
+            "uid": "hu:org:elysium-health",
+            "label": "Organization",
+            "op": "create",
+            "statementId": "s0011",
+            "properties": [
+              "entityKind",
+              "legalName",
+              "name"
+            ]
+          },
+          {
+            "uid": "hu:product:basis",
+            "label": "Product",
+            "op": "create",
+            "statementId": "s0012",
+            "properties": [
+              "marketedName",
+              "name",
+              "productKind"
+            ]
+          },
+          {
+            "uid": "hu:product-variant:basis-us-capsules",
+            "label": "ProductVariant",
+            "op": "create",
+            "statementId": "s0013",
+            "properties": [
+              "jurisdiction",
+              "name",
+              "strengthVerbatim"
+            ]
+          },
+          {
+            "uid": "hu:package:basis-us-60-capsules",
+            "label": "Package",
+            "op": "create",
+            "statementId": "s0014",
+            "properties": [
+              "name",
+              "packageKind",
+              "unitCount"
+            ]
+          },
+          {
+            "uid": "hu:label-version:basis-us-2026-07-10",
+            "label": "LabelVersion",
+            "op": "create",
+            "statementId": "s0015",
+            "properties": [
+              "compositionDigest",
+              "contentDigest",
+              "jurisdiction",
+              "name",
+              "panelKind"
+            ]
+          },
+          {
+            "uid": "hu:material:nicotinamide-riboside-chloride-as-listed",
+            "label": "IngredientMaterial",
+            "op": "create",
+            "statementId": "s0016",
+            "properties": [
+              "materialKind",
+              "name"
+            ]
+          },
+          {
+            "uid": "hu:assertion:6c35cb2139f6442794463898",
+            "label": "Assertion",
+            "op": "create",
+            "statementId": "s0017",
+            "properties": [
+              "predicate",
+              "assertionKind",
+              "status"
+            ],
+            "proposalId": "p1-distributes"
+          },
+          {
+            "uid": "hu:assertion:c89636821ec6d1b8cc83d8fa",
+            "label": "Assertion",
+            "op": "create",
+            "statementId": "s0020",
+            "properties": [
+              "predicate",
+              "assertionKind",
+              "status"
+            ],
+            "proposalId": "p4-label"
+          },
+          {
+            "uid": "hu:assertion:5b964c0448ab0fa37811415f",
+            "label": "Assertion",
+            "op": "create",
+            "statementId": "s0022",
+            "properties": [
+              "predicate",
+              "assertionKind",
+              "status"
+            ],
+            "proposalId": "p5-amount"
+          },
+          {
+            "uid": "hu:assessment:cfaec0630a23555f04b07ea5",
+            "label": "Assessment",
+            "op": "create",
+            "statementId": "s0024",
+            "properties": [
+              "assessmentKind",
+              "facets",
+              "inputSetDigest",
+              "methodVersion",
+              "name",
+              "rationale",
+              "status"
+            ],
+            "proposalId": "p6-mention"
+          }
+        ],
+        "relationships": [
+          {
+            "key": "HAS_SNAPSHOT|hu:source:elysiumhealth-com-pages-basis-supplement-facts-c85df727ac89edbc|hu:snapshot:9d272f4812144b1c7fcf",
+            "type": "HAS_SNAPSHOT",
+            "fromUid": "hu:source:elysiumhealth-com-pages-basis-supplement-facts-c85df727ac89edbc",
+            "toUid": "hu:snapshot:9d272f4812144b1c7fcf",
+            "relationshipUid": null,
+            "op": "create",
+            "statementId": "s0006",
+            "assertionUid": null
+          },
+          {
+            "key": "HAS_LOCATOR|hu:snapshot:9d272f4812144b1c7fcf|hu:locator:39743aea66d804a05140",
+            "type": "HAS_LOCATOR",
+            "fromUid": "hu:snapshot:9d272f4812144b1c7fcf",
+            "toUid": "hu:locator:39743aea66d804a05140",
+            "relationshipUid": null,
+            "op": "create",
+            "statementId": "s0008",
+            "assertionUid": null
+          },
+          {
+            "key": "HAS_LOCATOR|hu:snapshot:9d272f4812144b1c7fcf|hu:locator:0a8fd0e82a018c36061c",
+            "type": "HAS_LOCATOR",
+            "fromUid": "hu:snapshot:9d272f4812144b1c7fcf",
+            "toUid": "hu:locator:0a8fd0e82a018c36061c",
+            "relationshipUid": null,
+            "op": "create",
+            "statementId": "s0010",
+            "assertionUid": null
+          },
+          {
+            "key": "HAS_VARIANT|hu:product:basis|hu:product-variant:basis-us-capsules",
+            "type": "HAS_VARIANT",
+            "fromUid": "hu:product:basis",
+            "toUid": "hu:product-variant:basis-us-capsules",
+            "relationshipUid": null,
+            "op": "create",
+            "statementId": "s0018",
+            "assertionUid": null,
+            "proposalId": "p2-variant"
+          },
+          {
+            "key": "HAS_PACKAGE|hu:product-variant:basis-us-capsules|hu:package:basis-us-60-capsules",
+            "type": "HAS_PACKAGE",
+            "fromUid": "hu:product-variant:basis-us-capsules",
+            "toUid": "hu:package:basis-us-60-capsules",
+            "relationshipUid": null,
+            "op": "create",
+            "statementId": "s0019",
+            "assertionUid": null,
+            "proposalId": "p3-package"
+          },
+          {
+            "key": "hu:rel:has-label-version-e6cb1bb830a1aa4f",
+            "type": "HAS_LABEL_VERSION",
+            "fromUid": "hu:package:basis-us-60-capsules",
+            "toUid": "hu:label-version:basis-us-2026-07-10",
+            "relationshipUid": "hu:rel:has-label-version-e6cb1bb830a1aa4f",
+            "op": "create",
+            "statementId": "s0021",
+            "assertionUid": "hu:assertion:c89636821ec6d1b8cc83d8fa",
+            "proposalId": "p4-label"
+          },
+          {
+            "key": "hu:rel:declares-component-30892cfac234040d",
+            "type": "DECLARES_COMPONENT",
+            "fromUid": "hu:label-version:basis-us-2026-07-10",
+            "toUid": "hu:material:nicotinamide-riboside-chloride-as-listed",
+            "relationshipUid": "hu:rel:declares-component-30892cfac234040d",
+            "op": "create",
+            "statementId": "s0023",
+            "assertionUid": "hu:assertion:5b964c0448ab0fa37811415f",
+            "proposalId": "p5-amount"
+          },
+          {
+            "key": "ASSESSES|hu:assessment:cfaec0630a23555f04b07ea5|hu:source:elysiumhealth-com-pages-basis-supplement-facts-c85df727ac89edbc",
+            "type": "ASSESSES",
+            "fromUid": "hu:assessment:cfaec0630a23555f04b07ea5",
+            "toUid": "hu:source:elysiumhealth-com-pages-basis-supplement-facts-c85df727ac89edbc",
+            "relationshipUid": null,
+            "op": "create",
+            "statementId": "s0025",
+            "assertionUid": null,
+            "proposalId": "p6-mention"
+          }
+        ]
+      },
+      "invariants": [
+        {
+          "id": "i0001",
+          "kind": "uid-absent",
+          "failure": "BKS_IDENTITY_CONFLICT",
+          "params": {
+            "uid": "hu:source:elysiumhealth-com-pages-basis-supplement-facts-c85df727ac89edbc",
+            "label": "Source"
+          }
+        },
+        {
+          "id": "i0002",
+          "kind": "uid-absent",
+          "failure": "BKS_IDENTITY_CONFLICT",
+          "params": {
+            "uid": "hu:org:elysium-health",
+            "label": "Organization"
+          }
+        },
+        {
+          "id": "i0003",
+          "kind": "uid-absent",
+          "failure": "BKS_IDENTITY_CONFLICT",
+          "params": {
+            "uid": "hu:product:basis",
+            "label": "Product"
+          }
+        },
+        {
+          "id": "i0004",
+          "kind": "uid-absent",
+          "failure": "BKS_IDENTITY_CONFLICT",
+          "params": {
+            "uid": "hu:product-variant:basis-us-capsules",
+            "label": "ProductVariant"
+          }
+        },
+        {
+          "id": "i0005",
+          "kind": "uid-absent",
+          "failure": "BKS_IDENTITY_CONFLICT",
+          "params": {
+            "uid": "hu:package:basis-us-60-capsules",
+            "label": "Package"
+          }
+        },
+        {
+          "id": "i0006",
+          "kind": "uid-absent",
+          "failure": "BKS_IDENTITY_CONFLICT",
+          "params": {
+            "uid": "hu:label-version:basis-us-2026-07-10",
+            "label": "LabelVersion"
+          }
+        },
+        {
+          "id": "i0007",
+          "kind": "uid-absent",
+          "failure": "BKS_IDENTITY_CONFLICT",
+          "params": {
+            "uid": "hu:material:nicotinamide-riboside-chloride-as-listed",
+            "label": "IngredientMaterial"
+          }
+        },
+        {
+          "id": "i0008",
+          "kind": "uid-absent",
+          "failure": "BKS_IDENTITY_CONFLICT",
+          "proposalId": "p1-distributes",
+          "params": {
+            "uid": "hu:assertion:6c35cb2139f6442794463898",
+            "label": "Assertion"
+          }
+        },
+        {
+          "id": "i0009",
+          "kind": "evidence-chain",
+          "failure": "BKS_EVIDENCE_UNVERIFIED",
+          "proposalId": "p1-distributes",
+          "params": {
+            "assertionUid": "hu:assertion:6c35cb2139f6442794463898",
+            "locators": [
+              "hu:locator:39743aea66d804a05140"
+            ]
+          }
+        },
+        {
+          "id": "i0010",
+          "kind": "uid-absent",
+          "failure": "BKS_IDENTITY_CONFLICT",
+          "proposalId": "p4-label",
+          "params": {
+            "uid": "hu:assertion:c89636821ec6d1b8cc83d8fa",
+            "label": "Assertion"
+          }
+        },
+        {
+          "id": "i0011",
+          "kind": "evidence-chain",
+          "failure": "BKS_EVIDENCE_UNVERIFIED",
+          "proposalId": "p4-label",
+          "params": {
+            "assertionUid": "hu:assertion:c89636821ec6d1b8cc83d8fa",
+            "locators": [
+              "hu:locator:39743aea66d804a05140"
+            ]
+          }
+        },
+        {
+          "id": "i0012",
+          "kind": "slot-free",
+          "failure": "BKS_SLOT_CONFLICT",
+          "proposalId": "p4-label",
+          "params": {
+            "type": "HAS_LABEL_VERSION",
+            "fromUid": "hu:package:basis-us-60-capsules",
+            "toUid": "hu:label-version:basis-us-2026-07-10",
+            "asserterUid": "hu:org:elysium-health",
+            "validFrom": null,
+            "validTo": null,
+            "closing": []
+          }
+        },
+        {
+          "id": "i0013",
+          "kind": "episode-absent",
+          "failure": "BKS_STALE_PRECONDITION",
+          "proposalId": "p4-label",
+          "params": {
+            "type": "HAS_LABEL_VERSION",
+            "fromUid": "hu:package:basis-us-60-capsules",
+            "toUid": "hu:label-version:basis-us-2026-07-10",
+            "asserterUid": "hu:org:elysium-health",
+            "closing": []
+          }
+        },
+        {
+          "id": "i0014",
+          "kind": "asserted-edge-provenance",
+          "failure": "BKS_STALE_PRECONDITION",
+          "proposalId": "p4-label",
+          "params": {
+            "relationshipUid": "hu:rel:has-label-version-e6cb1bb830a1aa4f",
+            "type": "HAS_LABEL_VERSION",
+            "assertionUid": "hu:assertion:c89636821ec6d1b8cc83d8fa"
+          }
+        },
+        {
+          "id": "i0015",
+          "kind": "uid-absent",
+          "failure": "BKS_IDENTITY_CONFLICT",
+          "proposalId": "p5-amount",
+          "params": {
+            "uid": "hu:assertion:5b964c0448ab0fa37811415f",
+            "label": "Assertion"
+          }
+        },
+        {
+          "id": "i0016",
+          "kind": "evidence-chain",
+          "failure": "BKS_EVIDENCE_UNVERIFIED",
+          "proposalId": "p5-amount",
+          "params": {
+            "assertionUid": "hu:assertion:5b964c0448ab0fa37811415f",
+            "locators": [
+              "hu:locator:39743aea66d804a05140"
+            ]
+          }
+        },
+        {
+          "id": "i0017",
+          "kind": "episode-absent",
+          "failure": "BKS_STALE_PRECONDITION",
+          "proposalId": "p5-amount",
+          "params": {
+            "type": "DECLARES_COMPONENT",
+            "fromUid": "hu:label-version:basis-us-2026-07-10",
+            "toUid": "hu:material:nicotinamide-riboside-chloride-as-listed",
+            "asserterUid": "hu:org:elysium-health",
+            "closing": []
+          }
+        },
+        {
+          "id": "i0018",
+          "kind": "asserted-edge-provenance",
+          "failure": "BKS_STALE_PRECONDITION",
+          "proposalId": "p5-amount",
+          "params": {
+            "relationshipUid": "hu:rel:declares-component-30892cfac234040d",
+            "type": "DECLARES_COMPONENT",
+            "assertionUid": "hu:assertion:5b964c0448ab0fa37811415f"
+          }
+        },
+        {
+          "id": "i0019",
+          "kind": "uid-absent",
+          "failure": "BKS_IDENTITY_CONFLICT",
+          "proposalId": "p6-mention",
+          "params": {
+            "uid": "hu:assessment:cfaec0630a23555f04b07ea5",
+            "label": "Assessment"
+          }
+        }
+      ],
+      "statements": [
+        {
+          "id": "s0001",
+          "group": "activity",
+          "purpose": "create the run's Activity (one per externalRunSystem + runId)",
+          "cypher": "CREATE (act:`Activity`:`Occurrence` {uid: $uid})\nSET act += $aProps, act.id = $id, act.privacyClass = $privacyClass, act.lastWriterRunId = $runId, act.createdAt = datetime.transaction(), act.updatedAt = datetime.transaction(), act.`startedAt` = datetime($aDt.`startedAt`)\nRETURN act.uid AS uid",
+          "params": {
+            "uid": "hu:activity:mission-control-example-run-001-fdaecd53",
+            "id": "mission-control-example-run-001-fdaecd53",
+            "aProps": {
+              "name": "mission-control run example-run-001",
+              "activityKind": "INGESTION",
+              "externalRunSystem": "mission-control",
+              "runId": "example-run-001",
+              "missionId": "example-mission",
+              "operationKind": "knowledge.ingestion_apply",
+              "methodVersion": "bks-kg-ops/2.0.0",
+              "operationIds": [],
+              "intentDigests": [],
+              "planDigests": [],
+              "receiptIds": []
+            },
+            "aDt": {
+              "startedAt": "2026-10-11T12:00:00Z"
+            },
+            "aD": {},
+            "privacyClass": "INTERNAL",
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 1,
+          "expectRelationshipsCreated": 0,
+          "needs": []
+        },
+        {
+          "id": "s0002",
+          "group": "activity",
+          "purpose": "create the executor Agent",
+          "cypher": "MATCH (act:Activity {uid: $activityUid})\nCREATE (ag:`Agent`:`Entity` {uid: $uid})\nSET ag += $gProps, ag.id = $id, ag.privacyClass = 'PUBLIC', ag.lastWriterRunId = $runId, ag.createdAt = datetime.transaction(), ag.updatedAt = datetime.transaction()\nCREATE (ag)-[:WAS_GENERATED_BY]->(act)\nRETURN ag.uid AS uid",
+          "params": {
+            "uid": "hu:agent:bks-executor",
+            "id": "bks-executor",
+            "gProps": {
+              "name": "BellLabs knowledge executor",
+              "agentKind": "AUTOMATED_AGENT",
+              "toolVersion": "bks-kg-ops/2.0.0"
+            },
+            "activityUid": "hu:activity:mission-control-example-run-001-fdaecd53",
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 1,
+          "expectRelationshipsCreated": 1,
+          "needs": [
+            "hu:activity:mission-control-example-run-001-fdaecd53"
+          ]
+        },
+        {
+          "id": "s0003",
+          "group": "activity",
+          "purpose": "link the Activity to the executor Agent",
+          "cypher": "MATCH (act:Activity {uid: $activityUid}) MATCH (ag:Agent {uid: $agentUid}) CREATE (act)-[:WAS_ASSOCIATED_WITH]->(ag) RETURN act.uid AS uid",
+          "params": {
+            "activityUid": "hu:activity:mission-control-example-run-001-fdaecd53",
+            "agentUid": "hu:agent:bks-executor",
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 0,
+          "expectRelationshipsCreated": 1,
+          "needs": [
+            "hu:activity:mission-control-example-run-001-fdaecd53",
+            "hu:agent:bks-executor"
+          ]
+        },
+        {
+          "id": "s0004",
+          "group": "sources",
+          "purpose": "source label",
+          "cypher": "MATCH (act:Activity {uid: $activityUid})\nCREATE (n:`Source`:`Entity` {uid: $uid})\nSET n += $pProps, n.id = $id, n.privacyClass = $privacyClass, n.lastWriterRunId = $runId, n.createdAt = datetime.transaction(), n.updatedAt = datetime.transaction()\nCREATE (n)-[:WAS_GENERATED_BY]->(act)\nRETURN n.uid AS uid",
+          "params": {
+            "uid": "hu:source:elysiumhealth-com-pages-basis-supplement-facts-c85df727ac89edbc",
+            "id": "elysiumhealth-com-pages-basis-supplement-facts-c85df727ac89edbc",
+            "pProps": {
+              "name": "Basis Supplement Facts",
+              "canonicalUri": "https://www.elysiumhealth.com/pages/basis-supplement-facts",
+              "sourceKind": "WEB_PAGE",
+              "genre": "MARKETING_PAGE"
+            },
+            "pDt": {},
+            "pD": {},
+            "privacyClass": "PUBLIC",
+            "activityUid": "hu:activity:mission-control-example-run-001-fdaecd53",
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 1,
+          "expectRelationshipsCreated": 1,
+          "needs": [
+            "hu:activity:mission-control-example-run-001-fdaecd53"
+          ]
+        },
+        {
+          "id": "s0005",
+          "group": "sources",
+          "purpose": "snapshot of label",
+          "cypher": "MATCH (act:Activity {uid: $activityUid})\nCREATE (n:`SourceSnapshot`:`InformationArtifact` {uid: $uid})\nSET n += $pProps, n.id = $id, n.privacyClass = $privacyClass, n.lastWriterRunId = $runId, n.createdAt = datetime.transaction(), n.updatedAt = datetime.transaction(), n.`observedAt` = datetime($pDt.`observedAt`), n.`retrievedAt` = datetime($pDt.`retrievedAt`)\nCREATE (n)-[:WAS_GENERATED_BY]->(act)\nRETURN n.uid AS uid",
+          "params": {
+            "uid": "hu:snapshot:9d272f4812144b1c7fcf",
+            "id": "9d272f4812144b1c7fcf",
+            "pProps": {
+              "name": "Basis Supplement Facts @ 2026-07-10",
+              "contentHash": "sha256:283496a65daa5de294e80e62a549737b0e26936acc888565b666edb3b8f8e912",
+              "contentHashBasis": "SYNTHETIC_FIXTURE",
+              "captureMethod": "bks-fixture/1",
+              "captureCompleteness": "UNKNOWN",
+              "mimeType": "text/html"
+            },
+            "pDt": {
+              "retrievedAt": "2026-07-10T00:00:00Z",
+              "observedAt": "2026-07-10T00:00:00Z"
+            },
+            "pD": {},
+            "privacyClass": "PUBLIC",
+            "activityUid": "hu:activity:mission-control-example-run-001-fdaecd53",
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 1,
+          "expectRelationshipsCreated": 1,
+          "needs": [
+            "hu:activity:mission-control-example-run-001-fdaecd53",
+            "hu:source:elysiumhealth-com-pages-basis-supplement-facts-c85df727ac89edbc"
+          ]
+        },
+        {
+          "id": "s0006",
+          "group": "sources",
+          "purpose": "HAS_SNAPSHOT label",
+          "cypher": "MATCH (s:Source {uid: $sourceUid}) MATCH (snap:SourceSnapshot {uid: $snapshotUid}) CREATE (s)-[r:HAS_SNAPSHOT]->(snap) SET r.lastWriterRunId = $runId RETURN s.uid AS uid",
+          "params": {
+            "sourceUid": "hu:source:elysiumhealth-com-pages-basis-supplement-facts-c85df727ac89edbc",
+            "snapshotUid": "hu:snapshot:9d272f4812144b1c7fcf",
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 0,
+          "expectRelationshipsCreated": 1,
+          "needs": [
+            "hu:snapshot:9d272f4812144b1c7fcf",
+            "hu:source:elysiumhealth-com-pages-basis-supplement-facts-c85df727ac89edbc"
+          ]
+        },
+        {
+          "id": "s0007",
+          "group": "sources",
+          "purpose": "locator label/panel",
+          "cypher": "MATCH (act:Activity {uid: $activityUid})\nCREATE (n:`SourceLocator`:`InformationArtifact` {uid: $uid})\nSET n += $pProps, n.id = $id, n.privacyClass = $privacyClass, n.lastWriterRunId = $runId, n.createdAt = datetime.transaction(), n.updatedAt = datetime.transaction()\nCREATE (n)-[:WAS_GENERATED_BY]->(act)\nRETURN n.uid AS uid",
+          "params": {
+            "uid": "hu:locator:39743aea66d804a05140",
+            "id": "39743aea66d804a05140",
+            "pProps": {
+              "name": "TEXT_QUOTE",
+              "selectorKind": "TEXT_QUOTE",
+              "selectorDigest": "sha256:47473616f5e6939ed6d1bee42cc9baad37a5ed2a23f13003f8ea1778fc3a420f",
+              "selectorJson": "{\"basis\":\"raw-capture/v1\",\"exact\":\"Elysium NR (Nicotinamide Riboside Chloride) 250 mg\",\"selectorKind\":\"TEXT_QUOTE\",\"type\":\"TextQuoteSelector\"}",
+              "exact": "Elysium NR (Nicotinamide Riboside Chloride) 250 mg"
+            },
+            "pDt": {},
+            "pD": {},
+            "privacyClass": "PUBLIC",
+            "activityUid": "hu:activity:mission-control-example-run-001-fdaecd53",
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 1,
+          "expectRelationshipsCreated": 1,
+          "needs": [
+            "hu:activity:mission-control-example-run-001-fdaecd53",
+            "hu:snapshot:9d272f4812144b1c7fcf"
+          ]
+        },
+        {
+          "id": "s0008",
+          "group": "sources",
+          "purpose": "HAS_LOCATOR panel",
+          "cypher": "MATCH (snap:SourceSnapshot {uid: $snapshotUid}) MATCH (l:SourceLocator {uid: $uid}) CREATE (snap)-[r:HAS_LOCATOR]->(l) SET r.lastWriterRunId = $runId RETURN l.uid AS uid",
+          "params": {
+            "snapshotUid": "hu:snapshot:9d272f4812144b1c7fcf",
+            "uid": "hu:locator:39743aea66d804a05140",
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 0,
+          "expectRelationshipsCreated": 1,
+          "needs": [
+            "hu:locator:39743aea66d804a05140",
+            "hu:snapshot:9d272f4812144b1c7fcf"
+          ]
+        },
+        {
+          "id": "s0009",
+          "group": "sources",
+          "purpose": "locator label/pt",
+          "cypher": "MATCH (act:Activity {uid: $activityUid})\nCREATE (n:`SourceLocator`:`InformationArtifact` {uid: $uid})\nSET n += $pProps, n.id = $id, n.privacyClass = $privacyClass, n.lastWriterRunId = $runId, n.createdAt = datetime.transaction(), n.updatedAt = datetime.transaction()\nCREATE (n)-[:WAS_GENERATED_BY]->(act)\nRETURN n.uid AS uid",
+          "params": {
+            "uid": "hu:locator:0a8fd0e82a018c36061c",
+            "id": "0a8fd0e82a018c36061c",
+            "pProps": {
+              "name": "TEXT_QUOTE",
+              "selectorKind": "TEXT_QUOTE",
+              "selectorDigest": "sha256:d0c0bb864a4da042f9344d7f0c88f8372278ab4998b6fcce4aaab371a72f5e8b",
+              "selectorJson": "{\"basis\":\"raw-capture/v1\",\"exact\":\"PT (Pterostilbene)\",\"selectorKind\":\"TEXT_QUOTE\",\"type\":\"TextQuoteSelector\"}",
+              "exact": "PT (Pterostilbene)"
+            },
+            "pDt": {},
+            "pD": {},
+            "privacyClass": "PUBLIC",
+            "activityUid": "hu:activity:mission-control-example-run-001-fdaecd53",
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 1,
+          "expectRelationshipsCreated": 1,
+          "needs": [
+            "hu:activity:mission-control-example-run-001-fdaecd53",
+            "hu:snapshot:9d272f4812144b1c7fcf"
+          ]
+        },
+        {
+          "id": "s0010",
+          "group": "sources",
+          "purpose": "HAS_LOCATOR pt",
+          "cypher": "MATCH (snap:SourceSnapshot {uid: $snapshotUid}) MATCH (l:SourceLocator {uid: $uid}) CREATE (snap)-[r:HAS_LOCATOR]->(l) SET r.lastWriterRunId = $runId RETURN l.uid AS uid",
+          "params": {
+            "snapshotUid": "hu:snapshot:9d272f4812144b1c7fcf",
+            "uid": "hu:locator:0a8fd0e82a018c36061c",
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 0,
+          "expectRelationshipsCreated": 1,
+          "needs": [
+            "hu:locator:0a8fd0e82a018c36061c",
+            "hu:snapshot:9d272f4812144b1c7fcf"
+          ]
+        },
+        {
+          "id": "s0011",
+          "group": "subjects",
+          "purpose": "create subject elysium (Organization)",
+          "cypher": "MATCH (act:Activity {uid: $activityUid})\nCREATE (n:`Organization`:`Entity` {uid: $uid})\nSET n += $pProps, n.id = $id, n.privacyClass = $privacyClass, n.lastWriterRunId = $runId, n.createdAt = datetime.transaction(), n.updatedAt = datetime.transaction()\nCREATE (n)-[:WAS_GENERATED_BY]->(act)\nRETURN n.uid AS uid",
+          "params": {
+            "uid": "hu:org:elysium-health",
+            "id": "elysium-health",
+            "pProps": {
+              "entityKind": "LEGAL_ENTITY",
+              "legalName": "Elysium Health, Inc.",
+              "name": "Elysium Health"
+            },
+            "pDt": {},
+            "pD": {},
+            "privacyClass": "PUBLIC",
+            "activityUid": "hu:activity:mission-control-example-run-001-fdaecd53",
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 1,
+          "expectRelationshipsCreated": 1,
+          "needs": [
+            "hu:activity:mission-control-example-run-001-fdaecd53"
+          ]
+        },
+        {
+          "id": "s0012",
+          "group": "subjects",
+          "purpose": "create subject basis (Product)",
+          "cypher": "MATCH (act:Activity {uid: $activityUid})\nCREATE (n:`Product`:`Entity` {uid: $uid})\nSET n += $pProps, n.id = $id, n.privacyClass = $privacyClass, n.lastWriterRunId = $runId, n.createdAt = datetime.transaction(), n.updatedAt = datetime.transaction()\nCREATE (n)-[:WAS_GENERATED_BY]->(act)\nRETURN n.uid AS uid",
+          "params": {
+            "uid": "hu:product:basis",
+            "id": "basis",
+            "pProps": {
+              "productKind": "DIETARY_SUPPLEMENT",
+              "marketedName": "Basis",
+              "name": "Basis"
+            },
+            "pDt": {},
+            "pD": {},
+            "privacyClass": "PUBLIC",
+            "activityUid": "hu:activity:mission-control-example-run-001-fdaecd53",
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 1,
+          "expectRelationshipsCreated": 1,
+          "needs": [
+            "hu:activity:mission-control-example-run-001-fdaecd53"
+          ]
+        },
+        {
+          "id": "s0013",
+          "group": "subjects",
+          "purpose": "create subject variant (ProductVariant)",
+          "cypher": "MATCH (act:Activity {uid: $activityUid})\nCREATE (n:`ProductVariant`:`Entity` {uid: $uid})\nSET n += $pProps, n.id = $id, n.privacyClass = $privacyClass, n.lastWriterRunId = $runId, n.createdAt = datetime.transaction(), n.updatedAt = datetime.transaction()\nCREATE (n)-[:WAS_GENERATED_BY]->(act)\nRETURN n.uid AS uid",
+          "params": {
+            "uid": "hu:product-variant:basis-us-capsules",
+            "id": "basis-us-capsules",
+            "pProps": {
+              "jurisdiction": "US",
+              "strengthVerbatim": "250 mg",
+              "name": "Basis US capsules"
+            },
+            "pDt": {},
+            "pD": {},
+            "privacyClass": "PUBLIC",
+            "activityUid": "hu:activity:mission-control-example-run-001-fdaecd53",
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 1,
+          "expectRelationshipsCreated": 1,
+          "needs": [
+            "hu:activity:mission-control-example-run-001-fdaecd53"
+          ]
+        },
+        {
+          "id": "s0014",
+          "group": "subjects",
+          "purpose": "create subject package (Package)",
+          "cypher": "MATCH (act:Activity {uid: $activityUid})\nCREATE (n:`Package`:`Entity` {uid: $uid})\nSET n += $pProps, n.id = $id, n.privacyClass = $privacyClass, n.lastWriterRunId = $runId, n.createdAt = datetime.transaction(), n.updatedAt = datetime.transaction(), n.`unitCount` = toInteger($pProps.`unitCount`)\nCREATE (n)-[:WAS_GENERATED_BY]->(act)\nRETURN n.uid AS uid",
+          "params": {
+            "uid": "hu:package:basis-us-60-capsules",
+            "id": "basis-us-60-capsules",
+            "pProps": {
+              "packageKind": "CONTAINER",
+              "unitCount": 60,
+              "name": "Basis US 60 capsules"
+            },
+            "pDt": {},
+            "pD": {},
+            "privacyClass": "PUBLIC",
+            "activityUid": "hu:activity:mission-control-example-run-001-fdaecd53",
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 1,
+          "expectRelationshipsCreated": 1,
+          "needs": [
+            "hu:activity:mission-control-example-run-001-fdaecd53"
+          ]
+        },
+        {
+          "id": "s0015",
+          "group": "subjects",
+          "purpose": "create subject label-version (LabelVersion)",
+          "cypher": "MATCH (act:Activity {uid: $activityUid})\nCREATE (n:`LabelVersion`:`Entity` {uid: $uid})\nSET n += $pProps, n.id = $id, n.privacyClass = $privacyClass, n.lastWriterRunId = $runId, n.createdAt = datetime.transaction(), n.updatedAt = datetime.transaction()\nCREATE (n)-[:WAS_GENERATED_BY]->(act)\nRETURN n.uid AS uid",
+          "params": {
+            "uid": "hu:label-version:basis-us-2026-07-10",
+            "id": "basis-us-2026-07-10",
+            "pProps": {
+              "panelKind": "SUPPLEMENT_FACTS",
+              "jurisdiction": "US",
+              "contentDigest": "sha256:283496a65daa5de294e80e62a549737b0e26936acc888565b666edb3b8f8e912",
+              "compositionDigest": "sha256:0d4b5c8b0c7f1e0f0e2f8c9a6e1b3d5c7a9f1e3d5b7c9a1e3f5d7b9c1e3a5f70",
+              "name": "Basis US supplement facts observed 2026-07-10"
+            },
+            "pDt": {},
+            "pD": {},
+            "privacyClass": "PUBLIC",
+            "activityUid": "hu:activity:mission-control-example-run-001-fdaecd53",
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 1,
+          "expectRelationshipsCreated": 1,
+          "needs": [
+            "hu:activity:mission-control-example-run-001-fdaecd53"
+          ]
+        },
+        {
+          "id": "s0016",
+          "group": "subjects",
+          "purpose": "create subject nr (IngredientMaterial)",
+          "cypher": "MATCH (act:Activity {uid: $activityUid})\nCREATE (n:`IngredientMaterial`:`Entity` {uid: $uid})\nSET n += $pProps, n.id = $id, n.privacyClass = $privacyClass, n.lastWriterRunId = $runId, n.createdAt = datetime.transaction(), n.updatedAt = datetime.transaction()\nCREATE (n)-[:WAS_GENERATED_BY]->(act)\nRETURN n.uid AS uid",
+          "params": {
+            "uid": "hu:material:nicotinamide-riboside-chloride-as-listed",
+            "id": "nicotinamide-riboside-chloride-as-listed",
+            "pProps": {
+              "materialKind": "CHEMICALLY_DEFINED",
+              "name": "Nicotinamide riboside chloride (as listed)"
+            },
+            "pDt": {},
+            "pD": {},
+            "privacyClass": "PUBLIC",
+            "activityUid": "hu:activity:mission-control-example-run-001-fdaecd53",
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 1,
+          "expectRelationshipsCreated": 1,
+          "needs": [
+            "hu:activity:mission-control-example-run-001-fdaecd53"
+          ]
+        },
+        {
+          "id": "s0017",
+          "proposalId": "p1-distributes",
+          "group": "proposal",
+          "purpose": "Assertion DISTRIBUTES (RELATIONSHIP)",
+          "cypher": "MATCH (act:Activity {uid: $activityUid}) MATCH (s:`Organization` {uid: $subjectUid}) MATCH (w:`Organization` {uid: $asserterUid})\nMATCH (o:`Product` {uid: $objectUid})\nCREATE (x:Assertion {uid: $uid})\nSET x += $pProps, x.id = $id, x.privacyClass = $privacyClass, x.lastWriterRunId = $runId, x.recordedAt = datetime.transaction(), x.createdAt = datetime.transaction(), x.updatedAt = datetime.transaction(), x.`validObservedAt` = datetime($pDt.`validObservedAt`)\nCREATE (x)-[:HAS_SUBJECT]->(s) CREATE (x)-[:ASSERTED_BY]->(w) CREATE (x)-[:WAS_GENERATED_BY]->(act)\nCREATE (x)-[:HAS_OBJECT]->(o)\nWITH x\nUNWIND $evidence AS ev\nMATCH (l:SourceLocator {uid: ev.uid})\nCREATE (x)-[e:HAS_EVIDENCE]->(l) SET e.role = ev.role, e.origin = 'DECLARED', e.expectedSelectedContentDigest = ev.esc, e.lastWriterRunId = $runId\nRETURN x.uid AS uid",
+          "params": {
+            "uid": "hu:assertion:6c35cb2139f6442794463898",
+            "id": "6c35cb2139f6442794463898",
+            "pProps": {
+              "name": "DISTRIBUTES",
+              "predicate": "DISTRIBUTES",
+              "assertionKind": "RELATIONSHIP",
+              "status": "EXTRACTED",
+              "polarity": "POSITIVE",
+              "speechAct": "STATES",
+              "basisKind": "MANUFACTURER_CLAIM",
+              "validFromBasis": "UNKNOWN",
+              "validToBasis": "UNKNOWN",
+              "validObservedAtPrecision": "DAY",
+              "contentHash": "sha256:f63cd91420a216041ff93cf7dc2a0627c5fd19614b91b99676c6d2382fb0ee3a"
+            },
+            "pDt": {
+              "validObservedAt": "2026-07-10T00:00:00Z"
+            },
+            "pD": {},
+            "privacyClass": "PUBLIC",
+            "activityUid": "hu:activity:mission-control-example-run-001-fdaecd53",
+            "subjectUid": "hu:org:elysium-health",
+            "asserterUid": "hu:org:elysium-health",
+            "objectUid": "hu:product:basis",
+            "evidence": [
+              {
+                "uid": "hu:locator:39743aea66d804a05140",
+                "role": "SUPPORTS",
+                "esc": null
+              }
+            ],
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 1,
+          "expectRelationshipsCreated": 5,
+          "needs": [
+            "hu:activity:mission-control-example-run-001-fdaecd53",
+            "hu:locator:39743aea66d804a05140",
+            "hu:org:elysium-health",
+            "hu:product:basis"
+          ]
+        },
+        {
+          "id": "s0018",
+          "proposalId": "p2-variant",
+          "group": "proposal",
+          "purpose": "structural HAS_VARIANT",
+          "cypher": "MATCH (a:`Product` {uid: $fromUid}) MATCH (b:`ProductVariant` {uid: $toUid}) CREATE (a)-[r:`HAS_VARIANT`]->(b) SET r += $props, r.lastWriterRunId = $runId RETURN type(r) AS type",
+          "params": {
+            "fromUid": "hu:product:basis",
+            "toUid": "hu:product-variant:basis-us-capsules",
+            "props": {},
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 0,
+          "expectRelationshipsCreated": 1,
+          "needs": [
+            "hu:product-variant:basis-us-capsules",
+            "hu:product:basis"
+          ]
+        },
+        {
+          "id": "s0019",
+          "proposalId": "p3-package",
+          "group": "proposal",
+          "purpose": "structural HAS_PACKAGE",
+          "cypher": "MATCH (a:`ProductVariant` {uid: $fromUid}) MATCH (b:`Package` {uid: $toUid}) CREATE (a)-[r:`HAS_PACKAGE`]->(b) SET r += $props, r.lastWriterRunId = $runId RETURN type(r) AS type",
+          "params": {
+            "fromUid": "hu:product-variant:basis-us-capsules",
+            "toUid": "hu:package:basis-us-60-capsules",
+            "props": {},
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 0,
+          "expectRelationshipsCreated": 1,
+          "needs": [
+            "hu:package:basis-us-60-capsules",
+            "hu:product-variant:basis-us-capsules"
+          ]
+        },
+        {
+          "id": "s0020",
+          "proposalId": "p4-label",
+          "group": "proposal",
+          "purpose": "Assertion HAS_LABEL_VERSION (RELATIONSHIP)",
+          "cypher": "MATCH (act:Activity {uid: $activityUid}) MATCH (s:`Package` {uid: $subjectUid}) MATCH (w:`Organization` {uid: $asserterUid})\nMATCH (o:`LabelVersion` {uid: $objectUid})\nCREATE (x:Assertion {uid: $uid})\nSET x += $pProps, x.id = $id, x.privacyClass = $privacyClass, x.lastWriterRunId = $runId, x.recordedAt = datetime.transaction(), x.createdAt = datetime.transaction(), x.updatedAt = datetime.transaction(), x.`validObservedAt` = datetime($pDt.`validObservedAt`)\nCREATE (x)-[:HAS_SUBJECT]->(s) CREATE (x)-[:ASSERTED_BY]->(w) CREATE (x)-[:WAS_GENERATED_BY]->(act)\nCREATE (x)-[:HAS_OBJECT]->(o)\nWITH x\nUNWIND $evidence AS ev\nMATCH (l:SourceLocator {uid: ev.uid})\nCREATE (x)-[e:HAS_EVIDENCE]->(l) SET e.role = ev.role, e.origin = 'DECLARED', e.expectedSelectedContentDigest = ev.esc, e.lastWriterRunId = $runId\nRETURN x.uid AS uid",
+          "params": {
+            "uid": "hu:assertion:c89636821ec6d1b8cc83d8fa",
+            "id": "c89636821ec6d1b8cc83d8fa",
+            "pProps": {
+              "name": "HAS_LABEL_VERSION",
+              "predicate": "HAS_LABEL_VERSION",
+              "assertionKind": "RELATIONSHIP",
+              "status": "EXTRACTED",
+              "polarity": "POSITIVE",
+              "speechAct": "STATES",
+              "validFromBasis": "OBSERVATION_ONLY",
+              "validToBasis": "UNKNOWN",
+              "validObservedAtPrecision": "DAY",
+              "contentHash": "sha256:5f8186bfe91b6dc227d8aa03dee2e84960dc141516352aea379686dfe1c85ffc"
+            },
+            "pDt": {
+              "validObservedAt": "2026-07-10T00:00:00Z"
+            },
+            "pD": {},
+            "privacyClass": "PUBLIC",
+            "activityUid": "hu:activity:mission-control-example-run-001-fdaecd53",
+            "subjectUid": "hu:package:basis-us-60-capsules",
+            "asserterUid": "hu:org:elysium-health",
+            "objectUid": "hu:label-version:basis-us-2026-07-10",
+            "evidence": [
+              {
+                "uid": "hu:locator:39743aea66d804a05140",
+                "role": "SUPPORTS",
+                "esc": null
+              }
+            ],
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 1,
+          "expectRelationshipsCreated": 5,
+          "needs": [
+            "hu:activity:mission-control-example-run-001-fdaecd53",
+            "hu:label-version:basis-us-2026-07-10",
+            "hu:locator:39743aea66d804a05140",
+            "hu:org:elysium-health",
+            "hu:package:basis-us-60-capsules"
+          ]
+        },
+        {
+          "id": "s0021",
+          "proposalId": "p4-label",
+          "group": "proposal",
+          "purpose": "HAS_LABEL_VERSION episode authorized by hu:assertion:c89636821ec6d1b8cc83d8fa",
+          "cypher": "MATCH (a:`Package` {uid: $fromUid}) MATCH (b:`LabelVersion` {uid: $toUid})\nCREATE (a)-[r:`HAS_LABEL_VERSION` {relationshipUid: $relUid}]->(b)\nSET r += $edgeProps, r.assertionUid = $assertionUid, r.recordedFrom = datetime.transaction(), r.lastWriterRunId = $runId, r.validFrom = CASE WHEN $validFrom IS NULL THEN null ELSE datetime($validFrom) END, r.validTo = CASE WHEN $validTo IS NULL THEN null ELSE datetime($validTo) END, r.validFromPrecision = $validFromPrecision, r.validToPrecision = $validToPrecision, r.validFromBasis = $validFromBasis, r.validToBasis = $validToBasis\nRETURN r.relationshipUid AS uid",
+          "params": {
+            "fromUid": "hu:package:basis-us-60-capsules",
+            "toUid": "hu:label-version:basis-us-2026-07-10",
+            "relUid": "hu:rel:has-label-version-e6cb1bb830a1aa4f",
+            "assertionUid": "hu:assertion:c89636821ec6d1b8cc83d8fa",
+            "edgeProps": {},
+            "validFrom": null,
+            "validTo": null,
+            "validFromPrecision": null,
+            "validToPrecision": null,
+            "validFromBasis": "OBSERVATION_ONLY",
+            "validToBasis": "UNKNOWN",
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 0,
+          "expectRelationshipsCreated": 1,
+          "needs": [
+            "hu:assertion:c89636821ec6d1b8cc83d8fa",
+            "hu:label-version:basis-us-2026-07-10",
+            "hu:package:basis-us-60-capsules"
+          ]
+        },
+        {
+          "id": "s0022",
+          "proposalId": "p5-amount",
+          "group": "proposal",
+          "purpose": "Assertion DECLARES_COMPONENT (RELATIONSHIP)",
+          "cypher": "MATCH (act:Activity {uid: $activityUid}) MATCH (s:`LabelVersion` {uid: $subjectUid}) MATCH (w:`Organization` {uid: $asserterUid})\nMATCH (o:`IngredientMaterial` {uid: $objectUid})\nCREATE (x:Assertion {uid: $uid})\nSET x += $pProps, x.id = $id, x.privacyClass = $privacyClass, x.lastWriterRunId = $runId, x.recordedAt = datetime.transaction(), x.createdAt = datetime.transaction(), x.updatedAt = datetime.transaction()\nCREATE (x)-[:HAS_SUBJECT]->(s) CREATE (x)-[:ASSERTED_BY]->(w) CREATE (x)-[:WAS_GENERATED_BY]->(act)\nCREATE (x)-[:HAS_OBJECT]->(o)\nWITH x\nUNWIND $evidence AS ev\nMATCH (l:SourceLocator {uid: ev.uid})\nCREATE (x)-[e:HAS_EVIDENCE]->(l) SET e.role = ev.role, e.origin = 'DECLARED', e.expectedSelectedContentDigest = ev.esc, e.lastWriterRunId = $runId\nRETURN x.uid AS uid",
+          "params": {
+            "uid": "hu:assertion:5b964c0448ab0fa37811415f",
+            "id": "5b964c0448ab0fa37811415f",
+            "pProps": {
+              "name": "DECLARES_COMPONENT",
+              "predicate": "DECLARES_COMPONENT",
+              "assertionKind": "RELATIONSHIP",
+              "status": "EXTRACTED",
+              "polarity": "POSITIVE",
+              "speechAct": "STATES",
+              "validFromBasis": "UNKNOWN",
+              "validToBasis": "UNKNOWN",
+              "contentHash": "sha256:d4511226bbcce367a8a4565d801e87049c0741f3e0065c93f7a402462b05f351"
+            },
+            "pDt": {},
+            "pD": {},
+            "privacyClass": "PUBLIC",
+            "activityUid": "hu:activity:mission-control-example-run-001-fdaecd53",
+            "subjectUid": "hu:label-version:basis-us-2026-07-10",
+            "asserterUid": "hu:org:elysium-health",
+            "objectUid": "hu:material:nicotinamide-riboside-chloride-as-listed",
+            "evidence": [
+              {
+                "uid": "hu:locator:39743aea66d804a05140",
+                "role": "SUPPORTS",
+                "esc": null
+              }
+            ],
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 1,
+          "expectRelationshipsCreated": 5,
+          "needs": [
+            "hu:activity:mission-control-example-run-001-fdaecd53",
+            "hu:label-version:basis-us-2026-07-10",
+            "hu:locator:39743aea66d804a05140",
+            "hu:material:nicotinamide-riboside-chloride-as-listed",
+            "hu:org:elysium-health"
+          ]
+        },
+        {
+          "id": "s0023",
+          "proposalId": "p5-amount",
+          "group": "proposal",
+          "purpose": "DECLARES_COMPONENT episode authorized by hu:assertion:5b964c0448ab0fa37811415f",
+          "cypher": "MATCH (a:`LabelVersion` {uid: $fromUid}) MATCH (b:`IngredientMaterial` {uid: $toUid})\nCREATE (a)-[r:`DECLARES_COMPONENT` {relationshipUid: $relUid}]->(b)\nSET r += $edgeProps, r.assertionUid = $assertionUid, r.recordedFrom = datetime.transaction(), r.lastWriterRunId = $runId, r.`orderIndex` = toInteger($edgeProps.`orderIndex`)\nRETURN r.relationshipUid AS uid",
+          "params": {
+            "fromUid": "hu:label-version:basis-us-2026-07-10",
+            "toUid": "hu:material:nicotinamide-riboside-chloride-as-listed",
+            "relUid": "hu:rel:declares-component-30892cfac234040d",
+            "assertionUid": "hu:assertion:5b964c0448ab0fa37811415f",
+            "edgeProps": {
+              "lineRole": "DIETARY_INGREDIENT",
+              "orderIndex": 1,
+              "amount": 250,
+              "unitCode": "mg",
+              "amountReferent": "AS_NAMED",
+              "amountBasis": "PER_SERVING"
+            },
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 0,
+          "expectRelationshipsCreated": 1,
+          "needs": [
+            "hu:assertion:5b964c0448ab0fa37811415f",
+            "hu:label-version:basis-us-2026-07-10",
+            "hu:material:nicotinamide-riboside-chloride-as-listed"
+          ]
+        },
+        {
+          "id": "s0024",
+          "proposalId": "p6-mention",
+          "group": "proposal",
+          "purpose": "Assessment RESOLUTION",
+          "cypher": "MATCH (act:Activity {uid: $activityUid})\nCREATE (x:`Assessment`:`EvidenceAssessment` {uid: $uid})\nSET x += $pProps, x.id = $id, x.privacyClass = $privacyClass, x.lastWriterRunId = $runId, x.recordedAt = datetime.transaction(), x.createdAt = datetime.transaction(), x.updatedAt = datetime.transaction()\nCREATE (x)-[:WAS_GENERATED_BY]->(act)\nRETURN x.uid AS uid",
+          "params": {
+            "uid": "hu:assessment:cfaec0630a23555f04b07ea5",
+            "id": "cfaec0630a23555f04b07ea5",
+            "pProps": {
+              "name": "RESOLUTION PT (Pterostilbene)",
+              "assessmentKind": "RESOLUTION",
+              "status": "PROPOSED",
+              "methodVersion": "bks-kg-ops/2.0.0/mention.stage@1",
+              "facets": [
+                "candidate=none",
+                "surfaceForm=PT (Pterostilbene)",
+                "typeHint=IngredientMaterial"
+              ],
+              "rationale": "material identity not resolvable from the label alone",
+              "inputSetDigest": "sha256:1820c3ac9d2dcc93e23f8c187ebeeac1878e1cf53505b802a554791f149f492e"
+            },
+            "pDt": {},
+            "pD": {},
+            "privacyClass": "PUBLIC",
+            "activityUid": "hu:activity:mission-control-example-run-001-fdaecd53",
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 1,
+          "expectRelationshipsCreated": 1,
+          "needs": [
+            "hu:activity:mission-control-example-run-001-fdaecd53"
+          ]
+        },
+        {
+          "id": "s0025",
+          "proposalId": "p6-mention",
+          "group": "proposal",
+          "purpose": "Assessment ASSESSES Source",
+          "cypher": "MATCH (x:`Assessment` {uid: $uid}) UNWIND $targets AS t MATCH (y:`Source` {uid: t}) CREATE (x)-[:ASSESSES]->(y) RETURN y.uid AS uid",
+          "params": {
+            "uid": "hu:assessment:cfaec0630a23555f04b07ea5",
+            "targets": [
+              "hu:source:elysiumhealth-com-pages-basis-supplement-facts-c85df727ac89edbc"
+            ],
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 0,
+          "expectRelationshipsCreated": 1,
+          "needs": [
+            "hu:assessment:cfaec0630a23555f04b07ea5",
+            "hu:source:elysiumhealth-com-pages-basis-supplement-facts-c85df727ac89edbc"
+          ]
+        },
+        {
+          "id": "s0026",
+          "proposalId": "p6-mention",
+          "group": "proposal",
+          "purpose": "Assessment HAS_EVIDENCE",
+          "cypher": "MATCH (x:`Assessment` {uid: $uid}) UNWIND $evidence AS ev MATCH (l:SourceLocator {uid: ev.uid})\nCREATE (x)-[e:HAS_EVIDENCE]->(l) SET e.role = ev.role, e.origin = coalesce(ev.origin, 'DECLARED'), e.expectedSelectedContentDigest = ev.esc, e.authority = ev.authority, e.independence = ev.independence, e.facet = ev.facet, e.lastWriterRunId = $runId\nRETURN l.uid AS uid",
+          "params": {
+            "uid": "hu:assessment:cfaec0630a23555f04b07ea5",
+            "evidence": [
+              {
+                "uid": "hu:locator:0a8fd0e82a018c36061c",
+                "role": "CONTEXT",
+                "esc": null,
+                "origin": null,
+                "authority": null,
+                "independence": null,
+                "facet": null
+              }
+            ],
+            "runId": "example-run-001"
+          },
+          "expectRows": 1,
+          "expectNodesCreated": 0,
+          "expectRelationshipsCreated": 1,
+          "needs": [
+            "hu:assessment:cfaec0630a23555f04b07ea5",
+            "hu:locator:0a8fd0e82a018c36061c"
+          ]
+        }
+      ],
+      "errors": [],
+      "warnings": [
+        {
+          "code": "CAPTURE_METHOD_UNREGISTERED",
+          "message": "label: capture method bks-fixture/1 is not in vocabularies/capture-methods.yaml (FU-06)"
+        }
+      ]
+    },
+    "profile": {
+      "sets": [
+        "binding.principal.grants"
+      ]
+    },
+    "digest": "sha256:508692324f0f6263bc56111ea7c2a92c9a842adb41a0f090cd8a1d04acccd49c"
+  }
+}

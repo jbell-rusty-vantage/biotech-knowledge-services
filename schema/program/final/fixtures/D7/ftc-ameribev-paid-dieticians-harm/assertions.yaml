@@ -1,0 +1,107 @@
+# assertions.yaml — fixture ftc-ameribev-paid-dieticians-harm (D7, fixtures stage, A6, 2026-10-08)
+#
+# Harm case: a regulator's staff asserts, with hedged modality, that a marketer (a trade association) paid named
+# endorsers whose posts lacked adequate disclosure. Kernel shape as in the sinclair fixture: one Assertion per record,
+# locators in ./locators.yaml, edge properties of the D7 edge-property type (executor-set fields omitted).
+# producedBy ids are FIXTURE-SCOPED (not Mission Control ids).
+# Privacy: the letter to the association lists ten endorsers; this fixture names exactly one, Leslie Bonci, who also
+# received an individual letter (second snapshot). The other names are not entities, mentions or quotes here.
+fixture: ftc-ameribev-paid-dieticians-harm
+producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-ftc-ameribev-paid-dieticians-harm" }
+
+entities:
+  - { uid: "hu:org:federal-trade-commission", type: Organization, name: "Federal Trade Commission", entityKind: PUBLIC_BODY, organizationKind: GOVERNMENT_OR_REGULATOR, jurisdiction: "US", note: "asserter; the letters are staff letters signed by the Associate Director, Division of Advertising Practices (the press release says 'Federal Trade Commission staff')" }
+  - { uid: "hu:org:american-beverage-association", type: Organization, name: "American Beverage Association", entityKind: LEGAL_ENTITY, organizationKind: TRADE_OR_PROFESSIONAL_ASSOCIATION, note: "the marketer addressed by the letter ('ABA')" }
+  - { uid: "hu:person:leslie-bonci", type: Person, name: "Leslie Bonci", publicActorBasis: [ENDORSER_NAMED_BY_REGULATOR], privacyClass: PUBLIC, note: "named by the regulator in both letters; no address, contact or other personal data stored" }
+
+assertions:
+  - id: h-01
+    predicate: RECEIVES_VALUE_FROM
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:org:federal-trade-commission", type: Organization }
+    subject: { uid: "hu:person:leslie-bonci", type: Person }
+    object: { uid: "hu:org:american-beverage-association", type: Organization }
+    edge: { type: RECEIVES_VALUE_FROM, properties: { valueKind: PAID_ENDORSEMENT } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN, validObservedAt: "2023-11-13T00:00:00Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    basisKind: UNSTATED
+    qualifiers:
+      - "modality: 'It appears that ...' — a hedged staff finding in a warning letter, not an adjudicated fact or a Commission determination"
+      - "scope: Instagram posts endorsing the safety of aspartame (individual letter: a post of July 14, 2023, loc-bonci-post-date)"
+      - "no amount stated"
+    evidence:
+      - { locator: loc-bonci-it-appears, role: SUPPORTS, origin: DECLARED }
+      - { locator: loc-aba-it-appears, role: SUPPORTS, origin: DECLARED }
+      - { locator: loc-aba-bonci-named, role: SUPPORTS, origin: DECLARED }
+      - { locator: loc-bonci-salutation, role: CONTEXT, origin: DECLARED }
+      - { locator: loc-aba-date, role: QUALIFIES, origin: DECLARED }
+      - { locator: loc-bonci-post-date, role: QUALIFIES, origin: DECLARED }
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-ftc-ameribev-paid-dieticians-harm" }
+  - id: h-02
+    predicate: MATERIAL_CONNECTION_NOT_ADEQUATELY_DISCLOSED
+    predicateClass: predicateOnly   # 05-relationship-register.yaml predicateOnly; no edge is written
+    assertionKind: CLAIM
+    claimType: ATTRIBUTE
+    asserter: { uid: "hu:org:federal-trade-commission", type: Organization }
+    subject: { uid: "hu:person:leslie-bonci", type: Person }
+    object: { literal: { valueString: "aspartame (Instagram posts endorsing its safety)" }, seam: "D1.ChemicalSubstance aspartame when D1 resolves it (10-seams: the promoted subject)" }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["the disclaimer '#client' was used and judged 'ambiguous and inadequate' by staff ('we believe')"]
+    evidence: [{ locator: loc-bonci-client, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-ftc-ameribev-paid-dieticians-harm" }
+  - id: h-03
+    predicate: MATERIAL_CONNECTION_NOT_ADEQUATELY_DISCLOSED
+    predicateClass: predicateOnly
+    assertionKind: CLAIM
+    claimType: ATTRIBUTE
+    asserter: { uid: "hu:org:federal-trade-commission", type: Organization }
+    subject: { uid: "hu:org:american-beverage-association", type: Organization }
+    object: { literal: { valueString: "aspartame (posts by the dieticians endorsing its safety)" } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["'some of the posts we reviewed included no disclosures' — a finding about some posts, not all"]
+    evidence: [{ locator: loc-aba-no-disclosure, role: SUPPORTS, origin: DECLARED }, { locator: loc-aba-endorsing, role: CONTEXT, origin: DECLARED }, { locator: loc-aba-material-def, role: CONTEXT, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-ftc-ameribev-paid-dieticians-harm" }
+  - id: h-04
+    predicate: DOCUMENT_DATE_INCONSISTENT
+    predicateClass: predicateOnly   # 05 predicateOnly (subject a kernel Source); a BellLabs observation, not the FTC's statement
+    assertionKind: FIELD
+    asserter: { agent: "BellLabs fixtures-stage extraction agent A6 (kernel Agent)", note: "adversarial-review correction: the FTC states neither date as inconsistent; BellLabs reads the two printed dates side by side (directive 3.10 attribution)" }
+    subject: { source: "https://www.ftc.gov/system/files/ftc_gov/pdf/warning-letter-american-bev.pdf" }
+    object: { literal: { valueString: "page 1 dated November 13, 2023; page headers dated November 6, 2023" } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["BellLabs reading of two printed dates in one document (page 1 vs page headers); the source itself does not remark on it", "validObservedAt for h-01 uses the page-1 date and the press release (November 15, 2023) brackets it"]
+    evidence: [{ locator: loc-aba-date, role: SUPPORTS, origin: DECLARED }, { locator: loc-aba-page2-header, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-ftc-ameribev-paid-dieticians-harm" }
+  - id: h-05
+    predicate: WARNING_LETTERS_SENT
+    predicateClass: predicateOnly   # the regulatory action itself is a D8 RegulatoryRecord (ISSUED_BY / ADDRESSED_TO seams); kept as an Assertion here
+    assertionKind: FIELD
+    asserter: { uid: "hu:org:federal-trade-commission", type: Organization }
+    subject: { uid: "hu:org:federal-trade-commission", type: Organization }
+    object: { literal: { valueString: "warning letters to two trade associations and 12 registered dieticians and other online health influencers" } }
+    validTime: { validFrom: "2023-11-15T00:00:00Z", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN }
+    polarity: POSITIVE
+    speechAct: STATES
+    evidence: [{ locator: loc-pr-summary, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-ftc-ameribev-paid-dieticians-harm" }
+
+assessments:
+  - id: as-cr-ftc-01
+    assessmentKind: CONFLICT_RELEVANCE
+    assessmentSubkind: "D7.conflict-relevance"
+    status: PROPOSED
+    methodVersion: "fixture-expected/1"
+    conclusionCode: DIRECT   # relevanceLevel (K M9 slot)
+    effectDirection: HARM
+    about: [{ uid: "hu:person:leslie-bonci", type: Person }, { uid: "hu:org:american-beverage-association", type: Organization }]
+    inputAssertions: [h-01, h-02, h-03]
+    facets: ["relevanceBasis=SAME_SUBJECT_PROMOTED", "temporalOverlap=UNKNOWN", "disclosureFinding=INADEQUATE_DISCLOSURE_PER_REGULATOR"]   # kernel <facet>=<value> codes (10-seams conflict-relevance-subkinds)
+    summary: "Per FTC staff (hedged: 'It appears'), the endorser was paid by the marketer whose product category she promoted; the regulator judged the '#client' disclosure inadequate. Harm direction: the audience could not weigh the endorsement."
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-ftc-ameribev-paid-dieticians-harm" }

@@ -1,0 +1,367 @@
+# ---- fragment D13 ----
+# Synthesis (S module editor, 2026-10-08; final/decision-report.md, final/_work/rulings.yaml modules.D13). Compiles with
+# final/schema/kernel.graphql plus seam stubs. Edits: R-44 EventKind loses PUBLICATION, EventRole loses AUTHOR and
+# PUBLISHER (authors through D3 AUTHORED_BY on the Publication), RETRACTION docstring; R-66 enums ApprovalPathway and
+# DesignationType removed, Event.approvalPathway / designationType retyped to D8 RegulatoryPathway (OQ-D8-02 mapping),
+# REGULATOR / APPLICANT / ISSUER only without DOCUMENTED_BY_RECORD (executor-enforced), no re-asserted D3/D8 dates,
+# process chains from the D8 application identifier. Now 8 enums. Counts below are the packet's unless restated here.
+# Module D13 — frontiers, breakthroughs and events. Model stage (Wave 2) by A7, 2026-10-08.
+# Kernel pattern: packets/K/09-reasoning.md "Kernel pattern for subject, object, identifier and mention edges" (A1,
+# published 2026-10-08); this file follows packets/K/domain-template.graphql and compiles with packets/K/04-schema-proposal.graphql
+# plus scratch stubs for the seam targets (D3 Study, D7 Organization, D7 Person, D8 RegulatoryRecord); see 09-reasoning.md "Compile check".
+# Shared vocabulary owned here: packets/D13/vocab-frontiers.yaml@0.2.1 (frontier keys, event kinds, event relations, seam rule).
+#
+# What this module declares: 2 node types (Event, Frontier), 5 relationship types (ON_FRONTIER, LEADS_TO, RESPONDS_TO,
+# INVOLVES, DOCUMENTED_BY_RECORD), 7 from→to pairs, no unions, one edge-property type (EventRoleEdgeProperties = kernel
+# AssertedRecordedProperties fields verbatim + role, kernel rule M11), 10 enums. All five relationship types are recorded-time
+# only (kernel AssertedRecordedProperties, M10; 00-DIRECTIVE rule 9): no D13 question reads valid time on an edge.
+# Adversarial-review pass (A7, 2026-10-08): roleTitleVerbatim removed (M11(3): printed wording stays in Assertion.qualifiers
+# as roleText:<label>); DOCUMENTED_BY_RECORD promoted to a typed edge to D8 RegulatoryRecord so regulator, applicant and
+# record date are read from the record (ISSUED_BY / ADDRESSED_TO / issuedAt), not repeated on the Event; EventRole BORROWER
+# added, AWARDING_BODY / AWARDEE removed (parties of an award are D7 Award AWARDED_BY / AWARDED_TO); identity rule rewritten
+# (mint-time key, frozen; primary subject marked on its Assertion).
+# Check stage (A7, 2026-10-08): rebased on the kernel model-stage SDL (AssertedRecordedProperties, domain-local superset
+# edge-property types); recompiled, numbers in 09-reasoning.md "Compile check".
+# What it deliberately does NOT declare (kernel pattern, 09-reasoning.md):
+# - what an event is ABOUT (chemical substance, product, study, publication, condition, award): kernel Assertion, predicate
+#   EVENT_ABOUT, subject = Event, object = the thing (any Subjectable); read from the Assertion side.
+# - event clocks and their history: kernel Assertions EVENT_OCCURRED / EVENT_SCHEDULED / EVENT_ANNOUNCED / EVENT_EFFECTIVE /
+#   EVENT_CANCELLED (subject = Event; the time is the Assertion's validFrom/validTo); Event properties only MATERIALIZE them.
+# - FOLLOWS (computed at query time from the clocks), breakthrough / impact judgments (kernel Assessment, D10 kinds),
+#   frontier briefs and narrative arcs (kernel Report), claims before/after an event (kernel Claim and its CLAIM Assertions).
+# - any good/bad/success/hype/score property on Event or Frontier (00-DIRECTIVE 3.2): an advance or a setback is the event
+#   kind plus the source's own statement (primaryEndpointStatement), or an Assessment; never a stored verdict.
+# - SUPPORTS / CONTRADICTS / MENTIONS edges: support and contradiction are kernel HAS_EVIDENCE {role}; MENTIONS is D9/kernel.
+# Size lever (measured, 09-reasoning.md): scalar bookkeeping fields that no question filters or sorts on in GraphQL
+# (assertion-uid pointers, precisions, bases, notes, definition text) carry @filterable(byValue: false, byAggregate: false)
+# @sortable(byValue: false): −11.6 KB printed for this module; they stay readable and Cypher-filterable.
+
+# =====================================================================================================
+# Enums (controlled vocabularies; values mirror vocab-frontiers.yaml@0.2.1 sections 1, 5 and 8)
+# =====================================================================================================
+
+"Kind of event (vocab-frontiers.yaml section 5). One enum replaces the pinned EventCategory + eventType pair; the family is a lookup, not a stored field."
+enum EventKind {
+  TRIAL_START
+  READOUT
+  DATA_PRESENTATION
+  "A curated frontier milestone only (R-44): EVENT_ABOUT → D3 Publication; its clock cites the retraction notice's locator and no second date Assertion is written; the revision itself is D3 REVISES (or K HAS_REVISION_STATUS without an identified notice); authors and publisher are reached through the Publication."
+  RETRACTION
+  REGULATORY_SUBMISSION
+  REGULATORY_ACCEPTANCE
+  REGULATORY_DESIGNATION
+  ADVISORY_COMMITTEE
+  APPROVAL
+  REJECTION
+  CLINICAL_HOLD
+  CLINICAL_HOLD_LIFTED
+  REGULATORY_STATUS_CHANGE
+  ENFORCEMENT_ACTION
+  POLICY_CHANGE
+  LAUNCH
+  RECALL
+  MARKET_WITHDRAWAL
+  SAFETY_SIGNAL
+  PROGRAM_DISCONTINUATION
+  FINANCING
+  ACQUISITION
+  PARTNERSHIP
+  AWARD
+  LEGAL_ACTION
+  OTHER
+}
+
+"Materialized lifecycle of an Event from its time Assertions (never truth, never a judgment). A slip or a missed date is computed (Q-D13-11), not a status."
+enum EventStatus {
+  "Only EVENT_SCHEDULED assertions exist (a guided readout, a PDUFA goal date, an expected launch)."
+  PLANNED
+  "A durative event has started (EVENT_OCCURRED with validFrom, no validTo yet)."
+  IN_PROGRESS
+  "An accepted EVENT_OCCURRED assertion exists."
+  OCCURRED
+  "An accepted EVENT_CANCELLED assertion exists (the sponsor or regulator called it off)."
+  CANCELLED
+}
+
+"Stage of a readout as the source names it (qualifier on READOUT)."
+enum ReadoutStage {
+  TOPLINE
+  INTERIM
+  PRIMARY
+  FINAL
+  LONG_TERM_FOLLOW_UP
+}
+
+"What the source STATES about the primary endpoint(s) of a READOUT. A capture of the sponsor's or investigator's statement, never BellLabs' judgment of the result (that is a D3 StudyResult or an Assessment)."
+enum EndpointStatement {
+  MET
+  NOT_MET
+  MIXED
+  NOT_STATED
+}
+
+"How much a PROGRAM_DISCONTINUATION stops: one trial, the whole program, or the company (wind-down, dissolution)."
+enum DiscontinuationScope {
+  TRIAL
+  PROGRAM
+  COMPANY
+}
+
+"Role of an organization or person in an event (INVOLVES). Merges the pinned HOSTS_EVENT, SPEAKS_AT, EXHIBITS_AT and EventRoleEdgeProperties.participantRole strings. What the source printed ('lead investor', 'sole book-running manager') is the authorizing Assertion's qualifier roleText:<label>, never an edge field (kernel rule M11(3))."
+enum EventRole {
+  "Runs the trial or program the event is about."
+  SPONSOR
+  "Files or holds the application (NDA/BLA/MAA holder). Written only while no D8 RegulatoryRecord documents the event (a submission, a hold); once DOCUMENTED_BY_RECORD exists the applicant is the record's ADDRESSED_TO (executor-enforced, R-66)."
+  APPLICANT
+  "Regulator or agency that acts (holds, rejects, designates, enforces). Written only while no D8 RegulatoryRecord documents the event (a clinical hold or a designation known only from the sponsor); once DOCUMENTED_BY_RECORD exists the regulator is the record's ISSUED_BY (executor-enforced, R-66)."
+  REGULATOR
+  "Issuer of the securities sold in a FINANCING (registered direct, ATM sales, IPO, follow-on). Written only while no DOCUMENTED_BY_RECORD exists; with one, the issuer is the record's ISSUED_BY (executor-enforced, R-66)."
+  ISSUER
+  "Borrower under a loan or credit facility in a FINANCING (adversarial review: the financed party of a loan tranche issues no securities)."
+  BORROWER
+  INVESTOR
+  LEAD_INVESTOR
+  LENDER
+  "Underwriter, placement agent or at-the-market sales agent; the printed title is the authorizing Assertion's qualifier roleText."
+  UNDERWRITER
+  ACQUIRER
+  ACQUIREE
+  "Counterparty in a license, collaboration or option deal."
+  PARTNER
+  "Presents data or a paper (conference speaker, presenting author)."
+  PRESENTER
+  "Other party; the authorizing Assertion's qualifier roleText says what the source printed. Funder and recipient of an AWARD are not event roles: they are D7 Award AWARDED_BY / AWARDED_TO."
+  OTHER
+}
+
+"Granularity of a frontier (vocab-frontiers.yaml section 1)."
+enum FrontierGranularity {
+  THEME
+  MODALITY
+  MECHANISM
+  DISEASE_GOAL
+  REGULATORY_PATH
+  POPULATION
+}
+
+"Curation status of a frontier, set only by a vocabulary version bump with a rationale; never a judgment of success. MATURED is a vocabulary-retirement state (the frontier stops admitting new milestone attachments) whose bump rationale must cite an accepted BREAKTHROUGH_JUDGMENT Assessment about the Frontier; it is never set by a progress computation (vocab-frontiers.yaml 0.2.1)."
+enum FrontierCurationStatus {
+  ACTIVE
+  DORMANT
+  MATURED
+  DEPRECATED
+}
+
+# =====================================================================================================
+# Edge-property type (one; INVOLVES only)
+# =====================================================================================================
+
+"""
+Asserted recorded-time episode for INVOLVES (Event → Organization | Person). Domain-local superset of the kernel
+base type AssertedRecordedProperties (kernel rule M11): its five fields verbatim and in order (same names, types,
+nullability; executor-set from the one authorizing Assertion, predicate INVOLVES), then the qualifiers investor
+questions filter on: the event role only (Q-D13-03 sponsors and applicants, Q-D13-06 investors, lenders and issuers,
+Q-D13-14 regulators and sponsors, Q-D13-33 sponsors). No valid-time fields: an involvement has no validity of its own
+beyond the event's clocks (09-reasoning.md, bitemporal table); any time the source states stays on the authorizing
+Assertion. Class asserted (the base type's class). `role` is copied from the authorizing Assertion's qualifier
+`role=<EventRole>`; what the source printed ("lead investor", "sole book-running manager") stays on that Assertion as the
+qualifier `roleText:<label>` (kernel rule M11(3): a field that only reproduces the source's wording is not an edge field).
+"""
+type EventRoleEdgeProperties @relationshipProperties {
+  relationshipUid: String!
+  assertionUid: String!
+  recordedFrom: DateTime!
+  recordedTo: DateTime
+  lastWriterRunId: String
+  role: EventRole!
+}
+
+# =====================================================================================================
+# Node types
+# =====================================================================================================
+
+"""
+Purpose: one dated public occurrence in biotech that investors, researchers and agents order into timelines and chains:
+a trial start, a readout, a regulatory submission, acceptance, designation, approval, rejection or clinical hold, a
+safety signal, a discontinuation, a financing, an acquisition, a partnership, a retraction curated as a frontier
+milestone. Every timeline, chain, harm and breakthrough question filters by its kind and clocks, joins it to frontiers
+and participants, and traverses LEADS_TO / RESPONDS_TO through it, so it is a node.
+Clocks (CQ-TM-03): every time property is MATERIALIZED from one kernel Assertion whose subject is this Event and whose
+validFrom/validTo carry the time: startedAt/endedAt ← EVENT_OCCURRED (timeAssertionUid); announcedAt ← EVENT_ANNOUNCED
+(the first public statement by a party; announcementAssertionUid); effectiveFrom ← EVENT_EFFECTIVE (legal or
+contractual effect, may be an INSTANT with localTimeZone; effectiveAssertionUid); scheduledFrom/scheduledTo ←
+the latest accepted EVENT_SCHEDULED (a guided or goal window, half-open, e.g. "first half of 2023" = [2023-01-01,
+2023-07-01) with MONTH precision on both bounds; scheduleAssertionUid). The filing or acceptance time of the document
+that reports the event is not an Event clock: it is SourceSnapshot.publishedAt of that document. When two asserters
+disagree (a registry start date versus the sponsor's "first participant dosed"), both Assertions stay and the
+materialized value follows the precedence rule named in `clockRule`. History lives in the Assertions (recorded time):
+a re-guided date, a correction or a cancellation is a new Assertion on the same Event, never an edit and never a new
+Event. Nothing is required beyond one EVENT_OCCURRED or EVENT_SCHEDULED Assertion with a locator: an event that exists
+only as a press release (no filing, no registry change) is a valid Event (Q-D13-22 measures corroboration).
+Records (R-66): a regulatory act is one D8 RegulatoryRecord plus at most one Event, linked by DOCUMENTED_BY_RECORD; its date is
+one Assertion on one shared locator and the Event clocks are caches. An Event is minted only for a frontier timeline and
+never re-asserts a date a D3 or D8 record already carries; process chains (submission → acceptance → approval) are
+computed from the shared D8 application identifier, not from LEADS_TO.
+Identity rule (adversarial-review pass): `identityKey` is a MINT-TIME key, written once when the executor creates the
+Event and never recomputed: eventKind | primary subject uid | jurisdiction or '-' | time anchor as first stated (startedAt,
+or the scheduled window, at its stated precision) | discriminator when required. The primary subject is the object of the
+one EVENT_ABOUT Assertion carrying the qualifier `primary=true`; for FINANCING it is the ISSUER or BORROWER participant,
+for ACQUISITION the ACQUIREE, for PARTNERSHIP the party whose asset is licensed (the INVOLVES Assertion carrying
+`primary=true`). The discriminator is required when one subject can have several events of the same kind on one day
+(FINANCING: the instrument, e.g. loan-tranche, registered-direct, atm-sales). Matching a new artifact to an existing Event
+does not compare keys: candidates share eventKind, primary subject and jurisdiction and have overlapping time windows
+(scheduled window, occurrence at its precision); a sure match attaches the new Assertions to that Event, a doubtful one
+mints a new Event plus a proposed EQUIVALENCE Assessment, and a merge happens only through an accepted EQUIVALENCE
+Assessment. So a re-guided window, PLANNED → OCCURRED, or a more precise later date never mints a second Event (Q-D13-11).
+An 8-K, its press-release exhibit, a registry status change and a regulator record about the same occurrence are several
+Assertions about ONE Event (an acquisition's agreement and closing are one Event with two clocks). External ids
+(accession numbers, NCT ids of the subject study) are identifiers of the documents or subjects, not of the Event.
+uid token: `event` (hu:event:<opaque>).
+Questions: Q-D13-01, Q-D13-02, Q-D13-03, Q-D13-04, Q-D13-05, Q-D13-06, Q-D13-07, Q-D13-08, Q-D13-10, Q-D13-11,
+Q-D13-12, CQ-EV-05, Q-D13-14, Q-D13-15, Q-D13-16, Q-D13-17, CQ-TM-03, CQ-TM-01, Q-D13-21, Q-D13-22, Q-D13-25, Q-D13-26,
+Q-D13-27, Q-D13-30, Q-D13-31, Q-D13-32, Q-D13-33.
+"""
+type Event implements Entity & Subjectable
+  @node(labels: ["Event", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Kind of event; filter key of every D13 question (vocab-frontiers.yaml section 5)."
+  eventKind: EventKind!
+  "Required when eventKind is OTHER: what the source calls it (reviewed for a vocabulary bump)."
+  eventKindNote: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "Materialized from the time Assertions; never truth."
+  eventStatus: EventStatus!
+  "Mint-time key per the identity rule (kind | primary subject uid | jurisdiction | first-stated time at precision | discriminator); frozen, never recomputed; dedup matches on overlapping windows, not on this string."
+  identityKey: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "One-paragraph neutral summary written from the cited spans (presentation and retrieval only; never evidence)."
+  summaryText: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "ISO 3166-1 alpha-2 or region code (US, EU, GB, JP); required for regulatory kinds (vocab-frontiers.yaml `requires`). When a D8 RegulatoryRecord documents the event, the JURISDICTION Assertion cites the record's locator (one shared span)."
+  jurisdiction: String
+  "When it happened (valid-time start, first instant of its precision period) ← EVENT_OCCURRED."
+  startedAt: DateTime
+  startedAtPrecision: TimePrecision @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  startedAtBasis: ValidTimeBasis @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "When a durative event ended (half-open); null = unknown or instantaneous, never 'ongoing'."
+  endedAt: DateTime
+  endedAtPrecision: TimePrecision @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "uid of the EVENT_OCCURRED Assertion that startedAt/endedAt materialize."
+  timeAssertionUid: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "First public announcement by a party to the event (press-release dateline or publication instant) ← EVENT_ANNOUNCED."
+  announcedAt: DateTime
+  announcedAtPrecision: TimePrecision @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  announcementAssertionUid: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "When the legal, regulatory or contractual effect begins ← EVENT_EFFECTIVE; never proxied from announcedAt."
+  effectiveFrom: DateTime
+  effectiveFromPrecision: TimePrecision @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  effectiveFromBasis: ValidTimeBasis @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  effectiveAssertionUid: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "IANA time zone in which the source stated a local time (\"5:00 p.m. Eastern Time\"); instants are stored in UTC."
+  localTimeZone: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "Start of the latest accepted scheduled window (half-open) ← EVENT_SCHEDULED; null bound = unknown."
+  scheduledFrom: DateTime
+  "Exclusive end of the latest accepted scheduled window (a PDUFA goal date D is [D, D+1 day))."
+  scheduledTo: DateTime
+  scheduledFromPrecision: TimePrecision @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  scheduledToPrecision: TimePrecision @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "uid of the EVENT_SCHEDULED Assertion the window materializes; earlier windows stay as superseded Assertions (Q-D13-11)."
+  scheduleAssertionUid: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "Named precedence rule used when several asserters give the same clock, e.g. event-clock/v1 (regulator > registry > filing > sponsor release > press)."
+  clockRule: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "READOUT only."
+  readoutStage: ReadoutStage
+  "READOUT only: what the source states about the primary endpoint(s); a capture, not a judgment."
+  primaryEndpointStatement: EndpointStatement
+  "APPROVAL only; D8 vocabulary (R-66, OQ-D8-02 mapping: FULL → US_DRUG_NDA | US_BLA, ACCELERATED → US_ACCELERATED_APPROVAL, CONDITIONAL → EU_CONDITIONAL_MA, 510K / DE_NOVO / PMA → US_DEVICE_*, EMERGENCY_USE → US_EUA; a supplement is the record's recordNumber)."
+  approvalPathway: RegulatoryPathway
+  "REGULATORY_DESIGNATION (and PRIORITY_REVIEW announced with REGULATORY_ACCEPTANCE) only; D8 vocabulary (R-66): the designation programme, e.g. US_BREAKTHROUGH_THERAPY, EU_PRIME, JP_SAKIGAKE, US_ / EU_ORPHAN_DESIGNATION by jurisdiction."
+  designationType: RegulatoryPathway
+  "PROGRAM_DISCONTINUATION only."
+  discontinuationScope: DiscontinuationScope
+
+  """class: asserted; cardinality: many (1–2 level-2 frontiers, rarely 3; a level-1 theme only when no child fits; one recorded-time episode per classification Assertion by the curation agent, qualifier frontierVocabVersion; reclassification supersedes, never edits); questions: Q-D13-01, Q-D13-02, Q-D13-03, Q-D13-04, Q-D13-08, Q-D13-09, Q-D13-16, Q-D13-23, Q-D13-28, Q-D13-29."""
+  frontiers: [Frontier!]!
+    @relationship(type: "ON_FRONTIER", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many-to-many (earlier enabling event → later enabled event; projected only from an Assertion with speechAct STATES whose locator states the basis and whose SUPPORT adjudication is DIRECTLY_SUPPORTED or SUPPORTED_WITH_QUALIFICATION; service check object.startedAt >= subject.startedAt; temporal wording alone ("following") never projects); questions: Q-D13-01, Q-D13-05, Q-D13-06."""
+  leadsTo: [Event!]!
+    @relationship(type: "LEADS_TO", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many-to-many (responding event → stimulus event: a deliberate act by a sponsor, regulator, investor or publisher that the source states was taken because of the stimulus; same projection gate as LEADS_TO); questions: Q-D13-01, Q-D13-08, Q-D13-14, Q-D13-15, Q-D13-26."""
+  respondsTo: [Event!]!
+    @relationship(type: "RESPONDS_TO", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (one episode per participant and role; role on the edge, the printed title as the Assertion qualifier roleText; D7 Organization declares no inverse); questions: Q-D13-03, Q-D13-06, Q-D13-14, Q-D13-15, Q-D13-21, Q-D13-23, Q-D13-33."""
+  involvedOrganizations: [Organization!]!
+    @relationship(type: "INVOLVES", direction: OUT, properties: "EventRoleEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (presenters, named individual investors; public actors only; authors of a retracted paper are reached through D3 AUTHORED_BY on the Publication, R-44; D7 Person declares no inverse); questions: Q-D13-14, Q-D13-25."""
+  involvedPeople: [Person!]!
+    @relationship(type: "INVOLVES", direction: OUT, properties: "EventRoleEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (usually one: the authority's record of the act — a Drugs@FDA action, a designation, a warning letter, a recall — for APPROVAL, REJECTION, REGULATORY_DESIGNATION, ENFORCEMENT_ACTION, RECALL, MARKET_WITHDRAWAL, REGULATORY_STATUS_CHANGE; D8 owns the record and declares no inverse; regulator, applicant and record date are read from the record's ISSUED_BY / ADDRESSED_TO / issuedAt, so the Event repeats none of them; promoted from predicate-only in the adversarial-review pass); questions: Q-D13-12, Q-D13-14, Q-D13-22."""
+  regulatoryRecords: [RegulatoryRecord!]!
+    @relationship(type: "DOCUMENTED_BY_RECORD", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+"""
+Purpose: one curated research or therapeutic frontier — a field-level goal the community and investors track and that
+is not yet reliably achieved in humans ("senolytics in humans", "partial epigenetic reprogramming", "curing pancreatic
+cancer", "MASH fibrosis resolution"). The bucket every frontier question groups, filters and ranks by; events and
+studies attach to it by the asserted ON_FRONTIER classification; organizations, compounds and claims reach it only
+through events, studies and the kernel subject pattern (vocab-frontiers.yaml section 8). About 25 nodes, created only
+from vocab-frontiers.yaml by a vocabulary version bump.
+Not stored here: progress, stage, "furthest milestone", breakthrough or hype flags, success probability, market size
+(computed from ON_FRONTIER events, or Assessments/Reports about the Frontier), lists of organizations or compounds.
+Hierarchy is the property parentKey (two levels), relevance to D5 targets is the property targetKeys (D5 keys,
+vocabulary-to-vocabulary relevance, never an effect claim); neither spends a relationship type. `name` holds the
+vocabulary label.
+Identity rule: `key` (vocabulary id, e.g. frontier:senolytics-in-humans), never reused or renamed; a DEPRECATED
+frontier names its successor in replacedBy. External close matches (Wikidata QIDs of anchor concepts) are kernel
+Identifiers on the anchor entities, not on the Frontier.
+uid token: `frontier` (hu:frontier:<slug>, slug = key without the `frontier:` prefix).
+Questions: Q-D13-01, Q-D13-02, Q-D13-03, Q-D13-04, Q-D13-08, Q-D13-09, Q-D13-16, Q-D13-23, Q-D13-28, Q-D13-29, Q-D13-30.
+"""
+type Frontier implements Entity & Subjectable
+  @node(labels: ["Frontier", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Stable vocabulary key (frontier:<slug>); unique."
+  key: String!
+  "One paragraph: the goal, phrased as a capability not yet reliably achieved."
+  definition: String! @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "1 = theme, 2 = frontier (two levels only)."
+  level: Int!
+  "Key of the level-1 theme; null at level 1."
+  parentKey: String
+  granularity: FrontierGranularity!
+  "Feeds the fulltext index FrontierSearch(name, synonyms, definition) used to entity-link frontier phrases."
+  synonyms: [String!] @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "D5 target keys (packets/D5/vocab-targets.yaml) this frontier is relevant to; Q-D13-09 filters with IN."
+  targetKeys: [String!]
+  curationStatus: FrontierCurationStatus!
+  "Successor key when DEPRECATED."
+  replacedBy: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "vocab-frontiers.yaml version at creation or last edit."
+  vocabVersion: String! @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+
+  """class: asserted; cardinality: many (D3 Study → Frontier, declared here with direction IN so ON_FRONTIER stays one D13-owned relationship type and D3 Study spends no field; same classification Assertion rules as Event.frontiers); questions: Q-D13-02, Q-D13-03, Q-D13-16."""
+  studies: [Study!]!
+    @relationship(type: "ON_FRONTIER", direction: IN, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+

@@ -1,0 +1,372 @@
+# Assertions and derived records for fixture fda-qhc-magnesium-disconfirmation (D10, fixtures stage, A1, 2026-10-08).
+# Kind: disconfirmation. A petitioner's characterization of evidence strength ("supportive") rejected by the regulator
+# ("inconsistent and inconclusive"), with a mandated qualifier and a 350 mg condition; plus two retelling-fidelity cases
+# (a unit slip inside the letter; a secondary source calling the outcome an "approval").
+# Conventions: see the header of ../mg-bisglycinate-rct-unstructured/assertions.yaml (fixture uids and run ids; K/D10/Dn types).
+
+fixture: fda-qhc-magnesium-disconfirmation
+producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-fda-qhc-magnesium-disconfirmation" }   # fixture ids
+activities:
+  - uid: hu:activity:fx-d10-run-fda-qhc-ingest
+    activityKind: INGESTION
+    missionId: mission:ft-D10-fixtures
+    runId: run:ft-D10-fda-qhc-magnesium-disconfirmation
+  - uid: hu:activity:fx-d10-run-fda-qhc-evidence-mission
+    activityKind: EVIDENCE_MISSION          # composes the evidence report (Report WAS_GENERATED_BY this Activity)
+    missionId: mission:ft-D10-fixtures
+    runId: run:ft-D10-fda-qhc-magnesium-disconfirmation-report
+    policyVersion: "policy:bl-publish@fixture"
+
+entities:
+  - ref: e-claim
+    type: K.Claim
+    uid: hu:claim:fx-d10-mg-diet-reduces-hypertension-risk
+    proposition: "diets with adequate magnesium may reduce the risk of high blood pressure (hypertension)"
+    binding: { subject: "hu:chemical-substance:fx-magnesium", predicate: REDUCES_RISK_OF, object: "hu:condition:fx-hypertension", qualifiers: ["dietary intake (diets with adequate magnesium)"] }
+    propositionHash: "sha256:67c4066593bffae299facb3ac19cfa20330bc44bb4049eabe283f397a4271a95"
+    propositionHashRule: "sha256 over canonical JSON (sorted keys, no spaces, UTF-8) of {proposition, subject, predicate, object, qualifiers} as given in `proposition` and `binding` (fixture rule; the kernel normalization is not yet specified)"
+    claimType: CAUSAL
+  - { ref: e-mg, type: D1.ChemicalSubstance, uid: hu:chemical-substance:fx-magnesium, name: magnesium }
+  - { ref: e-hypertension, type: D2.Condition, uid: hu:condition:fx-hypertension, name: "high blood pressure (hypertension)" }
+  - { ref: e-fda, type: D7.Organization, uid: hu:organization:fx-us-fda, name: "U.S. Food and Drug Administration (letter signed by the Director, Office of Nutrition and Food Labeling, Center for Food Safety and Applied Nutrition)" }
+  - { ref: e-cmer, type: D7.Organization, uid: hu:organization:fx-center-for-magnesium-education-and-research, name: "The Center for Magnesium Education and Research, LLC (petitioner)" }
+  - { ref: e-jns, type: D7.Organization, uid: hu:organization:fx-johnson-nutrition-solutions, name: "Johnson Nutrition Solutions LLC (submitted the petition on the petitioner's behalf)" }
+  - { ref: e-ods, type: D7.Organization, uid: hu:organization:fx-nih-ods, name: "NIH Office of Dietary Supplements" }
+  - { ref: e-examine, type: D7.Organization, uid: hu:organization:fx-examine, name: "Examine.com" }
+  - { ref: e-dietary-supplements, type: D6.Product, uid: "hu:product-category:fx-dietary-supplements-bearing-mg-bp-claim", name: "dietary supplements bearing the magnesium/blood-pressure qualified claim (class, not a product)", note: "D6 has no product-class type; seam question in 11-open-questions" }
+
+assertions:
+  - id: a-petitioner-strength
+    uid: hu:assertion:fx-d10-petitioner-strength-supportive
+    assertionKind: CLAIM
+    claimType: CAUSAL
+    predicate: CHARACTERIZES_EVIDENCE_STRENGTH
+    subject: { ref: e-claim, type: K.Claim }
+    value: { valueString: "supportive but inconclusive" }
+    asserter: { ref: e-cmer, type: D7.Organization }
+    locators: [loc-petitioner-claim]
+    occurrenceOf: e-claim                 # OCCURRENCE_OF -> Claim (claim occurrence 1)
+    speechAct: STATES
+    polarity: POSITIVE
+    basisKind: CITED_FROM_PRIOR_WORK
+    qualifiers: ["proposed model claim for conventional foods and dietary supplements containing magnesium", "as restated in FDA's response letter (the petition itself was not captured)"]
+    validTime: { validFrom: "2016-10-04", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: null, note: "petition submitted October 4, 2016 per the letter" }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-fda-qhc-magnesium-disconfirmation" }
+
+  - id: a-fda-strength
+    uid: hu:assertion:fx-d10-fda-strength-inconsistent-inconclusive
+    assertionKind: CLAIM
+    claimType: CAUSAL
+    predicate: CHARACTERIZES_EVIDENCE_STRENGTH
+    subject: { ref: e-claim, type: K.Claim }
+    value: { valueString: "inconsistent and inconclusive" }
+    asserter: { ref: e-fda, type: D7.Organization }
+    locators: [loc-inconsistent, loc-overstates]   # p. 22 finding and p. 27 statement (adversarial-review stage: was loc-fda-qualified-claim)
+    occurrenceOf: e-claim                 # claim occurrence 2: same Claim, different strength qualifier
+    speechAct: STATES
+    polarity: MIXED
+    basisKind: EXPERT_OPINION
+    validTime: { validFrom: "2022-01-08", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: null, note: "letter digitally signed 2022.01.08" }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-fda-qhc-magnesium-disconfirmation" }
+
+  - id: a-qualified-wording
+    uid: hu:assertion:fx-d10-fda-requires-qualified-wording
+    assertionKind: FIELD
+    predicate: REQUIRES_QUALIFIED_CLAIM_WORDING
+    subject: { ref: e-claim, type: K.Claim }
+    value: { valueString: "Inconsistent and inconclusive scientific evidence suggests that diets with adequate magnesium may reduce the risk of high blood pressure (hypertension), a condition associated with many factors." }
+    asserter: { ref: e-fda, type: D7.Organization }
+    locators: [loc-fda-status, loc-fda-qualified-claim]
+    speechAct: STATES
+    qualifiers: ["qualified claim wording 1 of 3 listed on p. 28", "conventional foods and dietary supplements", "enforcement discretion, not authorization", "docket FDA-2016-Q-3770"]
+    validTime: { validFrom: "2022-01-08", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: null }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-fda-qhc-magnesium-disconfirmation" }
+
+  - id: a-qualified-wording-2
+    uid: hu:assertion:fx-d10-fda-requires-qualified-wording-2
+    assertionKind: FIELD
+    predicate: REQUIRES_QUALIFIED_CLAIM_WORDING
+    subject: { ref: e-claim, type: K.Claim }
+    value: { valueString: "Consuming diets with adequate magnesium may reduce the risk of high blood pressure (hypertension). However, FDA has concluded that the evidence is inconsistent and inconclusive." }
+    asserter: { ref: e-fda, type: D7.Organization }
+    locators: [loc-fda-status, loc-fda-qualified-claim-2]
+    speechAct: STATES
+    qualifiers: ["qualified claim wording 2 of 3 listed on p. 28", "conventional foods and dietary supplements", "enforcement discretion, not authorization", "docket FDA-2016-Q-3770", "added in the adversarial-review stage"]
+    validTime: { validFrom: "2022-01-08", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: null }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-fda-qhc-magnesium-disconfirmation" }
+
+  - id: a-qualified-wording-3
+    uid: hu:assertion:fx-d10-fda-requires-qualified-wording-3
+    assertionKind: FIELD
+    predicate: REQUIRES_QUALIFIED_CLAIM_WORDING
+    subject: { ref: e-claim, type: K.Claim }
+    value: { valueString: "Some scientific evidence suggests that diets with adequate magnesium may reduce the risk of high blood pressure (hypertension), a condition associated with many factors. FDA has concluded that the scientific evidence supporting this claim is inconsistent and not conclusive." }
+    asserter: { ref: e-fda, type: D7.Organization }
+    locators: [loc-fda-status, loc-fda-qualified-claim-3]
+    speechAct: STATES
+    qualifiers: ["qualified claim wording 3 of 3 listed on p. 28", "conventional foods and dietary supplements", "enforcement discretion, not authorization", "docket FDA-2016-Q-3770", "added in the adversarial-review stage"]
+    validTime: { validFrom: "2022-01-08", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: null }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-fda-qhc-magnesium-disconfirmation" }
+
+  - id: a-fda-status
+    uid: hu:assertion:fx-d10-fda-status-enforcement-discretion
+    assertionKind: FIELD
+    predicate: STATES_REGULATORY_STATUS
+    subject: { ref: e-claim, type: K.Claim }
+    value: { valueString: "FDA intends to consider exercising enforcement discretion (qualified health claim)" }
+    asserter: { ref: e-fda, type: D7.Organization }
+    locators: [loc-fda-status, loc-docket]
+    speechAct: STATES
+    validTime: { validFrom: "2022-01-08", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: null }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-fda-qhc-magnesium-disconfirmation" }
+
+  - id: a-350-condition
+    uid: hu:assertion:fx-d10-fda-350mg-condition
+    assertionKind: FIELD
+    predicate: CONDITIONS_CLAIM_USE_ON_MAX_AMOUNT     # D8 (regulatory status) may own the name
+    subject: { ref: e-dietary-supplements, type: D6.Product }
+    value: { valueNumber: 350, unitCode: "mg", valueString: "not more than 350 mg magnesium combined when used according to their labeling" }
+    asserter: { ref: e-fda, type: D7.Organization }
+    locators: [loc-350mg-condition]
+    speechAct: STATES
+    qualifiers: ["dietary supplements bearing the claim", "magnesium combined", "when used according to their labeling", "a factor in the exercise of enforcement discretion", "the quoted span states no time unit"]
+    validTime: { validFrom: "2022-01-08", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: null }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-fda-qhc-magnesium-disconfirmation" }
+
+  - id: a-unit-slip
+    uid: hu:assertion:fx-d10-fda-dose-range-studied
+    assertionKind: FIELD
+    predicate: REPORTS_DOSE_RANGE_STUDIED
+    subject: { ref: e-claim, type: K.Claim }
+    value: { valueString: "(181 mg/day to 960 g/day)" }
+    asserter: { ref: e-fda, type: D7.Organization }
+    locators: [loc-unit-slip]
+    speechAct: STATES
+    status: ACCEPTED      # capture fidelity only: the letter does print this (p. 23, "the whole range of magnesium intakes and forms of magnesium studied")
+    validTime: { validFrom: "2022-01-08", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: null }
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-fda-qhc-magnesium-disconfirmation" }
+
+  - id: a-dose-range-benefit
+    uid: hu:assertion:fx-d10-fda-dose-range-benefit-studies
+    assertionKind: FIELD
+    predicate: REPORTS_DOSE_RANGE_STUDIED
+    subject: { ref: e-claim, type: K.Claim }
+    value: { valueString: "181 mg/day to 960 mg/day" }
+    asserter: { ref: e-fda, type: D7.Organization }
+    locators: [loc-dose-range-p22]
+    speechAct: STATES
+    qualifiers: ["the 18 intervention studies that showed a statistically significant benefit", "elemental magnesium", "p. 22"]
+    validTime: { validFrom: "2022-01-08", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: null }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-fda-qhc-magnesium-disconfirmation" }
+
+  - id: a-dose-range-nobenefit
+    uid: hu:assertion:fx-d10-fda-dose-range-no-benefit-studies
+    assertionKind: FIELD
+    predicate: REPORTS_DOSE_RANGE_STUDIED
+    subject: { ref: e-claim, type: K.Claim }
+    value: { valueString: "240 mg/day to 720 mg/day" }
+    asserter: { ref: e-fda, type: D7.Organization }
+    locators: [loc-dose-range-nobenefit]
+    speechAct: STATES
+    qualifiers: ["the 20 intervention studies that showed no benefit", "elemental magnesium intake", "p. 22"]
+    validTime: { validFrom: "2022-01-08", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: null }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-fda-qhc-magnesium-disconfirmation" }
+
+  - id: a-examine-dose-range
+    uid: hu:assertion:fx-d10-examine-dose-range-studied
+    assertionKind: FIELD
+    predicate: REPORTS_DOSE_RANGE_STUDIED
+    subject: { ref: e-mg, type: D1.ChemicalSubstance }
+    value: { valueString: "30 to 960 mg/day of elemental magnesium" }
+    asserter: { ref: e-examine, type: D7.Organization }
+    locators: [loc-examine-dose-range]
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, validTo: null, statedAsOf: "2026-09-30" }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-fda-qhc-magnesium-disconfirmation" }
+
+  - id: a-ods-approved
+    uid: hu:assertion:fx-d10-ods-status-approved
+    assertionKind: FIELD
+    predicate: STATES_REGULATORY_STATUS
+    subject: { ref: e-claim, type: K.Claim }
+    value: { valueString: "approved (qualified health claim, 2022)" }
+    asserter: { ref: e-ods, type: D7.Organization }
+    locators: [loc-ods-approved]
+    speechAct: STATES
+    validTime: { validFrom: "2022-01-01", validFromPrecision: YEAR, validFromBasis: STATED_BY_SOURCE, validTo: null }
+    status: ACCEPTED      # capture fidelity; the misstatement is judged by s-fidelity-status
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-fda-qhc-magnesium-disconfirmation" }
+
+assessments:
+  - id: s-strength
+    uid: hu:assessment:fx-d10-strength-mg-bp-claim
+    type: K.Assessment
+    assessmentKind: EVIDENCE_SYNTHESIS
+    assessmentSubkind: D10.strength
+    status: PROPOSED
+    methodVersion: "bl-strength/regulator-review-mirror@0 (fixture)"
+    verdict: MIXED_OR_CONFLICTING
+    effectDirection: UNKNOWN
+    summary: "The regulator that reviewed the petition found the evidence inconclusive because study results are inconsistent and rejected the 'supportive' characterization; BellLabs adopts that characterization pending its own synthesis."
+    about: [{ ref: e-claim, type: K.Claim }]                                    # ASSESSES
+    inputAssertions: [a-petitioner-strength, a-fda-strength, a-qualified-wording]   # DERIVED_FROM
+    evidence:
+      - { locator: loc-inconsistent, role: CONTRADICTS, origin: DECLARED }
+      - { locator: loc-overstates, role: CONTRADICTS, origin: DECLARED }
+      - { locator: loc-petitioner-claim, role: CONTEXT, origin: DECLARED }
+    evidenceCutoffAt: "2026-10-08T21:39:08Z"
+    recordedAt: "2026-10-08T22:00:00Z"
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-fda-qhc-magnesium-disconfirmation-report" }
+
+  - id: s-fidelity-unit
+    uid: hu:assessment:fx-d10-fidelity-unit-fda-dose-range
+    type: K.Assessment
+    assessmentKind: RETELLING_FIDELITY
+    assessmentSubkind: D10.fidelity.unit
+    status: PROPOSED
+    methodVersion: "bl-fidelity/unit@1 (fixture; adversarial-review stage: compares against the same primary, not a secondary)"
+    verdict: PARTIALLY_SUPPORTED
+    summary: "The letter is internally inconsistent. On p. 23 it gives the whole range of magnesium intakes studied as '181 mg/day to 960 g/day'; on p. 22 it gives 181 mg/day to 960 mg/day for the 18 studies that showed a benefit and 240 mg/day to 720 mg/day for the 20 that did not, so the whole range is 181 to 960 mg/day and 'g/day' is a unit slip. The lower bound is supported; the unit of the upper bound is contradicted by the letter itself."
+    unsupportedFacets: ["unit of the upper bound (g/day; the letter's own p. 22 says mg/day)"]
+    about: [{ ref: e-claim, type: K.Claim }]
+    inputAssertions: [a-unit-slip, a-dose-range-benefit, a-dose-range-nobenefit]
+    evidence:
+      - { locator: loc-unit-slip, role: CONTEXT, origin: DECLARED }
+      - { locator: loc-dose-range-p22, role: CONTRADICTS, origin: DECLARED }
+      - { locator: loc-dose-range-nobenefit, role: QUALIFIES, origin: DECLARED }
+      - { locator: loc-examine-dose-range, role: CONTEXT, origin: DECLARED }   # optional secondary context (Examine: 30 to 960 mg/day across a different study set); not an input
+    recordedAt: "2026-10-08T22:00:00Z"
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-fda-qhc-magnesium-disconfirmation-report" }
+
+  - id: s-fidelity-status
+    uid: hu:assessment:fx-d10-fidelity-status-ods-approved
+    type: K.Assessment
+    assessmentKind: RETELLING_FIDELITY
+    assessmentSubkind: D10.fidelity.status
+    status: PROPOSED
+    methodVersion: "bl-fidelity/status@0 (fixture)"
+    verdict: PARTIALLY_SUPPORTED
+    summary: "The ODS fact sheet says FDA 'approved' a qualified health claim; the primary letter states FDA intends to consider exercising enforcement discretion for qualified claims with mandated wording. The claim's existence is supported; the regulatory action word is not."
+    unsupportedFacets: ["regulatory action: 'approved' vs enforcement discretion"]
+    about: [{ ref: e-claim, type: K.Claim }]
+    inputAssertions: [a-ods-approved, a-fda-status]          # secondary first, primary second
+    evidence:
+      - { locator: loc-ods-approved, role: CONTEXT, origin: DECLARED }
+      - { locator: loc-fda-status, role: CONTRADICTS, origin: DECLARED }
+    recordedAt: "2026-10-08T22:00:00Z"
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-fda-qhc-magnesium-disconfirmation-report" }
+
+reports:
+  - id: r-evidence-report
+    uid: hu:report:fx-d10-mg-bp-evidence-report-draft-1
+    type: K.Report
+    reportKind: EVIDENCE_REPORT
+    skeleton: "d10.evidence-report@1"
+    name: "Evidence report: magnesium and reduced risk of high blood pressure (fixture draft, not published)"
+    status: PROPOSED
+    verdict: MIXED_OR_CONFLICTING
+    policyVersion: "policy:bl-publish@fixture"
+    bodyFile: composed-body.txt
+    bodyDigest: "sha256:ccb2a15b49515bbfe3bea304a4567386555a9d896e0dbcc2eef0a0704ce6e8d3"
+    citationCompleteness: 1.0            # 8 of 8 body sentences under the sections cite (framing paragraph excluded: no item covers it)
+    about: [{ ref: e-claim, type: K.Claim }]
+    citesAssertions: [a-petitioner-strength, a-fda-strength, a-qualified-wording, a-qualified-wording-2, a-qualified-wording-3, a-350-condition, a-unit-slip, a-dose-range-benefit, a-dose-range-nobenefit]
+    citesAssessments: [s-strength, s-fidelity-unit, s-fidelity-status]
+    evidence: [loc-petitioner-claim, loc-inconsistent, loc-overstates, loc-fda-qualified-claim, loc-fda-qualified-claim-2, loc-fda-qualified-claim-3, loc-350mg-condition, loc-unit-slip, loc-dose-range-p22, loc-dose-range-nobenefit, loc-ods-approved]
+    generatedBy: hu:activity:fx-d10-run-fda-qhc-evidence-mission
+    recordedAt: "2026-10-08T22:00:00Z"
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-fda-qhc-magnesium-disconfirmation-report" }
+
+reportItems:
+  - id: i-claim-under-test
+    uid: hu:report-item:fx-d10-mg-bp-er-claim-under-test
+    report: r-evidence-report
+    orderIndex: 1
+    itemKind: SECTION
+    sectionKind: CLAIM_UNDER_TEST
+    itemKey: "sec:claim-under-test"
+    about: [{ ref: e-claim, type: K.Claim }]
+    citesAssertions: [a-petitioner-strength]
+    bodyStartOffset: 459
+    bodyEndOffset: 689
+    uncitedSentenceCount: 0
+    citationCompleteness: 1.0
+    recordedAt: "2026-10-08T22:00:00Z"
+  - id: i-evidence-against
+    uid: hu:report-item:fx-d10-mg-bp-er-evidence-against
+    report: r-evidence-report
+    orderIndex: 3
+    itemKind: SECTION
+    sectionKind: EVIDENCE_AGAINST
+    itemKey: "sec:evidence-against"
+    about: [{ ref: e-claim, type: K.Claim }]
+    citesAssertions: [a-fda-strength, a-qualified-wording, a-qualified-wording-2, a-qualified-wording-3]      # DERIVED_FROM -> Assertion
+    citesAssessments: [s-strength]                              # DERIVED_FROM -> Assessment
+    bodyStartOffset: 691
+    bodyEndOffset: 1245
+    uncitedSentenceCount: 0
+    citationCompleteness: 1.0
+    recordedAt: "2026-10-08T22:00:00Z"
+  - id: i-verdict
+    uid: hu:report-item:fx-d10-mg-bp-er-verdict
+    report: r-evidence-report
+    orderIndex: 4
+    itemKind: SECTION
+    sectionKind: VERDICT
+    itemKey: "sec:verdict"
+    about: [{ ref: e-claim, type: K.Claim }]
+    citesAssessments: [s-strength]
+    bodyStartOffset: 1247
+    bodyEndOffset: 1388
+    uncitedSentenceCount: 0
+    citationCompleteness: 1.0
+    recordedAt: "2026-10-08T22:00:00Z"
+  - id: i-harms
+    uid: hu:report-item:fx-d10-mg-bp-er-harms
+    report: r-evidence-report
+    orderIndex: 5
+    itemKind: SECTION
+    sectionKind: HARMS_AND_AVOIDANCE
+    itemKey: "sec:harms-and-avoidance"
+    about: [{ ref: e-mg, type: D1.ChemicalSubstance }, { ref: e-dietary-supplements, type: D6.Product }]
+    citesAssertions: [a-350-condition]
+    bodyStartOffset: 1390
+    bodyEndOffset: 1641
+    uncitedSentenceCount: 0
+    citationCompleteness: 1.0
+    recordedAt: "2026-10-08T22:00:00Z"
+  - id: i-missing-or-disputed
+    uid: hu:report-item:fx-d10-mg-bp-er-missing-or-disputed
+    report: r-evidence-report
+    orderIndex: 6
+    itemKind: SECTION
+    sectionKind: MISSING_OR_DISPUTED
+    itemKey: "sec:missing-or-disputed"
+    about: [{ ref: e-claim, type: K.Claim }]
+    citesAssertions: [a-unit-slip, a-dose-range-benefit, a-dose-range-nobenefit]
+    citesAssessments: [s-fidelity-unit, s-fidelity-status]
+    bodyStartOffset: 1643
+    bodyEndOffset: 2195
+    uncitedSentenceCount: 0
+    citationCompleteness: 1.0
+    recordedAt: "2026-10-08T22:00:00Z"
+
+staleReportDemo:   # Q-D10-13 expected behaviour; no superseding record exists, so none is invented
+  rule: "if s-strength gets recordedTo (superseded) or a cited Assertion becomes REJECTED/DISPUTED, r-evidence-report appears in the stale-report queue with citing items i-evidence-against and i-verdict"
+
+edgesExercised:
+  - { type: HAS_ITEM, from: r-evidence-report, to: [i-claim-under-test, i-evidence-against, i-verdict, i-harms, i-missing-or-disputed] }
+  - { type: DERIVED_FROM, pair: "ReportItem -> Assertion", from: i-evidence-against, to: [a-fda-strength, a-qualified-wording, a-qualified-wording-2, a-qualified-wording-3] }
+  - { type: DERIVED_FROM, pair: "ReportItem -> K.Assessment", from: i-verdict, to: [s-strength] }
+  - { type: DERIVED_FROM, pair: "ReportItem -> K.Assessment", from: i-missing-or-disputed, to: [s-fidelity-unit, s-fidelity-status] }
+  - { type: ASSESSES, from: i-harms, to: [e-mg, e-dietary-supplements] }

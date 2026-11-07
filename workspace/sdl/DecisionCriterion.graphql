@@ -1,0 +1,70 @@
+"""
+Purpose: one versioned criterion of a ranking or comparison method ("elemental magnesium per maximum daily dose",
+"block if the daily dose exceeds the supplemental upper limit stated for the population", Labdoor's "Label Accuracy"
+weight). A ranking is a function of (candidate set, criteria set @ version, inputs as recorded at R); the criteria are
+the only stored part of an unpublished ranking (Q-D10-01 is computed at query time from them). Criteria of a
+third-party ranker are DecisionCriterion records too, so two rankings can be compared criterion by criterion
+(Q-D10-11); the ranker's method statement is a kernel Assertion whose subject is the criterion. The publisher is reached
+through the criterion set's authorizing Assertion: ASSERTED_BY the publisher for a third-party criterion, or
+WAS_GENERATED_BY the BellLabs Activity for our own (Q-D10-10); `publisherUid` is only a cache of it (R-46).
+A criteria set is the group of records sharing (criteriaSetKey, criteriaSetVersion); no separate node.
+Identity rule: (criterionKey, version); a changed definition, weight, input predicate or direction is a new version
+naming `supersedesUid`; nothing is edited after publication. uid token: `decision-criterion`
+(hu:decision-criterion:<opaque>). Questions: CQ-RC-01, CQ-RC-02, CQ-RC-07, Q-D10-01, Q-D10-02, Q-D10-10, Q-D10-11,
+Q-D10-22.
+"""
+type DecisionCriterion implements Entity & Subjectable
+  @node(labels: ["DecisionCriterion", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Stable controlled key shared by all versions (e.g. bl:mg-sleep:elemental-mg-per-max-daily-dose)."
+  criterionKey: String!
+  "Version of this criterion; part of identity."
+  version: String!
+  "Ranking method family this criterion belongs to (e.g. bl:compare:mg-forms-for-sleep, labdoor:score)."
+  criteriaSetKey: String!
+  criteriaSetVersion: String!
+  criterionKind: CriterionKind!
+  direction: CriterionDirection!
+  "Weight inside its criteria set (SCORE criteria); null for BLOCK, FILTER, TIEBREAK."
+  weight: Float
+  "Tie-break or evaluation order inside the set."
+  evaluationOrder: Int
+  "Human-readable definition, as published."
+  definition: String!
+  "Machine rule (expression over input values) the comparison engine evaluates; versioned with the criterion."
+  rule: String
+  "Registered Assertion.predicate values the criterion reads (e.g. DECLARES_COMPONENT, IMPROVES_TARGET, HAS_UPPER_LIMIT; vocabularies/predicates.yaml)."
+  inputPredicates: [String!]
+  "Assessment kinds/subkinds the criterion reads (e.g. EVIDENCE_SYNTHESIS/D10.strength)."
+  inputAssessmentKinds: [String!]
+  "UCUM unit of the criterion value when it is a quantity."
+  valueUnitCode: String
+  "D5 Target keys the criteria set serves (shared vocabulary targets@0.2.2, e.g. target:sleep); a property, not an edge (the acknowledged exception OQ-D5-47, R-60). Q-D10-01 filters criteria on it."
+  targetKeys: [String!]
+  "Cache only (R-45, R-46, MD-D10-06): uid of the Organization or Agent that defines the criterion (BellLabs, or a third-party ranker). The authority is the criterion set's authorizing Assertion (ASSERTED_BY the publisher) or, for BellLabs criteria, WAS_GENERATED_BY the BellLabs Activity; answers cite that, never this property. Written only together with publisherUidMethodVersion, publisherUidDerivedAt and publisherUidAuthorityUid; a value without all three stamps is unproven and is not projected (rules/projection-rules.yaml)."
+  publisherUid: String
+  "Provenance stamp of the publisherUid cache (MD-D10-06): versioned derivation method that computed it (e.g. bl-cache/decision-criterion-publisher@1)."
+  publisherUidMethodVersion: String
+  "Provenance stamp of the publisherUid cache (MD-D10-06): when the executor derived it from its authority."
+  publisherUidDerivedAt: DateTime
+  "Provenance stamp of the publisherUid cache (MD-D10-06): uid of the authorizing Assertion (third-party criterion) or Activity (BellLabs criterion) the cache was derived from."
+  publisherUidAuthorityUid: String
+  "Policy validity of the criterion version as BellLabs applies it (e.g. from a ranker's method change date), not world valid time (R-24)."
+  validFrom: DateTime
+  validTo: DateTime
+  recordedAt: DateTime!
+  recordedTo: DateTime
+  supersedesUid: String
+  """class: structural (inverse; stored Report → DecisionCriterion); cardinality: many (every published comparison or ranking that applied this criterion version); questions: CQ-RC-01, CQ-RC-02, CQ-RC-07, Q-D10-02."""
+  usedByReports: [Report!]!
+    @relationship(type: "USES_CRITERION", direction: IN, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

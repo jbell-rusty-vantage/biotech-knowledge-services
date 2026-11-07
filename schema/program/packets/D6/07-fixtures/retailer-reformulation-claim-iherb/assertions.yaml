@@ -1,0 +1,632 @@
+# retailer-reformulation-claim-iherb — assertions (fixtures stage, A6, 2026-10-08). Subjects/objects are typed to D6 SDL types or to other modules' types
+# (module.Type) through the kernel Subjectable pattern. Typed literals keep currency in unitCode as iso4217:<code> (OQ-D6-06).
+# validTime.observedAtPerOBSERVED_AT is the instant 03-retrieval-patterns.md OBSERVED_AT derives (validFrom, else validObservedAt,
+# else the snapshot's observedAt). validObservedAt = kernel Assertion field (A1 change 5); validObservedAtPrecision is
+# fixture-only (the kernel field has no precision; OQ-D6-19).
+fixture: retailer-reformulation-claim-iherb
+kind: disconfirmation
+producedBy:
+  missionId: mission:ft-D6-fixtures
+  runId: run:ft-D6-retailer-reformulation-claim-iherb
+  note: "fixture-scoped ids (not Mission Control runs); assessments use the -assess run, verifier adjudications the -verify run, chunks the -chunk run"
+nodes:
+  - uid: hu:listing:iherb-com-120467
+    type: D6.MerchantListing
+    name: "iHerb item 120467"
+    properties:
+      listingKind: RETAILER_ITEM
+      hostDomain: iherb.com
+      hostItemId: "120467"
+      titleAsDisplayed: "Tru Niagen, Nicotinamide Riboside Chloride, 300 mg, 30 Vegetarian Capsules (Discontinued Item)"
+      canonicalUrl: https://www.iherb.com/pr/tru-niagen-nicotinamide-riboside-chloride-300-mg-30-vegetarian-capsules/120467
+    propertyEvidence: [M01]
+  - uid: hu:listing:iherb-com-162274
+    type: D6.MerchantListing
+    name: "iHerb item 162274"
+    properties:
+      listingKind: RETAILER_ITEM
+      hostDomain: iherb.com
+      hostItemId: "162274"
+      titleAsDisplayed: "Tru Niagen, Age Better®, 300 mg, 30 Vegetarian Capsules"
+      canonicalUrl: https://www.iherb.com/pr/tru-niagen-age-better-300-mg-30-vegetarian-capsules/162274
+    propertyEvidence: [M11]
+  - uid: hu:offer:iherb-com-120467-us-one-time
+    type: D6.Offer
+    name: "iHerb 120467 one-time offer (US)"
+    properties:
+      purchaseMode: ONE_TIME
+      jurisdiction: US
+    propertyEvidence: [M23]
+  - uid: hu:offer:iherb-com-162274-us-one-time
+    type: D6.Offer
+    name: "iHerb 162274 one-time offer (US)"
+    properties:
+      purchaseMode: ONE_TIME
+      jurisdiction: US
+    propertyEvidence: [M22]
+externalNodes:
+  - uid: hu:package:tru-niagen-300mg-30ct
+    type: D6.Package
+    name: "Tru Niagen 300 mg, 30 vegetarian capsules"
+    note: "declared in fixture label-versions-truniagen-dsld"
+  - uid: hu:label-version:tru-niagen-300mg-us-v09.2
+    type: D6.LabelVersion
+    name: "label V09.2"
+    note: "fixture label-versions-truniagen-dsld"
+  - uid: hu:label-version:tru-niagen-300mg-us-v12.3
+    type: D6.LabelVersion
+    name: "label V12.3"
+    note: "fixture label-versions-truniagen-dsld"
+  - uid: hu:org:iherb
+    type: D7.Organization
+    name: "iHerb, LLC (host of iherb.com)"
+    note: "owner D7; asserter of listing statements"
+  - uid: hu:product:tru-niagen
+    type: D6.Product
+    name: "Tru Niagen"
+    note: "fixture label-versions-truniagen-dsld"
+  - uid: hu:claim:tru-niagen-300mg-30ct-new-formulation
+    type: K.Claim
+    name: "A new formulation of Tru Niagen 300 mg, 30 capsules replaced the earlier item"
+    note: "kernel Claim (proposition)"
+  - uid: hu:claim:tru-niagen-tested-safe-2000mg-day
+    type: K.Claim
+    name: "Tru Niagen (nicotinamide riboside chloride) has been tested as safe up to 2,000 mg/day"
+    note: "kernel Claim; routed to D5/K evidence missions (Q-D6-09, Q-D6-18)"
+  - uid: hu:agent:d6-commerce-matcher
+    type: K.Agent
+    name: d6-commerce-matcher
+    note: "fixture agent identity"
+structuralEdges:
+  - type: HAS_OFFER
+    from:
+      uid: hu:listing:iherb-com-120467
+      type: D6.MerchantListing
+    to:
+      uid: hu:offer:iherb-com-120467-us-one-time
+      type: D6.Offer
+    traceVia: [M23]
+    lastWriterRunId: run:ft-D6-retailer-reformulation-claim-iherb
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-retailer-reformulation-claim-iherb
+  - type: HAS_OFFER
+    from:
+      uid: hu:listing:iherb-com-162274
+      type: D6.MerchantListing
+    to:
+      uid: hu:offer:iherb-com-162274-us-one-time
+      type: D6.Offer
+    traceVia: [M22]
+    lastWriterRunId: run:ft-D6-retailer-reformulation-claim-iherb
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-retailer-reformulation-claim-iherb
+assertions:
+  - id: b01
+    predicate: LISTING_FOR
+    assertionKind: RELATIONSHIP
+    relationship: LISTING_FOR
+    subject:
+      uid: hu:listing:iherb-com-120467
+      type: D6.MerchantListing
+    object:
+      uid: hu:package:tru-niagen-300mg-30ct
+      type: D6.Package
+    asserter:
+      uid: hu:agent:d6-commerce-matcher
+      type: K.Agent
+    locators:
+      - ref: M06
+        selectorKind: TEXT_QUOTE
+        source: iherb-120467
+        snapshotDigest: sha256:d728d8d78184cd0ab1ffaf47b812146fc8af7e5363c5c6867022f584c878d577
+      - ref: M01
+        selectorKind: TEXT_QUOTE
+        source: iherb-120467
+        snapshotDigest: sha256:d728d8d78184cd0ab1ffaf47b812146fc8af7e5363c5c6867022f584c878d577
+      - ref: M09
+        selectorKind: TEXT_QUOTE
+        source: iherb-120467
+        snapshotDigest: sha256:d728d8d78184cd0ab1ffaf47b812146fc8af7e5363c5c6867022f584c878d577
+    validTime:
+      validFrom: "2023-05-01T00:00:00Z"
+      validFromPrecision: MONTH
+      validFromBasis: STATED_BY_SOURCE
+      validTo: "2026-09-01T00:00:00Z"
+      validToPrecision: MONTH
+      validToBasis: INFERRED
+    status: EXTRACTED
+    basisKind: CALCULATED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["validFrom from iHerb 'First available: 05/2023' (M07)", "validTo INFERRED by d6-successor-first-available/v1: the host's successor item 162274 is 'First available: 09/2026' (M15) and this item shows 'Discontinued' (M02); the discontinuation date itself is not stated"]
+    derivationRule: "d6-listing-match/v1: listing GTIN equals a GTIN identifier of the package, and count + strength agree"
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-retailer-reformulation-claim-iherb
+  - id: b02
+    predicate: LISTING_FOR
+    assertionKind: RELATIONSHIP
+    relationship: LISTING_FOR
+    subject:
+      uid: hu:listing:iherb-com-162274
+      type: D6.MerchantListing
+    object:
+      uid: hu:package:tru-niagen-300mg-30ct
+      type: D6.Package
+    asserter:
+      uid: hu:agent:d6-commerce-matcher
+      type: K.Agent
+    locators:
+      - ref: M14
+        selectorKind: TEXT_QUOTE
+        source: iherb-162274
+        snapshotDigest: sha256:c06ff62ca89b9b85155d0310af27b6bd48b741cffe75d6e5ba58bc9556ea7712
+      - ref: M11
+        selectorKind: TEXT_QUOTE
+        source: iherb-162274
+        snapshotDigest: sha256:c06ff62ca89b9b85155d0310af27b6bd48b741cffe75d6e5ba58bc9556ea7712
+      - ref: M17
+        selectorKind: TEXT_QUOTE
+        source: iherb-162274
+        snapshotDigest: sha256:c06ff62ca89b9b85155d0310af27b6bd48b741cffe75d6e5ba58bc9556ea7712
+    validTime:
+      validFrom: "2026-09-01T00:00:00Z"
+      validFromPrecision: MONTH
+      validFromBasis: STATED_BY_SOURCE
+      validTo: null
+      validToBasis: UNKNOWN
+    status: EXTRACTED
+    basisKind: CALCULATED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["validFrom from 'First available: 09/2026' (M15)", "same Package as b01: same variant, 30 count, same declared panel; new GTIN = new identifier episode, not a new package (06 identity rule)"]
+    derivationRule: d6-listing-match/v1
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-retailer-reformulation-claim-iherb
+  - id: b03
+    predicate: OFFER_AVAILABILITY
+    assertionKind: FIELD
+    subject:
+      uid: hu:offer:iherb-com-120467-us-one-time
+      type: D6.Offer
+    value:
+      valueString: DISCONTINUED_AS_DISPLAYED
+    asserter:
+      uid: hu:org:iherb
+      type: D7.Organization
+    locators:
+      - ref: M02
+        selectorKind: TEXT_QUOTE
+        source: iherb-120467
+        snapshotDigest: sha256:d728d8d78184cd0ab1ffaf47b812146fc8af7e5363c5c6867022f584c878d577
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T21:00:00Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-retailer-reformulation-claim-iherb
+  - id: b04
+    predicate: OFFER_AVAILABILITY
+    assertionKind: FIELD
+    subject:
+      uid: hu:offer:iherb-com-162274-us-one-time
+      type: D6.Offer
+    value:
+      valueString: IN_STOCK
+    asserter:
+      uid: hu:org:iherb
+      type: D7.Organization
+    locators:
+      - ref: M12
+        selectorKind: TEXT_QUOTE
+        source: iherb-162274
+        snapshotDigest: sha256:c06ff62ca89b9b85155d0310af27b6bd48b741cffe75d6e5ba58bc9556ea7712
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T21:00:18Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-retailer-reformulation-claim-iherb
+  - id: b05
+    predicate: OFFER_PRICE_ONE_TIME
+    assertionKind: FIELD
+    subject:
+      uid: hu:offer:iherb-com-120467-us-one-time
+      type: D6.Offer
+    value:
+      valueNumber: 50.47
+      unitCode: iso4217:USD
+    asserter:
+      uid: hu:org:iherb
+      type: D7.Organization
+    locators:
+      - ref: M23
+        selectorKind: TEXT_QUOTE
+        source: iherb-120467
+        snapshotDigest: sha256:d728d8d78184cd0ab1ffaf47b812146fc8af7e5363c5c6867022f584c878d577
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T21:00:00Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["price still displayed on a discontinued item"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-retailer-reformulation-claim-iherb
+  - id: b06
+    predicate: OFFER_PRICE_ONE_TIME
+    assertionKind: FIELD
+    subject:
+      uid: hu:offer:iherb-com-162274-us-one-time
+      type: D6.Offer
+    value:
+      valueNumber: 49.0
+      unitCode: iso4217:USD
+    asserter:
+      uid: hu:org:iherb
+      type: D7.Organization
+    locators:
+      - ref: M22
+        selectorKind: TEXT_QUOTE
+        source: iherb-162274
+        snapshotDigest: sha256:c06ff62ca89b9b85155d0310af27b6bd48b741cffe75d6e5ba58bc9556ea7712
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T21:00:18Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-retailer-reformulation-claim-iherb
+  - id: b07
+    predicate: RETAILER_DISCONTINUED
+    assertionKind: FIELD
+    subject:
+      uid: hu:listing:iherb-com-120467
+      type: D6.MerchantListing
+    value:
+      valueBoolean: true
+    asserter:
+      uid: hu:org:iherb
+      type: D7.Organization
+    locators:
+      - ref: M01
+        selectorKind: TEXT_QUOTE
+        source: iherb-120467
+        snapshotDigest: sha256:d728d8d78184cd0ab1ffaf47b812146fc8af7e5363c5c6867022f584c878d577
+      - ref: M02
+        selectorKind: TEXT_QUOTE
+        source: iherb-120467
+        snapshotDigest: sha256:d728d8d78184cd0ab1ffaf47b812146fc8af7e5363c5c6867022f584c878d577
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T21:00:00Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-retailer-reformulation-claim-iherb
+  - id: b08
+    predicate: SUCCEEDED_BY
+    assertionKind: RELATIONSHIP
+    subject:
+      uid: hu:listing:iherb-com-120467
+      type: D6.MerchantListing
+    object:
+      uid: hu:listing:iherb-com-162274
+      type: D6.MerchantListing
+    asserter:
+      uid: hu:org:iherb
+      type: D7.Organization
+    locators:
+      - ref: M03
+        selectorKind: TEXT_QUOTE
+        source: iherb-120467
+        snapshotDigest: sha256:d728d8d78184cd0ab1ffaf47b812146fc8af7e5363c5c6867022f584c878d577
+      - ref: M04
+        selectorKind: TEXT_QUOTE
+        source: iherb-120467
+        snapshotDigest: sha256:d728d8d78184cd0ab1ffaf47b812146fc8af7e5363c5c6867022f584c878d577
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T21:00:00Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["iHerb block 'New formulation available now' links to item 162274"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-retailer-reformulation-claim-iherb
+  - id: b09
+    predicate: RETAILER_REFORMULATION_STATEMENT
+    assertionKind: CLAIM
+    claimType: ATTRIBUTE
+    subject:
+      uid: hu:listing:iherb-com-120467
+      type: D6.MerchantListing
+    value:
+      valueString: "New formulation available now"
+    asserter:
+      uid: hu:org:iherb
+      type: D7.Organization
+    locators:
+      - ref: M03
+        selectorKind: TEXT_QUOTE
+        source: iherb-120467
+        snapshotDigest: sha256:d728d8d78184cd0ab1ffaf47b812146fc8af7e5363c5c6867022f584c878d577
+      - ref: M04
+        selectorKind: TEXT_QUOTE
+        source: iherb-120467
+        snapshotDigest: sha256:d728d8d78184cd0ab1ffaf47b812146fc8af7e5363c5c6867022f584c878d577
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T21:00:00Z"
+    status: EXTRACTED
+    basisKind: UNSTATED
+    speechAct: STATES
+    polarity: POSITIVE
+    occurrenceOf: hu:claim:tru-niagen-300mg-30ct-new-formulation
+    note: "claim occurrence (kernel Assertion assertionKind CLAIM, OCCURRENCE_OF -> Claim); adjudicated in adj01"
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-retailer-reformulation-claim-iherb
+  - id: b10
+    predicate: PRODUCT_SAFETY_STATEMENT
+    assertionKind: CLAIM
+    claimType: MEASUREMENT
+    subject:
+      uid: hu:product:tru-niagen
+      type: D6.Product
+    value:
+      valueString: "Tru Niagen is tested as safe up to 2,000mg/day ."
+    asserter:
+      uid: hu:org:iherb
+      type: D7.Organization
+    locators:
+      - ref: M20
+        selectorKind: TEXT_QUOTE
+        source: iherb-162274
+        snapshotDigest: sha256:c06ff62ca89b9b85155d0310af27b6bd48b741cffe75d6e5ba58bc9556ea7712
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T21:00:18Z"
+    status: EXTRACTED
+    basisKind: UNSTATED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["copy shown in the iHerb product overview; authorship not stated on the page"]
+    occurrenceOf: hu:claim:tru-niagen-tested-safe-2000mg-day
+    note: "routed to K/D5 (claim vetting); input to Q-D6-09 safety reference"
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-retailer-reformulation-claim-iherb
+identifierAssertions:
+  - id: i10
+    predicate: HAS_IDENTIFIER
+    subject:
+      uid: hu:package:tru-niagen-300mg-30ct
+      type: D6.Package
+    scheme: GTIN
+    issuer: GS1
+    value: "00850015311116"
+    printedForm: "850015311116"
+    asserter:
+      uid: hu:org:iherb
+      type: D7.Organization
+    locators:
+      - ref: M06
+        selectorKind: TEXT_QUOTE
+        source: iherb-120467
+        snapshotDigest: sha256:d728d8d78184cd0ab1ffaf47b812146fc8af7e5363c5c6867022f584c878d577
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T21:00:00Z"
+    validation:
+      rule: "GS1 mod-10 check digit on the printed digits"
+      digits: "850015311116"
+      checkDigitValid: true
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-retailer-reformulation-claim-iherb
+  - id: i11
+    predicate: HAS_IDENTIFIER
+    subject:
+      uid: hu:package:tru-niagen-300mg-30ct
+      type: D6.Package
+    scheme: GTIN
+    issuer: GS1
+    value: "00850015311857"
+    printedForm: "850015311857"
+    asserter:
+      uid: hu:org:iherb
+      type: D7.Organization
+    locators:
+      - ref: M14
+        selectorKind: TEXT_QUOTE
+        source: iherb-162274
+        snapshotDigest: sha256:c06ff62ca89b9b85155d0310af27b6bd48b741cffe75d6e5ba58bc9556ea7712
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T21:00:18Z"
+    validation:
+      rule: "GS1 mod-10 check digit on the printed digits"
+      digits: "850015311857"
+      checkDigitValid: true
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-retailer-reformulation-claim-iherb
+  - id: i12
+    predicate: HAS_IDENTIFIER
+    subject:
+      uid: hu:listing:iherb-com-120467
+      type: D6.MerchantListing
+    scheme: "RETAILER_ITEM_ID (requested, OQ-D6-05)"
+    issuer: iherb.com
+    value: TNN-31111
+    printedForm: TNN-31111
+    asserter:
+      uid: hu:org:iherb
+      type: D7.Organization
+    locators:
+      - ref: M05
+        selectorKind: TEXT_QUOTE
+        source: iherb-120467
+        snapshotDigest: sha256:d728d8d78184cd0ab1ffaf47b812146fc8af7e5363c5c6867022f584c878d577
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T21:00:00Z"
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-retailer-reformulation-claim-iherb
+  - id: i13
+    predicate: HAS_IDENTIFIER
+    subject:
+      uid: hu:listing:iherb-com-162274
+      type: D6.MerchantListing
+    scheme: "RETAILER_ITEM_ID (requested, OQ-D6-05)"
+    issuer: iherb.com
+    value: TNN-31185
+    printedForm: TNN-31185
+    asserter:
+      uid: hu:org:iherb
+      type: D7.Organization
+    locators:
+      - ref: M13
+        selectorKind: TEXT_QUOTE
+        source: iherb-162274
+        snapshotDigest: sha256:c06ff62ca89b9b85155d0310af27b6bd48b741cffe75d6e5ba58bc9556ea7712
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T21:00:18Z"
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-retailer-reformulation-claim-iherb
+assessments:
+  - id: as10
+    assessmentKind: OTHER
+    assessmentSubkind: D6.change-kind
+    conclusionCode: PACKAGE_ONLY
+    status: PROPOSED
+    methodVersion: d6-change-kind/v1
+    about:
+      - uid: hu:package:tru-niagen-300mg-30ct
+        type: D6.Package
+      - uid: hu:listing:iherb-com-120467
+        type: D6.MerchantListing
+      - uid: hu:listing:iherb-com-162274
+        type: D6.MerchantListing
+    inputAssertions: [b01, b02, i10, i11]
+    evidence:
+      - locator: M06
+        role: SUPPORTS
+      - locator: M14
+        role: SUPPORTS
+      - locator: M08
+        role: SUPPORTS
+      - locator: M16
+        role: SUPPORTS
+      - locator: M09
+        role: SUPPORTS
+      - locator: M17
+        role: SUPPORTS
+    summary: "GTIN 850015311116 -> 850015311857, iHerb code TNN-31111 -> TNN-31185, dimensions 3.3 x 1.75 x 1.75 in / 0.24 lb -> 4.8 x 3.1 x 2.55 in / 0.4 lb, title adds \"Age Better\"; declared Supplement Facts and other ingredients identical -> PACKAGE_ONLY."
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-retailer-reformulation-claim-iherb-assess
+adjudications:
+  - id: adj01
+    adjudicationKind: SUPPORT
+    evaluates: [b09]
+    verdict: NOT_SUPPORTED
+    judgeKind: DETERMINISTIC
+    methodVersion: d6-label-claim-match/v1
+    policyOutcome: PASS_WITH_WARNINGS
+    evidenceSupport: NOT_SATISFIED
+    evidence:
+      - locator: M09
+        role: CONTRADICTS
+      - locator: M17
+        role: CONTRADICTS
+      - locator: M10
+        role: CONTRADICTS
+      - locator: M18
+        role: CONTRADICTS
+      - locator: M28
+        role: CONTRADICTS
+      - locator: M29
+        role: CONTRADICTS
+      - locator: M24
+        role: CONTRADICTS
+      - locator: M26
+        role: CONTEXT
+      - locator: M25
+        role: CONTEXT
+      - locator: "offer-roles-price-kinds-truniagen#N21"
+        role: CONTEXT
+      - locator: M30
+        role: QUALIFIES
+      - locator: M27
+        role: QUALIFIES
+      - locator: "label-versions-truniagen-dsld#L08"
+        role: CONTEXT
+      - locator: "label-versions-truniagen-dsld#L20"
+        role: CONTEXT
+      - locator: M21
+        role: QUALIFIES
+      - locator: M06
+        role: CONTEXT
+      - locator: M14
+        role: CONTEXT
+    unsupportedFacets: ["a change in declared composition between UPC 850015311116 and UPC 850015311857", "no label image or registry entry is captured for UPC 850015311857 itself (DSLD search for 850015311857 returned 0 hits on 2026-10-08)"]
+    rationale: "Evidence for the NEW package (UPC 850015311857) that is not iHerb's own copy: the brand's product page (truniagen.com, captured 2026-10-08), whose 30-count variant carries barcode 850015311857 in the storefront JSON (offer-roles-price-kinds-truniagen#N21), declares NIAGEN (nicotinamide riboside chloride) 300mg per one-capsule serving with Other Ingredients Microcrystalline Cellulose, Hypromellose (Vegetarian Capsule), Vegetable Magnesium Stearate (M28, M29); the Amazon listing with UPC 850015311857, sold by TRU NIAGEN (M25, M26), lists the same ingredients (M24). iHerb's own Supplement Facts tables for items 120467 and 162274 agree (M09, M17, M10, M18). The two DSLD label versions (V09.2, V12.3; equal compositionDigest) carry the OLD UPC 850015311116 and are context for the predecessor package only. What changed is the GTIN, the iHerb product code, the carton dimensions and the title (\"Age Better\"). The retailer statement \"New formulation\" is therefore NOT_SUPPORTED. Limits: the brand panel shown is the 90-count one (M30) and is not a label image tied to the GTIN; the Amazon directions match the older label (M27), so that copy may lag; an undeclared process change cannot be excluded (iHerb disclaimer M21). Hence NOT_SUPPORTED rather than CONTRADICTED."
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-retailer-reformulation-claim-iherb-verify

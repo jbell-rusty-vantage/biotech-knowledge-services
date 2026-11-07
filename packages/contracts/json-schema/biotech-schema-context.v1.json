@@ -1,0 +1,399 @@
+{
+  "$id": "https://belllabs.dev/contracts/biotech-schema-context.v1.json",
+  "title": "biotech-schema-context.v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "biotech-schema-context.v1"
+    },
+    "contextId": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "advisory": {
+      "type": "boolean",
+      "const": true
+    },
+    "grantsAuthority": {
+      "type": "boolean",
+      "const": false
+    },
+    "producer": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "release": {
+      "type": "object",
+      "properties": {
+        "releaseId": {
+          "type": "string"
+        },
+        "schemaDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "schemaReleaseDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "workspaceFingerprint": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "queryCatalogDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "releaseId",
+        "schemaDigest",
+        "schemaReleaseDigest",
+        "workspaceFingerprint"
+      ],
+      "additionalProperties": false
+    },
+    "intent": {
+      "type": "string"
+    },
+    "taskIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "questionIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "selected": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "cardId": {
+            "type": "string"
+          },
+          "cardDigest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "path": {
+            "type": "string"
+          },
+          "sections": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "cardId",
+          "path",
+          "reason"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "decisions": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "uidToken": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "rule": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "identifierSchemes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "executorOps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "type",
+              "uidToken",
+              "rule",
+              "identifierSchemes",
+              "executorOps"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "predicates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "route": {
+                "type": "string",
+                "enum": [
+                  "typed-edge",
+                  "assertion-only",
+                  "literal",
+                  "field",
+                  "computation",
+                  "alias",
+                  "retired"
+                ]
+              },
+              "typedEdge": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "name",
+              "kind",
+              "status",
+              "route",
+              "typedEdge"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "temporal": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "element": {
+                "type": "string"
+              },
+              "temporal": {
+                "type": "string"
+              },
+              "exclusive": {
+                "type": "boolean"
+              },
+              "scope": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "element",
+              "temporal",
+              "exclusive",
+              "scope"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "identity",
+        "predicates",
+        "temporal"
+      ],
+      "additionalProperties": false
+    },
+    "route": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "type": "string",
+          "enum": [
+            "navigation",
+            "read",
+            "write",
+            "read+write"
+          ]
+        },
+        "readOperations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "proposalKinds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "pendingProposalKinds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "patternTemplates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "operation",
+        "readOperations",
+        "proposalKinds",
+        "pendingProposalKinds",
+        "patternTemplates"
+      ],
+      "additionalProperties": false
+    },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "modules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "domains": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "nodeTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "relationshipTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "modules",
+        "domains",
+        "nodeTypes",
+        "relationshipTypes"
+      ],
+      "additionalProperties": false
+    },
+    "omissions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "element": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "element",
+          "reason"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "unresolved": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "budget": {
+      "type": "object",
+      "properties": {
+        "maxTokens": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "estimatedTokens": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "exceeded": {
+          "type": "boolean"
+        },
+        "estimator": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "maxTokens",
+        "estimatedTokens",
+        "exceeded",
+        "estimator"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "contextId",
+    "advisory",
+    "grantsAuthority",
+    "producer",
+    "release",
+    "taskIds",
+    "questionIds",
+    "selected",
+    "decisions",
+    "route",
+    "scope",
+    "omissions",
+    "unresolved"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,72 @@
+"""
+Purpose: the per-context qualifier of mechanism findings (round 0003 M3): one exposure group measured in one
+compartment of one organism in one setting. Every mechanism Assertion that reports an observation points at exactly
+one context (OBSERVED_IN_CONTEXT), so "where, in what, at what exposure was this step measured — and was it null"
+(CQ-MX-01..03) is a filter on this node, and compound → mechanism edges exist only as projections over these
+records. Species, anatomical context and organ are properties here (ModelOrganism + ncbiTaxonId, CompartmentKind +
+compartmentOntologyId), not nodes; species joins D3 populations by ncbiTaxonId equality (R-90). Payload record:
+implements Entity only, stored label MechanismEvidenceContext only (R-17).
+Exposure fields (exposureAmount, exposureUnitCode, exposureBasis, route, exposureDurationIso) are filled only for
+contexts with no IN_STUDY_ARM (unregistered preclinical, in-vitro and non-trial human groups). For a registered group
+the dose of record is D3's InterventionComponent (StudyArm -HAS_COMPONENT-> InterventionComponent -ADMINISTERS->
+material), which also carries per-component amounts for combinations; patterns coalesce the two (03 shared fragment DOSE).
+Identity rule: `contextKey` = sha256 over (source snapshot uid, verbatim groupLabel, setting, compartmentOntologyId or
+compartmentLabel, and for unregistered contexts exposureAmount + exposureUnitCode + exposureBasis); immutable — a
+corrected context is a new node.
+uid token: `mech-context` (hu:mech-context:<opaque>).
+Questions: CQ-MX-01, CQ-MX-02, CQ-MX-03, CQ-MX-04, CQ-MX-06, Q-D2-04, Q-D2-09, Q-D2-13, Q-D2-20, Q-D2-22, Q-D2-26, Q-D2-27.
+"""
+type MechanismEvidenceContext implements Entity
+  @node(labels: ["MechanismEvidenceContext"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  contextKey: String
+  "Verbatim group label from the source (e.g. 'NR 1 g/day, vastus lateralis biopsy')."
+  groupLabel: String
+  setting: MechanismSetting
+  organism: ModelOrganism
+  ncbiTaxonId: String
+  "Strain, line or cell line as the source names it (UM-HET3, C57BL/6JRj, HEK293)."
+  strainOrLine: String
+  "Sex composition of the measured group (D3 enum SexScope: ALL | FEMALE | MALE | NOT_REPORTED)."
+  sexScope: SexScope
+  "Verbatim age description (e.g. '75 ± 5 y', '8 months at start')."
+  ageDescriptor: String
+  sampleSize: Int
+  compartmentKind: CompartmentKind
+  "UBERON / CL / Cellosaurus id; equality with D4 Metric.systemOntologyId is the cross-domain compartment check (Q-D2-04)."
+  compartmentOntologyId: String
+  compartmentLabel: String
+  geneticManipulation: GeneticManipulation
+  "Unregistered contexts only (registered groups: D3 InterventionComponent.quantity)."
+  exposureAmount: Float
+  "UCUM unit of exposureAmount."
+  exposureUnitCode: String
+  "D6 enum AmountBasis (PER_DAY, PER_KG_BODY_WEIGHT_PER_DAY, PER_KG_DIET, SINGLE_DOSE, MEDIUM_CONCENTRATION …; R-58); never inferred across bases."
+  exposureBasis: AmountBasis
+  "D3 enum AdministrationRoute."
+  route: AdministrationRoute
+  "ISO 8601 duration (P21D, P12W)."
+  exposureDurationIso: String
+  "Verbatim assay / method text (western blot pan-acetylation, LC-MS/MS targeted metabolomics) until a question needs a D4 AssayVersion edge."
+  assayText: String
+  """class: structural; cardinality: one_or_more per context, zero_or_one context per Assertion (stored (Assertion)-[:OBSERVED_IN_CONTEXT]->(MechanismEvidenceContext); D2 mechanism Assertions only, never D5 adverse-effect records; written in the same intent as the Assertion and corrected only by superseding it, R-29); questions: CQ-MX-01, CQ-MX-02, CQ-MX-03, Q-D2-04, Q-D2-13, Q-D2-26."""
+  assertions: [Assertion!]!
+    @relationship(type: "OBSERVED_IN_CONTEXT", direction: IN, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: one_or_more (exactly one TESTED exposure unless geneticManipulation is set; BACKGROUND and COMPARATOR optional; structural per R-26, written alongside IN_STUDY_ARM where single-substance reach is needed, R-86); questions: CQ-MX-02, CQ-MX-04, Q-D2-09, Q-D2-04."""
+  exposures: [ContextExposure!]!
+    @relationship(type: "EXPOSED_TO", direction: OUT, properties: "ExposureRoleProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: zero_or_more (the trial arm(s) the group belongs to; a paper may pool registry arms, fixture metformin-exercise-harm; a registered group's dose of record is read through it); questions: CQ-MX-02, Q-D2-06, Q-D2-27, Q-D2-04."""
+  studyArm: [StudyArm!]!
+    @relationship(type: "IN_STUDY_ARM", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

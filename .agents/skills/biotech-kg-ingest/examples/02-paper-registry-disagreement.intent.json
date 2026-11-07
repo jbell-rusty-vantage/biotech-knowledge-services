@@ -1,0 +1,169 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v2",
+  "intentId": "skill-study-1",
+  "pins": {
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+    "policyVersion": "bks-admission-policy/v1"
+  },
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "biotech-kg-ingest-examples",
+      "model": "example"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run-skill-study-1",
+      "missionId": "mission-skill-study",
+      "operationId": "op-skill-study-1"
+    },
+    "activityKind": "INGESTION"
+  },
+  "basis": {
+    "creationOnly": {
+      "reason": "biotech-kg-ingest example study: first capture of synthetic example entities"
+    }
+  },
+  "sources": [
+    {
+      "ref": "paper",
+      "source": {
+        "canonicalUri": "https://examples.bks.test/study/paper-fulltext",
+        "sourceKind": "PDF",
+        "genre": "SCHOLARLY_ARTICLE"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-02T09:00:00Z",
+        "observedAt": "2026-10-02T09:00:00Z",
+        "contentHash": "sha256:8f041bbef269ca43890e92a9ae9f35a4994622911d33bdbd53dfe453d899a8ac",
+        "contentHashBasis": "SYNTHETIC_FIXTURE",
+        "captureMethod": "bks-example/1",
+        "captureCompleteness": "COMPLETE"
+      },
+      "locators": [
+        {
+          "ref": "l-paper",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "raw-capture/v1",
+            "type": "TextQuoteSelector",
+            "exact": "a randomized, double-blind, placebo-controlled trial",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 210,
+              "end": 262
+            }
+          },
+          "exact": "a randomized, double-blind, placebo-controlled trial",
+          "startOffset": 210,
+          "endOffset": 262
+        }
+      ]
+    },
+    {
+      "ref": "registry",
+      "source": {
+        "canonicalUri": "https://examples.bks.test/study/registry-record",
+        "sourceKind": "REGISTRY"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-02T09:05:00Z",
+        "observedAt": "2026-10-02T09:05:00Z",
+        "contentHash": "sha256:96db7086bbf8a0b8268e4c7c37c1735198402f0b377e8317a38e5114af66f17e",
+        "contentHashBasis": "SYNTHETIC_FIXTURE",
+        "captureMethod": "bks-example/1",
+        "captureCompleteness": "COMPLETE"
+      },
+      "locators": [
+        {
+          "ref": "l-registry",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "raw-capture/v1",
+            "type": "TextQuoteSelector",
+            "exact": "Masking: None (Open Label)",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 455,
+              "end": 481
+            }
+          },
+          "exact": "Masking: None (Open Label)",
+          "startOffset": 455,
+          "endOffset": 481
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "study",
+      "mode": "new",
+      "nodeType": "Study",
+      "name": "Example NR trial",
+      "uidSegment": "skill-study",
+      "properties": {
+        "studyKind": "INTERVENTIONAL_RANDOMIZED"
+      },
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "pub",
+      "mode": "new",
+      "nodeType": "Publication",
+      "name": "Example NR trial report",
+      "uidSegment": "skill-study-pub",
+      "properties": {
+        "publicationKind": "ARTICLE"
+      },
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "registry-org",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "Example Trial Registry",
+      "uidSegment": "skill-study-registry",
+      "properties": {
+        "entityKind": "PUBLIC_BODY"
+      },
+      "onMatch": "use_existing"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "masking-paper",
+      "kind": "assertion.literal",
+      "subjectRef": "study",
+      "asserterRef": "pub",
+      "evidence": [
+        "l-paper"
+      ],
+      "assertion": {
+        "predicate": "MASKING_STATED",
+        "speechAct": "STATES",
+        "validity": {}
+      },
+      "value": {
+        "valueString": "double-blind"
+      }
+    },
+    {
+      "proposalId": "masking-registry",
+      "kind": "assertion.literal",
+      "subjectRef": "study",
+      "asserterRef": "registry-org",
+      "evidence": [
+        "l-registry"
+      ],
+      "assertion": {
+        "predicate": "MASKING_STATED",
+        "speechAct": "STATES",
+        "validity": {}
+      },
+      "value": {
+        "valueString": "open label"
+      }
+    }
+  ]
+}

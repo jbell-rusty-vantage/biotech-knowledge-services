@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "conditions": {
+    "A-intent": { "skills": ["biotech-schema-explore", "biotech-kg-query", "biotech-kg-ingest"], "writeTool": "bks kg apply" },
+    "B-cypher-with-workspace": { "skills": ["biotech-schema-explore", "biotech-cypher-baseline"], "writeTool": "bks cypher write" },
+    "B-cypher-introspect-only": { "skills": ["biotech-cypher-baseline"], "writeTool": "bks cypher write" }
+  },
+  "seed": "examples/ingestion-intent.example.json",
+  "tasks": [
+    {
+      "id": "read-01-what-do-we-know",
+      "kind": "read",
+      "prompt": "Before researching Elysium Health's product Basis, report what the graph already holds: the Organization and Product uids, every relationship type attached to the Product with counts, and the source locator that supports the HAS_VARIANT assertion. Write answer.json with keys organizationUid, productUid, relationshipTypes (list), locatorUid.",
+      "expect": {
+        "organizationUid": "hu:org:elysium-health",
+        "productUid": "hu:product:basis",
+        "relationshipTypesInclude": ["HAS_VARIANT", "MARKETS_PRODUCT"],
+        "locatorUidPrefix": "hu:locator:elysiumhealth-com-pages-basis-supplement-facts"
+      }
+    },
+    {
+      "id": "read-02-as-of",
+      "kind": "read",
+      "prompt": "Which formulation version was attached to the Basis US capsules variant as of 2026-08-01, and what is the validity class of that episode? Write answer.json with keys formulationUid and validityClass.",
+      "expect": { "formulationUid": "hu:formulation:basis-us-2026-07-10", "validityClassIn": ["OPEN_END_UNVERIFIED", "KNOWN_WITHIN"] }
+    },
+    {
+      "id": "ingest-01-price-observation",
+      "kind": "ingest",
+      "prompt": "From the capture at https://example.test/amazon/basis (observed 2026-09-01, Supplement Facts page shows 'Basis 60 capsules $60.00 ships from Amazon.com'), record a MerchantListing for the Basis US capsules variant hosted by Amazon (Organization, new, domain amazon.com), an Offer and a PriceObservation of 60.00 USD observed 2026-09-01. Attach ASIN B0TESTBASIS to the variant. Cite the capture for every fact.",
+      "checks": [
+        { "name": "listing exists", "cypher": "MATCH (l:MerchantListing)-[:LISTING_FOR]->(v:ProductVariant {uid: 'hu:product-variant:basis-us-capsules'}) RETURN count(l) AS c", "expect": { "c": ">=1" } },
+        { "name": "price observation", "cypher": "MATCH (:MerchantListing)-[:HAS_OFFER]->(:Offer)-[:HAS_PRICE_OBSERVATION]->(p:PriceObservation) WHERE p.amount = 60.0 OR p.priceAmount = 60.0 OR p.valueNumber = 60.0 RETURN count(p) AS c", "expect": { "c": ">=1" } },
+        { "name": "asin attached", "cypher": "MATCH (v:ProductVariant {uid: 'hu:product-variant:basis-us-capsules'})-[r:HAS_IDENTIFIER]->(i:Identifier) WHERE toUpper(i.scheme) = 'ASIN' AND i.value = 'B0TESTBASIS' RETURN count(i) AS c, count(r.assertionUid) AS withAssertion", "expect": { "c": ">=1", "withAssertion": ">=1" } },
+        { "name": "no duplicate amazon org", "cypher": "MATCH (o:Organization) WHERE toLower(o.name) CONTAINS 'amazon' RETURN count(o) AS c", "expect": { "c": "<=1" } }
+      ]
+    },
+    {
+      "id": "ingest-02-correction",
+      "kind": "ingest",
+      "prompt": "A later capture of the Basis label (observed 2026-09-15, same page) shows the US capsules variant now ships a new formulation with 300 mg nicotinamide riboside chloride per serving. Record the new FormulationVersion, end the previous HAS_FORMULATION_VERSION episode, and record the new declared amount. Do not delete anything.",
+      "checks": [
+        { "name": "old episode closed", "cypher": "MATCH (v:ProductVariant {uid: 'hu:product-variant:basis-us-capsules'})-[r:HAS_FORMULATION_VERSION]->(f {uid: 'hu:formulation:basis-us-2026-07-10'}) RETURN count(r) AS c, count(r.recordedTo) AS closed", "expect": { "c": "1", "closed": "1" } },
+        { "name": "new episode open", "cypher": "MATCH (v:ProductVariant {uid: 'hu:product-variant:basis-us-capsules'})-[r:HAS_FORMULATION_VERSION]->(f) WHERE r.recordedTo IS NULL AND f.uid <> 'hu:formulation:basis-us-2026-07-10' RETURN count(r) AS c, count(r.assertionUid) AS withAssertion", "expect": { "c": "1", "withAssertion": "1" } },
+        { "name": "nothing deleted", "cypher": "MATCH (f {uid: 'hu:formulation:basis-us-2026-07-10'}) RETURN count(f) AS c", "expect": { "c": "1" } },
+        { "name": "amount recorded with evidence", "cypher": "MATCH (a:Assertion {predicate: 'LABEL_DECLARED_AMOUNT'}) WHERE a.valueNumber = 300 AND (a)-[:SUPPORTED_BY]->(:SourceLocator) RETURN count(a) AS c", "expect": { "c": ">=1" } }
+      ]
+    },
+    {
+      "id": "ingest-03-forbidden",
+      "kind": "ingest",
+      "prompt": "A podcast guest (Person, new: 'Dr. Example Guest') says on the episode at https://example.test/podcast/ep1 (media time 00:12:30-00:13:10, observed 2026-09-20) that they advise Elysium Health and that they take Basis every morning. Record what the source supports and nothing more.",
+      "checks": [
+        { "name": "advises edge asserted", "cypher": "MATCH (p:Person)-[r:ADVISES_ORGANIZATION]->(o:Organization {uid: 'hu:org:elysium-health'}) RETURN count(r) AS c, count(r.assertionUid) AS withAssertion", "expect": { "c": ">=1", "withAssertion": ">=1" } },
+        { "name": "no endorsement inferred", "cypher": "MATCH (p:Person)-[r:ENDORSES_PRODUCT|RECOMMENDS]->(:Product {uid: 'hu:product:basis'}) RETURN count(r) AS c", "expect": { "c": "0" } },
+        { "name": "practice recorded as a claim with speech act", "cypher": "MATCH (a:Assertion)-[:HAS_SUBJECT]->(p:Person) WHERE a.speechAct = 'REPORTS_PRACTICE' AND (a)-[:SUPPORTED_BY]->(:SourceLocator {selectorKind: 'MEDIA_TIME'}) RETURN count(a) AS c", "expect": { "c": ">=1" } }
+      ]
+    }
+  ],
+  "kernelChecks": [
+    { "name": "asserted edges carry episode fields", "cypher": "MATCH ()-[r]->() WHERE r.assertionUid IS NOT NULL AND (r.relationshipUid IS NULL OR r.recordedFrom IS NULL OR r.validFromBasis IS NULL) RETURN count(r) AS violations", "expect": { "violations": "0" } },
+    { "name": "assertions are generated by an activity", "cypher": "MATCH (a:Assertion) WHERE NOT (a)-[:WAS_GENERATED_BY]->(:Activity) RETURN count(a) AS violations", "expect": { "violations": "0" } },
+    { "name": "assertions have a subject", "cypher": "MATCH (a:Assertion) WHERE NOT (a)-[:HAS_SUBJECT]->() RETURN count(a) AS violations", "expect": { "violations": "0" } },
+    { "name": "nodes carry uid and marker", "cypher": "MATCH (n) WHERE NOT n:KsIntentMarker AND NOT n:BksScratch AND (n.uid IS NULL OR (n.entityType IS NULL AND n.artifactType IS NULL AND n.occurrenceType IS NULL AND n.stateType IS NULL AND n.assessmentType IS NULL AND NOT n:Assertion)) RETURN count(n) AS violations", "expect": { "violations": "0" } },
+    { "name": "no private uids", "cypher": "MATCH (n) WHERE n.uid STARTS WITH 'hu:private-' OR n.uid STARTS WITH 'hu:user-context' RETURN count(n) AS violations", "expect": { "violations": "0" } }
+  ]
+}

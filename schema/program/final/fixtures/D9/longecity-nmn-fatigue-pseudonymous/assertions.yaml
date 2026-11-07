@@ -1,0 +1,87 @@
+# longecity-nmn-fatigue-pseudonymous — assertions (fixtures stage, A8, 2026-10-08)
+# Close-out 2026-10-09 (FU-03, structural only; sources, locators and quoted values unchanged): R-43 RENDITION_OF asserted by the BellLabs curation agent (AssertedRecordedProperties).
+# Harm case: a community adverse-experience report on a combination (NMN + resveratrol) by a pseudonymous forum
+# account, with a counter-report a year later. Asserters are D9 Channel nodes of channelKind ACCOUNT (kernel request
+# K-6: admit Channel{ACCOUNT} in ASSERTED_BY); no Person exists until a source identifies one, and no identity
+# hypothesis is recorded. Profile fields of the posters (location, age) are deliberately not copied into the repo.
+# Answers must label these as anecdotes (basisKind PERSONAL_EXPERIENCE), never as evidence of effect.
+# Locator refs are ids in ./locators.yaml. producedBy ids are FIXTURE ids, not Mission Control ids.
+producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-longecity-nmn-fatigue-pseudonymous" }
+
+nodes:
+  - { ref: ch-longecity, type: D9.Channel, name: "LongeCity Forums", channelKind: FORUM, platform: WEB_FORUM, homeUrl: "https://www.longecity.org/forum/" }
+  - { ref: acct-hermuller, type: D9.Channel, name: "Hermuller", channelKind: ACCOUNT, platform: WEB_FORUM, handle: "Hermuller", platformAccountId: "48855", isPseudonymous: true, evidence: [q9] }
+  - { ref: acct-boopy, type: D9.Channel, name: "Boopy!", channelKind: ACCOUNT, platform: WEB_FORUM, handle: "Boopy!", platformAccountId: "34789", isPseudonymous: true, evidence: [q11] }
+  - { ref: w-thread, type: D9.MediaWork, name: "NMN + Resveratrol makes me SUPER tired", workKind: FORUM_THREAD, publishedAt: "2023-02-22T17:26:00", publishedAtPrecision: INSTANT, canonicalUrl: "https://www.longecity.org/forum/topic/116358-nmn-resveratrol-makes-me-super-tired/", identity: "forum topic id 116358", evidence: [q13, q1], note: "forum shows local times without a zone; kept zone-less" }
+  - { ref: src-thread, type: K.Source, canonicalUri: "https://www.longecity.org/forum/topic/116358-nmn-resveratrol-makes-me-super-tired/", sourceKind: WEB_PAGE, snapshot: "locators.yaml#thread" }
+  - { ref: cs-nmn, type: D1.ChemicalSubstance, name: "NMN (nicotinamide mononucleotide)" }
+  - { ref: cs-resveratrol, type: D1.ChemicalSubstance, name: "resveratrol" }
+  - { ref: cond-fatigue, type: D2.Condition, name: "fatigue (adverse-effect term; poster's words 'extreme tiredness' / 'SUPER tired')", note: "D5 seam rule: adverse-effect terms are D2 Conditions (D5 05 CAUSES_ADVERSE_EFFECT); MedDRA/MeSH ids attach to the Condition, not resolved in this fixture" }
+
+assertions:
+  # ---------------- structural ----------------
+  - { id: s-pub, class: structural, relationship: PUBLISHES, from: ch-longecity, to: w-thread, evidence: [q13], producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-longecity-nmn-fatigue-pseudonymous" } }
+  - { id: s-ren, class: asserted, relationship: RENDITION_OF, asserter: "K.Agent bks-curation (BellLabs curation agent)", subject: src-thread, object: w-thread, speechAct: STATES, basisKind: CURATOR_CLASSIFICATION, edgePropertiesType: AssertedRecordedProperties, qualifiers: ["renditionBasis:the thread page is the only rendition of the work minted from this capture"], validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN, note: "recorded-time only (AssertedRecordedProperties, R-43); regrouping is a supersession (R-26)" }, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-longecity-nmn-fatigue-pseudonymous" } }
+  - { id: s-occ, class: structural, relationship: OCCURS_IN, from: [o-ae, o-practice, o-counter], to: w-thread, note: "posts are not separate works; the permalink key (q8, q10) is a qualifier", producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-longecity-nmn-fatigue-pseudonymous" } }
+
+  # ---------------- occurrences by pseudonymous accounts ----------------
+  - id: o-practice
+    class: claim-occurrence
+    asserter: acct-hermuller
+    speechAct: REPORTS_PRACTICE
+    basisKind: PERSONAL_EXPERIENCE
+    predicate: TAKES
+    subject: acct-hermuller
+    object: [cs-nmn, cs-resveratrol]
+    qualifiers: ["timing:afternoon", "form:NMN capsule; resveratrol in protein shake", "post:p=922108"]
+    container: w-thread
+    evidence: [{ locator: q3, role: SUPPORTS }]
+    validTime: { validFrom: "2023-02-22", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-longecity-nmn-fatigue-pseudonymous" }
+  - id: o-ae
+    class: claim-occurrence
+    asserter: acct-hermuller
+    speechAct: STATES
+    basisKind: PERSONAL_EXPERIENCE
+    predicate: CAUSES_ADVERSE_EFFECT   # D5's predicate (adversarial review: one harm predicate across D5 / D9); aggregation is a D5/D10 safety-signal assessment
+    subject: [cs-nmn, cs-resveratrol]
+    object: cond-fatigue
+    valueString: "extreme tiredness"
+    polarity: POSITIVE
+    qualifiers: ["sourceKind:COMMUNITY", "attribution:UNCERTAIN (poster: 'I am unsure which one causes it')", "combination:true", "post:p=922108", "counter-evidence-cited-by-poster:reports of more energy from NMN (q12)"]
+    container: w-thread
+    evidence: [{ locator: q2, role: SUPPORTS }, { locator: q4, role: SUPPORTS }, { locator: q12, role: QUALIFIES }, { locator: q3, role: CONTEXT }]
+    validTime: { validFrom: "2023-02-22", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-longecity-nmn-fatigue-pseudonymous" }
+  - id: o-counter
+    class: claim-occurrence
+    asserter: acct-boopy
+    speechAct: STATES
+    basisKind: PERSONAL_EXPERIENCE
+    predicate: CAUSES_ADVERSE_EFFECT
+    subject: [cs-nmn, cs-resveratrol]
+    object: cond-fatigue
+    valueString: "no change in energy noticed"
+    polarity: NEGATIVE   # a denial in personal experience (kernel item 12: NEGATIVE is a denial), not a measured null
+    qualifiers: ["sourceKind:COMMUNITY", "post:p=929300", "counter-report-to:o-ae"]
+    container: w-thread
+    evidence: [{ locator: q5, role: SUPPORTS }, { locator: q6, role: SUPPORTS }]
+    validTime: { validFrom: "2024-02-24", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-longecity-nmn-fatigue-pseudonymous" }
+
+  # ---------------- derived retrieval structure ----------------
+  - id: c0
+    class: derived
+    node: D9.Chunk
+    chunk: "locators.yaml#chunk-0"
+    relationships:
+      - { relationship: CHUNK_OF, to: "snapshot thread (sha256:e2e8903f737df4b753840634384aa46ab6d29767509758eb4d980ab67135439a)", class: structural }
+      - { relationship: COVERS_LOCATOR, to: [q1, q2, q3, q4, q7, q10, q11, q12], derivationRule: "span-overlap/v1" }
+      - { relationship: MENTIONS, to: [cs-nmn, cs-resveratrol], derivationRule: "entity-link/fixture-v0 (surface 'Resv' -> resveratrol)" }
+    note: "the same chunker over the re-fetch did not reproduce this chunk's text (forum chrome changed) while every locator re-selected: chunks are regenerable, locators are the stable citation"
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-longecity-nmn-fatigue-pseudonymous" }
+
+  # ---------------- what is deliberately NOT written ----------------
+  # - no OPERATED_BY on acct-hermuller / acct-boopy (no source names an operator; CQ-CL-07 answer: none)
+  # - no APPEARS_IN (APPEARS_IN is Person -> work; an account's authorship is ASSERTED_BY on its occurrences)
+  # - no SAFETY_SIGNAL assessment: one report and one counter-report are counted (Q-D9-11), not weighed here

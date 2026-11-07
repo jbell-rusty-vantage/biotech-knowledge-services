@@ -1,0 +1,1096 @@
+# Frontiers vocabulary — FINAL (synthesis, VOCABULARIES stage, 2026-10-09).
+# GENERATED from packets/D13/vocab-frontiers.yaml@0.2.1 (sha256 b668b70f5d172756002a163a8ff25e3825eccedfef5af2766549b3be75d99f56) by scratch synth/vocab/build-frontiers.mjs
+# (final/_runlog/vocabularies.md): the packet text with asserted edits to final names and the synthesis rulings (R-09, R-22, R-25,
+# R-44, R-60, R-65, R-66, R-91, R-92) plus the `synthesis` block at the end. Version stays 0.2.1: no frontier id, key or milestone id
+# changed, so consumers pinned @0.2.1 (R-60) stay valid. Event-kind values follow the final SDL: PUBLICATION was removed (R-44);
+# ApprovalPathway / DesignationType were replaced by D8 RegulatoryPathway (R-66).
+# ---- original packet header follows ----
+# Frontiers vocabulary + event-kind and event-relation vocabularies — shared controlled vocabulary
+# (00-DIRECTIVE 3.7; 02-TEAM "Shared vocabularies"). Owner D13 (agent A7). Wave 0 publication.
+# Consumers reference it in their 10-seams.yaml under `sharedVocabularies` as
+#   frontiers: packets/D13/vocab-frontiers.yaml@0.2.1   (any @0.2.x is compatible: patch releases change no id)
+# and NEVER re-declare a Frontier node, a frontier enum, an event-kind enum or an event-to-event edge.
+# Choices, alternatives and the reasoning behind every section: _notes/vocab-frontiers-notes.md.
+# Citations: section 0 (`citations:`), referenced by id (C01 ...). Every example is a NAME or a REGISTRY ID only;
+# nothing here is a fact the graph stores — facts enter as Assertions from captured sources.
+# Research is not medical advice and not investment advice. A frontier is a field-level goal the research
+# community and investors track; listing one says nothing about whether any approach on it works.
+
+version: 0.2.1
+status: model-stage-published   # ids are stable; 0.2.0 only ADDS (one frontier, one computed milestone lens, examples, notes); 0.2.1 changes no id
+published: 2026-10-08
+changelog:
+  - version: 0.1.0
+    date: 2026-10-08
+    by: A7 (Wave 0)
+    summary: first publication (24 frontiers, 17 milestone kinds, 27 event kinds, event relations, seam rule, query shapes)
+  - version: 0.2.0
+    date: 2026-10-08
+    by: A7 (D13 model stage)
+    summary: >-
+      Rebased on the published kernel pattern (A1): ON_FRONTIER carries the kernel AssertedEdgeProperties and the vocab
+      version moves to the classification Assertion's qualifier frontierVocabVersion=<semver>; what an event is about is
+      the Assertion predicate EVENT_ABOUT (kernel subject/object), not an ABOUT edge. Added frontier:mash-fibrosis-resolution
+      (first non-incretin approval in the incretin/metabolic theme, research-notes 7.1), fixing the header count (7 themes +
+      18 frontiers = 25). Added the computed harm-channel lens ms:guidance-slip, the discontinuationScope qualifier, PDUFA
+      and planned-launch notes, BC-DESIGNATION asserter rule, worked LEADS_TO / FOLLOWS / RESPONDS_TO examples from the
+      research captures (C77-C79), and the corrected LEADS_TO evidence rule (the gate is speechAct STATES plus a SUPPORT
+      adjudication, not basisKind). Frontier label is stored in Entity.name. Size measured in the D13 SDL: 2 node types,
+      4 relationship types, 6 pairs (09-reasoning.md).
+    editorial: >-
+      Check stage, 2026-10-08 (no id, value or count change, so the version stays 0.2.0): ON_FRONTIER's edge-property type
+      is now the kernel's recorded-time-only AssertedRecordedProperties (kernel model stage M10); breakthrough judgments
+      use the kernel assessmentKind BREAKTHROUGH_JUDGMENT (BC-ANALYST), accepted in kernel change 4.
+  - version: 0.2.1
+    date: 2026-10-08
+    by: A7 (D13 adversarial-review pass)
+    summary: >-
+      No id, key or value added or removed. Corrections: the Study side of ON_FRONTIER is declared by D13 (Frontier.studies,
+      direction IN), D3 declares nothing; consumer obligations rebased on the kernel (retraction status is the kernel
+      HAS_REVISION_STATUS per authority + SourceSnapshot.revisionKind; there is no SourceRevisionEvent node) and on
+      `@0.2.x`; curationStatus MATURED redefined as a vocabulary-retirement state whose bump must cite an accepted
+      BREAKTHROUGH_JUDGMENT Assessment (never a progress computation); both RESPONDS_TO examples now rest on stated-basis
+      spans ('due to'), the 'following' / 'after' wordings are kept only as CONTEXT_ONLY counter-examples; owners' type names
+      (D1.ChemicalSubstance, D3.Publication, D9 Channel EVENT_SERIES, D7 Award, D2 Condition); primaryEndpointMet renamed
+      primaryEndpointStatement in the remaining text; FINANCING amounts are the D13 predicate FINANCING_AMOUNT with
+      amountKind / amountBasis qualifiers; AWARD amounts are D7 Award.amount.
+owner: D13
+agent: A7
+consumers: [K, D2, D3, D5, D7, D8, D9, D10, D11]
+sharedVocabulariesConsumed:
+  targets: final/vocabularies/targets.yaml@0.2.2      # synthesis R-60 re-pin (was packets/D5/vocab-targets.yaml@0.1.0; target ids unchanged since 0.1.0)
+  regulatory-pathways: final/schema/D8.graphql enum RegulatoryPathway   # synthesis R-66: Event.approvalPathway / designationType are typed by D8's RegulatoryPathway (mapping in synthesis.regulatoryPathwayMapping)
+kernelPattern: >-
+  Rebased in 0.2.0 on A1's published kernel pattern (packets/K/09-reasoning.md, 2026-10-08): Event and Frontier implement
+  Entity & Subjectable; subject/object/asserter/evidence are kernel edges (HAS_SUBJECT, HAS_OBJECT, ASSERTED_BY,
+  HAS_EVIDENCE {role} -> SourceLocator; SUPPORTED_BY is retired); lineage is WAS_GENERATED_BY -> Activity and
+  lastWriterRunId on edges. The executable query shapes for every D13 question are in 03-retrieval-patterns.md; the
+  shapes in section 9 below are kept as the vocabulary's summary and use the same names.
+
+# ---------------------------------------------------------------------------------------------
+# 0. Citations (URL · title · retrieved). "secondary" = news/law-firm/aggregator used only because the primary was
+#    not captured in this stage; the fixture stage must capture the primary before any quote is used.
+# ---------------------------------------------------------------------------------------------
+citations:
+  C01: {url: "https://www.fda.gov/patients/fast-track-breakthrough-therapy-accelerated-approval-priority-review/breakthrough-therapy", title: "Breakthrough Therapy (FDA)", retrieved: 2026-10-08}
+  C02: {url: "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-312/subpart-C/section-312.42", title: "21 CFR 312.42 Clinical holds and requests for modification (eCFR; text fetched via api/versioner/v1)", retrieved: 2026-10-08}
+  C03: {url: "https://clinicaltrials.gov/study/NCT05275205", title: "Safety, Tolerability, and Efficacy Study of UBX1325 in Patients With Neovascular Age-Related Macular Degeneration (ENVISION)", retrieved: 2026-10-08}
+  C04: {url: "https://clinicaltrials.gov/study/NCT06011798", title: "Assess the Efficacy and Safety of Repeat Intravitreal Injections of Foselutoclax (UBX1325) in Patients With DME (ASPIRE)", retrieved: 2026-10-08}
+  C05: {url: "https://www.biospace.com/press-releases/unity-biotechnology-announces-complete-36-week-results-from-the-aspire-phase-2b-study-of-ubx1325-in-diabetic-macular-edema-and-provides-corporate-updates", title: "UNITY Biotechnology Announces Complete 36-Week Results from the ASPIRE Phase 2b Study of UBX1325 ... (GlobeNewswire release, 2025-05-05, BioSpace host)", retrieved: 2026-10-08}
+  C06: {url: "https://clinicaltrials.gov/study/NCT02848131", title: "Senescence in Chronic Kidney Disease (Mayo Clinic; dasatinib + quercetin)", retrieved: 2026-10-08}
+  C07: {url: "https://doi.org/10.1016/j.ebiom.2018.12.052", title: "Senolytics in idiopathic pulmonary fibrosis: Results from a first-in-human, open-label, pilot study. EBioMedicine 2019. PMID 30616998", retrieved: 2026-10-08}
+  C08: {url: "https://clinicaltrials.gov/study/NCT07290244", title: "Evaluating ER-100 for Safety in People With Glaucoma or Non-Arteritic Anterior Ischemic Optic Neuropathy (Life Biosciences)", retrieved: 2026-10-08}
+  C09: {url: "https://www.lifebiosciences.com/life-biosciences-announces-fda-clearance-of-ind-application-for-er-100-in-optic-neuropathies", title: "Life Biosciences Announces FDA Clearance of IND Application for ER-100 in Optic Neuropathies (2026-01-28)", retrieved: 2026-10-08}
+  C10: {url: "https://www.lifebiosciences.com/life-biosciences-announces-first-patient-dosed-in-phase-1-trial-of-er-100-for-optic-neuropathies", title: "Life Biosciences Announces First Patient Dosed in Phase 1 Trial of ER-100 for Optic Neuropathies (2026-06-09)", retrieved: 2026-10-08}
+  C11: {url: "https://doi.org/10.1038/s41586-020-2975-4", title: "Reprogramming to recover youthful epigenetic information and restore vision. Nature 2020. PMID 33268865", retrieved: 2026-10-08}
+  C12: {url: "https://www.retro.bio/blog/fundraise-2026", title: "Retro Biosciences: Next Phase (initial close of financing, 2026-05-22)", retrieved: 2026-10-08}
+  C13: {url: "https://blog.newlimit.com/p/newlimit-raises-130-million-series", title: "NewLimit raises $130 million Series B led by Kleiner Perkins ...", retrieved: 2026-10-08}
+  C14: {url: "https://clinicaltrials.gov/study/NCT04488601", title: "Participatory Evaluation (of) Aging (With) Rapamycin (for) Longevity Study (PEARL; AgelessRx)", retrieved: 2026-10-08}
+  C15: {url: "https://doi.org/10.18632/aging.206235", title: "Influence of rapamycin on safety and healthspan metrics after one year: PEARL trial results. Aging 2025. PMID 40188830, PMCID PMC12074816", retrieved: 2026-10-08}
+  C16: {url: "https://www.biospace.com/restorbio-shares-plunge-74-percent-on-failure-of-phase-iii-respiratory-trial", title: "resTORbio Halts Respiratory Program for RTB101 After Phase III Failure (secondary)", retrieved: 2026-10-08}
+  C17: {url: "https://clinicaltrials.gov/study/NCT04571008", title: "Effect of NMN Supplementation on Organ System Biology (Washington University)", retrieved: 2026-10-08}
+  C18: {url: "https://clinicaltrials.gov/study/NCT03568968", title: "A Randomized Controlled Trial of Nicotinamide Riboside Supplementation in Early Parkinson's Disease (Haukeland)", retrieved: 2026-10-08}
+  C19: {url: "https://www.venable.com/insights/publications/2025/10/fda-declares-nicotinamide-mononucleotide-is", title: "FDA Declares Nicotinamide Mononucleotide Is a Dietary Supplement (Venable LLP; describes FDA letters dated 2025-09-29; secondary)", retrieved: 2026-10-08}
+  C20: {url: "https://www.xprize.org/news/101m-xprize-healthspan-awards-first-milestone-winners-driving-toward-revolutionary-healthy-aging-advances", title: "$101M XPRIZE Healthspan Awards First Milestone Winners ...", retrieved: 2026-10-08}
+  C21: {url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC5943638", title: "Metformin as a Tool to Target Aging (TAME design rationale). PMCID PMC5943638", retrieved: 2026-10-08}
+  C22: {url: "https://loyal.com", title: "Loyal — We're developing the first longevity drugs for dogs (RXE accepted; TAS accepted; CMC in progress)", retrieved: 2026-10-08}
+  C23: {url: "https://loyal.com/posts/loy-002-receives-rxe-from-the-fda", title: "Not just for big dogs! Our senior dog program receives preliminary FDA efficacy acceptance (RXE)", retrieved: 2026-10-08}
+  C24: {url: "https://minicircle.io/wp-content/uploads/2024/04/fstpreprint.pdf", title: "Plasmid delivery of follistatin gene therapy safely improves body composition ... (Minicircle self-hosted preprint; not peer reviewed)", retrieved: 2026-10-08}
+  C25: {url: "https://rejuvenatebio.com/press-releases/series", title: "Rejuvenate Bio Raises Over $10M in Series A Funding for Gene Therapy Aging Treatment", retrieved: 2026-10-08}
+  C26: {url: "https://clinicaltrials.gov/study/NCT03574597", title: "Semaglutide Effects on Heart Disease and Stroke in Patients With Overweight or Obesity (SELECT)", retrieved: 2026-10-08}
+  C27: {url: "https://clinicaltrials.gov/study/NCT03819153", title: "A Research Study to See How Semaglutide Works Compared to Placebo in People With Type 2 Diabetes and Chronic Kidney Disease (FLOW)", retrieved: 2026-10-08}
+  C28: {url: "https://clinicaltrials.gov/study/NCT04822181", title: "Research Study on Whether Semaglutide Works in People With Non-alcoholic Steatohepatitis (NASH) (ESSENCE)", retrieved: 2026-10-08}
+  C29: {url: "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2025/215256Orig1s024ltr.pdf", title: "NDA 215256/S-024 accelerated approval letter (Wegovy, MASH)", retrieved: 2026-10-08}
+  C30: {url: "https://www.globenewswire.com/news-release/2025/11/24/3193328/0/en/novo-nordisk-a-s-evoke-phase-3-trials-did-not-demonstrate-a-statistically-significant-reduction-in-alzheimer-s-disease-progression.html", title: "Novo Nordisk A/S: Evoke phase 3 trials did not demonstrate a statistically significant reduction in Alzheimer's disease progression (2025-11-24)", retrieved: 2026-10-08}
+  C31: {url: "https://clinicaltrials.gov/study/NCT04777396", title: "A Research Study Investigating Semaglutide in People With Early Alzheimer's Disease (EVOKE)", retrieved: 2026-10-08}
+  C32: {url: "https://clinicaltrials.gov/study/NCT04777409", title: "A Research Study Investigating Semaglutide in People With Early Alzheimer's Disease (EVOKE Plus)", retrieved: 2026-10-08}
+  C33: {url: "https://investor.lilly.com/news-releases/news-release-details/fda-approves-zepboundr-tirzepatide-first-and-only-prescription", title: "FDA approves Zepbound (tirzepatide) as the first and only prescription medicine for moderate-to-severe obstructive sleep apnea in adults with obesity (2024-12-20)", retrieved: 2026-10-08}
+  C34: {url: "https://clinicaltrials.gov/study/NCT05869903", title: "A Study of Orforglipron (LY3502970) in Adult Participants With Obesity or Overweight With Weight-Related Comorbidities (ATTAIN-1)", retrieved: 2026-10-08}
+  C35: {url: "https://investor.lilly.com/news-releases/news-release-details/fda-approves-lillys-foundayotm-orforglipron-only-glp-1-pill", title: "FDA approves Lilly's Foundayo (orforglipron), the only GLP-1 pill for weight loss that can be taken any time of day ... (2026-04-01)", retrieved: 2026-10-08}
+  C36: {url: "https://clinicaltrials.gov/study/NCT05616013", title: "Safety and Efficacy of Bimagrumab and Semaglutide in Adults Who Are Overweight or Obese (Eli Lilly)", retrieved: 2026-10-08}
+  C37: {url: "https://clinicaltrials.gov/study/NCT06625320", title: "Phase 3 Study of Daraxonrasib (RMC-6236) in Patients With Previously Treated Metastatic PDAC (RASolute 302)", retrieved: 2026-10-08}
+  C38: {url: "https://ir.revmed.com/news-releases/news-release-details/revolution-medicines-announces-fda-breakthrough-therapy", title: "Revolution Medicines Announces FDA Breakthrough Therapy Designation for Daraxonrasib in Previously Treated Metastatic Pancreatic Cancer with KRAS G12 Mutations (2025-06-23)", retrieved: 2026-10-08}
+  C39: {url: "https://ir.revmed.com/news-releases/news-release-details/daraxonrasib-demonstrates-unprecedented-overall-survival-benefit", title: "Daraxonrasib Demonstrates Unprecedented Overall Survival Benefit in Pivotal Phase 3 RASolute 302 ... (2026-04-13)", retrieved: 2026-10-08}
+  C40: {url: "https://ir.revmed.com/news-releases/news-release-details/revolution-medicines-new-drug-application-daraxonrasib-accepted", title: "Revolution Medicines' New Drug Application for Daraxonrasib Accepted for Review by U.S. FDA ... (2026-07-22)", retrieved: 2026-10-08}
+  C41: {url: "https://www.fda.gov/drugs/resources-information-approved-drugs/fda-approves-daraxonrasib-metastatic-pancreatic-adenocarcinoma", title: "FDA approves daraxonrasib for metastatic pancreatic adenocarcinoma (2026-08-26)", retrieved: 2026-10-08}
+  C42: {url: "https://doi.org/10.1056/NEJMoa2605555", title: "Daraxonrasib or Chemotherapy in Previously Treated Metastatic Pancreatic Cancer. N Engl J Med 2026-07-23. PMID 42223072", retrieved: 2026-10-08}
+  C43: {url: "https://clinicaltrials.gov/study/NCT05968326", title: "Adjuvant Autogene Cevumeran Plus Atezolizumab and mFOLFIRINOX Versus mFOLFIRINOX Alone in Resected PDAC (IMCODE003; Genentech)", retrieved: 2026-10-08}
+  C44: {url: "https://doi.org/10.1038/s41586-023-06063-y", title: "Personalized RNA neoantigen vaccines stimulate T cells in pancreatic cancer. Nature 2023. PMID 37165196", retrieved: 2026-10-08}
+  C45: {url: "https://clinicaltrials.gov/study/NCT05933577", title: "A Clinical Study of Intismeran Autogene (V940) Plus Pembrolizumab in People With High-Risk Melanoma (V940-001 / INTerpath-001)", retrieved: 2026-10-08}
+  C46: {url: "https://www.merck.com/news/merck-and-moderna-announce-phase-3-interpath-001-trial-of-intismeran-autogene-plus-keytruda-met-endpoints-of-recurrence-free-survival-rfs-and-distant-metastasis-free-survival-dmfs-in-patient", title: "Merck and Moderna Announce Phase 3 INTerpath-001 Trial of Intismeran Autogene Plus KEYTRUDA Met Endpoints of RFS and DMFS ... (2026-08-19 per AJMC reference)", retrieved: 2026-10-08}
+  C47: {url: "https://clinicaltrials.gov/study/NCT06128629", title: "MAGNITUDE: A Phase 3 Study of NTLA-2001 in Participants With Transthyretin Amyloidosis With Cardiomyopathy (ATTR-CM)", retrieved: 2026-10-08}
+  C48: {url: "https://ir.intelliatx.com/news-releases/news-release-details/intellia-therapeutics-provides-update-magnitude-clinical-trials", title: "Intellia Therapeutics Provides Update on MAGNITUDE Clinical Trials of Nexiguran Ziclumeran (nex-z) (2025-10-27)", retrieved: 2026-10-08}
+  C49: {url: "https://ir.intelliatx.com/news-releases/news-release-details/intellia-therapeutics-announces-third-quarter-2025-financial", title: "Intellia Therapeutics Announces Third Quarter 2025 Financial Results and Recent Updates (states FDA clinical hold of 2025-10-29)", retrieved: 2026-10-08}
+  C50: {url: "https://ir.intelliatx.com/news-releases/news-release-details/intellia-therapeutics-announces-fda-lift-clinical-hold-0", title: "Intellia Therapeutics Announces FDA Lift of Clinical Hold on MAGNITUDE Phase 3 Clinical Trial in ATTR-CM (2026-03-02)", retrieved: 2026-10-08}
+  C51: {url: "https://investor.lilly.com/news-releases/news-release-details/lilly-acquire-verve-therapeutics-advance-one-time-treatments", title: "Lilly to acquire Verve Therapeutics to advance one-time treatments for people with high cardiovascular risk", retrieved: 2026-10-08}
+  C52: {url: "https://clinicaltrials.gov/study/NCT06164730", title: "A Study of VERVE-102 in Patients With Familial Hypercholesterolemia or Premature Coronary Artery Disease", retrieved: 2026-10-08}
+  C53: {url: "https://doi.org/10.1056/NEJMoa2504747", title: "Patient-Specific In Vivo Gene Editing to Treat a Rare Genetic Disease. N Engl J Med 2025. PMID 40373211", retrieved: 2026-10-08}
+  C54: {url: "https://news.abbvie.com/2025-06-30-AbbVie-to-Acquire-Capstan-Therapeutics,-Further-Strengthening-Commitment-to-Transforming-Patient-Care-in-Immunology", title: "AbbVie to Acquire Capstan Therapeutics ... (2025-06-30)", retrieved: 2026-10-08}
+  C55: {url: "https://news.abbvie.com/2025-08-19-AbbVie-Completes-Acquisition-of-Capstan-Therapeutics", title: "AbbVie Completes Acquisition of Capstan Therapeutics (2025-08-19)", retrieved: 2026-10-08}
+  C56: {url: "https://clinicaltrials.gov/study/NCT06917742", title: "A Study of Intravenous CPTX2309 in Healthy Participants and Participants With Moderate to Severe Rheumatoid Arthritis (Capstan)", retrieved: 2026-10-08}
+  C57: {url: "https://www.astrazeneca.com/media-centre/press-releases/2025/astrazeneca-to-acquire-esobiotec.html", title: "AstraZeneca to acquire EsoBiotec to advance cell therapy ambition", retrieved: 2026-10-08}
+  C58: {url: "https://doi.org/10.1056/NEJMoa2308917", title: "CD19 CAR T-Cell Therapy in Autoimmune Disease - A Case Series with Follow-up. N Engl J Med 2024. PMID 38381673", retrieved: 2026-10-08}
+  C59: {url: "https://clinicaltrials.gov/study/NCT06154252", title: "RESET-Myositis: ... CABA-201 in Subjects With Active Idiopathic Inflammatory Myopathy ... (Cabaletta Bio)", retrieved: 2026-10-08}
+  C60: {url: "https://clinicaltrials.gov/study/NCT06588491", title: "KYSA-8: A Study of Anti-CD19 CAR T-Cell Therapy in Subjects With Treatment-Refractory Stiff Person Syndrome (Kyverna)", retrieved: 2026-10-08}
+  C61: {url: "https://ir.kyvernatx.com/news-releases/news-release-details/kyverna-therapeutics-announces-positive-topline-data", title: "Kyverna Therapeutics Announces Positive Topline Data from Registrational KYSA-8 Trial of Miv-cel (KYV-101) in Stiff Person Syndrome", retrieved: 2026-10-08}
+  C62: {url: "https://ir.kyvernatx.com/news-releases/news-release-details/kyverna-therapeutics-announces-initiation-rolling-sps-bla", title: "Kyverna Therapeutics Announces Initiation of Rolling SPS BLA Submission and Reports First Quarter 2026 Financial Results", retrieved: 2026-10-08}
+  C63: {url: "https://clinicaltrials.gov/study/NCT03887455", title: "A Study to Confirm Safety and Efficacy of Lecanemab in Participants With Early Alzheimer's Disease (Clarity AD)", retrieved: 2026-10-08}
+  C64: {url: "https://www.fda.gov/news-events/press-announcements/fda-converts-novel-alzheimers-disease-treatment-traditional-approval", title: "FDA Converts Novel Alzheimer's Disease Treatment to Traditional Approval (Leqembi, 2023-07-06)", retrieved: 2026-10-08}
+  C65: {url: "https://clinicaltrials.gov/study/NCT04437511", title: "A Study of Donanemab (LY3002813) in Participants With Early Alzheimer's Disease (TRAILBLAZER-ALZ 2)", retrieved: 2026-10-08}
+  C66: {url: "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K242706", title: "510(k) K242706 Lumipulse G pTau217/B-Amyloid 1-42 Plasma Ratio (Fujirebio; decision letter dated 2025-05-16)", retrieved: 2026-10-08}
+  C67: {url: "https://ir.unither.com/press-releases/2025/11-03-2025-120022270", title: "United Therapeutics Corporation Announces First Transplant in EXPAND Clinical Trial of UKidney in Patients With End-Stage Renal Disease (2025-11-03)", retrieved: 2026-10-08}
+  C68: {url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC12728669", title: "The First Clinical Renal Xenotransplantation Study (EXPAND): Evaluating Safety, Function, and Zoonotic Risks. PMCID PMC12728669", retrieved: 2026-10-08}
+  C69: {url: "https://clinicaltrials.gov/study/NCT07429838", title: "RENEW: Study of Porcine Liver Support in Participants With Acute-on-Chronic Liver Failure (eGenesis)", retrieved: 2026-10-08}
+  C70: {url: "https://doi.org/10.1016/j.cell.2022.11.001", title: "Hallmarks of aging: An expanding universe. Cell 2023. PMID 36599349", retrieved: 2026-10-08}
+  C71: {url: "https://www.prnewswire.com/news-releases/wegovy-approved-by-fda-for-the-treatment-of-adults-with-noncirrhotic-mash-with-moderate-to-advanced-liver-fibrosis-302531394.html", title: "Wegovy approved by FDA for the treatment of adults with noncirrhotic MASH with moderate to advanced liver fibrosis (Novo Nordisk, 2025-08-15)", retrieved: 2026-10-08}
+  C72: {url: "https://www.cnbc.com/2025/06/17/eli-lilly-to-acquire-verve-therapeutics-for-1point3-billion.html", title: "Eli Lilly to acquire Verve Therapeutics for $1.3 billion (secondary; dates the announcement 2025-06-17)", retrieved: 2026-10-08}
+  C73: {url: "https://doi.org/10.1056/NEJMoa2505783", title: "Daraxonrasib in Previously Treated Advanced RAS-Mutated Pancreatic Cancer. N Engl J Med 2026-05-07. PMID 42090791", retrieved: 2026-10-08}
+  C74: {url: "https://www.sec.gov/Archives/edgar/data/1157601/000119312522307935/d423141d8k.htm", title: "Madrigal Pharmaceuticals, Inc. Form 8-K, Date of Report December 19, 2022 (Items 7.01, 8.01): MAESTRO-NASH Phase 3 topline results (sha256 fea92312...)", retrieved: 2026-10-08}
+  C75: {url: "https://www.sec.gov/Archives/edgar/data/1157601/000119312524068170/d788116d8k.htm", title: "Madrigal Pharmaceuticals, Inc. Form 8-K filed 2024-03-15: FDA accelerated approval of Rezdiffra (resmetirom), continued approval contingent on confirmatory trials (sha256 a2cdf28c...)", retrieved: 2026-10-08}
+  C76: {url: "https://www.fda.gov/media/95302/download", title: "CDER Breakthrough Therapy Designation Approvals, data as of December 31, 2025 (row NDA 217785 REZDIFFRA, resmetirom, Madrigal, 14-Mar-2024; sha256 901fd6e8...)", retrieved: 2026-10-08}
+  C77: {url: "https://www.sec.gov/Archives/edgar/data/1157601/000119312522311537/d434336d8k.htm", title: "Madrigal Pharmaceuticals, Inc. Form 8-K filed 2022-12-23 (Items 1.01, 5.03, 7.01, 8.01, 9.01): loan milestone satisfied as a result of the MAESTRO-NASH topline announcement; equity financing (sha256 416740c7...)", retrieved: 2026-10-08}
+  C78: {url: "https://ir.bioagelabs.com/news-releases/news-release-details/bioage-labs-announces-discontinuation-strides-phase-2-clinical", title: "BioAge Labs Announces Discontinuation of STRIDES Phase 2 Clinical Trial Evaluating Azelaprag in Combination with Tirzepatide for the Treatment of Obesity (2024-12-06; sha256 37feb9da...)", retrieved: 2026-10-08}
+  C79: {url: "https://www.sec.gov/Archives/edgar/data/1157601/000119312524084797/d818318d8k.htm", title: "Madrigal Pharmaceuticals, Inc. Form 8-K 2024-04-02: underwriters' option exercise closing of the offering; no stated basis (sha256 b5fff676...)", retrieved: 2026-10-08}
+
+# ---------------------------------------------------------------------------------------------
+# 1. The node that carries the frontier vocabulary (proposal for the D13 SDL stage)
+# ---------------------------------------------------------------------------------------------
+node:
+  type: Frontier
+  labels: [Frontier, Entity]
+  uidPattern: "hu:frontier:<slug>"   # slug = the part after "frontier:" in `id`
+  idPattern: "frontier:<slug>"       # stable vocabulary key, stored as property `key`; never reused, never renamed
+  identityKeys: [key]
+  properties:                        # all scalar; the frontier itself declares no relationship fields except ON_FRONTIER (incoming)
+    key: "String! unique (e.g. frontier:senolytics-in-humans)"
+    label: "String! (stored in the kernel Entity field `name`; no separate label property in the SDL)"
+    definition: "String! one paragraph: the goal, phrased as a capability not yet reliably achieved in humans"
+    level: "Int (1 theme, 2 frontier); max 2 levels"
+    parentKey: "String (null at level 1). Hierarchy is a property, no relationship type spent (same choice as D5 targets)"
+    granularity: "FrontierGranularity enum THEME | MODALITY | MECHANISM | DISEASE_GOAL | REGULATORY_PATH | POPULATION"
+    synonyms: "[String!] feeds fulltext FrontierSearch(label, synonyms, definition) for entity linking of frontier phrases"
+    targetKeys: "[String!] curated relevance mapping to D5 target keys (vocabulary-to-vocabulary, NOT an effect claim; see seamRule)"
+    curationStatus: "FrontierCurationStatus enum ACTIVE | DORMANT | MATURED | DEPRECATED (a curation decision recorded with a vocab version bump and a rationale citing events; never a judgment of success). MATURED (0.2.1) is a vocabulary-retirement state — the frontier stops admitting new milestone attachments — whose bump rationale must cite an accepted BREAKTHROUGH_JUDGMENT Assessment about the Frontier; it is never set by a progress computation and it is not a progress measure (notStoredOnFrontier)"
+    replacedBy: "String (key of successor when DEPRECATED)"
+    vocabVersion: "String! (version of this file at creation / last edit)"
+  notStoredOnFrontier:
+    - "stage / progress / 'furthest milestone reached' — computed from ON_FRONTIER events (QF-02); may be a materialized projection with a method version, never a curated property"
+    - "breakthrough flag, hype score, investor sentiment, success probability — assessments (D10) or projections, never properties (directive 3.2, 3.6)"
+    - "lists of organizations / compounds / trials — reached through events and studies (QF-03); the `examples` in this file are curation aids, not graph data"
+  disambiguation:
+    - "NOT a D5 Target: a target is what a person pursues (sleep, longevity); a frontier is what the field pursues (senolytics in humans). Mapped by `targetKeys`."
+    - "NOT a Condition or Mechanism (D2): 'curing pancreatic cancer' is anchored on the condition but is a goal-state of the field; the condition stays in D2 and is named in `scope.anchors` only."
+    - "NOT a therapeutic class or modality node: a modality (in vivo CAR-T) appears as a frontier only when the field tracks it as a goal with milestones still unreached."
+    - "NOT a narrative arc (no NarrativeArc type in the final SDL): an arc is an assessment that selects and orders events into a story (D10 seam); a frontier is the stable bucket events attach to."
+    - "NOT a market segment or index: no market size, no valuation on the frontier."
+
+# ---------------------------------------------------------------------------------------------
+# 2. Admission and granularity rules (how a frontier gets into, and out of, this list)
+# ---------------------------------------------------------------------------------------------
+admissionRule:
+  mustAll:
+    - "A goal phrased as a capability the field is pursuing and has not reliably achieved in humans (or in the named population), with at least one unreached rung on the milestone ladder (section 4)."
+    - "Tracked by investors or researchers as a unit: at least two independent organizations or two registered trials active on it, evidenced by citations in `examples`."
+    - "Answerable: at least one seed question (QF-01..QF-08) is worth asking about it."
+    - "Distinct: an event would rarely need more than two frontiers; if two candidates share most events, merge them and keep the other as a synonym."
+  granularity: >-
+    Choose the level at which a milestone means the same thing for every member. A disease goal ('curing pancreatic
+    cancer') when the milestones are disease outcomes; a modality ('in vivo CAR-T') when the milestones are modality
+    firsts (first-in-human, first approval) regardless of disease; a mechanism ('senolytics') when the mechanism is
+    what is being validated. Never a single product or a single company.
+  hierarchy: "Two levels only. Level 1 themes group frontiers for browsing and aggregate timelines; an event attaches to a level-2 frontier (or a level-1 theme only when no child fits). Each frontier has one parent; cross-links use `related` (names only, no edge)."
+  lifecycle: "Add, merge, deprecate or retire only by a version bump of this file with a rationale in _notes/vocab-frontiers-notes.md. Retiring a frontier as MATURED requires an accepted BREAKTHROUGH_JUDGMENT Assessment (kernel) that the bump cites; the frontier keeps its node and events, stops admitting new attachments, and its progress stays computed (QF-02), never stored."
+  sizeTarget: "20-30 frontiers (brief: 20-40; coordinator: 12-25). Growth needs a question id; the vocabulary is curated, not crowd-sourced."
+
+# ---------------------------------------------------------------------------------------------
+# 3. The frontiers (7 themes + 18 frontiers = 25; 0.2.0 added frontier:mash-fibrosis-resolution)
+#    examples: names and registry ids only, each with citation ids. events: dated examples for fixtures and
+#    for checking that the milestone kinds fit; they are NOT graph data until captured as Assertions.
+#    targetKeys: D5 target keys (final/vocabularies/targets.yaml@0.2.2; ids unchanged since 0.1.0).
+# ---------------------------------------------------------------------------------------------
+frontiers:
+
+  # ===== Theme 1: geroscience =====
+  - id: frontier:geroscience-in-humans
+    label: Targeting the biology of aging in humans
+    level: 1
+    parent: null
+    granularity: THEME
+    definition: >-
+      Interventions that act on hallmarks of aging (cellular senescence, epigenetic alteration, deregulated nutrient
+      sensing, mitochondrial dysfunction and others) and show benefit in people on age-related function, multiple
+      age-related diseases, or validated aging endpoints, rather than on one disease.
+    scope:
+      includes: [hallmark-targeted interventions in humans, aging as an indication, aging biomarkers as trial endpoints, veterinary lifespan drugs as translational signal]
+      excludes: [single-disease therapies whose mechanism happens to be aging-related unless the sponsor frames them as aging-targeted, consumer supplements without a trial program]
+      anchors: {mechanisms: [hallmarks of aging (C70)]}
+    milestoneKinds: [ms:first-in-human, ms:randomized-readout, ms:pivotal-readout, ms:regulatory-path-accepted, ms:first-approval, ms:major-financing, ms:setback]
+    targetKeys: [target:longevity]
+    synonyms: [geroscience, longevity biotech, healthspan extension, anti-aging therapeutics, aging biology therapeutics]
+    examples:
+      papers: [{name: "Hallmarks of aging: An expanding universe", pmid: "36599349", cite: C70}]
+
+  - id: frontier:senolytics-in-humans
+    label: Senolytics in humans
+    level: 2
+    parent: frontier:geroscience-in-humans
+    granularity: MECHANISM
+    definition: >-
+      Drugs that selectively eliminate senescent cells (senolytics) or suppress their secretory phenotype
+      (senomorphics) producing clinical benefit in human age-related disease or function.
+    scope:
+      includes: [small-molecule senolytics (dasatinib + quercetin, fisetin, BCL-xL inhibitors), local senolytics (intravitreal, intra-articular), senomorphics in trials]
+      excludes: [senolytic claims on consumer supplements without a registered trial (D6 product claims)]
+      anchors: {mechanisms: [cellular senescence, BCL-2 family anti-apoptotic proteins]}
+    milestoneKinds: [ms:first-in-human, ms:randomized-readout, ms:pivotal-readout, ms:first-approval, ms:setback]
+    targetKeys: [target:longevity]
+    synonyms: [senolytic therapy, senotherapeutics, senescent cell clearance, senomorphics]
+    examples:
+      organizations: [{name: Unity Biotechnology, cite: [C03, C04, C05]}, {name: Mayo Clinic, cite: [C06, C07]}]
+      compounds: [{name: "foselutoclax (UBX1325)", cite: [C03, C04]}, {name: "dasatinib + quercetin", cite: [C06, C07]}]
+      trials: [{nct: NCT05275205, cite: C03}, {nct: NCT06011798, cite: C04}, {nct: NCT02848131, cite: C06}]
+      papers: [{name: "Senolytics in idiopathic pulmonary fibrosis: first-in-human pilot", pmid: "30616998", cite: C07}]
+      events:
+        - {date: 2025-05-05, kind: READOUT, what: "UNITY reports complete 36-week ASPIRE Phase 2b results for UBX1325 in DME", cite: C05}
+
+  - id: frontier:partial-epigenetic-reprogramming
+    label: Partial epigenetic reprogramming
+    level: 2
+    parent: frontier:geroscience-in-humans
+    granularity: MODALITY
+    definition: >-
+      Transient or partial expression of reprogramming factors (for example OSK/OSKM subsets) or reprogramming-like
+      interventions that restore youthful epigenetic state and tissue function without loss of cell identity,
+      reaching human trials and showing safety and benefit.
+    scope:
+      includes: [in vivo gene-delivered reprogramming factors, mRNA/small-molecule reprogramming cocktails, ex vivo reprogrammed cell therapies framed as rejuvenation]
+      excludes: [full iPSC reprogramming for cell manufacturing (regenerative medicine)]
+      anchors: {mechanisms: [epigenetic alteration, Yamanaka factors]}
+    milestoneKinds: [ms:regulatory-path-accepted, ms:first-in-human, ms:randomized-readout, ms:major-financing, ms:setback]
+    targetKeys: [target:longevity]
+    synonyms: [cellular rejuvenation, epigenetic rejuvenation, partial reprogramming, OSK therapy, rejuvenation biotech]
+    examples:
+      organizations: [{name: Life Biosciences, cite: [C08, C09, C10]}, {name: Retro Biosciences, cite: C12}, {name: NewLimit, cite: C13}]
+      compounds: [{name: "ER-100 (OSK gene therapy)", cite: [C08, C09]}]
+      trials: [{nct: NCT07290244, cite: C08}]
+      papers: [{name: "Reprogramming to recover youthful epigenetic information and restore vision", pmid: "33268865", cite: C11}]
+      events:
+        - {date: 2026-01-28, kind: REGULATORY_ACCEPTANCE, what: "FDA clears IND for ER-100 (company: first partial epigenetic reprogramming therapy to reach human trials)", cite: C09}
+        - {date: 2026-06-09, kind: TRIAL_START, what: "first participant dosed in ER-100 Phase 1", cite: C10}
+        - {date: 2026-05-22, kind: FINANCING, what: "Retro Biosciences initial close of financing round", cite: C12}
+
+  - id: frontier:mtor-inhibition-healthy-aging
+    label: mTOR inhibition for healthy aging
+    level: 2
+    parent: frontier:geroscience-in-humans
+    granularity: MECHANISM
+    definition: >-
+      Rapamycin, rapalogs or selective TORC1 inhibitors given to healthy or older people to slow aging-related
+      decline (immune, muscle, metabolic, function), shown in randomized trials.
+    scope:
+      includes: [intermittent low-dose rapamycin, TORC1-selective inhibitors, everolimus in older adults]
+      excludes: [mTOR inhibitors in oncology or transplant indications]
+      anchors: {mechanisms: [deregulated nutrient sensing, mTORC1]}
+    milestoneKinds: [ms:randomized-readout, ms:pivotal-readout, ms:setback]
+    targetKeys: [target:longevity, target:immune-function, target:muscle-mass]
+    synonyms: [rapamycin for longevity, rapalogs, TORC1 inhibition, mTOR geroprotection]
+    examples:
+      organizations: [{name: AgelessRx, cite: [C14, C15]}, {name: resTORbio, cite: C16}]
+      compounds: [{name: rapamycin (sirolimus), cite: [C14, C15]}, {name: "RTB101", cite: C16}]
+      trials: [{nct: NCT04488601, cite: C14}]
+      papers: [{name: "PEARL trial results", pmid: "40188830", cite: C15}]
+      events:
+        - {date: null, kind: READOUT, what: "resTORbio PROTECTOR 1 Phase 3 (RTB101) failed its primary endpoint (disconfirmation example; date to capture from primary)", cite: C16}
+
+  - id: frontier:nad-restoration
+    label: NAD+ restoration
+    level: 2
+    parent: frontier:geroscience-in-humans
+    granularity: MECHANISM
+    definition: >-
+      Raising NAD+ levels with precursors (nicotinamide riboside, nicotinamide mononucleotide) or enzyme modulators
+      producing clinically meaningful benefit in aging or age-related disease in randomized human trials.
+    scope:
+      includes: [NR, NMN, NAD+ infusions in trials, CD38 inhibition framed as NAD restoration]
+      excludes: [marketing claims without a trial (D6), niacin for dyslipidemia]
+      anchors: {mechanisms: [NAD+ metabolism, mitochondrial dysfunction]}
+    milestoneKinds: [ms:randomized-readout, ms:regulatory-status-change, ms:setback]
+    targetKeys: [target:longevity, target:energy, target:cardiometabolic-health]
+    synonyms: [NAD precursors, NAD boosters, NR, NMN, nicotinamide riboside, nicotinamide mononucleotide]
+    examples:
+      organizations: [{name: Washington University School of Medicine, cite: C17}, {name: Haukeland University Hospital, cite: C18}]
+      compounds: [{name: nicotinamide mononucleotide, cite: [C17, C19]}, {name: nicotinamide riboside, cite: C18}]
+      trials: [{nct: NCT04571008, cite: C17}, {nct: NCT03568968, cite: C18}]
+      events:
+        - {date: 2025-09-29, kind: POLICY_CHANGE, what: "FDA letters state NMN is not excluded from the dietary-supplement definition (as described by Venable; capture the FDA letter)", cite: C19}
+
+  - id: frontier:aging-as-indication
+    label: Aging as a regulatory indication and trial endpoint
+    level: 2
+    parent: frontier:geroscience-in-humans
+    granularity: REGULATORY_PATH
+    definition: >-
+      A regulator accepting aging, healthspan or a composite of age-related diseases as an indication, or an aging
+      biomarker as a surrogate endpoint, so that geroprotectors can be approved for aging itself.
+    scope:
+      includes: [composite-endpoint trials designed for regulators (TAME), aging biomarker validation programs, prize competitions with clinical milestones, veterinary precedents]
+      excludes: [measurement methods themselves (D4 Biomarker / measurement method)]
+      anchors: {programs: [TAME (C21), XPRIZE Healthspan (C20)]}
+    milestoneKinds: [ms:regulatory-path-accepted, ms:randomized-readout, ms:major-financing, ms:policy-change]
+    targetKeys: [target:longevity]
+    synonyms: [aging as a disease, healthspan indication, geroprotector approval pathway, aging biomarkers as surrogate endpoints, TAME]
+    related: [frontier:companion-animal-longevity-drugs]
+    examples:
+      organizations: [{name: American Federation for Aging Research (TAME sponsor), cite: C21}, {name: XPRIZE Foundation, cite: C20}]
+      compounds: [{name: metformin (TAME), cite: C21}]
+      trials: []     # TAME not found by ClinicalTrials.gov term search on 2026-10-08 (see notes)
+      events:
+        - {date: 2025-05-12, kind: AWARD, what: "XPRIZE Healthspan awards first milestone winners (top 40 of semifinalists)", cite: C20}
+
+  - id: frontier:companion-animal-longevity-drugs
+    label: Lifespan-extension drugs for companion animals
+    level: 2
+    parent: frontier:geroscience-in-humans
+    granularity: REGULATORY_PATH
+    definition: >-
+      Drugs approved (conditionally or fully) by a veterinary regulator with a lifespan or healthy-lifespan claim in
+      dogs or cats: the first regulatory precedent for an aging claim in any species.
+    scope:
+      includes: [FDA CVM conditional approval pathway (RXE, TAS, CMC technical sections), large pivotal dog studies]
+      excludes: [veterinary drugs for single age-related diseases]
+    milestoneKinds: [ms:regulatory-path-accepted, ms:first-approval, ms:pivotal-readout, ms:launch]
+    targetKeys: [target:longevity]
+    synonyms: [dog longevity drugs, canine lifespan extension, veterinary geroscience, LOY-002]
+    related: [frontier:aging-as-indication]
+    examples:
+      organizations: [{name: Loyal, cite: [C22, C23]}]
+      compounds: [{name: LOY-002, cite: [C22, C23]}]
+      events:
+        - {date: null, kind: REGULATORY_ACCEPTANCE, what: "FDA CVM accepts RXE technical section for LOY-002; TAS later accepted; CMC in progress (site status page)", cite: [C22, C23]}
+
+  - id: frontier:gene-therapy-for-aging
+    label: Gene therapy for aging
+    level: 2
+    parent: frontier:geroscience-in-humans
+    granularity: MODALITY
+    definition: >-
+      Gene therapies intended to slow or reverse aging in otherwise healthy people (follistatin, klotho, telomerase,
+      FGF21/TGF-beta receptor combinations and similar), tested under regulator oversight with captured safety data.
+    scope:
+      includes: [in vivo gene delivery framed as anti-aging, offshore or regulatory-arbitrage administrations (tracked as harm/risk events)]
+      excludes: [gene therapies for monogenic disease (frontier:in-vivo-gene-editing), partial reprogramming (own frontier)]
+    milestoneKinds: [ms:first-in-human, ms:randomized-readout, ms:regulatory-path-accepted, ms:safety-signal, ms:setback]
+    targetKeys: [target:longevity, target:muscle-mass]
+    synonyms: [longevity gene therapy, follistatin gene therapy, klotho gene therapy, anti-aging gene therapy]
+    related: [frontier:in-vivo-gene-editing, frontier:partial-epigenetic-reprogramming]
+    harmNote: "Most human use so far is outside regulated trials; the frontier exists so that safety signals, enforcement and unverified claims attach somewhere investors and biohackers will look."
+    examples:
+      organizations: [{name: Minicircle, cite: C24}, {name: Rejuvenate Bio, cite: C25}]
+      compounds: [{name: "follistatin plasmid (FST-344)", cite: C24}]
+
+  # ===== Theme 2: metabolic and incretin medicine =====
+  - id: frontier:incretin-and-metabolic-medicine
+    label: Incretin and metabolic medicine beyond weight loss
+    level: 1
+    parent: null
+    granularity: THEME
+    definition: >-
+      Incretin-based and adjacent metabolic drugs (GLP-1, GIP, glucagon, amylin agonists and successors, thyroid-receptor
+      agonists in MASH) proving benefit on hard outcomes and diseases beyond glycemia and body weight, in forms and
+      at costs that reach large populations.
+    scope:
+      includes: [cardiovascular, kidney, liver (MASH), sleep apnea, neurodegeneration and addiction indications, oral and next-generation agents, body-composition quality of weight loss]
+      excludes: [first-generation glycemic approvals as such]
+    milestoneKinds: [ms:pivotal-readout, ms:first-approval, ms:label-expansion, ms:launch, ms:setback]
+    targetKeys: [target:cardiometabolic-health, target:fat-loss, target:body-composition, target:glycemic-control]
+    synonyms: [GLP-1 class, incretin therapies, obesity drugs, cardiometabolic drugs]
+
+  - id: frontier:glp1-beyond-obesity
+    label: GLP-1 class beyond obesity
+    level: 2
+    parent: frontier:incretin-and-metabolic-medicine
+    granularity: DISEASE_GOAL
+    definition: >-
+      GLP-1 receptor agonists and multi-agonists approved or proven in outcome trials for diseases other than obesity
+      and type 2 diabetes: cardiovascular events, chronic kidney disease, MASH, obstructive sleep apnea,
+      Alzheimer's disease, addiction.
+    scope:
+      includes: [label expansions, outcome trials, failed indication trials (disconfirmation)]
+      excludes: [weight-loss-only readouts (parent theme)]
+    milestoneKinds: [ms:pivotal-readout, ms:label-expansion, ms:setback]
+    targetKeys: [target:cardiometabolic-health, target:brain-fitness, target:sleep]
+    synonyms: [GLP-1 beyond weight loss, semaglutide new indications, tirzepatide new indications, incretin label expansion]
+    examples:
+      organizations: [{name: Novo Nordisk, cite: [C26, C27, C28, C30]}, {name: Eli Lilly and Company, cite: C33}]
+      compounds: [{name: semaglutide, cite: [C26, C27, C28, C29, C31, C32]}, {name: tirzepatide, cite: C33}]
+      trials: [{nct: NCT03574597, cite: C26}, {nct: NCT03819153, cite: C27}, {nct: NCT04822181, cite: C28}, {nct: NCT04777396, cite: C31}, {nct: NCT04777409, cite: C32}]
+      events:
+        - {date: 2024-12-20, kind: APPROVAL, what: "FDA approves Zepbound for moderate-to-severe OSA in adults with obesity", cite: C33}
+        - {date: 2025-08-15, kind: APPROVAL, what: "FDA accelerated approval of Wegovy for noncirrhotic MASH with moderate-to-advanced fibrosis (NDA 215256/S-024)", cite: [C29, C71]}
+        - {date: 2025-11-24, kind: READOUT, what: "evoke and evoke+ (oral semaglutide, early Alzheimer's) did not show a statistically significant reduction in progression", cite: [C30, C31, C32]}
+
+  - id: frontier:oral-small-molecule-incretins
+    label: Oral small-molecule incretins
+    level: 2
+    parent: frontier:incretin-and-metabolic-medicine
+    granularity: MODALITY
+    definition: >-
+      Non-peptide, orally dosed incretin receptor agonists matching injectable efficacy without food or water
+      restrictions, approved and manufactured at population scale.
+    scope:
+      includes: [non-peptide GLP-1 agonists, oral multi-agonists]
+      excludes: [oral peptide formulations (tracked under the parent theme)]
+    milestoneKinds: [ms:pivotal-readout, ms:first-approval, ms:launch, ms:setback]
+    targetKeys: [target:fat-loss, target:glycemic-control]
+    synonyms: [GLP-1 pill, oral GLP-1, orforglipron, non-peptide GLP-1 agonist]
+    examples:
+      organizations: [{name: Eli Lilly and Company, cite: [C34, C35]}]
+      compounds: [{name: "orforglipron (Foundayo)", cite: [C34, C35]}]
+      trials: [{nct: NCT05869903, cite: C34}]
+      events:
+        - {date: 2026-04-01, kind: APPROVAL, what: "FDA approves Foundayo (orforglipron) for obesity / overweight with weight-related problems", cite: C35}
+
+  - id: frontier:muscle-preserving-weight-loss
+    label: Muscle-preserving weight loss
+    level: 2
+    parent: frontier:incretin-and-metabolic-medicine
+    granularity: DISEASE_GOAL
+    definition: >-
+      Therapies that, alone or with incretins, shift weight loss toward fat mass while preserving or increasing lean
+      mass and function (activin/myostatin pathway antibodies and others).
+    scope:
+      includes: [activin type II receptor antibodies, myostatin/GDF-8 inhibitors combined with incretins]
+      excludes: [exercise and nutrition protocols (D5 interventions)]
+      anchors: {mechanisms: [activin type II receptor signaling, myostatin]}
+    milestoneKinds: [ms:randomized-readout, ms:pivotal-readout, ms:setback]
+    targetKeys: [target:muscle-mass, target:body-composition, target:strength]
+    synonyms: [quality weight loss, lean mass preservation, sarcopenic obesity drugs, bimagrumab]
+    examples:
+      organizations: [{name: Eli Lilly and Company, cite: C36}]
+      compounds: [{name: bimagrumab, cite: C36}]
+      trials: [{nct: NCT05616013, cite: C36}]
+
+  - id: frontier:mash-fibrosis-resolution
+    label: Resolving MASH and liver fibrosis
+    level: 2
+    parent: frontier:incretin-and-metabolic-medicine
+    granularity: DISEASE_GOAL
+    definition: >-
+      Drugs that resolve metabolic dysfunction-associated steatohepatitis (MASH, formerly NASH) and halt or reverse liver
+      fibrosis with proven clinical benefit (fewer progressions to cirrhosis, liver events or deaths), including in
+      cirrhotic disease. The approvals recorded so far are accelerated approvals on liver histology whose continuation
+      depends on confirmatory outcome trials (C75, C29).
+    scope:
+      includes: [thyroid hormone receptor-beta agonists, incretin and multi-agonist MASH indications, other MASH mechanisms in registrational trials, confirmatory outcome trials of approved MASH drugs]
+      excludes: [weight-loss-only readouts (parent theme), liver diseases other than MASH]
+      anchors: {conditions: [MASH (NASH), liver fibrosis, cirrhosis], mechanisms: [thyroid hormone receptor-beta agonism, GLP-1 receptor agonism]}
+    milestoneKinds: [ms:pivotal-readout, ms:regulatory-filing-accepted, ms:expedited-designation, ms:first-approval, ms:label-expansion, ms:launch, ms:setback]
+    targetKeys: [target:cardiometabolic-health]
+    synonyms: [MASH, NASH, metabolic dysfunction-associated steatohepatitis, nonalcoholic steatohepatitis, MASH resolution, fibrosis regression, liver fibrosis drugs]
+    examples:
+      organizations: [{name: Madrigal Pharmaceuticals, cite: [C74, C75, C76]}, {name: Novo Nordisk, cite: [C29, C71]}]
+      compounds: [{name: "resmetirom (Rezdiffra)", cite: [C74, C75, C76]}, {name: semaglutide, cite: [C29, C71]}]
+      events:
+        - {date: 2022-12-19, kind: READOUT, what: "MAESTRO-NASH Phase 3 topline; the sponsor states the dual primary endpoints were met", cite: C74}
+        - {date: 2024-03-14, kind: APPROVAL, what: "FDA accelerated approval of Rezdiffra (resmetirom) for noncirrhotic NASH with moderate to advanced fibrosis; first approval on this frontier", cite: [C75, C76]}
+        - {date: 2025-08-15, kind: APPROVAL, what: "FDA accelerated approval of Wegovy for noncirrhotic MASH with moderate-to-advanced fibrosis (NDA 215256/S-024); also attached to frontier:glp1-beyond-obesity", cite: [C29, C71]}
+    note: "added in 0.2.0 (research-notes 7.1): the readout -> financing -> PDUFA -> approval fixtures (FC1-FC3) need a level-2 frontier for firstness (Q-D13-02/04); the GLP-1 frontier is defined by the GLP-1 class and cannot hold resmetirom."
+
+  # ===== Theme 3: curing specific cancers =====
+  - id: frontier:curing-hard-cancers
+    label: Curing hard-to-treat cancers
+    level: 1
+    parent: null
+    granularity: THEME
+    definition: >-
+      Turning cancers with poor survival into controllable or curable disease: large, durable survival gains in
+      randomized trials and approvals in cancers where standard care has failed for decades.
+    scope:
+      includes: [targeted therapies against historically undruggable drivers, individualized vaccines, cellular therapies in solid tumors]
+      excludes: [incremental approvals in cancers with good prognosis]
+    milestoneKinds: [ms:expedited-designation, ms:pivotal-readout, ms:regulatory-filing-accepted, ms:first-approval, ms:setback]
+    targetKeys: []
+    synonyms: [curing cancer, cancer cures, transformative oncology]
+
+  - id: frontier:curing-pancreatic-cancer
+    label: Curing pancreatic cancer
+    level: 2
+    parent: frontier:curing-hard-cancers
+    granularity: DISEASE_GOAL
+    definition: >-
+      Durable control or cure of pancreatic ductal adenocarcinoma (PDAC): randomized overall-survival gains and
+      approvals of therapies that change standard of care, including RAS-targeted drugs and adjuvant individualized
+      vaccines.
+    scope:
+      includes: [RAS(ON) and KRAS inhibitors in PDAC, individualized neoantigen vaccines in resected PDAC, early detection only when a trial reports survival]
+      excludes: [palliative supportive-care approvals]
+      anchors: {conditions: [pancreatic ductal adenocarcinoma], mechanisms: [KRAS / RAS GTPase signaling]}
+    milestoneKinds: [ms:expedited-designation, ms:pivotal-readout, ms:regulatory-filing-accepted, ms:first-approval, ms:setback]
+    targetKeys: []
+    synonyms: [pancreatic cancer cure, PDAC breakthrough, RAS inhibitor pancreatic cancer, daraxonrasib]
+    related: [frontier:individualized-neoantigen-vaccines]
+    examples:
+      organizations: [{name: Revolution Medicines, cite: [C37, C38, C39, C40, C41]}, {name: Genentech, cite: C43}, {name: BioNTech, cite: C44}]
+      compounds: [{name: "daraxonrasib (RMC-6236; RASONQUE)", cite: [C37, C41]}, {name: autogene cevumeran, cite: [C43, C44]}]
+      trials: [{nct: NCT06625320, cite: C37}, {nct: NCT05968326, cite: C43}]
+      papers:
+        - {name: "Daraxonrasib in Previously Treated Advanced RAS-Mutated Pancreatic Cancer", pmid: "42090791", cite: C73}
+        - {name: "Daraxonrasib or Chemotherapy in Previously Treated Metastatic Pancreatic Cancer", pmid: "42223072", cite: C42}
+        - {name: "Personalized RNA neoantigen vaccines stimulate T cells in pancreatic cancer", pmid: "37165196", cite: C44}
+      events:                   # a complete designation -> readout -> filing -> approval chain (fixture candidate)
+        - {date: 2025-06-23, kind: REGULATORY_DESIGNATION, what: "FDA Breakthrough Therapy designation for daraxonrasib, previously treated metastatic PDAC with KRAS G12 mutations", cite: C38}
+        - {date: 2026-04-13, kind: READOUT, what: "RASolute 302 positive topline: met primary and key secondary endpoints incl. PFS and OS", cite: C39}
+        - {date: 2026-07-22, kind: REGULATORY_ACCEPTANCE, what: "FDA accepts NDA for daraxonrasib for review", cite: C40}
+        - {date: 2026-07-23, record: D3.Publication, what: "RASolute 302 published in NEJM", cite: C42, note: "synthesis R-44: a publication is a D3 Publication, not an Event (event kind PUBLICATION removed)"}
+        - {date: 2026-08-26, kind: APPROVAL, what: "FDA approves daraxonrasib (RASONQUE); efficacy evaluated in RASolute 302 (NCT06625320)", cite: C41}
+
+  - id: frontier:individualized-neoantigen-vaccines
+    label: Individualized neoantigen cancer vaccines
+    level: 2
+    parent: frontier:curing-hard-cancers
+    granularity: MODALITY
+    definition: >-
+      Vaccines manufactured per patient from the tumor's own neoantigens (mRNA or other platforms) that reduce
+      recurrence or death in randomized trials and reach approval.
+    scope:
+      includes: [mRNA individualized neoantigen therapies in adjuvant settings across tumor types]
+      excludes: [off-the-shelf shared-antigen vaccines (parent theme)]
+    milestoneKinds: [ms:randomized-readout, ms:pivotal-readout, ms:first-approval, ms:setback]
+    targetKeys: []
+    synonyms: [personalized cancer vaccines, mRNA cancer vaccine, individualized neoantigen therapy, INT]
+    related: [frontier:curing-pancreatic-cancer]
+    examples:
+      organizations: [{name: Moderna, cite: C46}, {name: Merck Sharp & Dohme, cite: [C45, C46]}, {name: BioNTech, cite: C44}, {name: Genentech, cite: C43}]
+      compounds: [{name: "intismeran autogene (V940 / mRNA-4157)", cite: [C45, C46]}, {name: autogene cevumeran, cite: [C43, C44]}]
+      trials: [{nct: NCT05933577, cite: C45}, {nct: NCT05968326, cite: C43}]
+      events:
+        - {date: 2026-08-19, kind: READOUT, what: "INTerpath-001 Phase 3 (intismeran + pembrolizumab, resected melanoma) met RFS and DMFS endpoints", cite: C46}
+
+  # ===== Theme 4: in vivo genetic medicine =====
+  - id: frontier:in-vivo-genetic-medicine
+    label: In vivo genetic medicine
+    level: 1
+    parent: null
+    granularity: THEME
+    definition: >-
+      Editing or adding genes directly inside the body (CRISPR nucleases, base and prime editors, gene addition) as
+      one-time treatments for common as well as rare disease, with acceptable long-term safety.
+    scope:
+      includes: [LNP- and viral-delivered editors, one-time cardiovascular editing, bespoke N-of-1 editing]
+      excludes: [ex vivo edited cell products (theme 5)]
+    milestoneKinds: [ms:first-in-human, ms:pivotal-readout, ms:first-approval, ms:safety-signal, ms:clinical-hold, ms:strategic-transaction, ms:setback]
+    targetKeys: [target:cardiometabolic-health]
+    synonyms: [in vivo gene editing, one-and-done therapies, genetic medicines]
+
+  - id: frontier:in-vivo-gene-editing
+    label: In vivo gene editing for common disease
+    level: 2
+    parent: frontier:in-vivo-genetic-medicine
+    granularity: MODALITY
+    definition: >-
+      One-time in vivo CRISPR, base or prime editing that achieves durable clinical benefit in large populations
+      (cardiovascular risk, amyloidosis) or as rapid bespoke therapy, with a safety profile regulators accept.
+    scope:
+      includes: [PCSK9/ANGPTL3/TTR editing, personalized base editing for rare disease as platform proof]
+      excludes: [ex vivo edited cell therapies]
+      anchors: {conditions: [transthyretin amyloidosis, familial hypercholesterolemia]}
+    milestoneKinds: [ms:first-in-human, ms:pivotal-readout, ms:first-approval, ms:safety-signal, ms:clinical-hold, ms:strategic-transaction]
+    targetKeys: [target:cardiometabolic-health]
+    synonyms: [CRISPR in vivo, base editing, one-time LDL lowering, nex-z, VERVE-102]
+    examples:
+      organizations: [{name: Intellia Therapeutics, cite: [C47, C48, C49, C50]}, {name: Verve Therapeutics, cite: [C51, C52]}, {name: Eli Lilly and Company, cite: C51}]
+      compounds: [{name: "nexiguran ziclumeran (nex-z, NTLA-2001)", cite: [C47, C48]}, {name: VERVE-102, cite: C52}]
+      trials: [{nct: NCT06128629, cite: C47}, {nct: NCT06164730, cite: C52}]
+      papers: [{name: "Patient-Specific In Vivo Gene Editing to Treat a Rare Genetic Disease", pmid: "40373211", cite: C53}]
+      events:                    # a safety signal -> response -> hold -> lift chain (harm fixture candidate)
+        - {date: 2025-10-27, kind: SAFETY_SIGNAL, what: "Intellia pauses MAGNITUDE dosing and screening after Grade 4 transaminase and bilirubin elevations in one participant", cite: C48}
+        - {date: 2025-10-29, kind: CLINICAL_HOLD, what: "FDA places clinical holds on MAGNITUDE and MAGNITUDE-2 INDs", cite: [C49, C50]}
+        - {date: 2026-03-02, kind: CLINICAL_HOLD_LIFTED, what: "FDA removes clinical hold on MAGNITUDE (MAGNITUDE-2 hold resolved in January 2026)", cite: C50}
+        - {date: 2025-06-17, kind: ACQUISITION, what: "Lilly to acquire Verve Therapeutics", cite: [C51, C72]}
+
+  # ===== Theme 5: engineered cell therapy and immune reset =====
+  - id: frontier:immune-reset-cell-therapy
+    label: Engineered cell therapy and immune reset
+    level: 1
+    parent: null
+    granularity: THEME
+    definition: >-
+      Engineered immune cells (CAR-T and successors) made cheaper, safer and broader: generated inside the body,
+      used to reset autoimmunity, and extended beyond blood cancers.
+    scope:
+      includes: [in vivo CAR generation, CAR-T in autoimmune disease]
+      excludes: [approved autologous CAR-T label expansions within hematologic oncology]
+    milestoneKinds: [ms:first-in-human, ms:pivotal-readout, ms:regulatory-filing-accepted, ms:first-approval, ms:strategic-transaction, ms:safety-signal]
+    targetKeys: [target:immune-function]
+    synonyms: [cell therapy 2.0, immune reset, CAR-T beyond cancer]
+
+  - id: frontier:in-vivo-car-t
+    label: In vivo CAR-T
+    level: 2
+    parent: frontier:immune-reset-cell-therapy
+    granularity: MODALITY
+    definition: >-
+      Generating CAR-expressing T cells inside the patient with targeted LNP-mRNA or viral vectors, removing
+      apheresis, manufacturing and lymphodepletion, proven in human trials.
+    scope:
+      includes: [tLNP-mRNA CAR, lentiviral in vivo CAR, oncology and autoimmune indications]
+      excludes: [ex vivo autologous or allogeneic CAR-T]
+    milestoneKinds: [ms:first-in-human, ms:randomized-readout, ms:strategic-transaction, ms:safety-signal]
+    targetKeys: [target:immune-function]
+    synonyms: [in vivo CAR T, in situ CAR-T, tLNP CAR-T, off-the-shelf in vivo cell therapy]
+    examples:
+      organizations: [{name: Capstan Therapeutics, cite: [C54, C56]}, {name: AbbVie, cite: [C54, C55]}, {name: EsoBiotec, cite: C57}, {name: AstraZeneca, cite: C57}]
+      compounds: [{name: CPTX2309, cite: [C54, C56]}]
+      trials: [{nct: NCT06917742, cite: C56}]
+      events:
+        - {date: 2025-06-30, kind: ACQUISITION, what: "AbbVie definitive agreement to acquire Capstan Therapeutics (CPTX2309)", cite: C54}
+        - {date: 2025-08-19, kind: ACQUISITION, what: "AbbVie completes acquisition of Capstan (closing; same deal, later clock: effectiveFrom)", cite: C55}
+        - {date: null, kind: ACQUISITION, what: "AstraZeneca to acquire EsoBiotec (date to capture from primary)", cite: C57}
+
+  - id: frontier:car-t-for-autoimmune-disease
+    label: CAR-T for autoimmune disease
+    level: 2
+    parent: frontier:immune-reset-cell-therapy
+    granularity: DISEASE_GOAL
+    definition: >-
+      Drug-free remission of refractory autoimmune disease (lupus, myositis, stiff person syndrome, myasthenia
+      gravis, systemic sclerosis) after one course of B-cell-depleting CAR-T, shown in registrational trials and
+      approved.
+    scope:
+      includes: [CD19 / BCMA autologous CAR-T in autoimmunity, registrational programs]
+      excludes: [bispecific antibodies (unless the sponsor positions them as immune reset alternatives; note in event)]
+    milestoneKinds: [ms:first-in-human, ms:pivotal-readout, ms:regulatory-filing-accepted, ms:first-approval, ms:setback]
+    targetKeys: [target:immune-function]
+    synonyms: [CAR-T lupus, immune reset therapy, autoimmune CAR-T, miv-cel, rese-cel]
+    related: [frontier:in-vivo-car-t]
+    examples:
+      organizations: [{name: Kyverna Therapeutics, cite: [C60, C61, C62]}, {name: Cabaletta Bio, cite: C59}, {name: "Universitätsklinikum Erlangen (case series)", cite: C58}]
+      compounds: [{name: "mivocabtagene autoleucel (miv-cel, KYV-101)", cite: [C60, C61]}, {name: "CABA-201 (rese-cel)", cite: C59}]
+      trials: [{nct: NCT06588491, cite: C60}, {nct: NCT06154252, cite: C59}]
+      papers: [{name: "CD19 CAR T-Cell Therapy in Autoimmune Disease - A Case Series with Follow-up", pmid: "38381673", cite: C58}]
+      events:
+        - {date: null, kind: READOUT, what: "Kyverna positive topline KYSA-8 registrational trial in SPS (date to capture)", cite: C61}
+        - {date: null, kind: REGULATORY_SUBMISSION, what: "Kyverna initiates rolling SPS BLA (Q1 2026 report)", cite: C62}
+
+  # ===== Theme 6: neurodegeneration =====
+  - id: frontier:neurodegeneration-modification
+    label: Disease modification in neurodegeneration
+    level: 1
+    parent: null
+    granularity: THEME
+    definition: >-
+      Slowing, stopping or preventing neurodegenerative disease (Alzheimer's, Parkinson's, ALS) rather than treating
+      symptoms, with blood-based diagnosis that makes early treatment practical.
+    scope:
+      includes: [anti-amyloid and anti-tau therapies, preclinical-stage prevention trials, blood biomarker diagnostics that gate treatment, repurposed metabolic drugs]
+      excludes: [symptomatic cognitive enhancers]
+    milestoneKinds: [ms:pivotal-readout, ms:first-approval, ms:label-expansion, ms:diagnostic-clearance, ms:setback]
+    targetKeys: [target:brain-fitness]
+    synonyms: [disease-modifying therapies, neuroprotection]
+
+  - id: frontier:alzheimers-disease-modification
+    label: Alzheimer's disease modification and prevention
+    level: 2
+    parent: frontier:neurodegeneration-modification
+    granularity: DISEASE_GOAL
+    definition: >-
+      Therapies that slow clinical progression of Alzheimer's disease in randomized trials, move to earlier
+      (preclinical) stages, and are made deployable by blood-based amyloid/tau tests.
+    scope:
+      includes: [anti-amyloid antibodies, subcutaneous and maintenance dosing, blood pTau217 tests, non-amyloid mechanisms including GLP-1 trials]
+      excludes: [symptomatic cholinesterase inhibitors]
+      anchors: {conditions: [Alzheimer's disease]}
+    milestoneKinds: [ms:pivotal-readout, ms:first-approval, ms:label-expansion, ms:diagnostic-clearance, ms:safety-signal, ms:setback]
+    targetKeys: [target:brain-fitness]
+    synonyms: [Alzheimer's cure, anti-amyloid therapy, lecanemab, donanemab, Alzheimer's blood test]
+    related: [frontier:glp1-beyond-obesity]
+    examples:
+      organizations: [{name: Eisai, cite: [C63, C64]}, {name: Eli Lilly and Company, cite: C65}, {name: Fujirebio Diagnostics, cite: C66}, {name: Novo Nordisk, cite: [C30, C31]}]
+      compounds: [{name: lecanemab, cite: [C63, C64]}, {name: donanemab, cite: C65}, {name: semaglutide (evoke), cite: [C30, C31, C32]}]
+      trials: [{nct: NCT03887455, cite: C63}, {nct: NCT04437511, cite: C65}, {nct: NCT04777396, cite: C31}, {nct: NCT04777409, cite: C32}]
+      devices: [{name: "Lumipulse G pTau217/B-Amyloid 1-42 Plasma Ratio (510(k) K242706)", cite: C66}]
+      events:
+        - {date: 2023-07-06, kind: APPROVAL, what: "FDA converts Leqembi to traditional approval", cite: C64}
+        - {date: 2025-05-16, kind: APPROVAL, what: "FDA 510(k) clearance letter for Lumipulse plasma pTau217/AB42 ratio (device clearance; approvalPathway US_DEVICE_510K, synthesis R-66)", cite: C66}
+        - {date: 2025-11-24, kind: READOUT, what: "evoke/evoke+ did not meet primary endpoint (same event attaches to frontier:glp1-beyond-obesity)", cite: C30}
+
+  # ===== Theme 7: organ replacement =====
+  - id: frontier:organ-replacement
+    label: Organ and tissue replacement
+    level: 1
+    parent: null
+    granularity: THEME
+    definition: >-
+      Ending the organ shortage and replacing failing organs and tissues: xenotransplantation, bioengineered and
+      lab-grown organs, extracorporeal organ support from engineered animal organs.
+    scope:
+      includes: [gene-edited pig organs, bioengineered organs, ex vivo organ perfusion support]
+      excludes: [conventional allotransplant logistics]
+    milestoneKinds: [ms:regulatory-path-accepted, ms:first-in-human, ms:pivotal-readout, ms:first-approval, ms:safety-signal]
+    targetKeys: []
+    synonyms: [organ shortage, replacement organs]
+
+  - id: frontier:xenotransplantation
+    label: Xenotransplantation
+    level: 2
+    parent: frontier:organ-replacement
+    granularity: MODALITY
+    definition: >-
+      Transplanting gene-edited pig organs (kidney, heart, liver support) into humans in regulated clinical trials
+      with durable function and acceptable zoonotic risk, leading to approval.
+    scope:
+      includes: [kidney and heart xenografts, extracorporeal pig-liver perfusion, compassionate-use cases as events]
+      excludes: [pig-derived tissue products already approved (valves)]
+    milestoneKinds: [ms:regulatory-path-accepted, ms:first-in-human, ms:pivotal-readout, ms:first-approval, ms:safety-signal]
+    targetKeys: []
+    synonyms: [pig kidney transplant, xenokidney, UKidney, gene-edited pig organs, xenograft]
+    examples:
+      organizations: [{name: United Therapeutics, cite: [C67, C68]}, {name: NYU Langone Health, cite: C67}, {name: eGenesis, cite: C69}]
+      compounds: [{name: "UKidney (10-gene-edit pig kidney)", cite: C67}]
+      trials: [{nct: NCT07429838, cite: C69}]     # EXPAND NCT id not returned by the sponsor search; capture from C68 in the fixture stage
+      papers: [{name: "The First Clinical Renal Xenotransplantation Study (EXPAND)", pmcid: PMC12728669, cite: C68}]
+      events:
+        - {date: 2025-11-03, kind: TRIAL_START, what: "first transplant in the EXPAND trial of UKidney, performed at NYU Langone Health", cite: C67}
+
+# ---------------------------------------------------------------------------------------------
+# 4. Milestone kinds: a LENS over events (event kind + qualifier + computed firstness), never a node type.
+#    Per-frontier `milestoneKinds` lists which rungs mark progress on that frontier.
+#    `firstness` (first-in-human for the frontier, first approval in the frontier) is COMPUTED at query time
+#    (no earlier ON_FRONTIER event of the same milestone kind), never stored as a property.
+# ---------------------------------------------------------------------------------------------
+milestoneKinds:
+  - {id: ms:regulatory-path-accepted, eventKinds: [REGULATORY_ACCEPTANCE, REGULATORY_DESIGNATION], qualifier: "an IND/CTA clearance, a veterinary technical-section acceptance, or a regulator agreeing an endpoint/indication", ladderRank: 1}
+  - {id: ms:first-in-human, eventKinds: [TRIAL_START], qualifier: "first participant dosed with an intervention of the frontier's modality/mechanism (firstness computed)", ladderRank: 2}
+  - {id: ms:expedited-designation, eventKinds: [REGULATORY_DESIGNATION], qualifier: "Breakthrough Therapy, RMAT, PRIME, Fast Track, priority voucher, Orphan", ladderRank: 3}
+  - {id: ms:randomized-readout, eventKinds: [READOUT], qualifier: "randomized controlled trial readout, any phase (design from D3 Study)", ladderRank: 4}
+  - {id: ms:pivotal-readout, eventKinds: [READOUT], qualifier: "registrational / Phase 3 readout (D3 Study phase or the sponsor's 'registrational' statement)", ladderRank: 5}
+  - {id: ms:regulatory-filing-accepted, eventKinds: [REGULATORY_SUBMISSION, REGULATORY_ACCEPTANCE], qualifier: "NDA/BLA/MAA submitted or accepted for review", ladderRank: 6}
+  - {id: ms:first-approval, eventKinds: [APPROVAL], qualifier: "first marketing authorization in any major jurisdiction for an intervention on the frontier (firstness computed; jurisdiction required)", ladderRank: 7}
+  - {id: ms:diagnostic-clearance, eventKinds: [APPROVAL], qualifier: "device clearance/approval of a test that gates treatment on the frontier (approvalPathway US_DEVICE_510K, US_DEVICE_DE_NOVO, US_DEVICE_PMA; synthesis R-66)", ladderRank: 7}
+  - {id: ms:launch, eventKinds: [LAUNCH], qualifier: "commercial availability after approval", ladderRank: 8}
+  - {id: ms:label-expansion, eventKinds: [APPROVAL], qualifier: "new indication for an already-approved intervention (supplemental approval)", ladderRank: 8}
+  - {id: ms:major-financing, eventKinds: [FINANCING, AWARD], qualifier: "a financing or prize the source quantifies (FINANCING_AMOUNT on a FINANCING Event; an AWARD Event's amount is the D7 Award it is about); size thresholds are assessments, not properties", ladderRank: null}
+  - {id: ms:strategic-transaction, eventKinds: [ACQUISITION, PARTNERSHIP], qualifier: "a large company acquiring or partnering into the frontier", ladderRank: null}
+  - {id: ms:policy-change, eventKinds: [POLICY_CHANGE, REGULATORY_STATUS_CHANGE], qualifier: "a regulator or legislature changes the rules that govern the frontier", ladderRank: null}
+  - {id: ms:regulatory-status-change, eventKinds: [REGULATORY_STATUS_CHANGE, POLICY_CHANGE], qualifier: "lawful-status change of a substance or product class (e.g. supplement eligibility)", ladderRank: null}
+  - {id: ms:safety-signal, eventKinds: [SAFETY_SIGNAL, RECALL, MARKET_WITHDRAWAL], qualifier: "a reported serious adverse event, death, boxed warning, recall or withdrawal on the frontier", ladderRank: null, polarity: harm-channel}
+  - {id: ms:clinical-hold, eventKinds: [CLINICAL_HOLD, CLINICAL_HOLD_LIFTED], qualifier: "regulator hold and its resolution", ladderRank: null, polarity: harm-channel}
+  - {id: ms:setback, eventKinds: [READOUT, REJECTION, PROGRAM_DISCONTINUATION, RETRACTION, CLINICAL_HOLD, ENFORCEMENT_ACTION], qualifier: "READOUT only when the source states the primary endpoint was not met; otherwise the kind itself is the setback", ladderRank: null, polarity: harm-channel}
+  - {id: ms:guidance-slip, eventKinds: [], qualifier: "COMPUTED lens, not an event kind (0.2.0): a PLANNED event whose latest EVENT_SCHEDULED window starts after the first stated window ends, or whose window passed with no EVENT_OCCURRED (Q-D13-11). Guidance windows are half-open intervals with MONTH precision ('first half of 2023' = [2023-01-01, 2023-07-01)), so no HALF_YEAR precision is needed", ladderRank: null, polarity: harm-channel, computed: true}
+ladderNote: >-
+  ladderRank orders the generic path regulatory-path -> first-in-human -> designation -> randomized -> pivotal -> filing ->
+  approval -> launch/expansion. "Furthest rung reached on F as of T" is QF-02 (computed). Calling a milestone
+  a "breakthrough" is section 6, never a rung.
+
+# ---------------------------------------------------------------------------------------------
+# 5. Event kinds: ONE controlled enum on Event (`eventKind`), replacing the pinned pair
+#    EventCategory (26 values) + eventType (free controlled string). `family` is derived from the kind
+#    (a lookup, not a second stored field). Mapping to pinned values is given for migration.
+#    clocks: which of the three Event clocks (CQ-TM-03) normally apply — startedAt (when it happened),
+#    announcedAt (first public announcement by a party), effectiveFrom (legal/contractual effect).
+# ---------------------------------------------------------------------------------------------
+eventKinds:
+  - {value: TRIAL_START, family: CLINICAL, definition: "first participant dosed or trial opened to enrollment, as stated by sponsor or registry", typicalSources: [press release, ClinicalTrials.gov status history], clocks: [startedAt, announcedAt], pinned: {eventCategory: CLINICAL_EVENT, eventType: OTHER}}
+  - {value: READOUT, family: CLINICAL, definition: "first public disclosure of a trial's results (topline, interim, primary analysis). Qualifiers stated by the source: readoutStage (TOPLINE | INTERIM | PRIMARY | FINAL | LONG_TERM_FOLLOW_UP), primaryEndpointStatement (MET | NOT_MET | MIXED | NOT_STATED) — capture of the sponsor's statement, never BellLabs' judgment", typicalSources: [press release, 8-K Item 7.01/8.01, conference abstract], clocks: [startedAt, announcedAt], pinned: {eventCategory: DATA_READOUT_EVENT, eventType: TOPLINE_READOUT}}
+  - {value: DATA_PRESENTATION, family: CLINICAL, definition: "presentation of fuller data at a named conference session (predicate PRESENTED_AT_CONFERENCE → D9 Channel with channelKind EVENT_SERIES; edition and session are Assertion qualifiers; no Conference node in D9 or D13)", typicalSources: [conference abstract, slide deck, press release], clocks: [startedAt], pinned: {eventCategory: CONFERENCE_EVENT, eventType: PRESENTATION}}
+  # synthesis R-44: event kind PUBLICATION removed (a publication is a D3 Publication; see retiredEventKinds)
+  - {value: RETRACTION, family: SCIENTIFIC_RECORD, definition: "A curated frontier milestone only (synthesis R-44): EVENT_ABOUT → D3 Publication; its clock cites the retraction notice's locator and no second date Assertion is written; the revision itself is D3 REVISES (or K HAS_REVISION_STATUS without an identified notice; SourceRevisionKind is the one revision vocabulary); authors and publisher are reached through the Publication. Was: retraction, expression of concern or major correction of a publication, the Event as its frontier-milestone view citing the same notice locators", typicalSources: [Crossref update metadata, Retraction Watch, publisher notice], clocks: [startedAt], pinned: {eventCategory: RESEARCH_EVENT, eventType: OTHER}}
+  - {value: REGULATORY_SUBMISSION, family: REGULATORY, definition: "IND/CTA/NDA/BLA/MAA or veterinary technical section submitted (incl. rolling submission start)", typicalSources: [press release, 8-K], clocks: [startedAt, announcedAt], pinned: {eventCategory: REGULATORY_EVENT, eventType: FILING}, requires: [jurisdiction]}
+  - {value: REGULATORY_ACCEPTANCE, family: REGULATORY, definition: "regulator accepts a filing for review, clears an IND/CTA, or accepts a technical section (e.g. FDA CVM RXE/TAS). A PDUFA goal date announced with the acceptance is an EVENT_SCHEDULED assertion on a separate PLANNED APPROVAL event (window [D, D+1 day), DAY), not a property of the acceptance (0.2.0, FC3)", typicalSources: [regulator letter, press release], clocks: [startedAt, announcedAt], pinned: {eventCategory: REGULATORY_EVENT, eventType: OTHER}, requires: [jurisdiction]}
+  - {value: REGULATORY_DESIGNATION, family: REGULATORY, definition: "expedited or special designation granted: Breakthrough Therapy (C01), Fast Track, RMAT, PRIME, Orphan, priority review voucher. Qualifier designationType, typed by D8 RegulatoryPathway (synthesis R-66: US_BREAKTHROUGH_THERAPY, US_FAST_TRACK, US_RMAT, US_PRIORITY_REVIEW, US_PRIORITY_REVIEW_VOUCHER, EU_PRIME, JP_SAKIGAKE, US_ORPHAN_DESIGNATION, EU_ORPHAN_DESIGNATION)", typicalSources: [press release, regulator databases where public], clocks: [startedAt, announcedAt], pinned: {eventCategory: REGULATORY_EVENT, eventType: OTHER}, requires: [jurisdiction, designationType]}
+  - {value: ADVISORY_COMMITTEE, family: REGULATORY, definition: "advisory committee meeting and vote", typicalSources: [FDA advisory calendar, briefing documents, minutes], clocks: [startedAt], pinned: {eventCategory: REGULATORY_EVENT, eventType: OTHER}, requires: [jurisdiction]}
+  - {value: APPROVAL, family: REGULATORY, definition: "marketing authorization or device clearance. Qualifier approvalPathway, typed by D8 RegulatoryPathway (synthesis R-66; e.g. US_DRUG_NDA, US_BLA, US_ACCELERATED_APPROVAL, EU_CONDITIONAL_MA, US_DEVICE_510K, US_DEVICE_DE_NOVO, US_DEVICE_PMA, US_EUA; mapping from the retired ApprovalPathway values in synthesis.regulatoryPathwayMapping). The D8 RegulatoryRecord documents it (typed DOCUMENTED_BY_RECORD; regulator, holder and record date are the record's, 0.2.1)", typicalSources: [approval letter, Drugs@FDA/openFDA, EMA EPAR, press release], clocks: [startedAt, announcedAt, effectiveFrom], pinned: {eventCategory: REGULATORY_EVENT, eventType: "APPROVAL | CONDITIONAL_APPROVAL"}, requires: [jurisdiction]}
+  - {value: REJECTION, family: REGULATORY, definition: "complete response letter, refusal to file, negative opinion, non-approval", typicalSources: [press release, 8-K, EMA CHMP minutes], clocks: [startedAt, announcedAt], pinned: {eventCategory: REGULATORY_EVENT, eventType: OTHER}, requires: [jurisdiction], harmChannel: true}
+  - {value: CLINICAL_HOLD, family: REGULATORY, definition: "an order issued by FDA to the sponsor to delay a proposed clinical investigation or to suspend an ongoing investigation (21 CFR 312.42, C02); equivalent orders by other regulators", typicalSources: [press release, 8-K], clocks: [startedAt, announcedAt], pinned: {eventCategory: REGULATORY_EVENT, eventType: OTHER}, requires: [jurisdiction], harmChannel: true}
+  - {value: CLINICAL_HOLD_LIFTED, family: REGULATORY, definition: "regulator removes a clinical hold (full or partial)", typicalSources: [press release, 8-K], clocks: [startedAt, announcedAt], pinned: {eventCategory: REGULATORY_EVENT, eventType: OTHER}, requires: [jurisdiction]}
+  - {value: REGULATORY_STATUS_CHANGE, family: REGULATORY, definition: "change of lawful status of a substance/product class (scheduling, supplement eligibility, GRAS) — the status record is D8", typicalSources: [regulator letters, Federal Register], clocks: [startedAt, effectiveFrom], pinned: {eventCategory: REGULATORY_EVENT, eventType: OTHER}, requires: [jurisdiction]}
+  - {value: ENFORCEMENT_ACTION, family: REGULATORY, definition: "warning letter, import alert, injunction, seizure against a party (record is D8)", typicalSources: [FDA warning letters, DOJ releases], clocks: [startedAt, announcedAt], pinned: {eventCategory: LEGAL_EVENT, eventType: OTHER}, requires: [jurisdiction], harmChannel: true}
+  - {value: POLICY_CHANGE, family: POLICY, definition: "new guidance, rule, pathway or program from a regulator, legislature or payer that changes how a frontier is developed or reimbursed", typicalSources: [Federal Register, regulator press release], clocks: [startedAt, effectiveFrom], pinned: {eventCategory: POLICY_EVENT, eventType: OTHER}, requires: [jurisdiction]}
+  - {value: LAUNCH, family: COMMERCIAL, definition: "commercial availability of an approved product in a jurisdiction. Often only PLANNED in the approval release ('expected to be available ... in April', FC3): an EVENT_SCHEDULED window until an occurrence is captured", typicalSources: [press release, earnings call], clocks: [startedAt, announcedAt], pinned: {eventCategory: PRODUCT_EVENT, eventType: LAUNCH}}
+  - {value: RECALL, family: SAFETY, definition: "product recall (class stated by the regulator); record is D8", typicalSources: [FDA enforcement reports, openFDA recall API], clocks: [startedAt, announcedAt], pinned: {eventCategory: RECALL_EVENT, eventType: "RECALL_INITIATED | RECALL_CLASSIFIED"}, harmChannel: true}
+  - {value: MARKET_WITHDRAWAL, family: SAFETY, definition: "product withdrawn from market (safety, efficacy or commercial reason stated)", typicalSources: [regulator notice, press release], clocks: [startedAt, effectiveFrom], pinned: {eventCategory: PRODUCT_EVENT, eventType: OTHER}, harmChannel: true}
+  - {value: SAFETY_SIGNAL, family: SAFETY, definition: "publicly reported serious adverse event, death, dosing pause, boxed warning or safety communication. The event is the disclosure; any judgment of causality or frequency is a D5/D10 assessment", typicalSources: [press release, 8-K, FDA Drug Safety Communication, FAERS (aggregate, never an event by itself)], clocks: [startedAt, announcedAt], pinned: {eventCategory: SAFETY_EVENT, eventType: OTHER}, harmChannel: true}
+  - {value: PROGRAM_DISCONTINUATION, family: CORPORATE, definition: "sponsor stops a program, deprioritizes an indication, terminates a trial, or winds down. Qualifier discontinuationScope TRIAL | PROGRAM | COMPANY (0.2.0): workforce reductions, dissolution and deregistration are COMPANY scope (FC7), so the dropped pinned CORPORATE/LEADERSHIP categories are not needed", typicalSources: [press release, 10-Q/10-K, ClinicalTrials.gov status TERMINATED/WITHDRAWN], clocks: [startedAt, announcedAt], pinned: {eventCategory: CORPORATE_EVENT, eventType: CANCELLATION}, harmChannel: true}
+  - {value: FINANCING, family: FINANCIAL, definition: "equity, debt, royalty or grant financing; IPO; follow-on; at-the-market sales. Amounts are FINANCING_AMOUNT Assertions (D13 predicate, unitCode iso4217:<CODE>, qualifiers amountKind and amountBasis), not Event properties; the financed party is INVOLVES ISSUER or BORROWER", typicalSources: [press release, 8-K Item 1.01/3.02, Form D, S-1/424B], clocks: [startedAt, announcedAt, effectiveFrom], pinned: {eventCategory: FINANCING_EVENT, eventType: OTHER}}
+  - {value: ACQUISITION, family: FINANCIAL, definition: "acquisition or merger: agreement (announcedAt/startedAt) and closing (effectiveFrom) are ONE event with two clocks, not two events", typicalSources: [press release, 8-K Item 1.01/2.01, SC TO], clocks: [startedAt, announcedAt, effectiveFrom], pinned: {eventCategory: MNA_EVENT, eventType: OTHER}}
+  - {value: PARTNERSHIP, family: FINANCIAL, definition: "license, collaboration, co-development or option deal; upfront and milestones are Assertions", typicalSources: [press release, 8-K Item 1.01], clocks: [startedAt, announcedAt, effectiveFrom], pinned: {eventCategory: "PARTNERSHIP_EVENT | LICENSING_EVENT", eventType: OTHER}}
+  - {value: AWARD, family: FINANCIAL, definition: "prize or competition milestone with money attached (e.g. XPRIZE milestone awards), as a frontier-milestone occurrence only: the Event points at the D7 Award (EVENT_ABOUT), whose funder (AWARDED_BY), recipients (AWARDED_TO) and amount are D7's; no AWARD-specific event role or amount", typicalSources: [organizer release], clocks: [startedAt, announcedAt], pinned: {eventCategory: OTHER, eventType: OTHER}}
+  - {value: LEGAL_ACTION, family: CORPORATE, definition: "lawsuit, settlement, patent challenge outcome (patent records are D8)", typicalSources: [court dockets, 8-K Item 8.01, PTAB], clocks: [startedAt, announcedAt], pinned: {eventCategory: "LEGAL_EVENT | LITIGATION_EVENT", eventType: OTHER}}
+  - {value: OTHER, family: OTHER, definition: "anything else; an OTHER value needs a description and is reviewed for a vocabulary bump", typicalSources: [], clocks: [startedAt], pinned: {eventCategory: OTHER, eventType: OTHER}}
+retiredEventKinds:
+  - {value: PUBLICATION, ruling: R-44, reason: "a peer-reviewed publication is a D3 Publication (on a kernel Source), never an Event; milestone timelines read D3 Publication dates; RETRACTION stays as a curated milestone"}
+droppedPinnedCategories:
+  note: "pinned EventCategory values with no investor/researcher question in D13: HIRING_EVENT, LEADERSHIP_EVENT, BOARD_EVENT, FACILITY_EVENT, MANUFACTURING_EVENT, MARKET_EVENT (share-price moves are D7 market data, not events), MEDIA_EVENT (D9), COMMERCIAL_EVENT (folded into LAUNCH), UNKNOWN (use OTHER). Promotable by a vocabulary bump with a question id."
+eventFamilies: [CLINICAL, REGULATORY, SAFETY, SCIENTIFIC_RECORD, COMMERCIAL, FINANCIAL, CORPORATE, POLICY, OTHER]
+
+# ---------------------------------------------------------------------------------------------
+# 6. Breakthrough criteria: "breakthrough" is never a property or an event kind. It is either
+#    (a) a criterion an event satisfies by definition (computed), or (b) a D10 assessment that cites the criterion.
+# ---------------------------------------------------------------------------------------------
+breakthroughCriteria:
+  - {id: BC-DESIGNATION, rule: "event kind REGULATORY_DESIGNATION with designationType US_BREAKTHROUGH_THERAPY | US_RMAT | EU_PRIME | JP_SAKIGAKE (D8 RegulatoryPathway values, synthesis R-66; regulator's own definition, C01). Who can satisfy it: the sponsor's release for the grant date (FDA does not publish grants); the FDA Breakthrough Therapy approvals list (C76) corroborates only designated products that were later approved, without grant dates (0.2.0)", computed: true}
+  - {id: BC-FIRST-IN-HUMAN, rule: "first TRIAL_START on a level-2 frontier (no earlier TRIAL_START ON_FRONTIER as of T)", computed: true}
+  - {id: BC-FIRST-APPROVAL, rule: "first APPROVAL on a level-2 frontier in a jurisdiction (approvalPathway not US_DEVICE_510K unless the frontier is diagnostic; synthesis R-66)", computed: true}
+  - {id: BC-FIRST-POSITIVE-PIVOTAL, rule: "first READOUT on the frontier with readoutStage in (TOPLINE, PRIMARY) on a registrational trial and primaryEndpointStatement = MET as stated by the sponsor", computed: true}
+  - {id: BC-ANALYST, rule: "a kernel Assessment (assessmentKind BREAKTHROUGH_JUDGMENT, conclusionCode MEETS_CRITERION) by a named asserter citing located evidence and a method version; press language ('unprecedented', 'breakthrough') is a claim occurrence (kernel Assertion, assertionKind CLAIM; container D9 MediaWork), never this", computed: false}
+
+# ---------------------------------------------------------------------------------------------
+# 7. Event relation kinds (event -> event). Two are asserted typed relationships; one is computed.
+#    None of them is ever inferred from temporal order alone (forbidden implication carried from pinned W18:
+#    [FOLLOWS -> LEADS_TO]).
+# ---------------------------------------------------------------------------------------------
+eventRelations:
+  - kind: LEADS_TO
+    direction: "earlier (enabling) event -> later (enabled) event"
+    replaces: "pinned CAUSED_BY (effect -> cause), direction flipped so chains read forward in time"
+    semantics: >-
+      A source states that the earlier event was a basis, precondition or input for the later one: a readout is the
+      basis of a filing; a filing leads to an approval; a designation was granted on the basis of phase 1 data; a
+      financing was raised on the strength of a result. Process/precondition, not agency.
+    examples:
+      - "READOUT RASolute 302 (2026-04-13) LEADS_TO REGULATORY_ACCEPTANCE NDA (2026-07-22) LEADS_TO APPROVAL (2026-08-26): the FDA approval page states efficacy was evaluated in RASolute 302 (C41)"
+      - "READOUT MAESTRO-NASH topline (2022-12-19) LEADS_TO FINANCING (loan tranche eligibility): the 8-K states that 'as a result of the Company's announcement of Phase 3 MAESTRO-NASH clinical trial topline results' the lender confirmed the clinical milestone (C77; fixture madrigal-financing-after-readout)"
+    whoAsserts: "the party to the later event (sponsor, regulator, acquirer) or a named reporting source; a BellLabs agent may assert it only when it can point to such a statement"
+    evidenceRequired:
+      - "one kernel Assertion (predicate LEADS_TO; subject = earlier event, object = later event; one asserter) with a SourceLocator whose exact quote states the link"
+      - "speechAct STATES (corrected in 0.2.0: basisKind is not the gate; a party's statement about its own act or contract has no fitting BasisKind, see 11-open-questions.md); a SPECULATES / HYPOTHESIS link stays an Assertion and is never projected to the typed edge"
+      - "temporal wording alone ('following', 'after') is adjudicated CONTEXT_ONLY by the SUPPORT adjudication and never projects; the pair is then a computed FOLLOWS (FC2: 'as a result of the Company's announcement' projects, 'secured following the positive topline readout' does not)"
+      - "service check: object.startedAt >= subject.startedAt (or announcedAt when startedAt is unknown); a violation rejects the projection, not the assertion"
+      - "SUPPORT Adjudication from verification.v1 before the edge counts in investor answers"
+    edge: {class: asserted, pairs: ["Event -> Event"], cardinality: many-to-many, nestedOperations: [CONNECT], aggregate: false, temporal: recorded-only}
+  - kind: RESPONDS_TO
+    direction: "responding event -> stimulus event"
+    semantics: >-
+      A deliberate action by an agent (regulator, sponsor, investor, payer) that a source states was taken in reaction
+      to an earlier event: a clinical hold responds to a safety signal; a dosing pause responds to an SAE; a program
+      discontinuation responds to a failed readout; a retraction responds to an investigation. Carries agency.
+    examples:
+      - "PROGRAM_DISCONTINUATION STRIDES (2024-12-06) RESPONDS_TO SAFETY_SIGNAL (liver transaminitis): the sponsor-entered registry record states 'Dosing of both study drugs has been discontinued due to observation of liver transaminitis without clinically significant symptoms in some subjects receiving azelaprag' (ClinicalTrials.gov NCT06515418 whyStopped; fixture bioage-strides-discontinuation a12, locator l07, SUPPORT DIRECTLY_SUPPORTED)"
+    counterExamples:   # 0.2.1: temporal wording only; adjudicated CONTEXT_ONLY, never projects
+      - "BioAge's release lede: the decision to discontinue was made 'after liver transaminitis ... was observed' (C78; fixture bioage a14, CONTEXT_ONLY; the registry span above carries the basis)"
+      - "Intellia: the clinical holds 'were imposed by the FDA on October 29, 2025, following the observation of Grade 4 liver transaminases' (C50, re-read 2026-10-08): 'following' alone; no 'due to' / 'as a result of' span from Intellia or the FDA has been captured, so CLINICAL_HOLD MAGNITUDE → SAFETY_SIGNAL stays a computed FOLLOWS"
+    whoAsserts: "the responding party or a source quoting it; regulators' letters and sponsor releases are the usual locators"
+    evidenceRequired: "same as LEADS_TO (one asserter, locator naming the stimulus, STATES speech act, time-order check, SUPPORT adjudication)"
+    edge: {class: asserted, pairs: ["Event -> Event"], cardinality: many-to-many, nestedOperations: [CONNECT], aggregate: false, temporal: recorded-only}
+  - kind: FOLLOWS
+    direction: "later event -> earlier event within one scope (same frontier, same subject, or same organization)"
+    replaces: "pinned FOLLOWED_BY (derived)"
+    semantics: "pure temporal adjacency by the events' valid-time clocks; NEVER implies LEADS_TO or RESPONDS_TO; 'a financing followed a result' in the temporal sense is FOLLOWS, in the stated-basis sense is LEADS_TO"
+    whoAsserts: nobody (computed)
+    examples:
+      - "Madrigal's 2024-04-02 offering closing (C79) FOLLOWS the 2024-03-14 approval: no source states a basis, so it is temporal only"
+    evidenceRequired: "the two events' time assertions (timeAssertionUid); method valid-time-order-v1"
+    edge: {class: computed, stored: false, note: "computed at query time by ORDER BY startedAt within the scope (QF-01); a materialized derived FOLLOWS projection is allowed only if a GDS path or latency question needs it, with method version and read-only directives"}
+notEventRelations:
+    - "CONTRADICTS: a retraction or failed readout contradicting earlier claims is kernel/D10 (Claim -> evidence Adjudication / assessment), never an event-to-event or event-to-claim edge (directive 3.8)"
+    - "SUPERSEDES between events: corrections are new Assertions on the same Event (pinned rule), not a new event"
+    - "agreement vs closing of one deal: one ACQUISITION event with two clocks, never two events linked by LEADS_TO"
+
+# ---------------------------------------------------------------------------------------------
+# 8. Seam rule: how events, studies, organizations, compounds and claims attach to a frontier
+# ---------------------------------------------------------------------------------------------
+seamRule:
+  rule: >-
+    Only Events (D13) and Studies (D3) attach to a Frontier directly, through one asserted classification edge
+    ON_FRONTIER (Event|Study -> Frontier). Organizations, people, compounds and products never point at a frontier:
+    they reach it through the events they are INVOLVED in / the subject of (predicate EVENT_ABOUT) and the studies they sponsor or test, so "who is
+    active on F" is computed (optionally a read-only ACTIVE_ON_FRONTIER projection with a method version). Claims
+    reach a frontier through the kernel subject/object pattern (the Frontier node is an admissible subject/object)
+    and through the events and studies they are about. Frontier-to-target relevance is the property targetKeys;
+    hierarchy is parentKey. Polarity (advance or setback) is never on the edge; it is the event kind or a D10 assessment.
+  edges:
+    - name: ON_FRONTIER
+      from: [D13.Event, D3.Study]
+      to: D13.Frontier
+      class: asserted (classification)
+      asserter: "a BellLabs curation agent or curator (Agent), with the frontier vocab version; the Assertion cites the event's or study's own supporting locator and states which frontier definition clause matched"
+      evidenceRequired: "the classified entity's own located evidence + qualifier frontierVocabVersion=<semver> on the Assertion, basisKind CURATOR_CLASSIFICATION (synthesis R-25); re-classification on a vocab bump is a new Assertion that supersedes, never an edit"
+      cardinality: "an event or study attaches to 1-2 level-2 frontiers (rarely 3); attach to a level-1 theme only when no child fits"
+      edgeProperties: kernel AssertedRecordedProperties (relationshipUid, assertionUid, recordedFrom, recordedTo, lastWriterRunId; recorded time only, kernel M10, check stage 2026-10-08); the vocab version is on the Assertion (qualifier), because kernel edge-property types are never extended for one field (0.2.0)
+      nestedOperations: [CONNECT]
+      aggregate: false
+      temporal: recorded-only
+      pairs: 2
+    - name: ACTIVE_ON_FRONTIER (optional, deferred)
+      from: [D7.Organization, D1.ChemicalSubstance]
+      to: D13.Frontier
+      class: derived
+      method: "frontier-activity-v1: participant/subject of an ON_FRONTIER event or sponsor/intervention of an ON_FRONTIER study within a window"
+      nestedOperations: []
+      settable: "onCreate false, onUpdate false"
+      status: "not admitted in Wave 0; admit only if QF-03 latency or a GDS community question requires it"
+  attachmentByType:
+    Event: "direct ON_FRONTIER (asserted classification)"
+    Study: "direct ON_FRONTIER (asserted classification; D13 declares the field as Frontier.studies, direction IN, and owns the type; D3 declares nothing) — seam D3"
+    Organization: "indirect: Event -[INVOLVES {role}]-> Organization (D7 seam), Study sponsor (D3/D7)"
+    Person: "indirect: Event INVOLVES Person (D7 seam)"
+    ChemicalSubstance / Product / Intervention: "indirect: EVENT_ABOUT Assertion (subject the Event, object the entity; D1/D6/D5 seams; kernel subject pattern), Study arm components (D3 HAS_ARM → HAS_COMPONENT → ADMINISTERS)"
+    Claim / claim occurrence (kernel Assertion, assertionKind CLAIM): "kernel subject/object = Frontier, or about an event/study subject; time-windowed against events (QF-05) — seam K/D9"
+    Assessment (breakthrough, impact, narrative arc): "D10 assessment whose subject is an Event or Frontier (kernel pattern) — seam D10"
+    Target: "property Frontier.targetKeys (vocabulary mapping, not an effect claim) — seam D5"
+    Condition / Mechanism: "names in scope.anchors only (curation hints for the classifier); no edge in Wave 0 — seam D2"
+  rejected:
+    - {option: "typed FRONTIER edge from every domain type (Organization, Compound, Product, Person, Claim, Study, Event)", reason: "7+ pairs, a union target, and an organization 'on' a frontier is a judgment that goes stale; activity is better computed from dated events"}
+    - {option: "frontier tags (property frontierKeys) on Event", reason: "loses asserter, vocab version and supersession; cannot be adjudicated; a classification is a claim by the curator"}
+    - {option: "Assertion.predicate only (no typed edge)", reason: "the frontier timeline (QF-01) traverses it on every investor query; it earns a typed edge under rule 6"}
+  consumerObligations:
+    - "list `frontiers: final/vocabularies/frontiers.yaml@0.2.1` (synthesis R-60 / R-09; was packets/D13/vocab-frontiers.yaml@0.2.1; any @0.2.x) under sharedVocabularies in 10-seams.yaml; @0.1.0 references are stale"
+    - "D3: declare nothing; D13 declares the Study side of ON_FRONTIER as Frontier.studies (direction IN); list it as a seam owned by D13; never a second frontier edge"
+    - "D7/D9: use the eventKinds enum for any event you reference; never mint event kinds or event-to-event edges"
+    - "D8: regulatory records DOCUMENT events (APPROVAL, REJECTION, REGULATORY_DESIGNATION, ENFORCEMENT_ACTION, RECALL, MARKET_WITHDRAWAL, REGULATORY_STATUS_CHANGE) through D13's typed DOCUMENTED_BY_RECORD (Event → RegulatoryRecord); the record (issuer, addressee, date) is D8, the occurrence is D13; D8 declares no inverse"
+    - "K: retraction status stays the kernel HAS_REVISION_STATUS Assertion per authority + SourceSnapshot.revisionKind (kernel M6); D13 projects a RETRACTION Event only when it is a frontier milestone, citing the same notice locators"
+    - "entity-link frontier phrases via synonyms; propose new frontiers in 11-open-questions.md, never mint nodes"
+
+# ---------------------------------------------------------------------------------------------
+# 9. Investor query shapes (pinned kernel names as placeholders; rebase on A1). Ids QF-nn are vocabulary
+#    query shapes; the D13 questions file maps them to Q-D13-nn.
+# ---------------------------------------------------------------------------------------------
+queryShapes:
+  - id: QF-01
+    question: "What happened on frontier F in the last N days, in order, and which events led to or responded to which?"
+    answerKind: retrieved
+    cypher: |
+      MATCH (f:Frontier) WHERE f.key = $frontierKey OR f.parentKey = $frontierKey
+      MATCH (e:Event)-[r:ON_FRONTIER]->(f)
+      WHERE r.recordedFrom <= $asOf AND (r.recordedTo IS NULL OR r.recordedTo > $asOf)
+        AND coalesce(e.startedAt, e.announcedAt) >= datetime($asOf) - duration({days: $days})
+      OPTIONAL MATCH (e)-[l:LEADS_TO]->(next:Event)
+      OPTIONAL MATCH (e)-[rt:RESPONDS_TO]->(stim:Event)
+      OPTIONAL MATCH (e)-[inv:INVOLVES]->(org)
+      RETURN e.uid, e.eventKind, e.name, e.startedAt, e.announcedAt, e.effectiveFrom, e.jurisdiction,
+             collect(DISTINCT org.name) AS who,
+             collect(DISTINCT {leadsTo: next.uid, assertion: l.assertionUid}) AS leadsTo,
+             collect(DISTINCT {respondsTo: stim.uid, assertion: rt.assertionUid}) AS respondsTo
+      ORDER BY coalesce(e.startedAt, e.announcedAt)
+    trace: "each event's timeAssertionUid / announcementAssertionUid -> Assertion -> SourceLocator -> SourceSnapshot; each LEADS_TO/RESPONDS_TO edge -> assertionUid -> locator"
+  - id: QF-02
+    question: "How far has frontier F got (furthest milestone rung reached, first-ever events) as of T?"
+    answerKind: retrieved (or materialized projection with method frontier-ladder-v1)
+    cypher: |
+      MATCH (e:Event)-[r:ON_FRONTIER]->(f:Frontier {key: $frontierKey})
+      WHERE r.recordedFrom <= $asOf AND (r.recordedTo IS NULL OR r.recordedTo > $asOf)
+        AND coalesce(e.startedAt, e.announcedAt) <= $asOf
+      WITH e ORDER BY coalesce(e.startedAt, e.announcedAt)
+      WITH e.eventKind AS kind, collect(e)[0] AS first
+      RETURN kind, first.uid, first.name, first.startedAt   // map kind+qualifiers -> milestoneKinds ladderRank in the service layer
+  - id: QF-03
+    question: "Who is active on frontier F (organizations, compounds, studies) and what is each one's latest milestone?"
+    answerKind: retrieved (optional derived ACTIVE_ON_FRONTIER)
+    cypher: |
+      MATCH (f:Frontier {key: $frontierKey})<-[:ON_FRONTIER]-(e:Event)-[:INVOLVES]->(o:Organization)
+      WITH o, e ORDER BY coalesce(e.startedAt, e.announcedAt) DESC
+      WITH o, collect(e)[0] AS latest, count(e) AS nEvents
+      OPTIONAL MATCH (f2:Frontier {key: $frontierKey})<-[:ON_FRONTIER]-(s:Study)-[sr:HAS_STUDY_ROLE]->(o) WHERE sr.roleKind IN ['LEAD_SPONSOR', 'SPONSOR']   // D3 published name
+      RETURN o.name, latest.eventKind, latest.name, latest.startedAt, nEvents, collect(DISTINCT s.uid) AS studies
+      ORDER BY latest.startedAt DESC
+  - id: QF-04
+    question: "Which events on F were breakthroughs by a stated definition (designation, first-in-human, first approval, first positive pivotal) rather than by press language?"
+    answerKind: retrieved (BC-DESIGNATION..BC-FIRST-POSITIVE-PIVOTAL) + assessment (BC-ANALYST)
+    pattern: "QF-02 restricted to breakthroughCriteria; press 'breakthrough' language is listed separately from claim occurrences (kernel Assertions, assertionKind CLAIM) so the two are never conflated"
+  - id: QF-05
+    question: "What is the chain from first readout to approval for compound X, and how long did each step take?"
+    answerKind: retrieved
+    cypher: |
+      MATCH (x {uid: $compoundUid})<-[:HAS_OBJECT]-(:Assertion {predicate: 'EVENT_ABOUT'})-[:HAS_SUBJECT]->(start:Event {eventKind: 'READOUT'})
+      MATCH p = (start)-[:LEADS_TO*1..6]->(end:Event {eventKind: 'APPROVAL'})
+      RETURN [n IN nodes(p) | {uid: n.uid, kind: n.eventKind, at: coalesce(n.startedAt, n.announcedAt)}] AS chain,
+             [r IN relationships(p) | r.assertionUid] AS linkEvidence
+      ORDER BY length(p) LIMIT 5
+  - id: QF-06
+    question: "Which claims about frontier F (or its subjects) circulated before and after event E, and which were contradicted by it?"
+    answerKind: retrieved + assessment
+    pattern: "claim occurrences (kernel Assertions, assertionKind CLAIM, OCCURRENCE_OF a Claim; containers D9) whose claim subject/object is F or E's subjects, split by occurrence time < or >= E.announcedAt; contradiction comes from kernel Adjudication/assessment rows citing E's locators — seam K, D9, D10"
+  - id: QF-07
+    question: "What went wrong on frontier F: safety signals, holds, failed readouts, rejections, discontinuations, retractions, enforcement — and what did each lead to?"
+    answerKind: retrieved
+    polarity: harm
+    cypher: |
+      MATCH (e:Event)-[:ON_FRONTIER]->(:Frontier {key: $frontierKey})
+      WHERE e.eventKind IN ['SAFETY_SIGNAL','CLINICAL_HOLD','REJECTION','PROGRAM_DISCONTINUATION','RETRACTION',
+                            'ENFORCEMENT_ACTION','RECALL','MARKET_WITHDRAWAL']
+         OR (e.eventKind = 'READOUT' AND e.primaryEndpointStatement IN ['NOT_MET', 'MIXED'])
+      OPTIONAL MATCH (resp:Event)-[:RESPONDS_TO]->(e)
+      RETURN e.eventKind, e.name, e.startedAt, collect({kind: resp.eventKind, uid: resp.uid, at: resp.startedAt}) AS responses
+      ORDER BY e.startedAt DESC
+  - id: QF-08
+    question: "Which financings, acquisitions or partnerships followed a readout on F within N days, and which did a source state were based on it?"
+    answerKind: retrieved
+    pattern: "temporal pairs (FOLLOWS computed: same organization, deal.startedAt - readout.startedAt in [0, N days]) returned in one column, stated LEADS_TO pairs in another; never merged"
+  - id: QF-09
+    question: "Which frontiers does target T depend on, and what happened on them recently?"
+    answerKind: retrieved
+    cypher: |
+      MATCH (f:Frontier) WHERE $targetKey IN f.targetKeys
+      OPTIONAL MATCH (e:Event)-[:ON_FRONTIER]->(f)
+      WITH f, e ORDER BY e.startedAt DESC
+      RETURN f.key, f.name AS label, collect(e)[0..5] AS recentEvents   // synthesis: the label is Entity.name (no label property)
+indexes:
+  - "range :Frontier(key) unique; range :Frontier(parentKey); fulltext FrontierSearch(name, synonyms, definition) (name holds the label)"
+  - "range :Event(eventKind, startedAt); range :Event(announcedAt)"
+  - "Frontier.targetKeys list property (IN predicate); no index needed at 25 nodes"
+
+# ---------------------------------------------------------------------------------------------
+# 10. Size consequence (for the D13 SDL stage; measured there)
+# ---------------------------------------------------------------------------------------------
+sizeConsequence:
+  nodeTypes: [Frontier]                       # Event is already D13's; Frontier is the only addition from this vocabulary
+  relationshipTypes: [ON_FRONTIER, LEADS_TO, RESPONDS_TO]
+  pairs: 4                                    # Event->Frontier, Study->Frontier, Event->Event (LEADS_TO), Event->Event (RESPONDS_TO)
+  measuredInSdl: "0.2.1 (adversarial-review pass): the D13 module SDL declares 2 node types (Event, Frontier), 5 relationship types (the three above + INVOLVES to D7 + DOCUMENTED_BY_RECORD to D8), 7 pairs; printed marginal cost in 09-reasoning.md"
+  removedVersusPinned: "CAUSED_BY (1 pair) -> LEADS_TO; FOLLOWED_BY (derived, 1 pair) -> computed, not stored; EventCategory+eventType -> eventKind"
+  enums: [EventKind (27), FrontierGranularity (6), FrontierCurationStatus (4), ReadoutStage (5), EndpointStatement (4; was PrimaryEndpointMet), ApprovalPathway (8), DesignationType (9), DiscontinuationScope (3), EventRole (16; ISSUER added by the fixtures stage, BORROWER added and AWARDING_BODY / AWARDEE removed in the adversarial-review pass — the EventRole enum is D13's SDL, not a vocabulary id), EventStatus (4)]
+
+# ---------------------------------------------------------------------------------------------
+# 11. Synthesis (S, 2026-10-09): what changed against the packet, and the binding to the final SDL
+# ---------------------------------------------------------------------------------------------
+synthesis:
+  publishedAs: final/vocabularies/frontiers.yaml@0.2.1
+  source: packets/D13/vocab-frontiers.yaml@0.2.1
+  rulings:
+    - {ruling: R-60, change: "published here as frontiers@0.2.1; targets re-pinned to final/vocabularies/targets.yaml@0.2.2"}
+    - {ruling: R-44, change: "event kind PUBLICATION removed; RETRACTION only as a curated frontier milestone (EVENT_ABOUT → D3 Publication); EventRole loses AUTHOR and PUBLISHER"}
+    - {ruling: R-66, change: "enums ApprovalPathway and DesignationType removed; Event.approvalPathway / designationType typed by D8 RegulatoryPathway; breakthroughCriteria and milestone qualifiers remapped (regulatoryPathwayMapping); REGULATOR / APPLICANT / ISSUER event roles only while no DOCUMENTED_BY_RECORD exists (executor-enforced)"}
+    - {ruling: R-25, change: "ON_FRONTIER classification Assertions carry basisKind CURATOR_CLASSIFICATION"}
+    - {ruling: R-22, change: "LEADS_TO and RESPONDS_TO are projectionGate SUPPORT: a SUPPORT Adjudication DIRECTLY_SUPPORTED or SUPPORTED_WITH_QUALIFICATION before the edge exists (verdict-lattice.yaml)"}
+    - {ruling: R-91, change: "confirmed: only Event and Study attach to a Frontier"}
+    - {ruling: R-92, change: "FINANCING_AMOUNT (and DATE_OF_FIRST_SALE, INVESTOR_COUNT) registered by D13 (subject the Event); qualifier amountKind adds ROUND_TOTAL, amountBasis adds REMAINING; D7 FINANCING_AMOUNT_SOLD retired"}
+    - {ruling: R-65, change: "PRESENTED_AT_CONFERENCE registered by D13, object a D9 Channel (EVENT_SERIES)"}
+  regulatoryPathwayMapping:   # retired D13 value -> D8 RegulatoryPathway (packets/D8/11-open-questions.md OQ-D8-02; R-66)
+    approvalPathway:
+      FULL: "US_DRUG_NDA or US_BLA (by application type)"
+      ACCELERATED: US_ACCELERATED_APPROVAL
+      CONDITIONAL: EU_CONDITIONAL_MA
+      SUPPLEMENTAL: "no pathway value: the D8 RegulatoryRecord recordKind DRUG_APPLICATION_ACTION with the supplement in recordNumber"
+      CLEARANCE_510K: US_DEVICE_510K
+      DE_NOVO: US_DEVICE_DE_NOVO
+      PMA: US_DEVICE_PMA
+      EMERGENCY_USE: US_EUA
+    designationType:
+      BREAKTHROUGH_THERAPY: US_BREAKTHROUGH_THERAPY
+      FAST_TRACK: US_FAST_TRACK
+      RMAT: US_RMAT
+      PRIORITY_REVIEW: US_PRIORITY_REVIEW
+      PRIORITY_REVIEW_VOUCHER: US_PRIORITY_REVIEW_VOUCHER
+      PRIME: EU_PRIME
+      SAKIGAKE: JP_SAKIGAKE
+      ORPHAN: "US_ORPHAN_DESIGNATION or EU_ORPHAN_DESIGNATION (by jurisdiction)"
+      OTHER: OTHER
+  sdl:
+    node: {type: Frontier, labels: [Frontier, Entity], implements: [Entity, Subjectable], fields: [key, definition, level, parentKey, granularity, synonyms, targetKeys, curationStatus, replacedBy, vocabVersion, studies], label: "Entity.name"}
+    relationships:
+      - {type: ON_FRONTIER, pairs: ["Event.frontiers -> Frontier (OUT)", "Frontier.studies <- Study (IN)"], properties: AssertedRecordedProperties}
+      - {type: LEADS_TO, pairs: ["Event.leadsTo -> Event"], properties: AssertedRecordedProperties}
+      - {type: RESPONDS_TO, pairs: ["Event.respondsTo -> Event"], properties: AssertedRecordedProperties}
+      - {type: INVOLVES, pairs: ["Event.involvedOrganizations -> Organization", "Event.involvedPeople -> Person"], properties: EventRoleEdgeProperties}
+      - {type: DOCUMENTED_BY_RECORD, pairs: ["Event.regulatoryRecords -> RegulatoryRecord"], properties: AssertedRecordedProperties}
+  sdlEnums:
+    EventKind: [TRIAL_START, READOUT, DATA_PRESENTATION, RETRACTION, REGULATORY_SUBMISSION, REGULATORY_ACCEPTANCE, REGULATORY_DESIGNATION, ADVISORY_COMMITTEE, APPROVAL, REJECTION, CLINICAL_HOLD, CLINICAL_HOLD_LIFTED, REGULATORY_STATUS_CHANGE, ENFORCEMENT_ACTION, POLICY_CHANGE, LAUNCH, RECALL, MARKET_WITHDRAWAL, SAFETY_SIGNAL, PROGRAM_DISCONTINUATION, FINANCING, ACQUISITION, PARTNERSHIP, AWARD, LEGAL_ACTION, OTHER]
+    EventStatus: [PLANNED, IN_PROGRESS, OCCURRED, CANCELLED]
+    ReadoutStage: [TOPLINE, INTERIM, PRIMARY, FINAL, LONG_TERM_FOLLOW_UP]
+    EndpointStatement: [MET, NOT_MET, MIXED, NOT_STATED]
+    DiscontinuationScope: [TRIAL, PROGRAM, COMPANY]
+    EventRole: [SPONSOR, APPLICANT, REGULATOR, ISSUER, BORROWER, INVESTOR, LEAD_INVESTOR, LENDER, UNDERWRITER, ACQUIRER, ACQUIREE, PARTNER, PRESENTER, OTHER]
+    FrontierGranularity: [THEME, MODALITY, MECHANISM, DISEASE_GOAL, REGULATORY_PATH, POPULATION]
+    FrontierCurationStatus: [ACTIVE, DORMANT, MATURED, DEPRECATED]
+  checks: "final/_runlog/vocabularies.md: frontier keys, parents, levels, granularity, milestone ids, example event kinds and targetKeys checked; eventKinds equal the SDL EventKind; pathway values checked against RegulatoryPathway; QF-01, QF-02, QF-03, QF-05, QF-07, QF-09 EXPLAINed on Neo4j 5.26 (QF-04, QF-06, QF-08 are prose patterns)"
+  sizeConsequenceFinal: "enums in the final D13 fragment: EventKind (26), EventStatus (4), ReadoutStage (5), EndpointStatement (4), DiscontinuationScope (3), EventRole (14), FrontierGranularity (6), FrontierCurationStatus (4); ApprovalPathway and DesignationType removed (R-66); counted from the assembled SDL. Section 10 keeps the packet's numbers as history."

@@ -1,0 +1,41 @@
+"""
+Purpose: one outcome measure at one timepoint with one declared priority (the same measure at 2, 4 and 20 weeks is
+three definitions; a measure demoted from primary to secondary in a later version is a second definition with the same
+outcomeKey). Shared across sources (the exception to the per-source rule): every source that declares it gets a
+STATED_IN episode, so "which versions and which paper declared CTx at
+20 weeks as primary" is a traversal, and outcome switching (CQ-ST-04, Q-D3-16) is a group-by on outcomeKey. Adverse
+event terms are definitions of measureKind ADVERSE_EVENT so every StudyResult has exactly one definition. MEASURES links
+it to the D4 / D2 concept it measures, which is how study evidence reaches a D5 Target (D5 union TargetMeasure: Target
+-OPERATIONALIZED_BY-> Metric | Biomarker | D2 Outcome | D2 Condition; R-70).
+Identity rule: (study, outcomeKey = normalized measure title + normalized timepoint, priority).
+uid token: `outcome-definition`.
+Questions: CQ-ST-04, CQ-ST-05, CQ-ST-06, Q-D3-04, Q-D3-05, Q-D3-16, CQ-ST-03, Q-D3-14.
+"""
+type OutcomeDefinition implements Entity & Subjectable
+  @node(labels: ["OutcomeDefinition", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  "Measure title as first stated."
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Normalized measure + timepoint; equal across sources and versions for the same measure."
+  outcomeKey: String!
+  priority: OutcomePriority!
+  measureKind: MeasureKind!
+  "Timepoint or time frame as stated ('20 weeks', 'median 4.7 years')."
+  timepoint: String
+  description: String @filterable(byValue: false) @sortable(byValue: false)
+  """class: asserted; cardinality: one_or_more (each registration version and publication declaring this measure at this priority); questions: CQ-ST-04, CQ-ST-05, Q-D3-16."""
+  statedIn: [StatingRecord!]!
+    @relationship(type: "STATED_IN", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: zero_or_one (curated resolution of the measure; unresolved stays empty); questions: Q-D3-04, Q-D3-05, CQ-ST-03, CQ-ST-06."""
+  measures: [OutcomeMeasureTarget!]!
+    @relationship(type: "MEASURES", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

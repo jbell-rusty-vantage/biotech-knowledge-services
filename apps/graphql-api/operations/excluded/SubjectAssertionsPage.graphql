@@ -1,0 +1,37 @@
+# Paginated relationship: assertions about one subject, newest first. The subject predicate carries the server-bound
+# actor visibility so an excluded subject cannot be probed through the filter (installed 7.6.3 does not apply
+# authorization filter rules inside relationship filter predicates).
+query SubjectAssertionsPage($subjectUid: String!, $first: Int = 25, $after: String, $actorVisibility: [PrivacyClass!]!) {
+  assertionsConnection(
+    first: $first
+    after: $after
+    where: { subject: { some: { uid: { eq: $subjectUid }, privacyClass: { in: $actorVisibility } } } }
+    sort: [{ recordedAt: DESC }, { uid: ASC }]
+  ) {
+    totalCount
+    pageInfo {
+      ...PageInfoFields
+    }
+    edges {
+      cursor
+      node {
+        uid
+        predicate
+        assertionKind
+        status
+        polarity
+        speechAct
+        proposition
+        validFrom
+        validTo
+        recordedAt
+        object(limit: 3) {
+          ...SubjectRef
+        }
+        evidenceConnection(first: 1) {
+          totalCount
+        }
+      }
+    }
+  }
+}

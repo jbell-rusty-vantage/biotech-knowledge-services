@@ -1,0 +1,96 @@
+{
+  "$id": "https://belllabs.dev/contracts/biotech-cypher-request.v1.json",
+  "title": "biotech-cypher-request.v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "default": "biotech-cypher-request.v1",
+      "type": "string",
+      "const": "biotech-cypher-request.v1"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "read",
+        "write",
+        "explain"
+      ]
+    },
+    "cypher": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 20000
+    },
+    "params": {
+      "default": {},
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/__schema0"
+      }
+    },
+    "rowCap": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2000
+    },
+    "timeoutMs": {
+      "type": "integer",
+      "minimum": 100,
+      "maximum": 120000
+    },
+    "purpose": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "allowDeletes": {
+      "default": false,
+      "type": "boolean"
+    },
+    "runId": {
+      "type": "string",
+      "maxLength": 200
+    }
+  },
+  "required": [
+    "mode",
+    "cypher"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "__schema0": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema0"
+          }
+        },
+        {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/__schema0"
+          }
+        }
+      ]
+    }
+  }
+}

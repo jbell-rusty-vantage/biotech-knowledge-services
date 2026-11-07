@@ -1,0 +1,174 @@
+# Assertions for fixture retracted-sah-2017-stale-evidence (K, fixtures stage, A1, 2026-10-08).
+# Kind: harm. A 2017 rat study that presupposes "resveratrol is a SIRT1 activator" was retracted in 2025. The publisher page
+# has two snapshots of one Source: an Internet Archive capture of 2024-08-16 (no retraction) and the live 2026-10-08 page
+# ("Retraction in:"), recorded as revisionKind RETRACTION on the later snapshot. Three authorities state the retraction, each
+# as its own HAS_REVISION_STATUS Assertion (Retraction Watch via Crossref, NLM via PubMed, the publisher via its page and notice),
+# and they disagree on the date. The occurrences extracted from the 2024 snapshot are not deleted: Q-K-10 lists them as stale,
+# Q-K-17 flags the report that cites one, CQ-TM-02 shows the late-arriving valid time.
+# Conventions: see ../resveratrol-sirt1-evidence-mission/assertions.yaml.
+
+fixture: retracted-sah-2017-stale-evidence
+producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }   # fixture ids
+activities:
+  - { ref: act-r2-mission, uid: "hu:activity:fx-k-r2-evidence-mission", activityKind: EVIDENCE_MISSION, runId: "run:ft-K-r2-evidence-mission" }
+  - { ref: act-r2-verification, uid: "hu:activity:fx-k-r2-verification", activityKind: VERIFICATION, runId: "run:ft-K-r2-verification" }
+
+entities:
+  - { ref: e-resveratrol, type: D1.ChemicalSubstance, uid: "hu:chemical-substance:fx-k-resveratrol", name: resveratrol }
+  - { ref: e-sah, type: D2.Condition, uid: "hu:condition:fx-k-subarachnoid-hemorrhage", name: "subarachnoid hemorrhage", note: "MeSH D013345 in the record's MeshHeadingList; D2 owns Condition" }
+  - { ref: e-qian, type: D7.Person, uid: "hu:person:fx-k-qian-c", name: "Cong Qian (first author for the 7-author group of PMID 29039533; Zhejiang University School of Medicine)" }
+  - { ref: e-retraction-watch, type: D7.Organization, uid: "hu:organization:fx-k-retraction-watch", name: "Retraction Watch (database distributed by Crossref)" }
+  - { ref: e-nlm, type: D7.Organization, uid: "hu:organization:fx-k-nlm", name: "U.S. National Library of Medicine (PubMed / MEDLINE)" }
+  - { ref: e-spandidos, type: D7.Organization, uid: "hu:organization:fx-k-spandidos", name: "Spandidos Publications (publisher of Molecular Medicine Reports)" }
+
+sources:
+  - ref: src-pub-page
+    uid: "hu:source:fx-k-spandidos-mmr-2017-7773"
+    type: K.Source
+    canonicalUri: "https://www.spandidos-publications.com/10.3892/mmr.2017.7773"
+    sourceKind: WEB_PAGE
+    genre: PUBLISHER_ARTICLE_PAGE
+    name: "SIRT1 activation by resveratrol reduces brain edema and neuronal apoptosis in an experimental rat subarachnoid hemorrhage model"
+    snapshots:                                   # HAS_SNAPSHOT x2 (one Source, two captures)
+      - { ref: snap-pub-page-2024, uid: "hu:snapshot:fx-k-spandidos-7773-2024-08-16", observedAt: "2024-08-16T06:24:45Z", revisionKind: null }
+      - { ref: snap-pub-page-2026, uid: "hu:snapshot:fx-k-spandidos-7773-2026-10-08", revisionKind: RETRACTION, revisesSnapshotUid: "hu:snapshot:fx-k-spandidos-7773-2024-08-16" }
+    identifiers: ["DOI:10.3892/mmr.2017.7773", "PMID:29039533"]
+    note: "other differences between the two captures: the 2024 page repeats the abstract in twitter:description and og:description; the 2026 page does not, and its <title> appends 'Retraction in /10.3892/mmr.2025.13603'"
+  - { ref: src-pubmed-29039533, uid: "hu:source:fx-k-pubmed-29039533", canonicalUri: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=29039533&retmode=xml", sourceKind: API, genre: BIBLIOGRAPHIC_INDEX_RECORD, snapshots: [snap-pubmed-29039533] }
+  - { ref: src-pubmed-40613201, uid: "hu:source:fx-k-pubmed-40613201", canonicalUri: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=40613201&retmode=xml", sourceKind: API, genre: BIBLIOGRAPHIC_INDEX_RECORD, snapshots: [snap-pubmed-40613201], identifiers: ["PMID:40613201", "DOI:10.3892/mmr.2025.13603", "PMCID:PMC12235689"], note: "the retraction notice is its own Source" }
+  - { ref: src-cr-2017-7773, uid: "hu:source:fx-k-crossref-10-3892-mmr-2017-7773", canonicalUri: "https://api.crossref.org/v1/works/10.3892/mmr.2017.7773", sourceKind: API, genre: REGISTRY_METADATA_RECORD, snapshots: [snap-cr-2017-7773] }
+  - { ref: src-cr-2025-13603, uid: "hu:source:fx-k-crossref-10-3892-mmr-2025-13603", canonicalUri: "https://api.crossref.org/v1/works/10.3892/mmr.2025.13603", sourceKind: API, genre: REGISTRY_METADATA_RECORD, snapshots: [snap-cr-2025-13603] }
+
+claims:
+  - ref: claim-sah
+    uid: "hu:claim:fx-k-sirt1-activators-sah-prognosis"
+    type: K.Claim
+    proposition: "SIRT1 activators such as resveratrol may improve the prognosis of patients with subarachnoid hemorrhage"
+    propositionHash: "sha256:cfcc0012973d5fb15804383cb499ed2cabe104fe2d335f0e43ad91e8d42b7891"
+    propositionHashInput: '{"object":"hu:condition:fx-k-subarachnoid-hemorrhage","predicate":"MAY_IMPROVE_PROGNOSIS_OF","proposition":"sirt1 activators such as resveratrol may improve the prognosis of patients with subarachnoid hemorrhage","qualifiers":["speculative; extrapolated from a rat model"],"subject":"hu:chemical-substance:fx-k-resveratrol"}'
+    claimType: CAUSAL
+    lifecycleState: EXTRACTED
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }
+
+assertions:
+  - id: a-sah-occ-presup
+    uid: "hu:assertion:fx-k-occ-sah-2017-presupposition"
+    assertionKind: CLAIM
+    claimType: RELATIONSHIP
+    predicate: DIRECTLY_ACTIVATES
+    subject: { ref: e-resveratrol, type: D1.ChemicalSubstance }
+    object: { uid: "hu:molecular-entity:fx-k-sirt1-human", type: D2.MolecularEntity }
+    asserter: { ref: e-qian, type: D7.Person }
+    occurrenceOf: "hu:claim:fx-k-resveratrol-directly-activates-sirt1"          # claim-general
+    proposition: "resveratrol is a SIRT1 activator (presupposed: 'The SIRT1 activator resveratrol (RES)')"
+    locators: [loc-sah-presup-2024, loc-pm-presup]
+    polarity: POSITIVE
+    speechAct: STATES
+    basisKind: UNSTATED
+    validTime: { validFrom: "2017-10-12", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN }
+    status: ACCEPTED                     # capture fidelity stays ACCEPTED: the paper did say it; retraction is a separate fact about the Source
+    stale: { reason: "evidence locator loc-sah-presup-2024 lies on snap-pub-page-2024; the Source has a later snapshot with revisionKind RETRACTION", detectedBy: "03 Q-K-10" }
+    recordedAt: "2026-10-08T22:09:18Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }
+  - id: a-sah-prognosis
+    uid: "hu:assertion:fx-k-occ-sah-2017-prognosis"
+    assertionKind: CLAIM
+    claimType: CAUSAL
+    predicate: MAY_IMPROVE_PROGNOSIS_OF
+    subject: { ref: e-resveratrol, type: D1.ChemicalSubstance }
+    object: { ref: e-sah, type: D2.Condition }
+    asserter: { ref: e-qian, type: D7.Person }
+    occurrenceOf: claim-sah
+    proposition: "SIRT1 activators such as RES may have the potential to improve the prognosis of patients with SAH"
+    locators: [loc-sah-prognosis-2024]
+    polarity: POSITIVE
+    speechAct: SPECULATES
+    basisKind: INFERRED_FROM_MEASUREMENT
+    qualifiers: ["rat endovascular perforation model", "the authors call for clinical research"]
+    validTime: { validFrom: "2017-10-12", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN }
+    status: ACCEPTED
+    stale: { reason: "rests on snap-pub-page-2024 (revised by snap-pub-page-2026, RETRACTION); re-anchored exactly on the 2026 snapshot (loc-sah-prognosis-2026): the words are unchanged, the standing is not", detectedBy: "03 Q-K-10" }
+    recordedAt: "2026-10-08T22:09:18Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }
+  - id: a-rev-rw
+    uid: "hu:assertion:fx-k-revision-status-rw-mmr-2017-7773"
+    assertionKind: FIELD
+    predicate: HAS_REVISION_STATUS       # kernel predicate convention; one Assertion per authority
+    subject: { ref: src-pub-page, type: K.Source }
+    value: { valueString: RETRACTION }
+    asserter: { ref: e-retraction-watch, type: D7.Organization }
+    locators: [loc-cr-updated-by, loc-cr-update-to]
+    qualifiers: ["Retraction Watch record-id 68904", "notice DOI 10.3892/mmr.2025.13603", "Crossref updated-by source: retraction-watch"]
+    validTime: { validFrom: "2025-06-30", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: UNKNOWN, note: "Crossref updated-by[0].updated.date-time 2025-06-30T00:00:00Z" }
+    status: ACCEPTED
+    recordedAt: "2026-10-08T22:09:18Z"     # late arrival (CQ-TM-02): valid since 2025-06-30, known to BellLabs only from this run
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }
+  - id: a-rev-nlm
+    uid: "hu:assertion:fx-k-revision-status-nlm-mmr-2017-7773"
+    assertionKind: FIELD
+    predicate: HAS_REVISION_STATUS
+    subject: { ref: src-pub-page, type: K.Source }
+    value: { valueString: RETRACTION }
+    asserter: { ref: e-nlm, type: D7.Organization }
+    locators: [loc-pm-retracted-pubtype, loc-pm-retraction-in]
+    qualifiers: ["PublicationType D016441 Retracted Publication", "CommentsCorrections RetractionIn PMID 40613201"]
+    validTime: { validFrom: "2025-07-04", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN, note: "ArticleDate of the notice record PMID 40613201 (the article record's DateRevised is the same day); NLM states no retraction date of its own" }
+    status: ACCEPTED
+    recordedAt: "2026-10-08T22:09:18Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }
+  - id: a-rev-publisher
+    uid: "hu:assertion:fx-k-revision-status-publisher-mmr-2017-7773"
+    assertionKind: FIELD
+    predicate: HAS_REVISION_STATUS
+    subject: { ref: src-pub-page, type: K.Source }
+    value: { valueString: RETRACTION }
+    asserter: { ref: e-spandidos, type: D7.Organization }
+    locators: [loc-sah-retraction-in-2026, loc-notice-decision]
+    qualifiers: ["reason (notice): anomalies in the presentation of western blot data in Fig. 4", "loc-notice-noreply: the authors did not reply"]
+    validTime: { validFrom: null, validFromBasis: OBSERVATION_ONLY, validObservedAt: "2026-10-08", validTo: null, validToBasis: UNKNOWN, note: "the page states no date; observed on retrieval" }
+    status: ACCEPTED
+    recordedAt: "2026-10-08T22:09:18Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-evidence-mission" }
+
+adjudications:
+  - id: adj-cf-sah-reanchor
+    uid: "hu:adjudication:fx-k-cf-sah-prognosis-reanchor"
+    type: K.Adjudication
+    adjudicationKind: CAPTURE_FIDELITY
+    verdict: DIRECTLY_SUPPORTED
+    policyOutcome: PASS
+    mechanicalStatus: passed
+    judgeKind: DETERMINISTIC
+    methodVersion: "fixture-reselect/gen_locators_k.py@2026-10-08"
+    evaluates: [a-sah-prognosis]
+    evidence:
+      - { locator: loc-sah-prognosis-2024, role: SUPPORTS, origin: DECLARED }
+      - { locator: loc-sah-prognosis-2026, role: SUPPORTS, origin: VERIFIER_FOUND }
+    rationale: "the 2026 locator re-anchors the 2024 span exactly (reanchorMatch exact, same quoteHash); capture fidelity holds — retraction does not falsify what the authors wrote"
+    recordedAt: "2026-10-08T22:20:00Z"
+    producedBy: { missionId: "mission:ft-K-fixtures", runId: "run:ft-K-r2-verification" }
+
+reportsCitingStaleInputs:   # Q-K-17 expected flag (the report is defined in ../resveratrol-sirt1-evidence-mission)
+  - { report: "hu:report:fx-k-evidence-report-resveratrol-sirt1", cites: "hu:assertion:fx-k-occ-sah-2017-presupposition", via: DERIVED_FROM, flag: "cited input rests on a Source with HAS_REVISION_STATUS RETRACTION (3 authorities)", reportHandling: "the body states the paper was retracted and is not counted as evidence" }
+
+timeline:   # CQ-TM-03 / CQ-TM-02: the clocks of this fixture
+  - { what: "article received / accepted", date: "2016-10-01 / 2017-06-22", source: "PubMed History (snap-pubmed-29039533)" }
+  - { what: "article published (electronic)", date: "2017-10-12", source: "PubMed ArticleDate; Crossref published" }
+  - { what: "archived page observed without retraction", date: "2024-08-16T06:24:45Z", source: "snap-pub-page-2024.observedAt" }
+  - { what: "retraction (Retraction Watch via Crossref)", date: "2025-06-30", source: "loc-cr-updated-by" }
+  - { what: "notice released in PMC", date: "2025-06-30", source: "PubMed History pmc-release of PMID 40613201" }
+  - { what: "notice record / article record revised in PubMed", date: "2025-07-04", source: "ArticleDate of 40613201; DateRevised of 29039533" }
+  - { what: "notice issue date", date: "2025-09", source: "PubDate of 40613201 (Mol Med Rep 2025 Sep;32(3):238)" }
+  - { what: "BellLabs learns of the retraction", date: "2026-10-08T22:09:18Z", source: "recordedAt of a-rev-* (fixture clock)" }
+
+edgesExercised:
+  - { type: HAS_SNAPSHOT, pairs: "src-pub-page->snap-pub-page-2024, snap-pub-page-2026 (revisionKind RETRACTION, revisesSnapshotUid); src-pubmed-*, src-cr-* -> one snapshot each" }
+  - { type: HAS_LOCATOR, pairs: "each snapshot -> its locators (11)" }
+  - { type: HAS_EVIDENCE, pairs: "a-sah-occ-presup, a-sah-prognosis (on 2024 snapshot), a-rev-* (one or two locators each), adj-cf-sah-reanchor (DECLARED + VERIFIER_FOUND)" }
+  - { type: HAS_SUBJECT, pairs: "a-rev-rw, a-rev-nlm, a-rev-publisher -> src-pub-page (K.Source as Subjectable); a-sah-* -> e-resveratrol" }
+  - { type: HAS_OBJECT, pairs: "a-sah-occ-presup -> SIRT1; a-sah-prognosis -> e-sah" }
+  - { type: ASSERTED_BY, pairs: "a-rev-rw->e-retraction-watch, a-rev-nlm->e-nlm, a-rev-publisher->e-spandidos, a-sah-*->e-qian" }
+  - { type: OCCURRENCE_OF, pairs: "a-sah-occ-presup->claim-general; a-sah-prognosis->claim-sah" }
+  - { type: DERIVED_FROM, pairs: "rpt-general (../resveratrol-sirt1-evidence-mission) -> a-sah-occ-presup" }
+  - { type: ASSESSES, pairs: "adj-cf-sah-reanchor -> a-sah-prognosis" }
+  - { type: WAS_GENERATED_BY, pairs: "assertions -> act-r2-mission; adjudication -> act-r2-verification" }

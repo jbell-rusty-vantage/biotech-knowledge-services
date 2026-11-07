@@ -1,0 +1,296 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v2",
+  "intentId": "example-basis-label-2026-07-10",
+  "pins": {
+    "schemaReleaseDigest": "sha256:5fffb593c8ca94b289b768ac0a0b02df5739cb338b7a04ec88173589708c5a42",
+    "policyVersion": "bks-admission-policy/v1"
+  },
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "ingestion-agent",
+      "model": "claude-fable-5-1"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "example-run-001",
+      "missionId": "example-mission"
+    },
+    "activityKind": "INGESTION"
+  },
+  "basis": {
+    "creationOnly": {
+      "reason": "FU-03 v2 fixture round: replay of a packet fixture into a graph without a prior custody snapshot",
+      "expectAbsent": [],
+      "expectPresent": []
+    }
+  },
+  "defaults": {
+    "privacyClass": "PUBLIC"
+  },
+  "sources": [
+    {
+      "ref": "label",
+      "source": {
+        "canonicalUri": "https://www.elysiumhealth.com/pages/basis-supplement-facts",
+        "title": "Basis Supplement Facts",
+        "sourceKind": "MANUFACTURER_LABEL_PAGE"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-07-10T00:00:00Z",
+        "observedAt": "2026-07-10T00:00:00Z",
+        "contentHash": "sha256:283496a65daa5de294e80e62a549737b0e26936acc888565b666edb3b8f8e912",
+        "contentHashBasis": "SYNTHETIC_FIXTURE",
+        "captureCompleteness": "UNKNOWN",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "panel",
+          "selectorKind": "SECTION",
+          "selector": {
+            "type": "SECTION",
+            "exact": "Elysium NR (Nicotinamide Riboside Chloride) 250 mg",
+            "section": "Supplement Facts"
+          },
+          "exact": "Elysium NR (Nicotinamide Riboside Chloride) 250 mg"
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "elysium",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "Elysium Health",
+      "properties": {
+        "organizationType": "COMPANY",
+        "legalName": "Elysium Health, Inc."
+      },
+      "identifiers": [
+        {
+          "scheme": "DOMAIN",
+          "issuer": "DNS",
+          "value": "elysiumhealth.com"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "basis",
+      "mode": "new",
+      "nodeType": "Product",
+      "name": "Basis",
+      "properties": {
+        "productKind": "DIETARY_SUPPLEMENT"
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "variant",
+      "mode": "new",
+      "nodeType": "ProductVariant",
+      "name": "Basis — US capsules",
+      "properties": {
+        "jurisdiction": "US"
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "form",
+      "mode": "new",
+      "nodeType": "FormulationVersion",
+      "name": "Basis US label observed 2026-07-10",
+      "uidSegment": "basis-us-2026-07-10",
+      "properties": {
+        "jurisdiction": "US"
+      },
+      "identifiers": [],
+      "onMatch": "create_anyway"
+    },
+    {
+      "ref": "nr",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "Nicotinamide riboside chloride",
+      "properties": {},
+      "identifiers": [
+        {
+          "scheme": "UNII",
+          "issuer": "FDA GSRS",
+          "value": "8XM2XT8VWI"
+        }
+      ],
+      "onMatch": "use_existing"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "p1-markets",
+      "dependsOn": [],
+      "kind": "assertion.relate",
+      "subjectRef": "elysium",
+      "objectRef": "basis",
+      "assertion": {
+        "speechAct": "STATES",
+        "basisKind": "MANUFACTURER_CLAIM",
+        "qualifiers": [],
+        "validity": {},
+        "predicate": "MARKETS_PRODUCT"
+      },
+      "evidence": [
+        "panel"
+      ]
+    },
+    {
+      "proposalId": "p2-variant",
+      "dependsOn": [],
+      "kind": "edge.structural",
+      "relationshipType": "HAS_VARIANT",
+      "fromRef": "basis",
+      "toRef": "variant",
+      "properties": {}
+    },
+    {
+      "proposalId": "p3-formulation",
+      "dependsOn": [],
+      "kind": "assertion.relate",
+      "subjectRef": "variant",
+      "objectRef": "form",
+      "assertion": {
+        "qualifiers": [],
+        "validity": {
+          "validFrom": "2026-07-10T00:00:00Z",
+          "validFromBasis": "OBSERVATION_ONLY"
+        },
+        "predicate": "HAS_FORMULATION_VERSION"
+      },
+      "evidence": [
+        "panel"
+      ]
+    },
+    {
+      "proposalId": "p4-amount",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "variant",
+      "assertion": {
+        "qualifiers": [
+          "basis:PER_SERVING",
+          "referent:LISTED_INGREDIENT_AS_LISTED"
+        ],
+        "validity": {},
+        "predicate": "LABEL_DECLARED_AMOUNT"
+      },
+      "value": {
+        "valueNumber": 250,
+        "unitCode": "mg"
+      },
+      "evidence": [
+        "panel"
+      ]
+    },
+    {
+      "proposalId": "p5-mention",
+      "dependsOn": [],
+      "kind": "mention.stage",
+      "locator": "panel",
+      "surfaceForm": "PT (Pterostilbene)",
+      "typeHint": "IngredientMaterial",
+      "candidates": [],
+      "reason": "material identity not resolvable from the label alone"
+    }
+  ],
+  "notes": "Example only. Replace sources with a real capture (contentHash over the bytes, contentHashBasis RAW_BYTES) and cite a read snapshot in inputSnapshot/preconditions.",
+  "provenance": {
+    "derivedFrom": {
+      "schemaVersion": "biotech-knowledge-intent.v1",
+      "path": "examples/ingestion-intent.example.json",
+      "rawBytesDigest": "sha256:3ecca23ecd172be17adabd08479527a0568188b6537bf5190466099ca3f692f6"
+    },
+    "migrator": "bks-migrate-intent-v1/1",
+    "edits": [
+      {
+        "at": "context.activityKind",
+        "rule": "P3-kernel-activity-kind",
+        "from": "EXTRACTION",
+        "to": "INGESTION"
+      },
+      {
+        "at": "onStale",
+        "rule": "strict-stale",
+        "from": "fail",
+        "to": null,
+        "note": "production onStale removed; stale state is a new plan"
+      },
+      {
+        "at": "sources[0].snapshot.retrievedAt",
+        "rule": "retrievedAt-required",
+        "from": null,
+        "to": "2026-07-10T00:00:00Z"
+      },
+      {
+        "at": "sources[0].locators[0].selector",
+        "rule": "FU-03-selector-built-no-basis",
+        "from": null,
+        "to": null,
+        "note": "snapshot basis SYNTHETIC_FIXTURE: no projection basis can be stated mechanically (R-38); the planner refuses this locator"
+      },
+      {
+        "at": "proposals[0].kind",
+        "rule": "R-40-assertion.relate",
+        "from": "edge.assert",
+        "to": "assertion.relate",
+        "note": "MARKETS_PRODUCT is a predicate, not a relationship type"
+      },
+      {
+        "at": "proposals[0].assertion.assertionBasis",
+        "rule": "basisKind",
+        "from": "MANUFACTURER_CLAIM",
+        "to": "MANUFACTURER_CLAIM"
+      },
+      {
+        "at": "proposals[1].kind",
+        "rule": "structural-in-v2",
+        "from": "edge.assert",
+        "to": "edge.structural",
+        "note": "HAS_VARIANT is structural in the release; its evidence [\"panel\"] stays on the captured locators"
+      },
+      {
+        "at": "proposals[2].kind",
+        "rule": "state.attach->edge.assert",
+        "from": "state.attach",
+        "to": "edge.assert",
+        "note": "exclusive slots come from the relationship register (R-10)"
+      },
+      {
+        "at": "proposals[2].kind",
+        "rule": "R-40-assertion.relate",
+        "from": "edge.assert",
+        "to": "assertion.relate",
+        "note": "HAS_FORMULATION_VERSION is a predicate, not a relationship type"
+      },
+      {
+        "at": "proposals[3].quantityBasis",
+        "rule": "qualifier",
+        "from": "PER_SERVING",
+        "to": "basis:PER_SERVING"
+      },
+      {
+        "at": "proposals[3].amountReferent",
+        "rule": "qualifier",
+        "from": "LISTED_INGREDIENT_AS_LISTED",
+        "to": "referent:LISTED_INGREDIENT_AS_LISTED"
+      },
+      {
+        "at": "proposals[4].kind",
+        "rule": "P8-OD-04",
+        "from": "Mention node",
+        "to": "RESOLUTION Assessment + CONTEXT locator"
+      }
+    ]
+  }
+}

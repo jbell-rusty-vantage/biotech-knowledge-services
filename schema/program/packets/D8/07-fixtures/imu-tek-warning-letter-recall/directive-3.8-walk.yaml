@@ -1,0 +1,277 @@
+# Directive 3.8 effectiveness test for D8 (fixtures stage, A7, 2026-10-08): question → chunks (MENTIONS / fulltext) → assertions →
+# locators → snapshot bytes; the verifier re-selects the same spans (tools/verify.py result recorded in questions.md).
+question:
+  id: Q-D8-03
+  text: For Imu-Tek Animal Health, what is the enforcement chain (inspection → Form 483 → response → recall → warning letter), with dates?
+chunker:
+  name: ft-d8-window/1
+  windowChars: 700
+  stepChars: 500
+  textOf: snap-wl
+  textHash: sha256:b9b87a556c843175be0a36b7348206594e1dce3663ba0c7bb18e5bfac7673942
+  note: stand-in for D9 Chunk (CHUNK_OF → SourceSnapshot; COVERS_LOCATOR and MENTIONS are derived, read-only, never evidence). The production chunker and embedding
+    model are D9's; offsets share the locator offset basis so COVERS_LOCATOR is a span-overlap projection.
+step1_find_chunks:
+  viaMentions:
+    method: ft-d8-exact-alias/1 (exact alias string match; stand-in for D9 entity-link/vN)
+    entity: imutek
+    aliases:
+    - Imu-Tek Animal Health, Incorporated
+    - Imu-Tek
+    - ImuTek
+    chunks:
+    - hu:chunk:ft-d8-wl724610-000
+    - hu:chunk:ft-d8-wl724610-002
+    - hu:chunk:ft-d8-wl724610-003
+    - hu:chunk:ft-d8-wl724610-006
+  viaFulltext:
+    index: 'D9 chunk fulltext (stand-in: term-count score)'
+    query: inspection 483 response
+    top3:
+    - chunk: hu:chunk:ft-d8-wl724610-004
+      score: 6
+    - chunk: hu:chunk:ft-d8-wl724610-005
+      score: 5
+    - chunk: hu:chunk:ft-d8-wl724610-002
+      score: 2
+  viaVector: not exercised (no embedding run in the fixtures stage; D9 owns the embedding model)
+chunks:
+- chunk: hu:chunk:ft-d8-wl724610-000
+  chunkIndex: 0
+  startOffset: 0
+  endOffset: 700
+  textHash: sha256:eac36f861c3b0add642d8e3d859033a42ccbe249aad43aa3d04cba8f821c07be
+  mentions:
+  - fda
+  - imutek
+  fulltextScore: 0
+  coversLocators: []
+  containsLocatorsWhole: []
+- chunk: hu:chunk:ft-d8-wl724610-002
+  chunkIndex: 2
+  startOffset: 1000
+  endOffset: 1700
+  textHash: sha256:15c23be73386db232260ee00036ede9a93542ee070146b189f56ec66106e2550
+  mentions:
+  - imutek
+  fulltextScore: 2
+  coversLocators:
+  - loc-wl-cms
+  containsLocatorsWhole:
+  - loc-wl-cms
+- chunk: hu:chunk:ft-d8-wl724610-003
+  chunkIndex: 3
+  startOffset: 1500
+  endOffset: 2200
+  textHash: sha256:f65cbc89d35dc91670b09a0b2a1c66839f93fba277cd172d746c1ce0315375f5
+  mentions:
+  - fda
+  - imutek
+  fulltextScore: 1
+  coversLocators:
+  - loc-wl-cms
+  - loc-wl-office
+  - loc-wl-recipient
+  - loc-wl-inspection
+  containsLocatorsWhole:
+  - loc-wl-cms
+  - loc-wl-office
+  - loc-wl-recipient
+- chunk: hu:chunk:ft-d8-wl724610-004
+  chunkIndex: 4
+  startOffset: 2000
+  endOffset: 2700
+  textHash: sha256:575e894f39088baeeeee0e5204502fb2b53c5db60265bfea3afc22968d236050
+  mentions:
+  - fda
+  fulltextScore: 6
+  coversLocators:
+  - loc-wl-inspection
+  - loc-wl-483
+  containsLocatorsWhole:
+  - loc-wl-inspection
+- chunk: hu:chunk:ft-d8-wl724610-005
+  chunkIndex: 5
+  startOffset: 2500
+  endOffset: 3200
+  textHash: sha256:787ca5860bf82b4fe13e2c2fbb5ca5ca6954a3714a3218295e85bd1d6cb6184b
+  mentions:
+  - fda
+  - prod-c5-caps
+  - prod-c5-powder
+  fulltextScore: 5
+  coversLocators:
+  - loc-wl-483
+  - loc-wl-products
+  containsLocatorsWhole:
+  - loc-wl-483
+  - loc-wl-products
+- chunk: hu:chunk:ft-d8-wl724610-006
+  chunkIndex: 6
+  startOffset: 3000
+  endOffset: 3700
+  textHash: sha256:065471827dd5d865a3c9941fb7c16ea3cf374239d7c389e294bd497c9cbe8a58
+  mentions:
+  - imutek
+  - prod-c5-caps
+  fulltextScore: 0
+  coversLocators:
+  - loc-wl-drugclaim
+  containsLocatorsWhole:
+  - loc-wl-drugclaim
+- chunk: hu:chunk:ft-d8-wl724610-007
+  chunkIndex: 7
+  startOffset: 3500
+  endOffset: 4200
+  textHash: sha256:8f1960a31f1d85bf0b4c90fd26afe853f2750757c12dd5860aaef90e587b04e3
+  mentions:
+  - fda
+  fulltextScore: 0
+  coversLocators:
+  - loc-wl-drugclaim
+  containsLocatorsWhole: []
+- chunk: hu:chunk:ft-d8-wl724610-011
+  chunkIndex: 11
+  startOffset: 5500
+  endOffset: 6200
+  textHash: sha256:f6eb923983ef161fd9eb5fe9b33926f3302f9f06b12134127c853321f1187de1
+  mentions:
+  - fda
+  - prod-c5-caps
+  - prod-c5-powder
+  fulltextScore: 0
+  coversLocators:
+  - loc-wl-adulterated
+  containsLocatorsWhole:
+  - loc-wl-adulterated
+- chunk: hu:chunk:ft-d8-wl724610-017
+  chunkIndex: 17
+  startOffset: 8500
+  endOffset: 9200
+  textHash: sha256:d3a9da70f648843d4b24aaa4ddab3b712713bbf2aad35854101f902c0902e6b1
+  mentions: []
+  fulltextScore: 0
+  coversLocators:
+  - loc-wl-spec
+  containsLocatorsWhole: []
+- chunk: hu:chunk:ft-d8-wl724610-018
+  chunkIndex: 18
+  startOffset: 9000
+  endOffset: 9700
+  textHash: sha256:83ae9ee119c58320edbe19145969f64b1884523534109e4bd15678f901a899c7
+  mentions: []
+  fulltextScore: 2
+  coversLocators:
+  - loc-wl-spec
+  containsLocatorsWhole:
+  - loc-wl-spec
+- chunk: hu:chunk:ft-d8-wl724610-020
+  chunkIndex: 20
+  startOffset: 10000
+  endOffset: 10700
+  textHash: sha256:02c57cf5b925c9ae2d001fa4d0ba715d130b66c20537e46a290b7cb34a9e0712
+  mentions:
+  - prod-c5-caps
+  - prod-c5-powder
+  fulltextScore: 1
+  coversLocators:
+  - loc-wl-mmr
+  containsLocatorsWhole:
+  - loc-wl-mmr
+- chunk: hu:chunk:ft-d8-wl724610-034
+  chunkIndex: 34
+  startOffset: 17000
+  endOffset: 17700
+  textHash: sha256:e15475fbf1a8b9c919c780472c704df182663bcb1d7b42b4e5ac566f01c690d6
+  mentions:
+  - fda
+  fulltextScore: 0
+  coversLocators:
+  - loc-wl-signer
+  containsLocatorsWhole:
+  - loc-wl-signer
+step2_chunk_to_locators_to_assertions:
+- chunk: hu:chunk:ft-d8-wl724610-004
+  locators:
+  - loc-wl-inspection
+  - loc-wl-483
+  assertions:
+  - i10
+  - i11
+  - up-wl-724610
+- chunk: hu:chunk:ft-d8-wl724610-005
+  locators:
+  - loc-wl-483
+  - loc-wl-products
+  assertions:
+  - i03
+  - i04
+  - i11
+- chunk: hu:chunk:ft-d8-wl724610-002
+  locators:
+  - loc-wl-cms
+  assertions:
+  - up-wl-724610
+step2b_entity_hop:
+  note: adversarial-review revision. The recall record is JSON with no text extraction, so no chunk reaches its steps; the walk reaches them through the
+    entity found in step 1 (imutek, by MENTIONS) and the typed edge ADDRESSED_TO, then reads the record's located assertions. This hop is a graph join, not
+    retrieval; it is recorded here so the question → locator path is complete for every step of chain_answer.
+  from: imutek
+  via:
+    relationship: ADDRESSED_TO
+    assertion: i06
+    locator: loc-rc-firm
+  record: rc-h04832026
+  locators:
+  - loc-rc-initiated
+  - loc-rc-voluntary
+  - loc-rc-classified
+  - loc-rc-number
+  - loc-rc-status
+  - loc-rc-terminated
+  assertions:
+  - i05
+  - i15
+  - i16
+step3_locator_to_snapshot:
+- snapshot: snap-wl
+  contentHash: sha256:148c70a77b2491854cebba1d6e61348a432d21b251ad431ad9683253cca6c9bb
+  contentHashBasis: RAW_BYTES
+  reselect: extract text from the snapshot bytes (d8-h2t/2), normalize (nfc-ws-collapse/1), compare text[startOffset:endOffset] with exact and sha256(exact) with
+    quoteHash
+  recheck: 'adversarial review 2026-10-08: a fresh fetch had different raw bytes (sha256:252af690…, page markup) and an identical normalized text, so every
+    TEXT_QUOTE re-selects unchanged; identity by raw bytes would have forked the snapshot (OQ-D8-24)'
+- snapshot: snap-recall
+  contentHash: sha256:0091f10f5766ba18e51dba44dd263d61e09e1a5c0832f54230e9c898633f30b2
+  contentHashBasis: RAW_BYTES
+  reselect: parse the snapshot bytes as JSON and compare the value at each JSON_POINTER with exact
+  recheck: 'adversarial review 2026-10-08: re-fetched byte-identical'
+chain_answer:
+- date: 2025-10-06/2025-10-14
+  event: FDA inspection of 3541 E. Vine Dr., Fort Collins, CO
+  assertion: i10
+  locator: loc-wl-inspection
+- date: '2025-10-14'
+  event: Form FDA 483 issued at close of inspection
+  assertion: i11
+  locator: loc-wl-483
+- date: '2025-10-29'
+  event: firm's written response to the 483
+  assertion: i11
+  locator: loc-wl-483
+- date: '2025-11-25'
+  event: firm-initiated recall of Immuno-5 Colostrum Powder 7 oz, lot 216 (undeclared milk allergen)
+  assertion: i15
+  locator: loc-rc-initiated
+- date: '2026-02-05'
+  event: FDA classifies recall H-0483-2026 as Class II
+  assertion: i05
+  locator: loc-rc-classified
+- date: '2026-06-05'
+  event: warning letter CMS 724610 (unapproved new drug claims, misbranding, Part 111 CGMP)
+  assertion: up-wl-724610 (issuedAt; node.upsert evidence)
+  locator: loc-wl-cms
+- date: '2026-08-14'
+  event: recall terminated
+  assertion: i16
+  locator: loc-rc-terminated

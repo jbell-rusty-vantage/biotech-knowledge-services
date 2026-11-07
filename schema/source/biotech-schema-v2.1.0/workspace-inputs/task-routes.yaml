@@ -1,0 +1,286 @@
+# Task routes, release biotech-schema-v2.0.0 (hand-authored upstream; FU-09): the shortcuts an agent takes from a
+# research / ingestion task to the exact v2 schema elements, read operations and proposal kinds. Rendered as
+# tasks/<slug>.md and indexed as task:<slug>. Node and relationship names are validated against the release SDL.
+# Every v1 slug is kept (task usability); routes are rewritten on the kernel pattern.
+# Proposal kinds are the biotech-knowledge-intent.v2 kinds (INTERFACES section 5). `pendingProposalKinds` lists the
+# kinds of a route that are new or changed in v2 and need the S3 executor-v2 planner; until it lands no kind plans
+# against the v2 IR (the v1 planner reads creatability from GraphQL @mutation; v2 reads the register executorOps).
+# Read operations are the names of today's read executor (`bks kg read`); S4 maps them onto the v2 typed reads.
+# biotech-schema-v2.1.0 (authored in biotech-knowledge-services schema/source, R-SV10): state.attach removed from ingest-product-label,
+# ingest-study-publication and correct-a-stale-fact; it is not a biotech-knowledge-intent.v2 kind (the v1 migration maps it to edge.assert).
+version: 2
+tasks:
+  - slug: what-do-we-know-about-entity
+    title: What do we already know about X? (run before every research mission)
+    phase: before-research
+    domains: [kernel-and-provenance]
+    summary: Resolve the mentions in the mission brief to existing nodes, then read their cards, assertions and evidence so research targets gaps instead of re-discovering stored facts.
+    nodeTypes: [Identifier, Assertion, SourceLocator, Activity, Assessment]
+    relationshipTypes: [HAS_IDENTIFIER, HAS_SUBJECT, HAS_EVIDENCE, WAS_GENERATED_BY, ASSESSES]
+    readOperations: [node.resolve, node.card, node.neighbors, assertion.about, count.relationships]
+    proposalKinds: []
+    steps:
+      - Build one `node.resolve` operation with every entity mention (name, aliases, any identifier such as UNII, NCT, DOI, ORCID, GTIN, ROR) and the node type you expect.
+      - "For every match with basis `uid`, `identifier` or `name_exact`, add `node.card` (with `neighbors: true`) and `assertion.about` (assertions whose HAS_SUBJECT or HAS_OBJECT is the node)."
+      - Record the snapshot id and digest; the ingestion intent cites it and pins `preconditions` from `touched`.
+      - Gaps = mentions with no match, or cards whose relationship counts are zero for the relationship types your task writes.
+    pitfalls:
+      - A fulltext hit is a candidate, never a resolution. Confirm with an identifier or an exact name plus a corroborating relationship.
+      - "A node with no Assertion that has HAS_EVIDENCE {role: SUPPORTS} is weakly known; treat it as a gap, not as coverage."
+
+  - slug: decide-update-or-create
+    title: Should I update an existing node or create a new one?
+    phase: before-ingestion
+    domains: [kernel-and-provenance]
+    summary: "The planner resolves every `mode: new` subject against identifiers, exact names and aliases and applies the subject's `onMatch` policy; competing identity hypotheses are RESOLUTION or EQUIVALENCE Assessments, never edges."
+    nodeTypes: [Identifier, Assessment, SourceLocator]
+    relationshipTypes: [HAS_IDENTIFIER, ASSESSES, HAS_EVIDENCE]
+    readOperations: [node.resolve, node.card]
+    proposalKinds: [node.upsert, identifier.attach, mention.stage, assessment.record]
+    pendingProposalKinds: [mention.stage, assessment.record]
+    steps:
+      - "Resolved from the read snapshot -> subject `mode: resolved` with the uid; property changes go in `node.upsert`, only for types whose register executorOps include update."
+      - "Same (scheme, issuer, normalized value) -> same node (`onMatch: use_existing`); the same value from another issuer never establishes identity (R-42)."
+      - "Same name but no identifier -> `onMatch: review` (default). Add an identifier or record an EQUIVALENCE / RESOLUTION Assessment."
+      - "Known to be a different thing with the same name -> `onMatch: create_anyway` with a distinguishing `uidSegment` and the reason in `rationale`."
+      - Cannot place it at all -> `mention.stage`; v2 writes the SourceLocator and queues a RESOLUTION Assessment (no Mention node).
+    pitfalls:
+      - Similar name does not imply same identity; a shared identifier value across different issuers is not the same identity either.
+      - Executor creatability comes from the node register (mutations.executor), not from GraphQL; create-only types (RegistrationVersion, StudyResult, ProtocolEdition) are never updated.
+
+  - slug: ingest-product-label
+    title: Ingest a product label (supplement facts) as a label version with its component lines
+    phase: ingestion
+    domains: [products-and-commerce, substances-and-biology]
+    summary: One Product, one ProductVariant, one Package; the observed label content is a LabelVersion attached by a HAS_LABEL_VERSION episode; each label line is a DECLARES_COMPONENT edge to an IngredientMaterial, Constituent or FoodItem.
+    nodeTypes: [Product, ProductVariant, Package, LabelVersion, IngredientMaterial, Constituent, ChemicalSubstance, Brand]
+    relationshipTypes: [HAS_VARIANT, HAS_PACKAGE, HAS_LABEL_VERSION, DECLARES_COMPONENT, BRANDED_AS, NAMES_RESPONSIBLE_PARTY, HAS_IDENTIFIER]
+    readOperations: [node.resolve, node.card, state.asOf]
+    proposalKinds: [node.upsert, edge.structural, edge.assert, assertion.literal, identifier.attach]
+    steps:
+      - Declare the label page as a Source + SourceSnapshot (retrievedAt, observedAt) + one SourceLocator per panel row quoted.
+      - "Resolve Product / Variant / Package (GTIN as Identifier on the Package); create the LabelVersion as a `mode: new` subject (identity: responsible party, panelKind, jurisdiction, labelVersionCode or contentDigest)."
+      - "`edge.assert` Package -[HAS_LABEL_VERSION]-> LabelVersion with validFrom = observedAt, basis OBSERVATION_ONLY and its evidence locator (biotech-knowledge-intent.v2 has no state.attach; the slot exclusivity comes from the relationship register); the episode is exclusive per (package, slot, asserter)."
+      - "For each label line: `edge.assert` DECLARES_COMPONENT with ComponentLineProperties (orderIndex, amount, unitCode, amountReferent, massBasis, amountBasis); the printed wording goes on the line Assertion as qualifiers declaredName:, form:, statement:."
+      - A line you cannot map to a material becomes `mention.stage` on its locator.
+    pitfalls:
+      - The label states amounts per serving; a per-day maximum is the computation predicate CALCULATED_DAILY_MAX_INTAKE with a derivation rule, never a rewrite of the line.
+      - A listed ingredient amount is not the active-moiety amount (massBasis); a packaging-only change is not a new composition (compositionDigest).
+
+  - slug: ingest-study-publication
+    title: Ingest a study with its registration versions, intervention material and results
+    phase: ingestion
+    domains: [studies-and-evidence, substances-and-biology]
+    summary: Study identity comes from the registry identifier (NCT, ISRCTN) or the first reporting publication (DOI / PMID); each registry state is an immutable RegistrationVersion; what an arm administered is an InterventionComponent that ADMINISTERS a material, never the commercial product by assumption.
+    nodeTypes: [Study, RegistrationVersion, Publication, StudyArm, InterventionComponent, StudyPopulation, OutcomeDefinition, StudyResult, IngredientMaterial]
+    relationshipTypes: [HAS_REGISTRATION_VERSION, HAS_ARM, HAS_COMPONENT, ADMINISTERS, HAS_POPULATION, HAS_OUTCOME, MEASURES, RESULT_FOR, RESULT_FOR_ARM, STATED_IN, REPORTS_ON, HAS_IDENTIFIER]
+    readOperations: [node.resolve, node.card, node.neighbors]
+    proposalKinds: [node.upsert, identifier.attach, edge.assert, edge.structural, assertion.literal]
+    steps:
+      - Resolve by identifier first (NCT, DOI, PMID) and attach every identifier you have with `identifier.attach`.
+      - Each captured registry state is a new RegistrationVersion attached by a HAS_REGISTRATION_VERSION episode (field facts cite one locator per field).
+      - Arms, components, populations and outcome definitions are subjects linked by `edge.structural` (HAS_ARM, HAS_COMPONENT, HAS_POPULATION, HAS_OUTCOME); ADMINISTERS and MEASURES are `edge.assert` (curated resolutions).
+      - Each reported result is a create-only StudyResult (RESULT_FOR, RESULT_FOR_ARM, STATED_IN) with its estimate, interval and p-value as stated.
+    pitfalls:
+      - Statistically significant is not clinically meaningful; a within-arm change is not a between-arm effect.
+      - An abstract-only capture is captureCompleteness PARTIAL; preserve the source's salt / dose basis and unknowns (MD-D3-03).
+
+  - slug: ingest-organization-profile
+    title: Ingest an organization profile (roles, stakes, brands, control)
+    phase: ingestion
+    domains: [actors-and-institutions]
+    summary: Organization identity by registry identifier (LEI, SEC CIK, ROR) or (normalized legal name, jurisdiction); people hold roles and stakes through asserted, time-bounded edges; field facts (headcount, HQ, status) are FIELD Assertions whose node values are caches.
+    nodeTypes: [Organization, Person, Brand, Award]
+    relationshipTypes: [HOLDS_ROLE, HOLDS_STAKE, PARENT_OF, OWNS_BRAND, AWARDED_TO, AWARDED_BY, HAS_IDENTIFIER]
+    readOperations: [node.resolve, node.card, state.asOf]
+    proposalKinds: [node.upsert, identifier.attach, edge.assert, assertion.literal]
+    steps:
+      - Resolve the organization; attach LEI / SEC_CIK / ROR identifiers (only writeStatus active schemes are accepted).
+      - Roles are `edge.assert` HOLDS_ROLE with RoleEdgeProperties (roleKind) and validity from the source; the printed title is the qualifier roleText:<label>.
+      - A former name is the FORMER_NAME literal predicate; a rename alone does not create a new Organization (MD-D7-10).
+    pitfalls:
+      - Holding a role never implies recommending or endorsing the organization's product.
+      - A brand is its own Brand record; OWNS_BRAND needs ownership evidence, operating a brand is the OPERATED_BY predicate.
+
+  - slug: ingest-podcast-claims
+    title: Ingest claims made in a podcast or video episode
+    phase: ingestion
+    domains: [sources-documents-and-media, actors-and-institutions]
+    summary: The episode is a MediaWork published by a Channel and captured as a Source; each spoken statement is a claim occurrence (an Assertion with assertionKind CLAIM, speechAct and basisKind) at a media-time locator, ASSERTED_BY the speaker, OCCURS_IN the work and OCCURRENCE_OF its Claim; retellings are DERIVED_FROM the prior occurrence.
+    nodeTypes: [Channel, MediaWork, Source, Claim, Assertion, Person, Organization]
+    relationshipTypes: [PUBLISHES, APPEARS_IN, OCCURS_IN, OCCURRENCE_OF, ASSERTED_BY, HAS_EVIDENCE, DERIVED_FROM, RENDITION_OF]
+    readOperations: [node.resolve, node.search, assertion.about]
+    proposalKinds: [node.upsert, edge.structural, edge.assert, assertion.relate, assertion.literal, mention.stage]
+    pendingProposalKinds: [assertion.relate, mention.stage]
+    steps:
+      - Declare the episode Source / SourceSnapshot and one MEDIA_TIME locator per quoted span; the MediaWork is RENDITION_OF only with URL / DOI evidence.
+      - Resolve speakers to Person (public actors only); an inferred speaker carries asserterBasis:INFERRED plus a RESOLUTION Assessment citing the span.
+      - Each claim is one occurrence per independently stated item (MD-D9-01), with the qualifiers that must survive retelling (population:, segment:).
+    pitfalls:
+      - A speaker reporting their practice is not a recommendation; a RECOMMENDS speech act is never a BellLabs recommendation.
+      - Mentioning a product is not endorsing it; a sponsor read is the segment:SPONSOR_READ qualifier, not editorial content.
+
+  - slug: ingest-regulatory-filing
+    title: Ingest a regulatory record (filing, letter, recall, inspection) and the status it establishes
+    phase: ingestion
+    domains: [manufacturing-quality-regulatory-ip]
+    summary: The document is a RegulatoryRecord (recordKind, pathway, jurisdiction) ADDRESSED_TO the organization and CONCERNS its topic; a resulting standing is a LegalStatus episode (STATUS_OF its subject, STATUS_FROM the record); filing never implies capability or approval.
+    nodeTypes: [RegulatoryRecord, LegalStatus, Organization, ChemicalSubstance, Product]
+    relationshipTypes: [ADDRESSED_TO, ISSUED_BY, CONCERNS, STATUS_OF, STATUS_FROM]
+    readOperations: [node.resolve, node.list]
+    proposalKinds: [node.upsert, edge.assert, identifier.attach, assertion.literal]
+    steps:
+      - Resolve the subject (substance, material, product) and the issuing agency (Organization).
+      - Create the RegulatoryRecord with the agency's record identifiers (FDA_GRN, FDA_NDI, FDA_RECALL ...; active schemes only).
+      - "`edge.assert` STATUS_OF from a create-only LegalStatus with jurisdiction and validity from the record, and STATUS_FROM to the record."
+    pitfalls:
+      - A GRAS no-questions letter is not approval; an NDI acknowledgement is not approval; licence validity never implies marketed (status non-implication policy).
+      - An EFSA opinion alone is not an EU authorization (MD-D8-03); keep each source date with its semantic role (MD-D8-05).
+
+  - slug: ingest-mechanism-evidence
+    title: Record mechanism evidence (measured vs inferred) for a substance
+    phase: ingestion
+    domains: [substances-and-biology, studies-and-evidence]
+    summary: A mechanism statement is an Assertion with a registered mechanism predicate (INHIBITS, ACTIVATES, INCREASES_ACTIVITY_OF ...) and basisKind, OBSERVED_IN_CONTEXT a MechanismEvidenceContext (species, setting, compartment); AFFECTS_MECHANISM is a derived projection the executor never writes from an intent.
+    nodeTypes: [Mechanism, MechanismEvidenceContext, MolecularEntity, ChemicalSubstance, Assertion]
+    relationshipTypes: [OBSERVED_IN_CONTEXT, PARTICIPATES_IN, PART_OF_MECHANISM, AFFECTS_MECHANISM, EXPOSED_TO]
+    readOperations: [node.resolve, node.neighbors]
+    proposalKinds: [node.upsert, assertion.relate, edge.structural, assertion.literal]
+    pendingProposalKinds: [assertion.relate]
+    steps:
+      - Resolve the substance (UNII / InChIKey), the mechanism (key; Reactome / GO identifiers) and the molecular entity (HGNC / UniProt).
+      - Write the measured statement as `assertion.relate` (subject substance, object molecular entity or mechanism) with basisKind, linked by `edge.structural` OBSERVED_IN_CONTEXT to the context subject (EXPOSED_TO names the exposure).
+    pitfalls:
+      - AFFECTS_MECHANISM is read-only and derived; proposing it is rejected (write the assertion it is projected from).
+      - Measured in one species or compartment never applies to another.
+
+  - slug: record-price-observation
+    title: Record an observed price for a listing
+    phase: ingestion
+    domains: [products-and-commerce]
+    summary: A MerchantListing (host domain + host item id) is LISTING_FOR a Package and HAS_OFFER Offers; each captured price is a typed-literal Assertion on the Offer at a located capture; the seller of record is an asserted SELLER_OF_RECORD edge.
+    nodeTypes: [MerchantListing, Offer, Package, Organization, Identifier]
+    relationshipTypes: [LISTING_FOR, HAS_OFFER, SELLER_OF_RECORD, HAS_IDENTIFIER]
+    readOperations: [node.resolve, node.neighbors]
+    proposalKinds: [node.upsert, edge.structural, edge.assert, assertion.literal, identifier.attach]
+    steps:
+      - Resolve the listing by (hostDomain, hostItemId) or ASIN; create it when absent.
+      - Each capture is a new literal Assertion (price value, currency in qualifiers) with HAS_EVIDENCE to the capture's locator; never overwrite an earlier observation.
+    pitfalls:
+      - A listing absent in a later capture is not a withdrawn listing.
+      - Hosting a listing is not being the seller of record; no store-specific menu pricing in v2 (OD-30).
+
+  - slug: attach-identifier
+    title: Attach an external identifier to a node
+    phase: ingestion
+    domains: [kernel-and-provenance]
+    summary: An Identifier node is unique on (scheme, issuer, normalized value) and identifies at most one Subjectable; the HAS_IDENTIFIER edge is asserted (IdentifierLinkProperties) and cites the record where the identifier was read.
+    nodeTypes: [Identifier]
+    relationshipTypes: [HAS_IDENTIFIER]
+    readOperations: [node.resolve]
+    proposalKinds: [identifier.attach]
+    steps:
+      - Use the release register's scheme code (vocabularies/identifier-schemes.yaml) and the issuing authority as issuer; only writeStatus active schemes are accepted.
+      - Trade identifiers (GTIN, ASIN, SKU) are ordinary Identifiers in v2 (TradeItemIdentifier is gone); GTIN is normalized to GTIN-14 digits.
+    pitfalls:
+      - Normalize before attaching (DOI lowercase, InChIKey uppercase) and name the rule in normalizationRule.
+      - Never join two records through a shared Identifier; renditions use RENDITION_OF.
+
+  - slug: trace-answer-to-source
+    title: Trace an assertion to its source span and adjudication
+    phase: query
+    domains: [kernel-and-provenance]
+    summary: The kernel TRACE (query catalog P-01); every sentence of an answer cites assertion uids and the trace reports gaps instead of hiding them.
+    nodeTypes: [Assertion, SourceLocator, SourceSnapshot, Source, Adjudication, Activity]
+    relationshipTypes: [HAS_EVIDENCE, HAS_LOCATOR, HAS_SNAPSHOT, ASSESSES, ASSERTED_BY, WAS_GENERATED_BY]
+    readOperations: [assertion.trace, assertion.about]
+    proposalKinds: []
+    steps:
+      - Collect assertion uids from `assertion.about` on the subject, then run `assertion.trace` with the answer's recorded-as-of viewpoint; split HAS_EVIDENCE by role (SUPPORTS vs CONTRADICTS).
+    pitfalls:
+      - An ACCEPTED status means the capture is faithful, not that the proposition is true; truth after a mission is the Report verdict.
+      - Answers cite SourceLocator + SourceSnapshot.contentHash, never a Chunk or an Association.
+
+  - slug: correct-a-stale-fact
+    title: Correct or end a fact that is no longer true
+    phase: ingestion
+    domains: [kernel-and-provenance]
+    summary: Nothing is deleted or edited in place. A new Assertion by the same asserter supersedes the old one (supersedesUid), the old edge episode is closed by writing recordedTo once, and a new episode carries the corrected validity.
+    nodeTypes: [Assertion]
+    relationshipTypes: [HAS_SUBJECT, HAS_EVIDENCE, DERIVED_FROM]
+    readOperations: [assertion.about, node.neighbors, state.asOf]
+    proposalKinds: [edge.close, edge.assert]
+    steps:
+      - Read the current episode(s) with `node.neighbors` (the edge carries relationshipUid and assertionUid).
+      - "`edge.close` the stale episode with a reason; `edge.assert` the replacement with explicit validity and the new source locator; a correction occurrence is the CORRECTS predicate plus DERIVED_FROM the corrected occurrence."
+    pitfalls:
+      - A correction is a new recorded-time episode, never a change of valid time on the old one; ingestion time never substitutes for unknown valid time.
+      - Another source's disagreement is not a correction: keep both asserters' episodes (exclusivity is per asserter, OD-05).
+
+  - slug: stage-unresolved-mention
+    title: Stage something you found but cannot resolve or place
+    phase: ingestion
+    domains: [kernel-and-provenance]
+    summary: The surface form is the exact text of a SourceLocator; candidate identities are competing RESOLUTION Assessments that cite the locator with role CONTEXT (v1 Mention nodes are gone).
+    nodeTypes: [SourceLocator, Assessment]
+    relationshipTypes: [HAS_LOCATOR, HAS_EVIDENCE, ASSESSES]
+    readOperations: []
+    proposalKinds: [mention.stage, assessment.record]
+    pendingProposalKinds: [mention.stage, assessment.record]
+    steps:
+      - Use the exact surface form and the locator; name the candidate node type only when the text makes it obvious.
+    pitfalls:
+      - A staged mention is not a node of the candidate type and never carries facts; the derived MENTIONS edge comes from Chunk projection only.
+
+  - slug: claim-to-evidence-report
+    title: Take a claim through vetting, an evidence mission and a published evidence report
+    phase: ingestion
+    domains: [kernel-and-provenance, derived-knowledge-and-reports]
+    summary: A Claim is vetted by a VETTING Assessment (IGNORE / MONITOR / RESEARCH); an evidence-mission Activity ASSESSES exactly one Claim; SUPPORT Adjudications judge located evidence; the result is a Report (verdict, worldCorrectness) with ReportItems citing locators.
+    nodeTypes: [Claim, Assertion, Assessment, Adjudication, Activity, Report, ReportItem, SourceLocator]
+    relationshipTypes: [OCCURRENCE_OF, ASSESSES, DERIVED_FROM, HAS_EVIDENCE, WAS_INFORMED_BY, HAS_ITEM, WAS_GENERATED_BY]
+    readOperations: [assertion.about, assertion.trace, node.neighbors]
+    proposalKinds: [assessment.record, adjudication, report.publish]
+    pendingProposalKinds: [assessment.record, adjudication, report.publish]
+    steps:
+      - Record the vetting disposition as an Assessment (assessmentKind VETTING) that ASSESSES the Claim and is DERIVED_FROM its occurrences.
+      - The mission run is one Activity (runId) that ASSESSES the Claim; child runs chain with WAS_INFORMED_BY (OD-06, OD-07).
+      - Adjudications carry a sealed verification ref; publish the Report through `report.publish` (insert-only; a revision is a new Report).
+    pitfalls:
+      - Capture fidelity (ACCEPTED) and located support (SUPPORT verdict) are separate gates; a failed provider cannot support "none exists" without a sealed search-coverage artifact (OD-40).
+      - Do not rank conflicting asserters by a single "highest verdict" (KN-15).
+
+  - slug: measured-versus-declared-content
+    title: Compare measured content of a sold product with its label declaration (OD-10 option A)
+    phase: ingestion
+    domains: [manufacturing-quality-regulatory-ip, products-and-commerce]
+    summary: A lab result on a lot is a QualityResult (QUALITY_RESULT_FOR the Lot, MEASURES_ANALYTE the analyte); a measurement of a purchased product without a lot is the registered MEASURED_CONTENT_IN_PRODUCT predicate with provenance; the declaration stays a DECLARES_COMPONENT line on the LabelVersion.
+    nodeTypes: [QualityResult, Lot, Product, ProductVariant, LabelVersion, ChemicalSubstance, Organization]
+    relationshipTypes: [QUALITY_RESULT_FOR, MEASURES_ANALYTE, LOT_OF, ISSUED_BY, DECLARES_COMPONENT, HAS_LABEL_VERSION]
+    readOperations: [node.resolve, node.neighbors, state.asOf]
+    proposalKinds: [node.upsert, edge.assert, assertion.relate, assessment.record]
+    pendingProposalKinds: [assertion.relate, assessment.record]
+    steps:
+      - "With a lot: create the QualityResult (identity: issuer, report number, analyte, lot, testedAt) and `edge.assert` QUALITY_RESULT_FOR, MEASURES_ANALYTE, ISSUED_BY."
+      - "Without a lot (survey rows): `assertion.relate` MEASURED_CONTENT_IN_PRODUCT (subject Product or ProductVariant, object the analyte) with the measured value, unit and the survey locator."
+      - A conformance judgment (measured versus declared) is a QUALITY Assessment that is DERIVED_FROM both, never a rewrite of either.
+    pitfalls:
+      - A lab measurement never becomes a label declaration and a declaration never proves content (FX-05).
+      - QualityResult.statedVerdict is the lab's statement, not BellLabs' conclusion (OD-32); Product is not a QUALITY_RESULT_FOR target.
+
+  - slug: interest-conflict-disclosure
+    title: Record a financial interest or conflict and its disclosure
+    phase: ingestion
+    domains: [actors-and-institutions, sources-documents-and-media]
+    summary: A sourced interest is an asserted edge (HOLDS_ROLE, HOLDS_STAKE, RECEIVES_VALUE_FROM, CONTENT_SPONSORED_BY); whether it matters for a given claim occurrence is a CONFLICT_RELEVANCE Assessment (D7.conflict-relevance) with relevanceBasis, temporalOverlap and disclosureFinding facets.
+    nodeTypes: [Person, Organization, MediaWork, Assertion, Assessment, Brand]
+    relationshipTypes: [HOLDS_ROLE, HOLDS_STAKE, RECEIVES_VALUE_FROM, CONTENT_SPONSORED_BY, ASSESSES, DERIVED_FROM]
+    readOperations: [node.resolve, node.neighbors, assertion.about]
+    proposalKinds: [edge.assert, assertion.relate, assessment.record]
+    pendingProposalKinds: [assertion.relate, assessment.record]
+    steps:
+      - "`edge.assert` the interest with its source locator and validity; a disclosure or affiliate link alone is a disclosure Assertion with benefit NOT_STATED (MD-D7-05)."
+      - Record the relevance judgment as an Assessment that ASSESSES the speaker and the occurrence's Claim, DERIVED_FROM the occurrence and each interest Assertion; disclosureFinding uses INADEQUATE_DISCLOSURE_PER_REGULATOR (canonical spelling).
+    pitfalls:
+      - An interest never implies a recommendation and a recommendation never implies an interest; unknown ties stay unknown until captured evidence (MD-D7-03).
+      - "\"An X company\" without control evidence stays an assertion with unspecified relation scope; do not project PARENT_OF (MD-D7-07)."

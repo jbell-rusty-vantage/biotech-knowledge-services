@@ -1,0 +1,63 @@
+"""
+Purpose: one bounded attempt by a tool to search, fetch, resolve or parse a source for a subject that left no complete
+capture: a failure (401/403/429, challenge page, timeout, licence wall, parser failure) or a partial capture (truncated
+page, image-only PDF, lossy rendition). These are the only non-captures the kernel cannot hold: a failed request leaves
+no SourceSnapshot (often no bytes at all) and no Assertion. An authoritative empty result (search count 0, 404 for an id
+the source issues) is NOT an attempt: its response is a COMPLETE kernel SourceSnapshot and the statement is the kernel's
+FIELD_NOT_REPORTED Assertion. K:CQ-AX-04 reads attempts to tell "unknown: blocked" (FAILED / PARTIAL attempts for the
+subject and tool) from "unknown: never queried" (no attempt, no snapshot). Q-D11-17 lists what failed in a mission's runs
+and, joined to the registry by toolId, which questions that left unanswerable. Lineage is the kernel's WAS_GENERATED_BY
+to the run's Activity (declared once on Activity.generated). The subject and the partial snapshot are uid properties,
+following the kernel precedent (revisesSnapshotUid, supersedesUid): no question traverses past them, and an attempt can
+concern a subject that is not a graph node yet (queryText only). Not Subjectable: nothing is asserted about an attempt.
+It is not a second lineage mechanism: it has no run identity of its own (R-41). Stored labels [CaptureAttempt,
+Occurrence], the K archetype, never :Entity (R-17). Absorbs pinned SourceDiscoveryRecord (W19).
+Identity rule: uid = hu:capture-attempt:<sha256(runId of the generating Activity | toolId | requestDigest | attemptedAt)>,
+enforced by the kernel uid uniqueness constraint (runId is not a property: for an immutable attempt lastWriterRunId equals
+it). requestDigest = sha256 over the normalized request (method, URI with credential parameters api_key / key / token /
+email removed, body). Immutable; a retry is a new attempt.
+Privacy: privacyClass is INTERNAL by default (R-41; the kernel PrivacyClass has PUBLIC and INTERNAL only). requestUri,
+queryText and errorText never carry credentials. When the request names a person (e.g. an NPPES name search), queryText
+and requestUri store only "sha256:<hex>" of the value.
+uid token: `capture-attempt` (hu:capture-attempt:<opaque>).
+Questions: Q-D11-17, CQ-AX-04, Q-D11-01, Q-D11-07, Q-D11-20.
+"""
+type CaptureAttempt implements Entity
+  @node(labels: ["CaptureAttempt", "Occurrence"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Canonical action-space entry id (tooling/action-space.yaml), e.g. ctgov-v2-api, usda-fdc, firecrawl-cli; never a packet-local alias (the registry's top-level aliases map rewrites them, R-39). Same token as the prefix of SourceSnapshot.captureMethod (<action-space id>/<tool version>)."
+  toolId: String!
+  "Client, CLI, MCP server or API version used."
+  toolVersion: String @filterable(byValue: false) @sortable(byValue: false)
+  outcome: CaptureOutcome!
+  "Set when outcome is PARTIAL or FAILED."
+  failureKind: CaptureFailureKind
+  "HTTP status when the transport is HTTP; 0 when no response arrived (returned, never filtered: failureKind is the filter)."
+  httpStatus: Int @filterable(byValue: false) @sortable(byValue: false)
+  "Requested URI after normalization, credential parameters removed by the executor (never stores a key); person names replaced by their digest."
+  requestUri: String @filterable(byValue: false) @sortable(byValue: false)
+  "sha256:<hex> over the normalized request; identity component."
+  requestDigest: String! @filterable(byValue: false) @sortable(byValue: false)
+  "Search text or record id requested, as sent; sha256:<hex> only when it names a person (privacyClass INTERNAL)."
+  queryText: String @filterable(byValue: false) @sortable(byValue: false)
+  "uid of the graph entity the attempt was made for, when one exists (indexed; CQ-AX-04 filters on it)."
+  subjectUid: String
+  "sha256:<hex> of the response bytes when any were received (identical error pages hash identically)."
+  responseHash: String @filterable(byValue: false) @sortable(byValue: false)
+  "uid of the kernel SourceSnapshot (captureCompleteness PARTIAL_EXCERPT) that keeps the bytes of a PARTIAL attempt; null for FAILED."
+  snapshotUid: String @filterable(byValue: false) @sortable(byValue: false)
+  "Server-advised wait (Retry-After) for RATE_LIMITED / QUOTA_EXHAUSTED."
+  retryAfterSeconds: Int @filterable(byValue: false) @sortable(byValue: false)
+  "When the request was sent."
+  attemptedAt: DateTime!
+  "Short verbatim error text from the source or client (no credentials, no personal data: person names replaced by their digest)."
+  errorText: String @filterable(byValue: false) @sortable(byValue: false)
+}

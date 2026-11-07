@@ -1,0 +1,221 @@
+# Fixture predimed-retraction-disconfirmation — pattern definitions and the claim timeline of an alleged longevity-food claim
+# whose flagship trial report was retracted and republished. Fixture stage (A2, 2026-10-08); adversarial-review pass the
+# same day (publication status = kernel HAS_REVISION_STATUS, one Assertion per authority; retraction dated by the notice's
+# electronic date 2018-06-13, not the print issue 2018-06-21; notice PMID 29897867 captured). Kernel claim lifecycle:
+# packets/K/09-reasoning.md "Claim lifecycle". uids are fixture-scoped; producedBy ids are FIXTURE ids. The vetting
+# assessment and the as-of verdicts below are the EXPECTED fixture outcomes for the test, not results of a real mission.
+# Research is not medical advice.
+version: 1
+fixture: predimed-retraction-disconfirmation
+producedBy: &run { missionId: "mission:ft-D12-fixtures", runId: "run:ft-D12-predimed-retraction-disconfirmation", note: "fixture ids, not a real Mission Control run" }
+
+entities:
+  - { uid: "hu:person:estruch-ramon", type: D7.Person, name: "Ramón Estruch", owner: D7, note: "first author, asserter on behalf of the PREDIMED Study Investigators" }
+  - { uid: "hu:org:nlm", type: D7.Organization, name: "U.S. National Library of Medicine (PubMed)", owner: D7 }
+  - { uid: "hu:org:nejm", type: D7.Organization, name: "The New England Journal of Medicine (publisher of the retraction notice)", owner: D7, note: "the notice's author list is the PREDIMED investigators (Estruch R, Ros E, …); NEJM is the publishing authority for HAS_REVISION_STATUS" }
+  - { uid: "hu:source:pubmed-23432189", type: K.Source, name: "Primary prevention of cardiovascular disease with a Mediterranean diet (NEJM 2013)", identifiers: [ { scheme: PMID, value: "23432189" }, { scheme: DOI, value: "10.1056/NEJMoa1200303" } ] }
+  - { uid: "hu:source:pubmed-29897866", type: K.Source, name: "Primary Prevention of Cardiovascular Disease with a Mediterranean Diet Supplemented with Extra-Virgin Olive Oil or Nuts (NEJM 2018)", identifiers: [ { scheme: PMID, value: "29897866" }, { scheme: DOI, value: "10.1056/NEJMoa1800389" } ] }
+  - { uid: "hu:source:pubmed-29897867", type: K.Source, name: "Retraction notice (NEJM 2018;378(25):2441-2442)", identifiers: [ { scheme: PMID, value: "29897867" }, { scheme: DOI, value: "10.1056/NEJMc1806491" } ], note: "captured in the adversarial-review pass (snap-predimed-notice: PubMed XML of the notice, PublicationType 'Retraction Notice', electronic ArticleDate 2018-06-13, issue PubDate 2018 Jun 21)" }
+  - { uid: "hu:study:predimed-isrctn35739639", type: D3.Study, name: "PREDIMED", owner: D3, identifiers: [ { scheme: ISRCTN, value: "ISRCTN35739639" } ] }
+  - { uid: "hu:study-population:predimed", type: D3.StudyPopulation, name: "PREDIMED participants (high cardiovascular risk, no cardiovascular disease at enrollment, Spain)", owner: D3, note: "object of the D5 population qualifier (vocab-targets 0.2.x: population:<D3 StudyPopulation uid>)" }
+  - { uid: "hu:dietary-pattern:predimed-meddiet-evoo", type: D12.DietaryPattern, name: "PREDIMED Mediterranean diet supplemented with extra-virgin olive oil", properties: { definedBySourceUid: "hu:source:pubmed-29897866", patternKey: "meddiet-evoo-arm", version: "", definedBy: "PREDIMED (Estruch et al., NEJM 2018, arms as stated in the abstract)", patternKind: COMPOSITION, definitionScope: TRIAL_ARM, synonyms: ["MedDiet + EVOO"] } }
+  - { uid: "hu:dietary-pattern:predimed-meddiet-nuts", type: D12.DietaryPattern, name: "PREDIMED Mediterranean diet supplemented with mixed nuts", properties: { definedBySourceUid: "hu:source:pubmed-29897866", patternKey: "meddiet-nuts-arm", version: "", definedBy: "PREDIMED (Estruch et al., NEJM 2018, arms as stated in the abstract)", patternKind: COMPOSITION, definitionScope: TRIAL_ARM, synonyms: ["MedDiet + nuts"] } }
+  - { uid: "hu:dietary-pattern:predimed-control-reduced-fat", type: D12.DietaryPattern, name: "PREDIMED control diet (advice to reduce dietary fat)", properties: { definedBySourceUid: "hu:source:pubmed-29897866", patternKey: "control-reduced-fat-arm", version: "", definedBy: "PREDIMED (Estruch et al., NEJM 2018, arms as stated in the abstract)", patternKind: COMPOSITION, definitionScope: TRIAL_ARM, synonyms: ["reduced-fat diet"] } }
+  - { uid: "hu:food:curated-extra-virgin-olive-oil", type: D12.FoodItem, name: "extra-virgin olive oil", properties: { descriptionVerbatim: "extra-virgin olive oil", definingSystem: CURATED, preparationMethod: NOT_STATED, variantKind: BASE, synonyms: ["EVOO"] }, note: "an EQUIVALENCE Assessment may later tie it to FDC 748608 or Phenol-Explorer records; not asserted here" }
+  - { uid: "hu:food:curated-mixed-nuts", type: D12.FoodItem, name: "mixed nuts", properties: { descriptionVerbatim: "mixed nuts", definingSystem: CURATED, preparationMethod: NOT_STATED, variantKind: BASE } }
+  - { uid: "hu:constituent:total-fat", type: D1.Constituent, name: "total fat (dietary fat)", owner: D1 }
+  - { uid: "hu:target:cardiometabolic-health", type: D5.Target, name: "cardiometabolic health", owner: D5, note: "vocab-targets.yaml lists 'major adverse cardiovascular events' as an example outcome" }
+  - { uid: "hu:claim:meddiet-evoo-or-nuts-lowers-major-cardiovascular-events", type: K.Claim, name: "A Mediterranean diet supplemented with extra-virgin olive oil or nuts lowers major cardiovascular events in people at high cardiovascular risk" }
+
+assertions:
+  - id: "hu:assertion:ft-d12-pred-01"
+    predicate: PATTERN_COMPONENT
+    assertionKind: RELATIONSHIP
+    edge: { type: PATTERN_COMPONENT, class: asserted, edgeProperties: AssertedRecordedProperties, temporal: recorded-only }
+    subject: { uid: "hu:dietary-pattern:predimed-meddiet-evoo", type: D12.DietaryPattern }
+    object: { uid: "hu:food:curated-extra-virgin-olive-oil", type: D12.FoodItem }
+    asserter: { uid: "hu:person:estruch-ramon", type: D7.Person }
+    locators:
+      - { ref: loc-p18-arms, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-p18-provision, role: SUPPORTS, origin: DECLARED }
+    valueString: EMPHASIZES
+    basisKind: UNSTATED
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: []
+    notes: ["role EMPHASIZES (valueString): the arm is 'supplemented with' EVOO and participants received free EVOO", "quantity not stated in the captured abstract (the protocol amount is in the full text, not captured)"]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-pred-02"
+    predicate: PATTERN_COMPONENT
+    assertionKind: RELATIONSHIP
+    edge: { type: PATTERN_COMPONENT, class: asserted, edgeProperties: AssertedRecordedProperties, temporal: recorded-only }
+    subject: { uid: "hu:dietary-pattern:predimed-meddiet-nuts", type: D12.DietaryPattern }
+    object: { uid: "hu:food:curated-mixed-nuts", type: D12.FoodItem }
+    asserter: { uid: "hu:person:estruch-ramon", type: D7.Person }
+    locators:
+      - { ref: loc-p18-arms, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-p18-provision, role: SUPPORTS, origin: DECLARED }
+    valueString: EMPHASIZES
+    basisKind: UNSTATED
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: []
+    notes: ["role EMPHASIZES (valueString): supplemented with mixed nuts; free provision"]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-pred-03"
+    predicate: PATTERN_COMPONENT
+    assertionKind: RELATIONSHIP
+    edge: { type: PATTERN_COMPONENT, class: asserted, edgeProperties: AssertedRecordedProperties, temporal: recorded-only }
+    subject: { uid: "hu:dietary-pattern:predimed-control-reduced-fat", type: D12.DietaryPattern }
+    object: { uid: "hu:constituent:total-fat", type: D1.Constituent }
+    asserter: { uid: "hu:person:estruch-ramon", type: D7.Person }
+    locators:
+      - { ref: loc-p18-arms, role: SUPPORTS, origin: DECLARED }
+    valueString: LIMITS
+    basisKind: UNSTATED
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: []
+    notes: ["role LIMITS (valueString): 'advice to reduce dietary fat'; no quantity stated", "the 2018 conclusion names this arm 'a reduced-fat diet'"]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  # ---- claim timeline (kernel records; D12 supplies the subject pattern and the target) ----
+  - id: "hu:assertion:ft-d12-pred-04"
+    predicate: IMPROVES_TARGET
+    assertionKind: CLAIM
+    claimType: CAUSAL
+    occurrenceOf: "hu:claim:meddiet-evoo-or-nuts-lowers-major-cardiovascular-events"
+    subject: { uid: "hu:dietary-pattern:predimed-meddiet-evoo", type: D12.DietaryPattern, note: "the occurrence names both supplemented arms; a second occurrence row for the nuts arm is implied and omitted for size" }
+    object: { uid: "hu:target:cardiometabolic-health", type: D5.Target }
+    asserter: { uid: "hu:person:estruch-ramon", type: D7.Person }
+    locators:
+      - { ref: loc-p13-conclusion, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-p13-hr, role: SUPPORTS, origin: DECLARED }
+    proposition: "a Mediterranean diet supplemented with extra-virgin olive oil or nuts reduced the incidence of major cardiovascular events"
+    basisKind: DIRECT_MEASUREMENT
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["population:hu:study-population:predimed", "outcomeVerbatim:major cardiovascular events", "hazardRatio:0.70", "ci95:0.54-0.92", "comparator:hu:dietary-pattern:predimed-control-reduced-fat"]
+    notes: ["population as stated: persons at high cardiovascular risk, no cardiovascular disease at enrollment (Spain)", "design as reported in 2013: randomized trial"]
+    validTime: { validFrom: "2013-02-25T00:00:00Z", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validFromLocator: loc-p13-epub, validTo: null }
+    status: PROPOSED
+    expectedAfterAdjudication: "ACCEPTED (capture fidelity: it is what the 2013 record says). The occurrence is never superseded by pred-07; what changes is the publication status of its source (pred-05) and the vetting verdict."
+    producedBy: *run
+
+  # ---- revision status: kernel predicate convention HAS_REVISION_STATUS, one Assertion per authority (K 04 Assertion
+  # docstring; K 09 ownership map) + the SourceSnapshot.revisionKind cache. Was PUBLICATION_STATUS before the review.
+  - id: "hu:assertion:ft-d12-pred-05"
+    predicate: HAS_REVISION_STATUS
+    owner: K (kernel predicate convention)
+    assertionKind: FIELD
+    subject: { uid: "hu:source:pubmed-23432189", type: K.Source }
+    object: null
+    asserter: { uid: "hu:org:nlm", type: D7.Organization, note: "authority PubMed" }
+    locators:
+      - { ref: loc-p13-pubtype, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-p13-retraction-in, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-notice-epub, role: QUALIFIES, origin: DECLARED }
+    valueString: RETRACTION
+    basisKind: UNSTATED
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["issueDate:2018-06-21", "retractionIn:PMID:29897867"]
+    notes: ["PubMed's record does not date its own status change; validFrom takes the notice's electronic date as a publication proxy. 2018-06-21 is the print issue date in the RetractionIn citation (qualifier only)."]
+    validTime: { validFrom: "2018-06-13T00:00:00Z", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validFromLocator: loc-notice-epub }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-pred-05b"
+    predicate: HAS_REVISION_STATUS
+    owner: K (kernel predicate convention)
+    assertionKind: FIELD
+    subject: { uid: "hu:source:pubmed-23432189", type: K.Source }
+    object: null
+    asserter: { uid: "hu:org:nejm", type: D7.Organization, note: "authority publisher (the notice itself)" }
+    locators:
+      - { ref: loc-notice-title, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-notice-pubtype, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-notice-epub, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-notice-issue, role: QUALIFIES, origin: DECLARED }
+    valueString: RETRACTION
+    basisKind: UNSTATED
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["issueDate:2018-06-21", "republishedAs:PMID:29897866"]
+    notes: ["the notice is titled 'Retraction and Republication' and cites the 2013 article (N Engl J Med 2013;368:1279-90); electronic ArticleDate 2018-06-13 = the republication's electronic date; PubMed entry date 2018-06-14"]
+    validTime: { validFrom: "2018-06-13T00:00:00Z", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validFromLocator: loc-notice-epub }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-pred-06"
+    predicate: HAS_REVISION_STATUS
+    owner: K (kernel predicate convention)
+    assertionKind: FIELD
+    subject: { uid: "hu:source:pubmed-29897866", type: K.Source }
+    object: null
+    asserter: { uid: "hu:org:nlm", type: D7.Organization, note: "authority PubMed" }
+    locators:
+      - { ref: loc-p18-pubtype, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-p18-withdrawn, role: SUPPORTS, origin: DECLARED }
+    valueString: CORRECTED_AND_REPUBLISHED
+    basisKind: UNSTATED
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["republishedFrom:PMID:23432189"]
+    validTime: { validFrom: "2018-06-13T00:00:00Z", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validFromLocator: loc-p18-epub }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-pred-07"
+    predicate: IMPROVES_TARGET
+    assertionKind: CLAIM
+    claimType: COMPARATIVE
+    occurrenceOf: "hu:claim:meddiet-evoo-or-nuts-lowers-major-cardiovascular-events"
+    subject: { uid: "hu:dietary-pattern:predimed-meddiet-evoo", type: D12.DietaryPattern }
+    object: { uid: "hu:target:cardiometabolic-health", type: D5.Target }
+    asserter: { uid: "hu:person:estruch-ramon", type: D7.Person }
+    locators:
+      - { ref: loc-p18-conclusion, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-p18-hr, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-p18-withdrawn, role: QUALIFIES, origin: DECLARED }
+    proposition: "the incidence of major cardiovascular events was lower among those assigned to a Mediterranean diet supplemented with extra-virgin olive oil or nuts than among those assigned to a reduced-fat diet"
+    basisKind: DIRECT_MEASUREMENT
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["population:hu:study-population:predimed", "outcomeVerbatim:major cardiovascular events", "hazardRatio:0.69", "ci95:0.53-0.91", "comparator:hu:dietary-pattern:predimed-control-reduced-fat"]
+    notes: ["intention-to-treat adjusted for baseline characteristics and propensity scores", "the authors no longer rely exclusively on the assumption that all participants were randomly assigned", "wording changes from causal ('reduced') to comparative ('was lower among those assigned')"]
+    validTime: { validFrom: "2018-06-13T00:00:00Z", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validFromLocator: loc-p18-epub }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+assessments:
+  - id: "hu:assessment:ft-d12-pred-vetting"
+    assessmentKind: VETTING
+    about: "hu:claim:meddiet-evoo-or-nuts-lowers-major-cardiovascular-events"
+    disposition: RESEARCH
+    derivedFrom: ["hu:assertion:ft-d12-pred-04", "hu:assertion:ft-d12-pred-05", "hu:assertion:ft-d12-pred-05b", "hu:assertion:ft-d12-pred-06", "hu:assertion:ft-d12-pred-07"]
+    producedBy: *run
+    expectedVerdictAsOf:
+      - { asOf: "2018-06-12", verdict: DIRECTLY_SUPPORTED, basis: "the 2013 occurrence is the only record; reported as a randomized trial" }
+      - { asOf: "2018-06-13", verdict: SUPPORTED_WITH_QUALIFICATION, basis: "the same day: the 2013 report is retracted (notice PMID 29897867, electronic 2018-06-13; print issue 2018-06-21) and republished with revised analyses not relying exclusively on randomization; causal wording withdrawn; effect estimates similar (HR 0.70 → 0.69); any answer citing loc-p13-conclusion must flag the retraction" }
+    note: "Disconfirmation of the causal wording and of the randomization claim, not of the direction: a test of the verdict lattice (Q-D12-10). Expected values for the fixture only. Adversarial review: the earlier 2018-06-21 row is merged into 2018-06-13 (no 'republished but not yet retracted' window existed)."
+
+relationshipsExercised:
+  PATTERN_COMPONENT: ["hu:assertion:ft-d12-pred-01 (EMPHASIZES EVOO)", "hu:assertion:ft-d12-pred-02 (EMPHASIZES mixed nuts)", "hu:assertion:ft-d12-pred-03 (LIMITS total fat)"]
+  predicateOnly: { IMPROVES_TARGET: ["hu:assertion:ft-d12-pred-04 (2013 occurrence)", "hu:assertion:ft-d12-pred-07 (2018 occurrence)"], HAS_REVISION_STATUS: ["hu:assertion:ft-d12-pred-05 (PubMed)", "hu:assertion:ft-d12-pred-05b (NEJM notice)", "hu:assertion:ft-d12-pred-06 (PubMed, republication)"] }
+  seams: { "K Claim / OCCURRENCE_OF / Assessment VETTING": ["hu:assertion:ft-d12-pred-04", "hu:assertion:ft-d12-pred-07", "hu:assessment:ft-d12-pred-vetting"], "D3 ADMINISTERS (StudyArm → DietaryPattern)": "not written (D3 owns)" }

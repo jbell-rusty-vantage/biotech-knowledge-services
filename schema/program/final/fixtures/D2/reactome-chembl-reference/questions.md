@@ -1,0 +1,12 @@
+# reactome-chembl-reference — questions answered
+
+Fixture records: `assertions.yaml` (reference entities, asserted PART_OF_MECHANISM and PARTICIPATES_IN edges with their authorizing Assertions A-r-ref-01..14, A-r-01, ADJ-r-01, one derived edge), `locators.yaml` (L-r-01..18). Research, not medical advice.
+
+| question | expected answer from this fixture |
+| --- | --- |
+| Q-D2-11 | Curated players of Nicotinate metabolism (Reactome R-HSA-196807.8, database version 97): NAMPT (P43490), NMNAT1 (Q9HAN9) and the D1 metabolites NAD+ (ChEBI:57540), NAAD (ChEBI:58437), nicotinamide riboside (ChEBI:15927), all role MEMBER (the referenceEntities endpoint gives no per-reaction role). MTOR signalling (R-HSA-165159.10): FKBP1A (P62942), MTOR (P42345) and the substance sirolimus. Each row carries `assertionUid` (A-r-ref-07..14, asserter Reactome) → its JSON_POINTER locator (L-r-05..13). |
+| Q-D2-08 | ChEMBL 37: sirolimus (CHEMBL413) "FK506-binding protein 1A inhibitor", action INHIBITOR, target CHEMBL1902, ChEMBL's own reference a DailyMed label section (A-r-01). Marketing usually says "mTOR inhibitor"; the graph holds the two-step chain sirolimus INHIBITS FKBP1A (A-r-01, an Assertion; no stored compound → target edge since the adversarial review) and FKBP1A PARTICIPATES_IN MTOR signalling (A-r-ref-09) without a MechanismChain node. |
+| Q-D2-12 | Hallmark mapping (BELLLABS_CURATED, asserted by the curator agent A-r-ref-04..06 with basis CURATOR_CLASSIFICATION (R-26); vocabulary from PMID 36599349; the mapping's own curation-record locator is not captured, 11 item 12): MTOR signalling → deregulated nutrient-sensing; mitochondrial respiration → mitochondrial dysfunction; cellular senescence → cellular senescence. Nicotinate metabolism: no curated hallmark mapping (expected answer: "not mapped"). |
+| Q-D2-02 | Compounds acting on MTOR signalling: sirolimus, DECREASED, via participant FKBP1A, bestBasis CITED_FROM_PRIOR_WORK, highestSetting none (no measured context). Reactome's own listing of sirolimus as a participant is structural and is not counted. |
+| Q-D2-19 | Co-membership candidates (query-time, suggestion only): substances that share R-HSA-165159 with MTOR (sirolimus) or R-HSA-196807 with NAMPT/NMNAT1 (NR, NAD+, NAAD). Never written as an edge. |
+| CQ-MX-05 | sirolimus → MTOR signalling (projection via participant FKBP1A) rests only on a curated citation (CITED_FROM_PRIOR_WORK, humanMeasured false). |

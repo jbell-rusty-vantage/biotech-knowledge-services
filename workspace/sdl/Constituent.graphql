@@ -1,0 +1,30 @@
+"""
+Purpose: a component concept with no single defined structure — a NUTRIENT with its own declaration convention
+("vitamin B6" = six vitamers, declared "as pyridoxine"; "magnesium" as elemental Mg), a CHEMICAL_CLASS ("total
+withanolides"), an ANALYTICAL_MEASURAND ("flavonoids calculated as flavone glycosides") or a NON_SPECIFIC_FRACTION. It is
+the join point for nutrient-basis harm thresholds (TGA B6 > 50 mg per maximum daily dose; UL 100 mg), for "every form of
+M" expansion, for marker standardization and for food composition (D12). Absorbs the pinned Nutrient node.
+Identity rule: (constituentKind, normalized name); nutrients by the authority nutrient list they are declared under
+(21 CFR 101.9 / 101.36 nutrient names; NIH ODS); classes by ChEBI class id when one exists (identifier through the
+kernel).
+uid token: `constituent` (hu:constituent:<opaque>; pinned hu:nutrient: uids migrate here).
+Questions: CQ-PF-01, Q-D1-02, Q-D1-03, Q-D1-04, CQ-ID-03, Q-D1-13, Q-D1-19, Q-D1-20, Q-D1-22, Q-D1-28.
+"""
+type Constituent implements Entity & Subjectable
+  @node(labels: ["Constituent", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  constituentKind: ConstituentKind!
+  nutrientKind: NutrientKind
+  "UCUM unit the nutrient is conventionally declared in ('mg', 'ug{RAE}', 'mg{NE}', 'ug{DFE}'); NUTRIENT only."
+  referenceUnitCode: String
+  "Names and label spellings joined for the fulltext index d1_identity_fulltext (Q-D1-26)."
+  searchText: String
+}

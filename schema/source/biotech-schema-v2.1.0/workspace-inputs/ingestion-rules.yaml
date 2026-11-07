@@ -1,0 +1,131 @@
+# Ingestion rules, release biotech-schema-v2.0.0 (hand-authored upstream; FU-09): what the deterministic planner
+# enforces when it compiles an intent into Cypher, written as data so the skill, the workspace pages and the executor
+# cite the same text. Relationship types, edge-property profiles and their fields are validated against the release
+# SDL at build time. The class of a relationship type is the relationship register's (validation-params assertedTypes /
+# structuralTypes / derivedTypes); executor permissions per node type are the node register's mutations.executor
+# (validation-params executorOps); GraphQL @mutation flags grant nothing (OD-03, L2).
+version: 2
+
+relationshipClasses:
+  asserted:
+    rule: >-
+      One Assertion per episode (assertionKind RELATIONSHIP, predicate = the edge type, ASSERTED_BY, HAS_SUBJECT,
+      HAS_OBJECT). The edge carries relationshipUid, assertionUid and recordedFrom; episode types (AssertedEdgeProperties
+      and module episode profiles) also carry the validity copied from the Assertion. At least one HAS_EVIDENCE
+      {role: SUPPORTS} to a SourceLocator. Exclusive types reject an overlapping episode of the same asserter only.
+    proposalKind: edge.assert
+  structural:
+    rule: >-
+      Containment, curated reference links and provenance plumbing. No Assertion is minted; evidence is optional but
+      recorded on the plan when given. Only creatable on node types whose register executorOps allow the write.
+    proposalKind: edge.structural
+  derived:
+    rule: >-
+      Regenerable projections (mechanism projection, chunk mentions, associations, constraint resolution). Read-only
+      for intents; the projection Activity writes them with projectionOfAssertionUid / derivationRule / derivedAt. A
+      proposal naming a derived type is rejected with DERIVED_EDGE_READ_ONLY.
+    proposalKind: null
+
+# Kernel relationship types the planner itself emits as part of other proposals (never proposed by an author).
+kernelPlumbing:
+  assertionSubject: HAS_SUBJECT
+  assertionObject: HAS_OBJECT
+  assertionAsserter: ASSERTED_BY
+  assertionSupport: HAS_EVIDENCE
+  assertionGeneratedBy: WAS_GENERATED_BY
+  claimOccurrence: OCCURRENCE_OF
+  assessmentTarget: ASSESSES
+  derivationInput: DERIVED_FROM
+  sourceSnapshot: HAS_SNAPSHOT
+  snapshotLocator: HAS_LOCATOR
+  identifierLink: HAS_IDENTIFIER
+  activityAgent: WAS_ASSOCIATED_WITH
+  activityInformedBy: WAS_INFORMED_BY
+
+# Edge-property profiles and the properties the executor fills at write time; everything else comes from the proposal.
+# recordedTo is written once by edge.close; lastWriterRunId replaces v1 mongoResearchRunId.
+edgeProfiles:
+  AssertedEdgeProperties:
+    executorSets: [relationshipUid, assertionUid, validFrom, validTo, validFromPrecision, validToPrecision, validFromBasis, validToBasis, recordedFrom, lastWriterRunId]
+  AssertedRecordedProperties:
+    executorSets: [relationshipUid, assertionUid, recordedFrom, lastWriterRunId]
+  IdentifierLinkProperties:
+    executorSets: [relationshipUid, assertionUid, validFrom, validTo, validFromPrecision, validToPrecision, validFromBasis, validToBasis, recordedFrom, lastWriterRunId]
+  StructuralEdgeProperties:
+    executorSets: [lastWriterRunId]
+  EvidenceEdgeProperties:
+    executorSets: [lastWriterRunId]
+  DerivedEdgeProperties:
+    executorSets: [projectionOfAssertionUid, derivationRule, derivedFromAssertionUids, derivedFromAssessmentUids, derivedAt, lastWriterRunId]
+  AppearanceEdgeProperties:
+    executorSets: [relationshipUid, assertionUid, recordedFrom, lastWriterRunId]
+  ComponentLineProperties:
+    executorSets: [relationshipUid, assertionUid, recordedFrom, lastWriterRunId]
+  ContentEdgeProperties:
+    executorSets: [relationshipUid, assertionUid, validFrom, validTo, validFromPrecision, validToPrecision, validFromBasis, validToBasis, recordedFrom, lastWriterRunId]
+  ControlEdgeProperties:
+    executorSets: [relationshipUid, assertionUid, validFrom, validTo, validFromPrecision, validToPrecision, validFromBasis, validToBasis, recordedFrom, lastWriterRunId]
+  EventRoleEdgeProperties:
+    executorSets: [relationshipUid, assertionUid, recordedFrom, lastWriterRunId]
+  ExposureRoleProperties:
+    executorSets: [lastWriterRunId]
+  FoodContentProperties:
+    executorSets: [relationshipUid, assertionUid, recordedFrom, lastWriterRunId]
+  MechanismProjectionProperties:
+    executorSets: [projectionOfAssertionUid, derivationRule, derivedFromAssertionUids, derivedFromAssessmentUids, derivedAt, lastWriterRunId]
+  MechanismReferenceProperties:
+    executorSets: [relationshipUid, assertionUid, recordedFrom, lastWriterRunId]
+  RevisionEdgeProperties:
+    executorSets: [relationshipUid, assertionUid, recordedFrom, lastWriterRunId]
+  RoleEdgeProperties:
+    executorSets: [relationshipUid, assertionUid, validFrom, validTo, validFromPrecision, validToPrecision, validFromBasis, validToBasis, recordedFrom, lastWriterRunId]
+  StakeEdgeProperties:
+    executorSets: [relationshipUid, assertionUid, validFrom, validTo, validFromPrecision, validToPrecision, validFromBasis, validToBasis, recordedFrom, lastWriterRunId]
+  StudyRoleEdgeProperties:
+    executorSets: [relationshipUid, assertionUid, validFrom, validTo, validFromPrecision, validToPrecision, validFromBasis, validToBasis, recordedFrom, lastWriterRunId]
+  ValueEdgeProperties:
+    executorSets: [relationshipUid, assertionUid, validFrom, validTo, validFromPrecision, validToPrecision, validFromBasis, validToBasis, recordedFrom, lastWriterRunId]
+
+# Defaults the planner applies when the proposal is silent (values are v2 enum values of the kernel).
+assertionDefaults:
+  status: EXTRACTED          # captured, unadjudicated (KN-15); ACCEPTED only through a CAPTURE_FIDELITY Adjudication
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  assertionKindForEdges: RELATIONSHIP
+  validFromBasis: UNKNOWN    # when validFrom is null and no basis is stated
+  validToBasis: UNKNOWN
+  precisionWhenBoundGiven: DAY
+
+nodeDefaults:
+  privacyClass: PUBLIC
+
+uid:
+  pattern: "hu:<token>:<opaque>"
+  tokenSource: validation/validation-params.json#uidTypeTokens
+  slug: lowercase, ascii, hyphen-separated, max 80 chars; collisions get a short digest suffix
+  mintedBy:
+    assertion: "hu:assertion:<proposalId>-<intentDigest8>"
+    relationship: "hu:rel:<TYPE-lowercase>-<intentDigest8>-<n>"
+    identifier: "hu:identifier:<scheme-lowercase>-<normalized-value-slug>"
+    activity: "hu:activity:<externalRunSystem>-<runId-slug>"
+    source: "hu:source:<canonical-uri-digest>"
+    snapshot: "hu:snapshot:<sourceSlug>-<contentHash8>"
+    locator: "hu:locator:<snapshotSlug>-<selectorDigest8>"
+    assessment: "hu:assessment:<kind-lowercase>-<inputSetDigest8>"
+    adjudication: "hu:adjudication:<judgmentId-slug>"
+    report: "hu:report:<reportKind-lowercase>-<bodyDigest8>"
+
+deny:
+  - DELETE and DETACH DELETE never appear in a compiled knowledge-agent plan (projection jobs may delete only unreferenced regenerable records, register executorOps delete / delete-unreferenced).
+  - No proposal rewrites uid, id, createdAt, recordedAt, recordedFrom or any @timestamp / @id property.
+  - "No proposal sets a property that the schema marks @settable(onUpdate: false) on an existing node."
+  - No proposal targets a relationship type of class derived.
+  - No private-personal uid prefix (hu:private-, urn:hu:private, hu:user-context:, ...) is ever written to the shared graph.
+  - No node is created or updated unless the node register's executorOps for its type allow the operation (GraphQL @mutation is irrelevant).
+  - No predicate outside vocabularies/predicates.yaml status registered is written; alias-of names are re-keyed first, retired and unknown names are rejected.
+  - No identifier scheme with writeStatus disabled is attached.
+  - No qualifier name outside vocabularies/qualifiers.yaml is written.
+  - No knowledge-agent proposal writes an operational name of rules/operational-names.yaml (LegacyV0, LegacyV0_<Label>, MIGRATED_FROM, legacyLabels, legacyExportDigest, legacy:* qualifiers, Ks* markers); only the migrator and executor internals write them, under the KsWriteFence.
+
+forbiddenImplicationsSource: validation/validation-params.json#implicationPairs

@@ -1,0 +1,53 @@
+"""
+Purpose: one curated research or therapeutic frontier — a field-level goal the community and investors track and that
+is not yet reliably achieved in humans ("senolytics in humans", "partial epigenetic reprogramming", "curing pancreatic
+cancer", "MASH fibrosis resolution"). The bucket every frontier question groups, filters and ranks by; events and
+studies attach to it by the asserted ON_FRONTIER classification; organizations, compounds and claims reach it only
+through events, studies and the kernel subject pattern (vocab-frontiers.yaml section 8). About 25 nodes, created only
+from vocab-frontiers.yaml by a vocabulary version bump.
+Not stored here: progress, stage, "furthest milestone", breakthrough or hype flags, success probability, market size
+(computed from ON_FRONTIER events, or Assessments/Reports about the Frontier), lists of organizations or compounds.
+Hierarchy is the property parentKey (two levels), relevance to D5 targets is the property targetKeys (D5 keys,
+vocabulary-to-vocabulary relevance, never an effect claim); neither spends a relationship type. `name` holds the
+vocabulary label.
+Identity rule: `key` (vocabulary id, e.g. frontier:senolytics-in-humans), never reused or renamed; a DEPRECATED
+frontier names its successor in replacedBy. External close matches (Wikidata QIDs of anchor concepts) are kernel
+Identifiers on the anchor entities, not on the Frontier.
+uid token: `frontier` (hu:frontier:<slug>, slug = key without the `frontier:` prefix).
+Questions: Q-D13-01, Q-D13-02, Q-D13-03, Q-D13-04, Q-D13-08, Q-D13-09, Q-D13-16, Q-D13-23, Q-D13-28, Q-D13-29, Q-D13-30.
+"""
+type Frontier implements Entity & Subjectable
+  @node(labels: ["Frontier", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Stable vocabulary key (frontier:<slug>); unique."
+  key: String!
+  "One paragraph: the goal, phrased as a capability not yet reliably achieved."
+  definition: String! @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "1 = theme, 2 = frontier (two levels only)."
+  level: Int!
+  "Key of the level-1 theme; null at level 1."
+  parentKey: String
+  granularity: FrontierGranularity!
+  "Feeds the fulltext index FrontierSearch(name, synonyms, definition) used to entity-link frontier phrases."
+  synonyms: [String!] @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "D5 target keys (packets/D5/vocab-targets.yaml) this frontier is relevant to; Q-D13-09 filters with IN."
+  targetKeys: [String!]
+  curationStatus: FrontierCurationStatus!
+  "Successor key when DEPRECATED."
+  replacedBy: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "vocab-frontiers.yaml version at creation or last edit."
+  vocabVersion: String! @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+
+  """class: asserted; cardinality: many (D3 Study → Frontier, declared here with direction IN so ON_FRONTIER stays one D13-owned relationship type and D3 Study spends no field; same classification Assertion rules as Event.frontiers); questions: Q-D13-02, Q-D13-03, Q-D13-16."""
+  studies: [Study!]!
+    @relationship(type: "ON_FRONTIER", direction: IN, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

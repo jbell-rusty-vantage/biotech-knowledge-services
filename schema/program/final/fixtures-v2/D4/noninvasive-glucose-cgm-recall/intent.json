@@ -1,0 +1,767 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v2",
+  "intentId": "ft-d4-gluc-2026-10-08",
+  "pins": {
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+    "policyVersion": "bks-admission-policy/v1"
+  },
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "ft-d4-fixtures-agent-a3",
+      "model": "claude-opus-5-5"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run:ft-D4-noninvasive-glucose-cgm-recall",
+      "missionId": "mission:ft-D4-fixtures"
+    },
+    "activityKind": "INGESTION"
+  },
+  "basis": {
+    "creationOnly": {
+      "reason": "FU-03 v2 fixture round: replay of a packet fixture into a graph without a prior custody snapshot",
+      "expectAbsent": [],
+      "expectPresent": []
+    }
+  },
+  "defaults": {
+    "privacyClass": "PUBLIC"
+  },
+  "sources": [
+    {
+      "ref": "snap-fda",
+      "source": {
+        "canonicalUri": "https://www.fda.gov/medical-devices/safety-communications/do-not-use-smartwatches-or-smart-rings-measure-blood-glucose-levels-fda-safety-communication",
+        "title": "FDA - Do Not Use Smartwatches or Smart Rings to Measure Blood Glucose Levels: FDA Safety Communication (2024-02-21)",
+        "sourceKind": "WEB_PAGE",
+        "genre": "REGULATOR_SAFETY_COMMUNICATION"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T17:40:00-04:00",
+        "observedAt": "2026-10-08T17:40:00-04:00",
+        "contentHash": "sha256:a406e0fb4dca30ab1f1916e417146ea39be3a2a2343f875039db9b67e98edb8f",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "Firecrawl CLI 1.23.1 scrape --only-main-content --max-age 0 (found with Tavily CLI search in the research stage)",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "text/markdown",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "f1-date",
+          "uid": "hu:locator:ft-d4-gluc-f1-date",
+          "selectorKind": "CHARACTER_POSITION",
+          "selector": {
+            "end": 2292,
+            "offsetBasis": "Unicode code points of the UTF-8 Firecrawl markdown capture",
+            "start": 2262,
+            "type": "TextPositionSelector",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Date Issued: February 21, 2024",
+          "prefix": "asyon sa Kaligtasan ng FDA\")\n\n**",
+          "suffix": "**\n\nThe U.S. Food and Drug Admin",
+          "startOffset": 2262,
+          "endOffset": 2292
+        },
+        {
+          "ref": "f2-not-authorized",
+          "uid": "hu:locator:ft-d4-gluc-f2-not-authorized",
+          "selectorKind": "CHARACTER_POSITION",
+          "selector": {
+            "end": 2898,
+            "offsetBasis": "Unicode code points of the UTF-8 Firecrawl markdown capture",
+            "start": 2748,
+            "type": "TextPositionSelector",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "The FDA has not authorized, cleared, or approved any smartwatch or smart ring that is intended to measure or estimate blood glucose values on its own.",
+          "prefix": "cose monitoring devices (CGMs). ",
+          "suffix": "\n\nFor people with diabetes, inac",
+          "startOffset": 2748,
+          "endOffset": 2898
+        },
+        {
+          "ref": "f3-hypoglycaemia",
+          "uid": "hu:locator:ft-d4-gluc-f3-hypoglycaemia",
+          "selectorKind": "CHARACTER_POSITION",
+          "selector": {
+            "end": 3277,
+            "offsetBasis": "Unicode code points of the UTF-8 Firecrawl markdown capture",
+            "start": 3125,
+            "type": "TextPositionSelector",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Taking too much of these medications can quickly lead to dangerously low glucose, leading to mental confusion, coma, or death within hours of the error.",
+          "prefix": "an rapidly lower blood glucose. ",
+          "suffix": "\n\n## Recommendations for Consume",
+          "startOffset": 3125,
+          "endOffset": 3277
+        },
+        {
+          "ref": "f4-seller-claim",
+          "uid": "hu:locator:ft-d4-gluc-f4-seller-claim",
+          "selectorKind": "CHARACTER_POSITION",
+          "selector": {
+            "end": 4373,
+            "offsetBasis": "Unicode code points of the UTF-8 Firecrawl markdown capture",
+            "start": 4212,
+            "type": "TextPositionSelector",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Sellers of these smartwatches and smart rings claim their devices measure blood glucose levels without requiring people to prick their finger or pierce the skin.",
+          "prefix": "needed.\n\n## Device Description\n\n",
+          "suffix": " They claim to use non-invasive ",
+          "startOffset": 4212,
+          "endOffset": 4373
+        },
+        {
+          "ref": "f5-no-direct-test",
+          "uid": "hu:locator:ft-d4-gluc-f5-no-direct-test",
+          "selectorKind": "CHARACTER_POSITION",
+          "selector": {
+            "end": 4494,
+            "offsetBasis": "Unicode code points of the UTF-8 Firecrawl markdown capture",
+            "start": 4417,
+            "type": "TextPositionSelector",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "These smartwatches and smart rings do not directly test blood glucose levels.",
+          "prefix": "to use non-invasive techniques. ",
+          "suffix": "\n\nThese smartwatches and smart r",
+          "startOffset": 4417,
+          "endOffset": 4494
+        },
+        {
+          "ref": "f6-scope",
+          "uid": "hu:locator:ft-d4-gluc-f6-scope",
+          "selectorKind": "CHARACTER_POSITION",
+          "selector": {
+            "end": 6373,
+            "offsetBasis": "Unicode code points of the UTF-8 Firecrawl markdown capture",
+            "start": 6278,
+            "type": "TextPositionSelector",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Any smartwatch or smart ring, regardless of brand, that claims to measure blood glucose levels.",
+          "prefix": "796-7100.\n\n## Affected Devices\n\n",
+          "suffix": "\n\n### Success\n\nThank you. Your f",
+          "startOffset": 6278,
+          "endOffset": 6373
+        }
+      ]
+    },
+    {
+      "ref": "snap-openfda",
+      "source": {
+        "canonicalUri": "https://api.fda.gov/device/recall.json?search=product_description:%22FreeStyle+Libre+3%22&limit=3",
+        "title": "openFDA device recall API - FreeStyle Libre 3 (3 records; meta.last_updated 2026-10-05)",
+        "sourceKind": "API",
+        "genre": "REGULATOR_RECORD"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T17:39:00-04:00",
+        "observedAt": "2026-10-08T17:39:00-04:00",
+        "contentHash": "sha256:4a16676ef1ddb4c15725332f830ba0fb94715a0262fcce58b84cf905d81de6bc",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "curl openFDA device/recall (no API key)",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "o1-product",
+          "uid": "hu:locator:ft-d4-gluc-o1-product",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "pointer": "/results/1/product_description",
+            "refinedBy": {
+              "end": 173,
+              "offsetBasis": "Unicode code points of the decoded JSON string value at pointer",
+              "start": 67,
+              "type": "TextPositionSelector"
+            },
+            "type": "JsonPointerSelector"
+          },
+          "exact": "The FreeStyle Libre 3 sensor is a component of the FreeStyle Libre 3 Continuous Glucose Monitoring System.",
+          "prefix": "01\nUDI-DI code: 00357599818005\n\n",
+          "suffix": "",
+          "startOffset": 67,
+          "endOffset": 173
+        },
+        {
+          "ref": "o2-udi",
+          "uid": "hu:locator:ft-d4-gluc-o2-udi",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "pointer": "/results/1/product_description",
+            "refinedBy": {
+              "end": 65,
+              "offsetBasis": "Unicode code points of the decoded JSON string value at pointer",
+              "start": 38,
+              "type": "TextPositionSelector"
+            },
+            "type": "JsonPointerSelector"
+          },
+          "exact": "UDI-DI code: 00357599818005",
+          "prefix": "yle Libre 3 Sensor REF 72081-01\n",
+          "suffix": "\n\nThe FreeStyle Libre 3 sensor i",
+          "startOffset": 38,
+          "endOffset": 65
+        },
+        {
+          "ref": "o3-reason",
+          "uid": "hu:locator:ft-d4-gluc-o3-reason",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "pointer": "/results/1/reason_for_recall",
+            "refinedBy": {
+              "end": 130,
+              "offsetBasis": "Unicode code points of the decoded JSON string value at pointer",
+              "start": 0,
+              "type": "TextPositionSelector"
+            },
+            "type": "JsonPointerSelector"
+          },
+          "exact": "Due to a manufacturing process issue that may cause carbon build up in the sensor that may result in incorrect low glucose results",
+          "prefix": "",
+          "suffix": "",
+          "startOffset": 0,
+          "endOffset": 130
+        },
+        {
+          "ref": "o4-initiated",
+          "uid": "hu:locator:ft-d4-gluc-o4-initiated",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "pointer": "/results/1/event_date_initiated",
+            "refinedBy": {
+              "end": 10,
+              "offsetBasis": "Unicode code points of the decoded JSON string value at pointer",
+              "start": 0,
+              "type": "TextPositionSelector"
+            },
+            "type": "JsonPointerSelector"
+          },
+          "exact": "2025-11-24",
+          "prefix": "",
+          "suffix": "",
+          "startOffset": 0,
+          "endOffset": 10
+        },
+        {
+          "ref": "o5-k-number",
+          "uid": "hu:locator:ft-d4-gluc-o5-k-number",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "pointer": "/results/1/k_numbers/0",
+            "refinedBy": {
+              "end": 7,
+              "offsetBasis": "Unicode code points of the decoded JSON string value at pointer",
+              "start": 0,
+              "type": "TextPositionSelector"
+            },
+            "type": "JsonPointerSelector"
+          },
+          "exact": "K212132",
+          "prefix": "",
+          "suffix": "",
+          "startOffset": 0,
+          "endOffset": 7
+        },
+        {
+          "ref": "o6-readings",
+          "uid": "hu:locator:ft-d4-gluc-o6-readings",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "pointer": "/results/1/action",
+            "refinedBy": {
+              "end": 257,
+              "offsetBasis": "Unicode code points of the decoded JSON string value at pointer",
+              "start": 158,
+              "type": "TextPositionSelector"
+            },
+            "type": "JsonPointerSelector"
+          },
+          "exact": "certain FreeStyle Libre 3 and FreeStyle Libre 3 Plus sensors provide incorrect low glucose readings",
+          "prefix": "tt has recently identified that ",
+          "suffix": ". We learned about this through ",
+          "startOffset": 158,
+          "endOffset": 257
+        },
+        {
+          "ref": "o7-root-cause",
+          "uid": "hu:locator:ft-d4-gluc-o7-root-cause",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "pointer": "/results/1/root_cause_description",
+            "refinedBy": {
+              "end": 15,
+              "offsetBasis": "Unicode code points of the decoded JSON string value at pointer",
+              "start": 0,
+              "type": "TextPositionSelector"
+            },
+            "type": "JsonPointerSelector"
+          },
+          "exact": "Process control",
+          "prefix": "",
+          "suffix": "",
+          "startOffset": 0,
+          "endOffset": 15
+        },
+        {
+          "ref": "o8-recall-number",
+          "uid": "hu:locator:ft-d4-gluc-o8-recall-number",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "pointer": "/results/1/product_res_number",
+            "refinedBy": {
+              "end": 11,
+              "offsetBasis": "Unicode code points of the decoded JSON string value at pointer",
+              "start": 0,
+              "type": "TextPositionSelector"
+            },
+            "type": "JsonPointerSelector"
+          },
+          "exact": "Z-1020-2026",
+          "prefix": "",
+          "suffix": "",
+          "startOffset": 0,
+          "endOffset": 11
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "claim-noninvasive-glucose",
+      "mode": "new",
+      "nodeType": "Claim",
+      "name": "Smartwatches or smart rings measure blood glucose without piercing the skin",
+      "uidSegment": "smartwatch-ring-measures-blood-glucose-noninvasively",
+      "properties": {
+        "proposition": "A smartwatch or smart ring measures blood glucose levels without piercing the skin (non-invasively, on its own).",
+        "claimType": "CAPABILITY"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "metric-glucose-blood",
+      "mode": "new",
+      "nodeType": "Metric",
+      "name": "Glucose concentration in blood",
+      "uidSegment": "glucose-in-blood",
+      "properties": {
+        "metricKind": "MEASURAND",
+        "defaultResultKind": "MEASURED",
+        "definitionSource": "BELLLABS",
+        "systemText": "Bld",
+        "scale": "QUANTITATIVE",
+        "notReported": [
+          "UNIT"
+        ],
+        "searchText": "blood glucose, blood sugar"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "metric-glucose-cgm",
+      "mode": "new",
+      "nodeType": "Metric",
+      "name": "Glucose reading of the FreeStyle Libre 3 sensor (interstitial, device estimate)",
+      "uidSegment": "glucose-interstitial-cgm-estimate-abbott-libre3",
+      "properties": {
+        "metricKind": "DEVICE_ESTIMATE",
+        "defaultResultKind": "INFERRED",
+        "definitionSource": "VENDOR",
+        "definitionIssuerName": "Abbott Diabetes Care",
+        "systemText": "interstitial fluid (CGM sensor)",
+        "scale": "QUANTITATIVE",
+        "notReported": [
+          "UNIT",
+          "METRIC_METHOD"
+        ]
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "device-libre3-sensor",
+      "mode": "new",
+      "nodeType": "Device",
+      "name": "FreeStyle Libre 3 Sensor (REF 72081-01)",
+      "uidSegment": "abbott-freestyle-libre-3-sensor",
+      "properties": {
+        "deviceKind": "CGM_SENSOR",
+        "sensingModalities": [
+          "ELECTROCHEMICAL_GLUCOSE"
+        ],
+        "deviceFamily": "FreeStyle Libre",
+        "generationLabel": "3",
+        "makerName": "Abbott Diabetes Care, Inc."
+      },
+      "identifiers": [
+        {
+          "scheme": "UDI_DI",
+          "issuer": "GS1 (as printed in the FDA recall record)",
+          "value": "00357599818005"
+        },
+        {
+          "scheme": "FDA_510K",
+          "issuer": "FDA",
+          "value": "K212132"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "product-libre3-system",
+      "mode": "new",
+      "nodeType": "Product",
+      "name": "FreeStyle Libre 3 Continuous Glucose Monitoring System",
+      "uidSegment": "abbott-freestyle-libre-3-cgm-system",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "av-libre3-glucose",
+      "mode": "new",
+      "nodeType": "AlgorithmVersion",
+      "name": "FreeStyle Libre 3 sensor glucose estimation (software state not stated)",
+      "uidSegment": "abbott-libre3-glucose-estimation-unversioned",
+      "properties": {
+        "algorithmFamily": "FreeStyle Libre glucose estimation",
+        "familyKey": "abbott-libre-glucose",
+        "algorithmKind": "SIGNAL_PROCESSING",
+        "realization": "DEVICE_SOFTWARE",
+        "versionBasis": "UNKNOWN",
+        "outputKind": "FEATURE_MEASURE",
+        "componentLabel": "glucose reading",
+        "notReported": [
+          "VERSION_LABEL",
+          "SOFTWARE_VERSION",
+          "FIRMWARE_VERSION"
+        ]
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "org-fda",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "U.S. Food and Drug Administration",
+      "uidSegment": "us-fda",
+      "properties": {
+        "entityKind": "UNSPECIFIED"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "org-abbott",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "Abbott Diabetes Care, Inc.",
+      "uidSegment": "abbott-diabetes-care",
+      "properties": {
+        "entityKind": "UNSPECIFIED"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "agent-curation",
+      "mode": "new",
+      "nodeType": "Agent",
+      "name": "BellLabs D4 curation agent",
+      "uidSegment": "bks-curation-d4",
+      "properties": {
+        "agentKind": "AUTOMATED_AGENT"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "p01-c01",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "claim-noninvasive-glucose",
+      "assertion": {
+        "polarity": "NEGATIVE",
+        "speechAct": "STATES",
+        "basisKind": "EXPERT_OPINION",
+        "qualifiers": [],
+        "validity": {
+          "validFrom": "2024-02-21T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE"
+        },
+        "predicate": "RATES_CLAIM"
+      },
+      "value": {
+        "valueString": "NOT_AUTHORIZED: not authorized, cleared, or approved (any smartwatch or smart ring, on its own)"
+      },
+      "evidence": [
+        "f2-not-authorized",
+        "f4-seller-claim",
+        "f6-scope",
+        "f1-date"
+      ],
+      "asserterRef": "org-fda"
+    },
+    {
+      "proposalId": "p02-c02",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "claim-noninvasive-glucose",
+      "assertion": {
+        "polarity": "NEGATIVE",
+        "speechAct": "STATES",
+        "basisKind": "EXPERT_OPINION",
+        "qualifiers": [],
+        "validity": {
+          "validFrom": "2024-02-21T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE"
+        },
+        "predicate": "RATES_CLAIM"
+      },
+      "value": {
+        "valueString": "CAPABILITY_DENIED: these devices do not directly test blood glucose levels"
+      },
+      "evidence": [
+        "f5-no-direct-test"
+      ],
+      "asserterRef": "org-fda"
+    },
+    {
+      "proposalId": "p03-c03",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "claim-noninvasive-glucose",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "CAUTIONS",
+        "basisKind": "EXPERT_OPINION",
+        "qualifiers": [],
+        "validity": {
+          "validFrom": "2024-02-21T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE"
+        },
+        "predicate": "RATES_CLAIM"
+      },
+      "value": {
+        "valueString": "HARMFUL_IF_RELIED_ON: inaccurate readings -> wrong medication dose -> dangerously low glucose, confusion, coma or death"
+      },
+      "evidence": [
+        "f3-hypoglycaemia"
+      ],
+      "asserterRef": "org-fda"
+    },
+    {
+      "proposalId": "p04-c04",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "DELIVERS",
+      "fromRef": "product-libre3-system",
+      "toRef": "device-libre3-sensor",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "MANUFACTURER_CLAIM",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "OBSERVATION_ONLY",
+          "validObservedAt": "2026-10-05T00:00:00Z",
+          "validObservedAtPrecision": "DAY"
+        }
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "o1-product"
+      ],
+      "asserterRef": "org-abbott",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: SUBJECT_CONFLICT: product-libre3-system (REQUIRED_PROPERTY_MISSING: Product.productKind, marketedName)"
+      }
+    },
+    {
+      "proposalId": "p05-c05",
+      "rationale": "Lets a recall on the device reach every glucose value the device produced (Q-D4-09).",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "RUNS_ON_DEVICE",
+      "fromRef": "av-libre3-glucose",
+      "toRef": "device-libre3-sensor",
+      "assertion": {
+        "speechAct": "STATES",
+        "basisKind": "CALCULATED",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        }
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "o6-readings",
+        "o1-product"
+      ],
+      "asserterRef": "agent-curation",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: INVALID_ASSERTION: basisKind CALCULATED needs derivation.rule and derivation.from inputs"
+      }
+    },
+    {
+      "proposalId": "p06-c06",
+      "dependsOn": [],
+      "kind": "edge.structural",
+      "relationshipType": "OUTPUTS_METRIC",
+      "fromRef": "av-libre3-glucose",
+      "toRef": "metric-glucose-cgm",
+      "properties": {}
+    },
+    {
+      "proposalId": "p07-c07",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "device-libre3-sensor",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "MANUFACTURER_CLAIM",
+        "qualifiers": [],
+        "validity": {
+          "validFrom": "2025-11-24T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE"
+        },
+        "predicate": "REPORTED_MEASUREMENT_ERROR"
+      },
+      "value": {
+        "valueString": "incorrect low glucose results (carbon build-up from a manufacturing process issue); root cause: Process control; recall Z-1020-2026, event 98049"
+      },
+      "evidence": [
+        "o3-reason",
+        "o4-initiated",
+        "o7-root-cause",
+        "o8-recall-number"
+      ],
+      "asserterRef": "org-abbott",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: BKS_EVIDENCE_UNVERIFIED: locator o3-reason is invalid (selector.basis (projection id@version) is mandatory (R-38))"
+      }
+    },
+    {
+      "proposalId": "p08-c08",
+      "dependsOn": [],
+      "kind": "identifier.attach",
+      "subjectRef": "device-libre3-sensor",
+      "identifier": {
+        "scheme": "UDI_DI",
+        "issuer": "GS1 (as printed in the FDA recall record)",
+        "value": "00357599818005"
+      },
+      "evidence": [
+        "o2-udi"
+      ],
+      "qualifiers": [],
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: BKS_EVIDENCE_UNVERIFIED: locator o2-udi is invalid (selector.basis (projection id@version) is mandatory (R-38))"
+      }
+    },
+    {
+      "proposalId": "p09-c09",
+      "dependsOn": [],
+      "kind": "identifier.attach",
+      "subjectRef": "device-libre3-sensor",
+      "identifier": {
+        "scheme": "FDA_510K",
+        "issuer": "FDA",
+        "value": "K212132"
+      },
+      "evidence": [
+        "o5-k-number"
+      ],
+      "qualifiers": [],
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: BKS_EVIDENCE_UNVERIFIED: locator o5-k-number is invalid (selector.basis (projection id@version) is mandatory (R-38))"
+      }
+    }
+  ],
+  "notes": "Fixture intent (fixture ids). c01-c03 use the kernel predicate RATES_CLAIM (third-party verdict on a Claim; adversarial review replaced D4 regulatory_statement). Not expressible in v1: the SAFETY_SIGNAL assessments s01/s02 (assessment activity), assertionKind (c01-c03), and the Claim node is sent as a subject with nodeType Claim (kernel type; the executor may require a claim-specific proposal kind - open). The recall record itself is a D8 node; this intent only writes the D4 side.",
+  "provenance": {
+    "derivedFrom": {
+      "schemaVersion": "biotech-knowledge-intent.v1",
+      "path": "schema/program/final/fixtures/D4/noninvasive-glucose-cgm-recall/intent.json",
+      "rawBytesDigest": "sha256:8b27d9ba1e94081dc7f966a3c8ba87b6ff64eb203e072b8c06565861e9d89d97"
+    },
+    "migrator": "bks-migrate-intent-v1/1",
+    "edits": [
+      {
+        "at": "context.activityKind",
+        "rule": "P3-kernel-activity-kind",
+        "from": "EXTRACTION",
+        "to": "INGESTION"
+      },
+      {
+        "at": "onStale",
+        "rule": "strict-stale",
+        "from": "fail",
+        "to": null,
+        "note": "production onStale removed; stale state is a new plan"
+      },
+      {
+        "at": "sources[0].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "Firecrawl CLI 1.23.1 scrape --only-main-content --max-age 0 (found with Tavily CLI search in the research stage)",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[1].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl openFDA device/recall (no API key)",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "proposals[3].assertion.validity.statedAsOf",
+        "rule": "validObservedAt",
+        "from": "2026-10-05T00:00:00Z",
+        "to": "validObservedAt"
+      },
+      {
+        "at": "proposals[5].evidence",
+        "rule": "structural-needs-no-assertion",
+        "from": [
+          "o6-readings"
+        ],
+        "to": null,
+        "note": "StructuralEdgeProperties: the locators stay captured; v2 writes no Assertion beside a structural edge"
+      },
+      {
+        "at": "subjects[org-fda].properties.entityKind",
+        "rule": "schema-unknown-marker",
+        "from": null,
+        "to": "UNSPECIFIED",
+        "note": "not stated by the fixture source; OrganizationEntityKind.UNSPECIFIED is the release's explicit unknown member (OD-24 / OD-25), not a sourced fact"
+      },
+      {
+        "at": "subjects[org-abbott].properties.entityKind",
+        "rule": "schema-unknown-marker",
+        "from": null,
+        "to": "UNSPECIFIED",
+        "note": "not stated by the fixture source; OrganizationEntityKind.UNSPECIFIED is the release's explicit unknown member (OD-24 / OD-25), not a sourced fact"
+      }
+    ]
+  }
+}

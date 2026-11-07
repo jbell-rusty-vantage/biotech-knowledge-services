@@ -1,0 +1,291 @@
+{
+  "capabilities": {
+    "analytics.gds-aga": {
+      "reason": "OD-22: optional capability; no required DDL or supported template depends on it",
+      "status": "disabled"
+    },
+    "chunk.write": {
+      "reason": "the live shared Knowledge Services Enterprise constraints on :Chunk (chunkId, chunkKey, index, text NOT NULL; chunkId/chunkKey unique) conflict with the v2 D9 Chunk shape; they belong to another authority and are not dropped or modified; v2 Chunk writes are unsupported in this release",
+      "status": "unsupported"
+    },
+    "graphql.mutations": {
+      "reason": "L2 (OD-02): no Mutation root; writes go through the native executor",
+      "status": "unsupported"
+    },
+    "legacy.nodes": {
+      "reason": "LegacyV0 / LegacyV0_<Label> nodes, MIGRATED_FROM edges and legacy: qualifiers exist after the migration; they are excluded from the consumer projection, typed reads and catalog templates",
+      "status": "present-excluded"
+    },
+    "vectors.native": {
+      "reason": "OD-44: ddl/optional.cypher records the text-embedding-3-small/1536/cosine profile; not created or served in this release; the catalog templates that need the vector index (D9/Q-D9-20#vector, QP/P-04a) are unsupported with requires: [vectors.native] and excluded from the supported count",
+      "status": "disabled"
+    }
+  },
+  "ddlExceptions": [
+    {
+      "enablingCondition": "retirement of the 45 legacy MEASURES edges by a later admitted migration (legacy edge retirement with retained export and lineage); then the constraint is installed in the post-migration phase",
+      "enforcedInstead": "the native executor requires assertionUid on every new MEASURES write (asserted class, AssertedRecordedProperties)",
+      "name": "rel_MEASURES_assertion_exists",
+      "reason": "45 preserved legacy MEASURES edges (LabTest -> Biomarker) carry no assertionUid; a relationship type cannot change without deleting the edge, and legacy data is never deleted in this release",
+      "status": "blocked-by-legacy-data"
+    }
+  ],
+  "ddlPhases": {
+    "counts": {
+      "post-migration": 69,
+      "pre-migration": 502
+    },
+    "order": [
+      "pre-migration DDL (required.pre.cypher; enterprise.pre.cypher on Enterprise)",
+      "migration (S8 manifests, under KsWriteFence)",
+      "post-migration DDL (required.post.cypher; enterprise.post.cypher on Enterprise)",
+      "KsReleaseMarker (migrator, last)"
+    ],
+    "postMigrationUidExistsLabels": [
+      "Biomarker",
+      "Event",
+      "LabTest",
+      "Organization",
+      "Person",
+      "Product",
+      "Study"
+    ],
+    "rule": "Pre-migration: every statement that holds on a graph that still carries preserved legacy rows. Post-migration: constraints that cannot hold while legacy rows still carry the label or relationship type: uid_exists_<Label> for the legacy labels that are also stored v2 labels (legacy rows keep them until the migration relabels them to LegacyV0_<Label>) and the rel_<TYPE>_assertion_exists family (preserved legacy edges of a v2 type carry no assertionUid). Everything else is pre-migration."
+  },
+  "decisions": [
+    "CUTOVER.md Compatibility decisions (lead)",
+    "OD-22 (GDS optional)",
+    "OD-44 (native vectors recorded, not served)",
+    "S0-INVENTORY section 4 (live KS constraints)",
+    "lead: DDL phases, MEASURES assertionUid exception, vector-gated templates (2026-10-12)",
+    "R-SV10 / SV-D10 (2026-10-24): additive nullable verification/report binding fields; minor version"
+  ],
+  "executorReconciliation": {
+    "adopted": [
+      {
+        "note": "same name and definition",
+        "release": "ks_write_fence_id",
+        "s3": "ks_write_fence_id"
+      },
+      {
+        "note": "same name and definition (new in v2.0.1)",
+        "release": "ks_revocation_fence_id",
+        "s3": "ks_revocation_fence_id"
+      },
+      {
+        "note": "same name and definition (new in v2.0.1); the v2.0.0 uniqueness on effectKey (ks_intent_marker_effect_key) is replaced by the index ks_intent_marker_effect_key_lookup; ddl.json migrationCommands drops the old constraint on graphs that received v2.0.0 DDL",
+        "release": "ks_intent_marker_key",
+        "s3": "ks_intent_marker_key"
+      },
+      {
+        "note": "same definition under the release naming scheme (rel_<TYPE>_assertion / _writer / _uid)",
+        "release": "rel_<TYPE>_uid",
+        "s3": "rel_uid_<lowercase type> (relationshipUid per asserted type)"
+      }
+    ],
+    "notAdopted": [
+      {
+        "reason": "equivalent uniqueness already defined under the release name since v2.0.0; a second name would fail as an equivalent constraint",
+        "release": "ks_release_marker_release_id",
+        "s3": "ks_release_marker_id"
+      },
+      {
+        "reason": "equivalent (scheme, issuer, value) uniqueness already defined (query-patterns D-1)",
+        "release": "identifier_key",
+        "s3": "identifier_scheme_issuer_value"
+      },
+      {
+        "reason": "the release defines Claim.propositionHash as UNIQUE under the same name; its backing index serves the lookup; S3's CREATE INDEX of the same name conflicts and must be dropped from operationalDdl()",
+        "release": "claim_proposition_hash (uniqueness constraint)",
+        "s3": "claim_proposition_hash (index)"
+      },
+      {
+        "reason": "equivalent index already defined (query-patterns D-1)",
+        "release": "capture_subject",
+        "s3": "capture_attempt_subject"
+      },
+      {
+        "reason": "the release enforces (externalRunSystem, runId) uniqueness (kernel P2, one Activity per run) under the same name; the backing index serves the lookup",
+        "release": "activity_run (uniqueness constraint)",
+        "s3": "activity_run (index on externalRunSystem, runId)"
+      },
+      {
+        "reason": "equivalent per-label uid uniqueness already defined; release names are stable since v2.0.0",
+        "release": "entity_uid + uid_<Label>",
+        "s3": "uid_<lowercase label>"
+      }
+    ],
+    "rule": "ddl/required.cypher of the release is the single DDL authority; kg ensure-operations should apply loadRelease().ddl.required (and .enterprise on Enterprise) instead of its own operationalDdl() list",
+    "source": "packages/kg-ops/src/fence.ts operationalDdl() (S3)"
+  },
+  "format": "bks-release-compatibility.v1",
+  "installerOrder": [
+    "pre-migration DDL (required.pre.cypher; enterprise.pre.cypher on Enterprise)",
+    "migration (S8 manifests, under KsWriteFence)",
+    "post-migration DDL (required.post.cypher; enterprise.post.cypher on Enterprise)",
+    "KsReleaseMarker (migrator, last)"
+  ],
+  "liveConstraintsOwnedElsewhere": [
+    {
+      "constraints": [
+        "chunkId NOT NULL",
+        "chunkKey NOT NULL",
+        "index NOT NULL",
+        "text NOT NULL",
+        "chunkId UNIQUE",
+        "chunkKey UNIQUE"
+      ],
+      "decision": "kept; v2 Chunk writes unsupported",
+      "label": "Chunk",
+      "owner": "shared Knowledge Services ingestion"
+    },
+    {
+      "constraints": [
+        "document_* constraints (live)"
+      ],
+      "decision": "kept; Document nodes are tag-only LegacyV0 (original label kept)",
+      "label": "Document",
+      "owner": "shared Knowledge Services ingestion"
+    },
+    {
+      "constraints": [
+        "live KS constraints"
+      ],
+      "decision": "kept; not a v2 label",
+      "label": "DocumentTextVersion",
+      "owner": "shared Knowledge Services ingestion"
+    },
+    {
+      "constraints": [
+        "live KS constraints"
+      ],
+      "decision": "kept; not a v2 label",
+      "label": "Segmentation",
+      "owner": "shared Knowledge Services ingestion"
+    }
+  ],
+  "markerCompatibility": {
+    "fences": "KsWriteFence {id: 'canonical', graphRevision, lockSeq, locked} and KsRevocationFence {id: 'canonical', generation} are singletons bootstrapped once by the migrator (ddl.json bootstrap)",
+    "migrationMarkerKeys": "S8 migration batches claim KsIntentMarker {effectKey: migration:<migrationRunId>:<batchId>, planRef: <migrationRunId>} under S3's markerKey scheme: markerKey = mk-<sha256(canonical{installationId, applicationId: <migrator application id>, tenantId, effectKey})>; uniqueness is on markerKey (ks_intent_marker_key), effectKey stays indexed; the migrator must write markerKey (Enterprise existence constraint)"
+  },
+  "markers": {
+    "KsIntentMarker": "unique on markerKey (ks_intent_marker_key) = mk-<sha256(canonical{installationId, applicationId, tenantId, effectKey})> (S3 markerKeyOf); effectKey is the executor effect key or migration:<migrationRunId>:<batchId> for migration batches (indexed, ks_intent_marker_effect_key_lookup; no longer unique on its own); a migration batch is representable as markerKeyOf({installationId, applicationId: <migrator application id>, tenantId}, 'migration:<runId>:<batchId>'), so migrator markers share the executor's idempotence and must carry markerKey (Enterprise ks_intent_marker_key_exists); planRef = the plan ref, or the migrationRunId for migration batches (ks_intent_marker_plan_ref); persisted status applied|failed (applying is never committed; unresolved is a receipt outcome reconciled by lookup); also effectKey, scope, intentId, intentDigest, planDigest, attempts (JSON), receipt, receiptId, lastAttemptId, graphRevision",
+    "KsReleaseMarker": "{releaseId (unique, ks_release_marker_release_id), schemaReleaseDigest, ddlDigest, installedAt (index ks_release_marker_installed), migrationRunId} written last by the migrator after DDL and migration checks; Enterprise existence constraints on releaseId, schemaReleaseDigest, ddlDigest, installedAt",
+    "KsRevocationFence": "exactly one node {id: 'canonical', generation, updatedAt} (ks_revocation_fence_id; Enterprise ks_revocation_fence_generation_exists); the local revocation fence of the admission witness",
+    "KsWriteFence": "exactly one node {id: 'canonical', graphRevision, lockSeq, locked, lastEffectKey, lastWriterRunId, updatedAt} (ks_write_fence_id; Enterprise ks_write_fence_lock_seq_exists); every canonical write, migration batches included, takes the lock first with SET f.lockSeq = f.lockSeq + 1; graphRevision advances only when graph effects commit; locked is the executor's lock flag"
+  },
+  "migrationCommands": [
+    {
+      "cypher": "DROP CONSTRAINT ks_intent_marker_effect_key IF EXISTS",
+      "name": "drop-v2.0.0-effect-key-uniqueness",
+      "owner": "S8 migrator",
+      "when": "once, before ddl/required.cypher, on a graph that received biotech-schema-v2.0.0 DDL (uniqueness moved to ks_intent_marker_key on markerKey)"
+    }
+  ],
+  "operationalNames": {
+    "agentWrite": "forbidden",
+    "class": "operational",
+    "labels": [
+      "BellLabsSchemaDeploymentEvidence",
+      "Document",
+      "KsIntentMarker",
+      "KsReleaseMarker",
+      "KsRevocationFence",
+      "KsWriteFence",
+      "LegacyV0",
+      "LegacyV0_BellLabsSchemaDeploymentEvidence",
+      "LegacyV0_Biomarker",
+      "LegacyV0_Compound",
+      "LegacyV0_CompoundForm",
+      "LegacyV0_Document",
+      "LegacyV0_Event",
+      "LegacyV0_LabTest",
+      "LegacyV0_Listing",
+      "LegacyV0_ListingSnapshot",
+      "LegacyV0_Organization",
+      "LegacyV0_OrganizationSnapshot",
+      "LegacyV0_PanelDefinition",
+      "LegacyV0_Person",
+      "LegacyV0_PhysicalLocation",
+      "LegacyV0_Product",
+      "LegacyV0_ProductSnapshot",
+      "LegacyV0_RegulatoryStatus",
+      "LegacyV0_Study",
+      "LegacyV0_TechnologyPlatform"
+    ],
+    "projection": "excluded",
+    "properties": [
+      "legacyExportDigest",
+      "legacyLabels"
+    ],
+    "qualifierPrefixes": [
+      "legacy:extractedAt=",
+      "legacy:recordedFrom=",
+      "legacy:runId="
+    ],
+    "relationshipTypes": [
+      "MIGRATED_FROM"
+    ]
+  },
+  "parentRelease": {
+    "contentTreeDigest": "sha256:521f923851417b34bb89ac721764b294140f4a8fadf7342c05aa8de4fb169bf7",
+    "releaseId": "biotech-schema-v2.0.2",
+    "schemaDigest": "sha256:fe2cc50afb4a48e16a2b5c3c37378b4d00a679a06d37bf312676c45c65c6589a",
+    "schemaReleaseDigest": "sha256:5fffb593c8ca94b289b768ac0a0b02df5739cb338b7a04ec88173589708c5a42"
+  },
+  "queryCatalog": {
+    "counts": {
+      "aliases": 15,
+      "questions": 454,
+      "questionsByStatus": {
+        "held": 391,
+        "supported": 54,
+        "unsupported": 9
+      },
+      "templates": 157,
+      "templatesByExplain": {
+        "ok": 136,
+        "skipped": 21
+      },
+      "templatesByKind": {
+        "gds": 21,
+        "gds-projection": 10,
+        "read": 125,
+        "write": 1
+      },
+      "templatesByStatus": {
+        "held": 1,
+        "supported": 123,
+        "unsupported": 33
+      },
+      "valueOneByStatus": {
+        "held": 119,
+        "supported": 34,
+        "unsupported": 1
+      }
+    }
+  },
+  "readCompatibility": {
+    "changeClass": "minor-additive",
+    "ddlDelta": "v2.1.0 against v2.0.2: no constraint or index statement added, removed or changed (the new fields are plain reference properties with no index); ddl.json differs only in its release binding (releaseId, schemaDigest)",
+    "rule": "biotech-schema-v2.1.0 adds only nullable fields (Activity, Report, Assessment, Assertion) and two new enums (RunSealKind, UseDisposition) to the kernel; no label, relationship type, required field, enum value or field type of v2.0.2 is removed or changed. schemaDigest and schemaReleaseDigest differ from v2.0.2. Readers bound to v2.0.2 keep working against a graph installed at v2.1.0 (every v2.0.2 field keeps its type and meaning; new properties are absent on existing nodes and ignored by older readers); writers and the migrator require an exact schemaReleaseDigest match with the installed KsReleaseMarker, so a v2.0.2 writer refuses a v2.1.0 graph and a release upgrade re-stamps the marker. An incompatible change would require biotech-schema-v3.0.0.",
+    "schemaDigestEqualToParent": false,
+    "schemaReleaseDigestRule": "always differs from the parent release (release.json content differs); readers accept either release when its schemaDigest equals theirs and its operational names are a superset; writers require an exact schemaReleaseDigest match",
+    "sdlBytesChanged": true
+  },
+  "releaseId": "biotech-schema-v2.1.0",
+  "schemaDigest": "sha256:fe5c5992655fb31f7bde175538d3f9b361e3cfa06b2a4921b55f36bcacd41b97",
+  "supportedMatrix": {
+    "apoc": "APOC Core (required: DateTime projection in @neo4j/graphql reads); APOC Extended not required",
+    "cypher": "Cypher 5 (a CYPHER 5 prefix is allowed; CYPHER 25 is not used)",
+    "gds": "optional (OD-22); no required DDL or supported template depends on it",
+    "graphqlJs": "16.14.2",
+    "neo4j": {
+      "enterpriseEvaluation": "neo4j:5.26-enterprise (NEO4J_ACCEPT_LICENSE_AGREEMENT=eval) for Enterprise-only DDL",
+      "target": "Neo4j 5.27-aura Enterprise (Aura database neo4j, S0-INVENTORY)",
+      "tested": "Neo4j 5.26.31 community (disposable docker neo4j:5.26-community)"
+    },
+    "neo4jGraphql": "7.6.3",
+    "node": ">=22"
+  }
+}

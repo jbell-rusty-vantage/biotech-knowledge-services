@@ -1,0 +1,828 @@
+{
+  "compilerVersions": {
+    "generator": "scripts/release/generate.mjs@1.0.0",
+    "generators": {
+      "scripts/release/bootstrap-workspace-inputs.mjs": "04d6280960f38ce95a259899c468d5cfa61bdaaeb76fd004b59b04ff033b3493",
+      "scripts/release/derive-patch.mjs": "38b3be76a0da9a17feebdefd725185b5a3fd720677034c0417236860d052d16b",
+      "scripts/release/derive.mjs": "682aebc39f277e64c694dad1254008ca10bcaa71641d5a4c7ad041a395debb66",
+      "scripts/release/explain-catalog.mjs": "9f4319988f32539eba6b6ad9c9e4e8bbbefe72bd9a5bce269bdb833e8a73ef50",
+      "scripts/release/generate.mjs": "ad2b9c38017ff1426860a6a7e1b487196609c4cdb82c759718792786746971f1",
+      "scripts/release/lib/assemble.mjs": "b7b90d447869cd0c7f9925248b4395fe0b39f4e8a0f426f20067632cd28d6ff8",
+      "scripts/release/lib/capture-methods.mjs": "eadd84f562f030aca3dd6d8b34c794eca3e183ac84d90604f47e21e117404bfa",
+      "scripts/release/lib/catalog.mjs": "aa5309778db14ac515aa21e9b1e8d748062d617c5a3f5ab02834cfc692abf825",
+      "scripts/release/lib/common.mjs": "8380fbd6bea496bcc74ae3c67e68451575f1ab7a5374aab161290a80af96eb86",
+      "scripts/release/lib/corrections.mjs": "111ce229116feff397e4f36d3b03fc38d6509c0c3df25350f0f77ed737dae089",
+      "scripts/release/lib/ddl.mjs": "3c910813e247177dddefbda8d4b5d3171c90712d15079e058077adbb95567a89",
+      "scripts/release/lib/metrics.mjs": "fceaecd7f5ed876b753acf91bc2436171a1bad26b3681f0a42a27b0780e9f983",
+      "scripts/release/lib/params.mjs": "db97cd933147361b586124724172c528dc121caa0d2fafb902a60107761b3c88",
+      "scripts/release/lib/registries.mjs": "5e0a4e852972cdc7c84fae4fe7a69ba798016e6f183e6377c041d6546462f0ea",
+      "scripts/release/lib/reports.mjs": "219044d07bee036a815e0d7f5828e36dac5b9d177fd64becabb55fd34ece2cac",
+      "scripts/release/lib/sdl-model.mjs": "eaeaadc21b521f698fa3866047351915145793078bfd67067ca192e71c767d5c",
+      "scripts/release/lib/v1map.mjs": "9119415ccc8dbff6750a0fe5ae58075709a4816ce9f294b2a738b3d8cc3b62fd",
+      "scripts/release/promote.mjs": "ad46d29c40b682183da3e3de41e0b4618a6429edddd418915840409176325f36"
+    },
+    "graphqlJs": "16.14.2",
+    "neo4jGraphql": "7.6.3",
+    "yaml": "2.9.1"
+  },
+  "contractVersions": {
+    "assessmentVocabulary": "bks-assessment-vocabulary.v1",
+    "ddl": "bks-ddl.v1",
+    "ir": "bks-schema-ir.v2",
+    "legacyMap": "bks-legacy-map.v1",
+    "nativeContracts": {
+      "apply": "biotech-knowledge-apply.v2",
+      "applyWitness": "bks-apply-witness.v1",
+      "canonicalJson": "bks-canonical-json.v2",
+      "cypherRead": "biotech-cypher-read-intent.v1",
+      "ingestionIntent": "biotech-knowledge-intent.v2",
+      "owner": "S3 (packages/contracts)",
+      "plan": "biotech-knowledge-plan.v2",
+      "readResult": "biotech-knowledge-read-result.v2",
+      "receipt": "biotech-knowledge-receipt.v2",
+      "schemaContext": "biotech-schema-context.v1",
+      "typedRead": "biotech-knowledge-read-intent.v2"
+    },
+    "pin": "bks-pin.v2",
+    "qualifierGrammar": "bks-qualifier-grammar.v1",
+    "queryCatalog": "bks-query-catalog.v1",
+    "queryExplain": "bks-query-explain.v1",
+    "release": "bks-schema-release.v1",
+    "rules": "bks-rules.v1",
+    "sdlAssembly": "bks-sdl-assembly.v1",
+    "v1Map": "bks-v1-map.v1",
+    "validationParams": "bks-validation-params.v2"
+  },
+  "createdAt": "2026-10-25T00:00:00.000Z",
+  "decisionLedger": {
+    "entries": 160,
+    "input": "v2.0.2 decisions/DECISIONS.md (160-entry v2 closeout ledger) plus the appended release decisions R-SV10 and R-SV11",
+    "path": "decisions/DECISIONS.md",
+    "sha256": "7b39422feac89b182cd7833282dc4bf953911f103b1418d3020a1d68ed85a453",
+    "source": "biotech-knowledge-services schema/source/biotech-schema-v2.2.0/decisions/DECISIONS.md"
+  },
+  "decisionLedgerDigest": "sha256:7b39422feac89b182cd7833282dc4bf953911f103b1418d3020a1d68ed85a453",
+  "description": "Minor release of biotech-schema-v2.1.0 (Sprint V SV-11, R-SV11): ReportKind STUDY_APPRAISAL (the second Knowledge Services report kind), nullable useDecisionDigest on kernel Activity and Assessment (exact use-decision record digest for official-read revalidation), and two operational KsIntentMarker lookup indexes (dispatchId, markerDigest) for the Knowledge Services dispatch outbox consumer. PostgreSQL (Knowledge Services common component) still owns runs, decisions and the outbox; the graph holds immutable references. No label or relationship type change.",
+  "excludedFromFrozenDigestSet": {},
+  "files": {
+    "COMPATIBILITY.md": {
+      "bytes": 12819,
+      "role": "generated",
+      "sha256": "0a9a9a514111ad1ae7738198402763005de03c7e0caa832188abd5af3eb1e5ae"
+    },
+    "README.md": {
+      "bytes": 1310,
+      "role": "source (authored upstream)",
+      "sha256": "598cad371f4f3f606de5116e3edc98bfcb46014ffdd77eed19de31d13782b780"
+    },
+    "compatibility.json": {
+      "bytes": 15826,
+      "role": "generated",
+      "sha256": "8928768527acaca9c0bace51c2a956d33dbb7d0446fac2c4bce4952aeebf5e46"
+    },
+    "ddl/ddl.json": {
+      "bytes": 453465,
+      "role": "generated",
+      "sha256": "f0622dba117bd16236e575546764bd49444b604e95893eef665d1e796199ddb3"
+    },
+    "ddl/enterprise.cypher": {
+      "bytes": 24116,
+      "role": "generated",
+      "sha256": "1e9e9645f36cddbd2f9a8a54b4c1e0d859013f6e90a33e31c7ba038de63c08f8"
+    },
+    "ddl/enterprise.post.cypher": {
+      "bytes": 9680,
+      "role": "generated",
+      "sha256": "edc165e9a6c05276acbed896629a6a1b0469fc471b83798a5286dc7a08f787a3"
+    },
+    "ddl/enterprise.pre.cypher": {
+      "bytes": 15288,
+      "role": "generated",
+      "sha256": "77d6ea46e95aaa0d0779e53c9c19defe09181ca48db0f2addca3ae02217c2e4d"
+    },
+    "ddl/optional.cypher": {
+      "bytes": 1126,
+      "role": "generated",
+      "sha256": "397ea21ac6788bea3333377db628fc25e1f3bc94a1ff1df32f8d8a759a1ca47a"
+    },
+    "ddl/required.cypher": {
+      "bytes": 37053,
+      "role": "generated",
+      "sha256": "b539f8ff424218d3dcb6f41e75ec3c5be8ddbfd1b4c6f72bfc0cf15916551fb6"
+    },
+    "ddl/required.post.cypher": {
+      "bytes": 691,
+      "role": "generated",
+      "sha256": "ec1f1870192b4d4904282a4cdd0ddc2518bb6ee2a5e5ed3ca7e9b49779cad92d"
+    },
+    "ddl/required.pre.cypher": {
+      "bytes": 37127,
+      "role": "generated",
+      "sha256": "4e05eb2b25209f3e33da53230892002ecfd11c4f29fc225fb40a4887b12018ba"
+    },
+    "decisions/DECISIONS.md": {
+      "bytes": 46742,
+      "role": "copy",
+      "sha256": "7b39422feac89b182cd7833282dc4bf953911f103b1418d3020a1d68ed85a453"
+    },
+    "migration/legacy-map.yaml": {
+      "bytes": 50164,
+      "role": "source (promotion-generated)",
+      "sha256": "a78218f983379eaefd25bf1ed8952b41f01af693b6d4f0ac1267b3f84568f32b"
+    },
+    "migration/v1-map.yaml": {
+      "bytes": 183285,
+      "role": "source (promotion-generated)",
+      "sha256": "92b99d020a202362dd1d98fed87f8fcbea9142fc449474eb417ecfb937c73f1c"
+    },
+    "query-catalog/catalog.json": {
+      "bytes": 1169544,
+      "role": "generated",
+      "sha256": "39c7a9d3a3f13f2c8e287bb42ea528c060a2cfc8ebe01d8a4a79abcbe27896b6"
+    },
+    "query-catalog/explain.json": {
+      "bytes": 25421,
+      "role": "evidence",
+      "sha256": "3e8a9d0b74e32219259b729c6ddde205a3fc4b1970b508a426f80d559c2fcefc"
+    },
+    "query-catalog/sources/patterns-by-question/D1.md": {
+      "bytes": 24163,
+      "role": "source",
+      "sha256": "b4d1f9c55a86fb944eb3fc7035f148e12877d964161004bf8f020efb70921764"
+    },
+    "query-catalog/sources/patterns-by-question/D10.md": {
+      "bytes": 21495,
+      "role": "source",
+      "sha256": "9d1fae4d829c1b35b9cbcc1ec60c65ce35f39169675267d4d8d19bccc47178ba"
+    },
+    "query-catalog/sources/patterns-by-question/D11.md": {
+      "bytes": 22201,
+      "role": "source",
+      "sha256": "8bc29696a4863aa544223a0b9a81230899afa0478aa1ebf3e5c3d9eb3b090d67"
+    },
+    "query-catalog/sources/patterns-by-question/D12.md": {
+      "bytes": 16015,
+      "role": "source",
+      "sha256": "d0222a2d647aac7cde3646a1db90846b3611eb1bb3f6263af8c622c3e75a87e5"
+    },
+    "query-catalog/sources/patterns-by-question/D13.md": {
+      "bytes": 20489,
+      "role": "source",
+      "sha256": "d1aa1cf132a411e447ec305c7a02f0f78ec8d069f1df3783bfbd7a699bc9a3ea"
+    },
+    "query-catalog/sources/patterns-by-question/D2.md": {
+      "bytes": 11974,
+      "role": "source",
+      "sha256": "6ef8dd6e6742415c0ceb6cedf93722bb38e5e3a0e80f5bdba931a2a34c394415"
+    },
+    "query-catalog/sources/patterns-by-question/D3.md": {
+      "bytes": 14658,
+      "role": "source",
+      "sha256": "bd8a67d6ca1c21f59a27fc161e5961153b4d17a7f49d93a0b90dc3c0a97e7ad1"
+    },
+    "query-catalog/sources/patterns-by-question/D5.md": {
+      "bytes": 17336,
+      "role": "source",
+      "sha256": "6e62cebf2e716e4f9225e696fa14d153b684ac0e23ccbd523efda2ce308c1da5"
+    },
+    "query-catalog/sources/patterns-by-question/D6.md": {
+      "bytes": 23957,
+      "role": "source",
+      "sha256": "4ca83e997ccc32cc2ceaad0fca2a4c11a8fc3ad767a410200fa083a9ce4a9699"
+    },
+    "query-catalog/sources/patterns-by-question/D7.md": {
+      "bytes": 26082,
+      "role": "source",
+      "sha256": "63d555d223bfcf4d9b1a7bb10f5613d4037554f06ccc53c080ac37f0067ee8e0"
+    },
+    "query-catalog/sources/patterns-by-question/D8.md": {
+      "bytes": 34639,
+      "role": "source",
+      "sha256": "8523c8d8eae8101f47a5fc52235986d1bf7e0ddc50751005d1adec9e5bacdee8"
+    },
+    "query-catalog/sources/patterns-by-question/D9.md": {
+      "bytes": 65414,
+      "role": "source",
+      "sha256": "6e2d03f183f07255340b9a63ffcc06dac85a28c8dfa1900fe38982f9e3e50a15"
+    },
+    "query-catalog/sources/patterns-by-question/K.md": {
+      "bytes": 39381,
+      "role": "source",
+      "sha256": "5a63b65c34edc45f7928c33c1f41f29b45d3c304d759c4ca120d5f7016357f8a"
+    },
+    "query-catalog/sources/query-patterns.md": {
+      "bytes": 94212,
+      "role": "source",
+      "sha256": "e76e82642b7ce80adc5da8559b8088c0b47d2e1ee760fde26a07250ecb481525"
+    },
+    "query-catalog/sources/questions-catalog.md": {
+      "bytes": 450303,
+      "role": "source",
+      "sha256": "59021ecacfc2f0b2a37b84e66657cd12e99aa2f9ccf542a4bff3877f7f3555c0"
+    },
+    "query-catalog/sources/s4/catalog-patch.json": {
+      "bytes": 33767,
+      "role": "source",
+      "sha256": "ce344c25afce43559acdb8b00e7e24d5dd752395069aff5833a626f51f7bb95c"
+    },
+    "query-catalog/sources/s4/question-status.json": {
+      "bytes": 221782,
+      "role": "source",
+      "sha256": "83e72d55c6e9668e57b8a25a75daf09b6fa89684b6a5a9cf63e17207961613bd"
+    },
+    "registers/node-register.yaml": {
+      "bytes": 158087,
+      "role": "source",
+      "sha256": "8e7016f67d488165ef17b455501f926fe780d4208b1ad759ec0636dee7e3e6da"
+    },
+    "registers/relationship-register.yaml": {
+      "bytes": 305956,
+      "role": "source",
+      "sha256": "92400a6c46121ef37e1fa4303348a0fc30abdf3d4ff37943da685721321f7274"
+    },
+    "registers/seams.yaml": {
+      "bytes": 306955,
+      "role": "source",
+      "sha256": "f57ace7361a7d2509ef9f04259802816d9b0cd76905462747166c04a6323c9f5"
+    },
+    "release-source.yaml": {
+      "bytes": 4541,
+      "role": "source (authored upstream)",
+      "sha256": "f101e7784d00c080365024fe08821c2d8e91098d62aede7d0080ec802ff33f8d"
+    },
+    "reports/capture-methods.json": {
+      "bytes": 102056,
+      "role": "source (promotion-generated)",
+      "sha256": "c4b7b6668eca8fb2da24e2762c91cd473134764f40b9ff4229ca75cdb5480ef7"
+    },
+    "reports/corrections.json": {
+      "bytes": 29226,
+      "role": "source (promotion-generated)",
+      "sha256": "7b0ae043553757917e9e4d276daa2ed179a2f2a2f0b39f66469e189ef678e79c"
+    },
+    "reports/decision-closure.json": {
+      "bytes": 53169,
+      "role": "generated",
+      "sha256": "465a1cc91c76ddc5ceb2662b64b9f1baab65d2d33433b42b4fe2e90262a66bf6"
+    },
+    "reports/metrics.json": {
+      "bytes": 6320,
+      "role": "generated",
+      "sha256": "8e52718b6c469b2d7571184a61ba5e9b6142336ebd9ca5f0de7117363358b2fa"
+    },
+    "reports/predicate-registry-report.json": {
+      "bytes": 16661,
+      "role": "generated",
+      "sha256": "b032437392b57a9d46927e03e3564c24d4ec48384ac1a1e1a1293412302df7bc"
+    },
+    "reports/predicate-registry-report.md": {
+      "bytes": 7668,
+      "role": "generated",
+      "sha256": "9ca2d70de32fb7896baddb57c8d9c6eaac4f99fc0eea625cce339349afa018c2"
+    },
+    "reports/subjectable-audit.json": {
+      "bytes": 96169,
+      "role": "generated",
+      "sha256": "3663bde362a7dae7010222e6d434a897598c0d9f7fe66a1e79198b37da32f2eb"
+    },
+    "rules/compatibility.yaml": {
+      "bytes": 4751,
+      "role": "source (authored upstream)",
+      "sha256": "c669e9f834b5dfa299e0441fd46fffd7fe2cc6714cb2e8259bcbf0ae30ef5a4e"
+    },
+    "rules/ddl-policy.yaml": {
+      "bytes": 1639,
+      "role": "source (authored upstream)",
+      "sha256": "3ee32d1c050d4a0ce7bf17b67238bcc4a38ba7d8e0355ea20a6dd0d2512ab2a3"
+    },
+    "rules/identity-rules.yaml": {
+      "bytes": 31741,
+      "role": "source (promotion-generated)",
+      "sha256": "a8999c3cfb3e785b09bbdaca9a19c283dc55a9507dc296fc4066bbbc4e8d9a8f"
+    },
+    "rules/operational-names.yaml": {
+      "bytes": 17498,
+      "role": "source (authored upstream)",
+      "sha256": "c9344887acd23080868237a1ddbd66e11acf60386dbacc604622a17e25e5d628"
+    },
+    "rules/projection-rules.yaml": {
+      "bytes": 26304,
+      "role": "source (promotion-generated)",
+      "sha256": "99f47765aac57e221059cb7b6579d8fb62903d918fcda45df01d4e7bda916d54"
+    },
+    "rules/temporal-rules.yaml": {
+      "bytes": 21402,
+      "role": "source (promotion-generated)",
+      "sha256": "5540b62b45adc0c85e4076deba34ddc76f9ba107b0d491fcee529ad768784b7e"
+    },
+    "sdl/assembled.graphql": {
+      "bytes": 394279,
+      "role": "generated",
+      "sha256": "de8ab942f3b2fac85011938adcddd75244bc9b5e7c53df07ebc7490b888f6576"
+    },
+    "sdl/assembled.manifest.json": {
+      "bytes": 36649,
+      "role": "generated",
+      "sha256": "1f8efad54f82baf73f45c976c93462faeb3862058c7b00c46b3633813aa8c5c0"
+    },
+    "sdl/modules/D1.graphql": {
+      "bytes": 21149,
+      "role": "source",
+      "sha256": "5bb58e9fc1fa9c0140736fb5b24f611ae54e48a57fd50217e0db4b430bfb1257"
+    },
+    "sdl/modules/D10.graphql": {
+      "bytes": 20052,
+      "role": "source",
+      "sha256": "e2dce9e712e0ea6a17debbcfecd747080114d1a685b2d5e3213f52a5a63769fb"
+    },
+    "sdl/modules/D11.graphql": {
+      "bytes": 9176,
+      "role": "source",
+      "sha256": "ec9a90a90a15bb7cea1390504fdaf1df115a32a0312bd51238a28f1fea286ee6"
+    },
+    "sdl/modules/D12.graphql": {
+      "bytes": 18338,
+      "role": "source",
+      "sha256": "f7c6b4107e27f4db9f787db9de971e344522da674b6f1631e7c6132483fec4c0"
+    },
+    "sdl/modules/D13.graphql": {
+      "bytes": 27210,
+      "role": "source",
+      "sha256": "54d56da432d763a9e3cdb1831d7553727fa26b515b5d066fc5f7e9d1de50525b"
+    },
+    "sdl/modules/D2.graphql": {
+      "bytes": 24350,
+      "role": "source",
+      "sha256": "3d1f1a729fcd2ec595e875abcabe9d3b7de1931496120cfbe5f7d0d3b8421b71"
+    },
+    "sdl/modules/D3.graphql": {
+      "bytes": 45070,
+      "role": "source",
+      "sha256": "6a3cdc8982074fc479ae467dee456865ee6f019958070d8f07906cfc83e2df75"
+    },
+    "sdl/modules/D4.graphql": {
+      "bytes": 26992,
+      "role": "source",
+      "sha256": "b62054b09a7740809ade7b6f3f01c9c424b7097d312a101cb090182201a1bb00"
+    },
+    "sdl/modules/D5.graphql": {
+      "bytes": 29856,
+      "role": "source",
+      "sha256": "7fb18a838e1b29b4576b4eedea3c20d0f86798b12cbc4fd21edf4f0e7a52a251"
+    },
+    "sdl/modules/D6.graphql": {
+      "bytes": 26137,
+      "role": "source",
+      "sha256": "6b14b735ef1a80f479264325feb62140ee078a81082661f79e78253d3abd1523"
+    },
+    "sdl/modules/D7.graphql": {
+      "bytes": 23974,
+      "role": "source",
+      "sha256": "da9146a94314d8c402c7f2cfba7f9265ac75ccc3d3cc6aa621fe6bb38b30768d"
+    },
+    "sdl/modules/D8.graphql": {
+      "bytes": 34833,
+      "role": "source",
+      "sha256": "735106bbfc1f667079b5d72bf5869d054eb0ec398ebc073bc352ee7e70029627"
+    },
+    "sdl/modules/D9.graphql": {
+      "bytes": 20530,
+      "role": "source",
+      "sha256": "216af59fccffbfd9d1ac09b309e69fc076b0450c0e975d7650f5160b971c7519"
+    },
+    "sdl/modules/kernel.graphql": {
+      "bytes": 63015,
+      "role": "source",
+      "sha256": "12f13a6d3b4cfee465f65bc8c35c365c0afc91ba49486ce461dcf66f90035d51"
+    },
+    "tooling/action-space.yaml": {
+      "bytes": 328318,
+      "role": "source",
+      "sha256": "f891cf001d56045bc696739c097fa8820d008aa16a944139ec27ae01d7b71eeb"
+    },
+    "validation/validation-params.json": {
+      "bytes": 46537,
+      "role": "generated",
+      "sha256": "4f48c882224c0de7c1b515383a804af44e461059d4e94b8707b71e400fb38acf"
+    },
+    "vocabularies/answer-kinds.yaml": {
+      "bytes": 14235,
+      "role": "source",
+      "sha256": "616e1c642f89464c8f55d24e1c34bb2a39ecb3eefe0061fbba403c863a1d0c16"
+    },
+    "vocabularies/assessments.yaml": {
+      "bytes": 77910,
+      "role": "source (promotion-generated)",
+      "sha256": "2d9ce9b5ba538e3520c0d864b462a045e0f4ca975352c6af9837d641acf661a4"
+    },
+    "vocabularies/capture-methods.yaml": {
+      "bytes": 42236,
+      "role": "source (promotion-generated)",
+      "sha256": "8d25f04fb302a65d9b2af23c1c559c9d2b14b06d6cb7cf4b8b81a6d7b2e9fd8c"
+    },
+    "vocabularies/claim-lifecycle.yaml": {
+      "bytes": 11276,
+      "role": "source",
+      "sha256": "abb93b15d2242a51c1e7992e657b4860b10822e6ef60d618982fdd2ca4e0d0fc"
+    },
+    "vocabularies/frontiers.yaml": {
+      "bytes": 112688,
+      "role": "source",
+      "sha256": "0ec7d348a1a05f8f7e672562b83a0f27d51bc8fb097efcde32600731cf7817f2"
+    },
+    "vocabularies/goal-polarity.yaml": {
+      "bytes": 13298,
+      "role": "source",
+      "sha256": "1c0eaf27791cf6215a5f5654e6475df67b9caf911417720e4220b8175a47bb62"
+    },
+    "vocabularies/identifier-schemes.yaml": {
+      "bytes": 182655,
+      "role": "source",
+      "sha256": "52581c038a12a535c9f68deb09d46cd1908dc02801fc49b2661a9b51ca4ec914"
+    },
+    "vocabularies/predicates.yaml": {
+      "bytes": 432757,
+      "role": "source",
+      "sha256": "a2ff6f441e609e6ad918d26bc86791739382f17b5ef8568cfc1961c8adc9463f"
+    },
+    "vocabularies/qualifiers.yaml": {
+      "bytes": 72177,
+      "role": "source (promotion-generated)",
+      "sha256": "c56c1c85a65acfc0a2696bcc846dbc575ae8e71d5756d87b3461603a0aede481"
+    },
+    "vocabularies/targets.yaml": {
+      "bytes": 42063,
+      "role": "source",
+      "sha256": "02de43f1a6b5473d98ba9684ce91c6f298fdfd4432db1549cf67dbdb420c1402"
+    },
+    "vocabularies/verdict-lattice.yaml": {
+      "bytes": 15025,
+      "role": "source",
+      "sha256": "2641fb13db4ed30f0f4116fd37128304d8a9787c3c4b125d4990c5c2c40cac74"
+    },
+    "workspace-inputs/aliases.yaml": {
+      "bytes": 264933,
+      "role": "source (authored upstream)",
+      "sha256": "91aaf472cdbb418994da06e41dfdc7a056c6431457c5a5830651791481ff2b4e"
+    },
+    "workspace-inputs/domains.yaml": {
+      "bytes": 12654,
+      "role": "source (authored upstream)",
+      "sha256": "23800385e51d5a349b1f4d542658fb2c5735a2f1b2d29c504be2138e6184deed"
+    },
+    "workspace-inputs/identity-rules.yaml": {
+      "bytes": 25567,
+      "role": "source (authored upstream)",
+      "sha256": "d79cd4eca8593b6c7289383bab8d442a5c1029af0b285fa47aec925d6569fa55"
+    },
+    "workspace-inputs/ingestion-rules.yaml": {
+      "bytes": 8215,
+      "role": "source (authored upstream)",
+      "sha256": "6c2be4dae9b15b8dde0b643f323b080f8ecb5ef68396c03fcd6de82e2f2b75dd"
+    },
+    "workspace-inputs/task-routes.yaml": {
+      "bytes": 25256,
+      "role": "source (authored upstream)",
+      "sha256": "e0a11bab131baab3518c5daf26055466e34bd820f1641b2b0484faba917647ad"
+    },
+    "workspace-inputs/terminology.yaml": {
+      "bytes": 12562,
+      "role": "source (authored upstream)",
+      "sha256": "fc4cd928f3281b61856a78bd4881410c6a339d4dca956f72cbbbe269beeca018"
+    }
+  },
+  "identities": {
+    "contentTreeDigest": "sha256:4f6b35af801894420068a91acab33dbf8c95dab6f1d5bbad31447b7bc0504673",
+    "ddlDigest": "sha256:f0622dba117bd16236e575546764bd49444b604e95893eef665d1e796199ddb3",
+    "decisionLedgerDigest": "sha256:7b39422feac89b182cd7833282dc4bf953911f103b1418d3020a1d68ed85a453",
+    "queryCatalogDigest": "sha256:39c7a9d3a3f13f2c8e287bb42ea528c060a2cfc8ebe01d8a4a79abcbe27896b6",
+    "schemaDigest": "sha256:de8ab942f3b2fac85011938adcddd75244bc9b5e7c53df07ebc7490b888f6576",
+    "validationParamsDigest": "sha256:4f48c882224c0de7c1b515383a804af44e461059d4e94b8707b71e400fb38acf"
+  },
+  "identityRules": {
+    "baselineReuse": "the parent baseline sha256:c7cf1235... is never reused for changed bytes",
+    "ddlDigest": "sha256 of ddl/ddl.json bytes (it embeds every statement); the migrator stamps it on :KsReleaseMarker",
+    "queryCatalogDigest": "sha256 of query-catalog/catalog.json bytes",
+    "schemaDigest": "sha256 of sdl/assembled.graphql bytes",
+    "schemaReleaseDigest": "sha256 of canonicalJson(release.json) (recursively sorted keys, no whitespace, UTF-8); not stored in release.json; recorded in biotech-knowledge-services schema/pinned/PIN.json and INTERFACES.md"
+  },
+  "metrics": {
+    "catalog": {
+      "aliases": 15,
+      "questions": 454,
+      "questionsByStatus": {
+        "held": 391,
+        "supported": 54,
+        "unsupported": 9
+      },
+      "templates": 157,
+      "templatesByExplain": {
+        "ok": 136,
+        "skipped": 21
+      },
+      "templatesByKind": {
+        "gds": 21,
+        "gds-projection": 10,
+        "read": 125,
+        "write": 1
+      },
+      "templatesByStatus": {
+        "held": 1,
+        "supported": 123,
+        "unsupported": 33
+      },
+      "valueOneByStatus": {
+        "held": 119,
+        "supported": 34,
+        "unsupported": 1
+      }
+    },
+    "ddlStatements": {
+      "byType": {
+        "FULLTEXT": 15,
+        "NODE_PROPERTY_EXISTENCE": 79,
+        "NODE_PROPERTY_TYPE": 70,
+        "RANGE": 261,
+        "RELATIONSHIP_PROPERTY_EXISTENCE": 63,
+        "UNIQUENESS": 83,
+        "VECTOR": 3
+      },
+      "enterprise": 211,
+      "optional": 3,
+      "required": 359,
+      "total": 574
+    },
+    "kernelRelationshipTypes": 15,
+    "nodeTypes": 69,
+    "pairsCollapsed": 181,
+    "pairsExpanded": 848,
+    "relationshipTypes": 106
+  },
+  "moduleOwnership": {
+    "D1": {
+      "definitions": 19,
+      "file": "sdl/modules/D1.graphql",
+      "nodeTypes": [
+        "ChemicalSubstance",
+        "Constituent",
+        "IngredientMaterial",
+        "Taxon"
+      ],
+      "owner": "D1",
+      "sha256": "5bb58e9fc1fa9c0140736fb5b24f611ae54e48a57fd50217e0db4b430bfb1257",
+      "title": "compounds and ingredients"
+    },
+    "D10": {
+      "definitions": 9,
+      "file": "sdl/modules/D10.graphql",
+      "nodeTypes": [
+        "Association",
+        "DecisionCriterion",
+        "ReportItem"
+      ],
+      "owner": "D10",
+      "sha256": "e2dce9e712e0ea6a17debbcfecd747080114d1a685b2d5e3213f52a5a63769fb",
+      "title": "derived knowledge: associations, insights, reports, recommendations"
+    },
+    "D11": {
+      "definitions": 3,
+      "file": "sdl/modules/D11.graphql",
+      "nodeTypes": [
+        "CaptureAttempt"
+      ],
+      "owner": "D11",
+      "sha256": "ec9a90a90a15bb7cea1390504fdaf1df115a32a0312bd51238a28f1fea286ee6",
+      "title": "bio-medical tooling action space"
+    },
+    "D12": {
+      "definitions": 12,
+      "file": "sdl/modules/D12.graphql",
+      "nodeTypes": [
+        "DietaryPattern",
+        "FoodCategory",
+        "FoodItem"
+      ],
+      "owner": "D12",
+      "sha256": "f7c6b4107e27f4db9f787db9de971e344522da674b6f1631e7c6132483fec4c0",
+      "title": "food and nutrition"
+    },
+    "D13": {
+      "definitions": 11,
+      "file": "sdl/modules/D13.graphql",
+      "nodeTypes": [
+        "Event",
+        "Frontier"
+      ],
+      "owner": "D13",
+      "sha256": "54d56da432d763a9e3cdb1831d7553727fa26b515b5d066fc5f7e9d1de50525b",
+      "title": "frontiers, breakthroughs and events"
+    },
+    "D2": {
+      "definitions": 21,
+      "file": "sdl/modules/D2.graphql",
+      "nodeTypes": [
+        "Condition",
+        "Mechanism",
+        "MechanismEvidenceContext",
+        "MolecularEntity",
+        "Outcome"
+      ],
+      "owner": "D2",
+      "sha256": "3d1f1a729fcd2ec595e875abcabe9d3b7de1931496120cfbe5f7d0d3b8421b71",
+      "title": "mechanisms and biology of aging"
+    },
+    "D3": {
+      "definitions": 42,
+      "file": "sdl/modules/D3.graphql",
+      "nodeTypes": [
+        "InterventionComponent",
+        "OutcomeDefinition",
+        "Publication",
+        "RegistrationVersion",
+        "Study",
+        "StudyArm",
+        "StudyPopulation",
+        "StudyResult"
+      ],
+      "owner": "D3",
+      "sha256": "6a3cdc8982074fc479ae467dee456865ee6f019958070d8f07906cfc83e2df75",
+      "title": "clinical and preclinical evidence"
+    },
+    "D4": {
+      "definitions": 28,
+      "file": "sdl/modules/D4.graphql",
+      "nodeTypes": [
+        "AlgorithmVersion",
+        "AssayVersion",
+        "Biomarker",
+        "Device",
+        "LabTest",
+        "Metric",
+        "ReferenceIntervalVersion"
+      ],
+      "owner": "D4",
+      "sha256": "b62054b09a7740809ade7b6f3f01c9c424b7097d312a101cb090182201a1bb00",
+      "title": "diagnostics, biomarkers and measurement"
+    },
+    "D5": {
+      "definitions": 20,
+      "file": "sdl/modules/D5.graphql",
+      "nodeTypes": [
+        "Intervention",
+        "Protocol",
+        "ProtocolEdition",
+        "ProtocolStep",
+        "Target",
+        "UseConstraint"
+      ],
+      "owner": "D5",
+      "sha256": "7fb18a838e1b29b4576b4eedea3c20d0f86798b12cbc4fd21edf4f0e7a52a251",
+      "title": "interventions, protocols and safety"
+    },
+    "D6": {
+      "definitions": 20,
+      "file": "sdl/modules/D6.graphql",
+      "nodeTypes": [
+        "LabelVersion",
+        "MerchantListing",
+        "Offer",
+        "Package",
+        "Product",
+        "ProductVariant"
+      ],
+      "owner": "D6",
+      "sha256": "6b14b735ef1a80f479264325feb62140ee078a81082661f79e78253d3abd1523",
+      "title": "consumer products and commerce"
+    },
+    "D7": {
+      "definitions": 21,
+      "file": "sdl/modules/D7.graphql",
+      "nodeTypes": [
+        "Award",
+        "Brand",
+        "Organization",
+        "Person"
+      ],
+      "owner": "D7",
+      "sha256": "da9146a94314d8c402c7f2cfba7f9265ac75ccc3d3cc6aa621fe6bb38b30768d",
+      "title": "organizations, people and money"
+    },
+    "D8": {
+      "definitions": 31,
+      "file": "sdl/modules/D8.graphql",
+      "nodeTypes": [
+        "CertificationListing",
+        "LegalStatus",
+        "Lot",
+        "Patent",
+        "QualityResult",
+        "RegulatoryRecord"
+      ],
+      "owner": "D8",
+      "sha256": "735106bbfc1f667079b5d72bf5869d054eb0ec398ebc073bc352ee7e70029627",
+      "title": "manufacturing, quality, regulation and IP"
+    },
+    "D9": {
+      "definitions": 12,
+      "file": "sdl/modules/D9.graphql",
+      "nodeTypes": [
+        "Channel",
+        "Chunk",
+        "MediaWork"
+      ],
+      "owner": "D9",
+      "sha256": "216af59fccffbfd9d1ac09b309e69fc076b0450c0e975d7650f5160b971c7519",
+      "title": "sources, media and discourse"
+    },
+    "K": {
+      "definitions": 53,
+      "file": "sdl/modules/kernel.graphql",
+      "nodeTypes": [
+        "Activity",
+        "Adjudication",
+        "Agent",
+        "Assertion",
+        "Assessment",
+        "Claim",
+        "Identifier",
+        "Report",
+        "Source",
+        "SourceLocator",
+        "SourceSnapshot"
+      ],
+      "owner": "kernel",
+      "sha256": "12f13a6d3b4cfee465f65bc8c35c365c0afc91ba49486ce461dcf66f90035d51",
+      "title": "kernel: evidence, identity, time, lineage"
+    }
+  },
+  "parentBaseline": {
+    "bytes": 387615,
+    "commit": "431c8a7c287ee3d914843390a080dbfbe949acdc",
+    "path": "schema/program/final/schema/final_biotech_schema_v2.graphql",
+    "repository": "biotech-knowledge-services",
+    "schemaDigest": "sha256:c7cf1235dba876b26460c54a6510028d2dcfc65989787eacd5b446f9034b4793"
+  },
+  "parentRelease": {
+    "contentTreeDigest": "sha256:0fb2b531a950948d42df357aaea72c105a40f11179216aff29e755bb5dad1a87",
+    "releaseId": "biotech-schema-v2.1.0",
+    "schemaDigest": "sha256:fe5c5992655fb31f7bde175538d3f9b361e3cfa06b2a4921b55f36bcacd41b97",
+    "schemaReleaseDigest": "sha256:29e118247d725ad4f416911173eb2363488bc97cedebe5e93843eb53a4e661a7"
+  },
+  "releaseFormat": "bks-schema-release.v1",
+  "releaseId": "biotech-schema-v2.2.0",
+  "releaseNotes": [
+    "kernel ReportKind: STUDY_APPRAISAL added (Knowledge Services K08 report kinds evidence_report and study_appraisal; reportKindRef still refines the kind). Additive enum value; readers that switch exhaustively over ReportKind must accept it",
+    "kernel Activity and Assessment: useDecisionDigest (nullable) next to useDecisionRef; official reads compare it with the PostgreSQL authority's use_decision.digest",
+    "registers/node-register.yaml: otherProperties counts and notes for Activity and Assessment; no new filter property, relationship or index on domain labels",
+    "rules/operational-names.yaml: KsIntentMarker gains the dispatch admission fields (dispatchId, markerDigest, payloadDigest, useDecisionRef, useDecisionDigest, revocationEpoch, boundEffectDigest, appliedAt, markerSchemaVersion) and the declared operational DDL entries ks_intent_marker_dispatch_id and ks_intent_marker_marker_digest (RANGE indexes); uniqueness stays on ks_intent_marker_key because one dispatch names one effect key (outbox primary key) and dispatch ids are unique per tenant only",
+    "query-catalog/explain.json: EXPLAIN evidence inherited unchanged from biotech-schema-v2.1.0 (no query source changed, every template statement digest still matches); no new live-database EXPLAIN was run for v2.2.0"
+  ],
+  "sourceRevision": {
+    "additionalInputs": {
+      "legacyMap": {
+        "author": "S8 (migration / qualification)",
+        "note": "carried from v2.0.2 (migration/legacy-map.yaml, hosted verbatim); its target block still names an earlier release and a ${SCHEMA_RELEASE_DIGEST} placeholder: the binding authority is this release.json",
+        "path": "schema/program/final/migration/legacy-map.yaml",
+        "sha256": "a78218f983379eaefd25bf1ed8952b41f01af693b6d4f0ac1267b3f84568f32b"
+      },
+      "s4CatalogPatch": {
+        "author": "S4 (native reads)",
+        "path": "query-catalog/sources/s4/catalog-patch.json",
+        "sha256": "ce344c25afce43559acdb8b00e7e24d5dd752395069aff5833a626f51f7bb95c",
+        "source": "docs/plans/schema-v2-service-release/reports/S4-catalog-patch.json"
+      },
+      "s4QuestionStatus": {
+        "author": "S4 (native reads)",
+        "path": "query-catalog/sources/s4/question-status.json",
+        "sha256": "83e72d55c6e9668e57b8a25a75daf09b6fa89684b6a5a9cf63e17207961613bd",
+        "source": "docs/plans/schema-v2-service-release/reports/S4-question-status.json"
+      }
+    },
+    "bksCommit": "3ea014882b13a6b45f7bf7c6b70052cba2ebe9b5",
+    "bksCommitRule": "base commit of biotech-knowledge-services when this source tree was authored (fixed here so generation stays deterministic); the tree was uncommitted at creation, so the release identity is the content-tree digest (sourceRevision.dirtySnapshotDigest)",
+    "dirtySnapshotDigest": "sha256:4f6b35af801894420068a91acab33dbf8c95dab6f1d5bbad31447b7bc0504673",
+    "dirtySnapshotRule": "the release identity is the content-tree digest sha256 over the sorted lines '<path>\\0<sha256>\\n' of every frozen file below (identical to identities.contentTreeDigest); it holds whether or not the source tree is committed",
+    "initializedFrom": {
+      "path": "schema/source/biotech-schema-v2.1.0",
+      "releaseId": "biotech-schema-v2.1.0",
+      "schemaReleaseDigest": "sha256:29e118247d725ad4f416911173eb2363488bc97cedebe5e93843eb53a4e661a7"
+    },
+    "sourcePath": "schema/source/biotech-schema-v2.2.0",
+    "sourceRepository": "biotech-knowledge-services"
+  },
+  "status": "frozen",
+  "supportedMatrix": {
+    "apoc": "APOC Core (required: DateTime projection in @neo4j/graphql reads); APOC Extended not required",
+    "cypher": "Cypher 5 (a CYPHER 5 prefix is allowed; CYPHER 25 is not used)",
+    "gds": "optional (OD-22); no required DDL or supported template depends on it",
+    "graphqlJs": "16.14.2",
+    "neo4j": {
+      "enterpriseEvaluation": "neo4j:5.26-enterprise (NEO4J_ACCEPT_LICENSE_AGREEMENT=eval) for Enterprise-only DDL",
+      "target": "Neo4j 5.27-aura Enterprise (Aura database neo4j, S0-INVENTORY)",
+      "tested": "Neo4j 5.26.31 community (disposable docker neo4j:5.26-community)"
+    },
+    "neo4jGraphql": "7.6.3",
+    "node": ">=22"
+  },
+  "version": "2.2.0"
+}

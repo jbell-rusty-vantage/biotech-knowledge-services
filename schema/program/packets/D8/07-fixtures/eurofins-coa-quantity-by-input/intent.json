@@ -1,0 +1,1009 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v1",
+  "intentId": "ft-d8-coa-quantity-by-input",
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "ft-D8-A7-fixtures",
+      "model": "claude-opus-5-5"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run:ft-D8-eurofins-coa-quantity-by-input",
+      "missionId": "mission:ft-D8-fixtures"
+    },
+    "activityKind": "INGESTION"
+  },
+  "preconditions": [],
+  "onStale": "fail",
+  "sources": [
+    {
+      "ref": "snap-ef",
+      "source": {
+        "canonicalUri": "https://m.media-amazon.com/images/I/614wRFVDiqL.pdf",
+        "title": "Eurofins Certificate of Analysis 3921057-0 — Orgabay Liposomal NAD, lot LNA-199-0715",
+        "sourceKind": "PDF",
+        "properties": {
+          "genre": "CERTIFICATE_OF_ANALYSIS"
+        }
+      },
+      "snapshot": {
+        "observedAt": "2026-10-08T21:38:07Z",
+        "retrievedAt": "2026-10-08T21:38:07Z",
+        "contentHash": "sha256:402d7c3b68b3f1e8c4f209e698bb004a905fab381e820584115ce1ff2e8c94e8",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "captureMethod": "curl 8.x (browser User-Agent); PDF hosted on an Amazon media CDN (marketplace listing attachment)",
+          "mimeType": "application/pdf"
+        }
+      },
+      "locators": [
+        {
+          "ref": "loc-ef-report",
+          "selectorKind": "TABLE",
+          "page": 1,
+          "quote": "3921057-0",
+          "quotePrefix": "Certificate of Analysis ",
+          "quoteSuffix": " Report Number: Report Date: 27-",
+          "startOffset": 24,
+          "endOffset": 33,
+          "properties": {
+            "selectorDigest": "sha256:46d160bf8ae98b2ca880eb83245f964b4717c47d14554aa9c8c91b6173698572",
+            "tableName": "report header",
+            "tableRow": "Report Number:",
+            "tableColumn": "value",
+            "textHash": "sha256:3b57230e2cd6475a3cd085473611afb6b55ee55d09ce46ddd2982cc586268058",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-ef-date",
+          "selectorKind": "PDF_TEXT",
+          "page": 1,
+          "quote": "Report Date: 27-Dec-2022",
+          "quotePrefix": "alysis 3921057-0 Report Number: ",
+          "quoteSuffix": " Report Status: Final Sample Nam",
+          "startOffset": 49,
+          "endOffset": 73,
+          "properties": {
+            "selectorDigest": "sha256:719790aa25d6e3f703f211cd59973bce37b79601b6066a88f4fa66f0f7ec3a2f",
+            "textHash": "sha256:3b57230e2cd6475a3cd085473611afb6b55ee55d09ce46ddd2982cc586268058",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-ef-lot",
+          "selectorKind": "PDF_TEXT",
+          "page": 1,
+          "quote": "Lot Number LNA-199-0715",
+          "quotePrefix": "THL-20221104-0001 PO Number CVD ",
+          "quoteSuffix": " 1 Softgel Sample Serving Size D",
+          "startOffset": 206,
+          "endOffset": 229,
+          "properties": {
+            "selectorDigest": "sha256:6ca59038088db0de1dd3e5105907a8d8b6fad04d95b399c5a641014c10f5989c",
+            "textHash": "sha256:3b57230e2cd6475a3cd085473611afb6b55ee55d09ce46ddd2982cc586268058",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-ef-desc",
+          "selectorKind": "PDF_TEXT",
+          "page": 1,
+          "quote": "Description Orgabay Liposomal NAD 500 mg Supplement",
+          "quotePrefix": "5 1 Softgel Sample Serving Size ",
+          "quoteSuffix": " 17-Nov-2022 Receipt Date Receip",
+          "startOffset": 260,
+          "endOffset": 311,
+          "properties": {
+            "selectorDigest": "sha256:dd02c0fe1e2080115cc8a374e275a1108dc68444345e168d69a1f2f71ee09c8f",
+            "textHash": "sha256:3b57230e2cd6475a3cd085473611afb6b55ee55d09ce46ddd2982cc586268058",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-ef-started",
+          "selectorKind": "TABLE",
+          "page": 1,
+          "quote": "07-Dec-2022",
+          "quotePrefix": "perature 04-Nov-2022 Login Date ",
+          "quoteSuffix": " Date Started Sample results app",
+          "startOffset": 398,
+          "endOffset": 409,
+          "properties": {
+            "selectorDigest": "sha256:1315bc6b07ab54b223985798875b31363a95223cab78d48a23ea141db44caad7",
+            "tableName": "sample block",
+            "tableRow": "Date Started",
+            "tableColumn": "value",
+            "textHash": "sha256:3b57230e2cd6475a3cd085473611afb6b55ee55d09ce46ddd2982cc586268058",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-ef-nad",
+          "selectorKind": "TABLE",
+          "page": 1,
+          "quote": "500 mg/Serving Size",
+          "quotePrefix": "alysis Result Quantity by Input ",
+          "quoteSuffix": " NAD+ (Nicotinamide Adenine Dinu",
+          "startOffset": 528,
+          "endOffset": 547,
+          "properties": {
+            "selectorDigest": "sha256:086584c721815572888dcd6330959b1ab5f0c23464878db8a217c354b2b0bd55",
+            "tableName": "Analysis / Quantity by Input",
+            "tableRow": "NAD+ (Nicotinamide Adenine Dinucleotide)",
+            "tableColumn": "Result",
+            "textHash": "sha256:3b57230e2cd6475a3cd085473611afb6b55ee55d09ce46ddd2982cc586268058",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-ef-tmg",
+          "selectorKind": "TABLE",
+          "page": 1,
+          "quote": "250 mg/Serving Size",
+          "quotePrefix": "otinamide Adenine Dinucleotide) ",
+          "quoteSuffix": " Trimethylglycine (as Betaine An",
+          "startOffset": 589,
+          "endOffset": 608,
+          "properties": {
+            "selectorDigest": "sha256:7920752e3e0358e4151d36f7ad594e7bd1fbc2615eeea9c48c74788dcb491f79",
+            "tableName": "Analysis / Quantity by Input",
+            "tableRow": "Trimethylglycine (as Betaine Anhydrous)",
+            "tableColumn": "Result",
+            "textHash": "sha256:3b57230e2cd6475a3cd085473611afb6b55ee55d09ce46ddd2982cc586268058",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-ef-note",
+          "selectorKind": "PDF_TEXT",
+          "page": 1,
+          "quote": "Quantity by Input verified and reviewed from product batch records and ingredient COAs",
+          "quotePrefix": "lglycine (as Betaine Anhydrous) ",
+          "quoteSuffix": " Note Method References Testing ",
+          "startOffset": 649,
+          "endOffset": 735,
+          "properties": {
+            "selectorDigest": "sha256:203391693b83e9bf98fe209ed8ea27b3b5b72d395c0b55397c93b2c4c8149aa5",
+            "textHash": "sha256:3b57230e2cd6475a3cd085473611afb6b55ee55d09ce46ddd2982cc586268058",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-ef-qbi",
+          "selectorKind": "PDF_TEXT",
+          "page": 1,
+          "quote": "Quantity by Input (QTY_INPUT)",
+          "quotePrefix": "od Integrity Innovation-Madison ",
+          "quoteSuffix": " 6304 Ronald Reagan Ave Madison,",
+          "startOffset": 810,
+          "endOffset": 839,
+          "properties": {
+            "selectorDigest": "sha256:9932664094a80fc0bd10e4c34ab70cd8f28cbce5bd69d266e0c84b1211ddad6b",
+            "textHash": "sha256:3b57230e2cd6475a3cd085473611afb6b55ee55d09ce46ddd2982cc586268058",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-ef-method",
+          "selectorKind": "PDF_TEXT",
+          "page": 1,
+          "quote": "Quantity of ingredients verified through batch record review.",
+          "quotePrefix": "eagan Ave Madison, WI 53704 USA ",
+          "quoteSuffix": " Testing Location(s) Released on",
+          "startOffset": 885,
+          "endOffset": 946,
+          "properties": {
+            "selectorDigest": "sha256:16526fda66ea44a30b0c4c6daba055523db0d0cd6697f932ab99f5acb0b5b0bf",
+            "textHash": "sha256:3b57230e2cd6475a3cd085473611afb6b55ee55d09ce46ddd2982cc586268058",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-ef-lab",
+          "selectorKind": "PDF_TEXT",
+          "page": 1,
+          "quote": "Eurofins Food Chemistry Testing Madison, Inc.",
+          "quotePrefix": "od Integrity Innovation-Madison ",
+          "quoteSuffix": " 6304 Ronald Reagan Ave Madison ",
+          "startOffset": 1101,
+          "endOffset": 1146,
+          "properties": {
+            "selectorDigest": "sha256:658c0b9f87c64a0914677ecdffce256ead7e0b2ed342099780c1c96a1bd678f2",
+            "textHash": "sha256:3b57230e2cd6475a3cd085473611afb6b55ee55d09ce46ddd2982cc586268058",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-ef-released",
+          "selectorKind": "PDF_TEXT",
+          "page": 1,
+          "quote": "Released on Behalf of Eurofins by",
+          "quotePrefix": "ord review. Testing Location(s) ",
+          "quoteSuffix": " Edward Ladwig - President Eurof",
+          "startOffset": 967,
+          "endOffset": 1000,
+          "properties": {
+            "selectorDigest": "sha256:072a79d828817a93e659662abb205e7330c6f8cd836dfd14345c9c14aeaa0b3b",
+            "textHash": "sha256:3b57230e2cd6475a3cd085473611afb6b55ee55d09ce46ddd2982cc586268058",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        }
+      ]
+    },
+    {
+      "ref": "snap-as",
+      "source": {
+        "canonicalUri": "https://m.media-amazon.com/images/I/71N+Qjd8YlL.pdf",
+        "title": "Certificate of Analysis — Organic Ashwagandha Extract, lot 2404101ORA",
+        "sourceKind": "PDF",
+        "properties": {
+          "genre": "CERTIFICATE_OF_ANALYSIS"
+        }
+      },
+      "snapshot": {
+        "observedAt": "2026-10-08T21:38:08Z",
+        "retrievedAt": "2026-10-08T21:38:08Z",
+        "contentHash": "sha256:6499603381688ec5e71a52a1f036f99c4998be9e5645841d995552987131ef44",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "captureMethod": "curl 8.x (browser User-Agent); Amazon media CDN",
+          "mimeType": "application/pdf"
+        }
+      },
+      "locators": [
+        {
+          "ref": "loc-as-product",
+          "selectorKind": "PDF_TEXT",
+          "page": 1,
+          "quote": "Product Name: Organic Ashwagandha Extract",
+          "quotePrefix": "Certificate of Analysis ",
+          "quoteSuffix": " Manufactured for: Elite Source ",
+          "startOffset": 24,
+          "endOffset": 65,
+          "properties": {
+            "selectorDigest": "sha256:3670a4fa94acde5665f727a2643a8003980581ab31b32b510ee021c92cd2d94f",
+            "textHash": "sha256:bf6cfb690ac3920c1be8a560bd425685506978be1d747a339510bd5b7cfd14e8",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-as-mfr",
+          "selectorKind": "PDF_TEXT",
+          "page": 1,
+          "quote": "Manufactured for: Elite Source Products, Inc.",
+          "quotePrefix": "me: Organic Ashwagandha Extract ",
+          "quoteSuffix": " Item Number: 496003060 La Cresc",
+          "startOffset": 66,
+          "endOffset": 111,
+          "properties": {
+            "selectorDigest": "sha256:f2a6043810c63d9f6b4753d30bc253b4ce84ebd765d657673289831fbc3136ee",
+            "textHash": "sha256:bf6cfb690ac3920c1be8a560bd425685506978be1d747a339510bd5b7cfd14e8",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-as-lot",
+          "selectorKind": "PDF_TEXT",
+          "page": 1,
+          "quote": "Lot: 2404101ORA Exp: 08/2027",
+          "quotePrefix": "96003060 La Crescenta, CA 91214 ",
+          "quoteSuffix": " PACKAGED & LABELED DIETARY SUPP",
+          "startOffset": 158,
+          "endOffset": 186,
+          "properties": {
+            "selectorDigest": "sha256:6589199ad8fec127a5de5146c514bb595e8a0c40296099821cc9ea9289ad73c6",
+            "textHash": "sha256:bf6cfb690ac3920c1be8a560bd425685506978be1d747a339510bd5b7cfd14e8",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-as-ing-header",
+          "selectorKind": "PDF_TEXT",
+          "page": 1,
+          "quote": "INGREDIENTS LATIN NAME SPECIFICATION TEST METHOD",
+          "quotePrefix": "Conforms USP <2091> INGREDIENTS ",
+          "quoteSuffix": " Organic Ashwagandha Root Extrac",
+          "startOffset": 869,
+          "endOffset": 917,
+          "properties": {
+            "selectorDigest": "sha256:b982d19db7b3dd3f6c7be39b03aed6f26adf4a62d31ce299c5038d49480d0ece",
+            "textHash": "sha256:bf6cfb690ac3920c1be8a560bd425685506978be1d747a339510bd5b7cfd14e8",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-as-ipc",
+          "selectorKind": "TABLE",
+          "page": 1,
+          "quote": "Withania somnifera ≥ 450 mg IPC",
+          "quotePrefix": "oot Extract (2.5% Withanolides) ",
+          "quoteSuffix": " Organic Ashwagandha Root Withan",
+          "startOffset": 971,
+          "endOffset": 1002,
+          "properties": {
+            "selectorDigest": "sha256:1ab4fef8ee479c7c7f04cef47f80a40c73e390192537e9d3579ef4385873a4fe",
+            "tableName": "INGREDIENTS",
+            "tableRow": "Organic Ashwagandha Root Extract (2.5% Withanolides)",
+            "tableColumn": "LATIN NAME / SPECIFICATION / TEST METHOD",
+            "textHash": "sha256:bf6cfb690ac3920c1be8a560bd425685506978be1d747a339510bd5b7cfd14e8",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-as-assay",
+          "selectorKind": "TABLE",
+          "page": 1,
+          "quote": "≥ 2.5% Withanolides Conforms HPLC",
+          "quotePrefix": "oot Extract (2.5% Withanolides) ",
+          "quoteSuffix": " HEAVY METAL LIMIT Lead ≤ 0.5 µg",
+          "startOffset": 1218,
+          "endOffset": 1251,
+          "properties": {
+            "selectorDigest": "sha256:ba66f218bfde6161596462b6cdc74795f8b5be7312bc87306ba56cfc785518d0",
+            "tableName": "CHEMICAL ASSAY",
+            "tableRow": "Organic Ashwagandha Root Extract (2.5% Withanolides)",
+            "tableColumn": "SPECIFICATION / RESULT / TEST METHOD",
+            "textHash": "sha256:bf6cfb690ac3920c1be8a560bd425685506978be1d747a339510bd5b7cfd14e8",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        },
+        {
+          "ref": "loc-as-lead",
+          "selectorKind": "TABLE",
+          "page": 1,
+          "quote": "Lead ≤ 0.5 µg / serving 0.380 µg / serving ICP-MS",
+          "quotePrefix": "Conforms HPLC HEAVY METAL LIMIT ",
+          "quoteSuffix": " Arsenic ≤ 10 µg / serving < 0.0",
+          "startOffset": 1270,
+          "endOffset": 1319,
+          "properties": {
+            "selectorDigest": "sha256:259aa73b600f4f1ee04b54ab1adb67b266cecbe858409c1305fa646f30806bc5",
+            "tableName": "HEAVY METAL LIMIT",
+            "tableRow": "Lead",
+            "tableColumn": "SPECIFICATION / RESULTS / TEST METHOD",
+            "textHash": "sha256:bf6cfb690ac3920c1be8a560bd425685506978be1d747a339510bd5b7cfd14e8",
+            "offsetBasis": "nfc-ws-collapse/1"
+          }
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "eurofins",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "Eurofins Food Chemistry Testing Madison, Inc.",
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "agent-a7",
+      "mode": "new",
+      "nodeType": "Agent",
+      "name": "BellLabs fixtures agent A7 (ft-D8)",
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "prod-orgabay-nad",
+      "mode": "new",
+      "nodeType": "Product",
+      "name": "Orgabay Liposomal NAD 500 mg Supplement",
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "prod-ash",
+      "mode": "new",
+      "nodeType": "Product",
+      "name": "Organic Ashwagandha Extract (manufactured for Elite Source Products, item 496003060)",
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "nad",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "NAD+ (nicotinamide adenine dinucleotide)",
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "betaine",
+      "mode": "new",
+      "nodeType": "IngredientMaterial",
+      "name": "Trimethylglycine (as betaine anhydrous)",
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "ash-extract",
+      "mode": "new",
+      "nodeType": "IngredientMaterial",
+      "name": "Organic ashwagandha (Withania somnifera) root extract, 2.5% withanolides",
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "withanolides",
+      "mode": "new",
+      "nodeType": "Constituent",
+      "name": "Withanolides (total)",
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "lead",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "Lead",
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "lot-ef",
+      "mode": "new",
+      "nodeType": "Lot",
+      "name": "Orgabay Liposomal NAD — lot LNA-199-0715",
+      "uidSegment": "orgabay-liposomal-nad-lot-LNA-199-0715",
+      "identifiers": [
+        {
+          "scheme": "LOT_CODE",
+          "issuer": "Orgabay",
+          "value": "LNA-199-0715"
+        }
+      ],
+      "onMatch": "review"
+    },
+    {
+      "ref": "lot-as",
+      "mode": "new",
+      "nodeType": "Lot",
+      "name": "Organic Ashwagandha Extract — lot 2404101ORA",
+      "uidSegment": "elite-organic-ashwagandha-lot-2404101ORA",
+      "identifiers": [
+        {
+          "scheme": "LOT_CODE",
+          "issuer": "Elite Source Products, Inc.",
+          "value": "2404101ORA"
+        }
+      ],
+      "onMatch": "review"
+    },
+    {
+      "ref": "qr-ef-nad",
+      "mode": "new",
+      "nodeType": "QualityResult",
+      "name": "Eurofins 3921057-0 — NAD+ — Quantity by Input",
+      "uidSegment": "eurofins-3921057-0-nad",
+      "identifiers": [
+        {
+          "scheme": "LAB_REPORT",
+          "issuer": "Eurofins Food Chemistry Testing Madison, Inc.",
+          "value": "3921057-0"
+        }
+      ],
+      "onMatch": "review"
+    },
+    {
+      "ref": "qr-ef-tmg",
+      "mode": "new",
+      "nodeType": "QualityResult",
+      "name": "Eurofins 3921057-0 — trimethylglycine — Quantity by Input",
+      "uidSegment": "eurofins-3921057-0-tmg",
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "qr-as-ipc",
+      "mode": "new",
+      "nodeType": "QualityResult",
+      "name": "COA lot 2404101ORA — ashwagandha root extract — IPC",
+      "uidSegment": "elite-2404101ORA-ash-extract-ipc",
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "qr-as-assay",
+      "mode": "new",
+      "nodeType": "QualityResult",
+      "name": "COA lot 2404101ORA — withanolides assay — 'Conforms'",
+      "uidSegment": "elite-2404101ORA-withanolides-hplc",
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "qr-as-lead",
+      "mode": "new",
+      "nodeType": "QualityResult",
+      "name": "COA lot 2404101ORA — lead — 0.380 µg/serving",
+      "uidSegment": "elite-2404101ORA-lead-icpms",
+      "identifiers": [],
+      "onMatch": "review"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "up-lot-ef",
+      "kind": "node.upsert",
+      "subjectRef": "lot-ef",
+      "properties": {
+        "lotCode": "LNA-199-0715"
+      },
+      "evidence": [
+        "loc-ef-lot"
+      ]
+    },
+    {
+      "proposalId": "up-lot-as",
+      "kind": "node.upsert",
+      "subjectRef": "lot-as",
+      "properties": {
+        "lotCode": "2404101ORA"
+      },
+      "evidence": [
+        "loc-as-lot"
+      ]
+    },
+    {
+      "proposalId": "up-qr-ef-nad",
+      "kind": "node.upsert",
+      "subjectRef": "qr-ef-nad",
+      "properties": {
+        "reportNumber": "3921057-0",
+        "reportedAt": "2022-12-27T00:00:00Z",
+        "testedAt": "2022-12-07T00:00:00Z",
+        "sampleKind": "NOT_STATED",
+        "method": "Quantity by Input (QTY_INPUT)",
+        "methodReference": "Quantity of ingredients verified through batch record review.",
+        "statedVerdict": "NOT_STATED",
+        "resultBasis": "INPUT_VERIFIED",
+        "analyteVerbatim": "NAD+ (Nicotinamide Adenine Dinucleotide)",
+        "value": 500,
+        "unitCode": "mg",
+        "valueVerbatim": "500 mg/Serving Size"
+      },
+      "evidence": [
+        "loc-ef-nad",
+        "loc-ef-qbi",
+        "loc-ef-method",
+        "loc-ef-note",
+        "loc-ef-report",
+        "loc-ef-date",
+        "loc-ef-started"
+      ]
+    },
+    {
+      "proposalId": "up-qr-ef-tmg",
+      "kind": "node.upsert",
+      "subjectRef": "qr-ef-tmg",
+      "properties": {
+        "reportNumber": "3921057-0",
+        "reportedAt": "2022-12-27T00:00:00Z",
+        "testedAt": "2022-12-07T00:00:00Z",
+        "sampleKind": "NOT_STATED",
+        "method": "Quantity by Input (QTY_INPUT)",
+        "methodReference": "Quantity of ingredients verified through batch record review.",
+        "statedVerdict": "NOT_STATED",
+        "resultBasis": "INPUT_VERIFIED",
+        "analyteVerbatim": "Trimethylglycine (as Betaine Anhydrous)",
+        "value": 250,
+        "unitCode": "mg",
+        "valueVerbatim": "250 mg/Serving Size"
+      },
+      "evidence": [
+        "loc-ef-tmg",
+        "loc-ef-qbi",
+        "loc-ef-method",
+        "loc-ef-note",
+        "loc-ef-report",
+        "loc-ef-date"
+      ]
+    },
+    {
+      "proposalId": "up-qr-as-ipc",
+      "kind": "node.upsert",
+      "subjectRef": "qr-as-ipc",
+      "properties": {
+        "resultBasis": "IN_PROCESS_CONTROL",
+        "analyteVerbatim": "Organic Ashwagandha Root Extract (2.5% Withanolides)",
+        "method": "IPC",
+        "specComparator": "NOT_LESS_THAN",
+        "specLow": 450,
+        "unitCode": "mg",
+        "specVerbatim": "≥ 450 mg",
+        "specBasis": "NOT_STATED",
+        "specPeriod": "NOT_STATED",
+        "statedVerdict": "NOT_STATED",
+        "sampleKind": "NOT_STATED"
+      },
+      "evidence": [
+        "loc-as-ipc",
+        "loc-as-ing-header"
+      ]
+    },
+    {
+      "proposalId": "up-qr-as-assay",
+      "kind": "node.upsert",
+      "subjectRef": "qr-as-assay",
+      "properties": {
+        "resultBasis": "STATED_WITHOUT_VALUE",
+        "analyteVerbatim": "Organic Ashwagandha Root Extract (2.5% Withanolides)",
+        "valueVerbatim": "Conforms",
+        "method": "HPLC",
+        "specComparator": "NOT_LESS_THAN",
+        "specLow": 2.5,
+        "unitCode": "%",
+        "specVerbatim": "≥ 2.5% Withanolides",
+        "specBasis": "NOT_STATED",
+        "statedVerdict": "CONFORMS"
+      },
+      "evidence": [
+        "loc-as-assay"
+      ]
+    },
+    {
+      "proposalId": "up-qr-as-lead",
+      "kind": "node.upsert",
+      "subjectRef": "qr-as-lead",
+      "properties": {
+        "resultBasis": "MEASURED",
+        "analyteVerbatim": "Lead",
+        "value": 0.38,
+        "unitCode": "ug",
+        "valueQualifier": "EXACT",
+        "valueVerbatim": "0.380 µg / serving",
+        "method": "ICP-MS",
+        "specComparator": "NOT_MORE_THAN",
+        "specHigh": 0.5,
+        "specVerbatim": "≤ 0.5 µg / serving",
+        "specBasis": "NOT_STATED",
+        "statedVerdict": "NOT_STATED"
+      },
+      "evidence": [
+        "loc-as-lead"
+      ]
+    },
+    {
+      "proposalId": "c01",
+      "kind": "edge.assert",
+      "relationshipType": "QUALITY_RESULT_FOR",
+      "fromRef": "qr-ef-nad",
+      "toRef": "lot-ef",
+      "evidence": [
+        "loc-ef-nad",
+        "loc-ef-lot"
+      ],
+      "assertion": {
+        "predicate": "QUALITY_RESULT_FOR",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "eurofins"
+    },
+    {
+      "proposalId": "c02",
+      "kind": "edge.assert",
+      "relationshipType": "QUALITY_RESULT_FOR",
+      "fromRef": "qr-ef-tmg",
+      "toRef": "lot-ef",
+      "evidence": [
+        "loc-ef-tmg",
+        "loc-ef-lot"
+      ],
+      "assertion": {
+        "predicate": "QUALITY_RESULT_FOR",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "eurofins"
+    },
+    {
+      "proposalId": "c03",
+      "kind": "edge.assert",
+      "relationshipType": "MEASURES_ANALYTE",
+      "fromRef": "qr-ef-nad",
+      "toRef": "nad",
+      "evidence": [
+        "loc-ef-nad"
+      ],
+      "assertion": {
+        "predicate": "MEASURES_ANALYTE",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "eurofins",
+      "rationale": "the edge names the analyte a row reports on; for INPUT_VERIFIED rows nothing was measured (resultBasis carries that)"
+    },
+    {
+      "proposalId": "c04",
+      "kind": "edge.assert",
+      "relationshipType": "MEASURES_ANALYTE",
+      "fromRef": "qr-ef-tmg",
+      "toRef": "betaine",
+      "evidence": [
+        "loc-ef-tmg"
+      ],
+      "assertion": {
+        "predicate": "MEASURES_ANALYTE",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "eurofins"
+    },
+    {
+      "proposalId": "c05",
+      "kind": "edge.assert",
+      "relationshipType": "ISSUED_BY",
+      "fromRef": "qr-ef-nad",
+      "toRef": "eurofins",
+      "evidence": [
+        "loc-ef-lab",
+        "loc-ef-released"
+      ],
+      "assertion": {
+        "predicate": "ISSUED_BY",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "eurofins"
+    },
+    {
+      "proposalId": "c06",
+      "kind": "edge.assert",
+      "relationshipType": "ISSUED_BY",
+      "fromRef": "qr-ef-tmg",
+      "toRef": "eurofins",
+      "evidence": [
+        "loc-ef-lab",
+        "loc-ef-released"
+      ],
+      "assertion": {
+        "predicate": "ISSUED_BY",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "eurofins"
+    },
+    {
+      "proposalId": "c07",
+      "kind": "edge.assert",
+      "relationshipType": "LOT_OF",
+      "fromRef": "lot-ef",
+      "toRef": "prod-orgabay-nad",
+      "evidence": [
+        "loc-ef-lot",
+        "loc-ef-desc"
+      ],
+      "assertion": {
+        "predicate": "LOT_OF",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "eurofins"
+    },
+    {
+      "proposalId": "c08",
+      "kind": "edge.assert",
+      "relationshipType": "QUALITY_RESULT_FOR",
+      "fromRef": "qr-as-ipc",
+      "toRef": "lot-as",
+      "evidence": [
+        "loc-as-ipc",
+        "loc-as-lot"
+      ],
+      "assertion": {
+        "predicate": "QUALITY_RESULT_FOR",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "agent-a7",
+      "rationale": "qualifiers: document issuer not stated on the COA (no laboratory named, no signature; a 'Quality Control Approved' stamp only); 'Manufactured for' names the brand owner, which is not the issuer"
+    },
+    {
+      "proposalId": "c09",
+      "kind": "edge.assert",
+      "relationshipType": "QUALITY_RESULT_FOR",
+      "fromRef": "qr-as-assay",
+      "toRef": "lot-as",
+      "evidence": [
+        "loc-as-assay",
+        "loc-as-lot"
+      ],
+      "assertion": {
+        "predicate": "QUALITY_RESULT_FOR",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "agent-a7",
+      "rationale": "qualifiers: document issuer not stated on the COA (no laboratory named, no signature; a 'Quality Control Approved' stamp only); 'Manufactured for' names the brand owner, which is not the issuer"
+    },
+    {
+      "proposalId": "c10",
+      "kind": "edge.assert",
+      "relationshipType": "QUALITY_RESULT_FOR",
+      "fromRef": "qr-as-lead",
+      "toRef": "lot-as",
+      "evidence": [
+        "loc-as-lead",
+        "loc-as-lot"
+      ],
+      "assertion": {
+        "predicate": "QUALITY_RESULT_FOR",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "agent-a7",
+      "rationale": "qualifiers: document issuer not stated on the COA (no laboratory named, no signature; a 'Quality Control Approved' stamp only); 'Manufactured for' names the brand owner, which is not the issuer"
+    },
+    {
+      "proposalId": "c11",
+      "kind": "edge.assert",
+      "relationshipType": "MEASURES_ANALYTE",
+      "fromRef": "qr-as-ipc",
+      "toRef": "ash-extract",
+      "evidence": [
+        "loc-as-ipc"
+      ],
+      "assertion": {
+        "predicate": "MEASURES_ANALYTE",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "agent-a7",
+      "rationale": "qualifiers: document issuer not stated on the COA (no laboratory named, no signature; a 'Quality Control Approved' stamp only); 'Manufactured for' names the brand owner, which is not the issuer"
+    },
+    {
+      "proposalId": "c12",
+      "kind": "edge.assert",
+      "relationshipType": "MEASURES_ANALYTE",
+      "fromRef": "qr-as-assay",
+      "toRef": "withanolides",
+      "evidence": [
+        "loc-as-assay"
+      ],
+      "assertion": {
+        "predicate": "MEASURES_ANALYTE",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "agent-a7",
+      "rationale": "qualifiers: document issuer not stated on the COA (no laboratory named, no signature; a 'Quality Control Approved' stamp only); 'Manufactured for' names the brand owner, which is not the issuer"
+    },
+    {
+      "proposalId": "c13",
+      "kind": "edge.assert",
+      "relationshipType": "MEASURES_ANALYTE",
+      "fromRef": "qr-as-lead",
+      "toRef": "lead",
+      "evidence": [
+        "loc-as-lead"
+      ],
+      "assertion": {
+        "predicate": "MEASURES_ANALYTE",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "agent-a7",
+      "rationale": "qualifiers: document issuer not stated on the COA (no laboratory named, no signature; a 'Quality Control Approved' stamp only); 'Manufactured for' names the brand owner, which is not the issuer"
+    },
+    {
+      "proposalId": "c14",
+      "kind": "edge.assert",
+      "relationshipType": "LOT_OF",
+      "fromRef": "lot-as",
+      "toRef": "prod-ash",
+      "evidence": [
+        "loc-as-lot",
+        "loc-as-product"
+      ],
+      "assertion": {
+        "predicate": "LOT_OF",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "agent-a7",
+      "rationale": "qualifiers: document issuer not stated on the COA (no laboratory named, no signature; a 'Quality Control Approved' stamp only); 'Manufactured for' names the brand owner, which is not the issuer"
+    },
+    {
+      "proposalId": "c15",
+      "kind": "assertion.literal",
+      "subjectRef": "lot-as",
+      "predicate": "D8.LOT_EXPIRY_AS_PRINTED",
+      "evidence": [
+        "loc-as-lot"
+      ],
+      "assertion": {
+        "predicate": "D8.LOT_EXPIRY_AS_PRINTED",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "extractionMethod": "A7 fixtures stage: manual selection, string-verified by fxlib.py",
+        "validity": {
+          "validTo": "2027-08-01T00:00:00Z",
+          "validToPrecision": "MONTH",
+          "validToBasis": "STATED_BY_SOURCE"
+        }
+      },
+      "asserterRef": "agent-a7",
+      "valueString": "08/2027",
+      "rationale": "qualifiers: document issuer not stated on the COA (no laboratory named, no signature; a 'Quality Control Approved' stamp only); 'Manufactured for' names the brand owner, which is not the issuer"
+    }
+  ],
+  "notes": "D8 fixture intent (fixtures stage, A7). Contrast-COA assertions use the executor agent as asserter because the document names no issuer (open question for the kernel: asserter unknown). LOT_CODE and LAB_REPORT schemes are requested (OQ-D8-08). The QUALITY assessments are not intent proposals (intent v1 has no assessment proposal kind); they are listed in assertions.yaml."
+}

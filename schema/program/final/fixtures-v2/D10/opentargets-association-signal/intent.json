@@ -1,0 +1,1269 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v2",
+  "intentId": "ft-d10-fx-opentargets-association-signal",
+  "pins": {
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+    "policyVersion": "bks-admission-policy/v1"
+  },
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "ft-a1-fixtures-stage",
+      "model": "claude-opus-5-5"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run:ft-D10-opentargets-association-signal",
+      "missionId": "mission:ft-D10-fixtures"
+    },
+    "activityKind": "INGESTION"
+  },
+  "basis": {
+    "creationOnly": {
+      "reason": "FU-03 v2 fixture round: replay of a packet fixture into a graph without a prior custody snapshot",
+      "expectAbsent": [],
+      "expectPresent": []
+    }
+  },
+  "defaults": {
+    "privacyClass": "PUBLIC"
+  },
+  "sources": [
+    {
+      "ref": "snap-ot-apoe",
+      "source": {
+        "canonicalUri": "https://api.platform.opentargets.org/api/v4/graphql#target(ENSG00000130203).associatedDiseases(page 0, size 5)",
+        "sourceKind": "API",
+        "genre": "ASSOCIATION_DATABASE_RECORD"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:39:08Z",
+        "observedAt": "2026-10-08T21:39:08Z",
+        "contentHash": "sha256:92f608c0f2d87b716b6b7c8d0cd83c0f22896c3c2d465d62912015ab05b46fe8",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "curl POST GraphQL (body ot-q1.json)",
+        "captureCompleteness": "PARTIAL_EXCERPT",
+        "mimeType": "application/json",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "loc-ot-apoe-dataversion",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"dataVersion\":{\"year\":\"26\",\"month\":\"09\",\"iteration\":null}",
+            "prefix": "ion\":{\"x\":\"26\",\"y\":\"9\",\"z\":\"0\"},",
+            "suffix": "},\"target\":{\"id\":\"ENSG0000013020",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 103,
+              "end": 160
+            },
+            "jsonPointer": "/data/meta/dataVersion",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"dataVersion\":{\"year\":\"26\",\"month\":\"09\",\"iteration\":null}",
+          "prefix": "ion\":{\"x\":\"26\",\"y\":\"9\",\"z\":\"0\"},",
+          "suffix": "},\"target\":{\"id\":\"ENSG0000013020",
+          "quoteHash": "sha256:f19f4c270e7239224d50c88268bb88449f320647f04c5b682fa5ed57f2304966",
+          "startOffset": 103,
+          "endOffset": 160
+        },
+        {
+          "ref": "loc-ot-apoe-ad-score",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"name\":\"Alzheimer disease\"},\"score\":0.695512952413486",
+            "prefix": "\"disease\":{\"id\":\"MONDO_0004975\",",
+            "suffix": ",\"datatypeScores\":[{\"id\":\"litera",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 2104,
+              "end": 2157
+            },
+            "jsonPointer": "/data/target/associatedDiseases/rows/3/score",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"name\":\"Alzheimer disease\"},\"score\":0.695512952413486",
+          "prefix": "\"disease\":{\"id\":\"MONDO_0004975\",",
+          "suffix": ",\"datatypeScores\":[{\"id\":\"litera",
+          "quoteHash": "sha256:2fa94d6222f527d2b12ea88d8987f34169146b6c464cb691c621ccee6e619a25",
+          "startOffset": 2104,
+          "endOffset": 2157
+        },
+        {
+          "ref": "loc-ot-apoe-ad-literature",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "{\"id\":\"literature\",\"score\":0.9992042452669387}",
+            "prefix": "5512952413486,\"datatypeScores\":[",
+            "suffix": ",{\"id\":\"affected_pathway\",\"score",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 2176,
+              "end": 2222
+            },
+            "jsonPointer": "/data/target/associatedDiseases/rows/3/datatypeScores/0",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "{\"id\":\"literature\",\"score\":0.9992042452669387}",
+          "prefix": "5512952413486,\"datatypeScores\":[",
+          "suffix": ",{\"id\":\"affected_pathway\",\"score",
+          "quoteHash": "sha256:961f18c27d1263b27c89782624ccc00394382abab030b4b07bef6fb33edbd92c",
+          "startOffset": 2176,
+          "endOffset": 2222
+        },
+        {
+          "ref": "loc-ot-apoe-ad-genetic",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "{\"id\":\"genetic_association\",\"score\":0.8814168283246063}",
+            "prefix": "\",\"score\":0.017251532679053088},",
+            "suffix": "],\"datasourceScores\":[{\"id\":\"gwa",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 2329,
+              "end": 2384
+            },
+            "jsonPointer": "/data/target/associatedDiseases/rows/3/datatypeScores/3",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "{\"id\":\"genetic_association\",\"score\":0.8814168283246063}",
+          "prefix": "\",\"score\":0.017251532679053088},",
+          "suffix": "],\"datasourceScores\":[{\"id\":\"gwa",
+          "quoteHash": "sha256:f58bc0e8290e4423842ea10ca07cce6df95026ae83fa74142e2b584ba98d3b75",
+          "startOffset": 2329,
+          "endOffset": 2384
+        }
+      ]
+    },
+    {
+      "ref": "snap-ot-sirolimus",
+      "source": {
+        "canonicalUri": "https://api.platform.opentargets.org/api/v4/graphql#drug(CHEMBL413).adverseEvents(page 0, size 8)",
+        "sourceKind": "API",
+        "genre": "PHARMACOVIGILANCE_DATABASE_RECORD"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:39:08Z",
+        "observedAt": "2026-10-08T21:39:08Z",
+        "contentHash": "sha256:2d765747e8cb9bfb40bbba4402019e17d275c08509c653955a696bba6e916c31",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "curl POST GraphQL (body ot-q2.json)",
+        "captureCompleteness": "PARTIAL_EXCERPT",
+        "mimeType": "application/json",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "loc-ot-siro-dataversion",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"dataVersion\":{\"year\":\"26\",\"month\":\"09\",\"iteration\":null}",
+            "prefix": "ion\":{\"x\":\"26\",\"y\":\"9\",\"z\":\"0\"},",
+            "suffix": "},\"drug\":{\"id\":\"CHEMBL413\",\"name",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 57,
+              "end": 114
+            },
+            "jsonPointer": "/data/meta/dataVersion",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"dataVersion\":{\"year\":\"26\",\"month\":\"09\",\"iteration\":null}",
+          "prefix": "ion\":{\"x\":\"26\",\"y\":\"9\",\"z\":\"0\"},",
+          "suffix": "},\"drug\":{\"id\":\"CHEMBL413\",\"name",
+          "quoteHash": "sha256:f19f4c270e7239224d50c88268bb88449f320647f04c5b682fa5ed57f2304966",
+          "startOffset": 57,
+          "endOffset": 114
+        },
+        {
+          "ref": "loc-ot-siro-critical",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"criticalValue\":290.98842339916155",
+            "prefix": "AL\",\"adverseEvents\":{\"count\":32,",
+            "suffix": ",\"rows\":[{\"name\":\"stomatitis\",\"m",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 250,
+              "end": 284
+            },
+            "jsonPointer": "/data/drug/adverseEvents/criticalValue",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"criticalValue\":290.98842339916155",
+          "prefix": "AL\",\"adverseEvents\":{\"count\":32,",
+          "suffix": ",\"rows\":[{\"name\":\"stomatitis\",\"m",
+          "quoteHash": "sha256:6540878d176e15ddafdd4bbc2b654206444a23060cb34954c436e7f38ce6cba4",
+          "startOffset": 250,
+          "endOffset": 284
+        },
+        {
+          "ref": "loc-ot-siro-rejection",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "{\"name\":\"transplant rejection\",\"meddraCode\":\"\",\"count\":686,\"logLR\":1895.665732409805}",
+            "prefix": "423,\"logLR\":2480.2412365213677},",
+            "suffix": ",{\"name\":\"transplant dysfunction",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 468,
+              "end": 553
+            },
+            "jsonPointer": "/data/drug/adverseEvents/rows/2",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "{\"name\":\"transplant rejection\",\"meddraCode\":\"\",\"count\":686,\"logLR\":1895.665732409805}",
+          "prefix": "423,\"logLR\":2480.2412365213677},",
+          "suffix": ",{\"name\":\"transplant dysfunction",
+          "quoteHash": "sha256:6add793cc5a1ef07b1c12478e4018eb1332de47cc689a2467165a87ca90759e7",
+          "startOffset": 468,
+          "endOffset": 553
+        },
+        {
+          "ref": "loc-ot-siro-neoplasm",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "{\"name\":\"malignant neoplasm progression\",\"meddraCode\":\"\",\"count\":1423,\"logLR\":2480.2412365213677}",
+            "prefix": "1545,\"logLR\":3111.307459312404},",
+            "suffix": ",{\"name\":\"transplant rejection\",",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 370,
+              "end": 467
+            },
+            "jsonPointer": "/data/drug/adverseEvents/rows/1",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "{\"name\":\"malignant neoplasm progression\",\"meddraCode\":\"\",\"count\":1423,\"logLR\":2480.2412365213677}",
+          "prefix": "1545,\"logLR\":3111.307459312404},",
+          "suffix": ",{\"name\":\"transplant rejection\",",
+          "quoteHash": "sha256:4d3eec9b411499096f871d24074b7f71e20eec91ebdd284be5b48c4c10f3fa17",
+          "startOffset": 370,
+          "endOffset": 467
+        }
+      ]
+    },
+    {
+      "ref": "snap-ot-doc-associations",
+      "source": {
+        "canonicalUri": "https://platform-docs.opentargets.org/associations.md",
+        "sourceKind": "WEB_PAGE",
+        "genre": "METHOD_PAGE"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:39:08Z",
+        "observedAt": "2026-10-08T21:39:08Z",
+        "contentHash": "sha256:7af84ccd2f819bfd2c57091c1d9732ba0ce601043a7892d1d4b99309eff649d4",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "curl (markdown twin)",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "text/markdown",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "loc-ot-doc-not-confidence",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "they should not be interpreted as a confidence score for the target-disease association",
+            "prefix": "lists of targets or diseases, **",
+            "suffix": "**.&#x20;\n\nFor example, under-st",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 9361,
+              "end": 9448
+            },
+            "section": "Interpreting association scores",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "they should not be interpreted as a confidence score for the target-disease association",
+          "prefix": "lists of targets or diseases, **",
+          "suffix": "**.&#x20;\n\nFor example, under-st",
+          "quoteHash": "sha256:7c73485aedaa3a5a44f8080d78ad6268c3b67ec344243b966f8b2da291b0dcfd",
+          "startOffset": 9361,
+          "endOffset": 9448
+        }
+      ]
+    },
+    {
+      "ref": "snap-ot-doc-pharmacovigilance",
+      "source": {
+        "canonicalUri": "https://platform-docs.opentargets.org/drug/pharmacovigilance.md",
+        "sourceKind": "WEB_PAGE",
+        "genre": "METHOD_PAGE"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:39:08Z",
+        "observedAt": "2026-10-08T21:39:08Z",
+        "contentHash": "sha256:50f717513fab97982e5b7d96ff0bf25f8dfa7c0bac4e0b7b10978213a27f4b64",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "curl (markdown twin)",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "text/markdown",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "loc-ot-doc-lrt",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "The significant drug–ADR pairs were then evaluated using the Likelihood Ratio Test (LRT)",
+            "prefix": " `trade_names`               |\n\n",
+            "suffix": " as previously described by [Hua",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 3003,
+              "end": 3091
+            },
+            "section": "Computational pipelines and datasets",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "The significant drug–ADR pairs were then evaluated using the Likelihood Ratio Test (LRT)",
+          "prefix": " `trade_names`               |\n\n",
+          "suffix": " as previously described by [Hua",
+          "quoteHash": "sha256:4772aede65538448c916679dce1090b9d63876fb72401f74caa276c0069c70fa",
+          "startOffset": 3003,
+          "endOffset": 3091
+        },
+        {
+          "ref": "loc-ot-doc-indication",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "Due to the nature of the surveillance reports, it's relatively common for the indication for which a drug was prescribed to appear in the list of significant ADRs.",
+            "prefix": "st/_w_c5c2d04d/lrtmethod.pdf).\n\n",
+            "suffix": " Given the current structure of ",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 3722,
+              "end": 3885
+            },
+            "section": "Computational pipelines and datasets",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Due to the nature of the surveillance reports, it's relatively common for the indication for which a drug was prescribed to appear in the list of significant ADRs.",
+          "prefix": "st/_w_c5c2d04d/lrtmethod.pdf).\n\n",
+          "suffix": " Given the current structure of ",
+          "quoteHash": "sha256:faac30a4983fa3a1e7c0170841c43aa1e784e59bf6edea94b7903fe16c6ea863",
+          "startOffset": 3722,
+          "endOffset": 3885
+        }
+      ]
+    },
+    {
+      "ref": "snap-openfda-faers-drug-event",
+      "source": {
+        "canonicalUri": "https://api.fda.gov/drug/event.json?search=patient.drug.openfda.generic_name.exact:%22SIROLIMUS%22+AND+patient.reaction.reactionmeddrapt.exact:%22TRANSPLANT+REJECTION%22&limit=0",
+        "sourceKind": "API",
+        "genre": "PHARMACOVIGILANCE_COUNT_QUERY"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-09T01:54:23Z",
+        "observedAt": "2026-10-09T01:54:23Z",
+        "contentHash": "sha256:4ba6ceeba303eea26a584a4c511465040fe406339502a9adf4b3f060f68c6cef",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "curl (openFDA drug/event API, limit=0: meta only, no report bodies)",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "loc-faers-drug-event-total",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"total\": 372",
+            "prefix": "ip\": 0,\n      \"limit\": 0,\n      ",
+            "suffix": "\n    }\n  },\n  \"results\": []\n}",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 484,
+              "end": 496
+            },
+            "jsonPointer": "/meta/results/total",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"total\": 372",
+          "prefix": "ip\": 0,\n      \"limit\": 0,\n      ",
+          "suffix": "\n    }\n  },\n  \"results\": []\n}",
+          "quoteHash": "sha256:0ce6d727fb9469b58deadf4d27747a6a0d82e45a3bc9f1810c102cf6155bd29d",
+          "startOffset": 484,
+          "endOffset": 496
+        }
+      ]
+    },
+    {
+      "ref": "snap-openfda-faers-drug",
+      "source": {
+        "canonicalUri": "https://api.fda.gov/drug/event.json?search=patient.drug.openfda.generic_name.exact:%22SIROLIMUS%22&limit=0",
+        "sourceKind": "API",
+        "genre": "PHARMACOVIGILANCE_COUNT_QUERY"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-09T01:54:23Z",
+        "observedAt": "2026-10-09T01:54:23Z",
+        "contentHash": "sha256:e8e1c071e3fdabd4d3a4873a4b0dae7c157550df3e8e7cd0ad2c0fa3886801dc",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "curl (openFDA drug/event API, limit=0: meta only, no report bodies)",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "loc-faers-drug-total",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"total\": 13365",
+            "prefix": "ip\": 0,\n      \"limit\": 0,\n      ",
+            "suffix": "\n    }\n  },\n  \"results\": []\n}",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 484,
+              "end": 498
+            },
+            "jsonPointer": "/meta/results/total",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"total\": 13365",
+          "prefix": "ip\": 0,\n      \"limit\": 0,\n      ",
+          "suffix": "\n    }\n  },\n  \"results\": []\n}",
+          "quoteHash": "sha256:64c6670810e2d9bcdff476962c57fa86105684ee69cf17cdadfbad5930a158f9",
+          "startOffset": 484,
+          "endOffset": 498
+        }
+      ]
+    },
+    {
+      "ref": "snap-openfda-faers-event",
+      "source": {
+        "canonicalUri": "https://api.fda.gov/drug/event.json?search=patient.reaction.reactionmeddrapt.exact:%22TRANSPLANT+REJECTION%22&limit=0",
+        "sourceKind": "API",
+        "genre": "PHARMACOVIGILANCE_COUNT_QUERY"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-09T01:54:23Z",
+        "observedAt": "2026-10-09T01:54:23Z",
+        "contentHash": "sha256:c280afb38378dbb24997af37a48bccb364fa69d62f4f4422d8fb1873333da0d2",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "curl (openFDA drug/event API, limit=0: meta only, no report bodies)",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "loc-faers-event-total",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"total\": 7906",
+            "prefix": "ip\": 0,\n      \"limit\": 0,\n      ",
+            "suffix": "\n    }\n  },\n  \"results\": []\n}",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 484,
+              "end": 497
+            },
+            "jsonPointer": "/meta/results/total",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"total\": 7906",
+          "prefix": "ip\": 0,\n      \"limit\": 0,\n      ",
+          "suffix": "\n    }\n  },\n  \"results\": []\n}",
+          "quoteHash": "sha256:1ab779430a79aa76309154a1c5cc76df3bc44bdf7beeafcdac2ad2959c76b3a1",
+          "startOffset": 484,
+          "endOffset": 497
+        }
+      ]
+    },
+    {
+      "ref": "snap-openfda-faers-all",
+      "source": {
+        "canonicalUri": "https://api.fda.gov/drug/event.json?limit=0",
+        "sourceKind": "API",
+        "genre": "PHARMACOVIGILANCE_COUNT_QUERY"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-09T01:54:23Z",
+        "observedAt": "2026-10-09T01:54:23Z",
+        "contentHash": "sha256:f9d51a511a3e55ff3ab1ea521f285d7038998dfe211acf9c0370ee651c5b4fd8",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "curl (openFDA drug/event API, limit=0: meta only, no report bodies)",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "loc-faers-all-total",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"total\": 20692690",
+            "prefix": "ip\": 0,\n      \"limit\": 0,\n      ",
+            "suffix": "\n    }\n  },\n  \"results\": []\n}",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 484,
+              "end": 501
+            },
+            "jsonPointer": "/meta/results/total",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"total\": 20692690",
+          "prefix": "ip\": 0,\n      \"limit\": 0,\n      ",
+          "suffix": "\n    }\n  },\n  \"results\": []\n}",
+          "quoteHash": "sha256:d93dcb3d8df819a047cba91be0796770793de4fb81a8a40f197b7890f24d8b8b",
+          "startOffset": 484,
+          "endOffset": 501
+        },
+        {
+          "ref": "loc-faers-last-updated",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"last_updated\": \"2026-07-30\"",
+            "prefix": "s://open.fda.gov/license/\",\n    ",
+            "suffix": ",\n    \"results\": {\n      \"skip\":",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 396,
+              "end": 424
+            },
+            "jsonPointer": "/meta/last_updated",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"last_updated\": \"2026-07-30\"",
+          "prefix": "s://open.fda.gov/license/\",\n    ",
+          "suffix": ",\n    \"results\": {\n      \"skip\":",
+          "quoteHash": "sha256:119f27f263b94bdfc55c703af807a82dede019cef313d4a09803addff3cfc674",
+          "startOffset": 396,
+          "endOffset": 424
+        }
+      ]
+    },
+    {
+      "ref": "snap-openfda-sirolimus-label",
+      "source": {
+        "canonicalUri": "https://api.fda.gov/drug/label.json?search=set_id:09f24e7a-0bea-4e02-b557-c60eb842d41a&limit=1",
+        "sourceKind": "API",
+        "genre": "DRUG_LABEL_RECORD"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:39:08Z",
+        "observedAt": "2026-10-08T21:39:08Z",
+        "contentHash": "sha256:9807e7127aefa101a8e9bb1311c651db349ce04c7d00a6b7a03659a28faf2472",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "curl (openFDA drug label API)",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "loc-fda-label-indication",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "Sirolimus is an mTOR inhibitor immunosuppressant indicated for the prophylaxis of organ rejection in patients aged ≥13 years receiving renal transplants",
+            "prefix": "       \"1 INDICATIONS AND USAGE ",
+            "suffix": ": Patients at low- to moderate-i",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 4373,
+              "end": 4525
+            },
+            "jsonPointer": "/results/0/indications_and_usage/0",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Sirolimus is an mTOR inhibitor immunosuppressant indicated for the prophylaxis of organ rejection in patients aged ≥13 years receiving renal transplants",
+          "prefix": "       \"1 INDICATIONS AND USAGE ",
+          "suffix": ": Patients at low- to moderate-i",
+          "quoteHash": "sha256:eb8272c8104dc1a23d4f01cb2aa3d0d90a773687921014ab71fbaeec2f60d4bf",
+          "startOffset": 4373,
+          "endOffset": 4525
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "e-apoe",
+      "mode": "new",
+      "nodeType": "MolecularEntity",
+      "name": "APOE (gene/protein target)",
+      "uidSegment": "fx-apoe",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "e-alzheimer",
+      "mode": "new",
+      "nodeType": "Condition",
+      "name": "Alzheimer disease",
+      "uidSegment": "fx-alzheimer-disease",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "e-sirolimus",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "sirolimus",
+      "uidSegment": "fx-sirolimus",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "e-transplant-rejection",
+      "mode": "new",
+      "nodeType": "Condition",
+      "name": "transplant rejection (FAERS reaction term as returned by Open Targets)",
+      "uidSegment": "fx-transplant-rejection",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "e-neoplasm-progression",
+      "mode": "new",
+      "nodeType": "Condition",
+      "name": "malignant neoplasm progression (FAERS reaction term)",
+      "uidSegment": "fx-malignant-neoplasm-progression",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "e-ot",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "Open Targets (Platform release 26.09, API 26.9.0)",
+      "uidSegment": "fx-open-targets",
+      "properties": {
+        "entityKind": "UNSPECIFIED"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "e-fda",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "U.S. Food and Drug Administration (openFDA drug/event API; FAERS data last_updated 2026-07-30)",
+      "uidSegment": "fx-us-fda",
+      "properties": {
+        "entityKind": "UNSPECIFIED"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "p-a-ot-apoe-ad-score",
+      "rationale": "qualifiers: dataVersion 26.09; components: literature 0.9992042452669387; genetic_association 0.8814168283246063 (see a-ot-apoe-ad-components)",
+      "dependsOn": [],
+      "kind": "assertion.relate",
+      "subjectRef": "e-apoe",
+      "objectRef": "e-alzheimer",
+      "assertion": {
+        "predicate": "REPORTS_ASSOCIATION_SCORE",
+        "speechAct": "REPORTS_PRACTICE",
+        "basisKind": "CALCULATED",
+        "qualifiers": [
+          "componentsVerbatim:literature 0.9992042452669387"
+        ],
+        "validity": {
+          "validFrom": "2026-09-01T00:00:00Z",
+          "validFromPrecision": "MONTH",
+          "validFromBasis": "STATED_BY_SOURCE"
+        },
+        "uidSegment": "fx-d10-ot-26-09-apoe-alzheimer-score"
+      },
+      "evidence": [
+        "loc-ot-apoe-ad-score",
+        "loc-ot-apoe-dataversion",
+        "loc-ot-doc-not-confidence"
+      ],
+      "asserterRef": "e-ot",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: INVALID_ASSERTION: QUALIFIER_UNREGISTERED: \"componentsVerbatim:literature 0.99920424\" has no registered prefix in vocabularies/qualifiers.yaml (the executor refuses unregistered prefixes); basisKind CALCULATED needs derivation.rule and derivation.from inputs"
+      }
+    },
+    {
+      "proposalId": "p-a-ot-apoe-ad-components",
+      "rationale": "qualifiers: datatype scores, release 26.09; the row also lists affected_pathway and rna_expression (not quoted)",
+      "dependsOn": [],
+      "kind": "assertion.relate",
+      "subjectRef": "e-apoe",
+      "objectRef": "e-alzheimer",
+      "assertion": {
+        "predicate": "REPORTS_ASSOCIATION_SCORE",
+        "speechAct": "REPORTS_PRACTICE",
+        "basisKind": "CALCULATED",
+        "qualifiers": [],
+        "validity": {
+          "validFrom": "2026-09-01T00:00:00Z",
+          "validFromPrecision": "MONTH",
+          "validFromBasis": "STATED_BY_SOURCE"
+        },
+        "uidSegment": "fx-d10-ot-26-09-apoe-alzheimer-components"
+      },
+      "evidence": [
+        "loc-ot-apoe-ad-literature",
+        "loc-ot-apoe-ad-genetic"
+      ],
+      "asserterRef": "e-ot",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: INVALID_ASSERTION: basisKind CALCULATED needs derivation.rule and derivation.from inputs"
+      }
+    },
+    {
+      "proposalId": "p-a-ot-siro-rejection",
+      "dependsOn": [],
+      "kind": "assertion.relate",
+      "subjectRef": "e-sirolimus",
+      "objectRef": "e-transplant-rejection",
+      "assertion": {
+        "predicate": "REPORTS_DISPROPORTIONALITY_SIGNAL",
+        "speechAct": "REPORTS_PRACTICE",
+        "basisKind": "CALCULATED",
+        "qualifiers": [],
+        "validity": {
+          "validFrom": "2026-09-01T00:00:00Z",
+          "validFromPrecision": "MONTH",
+          "validFromBasis": "STATED_BY_SOURCE"
+        },
+        "uidSegment": "fx-d10-ot-26-09-sirolimus-transplant-rejection-lrt"
+      },
+      "evidence": [
+        "loc-ot-siro-rejection",
+        "loc-ot-siro-critical",
+        "loc-ot-siro-dataversion",
+        "loc-ot-doc-lrt"
+      ],
+      "asserterRef": "e-ot",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: INVALID_ASSERTION: basisKind CALCULATED needs derivation.rule and derivation.from inputs"
+      }
+    },
+    {
+      "proposalId": "p-a-ot-siro-neoplasm",
+      "dependsOn": [],
+      "kind": "assertion.relate",
+      "subjectRef": "e-sirolimus",
+      "objectRef": "e-neoplasm-progression",
+      "assertion": {
+        "predicate": "REPORTS_DISPROPORTIONALITY_SIGNAL",
+        "speechAct": "REPORTS_PRACTICE",
+        "basisKind": "CALCULATED",
+        "qualifiers": [],
+        "validity": {
+          "validFrom": "2026-09-01T00:00:00Z",
+          "validFromPrecision": "MONTH",
+          "validFromBasis": "STATED_BY_SOURCE"
+        },
+        "uidSegment": "fx-d10-ot-26-09-sirolimus-neoplasm-progression-lrt"
+      },
+      "evidence": [
+        "loc-ot-siro-neoplasm",
+        "loc-ot-siro-critical",
+        "loc-ot-siro-dataversion"
+      ],
+      "asserterRef": "e-ot",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: INVALID_ASSERTION: basisKind CALCULATED needs derivation.rule and derivation.from inputs"
+      }
+    },
+    {
+      "proposalId": "p-a-label-indication",
+      "rationale": "qualifiers: prophylaxis of organ rejection; patients aged >=13 years receiving renal transplants; label effective_time 20250630; labelHolder: REMEDYREPACK INC. (labeler of record of openFDA set_id 09f24e7a-0bea-4e02-b557-c60eb842d41a; not an asserter, so no subject); close-out FU-03: INDICATED_FOR re-keyed to HAS_APPROVED_INDICATION (D8, R-88), asserter the regulator",
+      "dependsOn": [],
+      "kind": "assertion.relate",
+      "subjectRef": "e-sirolimus",
+      "objectRef": "e-transplant-rejection",
+      "assertion": {
+        "predicate": "HAS_APPROVED_INDICATION",
+        "speechAct": "STATES",
+        "qualifiers": [
+          "labelHolderVerbatim:REMEDYREPACK INC. (labeler of record of openFDA set_id 09f24e7a-0bea-4e02-b557-c60eb842d41a",
+          "closeOutFU03Verbatim:INDICATED_FOR re-keyed to HAS_APPROVED_INDICATION (D8, R-88), asserter the regulator"
+        ],
+        "validity": {
+          "validFrom": "2025-06-30T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE"
+        },
+        "uidSegment": "fx-d10-label-sirolimus-indication-rejection-prophylaxis"
+      },
+      "evidence": [
+        "loc-fda-label-indication"
+      ],
+      "asserterRef": "e-fda",
+      "hold": {
+        "reason": "FU-03 round v2 SEMANTIC: INVALID_ASSERTION: QUALIFIER_UNREGISTERED: \"labelHolderVerbatim:REMEDYREPACK INC. (l\" has no registered prefix in vocabularies/qualifiers.yaml (the executor refuses unregistered prefixes); QUALIFIER_UNREGISTERED: \"closeOutFU03Verbatim:INDICATED_FOR re-ke\" has no registered prefix in vocabularies/qualifiers.yaml (the executor refuses unregistered prefixes)"
+      }
+    },
+    {
+      "proposalId": "p-a-ot-indication-caveat",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "e-ot",
+      "assertion": {
+        "predicate": "STATES_METHOD_CAVEAT",
+        "speechAct": "CAUTIONS",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "OBSERVATION_ONLY",
+          "validObservedAt": "2026-10-08T00:00:00Z"
+        },
+        "uidSegment": "fx-d10-ot-pharmacovigilance-indication-caveat"
+      },
+      "value": {
+        "valueString": "the indication for which a drug was prescribed commonly appears among its significant ADRs"
+      },
+      "evidence": [
+        "loc-ot-doc-indication"
+      ],
+      "asserterRef": "e-ot"
+    },
+    {
+      "proposalId": "p-a-faers-drug-event",
+      "rationale": "qualifiers: openFDA meta.results.total; FAERS data last_updated 2026-07-30; cell a of the 2x2 table; spontaneous reports, not de-duplicated; a report may name several drugs and reactions",
+      "dependsOn": [],
+      "kind": "assertion.relate",
+      "subjectRef": "e-sirolimus",
+      "objectRef": "e-transplant-rejection",
+      "assertion": {
+        "predicate": "REPORTS_REPORT_COUNT",
+        "speechAct": "REPORTS_PRACTICE",
+        "basisKind": "DIRECT_MEASUREMENT",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "OBSERVATION_ONLY",
+          "validObservedAt": "2026-07-30T00:00:00Z"
+        },
+        "uidSegment": "fx-d10-openfda-faers-sirolimus-and-rejection-count"
+      },
+      "evidence": [
+        "loc-faers-drug-event-total",
+        "loc-faers-last-updated"
+      ],
+      "asserterRef": "e-fda"
+    },
+    {
+      "proposalId": "p-a-faers-drug",
+      "rationale": "qualifiers: openFDA meta.results.total; FAERS data last_updated 2026-07-30; row total a+b; spontaneous reports, not de-duplicated; a report may name several drugs and reactions",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "e-sirolimus",
+      "assertion": {
+        "predicate": "REPORTS_REPORT_COUNT",
+        "speechAct": "REPORTS_PRACTICE",
+        "basisKind": "DIRECT_MEASUREMENT",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "OBSERVATION_ONLY",
+          "validObservedAt": "2026-07-30T00:00:00Z"
+        },
+        "uidSegment": "fx-d10-openfda-faers-sirolimus-count"
+      },
+      "value": {
+        "valueString": "FAERS reports naming sirolimus (generic_name.exact SIROLIMUS): 13365",
+        "valueNumber": 13365,
+        "unitCode": "{report}"
+      },
+      "evidence": [
+        "loc-faers-drug-total",
+        "loc-faers-last-updated"
+      ],
+      "asserterRef": "e-fda",
+      "hold": {
+        "reason": "FU-03 round v2 SEMANTIC: PREDICATE_KIND_MISMATCH: REPORTS_REPORT_COUNT is a relationship predicate; this proposal kind needs literal | field | computation"
+      }
+    },
+    {
+      "proposalId": "p-a-faers-event",
+      "rationale": "qualifiers: openFDA meta.results.total; FAERS data last_updated 2026-07-30; column total a+c; spontaneous reports, not de-duplicated; a report may name several drugs and reactions",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "e-transplant-rejection",
+      "assertion": {
+        "predicate": "REPORTS_REPORT_COUNT",
+        "speechAct": "REPORTS_PRACTICE",
+        "basisKind": "DIRECT_MEASUREMENT",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "OBSERVATION_ONLY",
+          "validObservedAt": "2026-07-30T00:00:00Z"
+        },
+        "uidSegment": "fx-d10-openfda-faers-rejection-count"
+      },
+      "value": {
+        "valueString": "FAERS reports naming the reaction TRANSPLANT REJECTION: 7906",
+        "valueNumber": 7906,
+        "unitCode": "{report}"
+      },
+      "evidence": [
+        "loc-faers-event-total",
+        "loc-faers-last-updated"
+      ],
+      "asserterRef": "e-fda",
+      "hold": {
+        "reason": "FU-03 round v2 SEMANTIC: PREDICATE_KIND_MISMATCH: REPORTS_REPORT_COUNT is a relationship predicate; this proposal kind needs literal | field | computation"
+      }
+    },
+    {
+      "proposalId": "p-a-faers-all",
+      "rationale": "qualifiers: openFDA meta.results.total; FAERS data last_updated 2026-07-30; N; spontaneous reports, not de-duplicated; a report may name several drugs and reactions",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "e-fda",
+      "assertion": {
+        "predicate": "REPORTS_REPORT_COUNT",
+        "speechAct": "REPORTS_PRACTICE",
+        "basisKind": "DIRECT_MEASUREMENT",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "OBSERVATION_ONLY",
+          "validObservedAt": "2026-07-30T00:00:00Z"
+        },
+        "uidSegment": "fx-d10-openfda-faers-all-count"
+      },
+      "value": {
+        "valueString": "all FAERS reports in openFDA drug/event: 20692690",
+        "valueNumber": 20692690,
+        "unitCode": "{report}"
+      },
+      "evidence": [
+        "loc-faers-all-total",
+        "loc-faers-last-updated"
+      ],
+      "asserterRef": "e-fda",
+      "hold": {
+        "reason": "FU-03 round v2 SEMANTIC: PREDICATE_KIND_MISMATCH: REPORTS_REPORT_COUNT is a relationship predicate; this proposal kind needs literal | field | computation"
+      }
+    }
+  ],
+  "notes": "Generated from locators.yaml + assertions.yaml (fixtures stage, A1, 2026-10-08; regenerated in the adversarial-review stage). useConstraint records are D5-owned derived records (RESOLVES_TO_CONSTRAINT), listed for the BLOCKED_BY trace. FIXTURE ids: missionId/runId and uidSegments are fixture ids. Expressible in biotech-knowledge-intent.v1: sources, snapshots, locators, subjects, assertion.literal, edge.assert, node.upsert (DecisionCriterion). NOT expressible in v1 (no proposal kind; they need report.publish / assessment.record / projection.write intents, see 11-open-questions.md): assessment:s-signal-indication-confounded, association:as-siro-rejection-prr. edge.assert proposals carry D10 predicate-only or sibling-owned predicates as relationshipType; v1 has no 'assertion with an entity object but no typed edge' kind, so the planner would reject them until one exists. Captured with sha256 of the bytes (contentHashBasis as stated); verify quotes with locators.yaml.",
+  "provenance": {
+    "derivedFrom": {
+      "schemaVersion": "biotech-knowledge-intent.v1",
+      "path": "schema/program/final/fixtures/D10/opentargets-association-signal/intent.json",
+      "rawBytesDigest": "sha256:6e5be8e5710649819e44a1928781b38a8e725919102e0ac591f80e64bb7dc864"
+    },
+    "migrator": "bks-migrate-intent-v1/1",
+    "edits": [
+      {
+        "at": "context.activityKind",
+        "rule": "P3-kernel-activity-kind",
+        "from": "EXTRACTION",
+        "to": "INGESTION"
+      },
+      {
+        "at": "onStale",
+        "rule": "strict-stale",
+        "from": "fail",
+        "to": null,
+        "note": "production onStale removed; stale state is a new plan"
+      },
+      {
+        "at": "sources[0].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl POST GraphQL (body ot-q1.json)",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[0].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[2].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[3].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[1].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl POST GraphQL (body ot-q2.json)",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[1].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[1].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[1].locators[2].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[1].locators[3].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[2].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl (markdown twin)",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[2].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[3].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl (markdown twin)",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[3].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[3].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[4].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl (openFDA drug/event API, limit=0: meta only, no report bodies)",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[4].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[5].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl (openFDA drug/event API, limit=0: meta only, no report bodies)",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[5].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[6].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl (openFDA drug/event API, limit=0: meta only, no report bodies)",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[6].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[7].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl (openFDA drug/event API, limit=0: meta only, no report bodies)",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[7].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[7].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[8].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl (openFDA drug label API)",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[8].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "proposals[0].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "qualifiers: dataVersion 26.09; components: literature 0.9992042452669387; genetic_association 0.8814168283246063 (see a-ot-apoe-ad-components)"
+      },
+      {
+        "at": "proposals[0].kind",
+        "rule": "R-40-assertion.relate",
+        "from": "edge.assert",
+        "to": "assertion.relate",
+        "note": "REPORTS_ASSOCIATION_SCORE is a predicate, not a relationship type"
+      },
+      {
+        "at": "proposals[1].kind",
+        "rule": "R-40-assertion.relate",
+        "from": "edge.assert",
+        "to": "assertion.relate",
+        "note": "REPORTS_ASSOCIATION_SCORE is a predicate, not a relationship type"
+      },
+      {
+        "at": "proposals[2].kind",
+        "rule": "R-40-assertion.relate",
+        "from": "edge.assert",
+        "to": "assertion.relate",
+        "note": "REPORTS_DISPROPORTIONALITY_SIGNAL is a predicate, not a relationship type"
+      },
+      {
+        "at": "proposals[3].kind",
+        "rule": "R-40-assertion.relate",
+        "from": "edge.assert",
+        "to": "assertion.relate",
+        "note": "REPORTS_DISPROPORTIONALITY_SIGNAL is a predicate, not a relationship type"
+      },
+      {
+        "at": "proposals[4].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "qualifiers: prophylaxis of organ rejection; patients aged >=13 years receiving renal transplants; label effective_time 20250630; labelHolder: REMEDYREPACK INC. "
+      },
+      {
+        "at": "proposals[4].kind",
+        "rule": "R-40-assertion.relate",
+        "from": "edge.assert",
+        "to": "assertion.relate",
+        "note": "HAS_APPROVED_INDICATION is a predicate, not a relationship type"
+      },
+      {
+        "at": "proposals[5].assertion.validity.statedAsOf",
+        "rule": "validObservedAt",
+        "from": "2026-10-08T00:00:00Z",
+        "to": "validObservedAt"
+      },
+      {
+        "at": "proposals[6].kind",
+        "rule": "R-40-assertion.relate",
+        "from": "edge.assert",
+        "to": "assertion.relate",
+        "note": "REPORTS_REPORT_COUNT is a predicate, not a relationship type"
+      },
+      {
+        "at": "proposals[6].assertion.validity.statedAsOf",
+        "rule": "validObservedAt",
+        "from": "2026-07-30T00:00:00Z",
+        "to": "validObservedAt"
+      },
+      {
+        "at": "proposals[7].assertion.validity.statedAsOf",
+        "rule": "validObservedAt",
+        "from": "2026-07-30T00:00:00Z",
+        "to": "validObservedAt"
+      },
+      {
+        "at": "proposals[8].assertion.validity.statedAsOf",
+        "rule": "validObservedAt",
+        "from": "2026-07-30T00:00:00Z",
+        "to": "validObservedAt"
+      },
+      {
+        "at": "proposals[9].assertion.validity.statedAsOf",
+        "rule": "validObservedAt",
+        "from": "2026-07-30T00:00:00Z",
+        "to": "validObservedAt"
+      },
+      {
+        "at": "subjects[e-ot].properties.entityKind",
+        "rule": "schema-unknown-marker",
+        "from": null,
+        "to": "UNSPECIFIED",
+        "note": "not stated by the fixture source; OrganizationEntityKind.UNSPECIFIED is the release's explicit unknown member (OD-24 / OD-25), not a sourced fact"
+      },
+      {
+        "at": "subjects[e-fda].properties.entityKind",
+        "rule": "schema-unknown-marker",
+        "from": null,
+        "to": "UNSPECIFIED",
+        "note": "not stated by the fixture source; OrganizationEntityKind.UNSPECIFIED is the release's explicit unknown member (OD-24 / OD-25), not a sourced fact"
+      }
+    ]
+  }
+}

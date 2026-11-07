@@ -1,0 +1,62 @@
+# Compatibility decisions for biotech-schema-v2.2.0 (source of compatibility.json and COMPATIBILITY.md, generated).
+# Authored in biotech-knowledge-services schema/source/biotech-schema-v2.2.0 (Sprint V SV-11, R-SV11).
+format: bks-compatibility-source.v1
+releaseId: biotech-schema-v2.2.0
+decisions:
+  - CUTOVER.md Compatibility decisions (lead)
+  - OD-22 (GDS optional)
+  - OD-44 (native vectors recorded, not served)
+  - S0-INVENTORY section 4 (live KS constraints)
+  - "lead: DDL phases, MEASURES assertionUid exception, vector-gated templates (2026-10-12)"
+  - "R-SV10 / SV-D10 (2026-10-24): additive nullable verification/report binding fields; minor version"
+  - "R-SV11 / SV-11 (2026-10-25): ReportKind STUDY_APPRAISAL, useDecisionDigest, KsIntentMarker dispatch lookup indexes; minor version"
+capabilities:
+  chunk.write:
+    status: unsupported
+    reason: the live shared Knowledge Services Enterprise constraints on :Chunk (chunkId, chunkKey, index, text NOT NULL; chunkId/chunkKey unique) conflict with the v2 D9 Chunk shape; they belong to another authority and are not dropped or modified; v2 Chunk writes are unsupported in this release
+  legacy.nodes:
+    status: present-excluded
+    reason: "LegacyV0 / LegacyV0_<Label> nodes, MIGRATED_FROM edges and legacy: qualifiers exist after the migration; they are excluded from the consumer projection, typed reads and catalog templates"
+  analytics.gds-aga:
+    status: disabled
+    reason: "OD-22: optional capability; no required DDL or supported template depends on it"
+  vectors.native:
+    status: disabled
+    reason: "OD-44: ddl/optional.cypher records the text-embedding-3-small/1536/cosine profile; not created or served in this release; the catalog templates that need the vector index (D9/Q-D9-20#vector, QP/P-04a) are unsupported with requires: [vectors.native] and excluded from the supported count"
+  graphql.mutations:
+    status: unsupported
+    reason: "L2 (OD-02): no Mutation root; writes go through the native executor"
+liveConstraintsOwnedElsewhere:
+  - label: Chunk
+    constraints:
+      - chunkId NOT NULL
+      - chunkKey NOT NULL
+      - index NOT NULL
+      - text NOT NULL
+      - chunkId UNIQUE
+      - chunkKey UNIQUE
+    owner: shared Knowledge Services ingestion
+    decision: kept; v2 Chunk writes unsupported
+  - label: Document
+    constraints:
+      - document_* constraints (live)
+    owner: shared Knowledge Services ingestion
+    decision: kept; Document nodes are tag-only LegacyV0 (original label kept)
+  - label: DocumentTextVersion
+    constraints:
+      - live KS constraints
+    owner: shared Knowledge Services ingestion
+    decision: kept; not a v2 label
+  - label: Segmentation
+    constraints:
+      - live KS constraints
+    owner: shared Knowledge Services ingestion
+    decision: kept; not a v2 label
+markers:
+  migrationMarkerKeys: "S8 migration batches claim KsIntentMarker {effectKey: migration:<migrationRunId>:<batchId>, planRef: <migrationRunId>} under S3's markerKey scheme: markerKey = mk-<sha256(canonical{installationId, applicationId: <migrator application id>, tenantId, effectKey})>; uniqueness is on markerKey (ks_intent_marker_key), effectKey stays indexed; the migrator must write markerKey (Enterprise existence constraint)"
+  fences: "KsWriteFence {id: 'canonical', graphRevision, lockSeq, locked} and KsRevocationFence {id: 'canonical', generation} are singletons bootstrapped once by the migrator (ddl.json bootstrap)"
+readCompatibility:
+  sdlBytesChanged: true
+  changeClass: minor-additive
+  rule: "biotech-schema-v2.2.0 adds one ReportKind enum value (STUDY_APPRAISAL) and one nullable field (useDecisionDigest) on kernel Activity and Assessment; no label, relationship type, required field, field type or existing enum value of v2.1.0 is removed or changed. schemaDigest and schemaReleaseDigest differ from v2.1.0. Readers bound to v2.1.0 keep working against a graph installed at v2.2.0 except that a Report may now carry reportKind STUDY_APPRAISAL, which a reader that switches exhaustively over ReportKind must accept (GraphQL clients treat a new output enum value as dangerous, not breaking); writers and the migrator require an exact schemaReleaseDigest match with the installed KsReleaseMarker, so a v2.1.0 writer refuses a v2.2.0 graph and a release upgrade re-stamps the marker. An incompatible change would require biotech-schema-v3.0.0."
+  ddlDelta: "v2.2.0 against v2.1.0: two RANGE indexes added on the operational label KsIntentMarker (ks_intent_marker_dispatch_id on dispatchId, ks_intent_marker_marker_digest on markerDigest), both idempotent CREATE INDEX IF NOT EXISTS and not writer-required; no constraint changed; ddl.json otherwise differs only in its release binding (releaseId, schemaDigest)"

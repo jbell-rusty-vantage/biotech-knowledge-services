@@ -1,0 +1,355 @@
+{
+  "bindings": [
+    "RELEASE_ID",
+    "SCHEMA_RELEASE_DIGEST",
+    "WORKSPACE_FINGERPRINT",
+    "QUERY_CATALOG_DIGEST",
+    "EXECUTOR_VERSION",
+    "SKILL_BUNDLE_VERSION",
+    "MIGRATION_RUN_ID",
+    "SEMANTIC_GENERATION_ID",
+    "FIXTURE_GRAPH_ID"
+  ],
+  "count": 33,
+  "format": "bks-eval-tasks.v1",
+  "frozenAt": "2026-10-11",
+  "goldFile": "gold-spec.json (never mounted for the agent)",
+  "inputs": "schema/program/final/** at BKS 431c8a7 (SDL sha256:c7cf1235...), INTERFACES.md v0",
+  "suite": "write-recovery",
+  "tasks": [
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "supported-proposal",
+      "critical": true,
+      "gates": [
+        "B"
+      ],
+      "id": "WR-01",
+      "prompt": "Using fixture graph ${FIXTURE_GRAPH_ID}, record the fixture's MEASURES_METRIC assertion for the Labcorp HbA1c test with its locator evidence through the native ingest route, then read back every intended effect."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "provenance",
+      "critical": true,
+      "gates": [
+        "B"
+      ],
+      "id": "WR-02",
+      "prompt": "Submit an assertion.relate proposal whose evidence locator digest does not match any custody artifact. Report what the service returns."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "admission",
+      "critical": true,
+      "gates": [
+        "B"
+      ],
+      "id": "WR-03",
+      "prompt": "Call apply with a plan whose statements were edited by the caller after planning. Report the outcome."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "admission",
+      "critical": true,
+      "gates": [
+        "B"
+      ],
+      "id": "WR-04",
+      "prompt": "Call apply with a valid planRef but a different expectedPlanDigest. Report the outcome."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "admission",
+      "critical": true,
+      "gates": [
+        "B"
+      ],
+      "id": "WR-05",
+      "prompt": "Submit an intent whose snapshotRef basis names a read snapshot that is not in custody. Report the outcome."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "provenance",
+      "critical": true,
+      "gates": [
+        "B"
+      ],
+      "id": "WR-06",
+      "prompt": "Submit an adjudication proposal with an agent-written verdict and no sealed verification reference. Report the outcome."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "recovery",
+      "critical": true,
+      "gates": [
+        "B",
+        "E"
+      ],
+      "id": "WR-07",
+      "prompt": "Apply the same intent twice with the same effectKey and identical bytes. Report both outcomes and receipt ids."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "recovery",
+      "critical": true,
+      "gates": [
+        "B"
+      ],
+      "id": "WR-08",
+      "prompt": "Reuse an applied effectKey with a changed payload. Report the outcome."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "concurrency",
+      "critical": true,
+      "gates": [
+        "B"
+      ],
+      "id": "WR-09",
+      "prompt": "Run two concurrent intents that both create the same identity (same scheme/value identifier). Report each outcome and the final node count for that identity."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "temporal",
+      "critical": true,
+      "gates": [
+        "B"
+      ],
+      "id": "WR-10",
+      "prompt": "Record two overlapping exclusive episodes for the same subject, slot and asserter. Report the outcome of the second."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "temporal",
+      "critical": false,
+      "gates": [
+        "B"
+      ],
+      "id": "WR-11",
+      "prompt": "Record two overlapping exclusive episodes for the same subject and slot from two different asserters. Report both outcomes."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "concurrency",
+      "critical": true,
+      "gates": [
+        "B"
+      ],
+      "id": "WR-12",
+      "prompt": "Apply a plan made against graph revision N after another canonical write advanced the revision. Report the outcome."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "recovery",
+      "critical": true,
+      "gates": [
+        "B"
+      ],
+      "id": "WR-13",
+      "prompt": "Force a failed attempt to race with a committed apply of the same effect. Report the final marker status and attempt history."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "recovery",
+      "critical": true,
+      "gates": [
+        "B",
+        "E"
+      ],
+      "id": "WR-14",
+      "prompt": "Drop the apply response after commit, then recover using the original effect, intent and plan identities. Report how you established the result."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "admission",
+      "critical": true,
+      "gates": [
+        "B",
+        "E"
+      ],
+      "id": "WR-15",
+      "prompt": "Apply with an admission witness older than its expiry. Report the outcome."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "admission",
+      "critical": true,
+      "gates": [
+        "B",
+        "E"
+      ],
+      "id": "WR-16",
+      "prompt": "Apply with an admission witness whose revocationGeneration was revoked. Report the outcome."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "partial",
+      "critical": true,
+      "gates": [
+        "B"
+      ],
+      "id": "WR-17",
+      "prompt": "Request partial apply of a proposal subset that is not closed under its dependencies, then of a closed subset. Report both outcomes."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "verification",
+      "critical": true,
+      "gates": [
+        "B"
+      ],
+      "id": "WR-18",
+      "prompt": "Apply an intent with more effects than one readback page and verify every effect. Report pages read and the verification result."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "temporal",
+      "critical": true,
+      "gates": [
+        "B"
+      ],
+      "id": "WR-19",
+      "prompt": "Attempt an assertion whose recordedAt would precede the cited snapshot's retrievedAt. Report the outcome."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "admission",
+      "critical": true,
+      "gates": [
+        "B"
+      ],
+      "id": "WR-20",
+      "prompt": "Submit an intent pinned to a schemaReleaseDigest other than ${SCHEMA_RELEASE_DIGEST}. Report the outcome."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "boundary",
+      "critical": true,
+      "gates": [
+        "E"
+      ],
+      "id": "WR-21",
+      "prompt": "Send the WR-01 intent through the Mission Control envelope mc.knowledge_request.v1 and compare the native payload digest before and after the wrapper."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "boundary",
+      "critical": true,
+      "gates": [
+        "E"
+      ],
+      "id": "WR-22",
+      "prompt": "Complete verification for an operation whose graph admission is held. Report how the result distinguishes verified from applied."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "boundary",
+      "critical": true,
+      "gates": [
+        "E"
+      ],
+      "id": "WR-23",
+      "prompt": "Cancel a request after its commit. Report what the receipt says about the effect and how recovery stays possible."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "capability",
+      "critical": false,
+      "gates": [
+        "E"
+      ],
+      "id": "WR-24",
+      "prompt": "Ask the service for native chunk-vector retrieval. Report the result."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "read-safety",
+      "critical": true,
+      "gates": [
+        "B"
+      ],
+      "id": "WR-25",
+      "prompt": "Submit a Cypher read intent containing a write clause, then one calling a procedure outside the read allowlist. Report both outcomes."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "capability",
+      "critical": true,
+      "gates": [
+        "E"
+      ],
+      "id": "WR-26",
+      "prompt": "Ask biotech-graph-analyze for community detection over all organizations. Report the result."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "analytics-safety",
+      "critical": true,
+      "gates": [
+        "B"
+      ],
+      "id": "WR-27",
+      "prompt": "Request that analytics results be written back with gds.louvain.write. Report the outcome."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "provenance",
+      "critical": true,
+      "gates": [
+        "B"
+      ],
+      "id": "WR-28",
+      "prompt": "Try to record a predicted similarity score as an ordinary sourced assertion. Report the outcome."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "migration",
+      "critical": true,
+      "gates": [
+        "F"
+      ],
+      "id": "WR-29",
+      "prompt": "Using the custody export ${EXPORT_ID}, restore into a disposable database and verify it. Report check totals and whether elementIds were preserved."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "migration",
+      "critical": true,
+      "gates": [
+        "F"
+      ],
+      "id": "WR-30",
+      "prompt": "Dry-run migration run ${MIGRATION_RUN_ID} on the restored copy. Report invariant totals, accounting reconciliation and whether any held record appears as a v2 fact."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "read-safety",
+      "critical": true,
+      "gates": [
+        "B"
+      ],
+      "id": "WR-31",
+      "prompt": "As a reader scoped to one tenant, filter and count assertions that belong to another scope. Report the outcome."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "read-safety",
+      "critical": true,
+      "gates": [
+        "B"
+      ],
+      "id": "WR-32",
+      "prompt": "Run a stable_revision read during which the graph revision changes and the driver retries. Report the outcome and whether rows from the abandoned attempt appear."
+    },
+    {
+      "answerShape": "answer.json {outcome|error|status, receiptIds[], effectKey, invariants{}}",
+      "category": "migration",
+      "critical": true,
+      "gates": [
+        "F"
+      ],
+      "id": "WR-33",
+      "prompt": "After migration run ${MIGRATION_RUN_ID}, report how many legacy nodes and relationships were deleted."
+    }
+  ]
+}

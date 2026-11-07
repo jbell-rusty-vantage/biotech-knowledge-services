@@ -1,0 +1,126 @@
+# ---- fragment D11 ----
+# Module D11 — bio-medical tooling action space. Model stage, agent A8, 2026-10-08.
+# Kernel pattern: packets/K/09-reasoning.md (A1, published 2026-10-08). Kernel types are referenced, never re-declared.
+# Synthesis (S module editor, 2026-10-08), rulings in final/decision-report.md: CaptureAttempt stored labels
+# [CaptureAttempt, Occurrence] (R-17); kept for FAILED / PARTIAL only, privacyClass INTERNAL by default, not Subjectable,
+# not a second lineage mechanism (R-41); toolId and the captureMethod prefix are canonical action-space ids (R-39);
+# LOSSY_RENDITION names contentHashBasis TOOL_RENDITION (R-35). Final kernel: final/schema/kernel.graphql.
+#
+# What D11 puts in the graph, and what it keeps out:
+# - The action-space registry (tools, sources, access, auth, limits, identifiers emitted, locator kinds, readiness,
+#   gaps) is CONFIG: tooling/action-space.yaml. The identifier-scheme register is the kernel's
+#   (packets/K/identifier-schemes.yaml); the bridge table between schemes is CONFIG: identifier-bridges.yaml.
+#   No question traverses a tool or a scheme as a node (09-reasoning.md, "Decisions").
+# - Successful captures are kernel SourceSnapshots (captureMethod = "<action-space id>/<tool version>").
+# - The one D11 node type is CaptureAttempt: the record of a search / fetch / resolve / parse that FAILED or yielded only
+#   a PARTIAL capture, i.e. the non-captures that leave no kernel record. "Not reported by the source" is the kernel's
+#   FIELD_NOT_REPORTED Assertion on a COMPLETE snapshot (an authoritative empty result is a capture, not an attempt).
+#   CaptureAttempt lets the graph tell "blocked" from "never queried" (K:CQ-AX-04) and list what failed in a mission
+#   (Q-D11-17). It declares no relationship fields: lineage is the kernel's
+#   WAS_GENERATED_BY (Activity.generated targets Entity); subject and response snapshot are uid properties.
+#
+# Discipline: @node(labels) @query(aggregate: false) @mutation(operations: []); no @id / @timestamp; properties no
+# question filters on carry @filterable(byValue: false) @sortable(byValue: false). Nothing here encodes good or bad
+# (00-DIRECTIVE 3.2): an outcome is an operational fact about one request, never a quality score of a source;
+# readiness scores live in the registry, not on nodes.
+
+"How one attempt ended. Both values mean the attempt left no complete capture; neither supports an absence statement."
+enum CaptureOutcome {
+  "Bytes were received but not all of the requested content (truncated page, image-only PDF, lossy rendition). When the bytes are kept, snapshotUid names the kernel SourceSnapshot (captureCompleteness PARTIAL_EXCERPT)."
+  PARTIAL
+  "No usable content: transport, policy, quota or parser failure (failureKind says which). Usually no snapshot exists."
+  FAILED
+}
+
+"Why an attempt did not yield a complete capture (observed 2026-10-08 across the first-tier tools; tooling/action-space.yaml evidence)."
+enum CaptureFailureKind {
+  "401 or login redirect: key or account required (CAS Common Chemistry, fhir.loinc.org)."
+  AUTH_REQUIRED
+  "403 by policy, including identity headers missing (CT.gov internal history API, EDGAR without declared User-Agent, regulations.gov attachment via curl)."
+  FORBIDDEN
+  "200 with an error or challenge page instead of content (Firecrawl scrape of the CT.gov history tab returned 'Error | ClinicalTrials.gov')."
+  BOT_CHALLENGE
+  "429 transient throttle (USDA FDC DEMO_KEY shared per IP, Semantic Scholar unkeyed)."
+  RATE_LIMITED
+  "Daily or monetary budget spent (OpenAlex X-RateLimit-Limit-USD without key)."
+  QUOTA_EXHAUSTED
+  "No response in the client deadline (WHO ICTRP, 60 s)."
+  TIMEOUT
+  "5xx from the source."
+  SERVER_ERROR
+  "Content exists but the licence forbids capture or storage (LOINC table, KEGG, DrugBank, Natural Medicines)."
+  LICENCE_RESTRICTED
+  "Bytes have no text layer (image-only PDF FDA-2022-S-0023-0068); OCR needed."
+  NO_TEXT_LAYER
+  "Third-party rendition (kernel contentHashBasis TOOL_RENDITION) dropped characters versus the issuer bytes (beta sign lost in a Firecrawl PDF rendition)."
+  LOSSY_RENDITION
+  "Bytes received; the parser could not read them."
+  PARSE_ERROR
+  "The calling client failed (CLI console-encoding crash), not the source."
+  CLIENT_ERROR
+  OTHER
+}
+
+"""
+Purpose: one bounded attempt by a tool to search, fetch, resolve or parse a source for a subject that left no complete
+capture: a failure (401/403/429, challenge page, timeout, licence wall, parser failure) or a partial capture (truncated
+page, image-only PDF, lossy rendition). These are the only non-captures the kernel cannot hold: a failed request leaves
+no SourceSnapshot (often no bytes at all) and no Assertion. An authoritative empty result (search count 0, 404 for an id
+the source issues) is NOT an attempt: its response is a COMPLETE kernel SourceSnapshot and the statement is the kernel's
+FIELD_NOT_REPORTED Assertion. K:CQ-AX-04 reads attempts to tell "unknown: blocked" (FAILED / PARTIAL attempts for the
+subject and tool) from "unknown: never queried" (no attempt, no snapshot). Q-D11-17 lists what failed in a mission's runs
+and, joined to the registry by toolId, which questions that left unanswerable. Lineage is the kernel's WAS_GENERATED_BY
+to the run's Activity (declared once on Activity.generated). The subject and the partial snapshot are uid properties,
+following the kernel precedent (revisesSnapshotUid, supersedesUid): no question traverses past them, and an attempt can
+concern a subject that is not a graph node yet (queryText only). Not Subjectable: nothing is asserted about an attempt.
+It is not a second lineage mechanism: it has no run identity of its own (R-41). Stored labels [CaptureAttempt,
+Occurrence], the K archetype, never :Entity (R-17). Absorbs pinned SourceDiscoveryRecord (W19).
+Identity rule: uid = hu:capture-attempt:<sha256(runId of the generating Activity | toolId | requestDigest | attemptedAt)>,
+enforced by the kernel uid uniqueness constraint (runId is not a property: for an immutable attempt lastWriterRunId equals
+it). requestDigest = sha256 over the normalized request (method, URI with credential parameters api_key / key / token /
+email removed, body). Immutable; a retry is a new attempt.
+Privacy: privacyClass is INTERNAL by default (R-41; the kernel PrivacyClass has PUBLIC and INTERNAL only). requestUri,
+queryText and errorText never carry credentials. When the request names a person (e.g. an NPPES name search), queryText
+and requestUri store only "sha256:<hex>" of the value.
+uid token: `capture-attempt` (hu:capture-attempt:<opaque>).
+Questions: Q-D11-17, CQ-AX-04, Q-D11-01, Q-D11-07, Q-D11-20.
+"""
+type CaptureAttempt implements Entity
+  @node(labels: ["CaptureAttempt", "Occurrence"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Canonical action-space entry id (tooling/action-space.yaml), e.g. ctgov-v2-api, usda-fdc, firecrawl-cli; never a packet-local alias (the registry's top-level aliases map rewrites them, R-39). Same token as the prefix of SourceSnapshot.captureMethod (<action-space id>/<tool version>)."
+  toolId: String!
+  "Client, CLI, MCP server or API version used."
+  toolVersion: String @filterable(byValue: false) @sortable(byValue: false)
+  outcome: CaptureOutcome!
+  "Set when outcome is PARTIAL or FAILED."
+  failureKind: CaptureFailureKind
+  "HTTP status when the transport is HTTP; 0 when no response arrived (returned, never filtered: failureKind is the filter)."
+  httpStatus: Int @filterable(byValue: false) @sortable(byValue: false)
+  "Requested URI after normalization, credential parameters removed by the executor (never stores a key); person names replaced by their digest."
+  requestUri: String @filterable(byValue: false) @sortable(byValue: false)
+  "sha256:<hex> over the normalized request; identity component."
+  requestDigest: String! @filterable(byValue: false) @sortable(byValue: false)
+  "Search text or record id requested, as sent; sha256:<hex> only when it names a person (privacyClass INTERNAL)."
+  queryText: String @filterable(byValue: false) @sortable(byValue: false)
+  "uid of the graph entity the attempt was made for, when one exists (indexed; CQ-AX-04 filters on it)."
+  subjectUid: String
+  "sha256:<hex> of the response bytes when any were received (identical error pages hash identically)."
+  responseHash: String @filterable(byValue: false) @sortable(byValue: false)
+  "uid of the kernel SourceSnapshot (captureCompleteness PARTIAL_EXCERPT) that keeps the bytes of a PARTIAL attempt; null for FAILED."
+  snapshotUid: String @filterable(byValue: false) @sortable(byValue: false)
+  "Server-advised wait (Retry-After) for RATE_LIMITED / QUOTA_EXHAUSTED."
+  retryAfterSeconds: Int @filterable(byValue: false) @sortable(byValue: false)
+  "When the request was sent."
+  attemptedAt: DateTime!
+  "Short verbatim error text from the source or client (no credentials, no personal data: person names replaced by their digest)."
+  errorText: String @filterable(byValue: false) @sortable(byValue: false)
+}

@@ -1,0 +1,517 @@
+# ---- fragment D6 ----
+# Module D6 — consumer products and commerce. Model stage (Wave 2) by A6, 2026-10-08; adversarial-review stage 2026-10-08
+# (DECLARES_COMPONENT asserted on an AssertedRecordedProperties superset; massBasis = D1 MassBasis; OfferKind, Offer.currency
+# and LabelVersion.hasUndeclaredBlendAmounts removed — 09-reasoning.md "Adversarial-review changes").
+# Synthesis (S module editor, 2026-10-08; final/decision-report.md, final/_work/rulings.yaml modules.D6):
+#   R-10  HAS_LABEL_VERSION uses AssertedEdgeProperties (StateEpisodeProperties retired); register field exclusive: true.
+#   R-30  ComponentLineProperties loses declaredNameVerbatim, formVerbatim, statementVerbatim: the row as printed is the
+#         authorizing Assertion's locator exact text, and qualifiers declaredName:, form:, statement: carry the parts.
+#   R-58  AmountBasis is the one program-wide amount-basis enum (owner D6; consumers D2, D3, D5, D12): +10 values.
+#   R-88  ProductKind PRESCRIPTION_DRUG, PanelKind PRESCRIBING_INFORMATION, ComponentLineRole ACTIVE_INGREDIENT.
+#   R-08  CQ-PF-03 here is D6's CQ-PF-03b (certification-scope assessment, v2); D8 owns CQ-PF-03a.
+#   R-18  LabelVersion keeps Subjectable (kernel Subjectable rule adopts D6's wording; OQ-D6-02 closed).
+# Kernel pattern: packets/K/09-reasoning.md "## Kernel pattern for subject, object, identifier and mention edges"; final kernel SDL
+# final/schema/kernel.graphql.
+# Kernel types are referenced, never re-declared. Every @node: implements Entity & Subjectable, lists the 7 Entity fields
+# verbatim, @query(aggregate: false) @mutation(operations: []). Every @relationship: aggregate: false, nestedOperations
+# declared, @filterable(byValue: true, byAggregate: false), docstring "class: …; cardinality: …; questions: …".
+#
+# Size: 6 node types, 9 relationship types, 11 from→to pairs, widest union 3 (DeclaredComponentTarget).
+#
+# What is NOT here, on purpose (09-reasoning.md):
+# - PriceObservation: a displayed price is a kernel Assertion with a typed literal (subject Offer, predicate OFFER_PRICE_<KIND>,
+#   valueNumber, unitCode iso4217:<CODE>, valid instant, asserter = the merchant/tracker, one locator). Availability likewise
+#   (predicate OFFER_AVAILABILITY, valueString from the ObservedAvailability vocabulary). A published reference price with no
+#   seller (an index such as The Economist's Big Mac price) is a MARKET_REFERENCE_PRICE Assertion whose subject is the
+#   Product, ProductVariant or Package it prices, never an Offer.
+# - FormulationVersion: absorbed into LabelVersion (component lines on DECLARES_COMPONENT + compositionDigest). "Formulation
+#   changed?" = compositionDigest differs between two label versions of one package (CQ-ID-05).
+# - Bundle / BundleComponent: Package.packageKind KIT/MULTIPACK/BUNDLE + predicate-only CONTAINS_PACKAGE (Q-D6-14, value 3).
+# - CommerceMatch: kernel Assessment (assessmentKind EQUIVALENCE/OTHER, assessmentSubkind D6.*).
+# - Host and fulfiller organizations: MerchantListing.hostDomain and Offer.fulfillmentKind (properties; predicate-only edges).
+# - Identifiers (GTIN, ASIN, SKU, DSLD, retailer ids), subjects/objects, mentions, lineage: kernel pattern, nothing declared.
+
+# =====================================================================================================
+# Edge-property type (D6-local; allowed by the kernel's superset rule M11 — base fields verbatim first; OQ-D6-01 resolved)
+# Base: kernel AssertedRecordedProperties (adversarial-review stage; was StructuralEdgeProperties).
+# =====================================================================================================
+
+"""
+Asserted line of a label's declared composition (one Supplement Facts / Nutrition Facts / ingredient-statement row).
+Each line is authorized by its own Assertion (predicate DECLARES_COMPONENT, subject the LabelVersion, object the line
+target, asserter the transcribing source, locator the panel row): the resolution of the printed row to a D1/D12 record is
+attributable, can be adjudicated, keeps recorded-time history when D1 merges or splits materials, and is the input a D1
+CALCULATED amount cites in DERIVED_FROM (adversarial-review stage; closes OQ-D6-24(2)). Superset of the kernel
+AssertedRecordedProperties: its five fields come first, verbatim and in kernel order (A1 rule M11); the label version's
+HAS_LABEL_VERSION episode carries valid time, so the line carries recorded time only. The qualifiers after the base fields
+are the ones CQ-AX-25, CQ-PF-01, Q-D6-02, Q-D6-08 and Q-D6-12 filter on. Amounts are declarations, never measurements
+(measured content is D8). The row as printed ('Niagen (as Nicotinamide Riboside Chloride)'), the form statement ('as
+pyridoxine HCl') and a per-component allergen or preparation statement are not edge fields (M11: a field that only
+reproduces the source's wording stays with the Assertion): they are the authorizing Assertion's locator exact text and
+its qualifiers `declaredName:`, `form:` and `statement:` (R-30).
+"""
+type ComponentLineProperties @relationshipProperties {
+  relationshipUid: String!
+  assertionUid: String!
+  recordedFrom: DateTime!
+  recordedTo: DateTime
+  lastWriterRunId: String
+  "Panel order of this line (0-based); siblings under one parent are ordered by it."
+  orderIndex: Int
+  "orderIndex of the parent line (proprietary blend total, prepared-food sub-component such as 'Big Mac Sauce'); null at top level."
+  parentOrderIndex: Int
+  lineRole: ComponentLineRole!
+  "Declared amount; null when the label states none (blend member, 'NP')."
+  amount: Float
+  "UCUM unit of amount (mg, ug, g, mL, kcal, {CFU})."
+  unitCode: String
+  amountReferent: AmountReferent
+  "Mass basis of a declared chemical amount (D1 shared vocabulary MassBasis: SALT_FORM, ACTIVE_MOIETY, NUTRIENT_EQUIVALENT, MATERIAL_AS_IS, UNSPECIFIED). US 'Niagen (as NRC) 300 mg' is SALT_FORM; the Canadian 'nicotinamide riboside 263 mg' line is ACTIVE_MOIETY (CQ-PF-01, Q-D6-02)."
+  massBasis: MassBasis
+  amountBasis: AmountBasis
+  "Percent Daily Value as printed; null when not stated."
+  dailyValuePercent: Float
+}
+
+# =====================================================================================================
+# Union (width 3)
+# =====================================================================================================
+
+"What a declared composition line resolves to: a D1 ingredient material (incl. D1's unresolved-material sentinel), a D1 nutrient/constituent, or a D12 food item (prepared-food ingredient statements)."
+union DeclaredComponentTarget = IngredientMaterial | Constituent | FoodItem
+
+# =====================================================================================================
+# Enums (controlled vocabularies)
+# =====================================================================================================
+
+"What kind of thing is sold. Replaces the pinned ProductKind (adds PREPARED_FOOD, SERVICE; drops BIOLOGIC, which is D8/D3 territory). The pinned drug-pipeline ProductStatus is not used by D6 (market status is assertions on offers and packages)."
+enum ProductKind {
+  DIETARY_SUPPLEMENT
+  CONVENTIONAL_FOOD
+  PREPARED_FOOD
+  BEVERAGE
+  OTC_DRUG
+  "A prescription drug product with a labeler of record (R-88); prescription-only status is a D8 LegalStatus (PRESCRIPTION_ONLY), scoped by jurisdiction."
+  PRESCRIPTION_DRUG
+  CONSUMER_DEVICE
+  MEDICAL_DEVICE
+  DIAGNOSTIC_TEST_SERVICE
+  SERVICE
+  COSMETIC
+  OTHER
+}
+
+"Consumer-distinguishing dosage or serving form of a variant."
+enum DosageForm {
+  CAPSULE
+  SOFTGEL
+  TABLET
+  GUMMY
+  POWDER
+  STICK_PACK
+  LIQUID
+  BAR
+  MEAL_ITEM
+  DEVICE
+  KIT
+  OTHER
+}
+
+"How a sellable package is composed."
+enum PackageKind {
+  "One container of one variant (a bottle of 30 capsules, a 350 g pouch)."
+  CONTAINER
+  "N identical containers sold as one item (two-bottle supply)."
+  MULTIPACK
+  "A seller-defined kit of different packages (brand SKU '-KIT')."
+  KIT
+  "A bundle across products or brands."
+  BUNDLE
+  "One served portion of a prepared food (a sandwich, a menu item); no container GTIN."
+  SERVED_PORTION
+  OTHER
+}
+
+"Which regulated or declared panel the label version is."
+enum PanelKind {
+  SUPPLEMENT_FACTS
+  NUTRITION_FACTS
+  DRUG_FACTS
+  "Prescribing information (SPL / package insert) of a prescription drug (R-88)."
+  PRESCRIBING_INFORMATION
+  MENU_DECLARATION
+  INGREDIENT_STATEMENT
+  OTHER
+}
+
+"Declared allergens (FDA major food allergens plus the EU Annex II list)."
+enum AllergenCode {
+  MILK
+  EGG
+  FISH
+  CRUSTACEAN_SHELLFISH
+  TREE_NUTS
+  PEANUTS
+  WHEAT
+  SOYBEANS
+  SESAME
+  CEREALS_CONTAINING_GLUTEN
+  CELERY
+  MUSTARD
+  LUPIN
+  MOLLUSCS
+  SULPHITES
+  OTHER
+}
+
+"Role the label prints for the responsible party ('Distributed by', 'Manufactured for', ...)."
+enum ResponsiblePartyRole {
+  MANUFACTURED_BY
+  MANUFACTURED_FOR
+  DISTRIBUTED_BY
+  PACKED_FOR
+  IMPORTED_BY
+  MARKETED_BY
+  UNSTATED
+}
+
+"Role of one declared composition line (absorbs the pinned DeclarationKind values that are composition rows)."
+enum ComponentLineRole {
+  "Active ingredient of a drug panel (Drug Facts, prescribing information) (R-88)."
+  ACTIVE_INGREDIENT
+  DIETARY_INGREDIENT
+  NUTRIENT
+  BLEND_TOTAL
+  BLEND_MEMBER
+  OTHER_INGREDIENT
+  SOURCE_INGREDIENT
+  SUB_COMPONENT
+  ENERGY
+}
+
+"What entity the declared amount refers to (CQ-PF-01). The salt-vs-moiety mass basis is a separate dimension, ComponentLineProperties.massBasis (D1 MassBasis; adversarial-review stage, answers D1 OQ-D1-24)."
+enum AmountReferent {
+  AS_NAMED
+  AS_NUTRIENT
+  AS_EXTRACT_MASS
+  AS_MARKER_CONSTITUENT
+  BLEND_TOTAL
+  NOT_DECLARED
+}
+
+"""
+Basis of a stated amount. The one program-wide amount-basis enum (R-58), owned by D6: declared label lines (D6
+ComponentLineProperties.amountBasis), administered doses (D3; replaces QuantityBasis), protocol and constraint doses
+(D5; replaces DosePeriod), food amounts (D12), and cell-free exposure contexts (D2, MEDIUM_CONCENTRATION). Consumers
+reference it and never re-declare it (R-56). Salt-vs-moiety mass basis is a separate dimension (D1 MassBasis).
+"""
+enum AmountBasis {
+  PER_SERVING
+  PER_UNIT
+  PER_100G
+  PER_100ML
+  PER_PACKAGE
+  PER_ITEM
+  PER_DOSE
+  PER_DAY
+  PER_WEEK
+  PER_CYCLE
+  PER_KG_BODY_WEIGHT_PER_DAY
+  PER_KG_DIET
+  SINGLE_DOSE
+  "Concentration in a culture or assay medium (D2 cell-free contexts, route IN_MEDIUM)."
+  MEDIUM_CONCENTRATION
+  NOT_STATED
+  OTHER
+}
+
+"What kind of commerce page the listing is."
+enum ListingKind {
+  MARKETPLACE_DETAIL_PAGE
+  RETAILER_ITEM
+  DTC_PRODUCT_PAGE
+  MENU_ITEM_PAGE
+  OTHER
+}
+
+"How the offer is bought (absorbs the pinned SubscriptionPlan node and OfferKind PURCHASE/SUBSCRIPTION_ONLY)."
+enum PurchaseMode {
+  ONE_TIME
+  SUBSCRIPTION
+  ONE_TIME_OR_SUBSCRIPTION
+  PREORDER
+  SERVICE_BOOKING
+  UNKNOWN
+}
+
+"Who ships the offer, as displayed (replaces the pinned FULFILLS_OFFER edge)."
+enum FulfillmentKind {
+  SELLER
+  HOST
+  THIRD_PARTY
+  IN_STORE
+  UNKNOWN
+}
+
+# =====================================================================================================
+# Node types (6)
+# =====================================================================================================
+
+"""
+Purpose: the enduring marketed concept behind every variant, package and listing ("Tru Niagen", "AG1", "Big Mac"):
+what a brand presents, what marketing and target claims are made about (kernel Assertions with this as subject), what
+D8 recalls/certifications, D12 reference foods and D5 protocol steps point at. Prepared foods from a named organization
+are Products (productKind PREPARED_FOOD) whose brand is that organization's brand (00-DIRECTIVE 3.2, 3.3).
+Identity rule: (uid of the brand the product was first captured under, normalized marketed name) — jurisdiction joins
+the key only when the marketed name differs by market; never GTIN (GTINs identify Packages through the kernel). The key is
+fixed at minting: a later BRANDED_AS episode (acquisition, relaunch under another brand) never re-keys or re-mints the
+Product.
+uid token: `product` (hu:product:<opaque>).
+Questions: Q-D6-16, CQ-AX-25, Q-D6-03, Q-D6-18, Q-D6-19, Q-D6-20, Q-D6-22, Q-D6-11, Q-D6-12, CQ-AX-17.
+"""
+type Product implements Entity & Subjectable
+  @node(labels: ["Product", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Filter for every ranking and avoidance question (Q-D6-03, Q-D6-12, Q-D6-22)."
+  productKind: ProductKind!
+  "Marketed name as the brand prints it (identity key with the brand)."
+  marketedName: String!
+  "ISO 3166 code when the product is market-specific; null for multi-market products."
+  jurisdiction: String
+  """class: structural; cardinality: one_or_more; questions: CQ-AX-25, Q-D6-16, Q-D6-02."""
+  variants: [ProductVariant!]!
+    @relationship(type: "HAS_VARIANT", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: zero_or_one open episode (brand reassignments and renames are successive episodes); questions: Q-D6-16, Q-D6-20, Q-D6-11, Q-D6-12."""
+  brand: [Brand!]!
+    @relationship(type: "BRANDED_AS", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+"""
+Purpose: a consumer-distinguishable realization of a Product — strength per unit, dosage form, flavor or jurisdiction
+(round-0001 Candidate B) — the level a study administers (D3 seam), a lot belongs to (D8 seam) and a reformulation is
+compared within. A label-only change (FC-1: directions, seals) or a GTIN/package change (FC-2) never mints a variant.
+Identity rule: (product uid, strengthVerbatim, dosageForm, flavor, jurisdiction) with nulls as explicit 'unspecified'.
+uid token: `product-variant` (hu:product-variant:<opaque>).
+Questions: CQ-ID-01, CQ-ID-02, CQ-ID-05, CQ-AX-17, CQ-AX-25, Q-D6-02.
+"""
+type ProductVariant implements Entity & Subjectable
+  @node(labels: ["ProductVariant", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  dosageForm: DosageForm
+  "Strength as printed ('300 mg', '12 g scoop'); the typed amount lives on label component lines."
+  strengthVerbatim: String
+  flavor: String
+  "ISO 3166 market of this variant (US vs UK fries; '500mg (Canada)')."
+  jurisdiction: String
+  """class: structural; cardinality: one_or_more; questions: Q-D6-02, Q-D6-04, CQ-ID-02."""
+  packages: [Package!]!
+    @relationship(type: "HAS_PACKAGE", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+"""
+Purpose: a sellable package configuration of one variant — container of N units or net quantity, multipack, kit, bundle,
+or one served portion of a prepared food. The unit price-per-dose arithmetic divides by (Q-D6-02), recalls and lots scope
+to (D8 seam, Q-D6-04/-05), listings resolve to (LISTING_FOR), GTINs identify (kernel HAS_IDENTIFIER with episodes,
+Q-D6-15) and labels attach to over time (HAS_LABEL_VERSION). Absorbs PackageConfiguration, Bundle, BundleComponent.
+Identity rule: (variant uid, packageKind, unitCount, netQuantityValue + netQuantityUnit); a GTIN change with the same
+count and quantity is the same Package with a new identifier episode (FC-2); a net-contents change (AG1 360 g → 350 g) is a
+new Package.
+uid token: `package` (hu:package:<opaque>).
+Questions: Q-D6-01, Q-D6-02, Q-D6-04, Q-D6-05, Q-D6-14, Q-D6-15, CQ-CM-02, CQ-ID-02, CQ-ID-05.
+"""
+type Package implements Entity & Subjectable
+  @node(labels: ["Package", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  packageKind: PackageKind!
+  "Count of dosage units or served items (30 capsules; 1 sandwich); denominator of price per unit and per dose."
+  unitCount: Int
+  "Unit noun as printed ('Vegetarian Capsules', 'sandwich')."
+  unitNoun: String
+  netQuantityValue: Float
+  "UCUM unit of netQuantityValue (g, mL)."
+  netQuantityUnit: String
+  "Kits and multipacks: component summary as printed ('2 x 90 capsules'); component edges are predicate-only CONTAINS_PACKAGE."
+  componentSummary: String
+  """class: asserted; cardinality: many episodes; register exclusive: true (R-10: StateEpisodeProperties retired, the executor enforces non-overlap per relationship type); one episode per (package, label version, asserter) (R-22); questions: Q-D6-01, CQ-ID-02, CQ-ID-05, CQ-AX-25, Q-D6-09, Q-D6-10, Q-D6-11, Q-D6-12."""
+  labelVersions: [LabelVersion!]!
+    @relationship(type: "HAS_LABEL_VERSION", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+"""
+Purpose: one version of what a package's label (or a menu item's declaration) states — the panel, serving definition,
+directions with min/max daily servings, warnings, allergens, seals and the declared composition lines — as a content
+node that many kernel SourceSnapshots evidence (DSLD record, retailer Supplement Facts table, brand page). Absorbs the
+pinned FormulationVersion (composition = DECLARES_COMPONENT lines + compositionDigest), LabelSnapshot (content part; the
+capture stays a kernel SourceSnapshot), LabelDeclaration, QuantityDeclaration, IngredientComponent, ServingDefinition.
+Time lives on the HAS_LABEL_VERSION episode, never on this node (except the observation cache fields).
+Identity rule: (responsible brand/org uid as printed on this version, panelKind, jurisdiction, labelVersionCode when
+printed — DSLD productVersionCode 'V12.3' — else contentDigest of the normalized panel); a label version is immutable, so
+its key never changes. Two label versions with equal compositionDigest declare the same
+formulation (FC-1: label-only change).
+uid token: `label-version` (hu:label-version:<opaque>).
+Implements Subjectable under the kernel rule for versioned states (R-18): DSLD identifiers identify it, D1 CALCULATED
+amounts have it as subject, D6 change-kind and certification-scope Assessments target it.
+Questions: Q-D6-01, CQ-ID-05, CQ-ID-02, CQ-PF-01, CQ-AX-25, Q-D6-08, Q-D6-09, Q-D6-10, Q-D6-11, Q-D6-12, CQ-PF-03b, CQ-PF-02, Q-D6-21.
+"""
+type LabelVersion implements Entity & Subjectable
+  @node(labels: ["LabelVersion", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  panelKind: PanelKind!
+  "Version code printed on the label or registered by DSLD (productVersionCode)."
+  labelVersionCode: String
+  jurisdiction: String
+  "sha256:<hex> over the normalized panel (all fields and lines); identity fallback."
+  contentDigest: String!
+  "sha256:<hex> over the normalized composition lines only (resolved target uid, amount, unit, referent, basis, parent); equal digest = same formulation (CQ-ID-05)."
+  compositionDigest: String!
+  servingSizeValue: Float
+  "UCUM or annotated unit ({capsule}, g)."
+  servingSizeUnit: String
+  servingSizeVerbatim: String
+  servingsPerContainer: Float
+  minDailyServings: Float
+  "Maximum suggested daily servings from the directions (Q-D6-09: max declared daily intake = this × line amount)."
+  maxDailyServings: Float
+  directionsText: String
+  warningsText: String
+  containsAllergens: [AllergenCode!]
+  mayContainAllergens: [AllergenCode!]
+  allergenStatementVerbatim: String
+  "Seals and certification marks as printed ('NSF Certified for Sport', 'Alkemist Assured'); scope checks are CQ-PF-03b assessments."
+  seals: [String!]
+  responsiblePartyRole: ResponsiblePartyRole
+  responsiblePartyVerbatim: String
+  "Declared as-of statement ('correct as of January 2022'), verbatim; the parsed date bounds the episode's valid time."
+  asOfStatementVerbatim: String
+  "Observation cache (executor-maintained from evidencing snapshots; read-only semantics): first and last retrievedAt."
+  firstObservedAt: DateTime
+  lastObservedAt: DateTime
+  """class: asserted; cardinality: many (one per declared panel line, each authorized by its own Assertion; ordered, nested via parentOrderIndex); recorded time only (ComponentLineProperties is an AssertedRecordedProperties superset; the HAS_LABEL_VERSION episode carries valid time); questions: CQ-AX-25, CQ-PF-01, Q-D6-02, Q-D6-08, Q-D6-09, Q-D6-11, Q-D6-12, Q-D6-21."""
+  components: [DeclaredComponentTarget!]!
+    @relationship(type: "DECLARES_COMPONENT", direction: OUT, properties: "ComponentLineProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: zero_or_one (the party the label names; role on responsiblePartyRole); recorded time only (AssertedRecordedProperties: the HAS_LABEL_VERSION episode carries valid time); questions: Q-D6-16, Q-D6-04."""
+  responsibleParty: [Organization!]!
+    @relationship(type: "NAMES_RESPONSIBLE_PARTY", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+"""
+Purpose: one host's catalog entry for a sellable item (Amazon ASIN detail page, iHerb product id, Shopify product page,
+restaurant menu-item page): the place offers live, recall-exposure and authorized-channel questions scan, and a
+retailer's own statements ('New formulation', 'Discontinued Item') are made on. Its resolution to a Package is an asserted
+episode; an unresolved or disputed match is a kernel Assessment (EQUIVALENCE, subkind D6.listing-to-package).
+Identity rule: (hostDomain, hostItemId) — e.g. (amazon.com, B07TK5K5TQ), (iherb.com, 162274).
+uid token: `listing` (hu:listing:<opaque>).
+Questions: CQ-CM-01, CQ-CM-02, CQ-CM-05, Q-D6-05, Q-D6-06, Q-D6-15, Q-D6-19, Q-D6-20, CQ-PF-02.
+"""
+type MerchantListing implements Entity & Subjectable
+  @node(labels: ["MerchantListing", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  listingKind: ListingKind!
+  "Registrable domain of the host ('amazon.com', 'iherb.com', 'truniagen.com', 'mcdonalds.com'); the host Organization is reached by D7 domain identifiers (HOSTED_BY is predicate-only)."
+  hostDomain: String!
+  "Host's item id (ASIN, iHerb product id, Shopify handle or product id, menu slug)."
+  hostItemId: String!
+  "Host's parent/family id when the host groups items (Amazon parent ASIN, '30-300MG-PARENT')."
+  parentHostItemId: String
+  "Title as displayed; a listing statement, never label truth (CQ-PF-02)."
+  titleAsDisplayed: String
+  canonicalUrl: String
+  firstObservedAt: DateTime
+  lastObservedAt: DateTime
+  """class: asserted; cardinality: zero_or_one open episode (repointed or merged listings close one episode and open the next); questions: CQ-CM-02, Q-D6-05, Q-D6-15, Q-D6-19, Q-D6-02, Q-D6-21."""
+  listingFor: [Package!]!
+    @relationship(type: "LISTING_FOR", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: many; questions: CQ-CM-01, CQ-CM-02, Q-D6-02, Q-D6-13."""
+  offers: [Offer!]!
+    @relationship(type: "HAS_OFFER", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+"""
+Purpose: one party's commercial proposition for one listing's item in one market and purchase mode — the subject of
+every price and availability Assertion (OFFER_PRICE_<KIND>, OFFER_AVAILABILITY), the holder of the seller-of-record role,
+and the thing a tracked affiliate link (D9) points at. A reference price with no seller behind it (an index, a tracker's
+aggregate over third-party sellers) is not an Offer: it is an Assertion on the Package/Variant/Product
+(MARKET_REFERENCE_PRICE) or on the MerchantListing (tracker aggregate, qualifier sellerClass=THIRD_PARTY_NEW).
+Identity rule: (listing uid, seller account id as displayed or 'host', purchaseMode, jurisdiction, condition).
+uid token: `offer` (hu:offer:<opaque>).
+Questions: CQ-CM-01, CQ-CM-02, CQ-CM-03, CQ-CM-05, CQ-AX-06, Q-D6-02, Q-D6-06, Q-D6-13, Q-D6-17, CQ-CM-04.
+"""
+type Offer implements Entity & Subjectable
+  @node(labels: ["Offer", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  purchaseMode: PurchaseMode!
+  "ISO 3166 market."
+  jurisdiction: String
+  "Seller account id as displayed (Amazon 'A1W0QC6JE0QLDF'); also attached as a kernel Identifier."
+  sellerAccountIdVerbatim: String
+  sellerNameAsDisplayed: String
+  fulfillmentKind: FulfillmentKind
+  fulfillerNameAsDisplayed: String
+  "Subscription terms as displayed (absorbs SubscriptionPlan); term changes over time are Assertions (OFFER_SUBSCRIPTION_TERMS)."
+  subscriptionTermsVerbatim: String
+  "Platform app administering the plan ('ordergroove-subscribe-and-save')."
+  subscriptionApp: String
+  "Observation cache (executor-maintained, read-only semantics) from the price/availability Assertions: CQ-AX-06, CQ-CM-05."
+  firstObservedAt: DateTime
+  lastObservedAt: DateTime
+  """class: asserted; cardinality: zero_or_one open episode; questions: CQ-CM-01, Q-D6-06, Q-D6-16, Q-D6-20."""
+  sellerOfRecord: [Organization!]!
+    @relationship(type: "SELLER_OF_RECORD", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

@@ -1,0 +1,5747 @@
+# Identifier scheme register, release biotech-schema-v2.0.0.
+# PROMOTED from schema/program/final/vocabularies/identifier-schemes.yaml (BKS 431c8a7, sha256 e1633169c4ffda7bde60e0067975527feff06546d7cf70bdfe4d17f1c8e1f939) by
+# scripts/release/promote.mjs (lib/corrections.mjs): KN-06 / MD-X-01 / OD-12 activation. A scheme is write-active only when it has
+# a namespace and issuer, a normalization rule, the R-42 uniqueness rule, public rights and an exercised capture route
+# (fixture evidence plus an authority route of readiness >= 2). Every other row stays in the register as history with
+# writeStatus: disabled and its reasons; disabled schemes are not advertised as write capabilities.
+version: 3
+status: release
+published: "2026-10-09"
+owner: K (register); D11 (bridge table and routes)
+rules:
+  identity: An Identifier is (scheme, issuer, normalized value). The same (scheme, value) from two issuers is two Identifiers and never establishes identity; names never establish identity (K register header).
+  uniqueness: One (scheme, issuer, normalized value) identifies at most one Subjectable; the executor enforces it. Cross-type joins through a shared Identifier are not a modeling pattern (R-42; renditions use RENDITION_OF, R-43; condition-coded targets use TargetMeasure, R-70).
+  schemeField: Identifier.scheme is a String code validated against this register, not a GraphQL enum (D11 kernelRecommendations, accepted); the register grows without a schema change.
+  normalization: Identifier.normalizationRule stores normalization.rule; the executor applies it before the uniqueness check, and `pattern` validates the normalized value (R-42).
+  registrationStatus: "Identifier.registrationStatus (D11 request) is declined: assignment status lives on the HAS_IDENTIFIER episode, a lapse is an Assertion; scheme-level validity of the string uses Identifier.validFrom / validTo (R-42)."
+  bridges: "A bridge is never an Identifier→Identifier edge. Observed in an authority record: a HAS_IDENTIFIER Assertion citing the authority snapshot. Inferred by BellLabs: an Assessment of kind RESOLUTION or EQUIVALENCE until adjudicated (D11 header; kernel)."
+  computed: Computed identifiers (INCHIKEY) carry issuer = algorithm + version (D11 kernelRecommendations).
+  status: seed = K v1 seed row; requested = added in K v2 or by synthesis (R-42); a requested code is usable by the executor, its pattern may be null (no verified pattern).
+fields:
+  - code
+  - name
+  - authority
+  - pattern
+  - normalization{rule,ruleOrigin,text}
+  - checkDigit
+  - resolver
+  - bridges
+  - usedByNodeTypes
+  - domains
+  - authorityRoutes
+  - bestRouteReadiness
+  - crosswalk
+  - status
+  - registeredBy
+  - requestedBy
+  - notes
+  - sources
+counts:
+  schemes: 113
+  seed: 47
+  requested: 66
+  addedBySynthesis: 10
+  withPattern: 81
+  usedByAtLeastOneNodeType: 103
+  bridgeRows: 22
+schemes:
+  - code: APPLE_PODCAST
+    name: Apple Podcasts collection or track id
+    authority: Apple
+    pattern: ^[0-9]+$
+    normalization:
+      rule: digits-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: digits only
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D9.Channel
+    domains:
+      - D9
+    authorityRoutes:
+      - itunes-search-api (3)
+    bestRouteReadiness: 3
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D9
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: APPLE_PODCAST (Apple Podcasts collection or track id)
+      issuer: Apple
+      normalization: digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - itunes-search-api (3)
+        bestRouteReadiness: 3
+        fixtureUses: 1
+        fixtures:
+          - D9/lifespan-ep4-spermidine-correction
+      decision: "KN-06 / MD-X-01: active"
+  - code: ASIN
+    name: Amazon Standard Identification Number
+    authority: "Amazon (per marketplace: issuer = marketplace host)"
+    pattern: ^[0-9A-Z]{10}$
+    normalization:
+      rule: upper-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: upper case
+    checkDigit: null
+    resolver: https://{issuer}/dp/{value}
+    bridges:
+      - to: GTIN
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D6.MerchantListing
+    domains:
+      - D6
+    authorityRoutes:
+      - firecrawl-cli (2)
+      - amazon-pages (1)
+      - camelcamelcamel (1)
+      - amazon-pa-api (0)
+      - keepa-api (0)
+    bestRouteReadiness: 2
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: ASIN (Amazon Standard Identification Number)
+      issuer: "Amazon (per marketplace: issuer = marketplace host)"
+      normalization: upper-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - firecrawl-cli (2)
+          - amazon-pages (1)
+          - camelcamelcamel (1)
+          - amazon-pa-api (0)
+          - keepa-api (0)
+        bestRouteReadiness: 2
+        fixtureUses: 4
+        fixtures:
+          - D6/offer-roles-price-kinds-truniagen
+          - D6/recall-moringa-mogo
+      decision: "KN-06 / MD-X-01: active"
+  - code: AWARD_NUMBER
+    name: grant or award number
+    authority: the funder (issuer = funder uid)
+    pattern: null
+    normalization:
+      rule: award-number-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: per funder
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D7.Award
+    domains:
+      - D7
+    authorityRoutes:
+      - ctgov-v2-api (3)
+      - europepmc-fulltext-jats (3)
+      - europepmc-rest (3)
+      - funder-award-pages (1)
+    bestRouteReadiness: 3
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D7
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: AWARD_NUMBER (grant or award number)
+      issuer: the funder (issuer = funder uid)
+      normalization: award-number-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - ctgov-v2-api (3)
+          - europepmc-fulltext-jats (3)
+          - europepmc-rest (3)
+          - funder-award-pages (1)
+        bestRouteReadiness: 3
+        fixtureUses: 6
+        fixtures:
+          - D7/elysium-paper-funding-award
+      decision: "KN-06 / MD-X-01: active"
+  - code: CAS_RN
+    name: CAS Registry Number
+    authority: Chemical Abstracts Service
+    pattern: ^[0-9]{2,7}-[0-9]{2}-[0-9]$
+    normalization:
+      rule: casrn-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: insert hyphens; validate check digit
+    checkDigit: yes (weighted sum mod 10)
+    resolver: null
+    bridges:
+      - to: UNII
+        basis: K register bridgesTo
+      - to: PUBCHEM_CID
+        basis: K register bridgesTo
+      - bridge: B07
+        direction: to
+        other:
+          - UNII
+        kind: authority-asserted (FDA GSRS, record version 18)
+        readiness: 3
+      - bridge: B09
+        direction: to
+        other:
+          - PUBCHEM_CID
+        kind: aggregator (depositor-supplied)
+        readiness: 2
+    usedByNodeTypes:
+      - D1.ChemicalSubstance
+    domains:
+      - D1
+    authorityRoutes:
+      - fda-gsrs (3)
+      - pubchem-pug-rest (3)
+      - wikidata (2)
+      - cas-common-chemistry (0)
+    bestRouteReadiness: 3
+    crosswalk:
+      bioregistryPrefix: null
+      wikidataProperty: P231
+      verifiedBy:
+        - wd-Q407329.json
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[CAS_RN]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: CAS_RN (CAS Registry Number)
+      issuer: Chemical Abstracts Service
+      normalization: casrn-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: restricted
+      exercisedRoute:
+        routes:
+          - fda-gsrs (3)
+          - pubchem-pug-rest (3)
+          - wikidata (2)
+          - cas-common-chemistry (0)
+        bestRouteReadiness: 3
+        fixtureUses: 13
+        fixtures:
+          - D11/nr-chloride-gsrs-identifier-bridge
+          - K/resveratrol-identifier-crosswalk
+          - K/seller-claim-occurrences
+          - cross-domain/compound-profile
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "rights: CAS Registry is proprietary; provider lookup needs CAS rights (OD-12); a source-stated value may be kept only as quoted text"
+  - code: CELEX
+    name: EUR-Lex CELEX number
+    authority: Publications Office of the EU
+    pattern: null
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: as published
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D8.RegulatoryRecord
+    domains:
+      - D8
+    authorityRoutes:
+      - eurlex (2)
+    bestRouteReadiness: 2
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D8
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: CELEX (EUR-Lex CELEX number)
+      issuer: Publications Office of the EU
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - eurlex (2)
+        bestRouteReadiness: 2
+        fixtureUses: 2
+        fixtures:
+          - D8/eu-nrcl-authorisation-data-protection
+      decision: "KN-06 / MD-X-01: active"
+  - code: CERT_LISTING
+    name: certification listing id
+    authority: the certifier (issuer = certifier uid)
+    pattern: null
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: as published
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D8.CertificationListing
+    domains:
+      - D8
+    authorityRoutes:
+      - ngsp (2)
+      - certification-databases (1)
+    bestRouteReadiness: 2
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D8
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: CERT_LISTING (certification listing id)
+      issuer: the certifier (issuer = certifier uid)
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - ngsp (2)
+          - certification-databases (1)
+        bestRouteReadiness: 2
+        fixtureUses: 4
+        fixtures:
+          - D8/certification-listing-lot-scope
+      decision: "KN-06 / MD-X-01: active"
+  - code: CHEBI
+    name: ChEBI id
+    authority: EMBL-EBI
+    pattern: ^CHEBI:[0-9]+$
+    normalization:
+      rule: chebi-curie-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: upper-case prefix with colon
+    checkDigit: none
+    resolver: https://www.ebi.ac.uk/chebi/searchId.do?chebiId={value}
+    bridges:
+      - to: PUBCHEM_CID
+        basis: K register bridgesTo
+      - to: INCHIKEY
+        basis: K register bridgesTo
+      - bridge: B10
+        direction: to
+        other:
+          - name
+        kind: hypothesis only (CQ-AX-14)
+        readiness: 1
+    usedByNodeTypes:
+      - D1.ChemicalSubstance
+      - D1.Constituent
+    domains:
+      - D1
+      - D2
+    authorityRoutes:
+      - ebi-ols4-chebi (3)
+      - fda-gsrs (3)
+      - reactome-content-service (3)
+      - europepmc-annotations (2)
+      - wikidata (2)
+    bestRouteReadiness: 3
+    crosswalk:
+      bioregistryPrefix: null
+      wikidataProperty: P683
+      verifiedBy:
+        - wd-Q407329.json
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[CHEBI]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: CHEBI (ChEBI id)
+      issuer: EMBL-EBI
+      normalization: chebi-curie-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - ebi-ols4-chebi (3)
+          - fda-gsrs (3)
+          - reactome-content-service (3)
+          - europepmc-annotations (2)
+          - wikidata (2)
+        bestRouteReadiness: 3
+        fixtureUses: 19
+        fixtures:
+          - D11/nr-chloride-gsrs-identifier-bridge
+          - D2/nr-muscle-unstructured
+          - K/resveratrol-identifier-crosswalk
+          - cross-domain/compound-profile
+      decision: "KN-06 / MD-X-01: active"
+  - code: CHEMBL
+    name: ChEMBL id (compounds and targets share the namespace)
+    authority: EMBL-EBI ChEMBL
+    pattern: ^CHEMBL[0-9]+$
+    normalization:
+      rule: upper-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: upper case
+    checkDigit: null
+    resolver: null
+    bridges:
+      - to: PUBCHEM_CID
+        basis: K register bridgesTo
+      - to: UNIPROT
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D2.MolecularEntity
+    domains:
+      - D1
+      - D2
+    authorityRoutes:
+      - chembl-rest (3)
+      - open-targets (2)
+      - wikidata (2)
+    bestRouteReadiness: 3
+    crosswalk:
+      bioregistryPrefix: null
+      wikidataProperty: P592
+      verifiedBy:
+        - wd-Q407329.json
+    status: requested
+    registeredBy: K-v2
+    requestedBy: K; D2 (CHEMBL_TARGET folded in)
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: CHEMBL (ChEMBL id (compounds and targets share the namespace))
+      issuer: EMBL-EBI ChEMBL
+      normalization: upper-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - chembl-rest (3)
+          - open-targets (2)
+          - wikidata (2)
+        bestRouteReadiness: 3
+        fixtureUses: 18
+        fixtures:
+          - D2/dq-senescence-biomarker-path
+          - D2/metformin-exercise-harm
+          - D2/reactome-chembl-reference
+          - D2/sirt1-activation-disconfirmation
+          - K/resveratrol-identifier-crosswalk
+      decision: "KN-06 / MD-X-01: active"
+  - code: CHEMSPIDER
+    name: ChemSpider id
+    authority: Royal Society of Chemistry
+    pattern: ^[0-9]+$
+    normalization:
+      rule: digits-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: digits only
+    checkDigit: null
+    resolver: null
+    bridges:
+      - to: INCHIKEY
+        basis: K register bridgesTo
+    usedByNodeTypes: []
+    domains:
+      - D1
+    authorityRoutes: []
+    bestRouteReadiness: null
+    crosswalk:
+      bioregistryPrefix: null
+      wikidataProperty: P661
+      verifiedBy:
+        - wd-Q407329.json
+    status: requested
+    registeredBy: K-v2
+    requestedBy: K
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+    writeStatus: disabled
+    activation:
+      namespace: CHEMSPIDER (ChemSpider id)
+      issuer: Royal Society of Chemistry
+      normalization: digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+        - no authority route
+  - code: COMPANY_NUMBER
+    name: national company registry number
+    authority: the registry (Companies House, Delaware Division of Corporations, ...)
+    pattern: null
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: as published by the registry
+    checkDigit: null
+    resolver: null
+    bridges:
+      - to: LEI
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D7.Organization
+    domains:
+      - D7
+    authorityRoutes:
+      - gleif-lei (3)
+      - companies-house (1)
+      - opencorporates (0)
+    bestRouteReadiness: 3
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D7
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: COMPANY_NUMBER (national company registry number)
+      issuer: the registry (Companies House, Delaware Division of Corporations, ...)
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: COURT_DOCKET
+    name: court docket number
+    authority: the court (issuer = court uid)
+    pattern: null
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: as published; never compared across courts
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D8.RegulatoryRecord
+    domains:
+      - D8
+    authorityRoutes:
+      - cafc-opinions (2)
+    bestRouteReadiness: 2
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D8
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: COURT_DOCKET (court docket number)
+      issuer: the court (issuer = court uid)
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - cafc-opinions (2)
+        bestRouteReadiness: 2
+        fixtureUses: 2
+        fixtures:
+          - D8/us8197807-claims-held-invalid
+      decision: "KN-06 / MD-X-01: active"
+  - code: CPT
+    name: AMA CPT code (storage subject to licence)
+    authority: American Medical Association
+    pattern: ^[0-9]{4}[0-9A-Z]$
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: as published
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D4.LabTest
+    domains:
+      - D4
+    authorityRoutes:
+      - lab-test-menus (1)
+    bestRouteReadiness: 1
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D4
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: CPT (AMA CPT code (storage subject to licence))
+      issuer: American Medical Association
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: restricted
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "rights: AMA CPT codes are licensed content (OD-12: no assumed commercial licence)"
+        - "no exercised capture route: no fixture uses the scheme"
+        - best authority route readiness 1 < 2
+  - code: CROSSREF_FUNDER
+    name: Crossref Funder Registry id
+    authority: Crossref
+    pattern: ^[0-9]+$
+    normalization:
+      rule: crossref-funder-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: strip the 10.13039/ prefix
+    checkDigit: null
+    resolver: null
+    bridges:
+      - to: ROR
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D7.Organization
+    domains:
+      - D7
+    authorityRoutes:
+      - crossref-rest (3)
+      - orcid (3)
+    bestRouteReadiness: 3
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D7
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: CROSSREF_FUNDER (Crossref Funder Registry id)
+      issuer: Crossref
+      normalization: crossref-funder-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: CULTURE_COLLECTION
+    name: strain deposit number
+    authority: the culture collection (ATCC, DSMZ, LMG, CCUG, NRRL, JCM)
+    pattern: null
+    normalization:
+      rule: culture-collection-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: collection prefix + number as published; equal deposits across collections are resolved by assessment, never by string
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D1.Taxon
+    domains:
+      - D1
+    authorityRoutes:
+      - atcc-catalog (1)
+    bestRouteReadiness: 1
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: CULTURE_COLLECTION (strain deposit number)
+      issuer: the culture collection (ATCC, DSMZ, LMG, CCUG, NRRL, JCM)
+      normalization: culture-collection-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - atcc-catalog (1)
+        bestRouteReadiness: 1
+        fixtureUses: 2
+        fixtures:
+          - D1/lgg-strain-resolution
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - best authority route readiness 1 < 2
+  - code: DOI
+    name: Digital Object Identifier
+    authority: DOI registration agency (Crossref, DataCite, ...)
+    pattern: ^10\.[0-9]{4,9}/\S+$
+    normalization:
+      rule: doi-lowercase-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: strip "https://doi.org/", "doi:"; lower case (DOIs are case-insensitive)
+    checkDigit: none
+    resolver: https://doi.org/{value}
+    bridges:
+      - to: PMID
+        basis: K register bridgesTo
+      - to: OPENALEX
+        basis: K register bridgesTo
+      - bridge: B01
+        direction: to
+        other:
+          - PMID
+        kind: authority-asserted
+        readiness: 3
+      - bridge: B02
+        direction: from
+        other:
+          - PMID
+        kind: authority-asserted (NLM)
+        readiness: 3
+      - bridge: B03
+        direction: to
+        other:
+          - NCT
+        kind: source-asserted in the paper; registry/index links are optional deposits
+        readiness: 2
+      - bridge: B05
+        direction: from
+        other: []
+        kind: authority-asserted (server), incomplete
+        readiness: 2
+      - bridge: B06
+        direction: from
+        other: []
+        kind: authority-asserted
+        readiness: 3
+    usedByNodeTypes:
+      - D3.Publication
+      - D5.Protocol
+      - D7.Award
+      - D9.MediaWork
+      - K.Source
+    domains:
+      - D3
+      - D9
+    authorityRoutes:
+      - crossref-rest (3)
+      - europepmc-fulltext-jats (3)
+      - europepmc-rest (3)
+      - ncbi-bioc-pmcoa (3)
+      - ncbi-eutils-pubmed (3)
+      - pmc-idconv (3)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[DOI]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: DOI (Digital Object Identifier)
+      issuer: DOI registration agency (Crossref, DataCite, ...)
+      normalization: doi-lowercase-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - crossref-rest (3)
+          - europepmc-fulltext-jats (3)
+          - europepmc-rest (3)
+          - ncbi-bioc-pmcoa (3)
+          - ncbi-eutils-pubmed (3)
+          - pmc-idconv (3)
+        bestRouteReadiness: 3
+        fixtureUses: 75
+        fixtures:
+          - D1/nr-trial-unstructured
+          - D11/nr-trial-jats-unstructured
+          - D11/resveratrol-retraction-integrity
+          - D12/predimed-retraction-disconfirmation
+          - D12/upf-diet-rct-unstructured
+          - D13/lesne-2006-retraction
+          - D2/dq-senescence-biomarker-path
+          - D2/metformin-exercise-harm
+          - D2/nr-muscle-unstructured
+          - D2/sirt1-activation-disconfirmation
+          - D3/aspree-registry-history-harm
+          - D3/dq-bone-trial-unstructured
+          - D3/resveratrol-retraction
+          - D4/clock-noise-vs-retest-advice
+          - D4/dunedinpace-paper-unstructured
+          - D4/nr-nad-compound-to-test
+          - D5/antioxidant-exercise-disconfirmation
+          - D7/elysium-paper-funding-award
+          - D9/rapa-ex-01-attia-retelling
+          - K/retracted-sah-2017-stale-evidence
+          - cross-domain/claim-mission-report
+          - cross-domain/compound-profile
+      decision: "KN-06 / MD-X-01: active"
+  - code: DRUGBANK
+    name: DrugBank accession
+    authority: DrugBank
+    pattern: ^DB[0-9]{5}$
+    normalization:
+      rule: upper-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: upper case
+    checkDigit: null
+    resolver: https://go.drugbank.com/drugs/{value}
+    bridges:
+      - to: UNII
+        basis: K register bridgesTo
+      - to: RXCUI
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D1.ChemicalSubstance
+    domains:
+      - D1
+      - D5
+    authorityRoutes:
+      - fda-gsrs (3)
+      - wikidata (2)
+    bestRouteReadiness: 3
+    crosswalk:
+      bioregistryPrefix: null
+      wikidataProperty: P715
+      verifiedBy:
+        - wd-Q407329.json
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: DRUGBANK (DrugBank accession)
+      issuer: DrugBank
+      normalization: upper-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: restricted
+      exercisedRoute:
+        routes:
+          - fda-gsrs (3)
+          - wikidata (2)
+        bestRouteReadiness: 3
+        fixtureUses: 3
+        fixtures:
+          - cross-domain/compound-profile
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "rights: DrugBank data licence required for provider lookup (OD-12)"
+  - code: DSLD
+    name: NIH ODS Dietary Supplement Label Database label id
+    authority: NIH ODS
+    pattern: ^[0-9]+$
+    normalization:
+      rule: digits-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: digits only
+    checkDigit: none
+    resolver: https://dsld.od.nih.gov/label/{value}
+    bridges:
+      - to: GTIN
+        basis: K register bridgesTo
+      - bridge: B13
+        direction: from
+        other:
+          - GTIN
+          - UNII
+        kind: authority-asserted (NIH ODS transcription of the label)
+        readiness: 2
+      - bridge: B14
+        direction: to
+        other:
+          - GTIN
+        kind: aggregator joins on a normalized key
+        readiness: 1
+      - bridge: B16
+        direction: to
+        other:
+          - product brand string
+        kind: hypothesis only
+        readiness: 1
+    usedByNodeTypes:
+      - D6.LabelVersion
+      - D6.Package
+    domains:
+      - D6
+      - D8
+    authorityRoutes:
+      - nih-dsld (2)
+    bestRouteReadiness: 2
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[DSLD_LABEL_ID]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: DSLD (NIH ODS Dietary Supplement Label Database label id)
+      issuer: NIH ODS
+      normalization: digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - nih-dsld (2)
+        bestRouteReadiness: 2
+        fixtureUses: 33
+        fixtures:
+          - D1/ashwagandha-plant-part-harm
+          - D1/lgg-strain-resolution
+          - D1/nr-salt-moiety-us-canada
+          - D1/vitamin-b6-threshold-harm
+          - D6/label-versions-truniagen-dsld
+          - D6/proprietary-blend-ag1
+          - cross-domain/compound-profile
+          - cross-domain/product-comparison
+      decision: "KN-06 / MD-X-01: active"
+  - code: DSLD_INGREDIENT
+    name: DSLD ingredient id
+    authority: NIH ODS
+    pattern: ^[0-9]+$
+    normalization:
+      rule: digits-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: digits only
+    checkDigit: null
+    resolver: null
+    bridges:
+      - to: DSLD
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D1.IngredientMaterial
+    domains:
+      - D1
+      - D6
+    authorityRoutes:
+      - nih-dsld (2)
+    bestRouteReadiness: 2
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: DSLD_INGREDIENT (DSLD ingredient id)
+      issuer: NIH ODS
+      normalization: digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: EFO
+    name: Experimental Factor Ontology term
+    authority: EMBL-EBI
+    pattern: ^EFO_[0-9]{7}$
+    normalization:
+      rule: efo-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: underscore form
+    checkDigit: null
+    resolver: null
+    bridges:
+      - to: MONDO
+        basis: K register bridgesTo
+      - bridge: B21
+        direction: to
+        other:
+          - CT.gov condition string
+        kind: hypothesis (mapping)
+        readiness: 1
+    usedByNodeTypes:
+      - D2.Condition
+    domains:
+      - D2
+    authorityRoutes:
+      - ebi-ols4-chebi (3)
+      - europepmc-annotations (2)
+      - open-targets (2)
+    bestRouteReadiness: 3
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D2
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: EFO (Experimental Factor Ontology term)
+      issuer: EMBL-EBI
+      normalization: efo-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: EIN
+    name: US Employer Identification Number
+    authority: U.S. IRS
+    pattern: ^[0-9]{9}$
+    normalization:
+      rule: digits-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: digits only (remove the hyphen)
+    checkDigit: none
+    resolver: null
+    bridges: []
+    usedByNodeTypes: []
+    domains:
+      - D11
+    authorityRoutes:
+      - sec-edgar (2)
+    bestRouteReadiness: 2
+    status: requested
+    registeredBy: S-R-42
+    requestedBy: D11 (Q-D11-15)
+    sources:
+      - final/decision-report.md R-42
+      - packets/D11/identifier-bridges.yaml schemes[EIN]
+      - packets/D11/identifier-bridges.yaml reconciliation
+    writeStatus: disabled
+    activation:
+      namespace: EIN (US Employer Identification Number)
+      issuer: U.S. IRS
+      normalization: digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: ENSEMBL_GENE
+    name: Ensembl gene id
+    authority: Ensembl
+    pattern: ^ENS[A-Z]*G[0-9]{11}$
+    normalization:
+      rule: ensembl-gene-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: upper case; drop version suffix into a qualifier
+    checkDigit: null
+    resolver: https://www.ensembl.org/id/{value}
+    bridges:
+      - to: HGNC
+        basis: K register bridgesTo
+      - to: NCBI_GENE
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D2.MolecularEntity
+    domains:
+      - D2
+    authorityRoutes:
+      - open-targets (2)
+    bestRouteReadiness: 2
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: ENSEMBL_GENE (Ensembl gene id)
+      issuer: Ensembl
+      normalization: ensembl-gene-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: EUCT
+    name: EU CT number (CTIS)
+    authority: European Medicines Agency
+    pattern: ^[0-9]{4}-[0-9]{6}-[0-9]{2}-[0-9]{2}$
+    normalization:
+      rule: euct-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: as published
+    checkDigit: unknown
+    resolver: null
+    bridges:
+      - to: EUDRACT
+        basis: K register bridgesTo
+      - to: NCT
+        basis: K register bridgesTo
+      - bridge: B04
+        direction: to
+        other:
+          - NCT
+        kind: registry-asserted (sponsor-entered)
+        readiness: 2
+    usedByNodeTypes:
+      - D3.Study
+    domains:
+      - D3
+    authorityRoutes:
+      - ctgov-v2-api (3)
+      - eu-ctis-public (2)
+      - who-ictrp (1)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[EU_CT]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: EUCT (EU CT number (CTIS))
+      issuer: European Medicines Agency
+      normalization: euct-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: EUDRACT
+    name: EudraCT number
+    authority: European Medicines Agency
+    pattern: ^[0-9]{4}-[0-9]{6}-[0-9]{2}$
+    normalization:
+      rule: eudract-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: as published
+    checkDigit: last two digits (algorithm not verified in this stage)
+    resolver: null
+    bridges:
+      - to: EUCT
+        basis: K register bridgesTo
+      - to: NCT
+        basis: K register bridgesTo
+      - bridge: B04
+        direction: to
+        other:
+          - NCT
+        kind: registry-asserted (sponsor-entered)
+        readiness: 2
+    usedByNodeTypes:
+      - D3.Study
+    domains:
+      - D3
+    authorityRoutes:
+      - ctgov-v2-api (3)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[EUDRACT]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: EUDRACT (EudraCT number)
+      issuer: European Medicines Agency
+      normalization: eudract-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: FDA_510K
+    name: FDA 510(k) number
+    authority: FDA CDRH
+    pattern: ^K[0-9]{6}$
+    normalization:
+      rule: upper-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: upper case
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D4.Device
+    domains:
+      - D4
+      - D8
+    authorityRoutes:
+      - openfda-device (2)
+    bestRouteReadiness: 2
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D4
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: FDA_510K (FDA 510(k) number)
+      issuer: FDA CDRH
+      normalization: upper-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - openfda-device (2)
+        bestRouteReadiness: 2
+        fixtureUses: 4
+        fixtures:
+          - D4/noninvasive-glucose-cgm-recall
+      decision: "KN-06 / MD-X-01: active"
+  - code: FDA_APPLICATION
+    name: FDA application number (NDA, ANDA, BLA)
+    authority: FDA
+    pattern: ^(NDA|ANDA|BLA)[0-9]{6}$
+    normalization:
+      rule: fda-application-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: upper case; remove spaces and hyphens
+    checkDigit: null
+    resolver: null
+    bridges:
+      - to: NDC
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D8.RegulatoryRecord
+    domains:
+      - D8
+    authorityRoutes:
+      - dailymed-spl (3)
+      - openfda-drugsfda (3)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: FDA_APPLICATION (FDA application number (NDA, ANDA, BLA))
+      issuer: FDA
+      normalization: fda-application-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - dailymed-spl (3)
+          - openfda-drugsfda (3)
+        bestRouteReadiness: 3
+        fixtureUses: 1
+        fixtures:
+          - D13/madrigal-pdufa-to-accelerated-approval
+      decision: "KN-06 / MD-X-01: active"
+  - code: FDA_DOCKET
+    name: regulations.gov FDA docket id
+    authority: FDA
+    pattern: ^FDA-[0-9]{4}-[A-Z]-[0-9]{4}$
+    normalization:
+      rule: upper-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: upper case
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D8.RegulatoryRecord
+    domains:
+      - D8
+    authorityRoutes:
+      - regulations-gov-api (2)
+      - fda-web-pages (1)
+    bestRouteReadiness: 2
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D8
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: FDA_DOCKET (regulations.gov FDA docket id)
+      issuer: FDA
+      normalization: upper-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - regulations-gov-api (2)
+          - fda-web-pages (1)
+        bestRouteReadiness: 2
+        fixtureUses: 5
+        fixtures:
+          - D8/nmn-us-exclusion-reversal
+      decision: "KN-06 / MD-X-01: active"
+  - code: FDA_FEI
+    name: FDA Establishment Identifier
+    authority: FDA
+    pattern: ^[0-9]{7,10}$
+    normalization:
+      rule: digits-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: digits only
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes: []
+    domains:
+      - D8
+    authorityRoutes:
+      - fda-data-dashboard (0)
+    bestRouteReadiness: 0
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D8
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+    writeStatus: disabled
+    activation:
+      namespace: FDA_FEI (FDA Establishment Identifier)
+      issuer: FDA
+      normalization: digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+        - best authority route readiness 0 < 2
+  - code: FDA_GRN
+    name: FDA GRAS notice number
+    authority: FDA
+    pattern: ^[0-9]+$
+    normalization:
+      rule: grn-digits-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: digits only
+    checkDigit: none
+    resolver: null
+    bridges:
+      - bridge: B07
+        direction: to
+        other:
+          - UNII
+        kind: authority-asserted (FDA GSRS, record version 18)
+        readiness: 3
+    usedByNodeTypes:
+      - D8.RegulatoryRecord
+    domains:
+      - D8
+    authorityRoutes:
+      - fda-gsrs (3)
+      - fda-gras-inventory (1)
+    bestRouteReadiness: 3
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D8
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[FDA_GRN]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: FDA_GRN (FDA GRAS notice number)
+      issuer: FDA
+      normalization: grn-digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - fda-gsrs (3)
+          - fda-gras-inventory (1)
+        bestRouteReadiness: 3
+        fixtureUses: 1
+        fixtures:
+          - D11/nr-chloride-gsrs-identifier-bridge
+      decision: "KN-06 / MD-X-01: active"
+  - code: FDA_NDI
+    name: FDA new dietary ingredient notification number
+    authority: FDA
+    pattern: null
+    normalization:
+      rule: ndin-digits-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: as published
+    checkDigit: none
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D8.RegulatoryRecord
+    domains:
+      - D8
+    authorityRoutes:
+      - regulations-gov-api (2)
+    bestRouteReadiness: 2
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D8
+    notes:
+      - D11 pattern "^[0-9]+$" available
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[FDA_NDI]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: FDA_NDI (FDA new dietary ingredient notification number)
+      issuer: FDA
+      normalization: ndin-digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - regulations-gov-api (2)
+        bestRouteReadiness: 2
+        fixtureUses: 3
+        fixtures:
+          - D8/nmn-us-exclusion-reversal
+      decision: "KN-06 / MD-X-01: active"
+  - code: FDA_PRODUCT_CODE
+    name: FDA device product code
+    authority: FDA CDRH
+    pattern: ^[A-Z]{3}$
+    normalization:
+      rule: upper-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: upper case
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D4.Device
+    domains:
+      - D4
+      - D8
+    authorityRoutes:
+      - openfda-device (2)
+    bestRouteReadiness: 2
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D4
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: FDA_PRODUCT_CODE (FDA device product code)
+      issuer: FDA CDRH
+      normalization: upper-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: FDA_RECALL
+    name: FDA recall number
+    authority: FDA
+    pattern: null
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: as published
+    checkDigit: null
+    resolver: null
+    bridges:
+      - to: FDA_RECALL_EVENT
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D8.RegulatoryRecord
+    domains:
+      - D8
+    authorityRoutes:
+      - openfda-food-enforcement (2)
+      - fsis-recall-api (0)
+    bestRouteReadiness: 2
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D8
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: FDA_RECALL (FDA recall number)
+      issuer: FDA
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - openfda-food-enforcement (2)
+          - fsis-recall-api (0)
+        bestRouteReadiness: 2
+        fixtureUses: 2
+        fixtures:
+          - D8/imu-tek-warning-letter-recall
+      decision: "KN-06 / MD-X-01: active"
+  - code: FDA_RECALL_EVENT
+    name: FDA recall event id
+    authority: FDA
+    pattern: ^[0-9]+$
+    normalization:
+      rule: digits-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: digits only
+    checkDigit: null
+    resolver: null
+    bridges:
+      - to: FDA_RECALL
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D8.RegulatoryRecord
+    domains:
+      - D8
+    authorityRoutes:
+      - openfda-device (2)
+      - openfda-food-enforcement (2)
+    bestRouteReadiness: 2
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D8
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: FDA_RECALL_EVENT (FDA recall event id)
+      issuer: FDA
+      normalization: digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - openfda-device (2)
+          - openfda-food-enforcement (2)
+        bestRouteReadiness: 2
+        fixtureUses: 2
+        fixtures:
+          - D8/imu-tek-warning-letter-recall
+      decision: "KN-06 / MD-X-01: active"
+  - code: FDA_WARNING_LETTER
+    name: FDA warning letter (CMS/MARCS) number
+    authority: FDA
+    pattern: null
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: as published
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D8.RegulatoryRecord
+    domains:
+      - D8
+    authorityRoutes:
+      - fda-web-pages (1)
+    bestRouteReadiness: 1
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D8
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: FDA_WARNING_LETTER (FDA warning letter (CMS/MARCS) number)
+      issuer: FDA
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - fda-web-pages (1)
+        bestRouteReadiness: 1
+        fixtureUses: 2
+        fixtures:
+          - D8/imu-tek-warning-letter-recall
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - best authority route readiness 1 < 2
+  - code: FDC_ID
+    name: USDA FoodData Central id
+    authority: USDA ARS
+    pattern: ^[0-9]+$
+    normalization:
+      rule: digits-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: digits only
+    checkDigit: none
+    resolver: https://fdc.nal.usda.gov/food-details/{value}/nutrients
+    bridges:
+      - to: GTIN
+        basis: K register bridgesTo
+      - bridge: B14
+        direction: to
+        other:
+          - GTIN
+        kind: aggregator joins on a normalized key
+        readiness: 1
+    usedByNodeTypes:
+      - D12.FoodItem
+      - D6.Package
+    domains:
+      - D12
+    authorityRoutes:
+      - usda-fdc (0)
+    bestRouteReadiness: 0
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[FDC_ID]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: FDC_ID (USDA FoodData Central id)
+      issuer: USDA ARS
+      normalization: digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - usda-fdc (0)
+        bestRouteReadiness: 0
+        fixtureUses: 6
+        fixtures:
+          - D12/mcdonalds-fries-prepared-food
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - best authority route readiness 0 < 2
+  - code: FDC_NUTRIENT
+    name: FoodData Central nutrient id or number
+    authority: USDA ARS
+    pattern: ^[0-9]+$
+    normalization:
+      rule: digits-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: digits only
+    checkDigit: null
+    resolver: null
+    bridges:
+      - to: FDC_ID
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D1.Constituent
+    domains:
+      - D1
+      - D12
+    authorityRoutes:
+      - usda-fdc-portal (2)
+      - usda-fdc (0)
+    bestRouteReadiness: 2
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: FDC_NUTRIENT (FoodData Central nutrient id or number)
+      issuer: USDA ARS
+      normalization: digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: FNDDS_FOOD_CODE
+    name: FNDDS survey food code (with validity window)
+    authority: USDA ARS (FNDDS)
+    pattern: ^[0-9]{8}$
+    patternOrigin: OQ-D12-08 '8-digit'
+    normalization:
+      rule: fndds-food-code-v1
+      ruleOrigin: S (R-42), rule text from the requesting packet
+      text: digits only; the FNDDS release validity window is Identifier.validFrom/validTo
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D12.FoodItem
+    domains:
+      - D12
+    authorityRoutes:
+      - usda-fdc (0)
+    bestRouteReadiness: 0
+    status: requested
+    registeredBy: S-R-42
+    requestedBy: D12 (OQ-D12-08)
+    sources:
+      - final/decision-report.md R-42
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: FNDDS_FOOD_CODE (FNDDS survey food code (with validity window))
+      issuer: USDA ARS (FNDDS)
+      normalization: fndds-food-code-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+        - best authority route readiness 0 < 2
+  - code: FOODEX2
+    name: EFSA FoodEx2 term code
+    authority: EFSA
+    pattern: null
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from the requesting packet
+      text: as published
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D12.FoodCategory
+    domains:
+      - D12
+    authorityRoutes:
+      - efsa-food-composition (?)
+    bestRouteReadiness: null
+    status: requested
+    registeredBy: S-R-42
+    requestedBy: D12 (OQ-D12-08)
+    sources:
+      - final/decision-report.md R-42
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: FOODEX2 (EFSA FoodEx2 term code)
+      issuer: EFSA
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+        - best authority route readiness unknown < 2
+  - code: FOODON
+    name: FoodOn ontology term
+    authority: FoodOn (OBO Foundry)
+    pattern: ^FOODON_[0-9]{8}$
+    patternOrigin: OQ-D12-08 'FOODON_nnnnnnnn'
+    normalization:
+      rule: foodon-v1
+      ruleOrigin: S (R-42), rule text from the requesting packet
+      text: IRI local part in underscore form
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D12.FoodItem
+    domains:
+      - D12
+    authorityRoutes:
+      - foodon (?)
+    bestRouteReadiness: null
+    status: requested
+    registeredBy: S-R-42
+    requestedBy: D12 (OQ-D12-08)
+    sources:
+      - final/decision-report.md R-42
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: FOODON (FoodOn ontology term)
+      issuer: FoodOn (OBO Foundry)
+      normalization: foodon-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+        - best authority route readiness unknown < 2
+  - code: GO
+    name: Gene Ontology term
+    authority: GO Consortium
+    pattern: ^GO:[0-9]{7}$
+    normalization:
+      rule: go-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: upper-case prefix with colon
+    checkDigit: null
+    resolver: https://amigo.geneontology.org/amigo/term/{value}
+    bridges: []
+    usedByNodeTypes:
+      - D2.Mechanism
+    domains:
+      - D2
+    authorityRoutes:
+      - ebi-ols4-chebi (3)
+      - quickgo (3)
+      - reactome-content-service (3)
+      - uniprot-rest (3)
+      - europepmc-annotations (2)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: GO (Gene Ontology term)
+      issuer: GO Consortium
+      normalization: go-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - ebi-ols4-chebi (3)
+          - quickgo (3)
+          - reactome-content-service (3)
+          - uniprot-rest (3)
+          - europepmc-annotations (2)
+        bestRouteReadiness: 3
+        fixtureUses: 9
+        fixtures:
+          - D2/dq-senescence-biomarker-path
+          - D2/nr-muscle-unstructured
+          - cross-domain/compound-profile
+      decision: "KN-06 / MD-X-01: active"
+  - code: GTIN
+    name: GS1 Global Trade Item Number (UPC-A
+    authority: GS1
+    pattern: ^[0-9]{14}$
+    normalization:
+      rule: gtin14-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: digits only; left-pad to 14; validate mod-10 check digit; keep the printed form in Identifier.name
+    checkDigit: "yes (GS1 mod 10); verified: '8 50015 31111 6' → 00850015311116 valid; '7 38654 00033 5' → 00738654000335 valid"
+    resolver: null
+    bridges:
+      - to: ASIN
+        basis: K register bridgesTo
+      - to: DSLD
+        basis: K register bridgesTo
+      - bridge: B13
+        direction: to
+        other:
+          - DSLD
+        kind: authority-asserted (NIH ODS transcription of the label)
+        readiness: 2
+      - bridge: B14
+        direction: from
+        other:
+          - FDC_ID
+          - DSLD
+          - merchant listing
+        kind: aggregator joins on a normalized key
+        readiness: 1
+      - bridge: B15
+        direction: from
+        other:
+          - UDI_DI
+        kind: identity by issuer rule (same GS1 number)
+        readiness: 3
+      - bridge: B16
+        direction: to
+        other:
+          - product brand string
+        kind: hypothesis only
+        readiness: 1
+    usedByNodeTypes:
+      - D6.Package
+    domains:
+      - D6
+      - D12
+    authorityRoutes:
+      - fda-gudid (3)
+      - shopify-storefront-json (3)
+      - firecrawl-cli (2)
+      - nih-dsld (2)
+      - open-food-facts (2)
+      - openfda-food-enforcement (2)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    notes:
+      - 'D11 pattern "^[0-9]{14}$ after normalization" differs; the K pattern is kept (precedence: kernel packet over D11; R-42: patterns validate the normalized value)'
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[GTIN]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: GTIN (GS1 Global Trade Item Number (UPC-A)
+      issuer: GS1
+      normalization: gtin14-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - fda-gudid (3)
+          - shopify-storefront-json (3)
+          - firecrawl-cli (2)
+          - nih-dsld (2)
+          - open-food-facts (2)
+          - openfda-food-enforcement (2)
+        bestRouteReadiness: 3
+        fixtureUses: 31
+        fixtures:
+          - D6/label-versions-truniagen-dsld
+          - D6/offer-roles-price-kinds-truniagen
+          - D6/recall-moringa-mogo
+          - D6/retailer-reformulation-claim-iherb
+          - D8/imu-tek-warning-letter-recall
+          - cross-domain/compound-profile
+          - cross-domain/product-comparison
+      decision: "KN-06 / MD-X-01: active"
+  - code: HGNC
+    name: HGNC gene id
+    authority: HUGO Gene Nomenclature Committee
+    pattern: ^HGNC:[0-9]+$
+    normalization:
+      rule: hgnc-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: upper-case prefix with colon
+    checkDigit: null
+    resolver: https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/{value}
+    bridges:
+      - to: NCBI_GENE
+        basis: K register bridgesTo
+      - to: ENSEMBL_GENE
+        basis: K register bridgesTo
+      - to: UNIPROT
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D2.MolecularEntity
+    domains:
+      - D2
+    authorityRoutes:
+      - uniprot-rest (3)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: HGNC (HGNC gene id)
+      issuer: HUGO Gene Nomenclature Committee
+      normalization: hgnc-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - uniprot-rest (3)
+        bestRouteReadiness: 3
+        fixtureUses: 2
+        fixtures:
+          - D2/sirt1-activation-disconfirmation
+      decision: "KN-06 / MD-X-01: active"
+  - code: HPO
+    name: Human Phenotype Ontology term
+    authority: HPO
+    pattern: ^HP:[0-9]{7}$
+    normalization:
+      rule: hpo-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: upper-case prefix with colon
+    checkDigit: null
+    resolver: https://hpo.jax.org/browse/term/{value}
+    bridges: []
+    usedByNodeTypes:
+      - D2.Condition
+    domains:
+      - D2
+      - D4
+    authorityRoutes:
+      - ebi-ols4-chebi (3)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: HPO (Human Phenotype Ontology term)
+      issuer: HPO
+      normalization: hpo-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: ICD10CM
+    name: ICD-10-CM code
+    authority: CDC NCHS
+    pattern: ^[A-Z][0-9][0-9A-Z](\.[0-9A-Z]{1,4})?$
+    normalization:
+      rule: icd10cm-dot-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: upper case; insert dot after 3rd character
+    checkDigit: none
+    resolver: null
+    bridges:
+      - to: MONDO
+        basis: K register bridgesTo
+      - to: SNOMEDCT
+        basis: K register bridgesTo
+      - bridge: B21
+        direction: to
+        other:
+          - CT.gov condition string
+        kind: hypothesis (mapping)
+        readiness: 1
+    usedByNodeTypes:
+      - D2.Condition
+    domains:
+      - D2
+      - D5
+    authorityRoutes:
+      - icd10cm-pcs (3)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[ICD10CM]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: ICD10CM (ICD-10-CM code)
+      issuer: CDC NCHS
+      normalization: icd10cm-dot-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - icd10cm-pcs (3)
+        bestRouteReadiness: 3
+        fixtureUses: 1
+        fixtures:
+          - D13/bioage-strides-discontinuation
+      decision: "KN-06 / MD-X-01: active"
+  - code: INCHIKEY
+    name: InChIKey (computed structure key)
+    authority: InChI Trust algorithm
+    pattern: ^[A-Z]{14}-[A-Z]{10}-[A-Z]$
+    normalization:
+      rule: inchikey-upper-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: upper case
+    checkDigit: embedded flag characters; computed from structure
+    resolver: null
+    bridges:
+      - to: PUBCHEM_CID
+        basis: K register bridgesTo
+      - to: CHEBI
+        basis: K register bridgesTo
+      - bridge: B07
+        direction: to
+        other:
+          - UNII
+        kind: authority-asserted (FDA GSRS, record version 18)
+        readiness: 3
+    usedByNodeTypes:
+      - D1.ChemicalSubstance
+    domains:
+      - D1
+    authorityRoutes:
+      - fda-gsrs (3)
+      - pubchem-pug-rest (3)
+      - wikidata (2)
+      - repo-mcp-servers (0)
+    bestRouteReadiness: 3
+    crosswalk:
+      bioregistryPrefix: null
+      wikidataProperty: P235
+      verifiedBy:
+        - wd-Q407329.json
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[INCHIKEY]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: INCHIKEY (InChIKey (computed structure key))
+      issuer: InChI Trust algorithm
+      normalization: inchikey-upper-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - fda-gsrs (3)
+          - pubchem-pug-rest (3)
+          - wikidata (2)
+          - repo-mcp-servers (0)
+        bestRouteReadiness: 3
+        fixtureUses: 12
+        fixtures:
+          - D11/nr-chloride-gsrs-identifier-bridge
+          - D12/acrylamide-fried-potato-harm
+          - D12/olive-oil-polyphenols-preparation
+          - K/resveratrol-identifier-crosswalk
+      decision: "KN-06 / MD-X-01: active"
+  - code: ISBN
+    name: International Standard Book Number (13)
+    authority: ISBN agency
+    pattern: ^97[89][0-9]{10}$
+    normalization:
+      rule: isbn-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: remove hyphens and spaces; convert ISBN-10 to ISBN-13
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D5.Protocol
+      - D9.MediaWork
+    domains:
+      - D9
+    authorityRoutes: []
+    bestRouteReadiness: null
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: ISBN (International Standard Book Number (13))
+      issuer: ISBN agency
+      normalization: isbn-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+        - no authority route
+  - code: ISRCTN
+    name: ISRCTN registry number
+    authority: ISRCTN registry
+    pattern: ^ISRCTN[0-9]{8}$
+    normalization:
+      rule: isrctn-upper-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: upper case; add prefix if missing
+    checkDigit: none
+    resolver: https://www.isrctn.com/{value}
+    bridges:
+      - to: NCT
+        basis: K register bridgesTo
+      - bridge: B04
+        direction: to
+        other:
+          - NCT
+        kind: registry-asserted (sponsor-entered)
+        readiness: 2
+    usedByNodeTypes:
+      - D3.Study
+    domains:
+      - D3
+    authorityRoutes:
+      - ctgov-v2-api (3)
+      - isrctn (2)
+      - who-ictrp (1)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[ISRCTN]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: ISRCTN (ISRCTN registry number)
+      issuer: ISRCTN registry
+      normalization: isrctn-upper-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - ctgov-v2-api (3)
+          - isrctn (2)
+          - who-ictrp (1)
+        bestRouteReadiness: 3
+        fixtureUses: 3
+        fixtures:
+          - D12/predimed-retraction-disconfirmation
+          - D3/aspree-registry-history-harm
+      decision: "KN-06 / MD-X-01: active"
+  - code: ISSN
+    name: International Standard Serial Number
+    authority: ISSN International Centre
+    pattern: ^[0-9]{4}-[0-9]{3}[0-9X]$
+    normalization:
+      rule: issn-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: insert hyphen; upper-case check character X
+    checkDigit: null
+    resolver: https://portal.issn.org/resource/ISSN/{value}
+    bridges: []
+    usedByNodeTypes:
+      - D9.Channel
+    domains:
+      - D9
+    authorityRoutes:
+      - crossref-rest (3)
+      - ncbi-eutils-pubmed (3)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: ISSN (International Standard Serial Number)
+      issuer: ISSN International Centre
+      normalization: issn-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: KEGG_PATHWAY
+    name: KEGG pathway id (licence-gated)
+    authority: Kanehisa Laboratories
+    pattern: ^[a-z]{2,4}[0-9]{5}$
+    normalization:
+      rule: kegg-pathway-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: lower-case organism prefix
+    checkDigit: null
+    resolver: null
+    bridges:
+      - to: REACTOME
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D2.Mechanism
+    domains:
+      - D2
+    authorityRoutes:
+      - kegg-rest (1)
+    bestRouteReadiness: 1
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D2
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: KEGG_PATHWAY (KEGG pathway id (licence-gated))
+      issuer: Kanehisa Laboratories
+      normalization: kegg-pathway-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+        - best authority route readiness 1 < 2
+  - code: LAB_REPORT
+    name: laboratory report / COA number
+    authority: the laboratory (issuer = lab uid)
+    pattern: null
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: as published
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D8.QualityResult
+    domains:
+      - D8
+    authorityRoutes:
+      - coa-pdf (1)
+    bestRouteReadiness: 1
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D8
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: LAB_REPORT (laboratory report / COA number)
+      issuer: the laboratory (issuer = lab uid)
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - coa-pdf (1)
+        bestRouteReadiness: 1
+        fixtureUses: 2
+        fixtures:
+          - D8/eurofins-coa-quantity-by-input
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - best authority route readiness 1 < 2
+  - code: LAB_TEST_CODE
+    name: laboratory test order code
+    authority: the laboratory (issuer = lab uid)
+    pattern: null
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: as published; never compared across issuers
+    checkDigit: null
+    resolver: null
+    bridges:
+      - to: LOINC
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D4.LabTest
+    domains:
+      - D4
+    authorityRoutes:
+      - lab-test-menus (1)
+    bestRouteReadiness: 1
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D4
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: LAB_TEST_CODE (laboratory test order code)
+      issuer: the laboratory (issuer = lab uid)
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - lab-test-menus (1)
+        bestRouteReadiness: 1
+        fixtureUses: 20
+        fixtures:
+          - D4/consumer-panel-and-blood-clock
+          - D4/hba1c-two-labs-interference
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - best authority route readiness 1 < 2
+  - code: LANGUAL
+    name: LanguaL facet code
+    authority: LanguaL (food description thesaurus)
+    pattern: null
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from the requesting packet
+      text: as published
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D12.FoodCategory
+    domains:
+      - D12
+    authorityRoutes:
+      - nih-dsld (2)
+    bestRouteReadiness: 2
+    status: requested
+    registeredBy: S-R-42
+    requestedBy: D12 (OQ-D12-08)
+    sources:
+      - final/decision-report.md R-42
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: LANGUAL (LanguaL facet code)
+      issuer: LanguaL (food description thesaurus)
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: LEI
+    name: Legal Entity Identifier
+    authority: GLEIF
+    pattern: ^[0-9A-Z]{18}[0-9]{2}$
+    normalization:
+      rule: lei-upper-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: upper case
+    checkDigit: "yes"
+    resolver: https://search.gleif.org/#/record/{value}
+    bridges:
+      - to: SEC_CIK
+        basis: K register bridgesTo
+      - bridge: B18
+        direction: to
+        other:
+          - SEC_CIK
+        kind: hypothesis (legal name + jurisdiction + registration number match)
+        readiness: 1
+    usedByNodeTypes:
+      - D7.Organization
+    domains:
+      - D7
+    authorityRoutes:
+      - gleif-lei (3)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    notes:
+      - 'D11 pattern "^[A-Z0-9]{18}[0-9]{2}$" differs; the K pattern is kept (precedence: kernel packet over D11; R-42: patterns validate the normalized value)'
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[LEI]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: LEI (Legal Entity Identifier)
+      issuer: GLEIF
+      normalization: lei-upper-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - gleif-lei (3)
+        bestRouteReadiness: 3
+        fixtureUses: 6
+        fixtures:
+          - D7/bioage-group-vehicles-stale-role
+          - D7/niagen-ownership-brand-history
+      decision: "KN-06 / MD-X-01: active"
+  - code: LNHPD_ID
+    name: Health Canada LNHPD product record id
+    authority: Health Canada
+    pattern: null
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: as published
+    checkDigit: null
+    resolver: null
+    bridges:
+      - to: NPN
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D8.RegulatoryRecord
+    domains:
+      - D8
+    authorityRoutes:
+      - health-canada-lnhpd (2)
+    bestRouteReadiness: 2
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D8
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: LNHPD_ID (Health Canada LNHPD product record id)
+      issuer: Health Canada
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: LNHPD_INGREDIENT
+    name: Health Canada LNHPD medicinal ingredient id
+    authority: Health Canada
+    pattern: null
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: as published
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D1.IngredientMaterial
+    domains:
+      - D1
+    authorityRoutes: []
+    bestRouteReadiness: null
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: LNHPD_INGREDIENT (Health Canada LNHPD medicinal ingredient id)
+      issuer: Health Canada
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+        - no authority route
+  - code: LOINC
+    name: LOINC code
+    authority: Regenstrief Institute
+    pattern: ^[0-9]{1,7}-[0-9]$
+    normalization:
+      rule: loinc-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: as published (with check digit)
+    checkDigit: "yes"
+    resolver: https://loinc.org/{value}
+    bridges:
+      - to: SNOMEDCT
+        basis: K register bridgesTo
+      - bridge: B17
+        direction: from
+        other:
+          - UCUM
+        kind: authority-asserted (Regenstrief)
+        readiness: 1
+    usedByNodeTypes:
+      - D4.Metric
+    domains:
+      - D4
+    authorityRoutes:
+      - dailymed-spl (3)
+      - loinc (2)
+      - lab-test-menus (1)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[LOINC]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: LOINC (LOINC code)
+      issuer: Regenstrief Institute
+      normalization: loinc-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - dailymed-spl (3)
+          - loinc (2)
+          - lab-test-menus (1)
+        bestRouteReadiness: 3
+        fixtureUses: 18
+        fixtures:
+          - D4/consumer-panel-and-blood-clock
+          - D4/hba1c-two-labs-interference
+      decision: "KN-06 / MD-X-01: active"
+  - code: LOT_CODE
+    name: lot or batch code
+    authority: the brand or manufacturer (issuer = organization uid)
+    pattern: null
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: as printed
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D8.Lot
+    domains:
+      - D8
+      - D6
+    authorityRoutes:
+      - openfda-food-enforcement (2)
+      - certification-databases (1)
+      - coa-pdf (1)
+      - fda-web-pages (1)
+    bestRouteReadiness: 2
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D8
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: LOT_CODE (lot or batch code)
+      issuer: the brand or manufacturer (issuer = organization uid)
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - openfda-food-enforcement (2)
+          - certification-databases (1)
+          - coa-pdf (1)
+          - fda-web-pages (1)
+        bestRouteReadiness: 2
+        fixtureUses: 50
+        fixtures:
+          - D8/certification-listing-lot-scope
+          - D8/eurofins-coa-quantity-by-input
+          - D8/imu-tek-warning-letter-recall
+          - cross-domain/product-comparison
+      decision: "KN-06 / MD-X-01: active"
+  - code: MARKETPLACE_SELLER_ID
+    name: marketplace seller id
+    authority: the marketplace host
+    pattern: null
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: as published (case-sensitive)
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D6.Offer
+    domains:
+      - D6
+      - D7
+    authorityRoutes:
+      - firecrawl-cli (2)
+    bestRouteReadiness: 2
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D6
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: MARKETPLACE_SELLER_ID (marketplace seller id)
+      issuer: the marketplace host
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - firecrawl-cli (2)
+        bestRouteReadiness: 2
+        fixtureUses: 1
+        fixtures:
+          - D6/offer-roles-price-kinds-truniagen
+      decision: "KN-06 / MD-X-01: active"
+  - code: MESH
+    name: MeSH descriptor or supplementary concept
+    authority: NLM
+    pattern: ^[DC][0-9]{6,9}$
+    normalization:
+      rule: mesh-ui-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: upper case
+    checkDigit: none
+    resolver: https://meshb.nlm.nih.gov/record/ui?ui={value}
+    bridges: []
+    usedByNodeTypes:
+      - D1.ChemicalSubstance
+      - D1.Constituent
+      - D2.Condition
+      - D2.Mechanism
+      - D5.Intervention
+      - D5.Target
+    domains:
+      - D1
+      - D2
+      - D3
+      - D5
+    authorityRoutes:
+      - ncbi-eutils-pubmed (3)
+      - nlm-mesh-rdf (3)
+      - mcp-pubmed (2)
+      - wikidata (2)
+    bestRouteReadiness: 3
+    crosswalk:
+      bioregistryPrefix: null
+      wikidataProperty: P486
+      verifiedBy:
+        - wd-Q407329.json
+    status: seed
+    registeredBy: K-v1
+    notes:
+      - 'D11 pattern "^[DCQ][0-9]{6,9}$" differs; the K pattern is kept (precedence: kernel packet over D11; R-42: patterns validate the normalized value)'
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[MESH_UI]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: MESH (MeSH descriptor or supplementary concept)
+      issuer: NLM
+      normalization: mesh-ui-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - ncbi-eutils-pubmed (3)
+          - nlm-mesh-rdf (3)
+          - mcp-pubmed (2)
+          - wikidata (2)
+        bestRouteReadiness: 3
+        fixtureUses: 7
+        fixtures:
+          - K/resveratrol-identifier-crosswalk
+          - cross-domain/claim-mission-report
+      decision: "KN-06 / MD-X-01: active"
+  - code: MONDO
+    name: Mondo disease id
+    authority: Monarch Initiative
+    pattern: ^MONDO:[0-9]{7}$
+    normalization:
+      rule: mondo-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: upper-case prefix with colon
+    checkDigit: null
+    resolver: https://monarchinitiative.org/{value}
+    bridges:
+      - to: ICD10CM
+        basis: K register bridgesTo
+      - to: MESH
+        basis: K register bridgesTo
+      - bridge: B21
+        direction: to
+        other:
+          - CT.gov condition string
+        kind: hypothesis (mapping)
+        readiness: 1
+    usedByNodeTypes:
+      - D2.Condition
+    domains:
+      - D2
+      - D5
+    authorityRoutes:
+      - ebi-ols4-chebi (3)
+      - open-targets (2)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: MONDO (Mondo disease id)
+      issuer: Monarch Initiative
+      normalization: mondo-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: NANOPUB
+    name: nanopublication trusty URI artifact code
+    authority: the signing agent
+    pattern: ^RA[A-Za-z0-9_-]{43}$
+    normalization:
+      rule: nanopub-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: strip https://w3id.org/np/
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes: []
+    domains:
+      - K
+    authorityRoutes:
+      - nanopub-registry (3)
+    bestRouteReadiness: 3
+    status: requested
+    registeredBy: K-v2
+    requestedBy: K
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+    writeStatus: disabled
+    activation:
+      namespace: NANOPUB (nanopublication trusty URI artifact code)
+      issuer: the signing agent
+      normalization: nanopub-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: NCBI_GENE
+    name: NCBI Gene id
+    authority: NCBI
+    pattern: ^[1-9][0-9]*$
+    normalization:
+      rule: digits-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: digits only
+    checkDigit: null
+    resolver: https://www.ncbi.nlm.nih.gov/gene/{value}
+    bridges:
+      - to: HGNC
+        basis: K register bridgesTo
+      - to: ENSEMBL_GENE
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D2.MolecularEntity
+    domains:
+      - D2
+    authorityRoutes:
+      - kegg-rest (1)
+    bestRouteReadiness: 1
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: NCBI_GENE (NCBI Gene id)
+      issuer: NCBI
+      normalization: digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+        - best authority route readiness 1 < 2
+  - code: NCBI_TAXON
+    name: NCBI Taxonomy id
+    authority: NCBI
+    pattern: ^[1-9][0-9]*$
+    normalization:
+      rule: digits-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: digits only
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D1.Taxon
+    domains:
+      - D1
+      - D12
+    authorityRoutes:
+      - ncbi-eutils-pubmed (3)
+    bestRouteReadiness: 3
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: NCBI_TAXON (NCBI Taxonomy id)
+      issuer: NCBI
+      normalization: digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - ncbi-eutils-pubmed (3)
+        bestRouteReadiness: 3
+        fixtureUses: 6
+        fixtures:
+          - D1/ashwagandha-plant-part-harm
+          - D1/lgg-strain-resolution
+      decision: "KN-06 / MD-X-01: active"
+  - code: NCT
+    name: ClinicalTrials.gov NCT number
+    authority: NLM ClinicalTrials.gov
+    pattern: ^NCT[0-9]{8}$
+    normalization:
+      rule: nct-upper-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: upper case
+    checkDigit: none
+    resolver: https://clinicaltrials.gov/study/{value}
+    bridges:
+      - to: EUCT
+        basis: K register bridgesTo
+      - to: ISRCTN
+        basis: K register bridgesTo
+      - to: PMID
+        basis: K register bridgesTo
+      - bridge: B03
+        direction: from
+        other:
+          - PMID
+          - DOI
+        kind: source-asserted in the paper; registry/index links are optional deposits
+        readiness: 2
+      - bridge: B04
+        direction: from
+        other:
+          - EUCT
+          - EUDRACT
+          - ISRCTN
+          - ORG_STUDY_ID
+        kind: registry-asserted (sponsor-entered)
+        readiness: 2
+    usedByNodeTypes:
+      - D3.Study
+      - K.Source
+    domains:
+      - D3
+    authorityRoutes:
+      - ctgov-v2-api (3)
+      - europepmc-fulltext-jats (3)
+      - ncbi-eutils-pubmed (3)
+      - europepmc-annotations (2)
+      - isrctn (2)
+      - mcp-clinicaltrials (2)
+    bestRouteReadiness: 3
+    crosswalk:
+      bioregistryPrefix: clinicaltrials
+      wikidataProperty: null
+      verifiedBy:
+        - br-clinicaltrials.json
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[NCT]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: NCT (ClinicalTrials.gov NCT number)
+      issuer: NLM ClinicalTrials.gov
+      normalization: nct-upper-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - ctgov-v2-api (3)
+          - europepmc-fulltext-jats (3)
+          - ncbi-eutils-pubmed (3)
+          - europepmc-annotations (2)
+          - isrctn (2)
+          - mcp-clinicaltrials (2)
+        bestRouteReadiness: 3
+        fixtureUses: 40
+        fixtures:
+          - D1/nr-trial-unstructured
+          - D11/capture-failures-coverage
+          - D11/nr-trial-jats-unstructured
+          - D12/upf-diet-rct-unstructured
+          - D13/bioage-strides-discontinuation
+          - D13/madrigal-maestro-nash-topline-8k
+          - D13/madrigal-pdufa-to-accelerated-approval
+          - D2/dq-senescence-biomarker-path
+          - D2/metformin-exercise-harm
+          - D2/nr-muscle-unstructured
+          - D3/aspree-registry-history-harm
+          - D3/dq-bone-trial-unstructured
+          - D8/nmn-us-exclusion-reversal
+          - cross-domain/compound-profile
+      decision: "KN-06 / MD-X-01: active"
+  - code: NDB_NUMBER
+    name: USDA SR NDB number
+    authority: USDA ARS (Standard Reference)
+    pattern: null
+    normalization:
+      rule: digits-v1
+      ruleOrigin: S (R-42), rule text from the requesting packet
+      text: digits only
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D12.FoodItem
+    domains:
+      - D12
+    authorityRoutes:
+      - usda-fdc-portal (2)
+      - usda-fdc (0)
+    bestRouteReadiness: 2
+    status: requested
+    registeredBy: S-R-42
+    requestedBy: D12 (OQ-D12-08)
+    sources:
+      - final/decision-report.md R-42
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: NDB_NUMBER (USDA SR NDB number)
+      issuer: USDA ARS (Standard Reference)
+      normalization: digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - usda-fdc-portal (2)
+          - usda-fdc (0)
+        bestRouteReadiness: 2
+        fixtureUses: 3
+        fixtures:
+          - D12/mcdonalds-fries-prepared-food
+      decision: "KN-06 / MD-X-01: active"
+  - code: NDC
+    name: FDA National Drug Code
+    authority: FDA
+    pattern: ^[0-9]{4,5}-[0-9]{3,4}-[0-9]{1,2}$
+    normalization:
+      rule: ndc11-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: keep the labeler-product-package hyphenation as printed; derive the 11-digit 5-4-2 form as a qualifier
+    checkDigit: none
+    resolver: null
+    bridges:
+      - to: RXCUI
+        basis: K register bridgesTo
+      - bridge: B12
+        direction: to
+        other:
+          - SPL_SET_ID
+        kind: authority-asserted (labeler SPL) / harmonized (openFDA)
+        readiness: 3
+    usedByNodeTypes:
+      - D6.ProductVariant
+    domains:
+      - D6
+      - D8
+    authorityRoutes:
+      - dailymed-spl (3)
+      - nlm-rxnav (3)
+      - openfda-drug-label (2)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    notes:
+      - 'D11 pattern "10-digit with hyphen layouts 4-4-2 / 5-3-2 / 5-4-1" differs; the K pattern is kept (precedence: kernel packet over D11; R-42: patterns validate the normalized value)'
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[NDC]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: NDC (FDA National Drug Code)
+      issuer: FDA
+      normalization: ndc11-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - dailymed-spl (3)
+          - nlm-rxnav (3)
+          - openfda-drug-label (2)
+        bestRouteReadiness: 3
+        fixtureUses: 4
+        fixtures:
+          - D11/sirolimus-spl-boxed-warning
+      decision: "KN-06 / MD-X-01: active"
+  - code: NIH_PROFILE_ID
+    name: NIH RePORTER PI profile id
+    authority: NIH RePORTER
+    pattern: ^[0-9]+$
+    normalization:
+      rule: digits-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: digits only
+    checkDigit: null
+    resolver: null
+    bridges:
+      - to: ORCID
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D7.Person
+    domains:
+      - D7
+    authorityRoutes:
+      - nih-reporter (3)
+    bestRouteReadiness: 3
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D7
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: NIH_PROFILE_ID (NIH RePORTER PI profile id)
+      issuer: NIH RePORTER
+      normalization: digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - nih-reporter (3)
+        bestRouteReadiness: 3
+        fixtureUses: 2
+        fixtures:
+          - D7/elysium-paper-funding-award
+      decision: "KN-06 / MD-X-01: active"
+  - code: NIH_PROJECT
+    name: NIH core project number
+    authority: NIH
+    pattern: ^[A-Z][0-9]{2}[A-Z]{2}[0-9]{6}$
+    normalization:
+      rule: nih-grant-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: upper case; drop support year and suffix
+    checkDigit: none
+    resolver: null
+    bridges:
+      - to: AWARD_NUMBER
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D7.Award
+    domains:
+      - D7
+    authorityRoutes:
+      - ctgov-v2-api (3)
+      - europepmc-fulltext-jats (3)
+      - europepmc-rest (3)
+      - nih-reporter (3)
+    bestRouteReadiness: 3
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D7
+    notes:
+      - "D11 pattern \"activity code + IC + serial (e.g. 'UL1 TR001082')\" differs; the K pattern is kept (precedence: kernel packet over D11; R-42: patterns validate the normalized value)"
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[NIH_PROJECT]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: NIH_PROJECT (NIH core project number)
+      issuer: NIH
+      normalization: nih-grant-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - ctgov-v2-api (3)
+          - europepmc-fulltext-jats (3)
+          - europepmc-rest (3)
+          - nih-reporter (3)
+        bestRouteReadiness: 3
+        fixtureUses: 2
+        fixtures:
+          - D7/elysium-paper-funding-award
+      decision: "KN-06 / MD-X-01: active"
+  - code: NIHMS
+    name: NIH author manuscript id
+    authority: NIH
+    pattern: ^NIHMS[0-9]+$
+    normalization:
+      rule: upper-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: upper case
+    checkDigit: null
+    resolver: null
+    bridges:
+      - to: PMCID
+        basis: K register bridgesTo
+      - to: PMID
+        basis: K register bridgesTo
+    usedByNodeTypes: []
+    domains:
+      - K
+      - D9
+    authorityRoutes:
+      - ncbi-eutils-pubmed (3)
+    bestRouteReadiness: 3
+    status: requested
+    registeredBy: K-v2
+    requestedBy: K
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+    writeStatus: disabled
+    activation:
+      namespace: NIHMS (NIH author manuscript id)
+      issuer: NIH
+      normalization: upper-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: NPI
+    name: US National Provider Identifier
+    authority: CMS NPPES
+    pattern: ^[0-9]{10}$
+    normalization:
+      rule: npi-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: digits only; validate Luhn with prefix 80840
+    checkDigit: yes (Luhn)
+    resolver: null
+    bridges:
+      - bridge: B20
+        direction: to
+        other:
+          - person name
+        kind: hypothesis only
+        readiness: 1
+    usedByNodeTypes:
+      - D7.Organization
+      - D7.Person
+    domains:
+      - D7
+    authorityRoutes:
+      - cms-open-payments (3)
+      - nppes-npi (3)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[NPI]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: NPI (US National Provider Identifier)
+      issuer: CMS NPPES
+      normalization: npi-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: NPN
+    name: Health Canada Natural Product Number
+    authority: Health Canada
+    pattern: ^[0-9]{8}$
+    normalization:
+      rule: digits-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: digits only
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D6.ProductVariant
+      - D8.RegulatoryRecord
+    domains:
+      - D8
+    authorityRoutes:
+      - health-canada-lnhpd (2)
+    bestRouteReadiness: 2
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: NPN (Health Canada Natural Product Number)
+      issuer: Health Canada
+      normalization: digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - health-canada-lnhpd (2)
+        bestRouteReadiness: 2
+        fixtureUses: 4
+        fixtures:
+          - D1/ashwagandha-plant-part-harm
+          - D1/nr-salt-moiety-us-canada
+      decision: "KN-06 / MD-X-01: active"
+  - code: OMIM
+    name: OMIM entry number
+    authority: Johns Hopkins University (OMIM)
+    pattern: ^[0-9]{6}$
+    normalization:
+      rule: digits-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: digits only
+    checkDigit: null
+    resolver: null
+    bridges:
+      - to: MONDO
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D2.Condition
+    domains:
+      - D2
+    authorityRoutes: []
+    bestRouteReadiness: null
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D2
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: OMIM (OMIM entry number)
+      issuer: Johns Hopkins University (OMIM)
+      normalization: digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+        - no authority route
+  - code: OPENALEX
+    name: OpenAlex work / author / institution id
+    authority: OpenAlex
+    pattern: ^[WAISFCP][0-9]+$
+    normalization:
+      rule: openalex-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: strip "https://openalex.org/"; upper-case prefix letter
+    checkDigit: null
+    resolver: https://openalex.org/{value}
+    bridges:
+      - to: DOI
+        basis: K register bridgesTo
+      - to: ORCID
+        basis: K register bridgesTo
+      - to: ROR
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D3.Publication
+      - D7.Organization
+      - D7.Person
+    domains:
+      - D3
+      - D7
+      - D9
+    authorityRoutes:
+      - openalex (2)
+    bestRouteReadiness: 2
+    crosswalk:
+      bioregistryPrefix: null
+      wikidataProperty: P10283
+      verifiedBy:
+        - wd-Q407329.json
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: OPENALEX (OpenAlex work / author / institution id)
+      issuer: OpenAlex
+      normalization: openalex-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - openalex (2)
+        bestRouteReadiness: 2
+        fixtureUses: 4
+        fixtures:
+          - D3/resveratrol-retraction
+      decision: "KN-06 / MD-X-01: active"
+  - code: ORCID
+    name: ORCID iD
+    authority: ORCID
+    pattern: ^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$
+    normalization:
+      rule: orcid-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: strip "https://orcid.org/"; validate ISO 7064 mod 11-2
+    checkDigit: yes (ISO 7064 11-2)
+    resolver: https://orcid.org/{value}
+    bridges:
+      - to: OPENALEX
+        basis: K register bridgesTo
+      - bridge: B20
+        direction: to
+        other:
+          - person name
+        kind: hypothesis only
+        readiness: 1
+    usedByNodeTypes:
+      - D7.Person
+    domains:
+      - D7
+      - D9
+    authorityRoutes:
+      - crossref-rest (3)
+      - europepmc-rest (3)
+      - ncbi-eutils-pubmed (3)
+      - orcid (3)
+      - openalex (2)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[ORCID]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: ORCID (ORCID iD)
+      issuer: ORCID
+      normalization: orcid-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - crossref-rest (3)
+          - europepmc-rest (3)
+          - ncbi-eutils-pubmed (3)
+          - orcid (3)
+          - openalex (2)
+        bestRouteReadiness: 3
+        fixtureUses: 11
+        fixtures:
+          - D11/nr-trial-jats-unstructured
+          - D3/aspree-registry-history-harm
+          - D3/dq-bone-trial-unstructured
+          - cross-domain/compound-profile
+      decision: "KN-06 / MD-X-01: active"
+  - code: ORG_STUDY_ID
+    name: sponsor's organization study id (registry secondary id)
+    authority: the sponsor (issuer = sponsor organization uid)
+    pattern: null
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from the requesting packet
+      text: as published; never compared across sponsors (issuer scoping mandatory)
+    checkDigit: none
+    resolver: null
+    bridges:
+      - bridge: B04
+        direction: to
+        other:
+          - NCT
+        kind: registry-asserted (sponsor-entered)
+        readiness: 2
+    usedByNodeTypes: []
+    domains:
+      - D11
+    authorityRoutes:
+      - ctgov-v2-api (3)
+    bestRouteReadiness: 3
+    status: requested
+    registeredBy: S-R-42
+    requestedBy: D11 (bridge B04)
+    sources:
+      - final/decision-report.md R-42
+      - packets/D11/identifier-bridges.yaml schemes[ORG_STUDY_ID]
+      - packets/D11/identifier-bridges.yaml reconciliation
+    writeStatus: disabled
+    activation:
+      namespace: ORG_STUDY_ID (sponsor's organization study id (registry secondary id))
+      issuer: the sponsor (issuer = sponsor organization uid)
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: ORPHANET
+    name: Orphanet disease id (ORPHA code)
+    authority: Orphanet
+    pattern: ^[0-9]+$
+    normalization:
+      rule: orphanet-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: "strip ORPHA: prefix"
+    checkDigit: null
+    resolver: null
+    bridges:
+      - to: MONDO
+        basis: K register bridgesTo
+      - to: OMIM
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D2.Condition
+    domains:
+      - D2
+    authorityRoutes: []
+    bestRouteReadiness: null
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D2
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: ORPHANET (Orphanet disease id (ORPHA code))
+      issuer: Orphanet
+      normalization: orphanet-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+        - no authority route
+  - code: PATENT_APPLICATION
+    name: patent application number
+    authority: the patent office
+    pattern: null
+    normalization:
+      rule: patent-application-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: office code + number as published
+    checkDigit: null
+    resolver: null
+    bridges:
+      - to: PATENT_PUB
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D8.Patent
+    domains:
+      - D8
+    authorityRoutes:
+      - google-patents (1)
+    bestRouteReadiness: 1
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D8
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: PATENT_APPLICATION (patent application number)
+      issuer: the patent office
+      normalization: patent-application-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+        - best authority route readiness 1 < 2
+  - code: PATENT_PUB
+    name: patent publication number
+    authority: the patent office named by the country code (USPTO, EPO, WIPO, ...)
+    pattern: ^[A-Z]{2}[0-9A-Z]+[A-Z][0-9]?$
+    normalization:
+      rule: patent-pub-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: country code + number + kind code; remove spaces, commas and slashes
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D8.Patent
+    domains:
+      - D8
+    authorityRoutes:
+      - google-patents (1)
+      - patentsview (0)
+    bestRouteReadiness: 1
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: PATENT_PUB (patent publication number)
+      issuer: the patent office named by the country code (USPTO, EPO, WIPO, ...)
+      normalization: patent-pub-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - google-patents (1)
+          - patentsview (0)
+        bestRouteReadiness: 1
+        fixtureUses: 2
+        fixtures:
+          - D8/us8197807-claims-held-invalid
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - best authority route readiness 1 < 2
+  - code: PHENOL_EXPLORER_FOOD
+    name: Phenol-Explorer food id
+    authority: Phenol-Explorer (phenol-explorer.eu)
+    pattern: null
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from the requesting packet
+      text: as published
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D12.FoodItem
+    domains:
+      - D12
+    authorityRoutes: []
+    bestRouteReadiness: null
+    status: requested
+    registeredBy: S-R-42
+    requestedBy: D12 (OQ-D12-08)
+    sources:
+      - final/decision-report.md R-42
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: PHENOL_EXPLORER_FOOD (Phenol-Explorer food id)
+      issuer: Phenol-Explorer (phenol-explorer.eu)
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+        - no authority route
+  - code: PMCID
+    name: PubMed Central identifier
+    authority: NLM
+    pattern: ^PMC[0-9]+$
+    normalization:
+      rule: pmcid-upper-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: upper case; add "PMC" prefix if missing
+    checkDigit: none
+    resolver: https://pmc.ncbi.nlm.nih.gov/articles/{value}/
+    bridges:
+      - to: PMID
+        basis: K register bridgesTo
+      - to: DOI
+        basis: K register bridgesTo
+      - bridge: B01
+        direction: to
+        other:
+          - PMID
+        kind: authority-asserted
+        readiness: 3
+    usedByNodeTypes:
+      - D3.Publication
+      - K.Source
+    domains:
+      - D3
+      - D9
+    authorityRoutes:
+      - europepmc-fulltext-jats (3)
+      - europepmc-rest (3)
+      - ncbi-bioc-pmcoa (3)
+      - ncbi-eutils-pubmed (3)
+      - pmc-idconv (3)
+      - firecrawl-research-index (2)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[PMCID]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: PMCID (PubMed Central identifier)
+      issuer: NLM
+      normalization: pmcid-upper-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - europepmc-fulltext-jats (3)
+          - europepmc-rest (3)
+          - ncbi-bioc-pmcoa (3)
+          - ncbi-eutils-pubmed (3)
+          - pmc-idconv (3)
+          - firecrawl-research-index (2)
+        bestRouteReadiness: 3
+        fixtureUses: 42
+        fixtures:
+          - D1/nr-trial-unstructured
+          - D11/nr-trial-jats-unstructured
+          - D12/upf-diet-rct-unstructured
+          - D2/dq-senescence-biomarker-path
+          - D2/metformin-exercise-harm
+          - D2/nr-muscle-unstructured
+          - D2/sirt1-activation-disconfirmation
+          - D3/aspree-registry-history-harm
+          - D3/dq-bone-trial-unstructured
+          - D4/clock-noise-vs-retest-advice
+          - D4/dunedinpace-paper-unstructured
+          - D4/nr-nad-compound-to-test
+          - D5/antioxidant-exercise-disconfirmation
+          - D7/elysium-paper-funding-award
+          - D9/rapa-ex-01-attia-retelling
+          - K/retracted-sah-2017-stale-evidence
+          - cross-domain/claim-mission-report
+          - cross-domain/compound-profile
+      decision: "KN-06 / MD-X-01: active"
+  - code: PMID
+    name: PubMed identifier
+    authority: NLM
+    pattern: ^[1-9][0-9]{0,8}$
+    normalization:
+      rule: pmid-digits-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: strip "PMID:" prefix and whitespace
+    checkDigit: none
+    resolver: https://pubmed.ncbi.nlm.nih.gov/{value}/
+    bridges:
+      - to: DOI
+        basis: K register bridgesTo
+      - to: PMCID
+        basis: K register bridgesTo
+      - bridge: B01
+        direction: from
+        other:
+          - PMCID
+          - DOI
+        kind: authority-asserted
+        readiness: 3
+      - bridge: B02
+        direction: to
+        other:
+          - DOI
+        kind: authority-asserted (NLM)
+        readiness: 3
+      - bridge: B03
+        direction: to
+        other:
+          - NCT
+        kind: source-asserted in the paper; registry/index links are optional deposits
+        readiness: 2
+    usedByNodeTypes:
+      - D3.Publication
+      - K.Source
+    domains:
+      - D3
+      - D9
+    authorityRoutes:
+      - chembl-rest (3)
+      - ctgov-v2-api (3)
+      - europepmc-fulltext-jats (3)
+      - europepmc-rest (3)
+      - ncbi-bioc-pmcoa (3)
+      - ncbi-eutils-pubmed (3)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[PMID]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: PMID (PubMed identifier)
+      issuer: NLM
+      normalization: pmid-digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - chembl-rest (3)
+          - ctgov-v2-api (3)
+          - europepmc-fulltext-jats (3)
+          - europepmc-rest (3)
+          - ncbi-bioc-pmcoa (3)
+          - ncbi-eutils-pubmed (3)
+        bestRouteReadiness: 3
+        fixtureUses: 107
+        fixtures:
+          - D1/nr-trial-unstructured
+          - D11/nr-trial-jats-unstructured
+          - D11/resveratrol-retraction-integrity
+          - D12/predimed-retraction-disconfirmation
+          - D12/upf-diet-rct-unstructured
+          - D13/lesne-2006-retraction
+          - D2/dq-senescence-biomarker-path
+          - D2/metformin-exercise-harm
+          - D2/nr-muscle-unstructured
+          - D2/sirt1-activation-disconfirmation
+          - D3/aspree-registry-history-harm
+          - D3/dq-bone-trial-unstructured
+          - D3/resveratrol-retraction
+          - D4/clock-noise-vs-retest-advice
+          - D4/dunedinpace-paper-unstructured
+          - D4/nr-nad-compound-to-test
+          - D5/antioxidant-exercise-disconfirmation
+          - D7/elysium-paper-funding-award
+          - D9/rapa-ex-01-attia-retelling
+          - K/retracted-sah-2017-stale-evidence
+          - cross-domain/claim-mission-report
+          - cross-domain/compound-profile
+      decision: "KN-06 / MD-X-01: active"
+  - code: PODCAST_GUID
+    name: podcast episode RSS guid
+    authority: the feed (issuer = feed URL)
+    pattern: null
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: as published; never compared across feeds
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D9.MediaWork
+      - K.Source
+    domains:
+      - D9
+    authorityRoutes:
+      - itunes-search-api (3)
+      - podcast-rss (3)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: PODCAST_GUID (podcast episode RSS guid)
+      issuer: the feed (issuer = feed URL)
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - itunes-search-api (3)
+          - podcast-rss (3)
+        bestRouteReadiness: 3
+        fixtureUses: 4
+        fixtures:
+          - D9/hl-essentials-recut-nmncom-retelling
+          - D9/hl52-transcript-nmn-practice
+          - D9/lifespan-ep4-spermidine-correction
+      decision: "KN-06 / MD-X-01: active"
+  - code: PODCAST_INDEX_FEED
+    name: Podcast Index feed id
+    authority: Podcast Index
+    pattern: ^[0-9]+$
+    normalization:
+      rule: digits-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: digits only
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D9.Channel
+    domains:
+      - D9
+    authorityRoutes: []
+    bestRouteReadiness: null
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: PODCAST_INDEX_FEED (Podcast Index feed id)
+      issuer: Podcast Index
+      normalization: digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+        - no authority route
+  - code: PTAB_TRIAL
+    name: USPTO PTAB trial number
+    authority: USPTO
+    pattern: null
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: as published
+    checkDigit: null
+    resolver: null
+    bridges:
+      - to: PATENT_PUB
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D8.RegulatoryRecord
+    domains:
+      - D8
+    authorityRoutes: []
+    bestRouteReadiness: null
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D8
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: PTAB_TRIAL (USPTO PTAB trial number)
+      issuer: USPTO
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+        - no authority route
+  - code: PUBCHEM_CID
+    name: PubChem compound id
+    authority: NCBI PubChem
+    pattern: ^[1-9][0-9]*$
+    normalization:
+      rule: digits-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: strip "CID" prefix
+    checkDigit: none
+    resolver: https://pubchem.ncbi.nlm.nih.gov/compound/{value}
+    bridges:
+      - to: INCHIKEY
+        basis: K register bridgesTo
+      - to: CAS_RN
+        basis: K register bridgesTo
+      - to: UNII
+        basis: K register bridgesTo
+      - to: CHEBI
+        basis: K register bridgesTo
+      - bridge: B07
+        direction: to
+        other:
+          - UNII
+        kind: authority-asserted (FDA GSRS, record version 18)
+        readiness: 3
+      - bridge: B09
+        direction: from
+        other:
+          - UNII
+          - CAS_RN
+        kind: aggregator (depositor-supplied)
+        readiness: 2
+      - bridge: B10
+        direction: to
+        other:
+          - name
+        kind: hypothesis only (CQ-AX-14)
+        readiness: 1
+    usedByNodeTypes:
+      - D1.ChemicalSubstance
+    domains:
+      - D1
+    authorityRoutes:
+      - fda-gsrs (3)
+      - pubchem-pug-rest (3)
+      - wikidata (2)
+      - repo-mcp-servers (0)
+    bestRouteReadiness: 3
+    crosswalk:
+      bioregistryPrefix: pubchem.compound
+      wikidataProperty: P662
+      verifiedBy:
+        - br-pubchem.compound.json
+        - wd-Q407329.json
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[PUBCHEM_CID]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: PUBCHEM_CID (PubChem compound id)
+      issuer: NCBI PubChem
+      normalization: digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - fda-gsrs (3)
+          - pubchem-pug-rest (3)
+          - wikidata (2)
+          - repo-mcp-servers (0)
+        bestRouteReadiness: 3
+        fixtureUses: 24
+        fixtures:
+          - D11/nr-chloride-gsrs-identifier-bridge
+          - D12/acrylamide-fried-potato-harm
+          - D12/olive-oil-polyphenols-preparation
+          - D2/sirt1-activation-disconfirmation
+          - K/resveratrol-identifier-crosswalk
+          - cross-domain/compound-profile
+          - cross-domain/product-comparison
+      decision: "KN-06 / MD-X-01: active"
+  - code: REACTOME
+    name: Reactome stable id
+    authority: Reactome
+    pattern: ^R-[A-Z]{3}-[0-9]+$
+    normalization:
+      rule: reactome-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: upper case; drop version suffix
+    checkDigit: null
+    resolver: https://reactome.org/content/detail/{value}
+    bridges:
+      - to: GO
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D2.Mechanism
+    domains:
+      - D2
+    authorityRoutes:
+      - reactome-content-service (3)
+      - open-targets (2)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: REACTOME (Reactome stable id)
+      issuer: Reactome
+      normalization: reactome-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - reactome-content-service (3)
+          - open-targets (2)
+        bestRouteReadiness: 3
+        fixtureUses: 10
+        fixtures:
+          - D2/reactome-chembl-reference
+          - D4/nr-nad-compound-to-test
+      decision: "KN-06 / MD-X-01: active"
+  - code: RETAILER_ITEM_ID
+    name: retailer item id
+    authority: the retailer host domain
+    pattern: null
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: as published; never compared across issuers
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D6.MerchantListing
+    domains:
+      - D6
+    authorityRoutes:
+      - iherb-pages (1)
+      - retailer-partner-apis (0)
+    bestRouteReadiness: 1
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D6
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: RETAILER_ITEM_ID (retailer item id)
+      issuer: the retailer host domain
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - iherb-pages (1)
+          - retailer-partner-apis (0)
+        bestRouteReadiness: 1
+        fixtureUses: 2
+        fixtures:
+          - D6/retailer-reformulation-claim-iherb
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - best authority route readiness 1 < 2
+  - code: ROR
+    name: Research Organization Registry id
+    authority: ROR
+    pattern: ^0[0-9a-z]{6}[0-9]{2}$
+    normalization:
+      rule: ror-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: strip "https://ror.org/"; lower case
+    checkDigit: null
+    resolver: https://ror.org/{value}
+    bridges:
+      - to: WIKIDATA
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D7.Organization
+    domains:
+      - D7
+    authorityRoutes:
+      - orcid (3)
+      - openalex (2)
+      - crossref-labs (1)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: ROR (Research Organization Registry id)
+      issuer: ROR
+      normalization: ror-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - orcid (3)
+          - openalex (2)
+          - crossref-labs (1)
+        bestRouteReadiness: 3
+        fixtureUses: 1
+        fixtures:
+          - D3/resveratrol-retraction
+      decision: "KN-06 / MD-X-01: active"
+  - code: RW_RECORD
+    name: Retraction Watch database record id
+    authority: Retraction Watch (distributed by Crossref)
+    pattern: ^[0-9]+$
+    normalization:
+      rule: digits-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: digits only
+    checkDigit: none
+    resolver: null
+    bridges:
+      - to: DOI
+        basis: K register bridgesTo
+    usedByNodeTypes: []
+    domains:
+      - K
+      - D9
+    authorityRoutes:
+      - crossref-rest (3)
+      - crossref-labs (1)
+    bestRouteReadiness: 3
+    status: requested
+    registeredBy: K-v2
+    requestedBy: K
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[RW_RECORD]
+      - packets/D11/identifier-bridges.yaml reconciliation
+    writeStatus: disabled
+    activation:
+      namespace: RW_RECORD (Retraction Watch database record id)
+      issuer: Retraction Watch (distributed by Crossref)
+      normalization: digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: RXCUI
+    name: RxNorm concept unique id
+    authority: NLM RxNorm
+    pattern: ^[0-9]+$
+    normalization:
+      rule: digits-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: digits only
+    checkDigit: none
+    resolver: null
+    bridges:
+      - to: UNII
+        basis: K register bridgesTo
+      - to: NDC
+        basis: K register bridgesTo
+      - bridge: B10
+        direction: to
+        other:
+          - name
+        kind: hypothesis only (CQ-AX-14)
+        readiness: 1
+      - bridge: B11
+        direction: from
+        other:
+          - UNII
+        kind: authority-asserted (NLM)
+        readiness: 3
+      - bridge: B12
+        direction: to
+        other:
+          - SPL_SET_ID
+        kind: authority-asserted (labeler SPL) / harmonized (openFDA)
+        readiness: 3
+    usedByNodeTypes:
+      - D1.ChemicalSubstance
+    domains:
+      - D1
+      - D5
+    authorityRoutes:
+      - fda-gsrs (3)
+      - nlm-rxnav (3)
+      - openfda-drug-label (2)
+    bestRouteReadiness: 3
+    crosswalk:
+      bioregistryPrefix: null
+      wikidataProperty: P3345
+      verifiedBy:
+        - wd-Q407329.json
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[RXCUI]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: RXCUI (RxNorm concept unique id)
+      issuer: NLM RxNorm
+      normalization: digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - fda-gsrs (3)
+          - nlm-rxnav (3)
+          - openfda-drug-label (2)
+        bestRouteReadiness: 3
+        fixtureUses: 1
+        fixtures:
+          - D11/sirolimus-spl-boxed-warning
+      decision: "KN-06 / MD-X-01: active"
+  - code: SEC_ACCESSION
+    name: SEC EDGAR filing accession number
+    authority: US SEC
+    pattern: ^[0-9]{10}-[0-9]{2}-[0-9]{6}$
+    normalization:
+      rule: sec-accession-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: insert hyphens
+    checkDigit: null
+    resolver: null
+    bridges:
+      - to: SEC_CIK
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - K.Source
+    domains:
+      - D13
+      - D7
+    authorityRoutes:
+      - sec-edgar (2)
+    bestRouteReadiness: 2
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D13
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: SEC_ACCESSION (SEC EDGAR filing accession number)
+      issuer: US SEC
+      normalization: sec-accession-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: SEC_CIK
+    name: SEC Central Index Key
+    authority: US SEC
+    pattern: ^[0-9]{10}$
+    normalization:
+      rule: cik10-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: left-pad to 10 digits
+    checkDigit: none
+    resolver: https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={value}
+    bridges:
+      - to: LEI
+        basis: K register bridgesTo
+      - bridge: B18
+        direction: from
+        other:
+          - LEI
+        kind: hypothesis (legal name + jurisdiction + registration number match)
+        readiness: 1
+      - bridge: B19
+        direction: from
+        other:
+          - TICKER
+        kind: authority-asserted, time-varying
+        readiness: 3
+    usedByNodeTypes:
+      - D7.Organization
+      - D7.Person
+    domains:
+      - D7
+      - D13
+    authorityRoutes:
+      - sec-edgar (2)
+      - repo-mcp-servers (0)
+    bestRouteReadiness: 2
+    status: seed
+    registeredBy: K-v1
+    notes:
+      - 'D11 pattern "^[0-9]{1,10}$" differs; the K pattern is kept (precedence: kernel packet over D11; R-42: patterns validate the normalized value)'
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[CIK]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: SEC_CIK (SEC Central Index Key)
+      issuer: US SEC
+      normalization: cik10-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - sec-edgar (2)
+          - repo-mcp-servers (0)
+        bestRouteReadiness: 2
+        fixtureUses: 16
+        fixtures:
+          - D1/nr-salt-moiety-us-canada
+          - D13/bioage-strides-discontinuation
+          - D13/madrigal-financing-after-readout
+          - D13/madrigal-maestro-nash-topline-8k
+          - D13/madrigal-pdufa-to-accelerated-approval
+          - D6/label-versions-truniagen-dsld
+          - D7/bioage-group-vehicles-stale-role
+          - D7/niagen-ownership-brand-history
+          - D7/sinclair-self-disclosure-unstructured
+          - D8/us8197807-claims-held-invalid
+      decision: "KN-06 / MD-X-01: active"
+  - code: SKU
+    name: seller stock-keeping unit
+    authority: the seller (issuer = seller uid)
+    pattern: null
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: as printed; never compared across issuers
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D6.Package
+      - D6.ProductVariant
+    domains:
+      - D6
+    authorityRoutes:
+      - shopify-storefront-json (3)
+      - nih-dsld (2)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: SKU (seller stock-keeping unit)
+      issuer: the seller (issuer = seller uid)
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - shopify-storefront-json (3)
+          - nih-dsld (2)
+        bestRouteReadiness: 3
+        fixtureUses: 4
+        fixtures:
+          - D6/offer-roles-price-kinds-truniagen
+      decision: "KN-06 / MD-X-01: active"
+  - code: SNOMEDCT
+    name: SNOMED CT concept id
+    authority: SNOMED International
+    pattern: ^[0-9]{6,18}$
+    normalization:
+      rule: digits-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: digits only
+    checkDigit: null
+    resolver: null
+    bridges:
+      - to: ICD10CM
+        basis: K register bridgesTo
+      - to: LOINC
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D2.Condition
+      - D5.Intervention
+    domains:
+      - D2
+      - D4
+      - D5
+    authorityRoutes: []
+    bestRouteReadiness: null
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: SNOMEDCT (SNOMED CT concept id)
+      issuer: SNOMED International
+      normalization: digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: restricted
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "rights: SNOMED CT affiliate licence required (OD-12)"
+        - "no exercised capture route: no fixture uses the scheme"
+        - no authority route
+  - code: SPL_SET_ID
+    name: FDA Structured Product Labeling set id (label lineage)
+    authority: FDA SPL (labeler)
+    pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+    patternOrigin: "S: regex form of D11's 'UUID' over the uuid-lower-v1 normalized value"
+    normalization:
+      rule: uuid-lower-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: lower-case UUID; the version number and effectiveTime identify one label version and are not part of the value
+    checkDigit: none
+    resolver: null
+    bridges:
+      - bridge: B12
+        direction: from
+        other:
+          - UNII
+          - NDC
+          - RXCUI
+        kind: authority-asserted (labeler SPL) / harmonized (openFDA)
+        readiness: 3
+    usedByNodeTypes: []
+    domains:
+      - D11
+    authorityRoutes:
+      - dailymed-spl (3)
+      - openfda-drug-label (2)
+    bestRouteReadiness: 3
+    status: requested
+    registeredBy: S-R-42
+    requestedBy: D11 (Q-D11-11, CQ-PV-05)
+    notes:
+      - 'D11 pattern "UUID" differs; the K pattern is kept (precedence: kernel packet over D11; R-42: patterns validate the normalized value)'
+    sources:
+      - final/decision-report.md R-42
+      - packets/D11/identifier-bridges.yaml schemes[SPL_SET_ID]
+      - packets/D11/identifier-bridges.yaml reconciliation
+    writeStatus: active
+    activation:
+      namespace: SPL_SET_ID (FDA Structured Product Labeling set id (label lineage))
+      issuer: FDA SPL (labeler)
+      normalization: uuid-lower-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - dailymed-spl (3)
+          - openfda-drug-label (2)
+        bestRouteReadiness: 3
+        fixtureUses: 1
+        fixtures:
+          - D11/sirolimus-spl-boxed-warning
+      decision: "KN-06 / MD-X-01: active"
+  - code: SPOTIFY
+    name: Spotify show or episode id
+    authority: Spotify
+    pattern: ^[0-9A-Za-z]{22}$
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: as published
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D9.Channel
+      - D9.MediaWork
+    domains:
+      - D9
+    authorityRoutes: []
+    bestRouteReadiness: null
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D9
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: SPOTIFY (Spotify show or episode id)
+      issuer: Spotify
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+        - no authority route
+  - code: STOREFRONT_PRODUCT_ID
+    name: storefront product id (e.g. Shopify)
+    authority: the store domain
+    pattern: null
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: as published
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D6.MerchantListing
+      - D6.Product
+    domains:
+      - D6
+    authorityRoutes:
+      - shopify-storefront-json (3)
+    bestRouteReadiness: 3
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D6
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: STOREFRONT_PRODUCT_ID (storefront product id (e.g. Shopify))
+      issuer: the store domain
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: STOREFRONT_VARIANT_ID
+    name: storefront variant id (e.g. Shopify)
+    authority: the store domain
+    pattern: null
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: as published
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D6.ProductVariant
+    domains:
+      - D6
+    authorityRoutes:
+      - shopify-storefront-json (3)
+    bestRouteReadiness: 3
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D6
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: STOREFRONT_VARIANT_ID (storefront variant id (e.g. Shopify))
+      issuer: the store domain
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: SUBSTACK_POST
+    name: Substack post id or slug
+    authority: the publication (issuer = publication domain)
+    pattern: null
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: as published
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D9.MediaWork
+    domains:
+      - D9
+    authorityRoutes:
+      - substack-api (2)
+    bestRouteReadiness: 2
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D9
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: SUBSTACK_POST (Substack post id or slug)
+      issuer: the publication (issuer = publication domain)
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: SUPPLIER_CODE
+    name: supplier material code
+    authority: the supplier (issuer = supplier uid)
+    pattern: null
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: as printed; never compared across issuers
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D1.IngredientMaterial
+    domains:
+      - D1
+    authorityRoutes: []
+    bestRouteReadiness: null
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: SUPPLIER_CODE (supplier material code)
+      issuer: the supplier (issuer = supplier uid)
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+        - no authority route
+  - code: TICKER
+    name: exchange ticker symbol
+    authority: the exchange (issuer = exchange MIC)
+    pattern: null
+    normalization:
+      rule: ticker-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: upper case; validity per listing period
+    checkDigit: null
+    resolver: null
+    bridges:
+      - to: SEC_CIK
+        basis: K register bridgesTo
+      - bridge: B19
+        direction: to
+        other:
+          - SEC_CIK
+        kind: authority-asserted, time-varying
+        readiness: 3
+    usedByNodeTypes: []
+    domains:
+      - D7
+      - D13
+    authorityRoutes:
+      - sec-edgar (2)
+    bestRouteReadiness: 2
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D7
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+    writeStatus: disabled
+    activation:
+      namespace: TICKER (exchange ticker symbol)
+      issuer: the exchange (issuer = exchange MIC)
+      normalization: ticker-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+  - code: UDI_DI
+    name: device identifier part of a UDI
+    authority: the issuing agency (GS1, HIBCC, ICCBBA)
+    pattern: null
+    normalization:
+      rule: udidi-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: as published by the issuing agency
+    checkDigit: issuer-specific
+    resolver: null
+    bridges:
+      - to: GTIN
+        basis: K register bridgesTo
+      - bridge: B15
+        direction: to
+        other:
+          - GTIN
+        kind: identity by issuer rule (same GS1 number)
+        readiness: 3
+    usedByNodeTypes:
+      - D4.Device
+    domains:
+      - D4
+      - D8
+    authorityRoutes:
+      - fda-gudid (3)
+      - openfda-device (2)
+    bestRouteReadiness: 3
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D4
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[UDI_DI]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: UDI_DI (device identifier part of a UDI)
+      issuer: the issuing agency (GS1, HIBCC, ICCBBA)
+      normalization: udidi-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - fda-gudid (3)
+          - openfda-device (2)
+        bestRouteReadiness: 3
+        fixtureUses: 4
+        fixtures:
+          - D4/noninvasive-glucose-cgm-recall
+      decision: "KN-06 / MD-X-01: active"
+  - code: UEI
+    name: SAM.gov Unique Entity ID
+    authority: US GSA SAM.gov
+    pattern: ^[A-Z0-9]{12}$
+    normalization:
+      rule: upper-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: upper case
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D7.Organization
+    domains:
+      - D7
+    authorityRoutes:
+      - nih-reporter (3)
+    bestRouteReadiness: 3
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D7
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: UEI (SAM.gov Unique Entity ID)
+      issuer: US GSA SAM.gov
+      normalization: upper-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - nih-reporter (3)
+        bestRouteReadiness: 3
+        fixtureUses: 2
+        fixtures:
+          - D7/elysium-paper-funding-award
+      decision: "KN-06 / MD-X-01: active"
+  - code: UMLS_CUI
+    name: UMLS concept unique id
+    authority: NLM UMLS
+    pattern: ^C[0-9]{7}$
+    normalization:
+      rule: upper-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: upper case
+    checkDigit: null
+    resolver: null
+    bridges:
+      - to: MESH
+        basis: K register bridgesTo
+      - to: SNOMEDCT
+        basis: K register bridgesTo
+    usedByNodeTypes: []
+    domains:
+      - D1
+      - D2
+    authorityRoutes: []
+    bestRouteReadiness: null
+    crosswalk:
+      bioregistryPrefix: null
+      wikidataProperty: P2892
+      verifiedBy:
+        - wd-Q407329.json
+    status: requested
+    registeredBy: K-v2
+    requestedBy: K
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+    writeStatus: disabled
+    activation:
+      namespace: UMLS_CUI (UMLS concept unique id)
+      issuer: NLM UMLS
+      normalization: upper-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: restricted
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "rights: UMLS Metathesaurus licence required (OD-12)"
+        - "no exercised capture route: no fixture uses the scheme"
+        - no authority route
+  - code: UNII
+    name: FDA Unique Ingredient Identifier
+    authority: FDA GSRS
+    pattern: ^[0-9A-Z]{10}$
+    normalization:
+      rule: unii-upper-v1
+      ruleOrigin: D11 identifier-bridges.yaml (proposed id)
+      text: upper case
+    checkDigit: yes (last character); algorithm not verified in this stage
+    resolver: https://precision.fda.gov/uniisearch/srs/unii/{value}
+    bridges:
+      - to: CAS_RN
+        basis: K register bridgesTo
+      - to: PUBCHEM_CID
+        basis: K register bridgesTo
+      - to: INCHIKEY
+        basis: K register bridgesTo
+      - bridge: B07
+        direction: from
+        other:
+          - CAS_RN
+          - PUBCHEM_CID
+          - FDA_GRN
+          - NCIT
+          - INCHIKEY
+        kind: authority-asserted (FDA GSRS, record version 18)
+        readiness: 3
+      - bridge: B08
+        direction: from
+        other: []
+        kind: authority-asserted
+        readiness: 3
+      - bridge: B09
+        direction: to
+        other:
+          - PUBCHEM_CID
+        kind: aggregator (depositor-supplied)
+        readiness: 2
+      - bridge: B11
+        direction: to
+        other:
+          - RXCUI
+        kind: authority-asserted (NLM)
+        readiness: 3
+      - bridge: B12
+        direction: to
+        other:
+          - SPL_SET_ID
+        kind: authority-asserted (labeler SPL) / harmonized (openFDA)
+        readiness: 3
+      - bridge: B13
+        direction: to
+        other:
+          - DSLD
+        kind: authority-asserted (NIH ODS transcription of the label)
+        readiness: 2
+    usedByNodeTypes:
+      - D1.ChemicalSubstance
+    domains:
+      - D1
+      - D8
+    authorityRoutes:
+      - dailymed-spl (3)
+      - fda-gsrs (3)
+      - ncbi-eutils-pubmed (3)
+      - nlm-rxnav (3)
+      - pubchem-pug-rest (3)
+      - nih-dsld (2)
+    bestRouteReadiness: 3
+    crosswalk:
+      bioregistryPrefix: unii
+      wikidataProperty: P652
+      verifiedBy:
+        - br-unii.json
+        - wd-Q407329.json
+    status: seed
+    registeredBy: K-v1
+    notes:
+      - 'D11 pattern "^[A-Z0-9]{10}$" differs; the K pattern is kept (precedence: kernel packet over D11; R-42: patterns validate the normalized value)'
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml schemes[UNII]
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: UNII (FDA Unique Ingredient Identifier)
+      issuer: FDA GSRS
+      normalization: unii-upper-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - dailymed-spl (3)
+          - fda-gsrs (3)
+          - ncbi-eutils-pubmed (3)
+          - nlm-rxnav (3)
+          - pubchem-pug-rest (3)
+          - nih-dsld (2)
+        bestRouteReadiness: 3
+        fixtureUses: 40
+        fixtures:
+          - D1/ashwagandha-plant-part-harm
+          - D1/nr-salt-moiety-us-canada
+          - D1/nr-trial-unstructured
+          - D1/vitamin-b6-threshold-harm
+          - D11/nr-chloride-gsrs-identifier-bridge
+          - D11/nr-trial-jats-unstructured
+          - D11/sirolimus-spl-boxed-warning
+          - D3/resveratrol-retraction
+          - K/resveratrol-identifier-crosswalk
+          - cross-domain/compound-profile
+          - cross-domain/product-comparison
+      decision: "KN-06 / MD-X-01: active"
+  - code: UNIPROT
+    name: UniProtKB accession
+    authority: UniProt
+    pattern: ^[A-Z0-9]{6}([A-Z0-9]{4})?$
+    normalization:
+      rule: uniprot-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: upper case; drop isoform suffix into a qualifier
+    checkDigit: null
+    resolver: https://www.uniprot.org/uniprotkb/{value}
+    bridges:
+      - to: HGNC
+        basis: K register bridgesTo
+      - to: NCBI_GENE
+        basis: K register bridgesTo
+      - to: ENSEMBL_GENE
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D2.MolecularEntity
+    domains:
+      - D2
+    authorityRoutes:
+      - reactome-content-service (3)
+      - uniprot-rest (3)
+      - europepmc-annotations (2)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: UNIPROT (UniProtKB accession)
+      issuer: UniProt
+      normalization: uniprot-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - reactome-content-service (3)
+          - uniprot-rest (3)
+          - europepmc-annotations (2)
+        bestRouteReadiness: 3
+        fixtureUses: 12
+        fixtures:
+          - D2/nr-muscle-unstructured
+          - D2/reactome-chembl-reference
+          - D2/sirt1-activation-disconfirmation
+      decision: "KN-06 / MD-X-01: active"
+  - code: WEB_DOMAIN
+    name: registrable web domain
+    authority: DNS (public suffix list)
+    pattern: null
+    normalization:
+      rule: web-domain-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: lower case; punycode; registrable domain only
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D7.Brand
+      - D7.Organization
+    domains:
+      - D6
+      - D7
+      - D9
+    authorityRoutes: []
+    bestRouteReadiness: null
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D6; D7
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: WEB_DOMAIN (registrable web domain)
+      issuer: DNS (public suffix list)
+      normalization: web-domain-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+        - no authority route
+  - code: WIKIDATA
+    name: Wikidata item
+    authority: Wikimedia Foundation
+    pattern: ^Q[1-9][0-9]*$
+    normalization:
+      rule: wikidata-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: upper-case Q
+    checkDigit: null
+    resolver: https://www.wikidata.org/wiki/{value}
+    bridges: []
+    usedByNodeTypes:
+      - D1.ChemicalSubstance
+      - D1.Taxon
+      - D12.DietaryPattern
+      - D12.FoodItem
+      - D2.Condition
+      - D2.Mechanism
+      - D2.MolecularEntity
+      - D2.Outcome
+      - D5.Intervention
+      - D5.Target
+      - D6.Product
+      - D7.Brand
+      - D7.Organization
+      - D7.Person
+      - D9.Channel
+      - D9.MediaWork
+      - K.Source
+    domains:
+      - D1
+      - D2
+      - D7
+      - D9
+      - D13
+    authorityRoutes:
+      - bioregistry (3)
+      - wikidata (2)
+    bestRouteReadiness: 3
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: active
+    activation:
+      namespace: WIKIDATA (Wikidata item)
+      issuer: Wikimedia Foundation
+      normalization: wikidata-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes:
+          - bioregistry (3)
+          - wikidata (2)
+        bestRouteReadiness: 3
+        fixtureUses: 2
+        fixtures:
+          - K/resveratrol-identifier-crosswalk
+      decision: "KN-06 / MD-X-01: active"
+  - code: WIKIPATHWAYS
+    name: WikiPathways id
+    authority: WikiPathways
+    pattern: ^WP[0-9]+$
+    normalization:
+      rule: wikipathways-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: upper-case prefix
+    checkDigit: null
+    resolver: null
+    bridges:
+      - to: REACTOME
+        basis: K register bridgesTo
+    usedByNodeTypes:
+      - D2.Mechanism
+    domains:
+      - D2
+    authorityRoutes: []
+    bestRouteReadiness: null
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D2
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: WIKIPATHWAYS (WikiPathways id)
+      issuer: WikiPathways
+      normalization: wikipathways-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+        - no authority route
+  - code: WWEIA_CATEGORY
+    name: WWEIA food category code
+    authority: USDA ARS (What We Eat in America)
+    pattern: ^[0-9]{4}$
+    patternOrigin: OQ-D12-08 '4-digit'
+    normalization:
+      rule: digits-v1
+      ruleOrigin: S (R-42), rule text from the requesting packet
+      text: digits only
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D12.FoodCategory
+    domains:
+      - D12
+    authorityRoutes: []
+    bestRouteReadiness: null
+    status: requested
+    registeredBy: S-R-42
+    requestedBy: D12 (OQ-D12-08)
+    sources:
+      - final/decision-report.md R-42
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: WWEIA_CATEGORY (WWEIA food category code)
+      issuer: USDA ARS (What We Eat in America)
+      normalization: digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+        - no authority route
+  - code: X_ACCOUNT
+    name: X (Twitter) account id
+    authority: X Corp
+    pattern: ^[0-9]+$
+    normalization:
+      rule: x-account-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: numeric id; the handle is a name, never identity
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D9.Channel
+    domains:
+      - D9
+      - D7
+    authorityRoutes: []
+    bestRouteReadiness: null
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D9
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: X_ACCOUNT (X (Twitter) account id)
+      issuer: X Corp
+      normalization: x-account-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+        - no authority route
+  - code: X_POST
+    name: X (Twitter) post id
+    authority: X Corp
+    pattern: ^[0-9]+$
+    normalization:
+      rule: digits-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: digits only
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D9.MediaWork
+    domains:
+      - D9
+    authorityRoutes: []
+    bestRouteReadiness: null
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D9
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: X_POST (X (Twitter) post id)
+      issuer: X Corp
+      normalization: digits-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+        - no authority route
+  - code: YOUTUBE_CHANNEL
+    name: YouTube channel id
+    authority: YouTube
+    pattern: ^UC[0-9A-Za-z_-]{22}$
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: as published (case-sensitive)
+    checkDigit: null
+    resolver: null
+    bridges: []
+    usedByNodeTypes:
+      - D9.Channel
+    domains:
+      - D9
+    authorityRoutes: []
+    bestRouteReadiness: null
+    status: requested
+    registeredBy: K-v2
+    requestedBy: D9
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: YOUTUBE_CHANNEL (YouTube channel id)
+      issuer: YouTube
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute:
+        routes: []
+        bestRouteReadiness: null
+        fixtureUses: 1
+        fixtures:
+          - D9/hl52-transcript-nmn-practice
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - no authority route
+  - code: YOUTUBE_VIDEO
+    name: YouTube video id
+    authority: YouTube
+    pattern: ^[0-9A-Za-z_-]{11}$
+    normalization:
+      rule: verbatim-v1
+      ruleOrigin: S (R-42), rule text from K
+      text: as published (case-sensitive)
+    checkDigit: null
+    resolver: https://www.youtube.com/watch?v={value}
+    bridges: []
+    usedByNodeTypes:
+      - D9.MediaWork
+      - K.Source
+    domains:
+      - D9
+    authorityRoutes:
+      - youtube-pages (1)
+    bestRouteReadiness: 1
+    status: seed
+    registeredBy: K-v1
+    sources:
+      - packets/K/identifier-schemes.yaml v2
+      - packets/D11/identifier-bridges.yaml reconciliation
+      - final/node-register.yaml identifierSchemes
+    writeStatus: disabled
+    activation:
+      namespace: YOUTUBE_VIDEO (YouTube video id)
+      issuer: YouTube
+      normalization: verbatim-v1
+      uniqueness: "R-42: one (scheme, issuer, normalized value) identifies at most one Subjectable"
+      rights: public-identifier
+      exercisedRoute: null
+      decision: "KN-06 / MD-X-01: disabled (registry history retained; not an advertised write capability)"
+      reasons:
+        - "no exercised capture route: no fixture uses the scheme"
+        - best authority route readiness 1 < 2
+bridgeTable:
+  - id: B01
+    from:
+      - PMID
+    to:
+      - PMCID
+      - DOI
+    fromAsWritten: PMID
+    toAsWritten:
+      - PMCID
+      - DOI
+    via: pmc-idconv (authority); europepmc-rest; openalex (aggregator)
+    kind: authority-asserted
+    readiness: 3
+    failureModes: No PMCID for non-OA papers; OpenAlex returns PMID as a URL.
+  - id: B02
+    from:
+      - DOI
+    to:
+      - PMID
+    fromAsWritten: DOI
+    toAsWritten:
+      - PMID
+    via: ncbi-eutils-pubmed (ELocationID doi), crossref-rest (no PMID), openalex ids
+    kind: authority-asserted (NLM)
+    readiness: 3
+    failureModes: Crossref does not carry PMIDs; DOI case variants.
+  - id: B03
+    from:
+      - NCT
+    to:
+      - PMID
+      - DOI
+    fromAsWritten: NCT
+    toAsWritten:
+      - PMID
+      - DOI
+    via: publication full text (JATS ext-link-type pmc:clinical-trial); PubMed DataBank/[si] when deposited; CT.gov referencesModule when the sponsor enters it
+    kind: source-asserted in the paper; registry/index links are optional deposits
+    readiness: 2
+    gap: G4 (JATS ext-link extractor) — action-space
+    failureModes: The bridge exists only inside the paper's text for this trial. Any registry-first or index-first agent concludes 'no publication'.
+  - id: B04
+    from:
+      - NCT
+    to:
+      - EUCT
+      - EUDRACT
+      - ISRCTN
+      - ORG_STUDY_ID
+    fromAsWritten: NCT
+    toAsWritten:
+      - EU_CT
+      - EudraCT
+      - ISRCTN
+      - ORG_STUDY_ID
+    via: ctgov-v2-api secondaryIdInfos; who-ictrp secondary ids; eu-ctis-public
+    kind: registry-asserted (sponsor-entered)
+    readiness: 2
+    failureModes: Sponsor-entered, often missing; ICTRP copy can be years stale (Last refreshed 12 December 2016).
+  - id: B05
+    from:
+      - DOI
+    to:
+      - DOI
+    fromAsWritten: DOI (preprint)
+    toAsWritten: DOI (journal article)
+    via: biorxiv-api published_doi; crossref-rest relation is-preprint-of / has-preprint
+    kind: authority-asserted (server), incomplete
+    readiness: 2
+    failureModes: Missing links; never infer by title alone without a hypothesis.
+  - id: B06
+    from:
+      - DOI
+    to:
+      - DOI
+    fromAsWritten: DOI (article)
+    toAsWritten: DOI (retraction / correction notice)
+    via: crossref-rest updated-by (source retraction-watch or publisher); ncbi-eutils-pubmed CommentsCorrections
+    kind: authority-asserted
+    readiness: 3
+    failureModes: Discovery tools (Firecrawl research index, PubMed MCP) do not surface it.
+  - id: B07
+    from:
+      - UNII
+    to:
+      - CAS_RN
+      - PUBCHEM_CID
+      - FDA_GRN
+      - NCIT
+      - INCHIKEY
+    fromAsWritten: UNII
+    toAsWritten:
+      - CAS_RN
+      - PUBCHEM_CID
+      - FDA_GRN
+      - NCIt
+      - INCHIKEY
+    via: fda-gsrs codes[] and structure
+    kind: authority-asserted (FDA GSRS, record version 18)
+    readiness: 3
+    failureModes: GSRS codes are curated per form; the moiety UNII has its own set.
+  - id: B08
+    from:
+      - UNII
+    to:
+      - UNII
+    fromAsWritten: UNII (salt / form)
+    toAsWritten: UNII (active moiety)
+    via: fda-gsrs relationships (ACTIVE MOIETY, PARENT->SALT/SOLVATE)
+    kind: authority-asserted
+    readiness: 3
+    failureModes: "A study administered NR chloride (JATS Par30: 'nicotinamide riboside chloride (NIAGEN®; 500 mg, twice per day …)') and the DSLD row is the branded ingredient 'Niagen' (row uniiCode null) with nested form 'Nicotinamide Riboside Chloride' (uniiCode 8XM2XT8VWI), 300 mg → the form is known but the mass basis of 300 mg (salt vs moiety) is not stated; this is a quantity-basis risk (CQ-PV-04)."
+  - id: B09
+    from:
+      - PUBCHEM_CID
+    to:
+      - UNII
+      - CAS_RN
+    fromAsWritten: PUBCHEM_CID
+    toAsWritten:
+      - UNII
+      - CAS_RN
+    via: pubchem-pug-rest synonyms (untyped strings) and xrefs RegistryID
+    kind: aggregator (depositor-supplied)
+    readiness: 2
+    failureModes: Untyped synonym strings; pattern matching required; depositor errors propagate.
+  - id: B10
+    from:
+      - name
+    to:
+      - PUBCHEM_CID
+      - CHEBI
+      - RXCUI
+    fromAsWritten: name (free text)
+    toAsWritten:
+      - PUBCHEM_CID
+      - CHEBI
+      - RXCUI
+    via: pubchem-pug-rest name endpoint; ebi-ols4-chebi; nlm-rxnav; europepmc-annotations
+    kind: hypothesis only (CQ-AX-14)
+    readiness: 1
+    failureModes: Form loss and outright mislinks.
+  - id: B11
+    from:
+      - RXCUI
+    to:
+      - UNII
+    fromAsWritten: RXCUI
+    toAsWritten: UNII
+    via: nlm-rxnav property UNII_CODE
+    kind: authority-asserted (NLM)
+    readiness: 3
+  - id: B12
+    from:
+      - SPL_SET_ID
+    to:
+      - UNII
+      - NDC
+      - RXCUI
+    fromAsWritten: SPL_SET_ID
+    toAsWritten:
+      - UNII
+      - NDC
+      - RXCUI
+    via: dailymed-spl XML; openfda-drug-label openfda block
+    kind: authority-asserted (labeler SPL) / harmonized (openFDA)
+    readiness: 3
+  - id: B13
+    from:
+      - DSLD
+    to:
+      - GTIN
+      - UNII
+      - DSLD
+    fromAsWritten: DSLD_LABEL_ID
+    toAsWritten:
+      - GTIN
+      - UNII
+      - DSLD_LABEL_ID (other versions)
+    via: nih-dsld upcSku, ingredientRows[].uniiCode and ingredientRows[].forms[].uniiCode, labelRelationships
+    kind: authority-asserted (NIH ODS transcription of the label)
+    readiness: 2
+    failureModes: UNII sits on the nested form, not on the branded ingredient row; GTIN printed with spaces; label versions share GTIN.
+  - id: B14
+    from:
+      - GTIN
+    to:
+      - FDC_ID
+      - DSLD
+      - merchant listing
+    fromAsWritten: GTIN
+    toAsWritten:
+      - FDC_ID
+      - DSLD_LABEL_ID
+      - merchant listing
+    via: usda-fdc gtinUpc (blocked today), nih-dsld upcSku, Shopify <handle>.js barcode (D6), Open Food Facts by barcode (D6)
+    kind: aggregator joins on a normalized key
+    readiness: 1
+    failureModes: Requires gtin14-v1 normalization on both sides; GS1 registry itself not open.
+  - id: B15
+    from:
+      - GTIN
+    to:
+      - UDI_DI
+    fromAsWritten: GTIN
+    toAsWritten: UDI_DI
+    via: fda-gudid (GS1-issued DIs are GTINs)
+    kind: identity by issuer rule (same GS1 number)
+    readiness: 3
+  - id: B16
+    from:
+      - product brand string
+    to:
+      - GTIN
+      - DSLD
+    fromAsWritten: product brand string (free text)
+    toAsWritten:
+      - GTIN
+      - DSLD_LABEL_ID
+    via: openfda-caers products.name_brand; openfda-food-enforcement product_description
+    kind: hypothesis only
+    readiness: 1
+    failureModes: Adverse-event and recall records cannot be joined to a product version by identifier.
+  - id: B17
+    from:
+      - LOINC
+    to:
+      - UCUM
+    fromAsWritten: LOINC
+    toAsWritten: UCUM
+    via: LOINC table EXAMPLE_UCUM_UNITS (licensed download); NLM Clinical Tables (partial)
+    kind: authority-asserted (Regenstrief)
+    readiness: 1
+    failureModes: Lab vendor test codes ↔ LOINC mappings live on vendor test menus (scrape).
+  - id: B18
+    from:
+      - SEC_CIK
+    to:
+      - LEI
+    fromAsWritten: CIK
+    toAsWritten: LEI
+    via: none authoritative (EDGAR submissions.lei null; GLEIF has no CIK)
+    kind: hypothesis (legal name + jurisdiction + registration number match)
+    readiness: 1
+    failureModes: Renames not propagated to GLEIF; lapsed registrations.
+  - id: B19
+    from:
+      - SEC_CIK
+    to:
+      - TICKER
+    fromAsWritten: CIK
+    toAsWritten: ticker
+    via: sec-edgar company_tickers.json
+    kind: authority-asserted, time-varying
+    readiness: 3
+  - id: B20
+    from:
+      - person name
+    to:
+      - NPI
+      - ORCID
+    fromAsWritten: person name
+    toAsWritten:
+      - NPI
+      - ORCID
+    via: nppes-npi search; europepmc authorIdList; JATS contrib-id
+    kind: hypothesis only
+    readiness: 1
+    failureModes: Wrong-person attribution (credentials, conflicts of interest).
+  - id: B21
+    from:
+      - CT.gov condition string
+    to:
+      - ICD10CM
+      - MONDO
+      - EFO
+    fromAsWritten: CT.gov condition string
+    toAsWritten:
+      - ICD10CM
+      - MONDO/EFO
+    via: icd10cm-pcs; ebi-ols4
+    kind: hypothesis (mapping)
+    readiness: 1
+  - id: B22
+    from:
+      - organization
+    to:
+      - funding / competing-interest disclosure
+    fromAsWritten: organization (sponsor/collaborator)
+    toAsWritten: funding / competing-interest disclosure
+    via: ctgov collaborators; JATS <ack>; JATS competing interests; Europe PMC grantsList; Crossref funder
+    kind: source-asserted, inconsistent across sources
+    readiness: 2
+    failureModes: An index-only agent reports no industry involvement.
+noBridge:
+  - NCT ↔ PMID from PubMed or the registry for NCT02921659 (only the paper's full text carries it).
+  - CIK ↔ LEI (no authority carries both).
+  - GTIN ↔ formulation version (GTIN persists across label changes; DSLD 295562 → 323170 share it).
+  - CAERS / recall product strings ↔ GTIN or UNII.
+  - Person name ↔ NPI/ORCID without a second key.
+  - "Label amount ↔ mass basis: DSLD gives the NR form (UNII 8XM2XT8VWI) but not whether 300 mg is salt or moiety basis."
+  - Registry version history (no public API; see action-space ctgov-record-history).
+notRegistered:
+  - code: NCIT
+    reason: optional in D11 (observed on GSRS); R-42 adds only SPL_SET_ID, EIN, ORG_STUDY_ID and the seven D12 food schemes; request again with a question id
+  - code: UCUM
+    reason: a unit vocabulary (Assertion.unitCode), not an Identifier scheme (D11 schemes row UCUM)
+unusedByNodeRegister:
+  - CHEMSPIDER
+  - EIN
+  - FDA_FEI
+  - NANOPUB
+  - NIHMS
+  - ORG_STUDY_ID
+  - RW_RECORD
+  - SPL_SET_ID
+  - TICKER
+  - UMLS_CUI
+sources:
+  packets/K/identifier-schemes.yaml: 29f77d32663989eda45390dc04b83005c97e0e28639bb7f783b2ac8c12de8572
+  packets/D11/identifier-bridges.yaml: e52bc00ce7d4b1be390979b5a9183101e16257b7c6623745e084a80e3da7cf81
+  final/node-register.yaml: 7515835405e0034a137286f7b87dd5f64a0a2e203864d4682043eddb3f19d942
+  final/decision-report.md (R-42): 2f9c98fce5e58015cf40eb594e3e09208e8cd78d1cc5d0c4b750c613a0cefb6c
+  packets/D12/11-open-questions.md (OQ-D12-08): 5f8394dff8f80ea447735b1e21374749f736673f73e37f2149a787e58346c61c
+release:
+  releaseId: biotech-schema-v2.0.0
+  decisions:
+    - KN-06
+    - MD-X-01
+    - OD-12
+  activeSchemes: 52
+  disabledSchemes: 61
+  unregisteredFixtureSchemes:
+    - scheme: DOMAIN
+      uses: 7
+      fixtures:
+        - D12/acrylamide-fried-potato-harm
+        - D12/mcdonalds-fries-prepared-food
+        - D12/olive-oil-polyphenols-preparation
+        - D12/predimed-retraction-disconfirmation
+        - D12/upf-diet-rct-unstructured
+    - scheme: FDC_NUTRIENT_NUMBER
+      uses: 2
+      fixtures:
+        - D12/mcdonalds-fries-prepared-food
+  rule: active = issuer + normalization rule + R-42 uniqueness + public rights + exercised route (fixture use and authority route readiness >= 2)

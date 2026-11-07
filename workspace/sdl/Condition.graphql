@@ -1,0 +1,26 @@
+"""
+Purpose: a disease, syndrome, phenotype or risk state (conditionKind) that mechanisms are linked to and that other
+modules scope by: D3 studies investigate it, D5 contraindications and adverse effects name it (CAUSES_ADVERSE_EFFECT
+object, R-84), D4 biomarkers indicate it, D13 frontiers anchor on it. A TargetMeasure member: D5 Target
+-[:OPERATIONALIZED_BY]-> Condition means the incidence of this condition measures the target (declared by D5, R-70). Absorbs the pinned RiskFactor (RISK_STATE: insulin resistance, obesity); behavioural
+exposures (smoking, inactivity) are D5 Interventions/exposures.
+Identity rule: MONDO id when one exists (kernel Identifier MONDO, plus ICD10CM, HPO, SNOMEDCT, MESH bridges), else
+curated `key` bellabs:<slug>. uid token: `condition` (hu:condition:<opaque>).
+Questions: Q-D2-14, Q-D2-15, Q-D2-06.
+"""
+type Condition implements Entity & Subjectable
+  @node(labels: ["Condition", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  key: String
+  conditionKind: ConditionKind
+  description: String
+  synonyms: [String!]
+}

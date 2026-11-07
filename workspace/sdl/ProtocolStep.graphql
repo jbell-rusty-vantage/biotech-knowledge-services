@@ -1,0 +1,90 @@
+"""
+Purpose: one step of a protocol edition: what to do (stepKind), with what (STEP_USES -> substance, product, food,
+practice, or the Metric a MEASURE step measures), how much (dose as a range, never a midpoint, with period and intake
+scope), when (anchor + offset), how often (occurrence range per period), for which target (`targetKeys`: the
+protocol's own stated purpose, captured content, never an effect claim), for whom (`appliesToPopulations`), under which
+stated cautions (STATES_CONSTRAINT -> UseConstraint, derived from the author's caution Assertion) and with which review/stop rule (REVIEW steps). One step names one
+primary means; "A or B" alternatives are sibling steps sharing `alternativeGroup` (Huberman: 145 mg magnesium
+threonate OR 200 mg bisglycinate). Absorbs pinned MeasurementPlan, ProtocolAdjustmentRule and the numeric Target.
+Its text is located: `locatorUid` names the SourceLocator (cited by the HAS_EDITION authorizing Assertion) and
+`exactText` is the verbatim span.
+Identity rule: (edition, stepKey); stepKey = section slug + normalized action-text hash, aligned across editions by
+stepKeyAlignmentVersion. uid token: `protocol-step` (hu:protocol-step:<opaque>).
+Questions: Q-D5-01, Q-D5-06, Q-D5-10, CQ-PR-02, CQ-PR-04, Q-D5-11, Q-D5-12, Q-D5-19, CQ-PR-06.
+"""
+type ProtocolStep implements Entity & Subjectable
+  @node(labels: ["ProtocolStep", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  stepKey: String!
+  "sha256:<hex> over this step's canonical payload; equal hashes across editions = unchanged step (CQ-PR-01)."
+  payloadHash: String!
+  stepKind: StepKind!
+  "The source's own verb or heading ('You might consider taking')."
+  stepKindRaw: String
+  "Section the step sits in ('Pregnancy', 'Supplements'); Blueprint numbering restarts per section."
+  sectionLabel: String
+  "Shared by sibling steps that are alternatives of one another ('A or B')."
+  alternativeGroup: String
+  "Verbatim span of the step (equals SourceLocator.exact of `locatorUid`)."
+  exactText: String
+  "uid of the SourceLocator of this step's span on the edition's snapshot. A cache (R-46): the provenance path is the HAS_EDITION authorizing Assertion's HAS_EVIDENCE."
+  locatorUid: String
+  requirementLevel: RequirementLevel!
+  requirementBasis: RequirementBasis!
+  "Practice report ('3-4 nights per week I also take') vs recommendation vs caution (kernel SpeechAct)."
+  speechAct: SpeechAct
+  "Directive level the protocol itself states for AVOID / REVIEW steps ('Don't take' = AVOID)."
+  statedLevel: ConstraintLevel
+  "Target keys (vocab-targets.yaml) the protocol states this step is for; captured purpose, never an effect claim."
+  targetKeys: [String!]
+  "Populations the step is stated for or restricted to; UNSPECIFIED when the source names none."
+  appliesToPopulations: [PopulationGroup!]
+  "Verbatim condition for CONDITIONAL steps ('if you have trouble falling asleep')."
+  conditionText: String
+  route: String
+  doseMin: Float
+  doseMax: Float
+  "UCUM unit of doseMin/doseMax (mg, g, IU, min, lx)."
+  doseUnit: String
+  "Time basis of doseMin/doseMax (D6 AmountBasis, R-58: PER_DOSE, PER_DAY, PER_WEEK, PER_CYCLE, NOT_STATED ...)."
+  dosePeriod: AmountBasis
+  intakeScope: IntakeScope
+  timeAnchor: TimeAnchor
+  "Offset from the anchor in minutes; negative = before (30-60 min before bed = -60..-30)."
+  offsetMinutesMin: Int
+  offsetMinutesMax: Int
+  occurrencesPerPeriodMin: Int
+  occurrencesPerPeriodMax: Int
+  occurrencePeriodUnit: CadenceUnit
+  durationDaysMin: Int
+  durationDaysMax: Int
+  scheduleText: String
+  isAsNeeded: Boolean
+  "MEASURE / REVIEW steps: threshold on the measured Metric (absorbs the pinned numeric Target). D1 QuantityComparator (R-57)."
+  thresholdComparator: QuantityComparator
+  thresholdLow: Float
+  thresholdHigh: Float
+  thresholdUnit: String
+  reviewAction: ReviewAction
+  "stepKeys this step depends on within the edition (CQ-PR-02); a property, not an edge."
+  dependsOnStepKeys: [String!]
+  "Fields the source does not state (never inferred)."
+  notReportedFields: [String!]
+  """class: structural; cardinality: zero_or_more (one primary means; none for informational OTHER / CONSULT steps). Target is the kernel interface Subjectable, one of the two registered domain exceptions (R-28; the admissible list is in the D5 relationship register and executor-enforced); the executor admits only D1 ChemicalSubstance | IngredientMaterial, D6 Product, D12 FoodItem | FoodCategory | DietaryPattern, D5 Intervention, D4 Metric | Device, and validates the type per stepKind (MEASURE -> Metric; TAKE -> substance, material, product, food); questions: Q-D5-06, Q-D5-10, Q-D5-11, Q-D5-12, Q-D5-19, CQ-PR-04."""
+  uses: [Subjectable!]!
+    @relationship(type: "STEP_USES", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: derived; cardinality: many (projection use-constraint-key/v2: when the protocol author's USE_CONSTRAINED_IN | INTERACTS_WITH | HAS_UPPER_LIMIT Assertion cites this step's locatorUid, or a locator inside its span on the same snapshot, and resolves to a UseConstraint, the step gets this edge to it; regenerable, never part of the edition payload); questions: Q-D5-11, CQ-PR-02, Q-D5-03."""
+  statesConstraints: [UseConstraint!]!
+    @relationship(type: "STATES_CONSTRAINT", direction: OUT, properties: "DerivedEdgeProperties", nestedOperations: [], aggregate: false)
+    @settable(onCreate: false, onUpdate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

@@ -1,0 +1,651 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v1",
+  "intentId": "ft-d13-mfin-2026-10-08",
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "agent:d13-event-linker"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run:ft-D13-madrigal-financing-after-readout",
+      "missionId": "mission:ft-D13-fixtures"
+    },
+    "activityKind": "INGESTION"
+  },
+  "onStale": "fail",
+  "sources": [
+    {
+      "ref": "s-mdgl-8k-2022-12-23",
+      "source": {
+        "canonicalUri": "https://www.sec.gov/Archives/edgar/data/1157601/000119312522311537/d434336d8k.htm",
+        "title": "Madrigal Form 8-K (Items 1.01, 5.03, 7.01, 8.01, 9.01), accession 0001193125-22-311537",
+        "sourceKind": "WEB_PAGE",
+        "properties": {
+          "genre": "REGULATORY_FILING"
+        }
+      },
+      "snapshot": {
+        "uid": "hu:snapshot:fx-d13-mdgl-8k-2022-12-23",
+        "observedAt": "2026-10-08T00:00:00Z",
+        "retrievedAt": "2026-10-08T00:00:00Z",
+        "contentHash": "sha256:e67b4342dc932400f5149353f2573b039778ef546d61b66299d42929cebbe459",
+        "contentHashBasis": "CANONICAL_PROJECTION",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "captureMethod": "curl -> SEC EDGAR Archives (User-Agent from EDGAR_IDENTITY) + h2t-v1 projection",
+          "captureTool": "tool:sec-edgar-archives",
+          "canonicalProjectionHash": "sha256:e67b4342dc932400f5149353f2573b039778ef546d61b66299d42929cebbe459",
+          "rawBytesHashSessionOnly": "sha256:416740c759506ea973ec4ae242b6a8707c51972c879a6656be1cdb36e0333536",
+          "publishedAt": "2022-12-23"
+        }
+      },
+      "locators": [
+        {
+          "ref": "l01",
+          "selectorKind": "TEXT_QUOTE",
+          "section": "Item 8.01 / Borrowing Availability Under Loan Agreement",
+          "quote": "On December 19, 2022, as a result of the Company’s announcement of Phase 3 MAESTRO-NASH clinical trial topline results, the Company received confirmation from Hercules Capital, Inc. (“Hercules”) that it has satisfied the clinical development milestone under the Company’s previously disclosed Loan and Security Agreement",
+          "quotePrefix": "lability Under Loan Agreement \n\n",
+          "quoteSuffix": ", dated May 9, 2022, among the C",
+          "startOffset": 10401,
+          "endOffset": 10721,
+          "properties": {
+            "selectorJson": "{\"basis\":\"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)\",\"exact\":\"On December 19, 2022, as a result of the Company’s announcement of Phase 3 MAESTRO-NASH clinical trial topline results, the Company received confirmation from Hercules Capital, Inc. (“Hercules”) that it has satisfied the clinical development milestone under the Company’s previously disclosed Loan and Security Agreement\",\"prefix\":\"lability Under Loan Agreement \\n\\n\",\"refinedBy\":{\"end\":10721,\"start\":10401,\"type\":\"TextPositionSelector\"},\"suffix\":\", dated May 9, 2022, among the C\",\"type\":\"TextQuoteSelector\"}",
+            "selectorDigest": "sha256:b203c12cd0b216c3182c9b73e8932ef11d997b7469d8974fcf5e3e9f8a4bdbc8"
+          }
+        },
+        {
+          "ref": "l02",
+          "selectorKind": "TEXT_QUOTE",
+          "section": "Item 8.01 / Borrowing Availability Under Loan Agreement",
+          "quote": "As a result of the achievement of the clinical development milestone, the Company is now eligible to borrow up to an additional $50 million under the Loan Agreement.",
+          "quotePrefix": "thereto (the “Loan Agreement”). ",
+          "quoteSuffix": " \n\nATM Program Update \n\nOn Decem",
+          "startOffset": 10923,
+          "endOffset": 11088,
+          "properties": {
+            "selectorJson": "{\"basis\":\"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)\",\"exact\":\"As a result of the achievement of the clinical development milestone, the Company is now eligible to borrow up to an additional $50 million under the Loan Agreement.\",\"prefix\":\"thereto (the “Loan Agreement”). \",\"refinedBy\":{\"end\":11088,\"start\":10923,\"type\":\"TextPositionSelector\"},\"suffix\":\" \\n\\nATM Program Update \\n\\nOn Decem\",\"type\":\"TextQuoteSelector\"}",
+            "selectorDigest": "sha256:3b442ddb320d513b554a6ff3541a89aeb5c7695466a425da63db582870bc1316"
+          }
+        },
+        {
+          "ref": "l03",
+          "selectorKind": "TEXT_QUOTE",
+          "section": "Item 1.01 / Securities Purchase Agreement",
+          "quote": "On December 21, 2022, Madrigal Pharmaceuticals, Inc. (the “Company” or “Madrigal”) entered into a Securities Purchase Agreement (the “Securities Purchase Agreement”) with a group of institutional investors",
+          "quotePrefix": "Securities Purchase Agreement \n\n",
+          "quoteSuffix": " (collectively, the “Investors”)",
+          "startOffset": 2396,
+          "endOffset": 2601,
+          "properties": {
+            "selectorJson": "{\"basis\":\"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)\",\"exact\":\"On December 21, 2022, Madrigal Pharmaceuticals, Inc. (the “Company” or “Madrigal”) entered into a Securities Purchase Agreement (the “Securities Purchase Agreement”) with a group of institutional investors\",\"prefix\":\"Securities Purchase Agreement \\n\\n\",\"refinedBy\":{\"end\":2601,\"start\":2396,\"type\":\"TextPositionSelector\"},\"suffix\":\" (collectively, the “Investors”)\",\"type\":\"TextQuoteSelector\"}",
+            "selectorDigest": "sha256:07611da8337894f92a2c129f839724e315f1c619e16757663e4bd27696673b46"
+          }
+        },
+        {
+          "ref": "l04",
+          "selectorKind": "TEXT_QUOTE",
+          "section": "Item 1.01 / Securities Purchase Agreement",
+          "quote": "The gross proceeds from the transaction will be $100 million in the aggregate before estimated transaction expenses",
+          "quotePrefix": "(“Series A Preferred Stock”). \n\n",
+          "quoteSuffix": ", which gross proceeds are compr",
+          "startOffset": 3502,
+          "endOffset": 3617,
+          "properties": {
+            "selectorJson": "{\"basis\":\"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)\",\"exact\":\"The gross proceeds from the transaction will be $100 million in the aggregate before estimated transaction expenses\",\"prefix\":\"(“Series A Preferred Stock”). \\n\\n\",\"refinedBy\":{\"end\":3617,\"start\":3502,\"type\":\"TextPositionSelector\"},\"suffix\":\", which gross proceeds are compr\",\"type\":\"TextQuoteSelector\"}",
+            "selectorDigest": "sha256:7b51d199cf310dbca784ecf77e6526265f555973f377a4107e2701e8ced500ca"
+          }
+        },
+        {
+          "ref": "l05",
+          "selectorKind": "TEXT_QUOTE",
+          "section": "Item 7.01 Regulation FD Disclosure",
+          "quote": "On December 21, 2022, the Company issued a press release announcing the Offering and other financing updates.",
+          "quotePrefix": " | \nRegulation FD Disclosure. \n\n",
+          "quoteSuffix": " \n\nThe press release is furnishe",
+          "startOffset": 9669,
+          "endOffset": 9778,
+          "properties": {
+            "selectorJson": "{\"basis\":\"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)\",\"exact\":\"On December 21, 2022, the Company issued a press release announcing the Offering and other financing updates.\",\"prefix\":\" | \\nRegulation FD Disclosure. \\n\\n\",\"refinedBy\":{\"end\":9778,\"start\":9669,\"type\":\"TextPositionSelector\"},\"suffix\":\" \\n\\nThe press release is furnishe\",\"type\":\"TextQuoteSelector\"}",
+            "selectorDigest": "sha256:a27bae1e790e4079fe51299ede8a5414bcde876f110aef39343e2b4f5f8ab4fc"
+          }
+        },
+        {
+          "ref": "l08",
+          "selectorKind": "TEXT_QUOTE",
+          "section": "Cover",
+          "quote": "Date of Report (Date of earliest event reported): December 19, 2022",
+          "quotePrefix": "ecurities Exchange Act of 1934\n\n",
+          "quoteSuffix": "\n\nMADRIGAL PHARMACEUTICALS, INC.",
+          "startOffset": 240,
+          "endOffset": 307,
+          "properties": {
+            "selectorJson": "{\"basis\":\"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)\",\"exact\":\"Date of Report (Date of earliest event reported): December 19, 2022\",\"prefix\":\"ecurities Exchange Act of 1934\\n\\n\",\"refinedBy\":{\"end\":307,\"start\":240,\"type\":\"TextPositionSelector\"},\"suffix\":\"\\n\\nMADRIGAL PHARMACEUTICALS, INC.\",\"type\":\"TextQuoteSelector\"}",
+            "selectorDigest": "sha256:8e5f04b772ebf45b0ad0565ed2ae5ec38ce3c8767735632ad57472421fa8a155"
+          }
+        },
+        {
+          "ref": "l10",
+          "selectorKind": "TEXT_QUOTE",
+          "section": "Item 8.01 / ATM Program Update",
+          "quote": "On December 19, 2022, the Company sold 738,900 shares of Common Stock under its “at-the-market” sales program (“ATM Program”) pursuant to the Sales Agreement, dated June 1, 2021 with Cowen and Company, LLC (“Cowen”), for $159.1 million in gross proceeds before any discounts and fees, under the Sales Agreement.",
+          "quotePrefix": "reement. \n\nATM Program Update \n\n",
+          "quoteSuffix": " Cowen and Company, LLC, acted a",
+          "startOffset": 11112,
+          "endOffset": 11423,
+          "properties": {
+            "selectorJson": "{\"basis\":\"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)\",\"exact\":\"On December 19, 2022, the Company sold 738,900 shares of Common Stock under its “at-the-market” sales program (“ATM Program”) pursuant to the Sales Agreement, dated June 1, 2021 with Cowen and Company, LLC (“Cowen”), for $159.1 million in gross proceeds before any discounts and fees, under the Sales Agreement.\",\"prefix\":\"reement. \\n\\nATM Program Update \\n\\n\",\"refinedBy\":{\"end\":11423,\"start\":11112,\"type\":\"TextPositionSelector\"},\"suffix\":\" Cowen and Company, LLC, acted a\",\"type\":\"TextQuoteSelector\"}",
+            "selectorDigest": "sha256:851ad849ab4ae8a9184d14fc7b332a8ad43e62b50890132a601bd433a7bb960b"
+          }
+        },
+        {
+          "ref": "l12",
+          "selectorKind": "TEXT_QUOTE",
+          "section": "Item 8.01 / ATM Program Update",
+          "quote": "Cowen and Company, LLC, acted as sales agent under the ATM Program.",
+          "quotePrefix": "ees, under the Sales Agreement. ",
+          "quoteSuffix": " The $159.1 million in gross pro",
+          "startOffset": 11424,
+          "endOffset": 11491,
+          "properties": {
+            "selectorJson": "{\"basis\":\"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)\",\"exact\":\"Cowen and Company, LLC, acted as sales agent under the ATM Program.\",\"prefix\":\"ees, under the Sales Agreement. \",\"refinedBy\":{\"end\":11491,\"start\":11424,\"type\":\"TextPositionSelector\"},\"suffix\":\" The $159.1 million in gross pro\",\"type\":\"TextQuoteSelector\"}",
+            "selectorDigest": "sha256:cf43cd9d6fae543901eebb6abd01990efaf631e9b5f331131fae5aad6fc939a6"
+          }
+        }
+      ]
+    },
+    {
+      "ref": "s-mdgl-ex991-2022-12-21",
+      "source": {
+        "canonicalUri": "https://www.sec.gov/Archives/edgar/data/1157601/000119312522311537/d434336dex991.htm",
+        "title": "Exhibit 99.1 'Madrigal Pharmaceuticals Announces $300+ Million in Financing Events to Advance Resmetirom Program'",
+        "sourceKind": "WEB_PAGE",
+        "properties": {
+          "genre": "PRESS_RELEASE"
+        }
+      },
+      "snapshot": {
+        "uid": "hu:snapshot:fx-d13-mdgl-ex991-2022-12-21",
+        "observedAt": "2026-10-08T00:00:00Z",
+        "retrievedAt": "2026-10-08T00:00:00Z",
+        "contentHash": "sha256:3fdd41e2668e4bac47ea9abaa78f9d503a3ef1afa89be727b2e3a440155579cc",
+        "contentHashBasis": "CANONICAL_PROJECTION",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "captureMethod": "curl -> SEC EDGAR Archives (User-Agent from EDGAR_IDENTITY) + h2t-v1 projection",
+          "captureTool": "tool:sec-edgar-archives",
+          "canonicalProjectionHash": "sha256:3fdd41e2668e4bac47ea9abaa78f9d503a3ef1afa89be727b2e3a440155579cc",
+          "rawBytesHashSessionOnly": "sha256:ef32efcdb18957c0f7f254c78fa16b7d703fa4f4222142162d3c8748008b20e5",
+          "publishedAt": "2022-12-23"
+        }
+      },
+      "locators": [
+        {
+          "ref": "l06",
+          "selectorKind": "TEXT_QUOTE",
+          "section": "EX-99.1, CEO quote (Paul Friedman, M.D.)",
+          "quote": "The financings secured following the positive topline readout of our\nPhase 3 MAESTRO-NASH trial reflect the strong support that Madrigal has established with long-standing strategic and institutional investors.",
+          "quotePrefix": "e Officer of Madrigal, stated: “",
+          "quoteSuffix": " The funds provide a solid found",
+          "startOffset": 809,
+          "endOffset": 1019,
+          "properties": {
+            "selectorJson": "{\"basis\":\"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)\",\"exact\":\"The financings secured following the positive topline readout of our\\nPhase 3 MAESTRO-NASH trial reflect the strong support that Madrigal has established with long-standing strategic and institutional investors.\",\"prefix\":\"e Officer of Madrigal, stated: “\",\"refinedBy\":{\"end\":1019,\"start\":809,\"type\":\"TextPositionSelector\"},\"suffix\":\" The funds provide a solid found\",\"type\":\"TextQuoteSelector\"}",
+            "selectorDigest": "sha256:e7b3ad7adb06be0b61abb8fa95dae3aef41ede822e9a58b438d7b9b88cd8b54c"
+          }
+        },
+        {
+          "ref": "l07",
+          "selectorKind": "TEXT_QUOTE",
+          "section": "EX-99.1 body",
+          "quote": "In connection with Madrigal’s December 19, 2022 announcement of positive topline data from its pivotal Phase 3 MAESTRO-NASH clinical trial of\nresmetirom, Hercules Capital, Inc. (NYSE:HTGC) confirmed that Madrigal has achieved its clinical milestone under the Company’s Credit Facility with Hercules",
+          "quotePrefix": "344 common equivalent shares. \n\n",
+          "quoteSuffix": ", thereby enabling Madrigal to d",
+          "startOffset": 2196,
+          "endOffset": 2494,
+          "properties": {
+            "selectorJson": "{\"basis\":\"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)\",\"exact\":\"In connection with Madrigal’s December 19, 2022 announcement of positive topline data from its pivotal Phase 3 MAESTRO-NASH clinical trial of\\nresmetirom, Hercules Capital, Inc. (NYSE:HTGC) confirmed that Madrigal has achieved its clinical milestone under the Company’s Credit Facility with Hercules\",\"prefix\":\"344 common equivalent shares. \\n\\n\",\"refinedBy\":{\"end\":2494,\"start\":2196,\"type\":\"TextPositionSelector\"},\"suffix\":\", thereby enabling Madrigal to d\",\"type\":\"TextQuoteSelector\"}",
+            "selectorDigest": "sha256:051ec807315ff4faf76ca862d07b58587b39f1fff8c082cc6b9c78588f9152fe"
+          }
+        },
+        {
+          "ref": "l11",
+          "selectorKind": "TEXT_QUOTE",
+          "section": "EX-99.1 body",
+          "quote": "Madrigal has completed $159 million in gross sales of\ncommon stock under its ATM Program (“ATM Sales”)",
+          "quotePrefix": "al of resmetirom in the U.S.” \n\n",
+          "quoteSuffix": " and has separately entered into",
+          "startOffset": 1215,
+          "endOffset": 1317,
+          "properties": {
+            "selectorJson": "{\"basis\":\"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)\",\"exact\":\"Madrigal has completed $159 million in gross sales of\\ncommon stock under its ATM Program (“ATM Sales”)\",\"prefix\":\"al of resmetirom in the U.S.” \\n\\n\",\"refinedBy\":{\"end\":1317,\"start\":1215,\"type\":\"TextPositionSelector\"},\"suffix\":\" and has separately entered into\",\"type\":\"TextQuoteSelector\"}",
+            "selectorDigest": "sha256:07272937c88f3c552c302ff08d79d028a3f27e9ac4a23cb05cbae72c0362f3f5"
+          }
+        },
+        {
+          "ref": "l13",
+          "selectorKind": "TEXT_QUOTE",
+          "section": "EX-99.1 sub-headline",
+          "quote": "$259 Million in Equity Securities Sales and $50 Million in Additional Debt Financing Capacity",
+          "quotePrefix": "tirom Program\n\n | \n | •\n | \n | \n",
+          "quoteSuffix": "\n\n | \n | •\n | \n | \nMadrigal inte",
+          "startOffset": 178,
+          "endOffset": 271,
+          "properties": {
+            "selectorJson": "{\"basis\":\"h2t-v1 (_notes/tools/h2t_v1.py; UTF-8, LF)\",\"exact\":\"$259 Million in Equity Securities Sales and $50 Million in Additional Debt Financing Capacity\",\"prefix\":\"tirom Program\\n\\n | \\n | •\\n | \\n | \\n\",\"refinedBy\":{\"end\":271,\"start\":178,\"type\":\"TextPositionSelector\"},\"suffix\":\"\\n\\n | \\n | •\\n | \\n | \\nMadrigal inte\",\"type\":\"TextQuoteSelector\"}",
+            "selectorDigest": "sha256:f983fd17e38e0233b0869681c8c0496db69469abaad23643aea146baa7436c83"
+          }
+        }
+      ]
+    },
+    {
+      "ref": "s-mdgl-edgar-submissions",
+      "source": {
+        "canonicalUri": "https://data.sec.gov/submissions/CIK0001157601.json",
+        "title": "SEC EDGAR submissions index, CIK 0001157601 (Madrigal Pharmaceuticals)",
+        "sourceKind": "API",
+        "properties": {
+          "genre": "REGISTRY_RECORD"
+        }
+      },
+      "snapshot": {
+        "uid": "hu:snapshot:fx-d13-mdgl-edgar-submissions",
+        "observedAt": "2026-10-08T00:00:00Z",
+        "retrievedAt": "2026-10-08T00:00:00Z",
+        "contentHash": "sha256:6b23ab5df12518ae53921769482dfaf108cc4336e22136b8f944aad7c0297860",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "captureMethod": "curl -> data.sec.gov submissions API (User-Agent from EDGAR_IDENTITY)",
+          "captureTool": "tool:sec-edgar-submissions"
+        }
+      },
+      "locators": [
+        {
+          "ref": "l09",
+          "selectorKind": "API_RECORD",
+          "quote": "2022-12-23",
+          "properties": {
+            "selectorJson": "{\"arrayRoot\":\"/filings/recent\",\"field\":\"filingDate\",\"recordKey\":{\"accessionNumber\":\"0001193125-22-311537\"},\"rule\":\"edgar-accession/v1\",\"type\":\"RecordFieldSelector\"}",
+            "selectorDigest": "sha256:1c9cda7d008584e70845537fd2a6f4c6b07b6d3d202448230b71c92aa96c2cc1"
+          }
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "ev-readout",
+      "mode": "resolved",
+      "uid": "hu:event:fx-mdgl-maestro-nash-topline-2022-12-19",
+      "nodeType": "Event"
+    },
+    {
+      "ref": "ev-hercules",
+      "mode": "new",
+      "nodeType": "Event",
+      "name": "Hercules loan clinical-milestone tranche becomes available to Madrigal",
+      "uidSegment": "fx-mdgl-hercules-milestone-tranche-2022-12-19",
+      "properties": {
+        "eventKind": "FINANCING",
+        "eventStatus": "OCCURRED",
+        "identityKey": "FINANCING|hu:org:fx-madrigal-pharmaceuticals|-|2022-12-19/DAY|loan-tranche"
+      },
+      "onMatch": "review"
+    },
+    {
+      "ref": "ev-atm",
+      "mode": "new",
+      "nodeType": "Event",
+      "name": "Madrigal at-the-market common stock sales ($159.1M gross, Cowen as sales agent)",
+      "uidSegment": "fx-mdgl-atm-sales-2022-12-19",
+      "properties": {
+        "eventKind": "FINANCING",
+        "eventStatus": "OCCURRED",
+        "identityKey": "FINANCING|hu:org:fx-madrigal-pharmaceuticals|-|2022-12-19/DAY|atm-sales"
+      },
+      "onMatch": "review"
+    },
+    {
+      "ref": "ev-regdirect",
+      "mode": "new",
+      "nodeType": "Event",
+      "name": "Madrigal $100M Series B preferred + common registered direct (securities purchase agreement)",
+      "uidSegment": "fx-mdgl-registered-direct-2022-12-21",
+      "properties": {
+        "eventKind": "FINANCING",
+        "eventStatus": "OCCURRED",
+        "identityKey": "FINANCING|hu:org:fx-madrigal-pharmaceuticals|-|2022-12-21/DAY|registered-direct"
+      },
+      "onMatch": "review"
+    },
+    {
+      "ref": "madrigal",
+      "mode": "resolved",
+      "uid": "hu:org:fx-madrigal-pharmaceuticals",
+      "nodeType": "Organization"
+    },
+    {
+      "ref": "hercules",
+      "mode": "resolved",
+      "uid": "hu:org:fx-hercules-capital",
+      "nodeType": "Organization"
+    },
+    {
+      "ref": "cowen",
+      "mode": "resolved",
+      "uid": "hu:org:fx-cowen-and-company",
+      "nodeType": "Organization"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "p-a01",
+      "kind": "assertion.literal",
+      "subjectRef": "ev-hercules",
+      "predicate": "EVENT_OCCURRED",
+      "evidence": [
+        "l01"
+      ],
+      "assertion": {
+        "predicate": "EVENT_OCCURRED",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "polarity": "POSITIVE",
+        "validity": {
+          "validFrom": "2022-12-19T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "madrigal"
+    },
+    {
+      "proposalId": "p-a02",
+      "kind": "assertion.literal",
+      "subjectRef": "ev-hercules",
+      "predicate": "FINANCING_AMOUNT",
+      "evidence": [
+        "l02"
+      ],
+      "assertion": {
+        "predicate": "FINANCING_AMOUNT",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "polarity": "POSITIVE",
+        "validity": {
+          "validFromBasis": "UNKNOWN",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "madrigal",
+      "valueNumber": 50000000,
+      "unitCode": "iso4217:USD",
+      "rationale": "qualifiers (intent v1 has no qualifiers field): amountKind=BORROWING_CAPACITY; amountBasis=AVAILABLE; upTo=true (drawn amount not stated)"
+    },
+    {
+      "proposalId": "p-a03",
+      "kind": "edge.assert",
+      "relationshipType": "INVOLVES",
+      "fromRef": "ev-hercules",
+      "toRef": "hercules",
+      "evidence": [
+        "l01"
+      ],
+      "assertion": {
+        "predicate": "INVOLVES",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "polarity": "POSITIVE",
+        "validity": {
+          "validFromBasis": "UNKNOWN",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "edgeProperties": {
+        "role": "LENDER"
+      },
+      "asserterRef": "madrigal",
+      "rationale": "qualifiers (intent v1 has no qualifiers field): role=LENDER"
+    },
+    {
+      "proposalId": "p-a04",
+      "kind": "edge.assert",
+      "relationshipType": "INVOLVES",
+      "fromRef": "ev-hercules",
+      "toRef": "madrigal",
+      "evidence": [
+        "l01"
+      ],
+      "assertion": {
+        "predicate": "INVOLVES",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "polarity": "POSITIVE",
+        "validity": {
+          "validFromBasis": "UNKNOWN",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "edgeProperties": {
+        "role": "BORROWER"
+      },
+      "asserterRef": "madrigal",
+      "rationale": "qualifiers (intent v1 has no qualifiers field): role=BORROWER; primary=true; roleText=the Company (borrower under the Loan and Security Agreement)"
+    },
+    {
+      "proposalId": "p-a05",
+      "kind": "edge.assert",
+      "relationshipType": "LEADS_TO",
+      "fromRef": "ev-readout",
+      "toRef": "ev-hercules",
+      "evidence": [
+        "l01",
+        "l07"
+      ],
+      "assertion": {
+        "predicate": "LEADS_TO",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "polarity": "POSITIVE",
+        "validity": {
+          "validFromBasis": "UNKNOWN",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "edgeProperties": {},
+      "asserterRef": "madrigal"
+    },
+    {
+      "proposalId": "p-a06",
+      "kind": "assertion.literal",
+      "subjectRef": "ev-regdirect",
+      "predicate": "EVENT_OCCURRED",
+      "evidence": [
+        "l03"
+      ],
+      "assertion": {
+        "predicate": "EVENT_OCCURRED",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "polarity": "POSITIVE",
+        "validity": {
+          "validFrom": "2022-12-21T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "madrigal"
+    },
+    {
+      "proposalId": "p-a07",
+      "kind": "assertion.literal",
+      "subjectRef": "ev-regdirect",
+      "predicate": "EVENT_ANNOUNCED",
+      "evidence": [
+        "l05"
+      ],
+      "assertion": {
+        "predicate": "EVENT_ANNOUNCED",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "polarity": "POSITIVE",
+        "validity": {
+          "validFrom": "2022-12-21T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "madrigal"
+    },
+    {
+      "proposalId": "p-a08",
+      "kind": "assertion.literal",
+      "subjectRef": "ev-regdirect",
+      "predicate": "FINANCING_AMOUNT",
+      "evidence": [
+        "l04"
+      ],
+      "assertion": {
+        "predicate": "FINANCING_AMOUNT",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "polarity": "POSITIVE",
+        "validity": {
+          "validFromBasis": "UNKNOWN",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "madrigal",
+      "valueNumber": 100000000,
+      "unitCode": "iso4217:USD",
+      "rationale": "qualifiers (intent v1 has no qualifiers field): amountKind=GROSS_PROCEEDS; amountBasis=COMMITTED; before estimated transaction expenses; agreement signed, closing expected"
+    },
+    {
+      "proposalId": "p-a09",
+      "kind": "edge.assert",
+      "relationshipType": "INVOLVES",
+      "fromRef": "ev-regdirect",
+      "toRef": "madrigal",
+      "evidence": [
+        "l03"
+      ],
+      "assertion": {
+        "predicate": "INVOLVES",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "polarity": "POSITIVE",
+        "validity": {
+          "validFromBasis": "UNKNOWN",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "edgeProperties": {
+        "role": "ISSUER"
+      },
+      "asserterRef": "madrigal",
+      "rationale": "qualifiers (intent v1 has no qualifiers field): role=ISSUER; primary=true; roleText=the “Company”"
+    },
+    {
+      "proposalId": "p-a11",
+      "kind": "assertion.literal",
+      "subjectRef": "ev-atm",
+      "predicate": "EVENT_OCCURRED",
+      "evidence": [
+        "l10"
+      ],
+      "assertion": {
+        "predicate": "EVENT_OCCURRED",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "polarity": "POSITIVE",
+        "validity": {
+          "validFrom": "2022-12-19T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "madrigal"
+    },
+    {
+      "proposalId": "p-a12",
+      "kind": "assertion.literal",
+      "subjectRef": "ev-atm",
+      "predicate": "FINANCING_AMOUNT",
+      "evidence": [
+        "l10",
+        "l11"
+      ],
+      "assertion": {
+        "predicate": "FINANCING_AMOUNT",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "polarity": "POSITIVE",
+        "validity": {
+          "validFromBasis": "UNKNOWN",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "asserterRef": "madrigal",
+      "valueNumber": 159100000,
+      "unitCode": "iso4217:USD",
+      "rationale": "qualifiers (intent v1 has no qualifiers field): amountKind=GROSS_PROCEEDS; amountBasis=SOLD; before any discounts and fees (8-K); EX-99.1 rounds to '$159 million'"
+    },
+    {
+      "proposalId": "p-a13",
+      "kind": "edge.assert",
+      "relationshipType": "INVOLVES",
+      "fromRef": "ev-atm",
+      "toRef": "madrigal",
+      "evidence": [
+        "l10"
+      ],
+      "assertion": {
+        "predicate": "INVOLVES",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "polarity": "POSITIVE",
+        "validity": {
+          "validFromBasis": "UNKNOWN",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "edgeProperties": {
+        "role": "ISSUER"
+      },
+      "asserterRef": "madrigal",
+      "rationale": "qualifiers (intent v1 has no qualifiers field): role=ISSUER; primary=true; roleText=the Company"
+    },
+    {
+      "proposalId": "p-a14",
+      "kind": "edge.assert",
+      "relationshipType": "INVOLVES",
+      "fromRef": "ev-atm",
+      "toRef": "cowen",
+      "evidence": [
+        "l12"
+      ],
+      "assertion": {
+        "predicate": "INVOLVES",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "polarity": "POSITIVE",
+        "validity": {
+          "validFromBasis": "UNKNOWN",
+          "validToBasis": "UNKNOWN"
+        }
+      },
+      "edgeProperties": {
+        "role": "UNDERWRITER"
+      },
+      "asserterRef": "madrigal",
+      "rationale": "qualifiers (intent v1 has no qualifiers field): role=UNDERWRITER; roleText=sales agent"
+    }
+  ],
+  "notes": "Fixture intent for D13 fixture madrigal-financing-after-readout (fixtures stage, A7, 2026-10-08); validated against packages/contracts IngestionIntent (zod). Real captures (contentHash over RAW_BYTES of the capture artifact). Not expressible in biotech-knowledge-intent.v1 and therefore omitted (see assertions.yaml for the full set and 11-open-questions.md): a10 LEADS_TO (CONTEXT_ONLY candidate: intent v1 has no 'assertion only, project after SUPPORT adjudication' proposal kind; edge.assert would write the episode at admission) | a15 LEADS_TO (CONTEXT_ONLY candidate: intent v1 has no 'assertion only, project after SUPPORT adjudication' proposal kind; edge.assert would write the episode at admission)"
+}

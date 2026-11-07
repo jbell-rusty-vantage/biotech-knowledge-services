@@ -1,0 +1,265 @@
+# hl52-transcript-nmn-practice — assertions (fixtures stage, A8, 2026-10-08)
+# Close-out 2026-10-09 (FU-03, structural only; sources, locators and quoted values unchanged): R-43 the three RENDITION_OF rows are asserted (AssertedRecordedProperties; feed publisher org-scicomm for web page and audio, BellLabs curation agent for the YouTube join); R-30 roleTitleVerbatim -> roleText: qualifier; F-05 comment.
+# Shapes: kernel pattern (packets/K/09-reasoning.md, A1) + D9 SDL (04-schema-proposal.graphql) + interim conventions
+# of 03-retrieval-patterns.md ("Conventions used below": recommendation shape, segment:<KIND> qualifier, TRACE).
+# Locator refs (l*, y*, r*, e*) are the ids in ./locators.yaml. Node refs are fixture-local; uids are derived by the
+# executor from the intent (./intent.json). producedBy ids are FIXTURE ids (mission:ft-D9-fixtures / run:ft-D9-*),
+# not Mission Control mission or run ids. Expected verifier outputs are marked `expected:`; no verifier run was made.
+producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" }
+
+nodes:
+  - { ref: ch-hl, type: D9.Channel, name: "Huberman Lab", channelKind: SHOW, platform: RSS, feedUrl: "https://feeds.megaphone.fm/hubermanlab", evidence: [r0], identifiers: [{ scheme: YOUTUBE_CHANNEL (requested K-8), value: "@hubermanlab", evidence: e2 }] }
+  - { ref: w-52, type: D9.MediaWork, name: "The Biology of Slowing & Reversing Aging | Dr. David Sinclair", workKind: PODCAST_EPISODE, publishedAt: "2021-12-27T09:00:00Z", publishedAtPrecision: INSTANT, episodeNumber: 52, durationSeconds: 7556, canonicalUrl: "https://www.hubermanlab.com/episode/dr-david-sinclair-the-biology-of-slowing-and-reversing-aging", identity: "RSS guid 8fd04ec7-dda7-4497-a731-be008c9f2521 in ch-hl's feed", evidence: [r1, r8, r9, r10] }
+  - { ref: src-web, type: K.Source, canonicalUri: "https://www.hubermanlab.com/episode/dr-david-sinclair-the-biology-of-slowing-and-reversing-aging", sourceKind: WEB_PAGE, snapshot: "locators.yaml#hl52-web" }
+  - { ref: src-yt, type: K.Source, canonicalUri: "https://www.youtube.com/watch?v=n9IxomBusuw", sourceKind: VIDEO, snapshot: "locators.yaml#hl52-youtube" }
+  - { ref: src-audio, type: K.Source, canonicalUri: "https://traffic.megaphone.fm/SCIM1831113627.mp3", sourceKind: AUDIO, snapshot: null, note: "enclosure not downloaded; described by the feed snapshot (r3)" }
+  - { ref: src-feed, type: K.Source, canonicalUri: "https://feeds.megaphone.fm/hubermanlab", sourceKind: API, snapshot: "locators.yaml#hl-feed", note: "the feed is an evidence source, not a rendition" }
+  - { ref: p-huberman, type: D7.Person, name: "Andrew Huberman" }
+  - { ref: p-sinclair, type: D7.Person, name: "David A. Sinclair" }
+  - { ref: org-scicomm, type: D7.Organization, name: "Scicomm Media", note: "itunes:author of the item (r4); channel copyright line names Scicomm Media LLC" }
+  - { ref: org-insidetracker, type: D7.Organization, name: "InsideTracker (Segterra)" }
+  - { ref: b-roka, type: D7.Brand, name: "ROKA" }
+  - { ref: b-insidetracker, type: D7.Brand, name: "InsideTracker" }
+  - { ref: b-magicspoon, type: D7.Brand, name: "Magic Spoon" }
+  - { ref: b-ag1, type: D7.Brand, name: "AG1" }
+  - { ref: b-lmnt, type: D7.Brand, name: "LMNT" }
+  - { ref: b-wakingup, type: D7.Brand, name: "Waking Up" }
+  - { ref: b-momentous, type: D7.Brand, name: "Momentous" }
+  - { ref: cs-nmn, type: D1.ChemicalSubstance, name: "NMN (nicotinamide mononucleotide)", note: "identity resolved by D1 at ingestion; no identifier asserted here" }
+  - { ref: cs-resveratrol, type: D1.ChemicalSubstance, name: "resveratrol" }
+  - { ref: cs-nad, type: D1.ChemicalSubstance, name: "NAD+" }
+  - { ref: prod-sinclair-test, type: D6.Product, name: "biological age test (doctorsinclair.com sign-up, 2021)", note: "link to Tally Health is a RESOLUTION hypothesis, see sinclair-recommendation-disclosure-asof" }
+
+assertions:
+  # ---------------- structural (capture-shaped; no asserter, StructuralEdgeProperties) ----------------
+  - { id: s-pub, class: structural, relationship: PUBLISHES, from: ch-hl, to: w-52, evidence: [r0, r9], basis: "item guid sits in the channel's own feed", producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" } }
+  - { id: s-ren-web, class: asserted, relationship: RENDITION_OF, asserter: org-scicomm, subject: src-web, object: w-52, speechAct: STATES, basisKind: UNSTATED, edgePropertiesType: AssertedRecordedProperties, qualifiers: ["renditionBasis:RSS item <link> names the page"], evidence: [{ locator: r5, role: SUPPORTS }], validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN, note: "recorded-time only (AssertedRecordedProperties, R-43); regrouping is a supersession (R-26)" }, note: "RSS item <link> names the page", producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" } }
+  - { id: s-ren-yt, class: asserted, relationship: RENDITION_OF, asserter: "K.Agent bks-curation (BellLabs match)", subject: src-yt, object: w-52, speechAct: STATES, basisKind: CURATOR_CLASSIFICATION, edgePropertiesType: AssertedRecordedProperties, qualifiers: ["renditionBasis:same title, upload date = pubDate day, identical chapter list, same author; join method title+date+chapters", "linkBasis:BELLLABS_MATCH"], evidence: [{ locator: y5, role: SUPPORTS }, { locator: y7, role: SUPPORTS }, { locator: e1, role: SUPPORTS }], validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN, note: "recorded-time only (AssertedRecordedProperties, R-43); regrouping is a supersession (R-26)" }, note: "same title, upload date = pubDate day, identical chapter list, same author; join method title+date+chapters (a wrong join is corrected by a kernel RESOLUTION assessment and a superseding write)", producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" } }
+  - { id: s-ren-audio, class: asserted, relationship: RENDITION_OF, asserter: org-scicomm, subject: src-audio, object: w-52, speechAct: STATES, basisKind: UNSTATED, edgePropertiesType: AssertedRecordedProperties, qualifiers: ["renditionBasis:enclosure of the RSS item"], evidence: [{ locator: r3, role: SUPPORTS }, { locator: r9, role: SUPPORTS }], validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN, note: "recorded-time only (AssertedRecordedProperties, R-43); regrouping is a supersession (R-26)" }, note: "enclosure of the item", producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" } }
+  - { id: s-occ, class: structural, relationship: OCCURS_IN, from: [o1, o2, o3, o4, o5, o6], to: w-52, note: "one OCCURS_IN per occurrence; the container is the work, whichever rendition carries the locator", producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" } }
+
+  # ---------------- asserted D9 edges (AssertedEdgeProperties / AppearanceEdgeProperties) ----------------
+  - id: a-app-host
+    class: asserted
+    relationship: APPEARS_IN
+    asserter: org-scicomm
+    subject: p-huberman
+    object: w-52
+    edgeProperties: { appearanceRole: HOST }
+    evidence: [{ locator: r6, role: SUPPORTS }, { locator: e1, role: SUPPORTS }]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN, note: "recorded-time only; the time of an appearance is w-52.publishedAt" }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" }
+  - id: a-app-guest
+    class: asserted
+    relationship: APPEARS_IN
+    asserter: org-scicomm
+    subject: p-sinclair
+    object: w-52
+    edgeProperties: { appearanceRole: GUEST }
+    qualifiers: ["credited-name:Dr. David Sinclair"]
+    evidence: [{ locator: r6, role: SUPPORTS }]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" }
+  # Sponsor window 1 — web page and YouTube renditions (the original 2021 reads)
+  - id: sp-web-roka
+    class: asserted
+    relationship: CONTENT_SPONSORED_BY
+    asserter: org-scicomm
+    subject: w-52
+    object: b-roka
+    qualifiers: ["segment:SPONSOR_READ", "rendition:src-web", "rendition:src-yt"]
+    evidence: [{ locator: l6, role: SUPPORTS }, { locator: y6, role: SUPPORTS }]
+    validTime: { validFrom: "2021-12-27T09:00:00Z", validFromPrecision: INSTANT, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: OBSERVATION_ONLY, observedAt: "2026-10-08" }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" }
+  - id: sp-web-insidetracker
+    class: asserted
+    relationship: CONTENT_SPONSORED_BY
+    asserter: p-huberman
+    authorizingAssertion: o6
+    subject: w-52
+    object: b-insidetracker
+    qualifiers: ["segment:SPONSOR_READ", "rendition:src-web", "rendition:src-yt"]
+    evidence: [{ locator: l6, role: SUPPORTS }, { locator: y1, role: SUPPORTS }]
+    validTime: { validFrom: "2021-12-27T09:00:00Z", validFromPrecision: INSTANT, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: OBSERVATION_ONLY, observedAt: "2026-10-08" }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" }
+  - id: sp-web-magicspoon
+    class: asserted
+    relationship: CONTENT_SPONSORED_BY
+    asserter: org-scicomm
+    subject: w-52
+    object: b-magicspoon
+    qualifiers: ["segment:SPONSOR_READ", "rendition:src-web", "rendition:src-yt"]
+    evidence: [{ locator: l6, role: SUPPORTS }]
+    validTime: { validFrom: "2021-12-27T09:00:00Z", validFromPrecision: INSTANT, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: OBSERVATION_ONLY, observedAt: "2026-10-08" }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" }
+  # Sponsor window 2 — RSS audio re-cut (enclosure ?updated=1747836975 = 2025-05-21T14:16:15Z)
+  - id: sp-rss-ag1
+    class: asserted
+    relationship: CONTENT_SPONSORED_BY
+    asserter: org-scicomm
+    subject: w-52
+    object: b-ag1
+    qualifiers: ["segment:SPONSOR_READ", "rendition:src-audio"]
+    evidence: [{ locator: r2, role: SUPPORTS }, { locator: r3, role: CONTEXT }]
+    validTime: { validFrom: "2025-05-21T14:16:15Z", validFromPrecision: INSTANT, validFromBasis: INFERRED, validTo: null, validToBasis: OBSERVATION_ONLY, observedAt: "2026-10-08", note: "validFrom = enclosure updated stamp; the re-cut may be older than the stamp; what the RSS audio carried before is not captured" }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" }
+  - id: sp-rss-lmnt
+    class: asserted
+    relationship: CONTENT_SPONSORED_BY
+    asserter: org-scicomm
+    subject: w-52
+    object: b-lmnt
+    qualifiers: ["segment:SPONSOR_READ", "rendition:src-audio"]
+    evidence: [{ locator: r2, role: SUPPORTS }, { locator: r3, role: CONTEXT }]
+    validTime: { validFrom: "2025-05-21T14:16:15Z", validFromPrecision: INSTANT, validFromBasis: INFERRED, validTo: null, validToBasis: OBSERVATION_ONLY, observedAt: "2026-10-08" }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" }
+  - id: sp-rss-wakingup
+    class: asserted
+    relationship: CONTENT_SPONSORED_BY
+    asserter: org-scicomm
+    subject: w-52
+    object: b-wakingup
+    qualifiers: ["segment:SPONSOR_READ", "rendition:src-audio"]
+    evidence: [{ locator: r2, role: SUPPORTS }, { locator: r3, role: CONTEXT }]
+    validTime: { validFrom: "2025-05-21T14:16:15Z", validFromPrecision: INSTANT, validFromBasis: INFERRED, validTo: null, validToBasis: OBSERVATION_ONLY, observedAt: "2026-10-08" }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" }
+  - id: sp-rss-momentous
+    class: asserted
+    relationship: CONTENT_SPONSORED_BY
+    asserter: org-scicomm
+    subject: w-52
+    object: b-momentous
+    qualifiers: ["segment:SHOW_NOTES", "rendition:src-audio"]
+    evidence: [{ locator: r7, role: SUPPORTS }]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY, observedAt: "2026-10-08", note: "listed under 'Thank you to our sponsors' but not in the 00:03:45 sponsor chapter" }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" }
+
+  # ---------------- kernel claim occurrences (Assertion {assertionKind: CLAIM}, no extra label; F-05) ----------------
+  - id: o1
+    class: claim-occurrence
+    occurrenceOf: "claim: David Sinclair takes 1 g of NMN daily"
+    asserter: p-sinclair
+    speechAct: REPORTS_PRACTICE
+    basisKind: PERSONAL_EXPERIENCE   # partly third-party ("my father"): K-7 requests THIRD_PARTY_ANECDOTE
+    predicate: TAKES
+    subject: p-sinclair
+    object: cs-nmn
+    valueNumber: 1
+    unitCode: g
+    qualifiers: ["frequency:daily", "co-practitioner:father (aged 82, as stated)", "segment:EDITORIAL", "population:SPEAKER_ONLY"]
+    container: w-52            # OCCURS_IN
+    evidence:
+      - { locator: l1, role: SUPPORTS, expectedSelectedContentDigest: "sha256:96fe6eb5c9177e4e2c18035be1bd8bfce8f7325882994ff8274de98cf4516e56" }
+      - { locator: l2, role: QUALIFIES }
+      - { locator: y2, role: SUPPORTS, note: "re-anchored on the YouTube rendition; preceding wording differs ('my 82-year-old father,')" }
+      - { locator: l9, role: CONTEXT }
+    validTime: { validFrom: "2021-12-27T09:00:00Z", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN, statedTense: PRESENT }
+    status: { initial: EXTRACTED, expected: ACCEPTED, via: adj-o1 }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" }
+  - id: o2
+    class: claim-occurrence
+    occurrenceOf: "claim: David Sinclair's own regimen is not generalizable (individual variation)"
+    asserter: p-sinclair
+    speechAct: CAUTIONS
+    basisKind: EXPERT_OPINION
+    predicate: QUALIFIES          # interim (kernel request K-2: QUALIFIED_BY Assertion -> Assertion)
+    subject: p-sinclair
+    derivedFrom: [o1]             # kernel DERIVED_FROM, interim link qualifier -> qualified occurrence
+    qualifiers: ["qualification-kind:INDIVIDUAL_VARIATION", "individual-variation:microbiome", "individual-variation:age", "individual-variation:sex", "segment:EDITORIAL"]
+    container: w-52
+    evidence: [{ locator: l2, role: SUPPORTS, expectedSelectedContentDigest: "sha256:3b3b6b061f0b29b0d46c261494eddb3f9d52b6aaeda77d013713c7d09be86656" }]
+    validTime: { validFrom: "2021-12-27T09:00:00Z", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" }
+  - id: o3
+    class: claim-occurrence
+    occurrenceOf: "claim: David Sinclair was an early InsideTracker board member and is its scientific lead"
+    asserter: p-sinclair
+    speechAct: STATES
+    basisKind: PERSONAL_EXPERIENCE
+    predicate: HOLDS_ROLE
+    subject: p-sinclair
+    object: org-insidetracker
+    qualifiers: ["role:board member (past, as stated)", "role:scientific lead (current at statement)", "segment:EDITORIAL", "disclosure:IN_CONTAINER"]
+    container: w-52
+    evidence: [{ locator: l3, role: SUPPORTS }]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    authorizes: [d7-it-board, d7-it-lead]
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" }
+  - id: o4
+    class: claim-occurrence
+    occurrenceOf: "claim: get blood biomarker tests (InsideTracker is one provider) at least twice a year"
+    asserter: p-sinclair
+    speechAct: RECOMMENDS
+    basisKind: EXPERT_OPINION
+    predicate: RECOMMENDS_USE      # no D5 target named -> no object (03 recommendation convention)
+    subject: org-insidetracker
+    qualifiers: ["frequency:a couple of times a year at a minimum", "condition:if you can afford these tests", "population:UNSPECIFIED", "segment:EDITORIAL"]
+    container: w-52
+    evidence: [{ locator: l4, role: SUPPORTS }]
+    validTime: { validFrom: "2021-12-27T09:00:00Z", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN }
+    reachableInterest: [o3, "d7-it-* (sinclair-recommendation-disclosure-asof)", sp-web-insidetracker]
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" }
+  - id: o5
+    class: claim-occurrence
+    occurrenceOf: "claim: sign up at doctorsinclair.com for the biological age test"
+    asserter: p-sinclair
+    speechAct: RECOMMENDS
+    basisKind: EXPERT_OPINION
+    predicate: RECOMMENDS_USE
+    subject: prod-sinclair-test
+    qualifiers: ["call-to-action:sign-up", "population:UNSPECIFIED", "segment:EDITORIAL"]
+    container: w-52
+    evidence: [{ locator: l5, role: SUPPORTS }]
+    validTime: { validFrom: "2021-12-27T09:00:00Z", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN }
+    reachableInterest: "see sinclair-recommendation-disclosure-asof (Tally Health F,I,E; RESOLUTION hypothesis)"
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" }
+  - id: o6
+    class: claim-occurrence
+    occurrenceOf: "claim: InsideTracker sponsors Huberman Lab episode 52"
+    asserter: p-huberman
+    asserterBasis: "INFERRED: caption track has no speaker labels; the read sits in the host intro"
+    speechAct: STATES
+    basisKind: UNSTATED
+    predicate: CONTENT_SPONSORED_BY
+    subject: w-52
+    object: b-insidetracker
+    qualifiers: ["segment:SPONSOR_READ", "rendition:src-yt"]
+    container: w-52
+    evidence: [{ locator: y1, role: SUPPORTS }]
+    validTime: { validFrom: "2021-12-27T09:00:00Z", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: OBSERVATION_ONLY }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" }
+
+  # ---------------- D7 episodes authorized by o3 (D7 HOLDS_ROLE, RoleEdgeProperties) ----------------
+  - { id: d7-it-board, class: asserted, relationship: "D7 HOLDS_ROLE", asserter: p-sinclair, subject: p-sinclair, object: org-insidetracker, edgeProperties: { roleKind: DIRECTOR }, qualifiers: ["roleText:'board member'"], evidence: [{ locator: l3, role: SUPPORTS }], validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN, note: "past at statement; the self-disclosure page dates it B (2011-2017), see the as-of fixture" }, authorizingAssertion: o3, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" } }
+  - { id: d7-it-lead, class: asserted, relationship: "D7 HOLDS_ROLE", asserter: p-sinclair, subject: p-sinclair, object: org-insidetracker, edgeProperties: { roleKind: OTHER }, qualifiers: ["roleText:'scientific lead guy'"], evidence: [{ locator: l3, role: SUPPORTS }], validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN, note: "'still' = valid at 2021-12-27" }, authorizingAssertion: o3, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" } }
+
+  # ---------------- expected verifier output (kernel Adjudication, CAPTURE_FIDELITY) ----------------
+  - id: adj-o1
+    class: adjudication
+    adjudicationKind: CAPTURE_FIDELITY
+    about: o1
+    expected: { verdict: DIRECTLY_SUPPORTED, policyOutcome: PASS, resultingStatus: ACCEPTED }
+    reselection: "TEXT_QUOTE l1 (exact + 32-char prefix/suffix) re-selected in the fixtures-stage re-fetch sha256:b9666e66b2495268577b5870996737df7f36da5f375fe34662d0057e7629088a at [71491, 71547) (match EXACT_WITH_CONTEXT; offsets moved by -145 because page chrome changed); selected content digest equals l1.quoteHash"
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" }
+
+  # ---------------- derived retrieval structure (D9 Chunk; never evidence) ----------------
+  - id: c52
+    class: derived
+    node: D9.Chunk
+    chunk: "locators.yaml#chunk-52"
+    relationships:
+      - { relationship: CHUNK_OF, to: "snapshot hl52-web (sha256:3158acee44e12235c743aabb3750c7b0d0a807f560bb16477bef76529b0ae973)", class: structural }
+      - { relationship: COVERS_LOCATOR, to: [l1, l2, l9], derivationRule: "span-overlap/v1" }
+      - { relationship: MENTIONS, to: [cs-nmn, cs-resveratrol, cs-nad], derivationRule: "entity-link/fixture-v0 (exact-token lexicon)" }
+    textReviewNote: "This transcript is currently under human review and may contain errors."
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl52-transcript-nmn-practice" }
+
+# Directive 3.8 effectiveness path (Q-D9-20), as data:
+trace38:
+  question: "What does David Sinclair say he takes for NAD, and is it a recommendation?"
+  step1_chunks: "MATCH (c:Chunk)-[:MENTIONS]->(:ChemicalSubstance {uid: $nmn})  (or chunk_embedding vector search / chunk_text fulltext 'NMN')  -> c52"
+  step2_locators: "c52 -[:COVERS_LOCATOR]-> l1, l2, l9"
+  step3_assertions: "l1 <-[:HAS_EVIDENCE {role: SUPPORTS}]- o1 (status ACCEPTED); l2 <-[:HAS_EVIDENCE {role: QUALIFIES}]- o1 and SUPPORTS o2; l9 CONTEXT only"
+  step4_locator: "l1: TEXT_QUOTE 'My 82 -year-old father, we take a gram of NMN every day.' [71636, 71692), speaker label 'David Sinclair:'"
+  step5_snapshot: "SourceSnapshot sha256:3158acee44e12235c743aabb3750c7b0d0a807f560bb16477bef76529b0ae973 (firecrawl markdown, 150,870 bytes) of src-web"
+  verifier: "re-selects l1 from selectorJson in the current capture (adj-o1) — the same locator the path ended at; the chunk is never cited"

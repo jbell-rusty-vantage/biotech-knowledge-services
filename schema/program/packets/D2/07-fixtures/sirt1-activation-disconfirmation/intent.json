@@ -1,0 +1,639 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v1",
+  "intentId": "ft-d2-sirt1-activation-disconfirmation-2026-10-08",
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "a3-d2-fixtures",
+      "model": "claude-opus-5-5"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run:ft-D2-sirt1-activation-disconfirmation",
+      "missionId": "mission:ft-D2-fixtures"
+    },
+    "activityKind": "EXTRACTION"
+  },
+  "onStale": "fail",
+  "sources": [
+    {
+      "ref": "s-chembl-search-srt1720",
+      "source": {
+        "canonicalUri": "https://www.ebi.ac.uk/chembl/api/data/molecule/search.json?q=SRT1720&limit=5",
+        "title": "ChEMBL molecule search 'SRT1720' (adversarial review 2026-10-08)",
+        "sourceKind": "API"
+      },
+      "snapshot": {
+        "observedAt": "2026-10-09T01:54:21Z",
+        "retrievedAt": "2026-10-09T01:54:21Z",
+        "contentHash": "sha256:d572da700c1b074e7ab373a2c9b2039708d6305fdbfa58e85f06aa768968c208",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "mimeType": "application/json",
+          "captureTool": "tool:chembl-rest (curl)"
+        }
+      },
+      "locators": [
+        {
+          "ref": "l-s-13",
+          "selectorKind": "JSON_POINTER",
+          "quote": "CHEMBL257991",
+          "properties": {
+            "jsonPointer": "/molecules/0/molecule_chembl_id",
+            "valueDigest": "sha256:d30d24bba182b3f80d027a7b3c22010d75f8364796df20573753ce09a2d123d7",
+            "selectorDigest": "sha256:5292400543cc26ea6cb59ccff7075acc7fddfe0dedfbf0df219473899c3a842c"
+          }
+        }
+      ]
+    },
+    {
+      "ref": "s-genage-sirt1",
+      "source": {
+        "canonicalUri": "https://genomics.senescence.info/genes/entry.php?hgnc=SIRT1",
+        "title": "GenAge (HAGR) human gene entry SIRT1, Build 21",
+        "sourceKind": "API"
+      },
+      "snapshot": {
+        "observedAt": "2026-10-08T21:42:08Z",
+        "retrievedAt": "2026-10-08T21:42:08Z",
+        "contentHash": "sha256:25258525786d32b5fa9fd2a52550710ce4c97d9581b9267a43d15b8c9a248e09",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "mimeType": "text/html",
+          "captureTool": "tool:hagr-genage (curl)",
+          "derivedTextHash": "sha256:054ecc70761b48d536d0f660672cd3a8ecf32c0bf863a68dc72b5ab7756dacf0",
+          "derivedTextRule": "html2txt/v1"
+        }
+      },
+      "locators": [
+        {
+          "ref": "l-s-06",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "Increasing the levels of SIRT1 homologues in fruit flies [1284] and roundworms [199] extends lifespan, although these findings have been questioned by other studies [3321].",
+          "quotePrefix": "d to cellular senescence [200]. ",
+          "quoteSuffix": "\nSIRT1-null mice are born smalle",
+          "startOffset": 3402,
+          "endOffset": 3574,
+          "properties": {
+            "offsetBasis": "html2txt/v1",
+            "normalization": "none",
+            "quoteHash": "sha256:0aca112d79d0d028c663ec834f6a0b56e6e3c5147632a9b97bf36579e1f3566c",
+            "selectorDigest": "sha256:1de8fd1ed0023b6922c584d7bfd58b8bb3aab4f8033b4d1f9750a4d9557e920d"
+          }
+        },
+        {
+          "ref": "l-s-07",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "Overall, whole-body moderate overexpression of Sirt1 improves healthy ageing but does not increase mice lifespan [3266].",
+          "quotePrefix": " induced cardiomyopathy [1930]. ",
+          "quoteSuffix": " Brain-specific overexpression i",
+          "startOffset": 4508,
+          "endOffset": 4628,
+          "properties": {
+            "offsetBasis": "html2txt/v1",
+            "normalization": "none",
+            "quoteHash": "sha256:dc85d2694908983806814c74dc04c78ffdc5f350247e48d3fbe6ea9b4d9d2304",
+            "selectorDigest": "sha256:547f1313612c1e494d7e057b969af4d80182c0d81aca1f88eff7ed71091a0102"
+          }
+        },
+        {
+          "ref": "l-s-08",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "Build 21 (28/08/2023): 307 genes",
+          "quotePrefix": "rch all databases:\nQuick Search\n",
+          "quoteSuffix": "\nReturn to GenAge main page\nGenA",
+          "startOffset": 2435,
+          "endOffset": 2467,
+          "properties": {
+            "offsetBasis": "html2txt/v1",
+            "normalization": "none",
+            "quoteHash": "sha256:a90f03787c22230c6bf78dc4de5744d62d35aecc555c2a6d18c226a8ec83c453",
+            "selectorDigest": "sha256:784c8713f5e3167fcc134cf8292a95ccf9584ca4477bbe7cc44952b1add54c52"
+          }
+        }
+      ]
+    },
+    {
+      "ref": "s-kegg-hsa04211",
+      "source": {
+        "canonicalUri": "https://rest.kegg.jp/get/hsa04211",
+        "title": "KEGG PATHWAY hsa04211 Longevity regulating pathway - Homo sapiens (flat file)",
+        "sourceKind": "API"
+      },
+      "snapshot": {
+        "observedAt": "2026-10-08T21:42:08Z",
+        "retrievedAt": "2026-10-08T21:42:08Z",
+        "contentHash": "sha256:29c83f0fe919a156cbac6685c418c5154730644d6d223a06cc616a60b7f39778",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "mimeType": "text/plain",
+          "captureTool": "tool:kegg-rest (curl)"
+        }
+      },
+      "locators": [
+        {
+          "ref": "l-s-05",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "there is evidence supporting that life span extension can be achieved with pharmacologic agents that mimic the effects of caloric restriction, such as rapamycin, via mTOR signaling blockade, resveratrol, by activating SIRT1 activity, and metformin, which seems to be a robust stimulator of AMPK activity.",
+          "quotePrefix": "d cellular growth. Furthermore, ",
+          "quoteSuffix": " As an aging suppressor, Klotho ",
+          "startOffset": 902,
+          "endOffset": 1206,
+          "properties": {
+            "offsetBasis": "raw-utf8 (code points)",
+            "normalization": "none",
+            "quoteHash": "sha256:02dc39b9cfdc3624daa6a8930bcfb9f4bd1f08fdc983534347de478928b27f04",
+            "selectorDigest": "sha256:ce68e7b30067736bdc410f96a960beceaadd16928b01a286a35bc3e585e9474f"
+          }
+        }
+      ]
+    },
+    {
+      "ref": "s-pubchem-srt1720",
+      "source": {
+        "canonicalUri": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/SRT1720/property/IUPACName,CanonicalSMILES,MolecularFormula/JSON",
+        "title": "PubChem PUG REST name lookup 'SRT1720' (adversarial review 2026-10-08)",
+        "sourceKind": "API"
+      },
+      "snapshot": {
+        "observedAt": "2026-10-09T01:54:21Z",
+        "retrievedAt": "2026-10-09T01:54:21Z",
+        "contentHash": "sha256:b98e6de526d32f055420376d4b91c0b8232df0f960b4efb171584f24b45f956c",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "mimeType": "application/json",
+          "captureTool": "tool:pubchem-rest (curl)"
+        }
+      },
+      "locators": [
+        {
+          "ref": "l-s-14",
+          "selectorKind": "JSON_POINTER",
+          "properties": {
+            "jsonPointer": "/PropertyTable/Properties/0/CID",
+            "valueDigest": "sha256:226f2c652b71359050ae6169f8b3a0d4bacf8bade8e669b91b1cbe1a3a80c770",
+            "selectorDigest": "sha256:96baa263ef228275dd3458e88dadd325a1d14030bd51422bb24e1183aaf22066"
+          }
+        }
+      ]
+    },
+    {
+      "ref": "s-pubmed-12939617",
+      "source": {
+        "canonicalUri": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=12939617&retmode=xml",
+        "title": "Howitz et al. 2003 Nature 425:191 Small molecule activators of sirtuins extend Saccharomyces cerevisiae lifespan (PMID 12939617, DOI 10.1038/nature01960) PubMed record",
+        "sourceKind": "API"
+      },
+      "snapshot": {
+        "observedAt": "2026-10-08T21:42:08Z",
+        "retrievedAt": "2026-10-08T21:42:08Z",
+        "contentHash": "sha256:eefeb54674e35dac24d9259fe983e4d00762ddc130e01000f92a1d1f84b82ee5",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "mimeType": "application/xml",
+          "captureTool": "tool:pubmed-eutils (curl)",
+          "derivedTextHash": "sha256:5f77fec9694fdce906ef4c71772ed26e112287418f2abbbe6c9dd44499ef4f73",
+          "derivedTextRule": "jats-xml2txt/v1"
+        }
+      },
+      "locators": [
+        {
+          "ref": "l-s-09",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "We show that the potent activator resveratrol, a polyphenol found in red wine, lowers the Michaelis constant of SIRT1 for both the acetylated substrate and NAD(+), and increases cell survival by stimulating SIRT1-dependent deacetylation of p53.",
+          "quotePrefix": "lecules that activate sirtuins. ",
+          "quoteSuffix": " In yeast, resveratrol mimics ca",
+          "startOffset": 757,
+          "endOffset": 1001,
+          "properties": {
+            "offsetBasis": "jats-xml2txt/v1",
+            "normalization": "none",
+            "quoteHash": "sha256:05298fba66e67bb3fc92195dcc9faff8147f4c69fa08e3583c20781d87992e30",
+            "selectorDigest": "sha256:7a06c655020c03d0c1cb3bcf1b45de584646c8d68827cb12087418971745207e"
+          }
+        },
+        {
+          "ref": "l-s-10",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "BIOMOL Research Laboratories, Inc., 5120 Butler Pike, Plymouth Meeting, Pennsylvania 19462, USA.",
+          "quotePrefix": "tuin activators.HowitzKonrad TKT",
+          "quoteSuffix": "BittermanKevin JKJCohenHaim YHYL",
+          "startOffset": 1285,
+          "endOffset": 1381,
+          "properties": {
+            "offsetBasis": "jats-xml2txt/v1",
+            "normalization": "none",
+            "quoteHash": "sha256:e3bc8490082d8a1a2dfc5c4021167f217ffa554c4cf0ea76b7928acbdef45ad6",
+            "selectorDigest": "sha256:cc46f78ca0cd4cfbfaa8be65956c20a57fb2e42fe0a847dd46821926cc2ee790"
+          }
+        }
+      ]
+    },
+    {
+      "ref": "s-pubmed-20061378",
+      "source": {
+        "canonicalUri": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=20061378&retmode=xml",
+        "title": "Pacholec et al. 2010 J Biol Chem 285(11):8340 (PMID 20061378, DOI 10.1074/jbc.M109.088682) PubMed record",
+        "sourceKind": "API"
+      },
+      "snapshot": {
+        "observedAt": "2026-10-08T21:42:08Z",
+        "retrievedAt": "2026-10-08T21:42:08Z",
+        "contentHash": "sha256:ef3a2a1ca835bfbcbdac6e1805d5488ca7757cf1d5f5d8e75f40211f7834a381",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "mimeType": "application/xml",
+          "captureTool": "tool:pubmed-eutils (curl)",
+          "derivedTextHash": "sha256:48ec71f494687584e60281a066e93e098f49bf89df43bfc25ea66f36bece390f",
+          "derivedTextRule": "jats-xml2txt/v1"
+        }
+      },
+      "locators": [
+        {
+          "ref": "l-s-01",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "SRT1720, its structurally related compounds SRT2183 and SRT1460, and resveratrol do not lead to apparent activation of SIRT1 with native peptide or full-length protein substrates, whereas they do activate SIRT1 with peptide substrate containing a covalently attached fluorophore.",
+          "quotePrefix": "p53 and acetyl-CoA synthetase1. ",
+          "quoteSuffix": " Employing NMR, surface plasmon ",
+          "startOffset": 1184,
+          "endOffset": 1463,
+          "properties": {
+            "offsetBasis": "jats-xml2txt/v1",
+            "normalization": "none",
+            "quoteHash": "sha256:a2cd267472a3b189c3725ffdd6b89ae36eac8978cc9dcce16ee9b43e3405f61c",
+            "selectorDigest": "sha256:8edc49dbc1dd4d8f9058825ffcebb56651a0142dc60343d35e2179596a656505"
+          }
+        },
+        {
+          "ref": "l-s-02",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "Furthermore, we demonstrate that SRT1720 neither lowers plasma glucose nor improves mitochondrial capacity in mice fed a high fat diet.",
+          "quotePrefix": "-containing peptide substrates. ",
+          "quoteSuffix": " SRT1720, SRT2183, SRT1460, and ",
+          "startOffset": 1652,
+          "endOffset": 1787,
+          "properties": {
+            "offsetBasis": "jats-xml2txt/v1",
+            "normalization": "none",
+            "quoteHash": "sha256:95c959fd6427dabf9caf89a330c32d084d322f66f070275f725269fd47190a93",
+            "selectorDigest": "sha256:aac56bea27b6412e35ba40fed41a046c39e7650b4175cf71f5033bc156ee8d32"
+          }
+        },
+        {
+          "ref": "l-s-03",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "Taken together, we conclude that SRT1720, SRT2183, SRT1460, and resveratrol are not direct activators of SIRT1.",
+          "quotePrefix": "transporters, and ion channels. ",
+          "quoteSuffix": "PacholecMichelleMDepartment of C",
+          "startOffset": 1930,
+          "endOffset": 2041,
+          "properties": {
+            "offsetBasis": "jats-xml2txt/v1",
+            "normalization": "none",
+            "quoteHash": "sha256:3aa7991dea69798075265547ed371132f0ca9d8ae72691f14212c32a874402d4",
+            "selectorDigest": "sha256:b9dfd808b149bc2493c46da98c67fe4da0a70de7b7ebb74e63e5011f702db449"
+          }
+        },
+        {
+          "ref": "l-s-04",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "Department of Cardiovascular, Pfizer Global Research and Development, Groton, Connecticut 06340, USA.",
+          "quotePrefix": "ators of SIRT1.PacholecMichelleM",
+          "quoteSuffix": "BleasdaleJohn EJEChrunykBorisBCu",
+          "startOffset": 2058,
+          "endOffset": 2159,
+          "properties": {
+            "offsetBasis": "jats-xml2txt/v1",
+            "normalization": "none",
+            "quoteHash": "sha256:66c1f194657b13dad087fda3219baa0952cee4ab9e5ebbacad8cbdf8e28bd337",
+            "selectorDigest": "sha256:0f437d8016441ef1d2cf0c59a7499ae33b3269e892b5a0cb567b950c161f3e5f"
+          }
+        }
+      ]
+    },
+    {
+      "ref": "s-uniprot-q96eb6",
+      "source": {
+        "canonicalUri": "https://rest.uniprot.org/uniprotkb/Q96EB6.json",
+        "title": "UniProtKB Q96EB6 SIRT1_HUMAN (entry version 226)",
+        "sourceKind": "API"
+      },
+      "snapshot": {
+        "observedAt": "2026-10-08T21:42:08Z",
+        "retrievedAt": "2026-10-08T21:42:08Z",
+        "contentHash": "sha256:111c957ca5753874371e2c72467b5035c323aa13d6faf5c1d03057dea9445834",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "mimeType": "application/json",
+          "captureTool": "tool:uniprot-rest (curl)"
+        }
+      },
+      "locators": [
+        {
+          "ref": "l-s-11",
+          "selectorKind": "JSON_POINTER",
+          "properties": {
+            "jsonPointer": "/uniProtKBCrossReferences/242",
+            "valueDigest": "sha256:608552b30a5c6f13b69d4b1ed2ab0448a0c8f6c5c189d1d88f5134451e094248",
+            "selectorDigest": "sha256:47b798306c617d06f03aee74b57d3e144e2a47dac8c1edf7ccc086b035875d0f"
+          }
+        },
+        {
+          "ref": "l-s-12",
+          "selectorKind": "JSON_POINTER",
+          "quote": "Q96EB6",
+          "properties": {
+            "jsonPointer": "/primaryAccession",
+            "valueDigest": "sha256:6166b45edb5881f9a93a8f966192cb78be92c44dddd7e6155e48a1999409125f",
+            "selectorDigest": "sha256:dc39e3a3446c9e3bf544a6d1c696110e706123cb6c3d40f1e98e583f5e907bb8"
+          }
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "ctx-howitz-resv",
+      "mode": "new",
+      "nodeType": "MechanismEvidenceContext",
+      "name": "resveratrol; SIRT1 with the acetylated substrate and NAD(+) / CELL_FREE",
+      "uidSegment": "fx-d2-howitz2003-resveratrol-sirt1",
+      "properties": {
+        "groupLabel": "resveratrol; SIRT1 with the acetylated substrate and NAD(+)",
+        "setting": "IN_VITRO_CELL_FREE",
+        "organism": "NOT_APPLICABLE",
+        "compartmentKind": "CELL_FREE",
+        "geneticManipulation": "NONE",
+        "assayText": "SIRT1 kinetics (Michaelis constant); substrate type not named in the abstract"
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "ctx-pacholec-resv-fluor",
+      "mode": "new",
+      "nodeType": "MechanismEvidenceContext",
+      "name": "resveratrol; peptide substrate containing a covalently attached fluorophore / CELL_FREE",
+      "uidSegment": "fx-d2-pacholec2010-resveratrol-fluorophore-substrate",
+      "properties": {
+        "groupLabel": "resveratrol; peptide substrate containing a covalently attached fluorophore",
+        "setting": "IN_VITRO_CELL_FREE",
+        "organism": "NOT_APPLICABLE",
+        "compartmentKind": "CELL_FREE",
+        "geneticManipulation": "NONE",
+        "assayText": "SIRT1 deacetylation with a fluorophore-tagged peptide substrate"
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "ctx-pacholec-resv-native",
+      "mode": "new",
+      "nodeType": "MechanismEvidenceContext",
+      "name": "resveratrol; native peptide or full-length protein substrates / CELL_FREE",
+      "uidSegment": "fx-d2-pacholec2010-resveratrol-native-substrate",
+      "properties": {
+        "groupLabel": "resveratrol; native peptide or full-length protein substrates",
+        "setting": "IN_VITRO_CELL_FREE",
+        "organism": "NOT_APPLICABLE",
+        "compartmentKind": "CELL_FREE",
+        "geneticManipulation": "NONE",
+        "assayText": "SIRT1 deacetylation with native peptide or full-length protein substrates (abstract; concentrations not in the PubMed record)"
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "ctx-pacholec-srt1720-hfd",
+      "mode": "new",
+      "nodeType": "MechanismEvidenceContext",
+      "name": "SRT1720; mice fed a high fat diet / NOT_REPORTED",
+      "uidSegment": "fx-d2-pacholec2010-srt1720-hfd-mice",
+      "properties": {
+        "groupLabel": "SRT1720; mice fed a high fat diet",
+        "setting": "IN_VIVO_MAMMAL",
+        "organism": "MOUSE",
+        "ncbiTaxonId": "10090",
+        "compartmentKind": "NOT_REPORTED",
+        "geneticManipulation": "NONE",
+        "route": "NOT_REPORTED",
+        "assayText": "mitochondrial capacity (abstract wording; tissue and dose not in the PubMed record)"
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "m-mito-respiration",
+      "mode": "new",
+      "nodeType": "Mechanism",
+      "name": "mitochondrial respiration",
+      "uidSegment": "fx-d2-mitochondrial-respiration",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "m-protein-deacetylation",
+      "mode": "new",
+      "nodeType": "Mechanism",
+      "name": "protein deacetylation",
+      "uidSegment": "fx-d2-go-0006476",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "me-sirt1",
+      "mode": "new",
+      "nodeType": "MolecularEntity",
+      "name": "NAD-dependent protein deacetylase sirtuin-1",
+      "uidSegment": "fx-d2-sirt1",
+      "properties": {
+        "entityKind": "PROTEIN",
+        "geneSymbol": "SIRT1",
+        "organism": "HUMAN",
+        "ncbiTaxonId": "9606"
+      },
+      "identifiers": [
+        {
+          "scheme": "UNIPROT",
+          "issuer": "UniProt",
+          "value": "Q96EB6"
+        },
+        {
+          "scheme": "HGNC",
+          "issuer": "HGNC",
+          "value": "HGNC:14929"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "o-lifespan",
+      "mode": "new",
+      "nodeType": "Outcome",
+      "name": "lifespan",
+      "uidSegment": "fx-d2-lifespan",
+      "properties": {
+        "key": "bellabs:outcome:lifespan",
+        "outcomeKind": "SURVIVAL"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "org-uniprot",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "UniProt Consortium (UniProtKB)",
+      "uidSegment": "fx-d2-uniprot",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "resveratrol",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "resveratrol",
+      "uidSegment": "fx-d2-resveratrol",
+      "properties": {},
+      "identifiers": [
+        {
+          "scheme": "CHEMBL",
+          "issuer": "EMBL-EBI ChEMBL",
+          "value": "CHEMBL165"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "srt1720",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "SRT1720",
+      "uidSegment": "fx-d2-srt1720",
+      "properties": {},
+      "identifiers": [
+        {
+          "scheme": "CHEMBL",
+          "issuer": "EMBL-EBI ChEMBL",
+          "value": "CHEMBL257991"
+        },
+        {
+          "scheme": "PUBCHEM_CID",
+          "issuer": "NCBI PubChem",
+          "value": "25232708"
+        }
+      ],
+      "onMatch": "use_existing"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "p-00-exposed_to",
+      "kind": "edge.structural",
+      "relationshipType": "EXPOSED_TO",
+      "fromRef": "ctx-pacholec-resv-native",
+      "toRef": "resveratrol",
+      "properties": {
+        "exposureRole": "TESTED",
+        "orderIndex": 0
+      },
+      "evidence": [
+        "l-s-01"
+      ]
+    },
+    {
+      "proposalId": "p-01-exposed_to",
+      "kind": "edge.structural",
+      "relationshipType": "EXPOSED_TO",
+      "fromRef": "ctx-pacholec-resv-fluor",
+      "toRef": "resveratrol",
+      "properties": {
+        "exposureRole": "TESTED",
+        "orderIndex": 0
+      },
+      "evidence": [
+        "l-s-01"
+      ]
+    },
+    {
+      "proposalId": "p-02-exposed_to",
+      "kind": "edge.structural",
+      "relationshipType": "EXPOSED_TO",
+      "fromRef": "ctx-pacholec-srt1720-hfd",
+      "toRef": "srt1720",
+      "properties": {
+        "exposureRole": "TESTED",
+        "orderIndex": 0
+      },
+      "evidence": [
+        "l-s-02"
+      ]
+    },
+    {
+      "proposalId": "p-03-exposed_to",
+      "kind": "edge.structural",
+      "relationshipType": "EXPOSED_TO",
+      "fromRef": "ctx-howitz-resv",
+      "toRef": "resveratrol",
+      "properties": {
+        "exposureRole": "TESTED",
+        "orderIndex": 0
+      },
+      "evidence": [
+        "l-s-09"
+      ]
+    },
+    {
+      "proposalId": "p-ae-00-participates_in",
+      "kind": "edge.assert",
+      "relationshipType": "PARTICIPATES_IN",
+      "fromRef": "me-sirt1",
+      "toRef": "m-protein-deacetylation",
+      "asserterRef": "org-uniprot",
+      "evidence": [
+        "l-s-11"
+      ],
+      "edgeProperties": {
+        "referenceScheme": "GO",
+        "referenceRelease": "UniProtKB Q96EB6 entry version 226 (GO annotation IDA, ECO:0000314)",
+        "participantRole": "CATALYST"
+      },
+      "assertion": {
+        "polarity": "POSITIVE",
+        "basisKind": "DIRECT_MEASUREMENT",
+        "speechAct": "STATES",
+        "validity": {},
+        "uidSegment": "fx-d2-s-ref-01"
+      }
+    },
+    {
+      "proposalId": "p-node-m-mito-respiration",
+      "kind": "node.upsert",
+      "subjectRef": "m-mito-respiration",
+      "properties": {},
+      "evidence": [
+        "l-s-02"
+      ]
+    },
+    {
+      "proposalId": "p-node-o-lifespan",
+      "kind": "node.upsert",
+      "subjectRef": "o-lifespan",
+      "properties": {},
+      "evidence": [
+        "l-s-06"
+      ]
+    }
+  ],
+  "notes": "Contract gaps (intent v1, 2026-10-08): (G1) no proposal kind writes a predicate-only Assertion with an object node (subject-predicate-object, no typed edge); edge.assert would create a typed edge named after the predicate, which D2 registers as predicate-only. (G2) an Assertion created by a proposal cannot be the endpoint of another proposal, so OBSERVED_IN_CONTEXT (Assertion -> MechanismEvidenceContext) cannot be written in the same intent. (G3) no kernel Assessment / Adjudication proposals. (G4) D2 node types and properties are not in the pinned schema yet, so the planner would reject the node types until the merged schema is pinned. Not expressed here: A-s-01 resveratrol NO_CHANGE_IN me-sirt1 (context ctx-pacholec-resv-native); A-s-02 resveratrol INCREASES_ACTIVITY_OF me-sirt1 (context ctx-pacholec-resv-fluor); A-s-03 srt1720 NO_CHANGE_IN m-mito-respiration (context ctx-pacholec-srt1720-hfd); A-s-04 resveratrol INCREASES_ACTIVITY_OF me-sirt1 (context ctx-howitz-resv); A-s-05 resveratrol INCREASES_ACTIVITY_OF me-sirt1; A-s-06a me-sirt1 INCREASES_LEVEL_OF o-lifespan (context ctx-genage-fly); A-s-06b me-sirt1 INCREASES_LEVEL_OF o-lifespan (context ctx-genage-worm); A-s-07 me-sirt1 NO_CHANGE_IN o-lifespan (context ctx-genage-mouse)"
+}

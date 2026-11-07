@@ -1,0 +1,49 @@
+"""
+Purpose: an editorial container that publishes works over time — a podcast show, a video channel, a newsletter, a
+site, a forum, or an account/handle on a platform (named or pseudonymous). It is what PUBLISHES works, where "the
+channel's" financial interest (CQ-CL-05) attaches through its operators (predicate-only OPERATED_BY Assertions, subject
+Channel, object D7 Person or Organization, valid time on the Assertion), what a pseudonymous asserter is (channelKind
+ACCOUNT, isPseudonymous; admitted by the kernel ASSERTED_BY contract; D7 holds no handles), and the unit of influence and
+coverage questions. Absorbs the pinned Platform (→ `platform`), Series (→ channelKind SHOW; sub-series such as
+"Essentials" are works with republicationKind), Community-online (→ channelKind FORUM), ON_PLATFORM (→ `platform`) and
+HOSTS_CHANNEL / OPERATES_CHANNEL / SERVES_ON_CHANNEL (→ the OPERATED_BY predicate; host role is APPEARS_IN HOST per work).
+Identity rule: (platform, platformAccountId) when the platform issues one (YouTube channel id, Apple collectionId,
+Substack subdomain, X handle id, forum member id); else the normalized feed URL (RSS) or home URL. A show carried on
+several platforms is one Channel per platform account only when a question separates them; by default one Channel
+per show with its feed as identity and platform ids attached as Identifiers. Identifiers attach through the kernel.
+uid token: `channel` (hu:channel:<opaque>).
+Questions: CQ-CL-05, CQ-CL-07, Q-D9-11, Q-D9-12, Q-D9-14, Q-D9-19.
+"""
+type Channel implements Entity & Subjectable
+  @node(labels: ["Channel", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  "Display name of the show, channel, publication, forum or handle."
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  channelKind: ChannelKind!
+  platform: MediaPlatform!
+  "Platform-issued account or collection id (YouTube channel id, Apple collectionId, forum member id)."
+  platformAccountId: String
+  "Handle as displayed (@bryan_johnson, Hermuller); presentation and lookup, never identity across platforms."
+  handle: String
+  "Normalized RSS/Atom feed URL when the channel has one (joins to the feed's kernel Source.canonicalUri)."
+  feedUrl: String
+  "Home page or profile URL."
+  homeUrl: String
+  "True when no publicly identified operator stands behind an ACCOUNT (a forum handle). A resolution to a Person is a kernel RESOLUTION Assessment, never a merge."
+  isPseudonymous: Boolean
+  "BCP 47 language tag of the channel's works."
+  language: String
+  "Discourse projection cache (R-49, Q-D9-19): influence score of this channel over the retelling graph (PageRank class), graph-wide, under influenceMethodVersion. A per-topic or per-frontier score is not stored here (open-questions FU-11). Authority: the occurrences and retellings it was computed from."
+  influenceScore: Float
+  "Method version of the influence cache, e.g. d9-influence/pagerank-v1 (R-45 condition 3)."
+  influenceMethodVersion: String @filterable(byValue: false) @sortable(byValue: false)
+  "When the PROJECTION Activity derived the influence cache (R-45 condition 3)."
+  influenceDerivedAt: DateTime @filterable(byValue: false) @sortable(byValue: false)
+}

@@ -1,0 +1,9 @@
+# Questions answered — ftc-ameribev-paid-dieticians-harm
+
+| question | expected answer | from |
+| --- | --- | --- |
+| Q-D7-07 | Regulator: Federal Trade Commission (staff warning letters, page-1 date November 13, 2023; press release November 15, 2023). Marketer: American Beverage Association. Endorser named in this fixture: Leslie Bonci (registered dietician; individual letter). Promoted subject: the safety of aspartame (D1/D12 seam). Finding, with its modality kept: "It appears that you were paid by the American Beverage Association ("ABA") to make those posts."; disclosure judged inadequate ("#client" — "ambiguous and inadequate"). Scope from the press release: letters to two trade associations and 12 registered dieticians and other online health influencers. | h-01, h-02, h-03, h-05 |
+| Q-D7-06 | For the endorser's aspartame posts: a reachable financial interest exists — RECEIVES_VALUE_FROM{PAID_ENDORSEMENT} → American Beverage Association, asserted by the regulator (not by the endorser), hedged; disclosure finding INADEQUATE_DISCLOSURE_PER_REGULATOR. The posts themselves are D9 occurrences not captured here. | h-01, h-02, as-cr-ftc-01 |
+| CQ-CL-05 | Financial relationship relevant to the statement: paid endorsement by the trade association promoting the same subject (relevanceBasis SAME_SUBJECT_PROMOTED); valid-time UNKNOWN (no dates for the payment, only a post date of July 14, 2023 in the individual letter (loc-bonci-post-date) and the letter date); disclosed where: in the posts only as "#client" (inadequate per the regulator). Effect direction HARM. | h-01, as-cr-ftc-01 |
+
+Disconfirmation note: the letter's page headers ("November 6, 2023 Page 2") disagree with its page-1 date ("November 13, 2023"); h-04 records the inconsistency as a BellLabs observation (asserter: the extraction Agent, not the FTC), and the answer cites the page-1 date bracketed by the press-release date.

@@ -1,0 +1,117 @@
+version: 1
+module: D13
+# Model stage (Wave 2), A7, 2026-10-08. Two node types. Kernel pattern: both implement Entity & Subjectable, list the
+# seven Entity fields verbatim, carry @query(aggregate: false) @mutation(operations: []); identifiers attach through the
+# kernel (Identifier.identifies), never as fields.
+nodes:
+  - name: Event
+    uidToken: event
+    identityKeys: [eventKind, primarySubjectUid, jurisdiction, firstStatedTimeAtPrecision, discriminator]
+    identityRule: >-
+      Adversarial-review pass. identityKey is a MINT-TIME key, written once when the Event is created and never
+      recomputed: eventKind | primary subject uid | jurisdiction or '-' | the time anchor as first stated (startedAt, or
+      the scheduled window, at its stated precision) | discriminator when required. Primary subject = the object of the one
+      EVENT_ABOUT Assertion with qualifier primary=true; for FINANCING the ISSUER or BORROWER participant, for ACQUISITION
+      the ACQUIREE, for PARTNERSHIP the party whose asset is licensed (the INVOLVES Assertion with primary=true).
+      Discriminator, required when one subject can have several events of one kind on one day: FINANCING instrument
+      (loan-tranche, registered-direct, atm-sales, ipo, follow-on, private-round, grant). Matching never compares key
+      strings: a candidate shares eventKind, primary subject and jurisdiction and has an overlapping time window (scheduled
+      window or occurrence at its precision); a sure match attaches the new Assertions, a doubtful one mints a new Event
+      plus a proposed EQUIVALENCE Assessment, and Events merge only through an accepted EQUIVALENCE Assessment. So a
+      re-guided window, PLANNED → OCCURRED, or a more precise later date is a new Assertion on the SAME Event (Q-D13-11),
+      never a new Event. Several artifacts about one occurrence (8-K, press-release exhibit, registry change, regulator
+      record) are several Assertions about ONE Event; an acquisition's agreement and closing are one Event with two clocks.
+      Fixtures: every Event records `mintedFrom` (snapshot and assertions its key came from).
+    identifierSchemes: []
+    identifierNote: "an event has no external id of its own; accession numbers, NCT ids, DOIs and FDA application numbers identify the documents (kernel Source) or the subjects (D3 Study, D8 record), reached through the event's assertions. SEC accession numbers are requested as a kernel scheme in 11-open-questions.md (for Sources)."
+    whyNode: >-
+      Every D13 question filters events by kind and clocks, joins them to frontiers (ON_FRONTIER) and participants
+      (INVOLVES), and traverses event-to-event chains (LEADS_TO, RESPONDS_TO): Q-D13-01 timeline, Q-D13-02 ladder and
+      firstness, Q-D13-05 readout-to-approval chain, Q-D13-06 financing after a result, Q-D13-08 / Q-D13-14 harm and
+      responses, Q-D13-10 / Q-D13-11 scheduled milestones and slips. It is also the subject of time assertions,
+      breakthrough and impact assessments, and claims (kernel subject pattern).
+    filterProperties: [eventKind, eventStatus, jurisdiction, startedAt, endedAt, announcedAt, effectiveFrom, scheduledFrom, scheduledTo, readoutStage, primaryEndpointStatement, approvalPathway, designationType, discontinuationScope, name]
+    otherProperties: 17
+    otherPropertiesList: [eventKindNote, identityKey, summaryText, startedAtPrecision, startedAtBasis, endedAtPrecision, timeAssertionUid, announcedAtPrecision, announcementAssertionUid, effectiveFromPrecision, effectiveFromBasis, effectiveAssertionUid, localTimeZone, scheduledFromPrecision, scheduledToPrecision, scheduleAssertionUid, clockRule]
+    relationshipFields: 6
+    archetype: Occurrence
+    mutations: { create: false, update: false, delete: false }
+    mutationsNote: "GraphQL API is read-only (@mutation(operations: [])); the intent executor creates Events (node.upsert) and re-materializes clocks from Assertions; nothing is deleted"
+  - name: Frontier
+    uidToken: frontier
+    identityKeys: [key]
+    identityRule: "vocabulary key frontier:<slug> from vocab-frontiers.yaml; never reused or renamed; DEPRECATED frontiers name replacedBy"
+    identifierSchemes: []
+    identifierNote: "Wikidata QIDs exist for anchor concepts (cellular senescence, MASH), not for the frontiers; they attach as WIKIDATA identifiers on the D2 anchors, never on the Frontier"
+    whyNode: >-
+      The grouping key of every frontier question (Q-D13-01..04, Q-D13-08, Q-D13-09, Q-D13-16, Q-D13-23): events and
+      studies attach to it by the asserted ON_FRONTIER classification (with asserter, vocab version and supersession,
+      which a tag cannot carry), and it is the subject of breakthrough assessments (Q-D13-30), frontier briefs
+      (Q-D13-29) and claims about a field. A controlled vocabulary with a node per frontier (00-DIRECTIVE 3.7), ~25 nodes.
+    filterProperties: [key, name, level, parentKey, granularity, targetKeys, curationStatus]
+    otherProperties: 4
+    otherPropertiesList: [definition, synonyms, replacedBy, vocabVersion]
+    relationshipFields: 1
+    archetype: Vocabulary
+    mutations: { create: false, update: false, delete: false }
+    mutationsNote: "created and edited only by a vocabulary version bump (vocab-frontiers.yaml) applied by the executor"
+deferred:
+  - name: NarrativeArc
+    reason: "→ kernel Report (reportKind PROFILE with skeletonKey d10.frontier-brief@1, kernel change 4; composition method D10): an arc selects and orders events into a story, which is a published artifact citing the events' assertions (Q-D13-29), never a fact node in D13"
+    owner: K / D10
+  - name: EventImpactAssessment
+    reason: "→ kernel Assessment (assessmentKind EVENT_IMPACT, accepted by the kernel model stage; impact domain in facets impactDomain=<MARKET|...>); Q-D13-31 is value 3; one assessment archetype in the kernel, not one per domain"
+    owner: K / D10
+  - name: Conference
+    reason: "no node in either module: the recurring meeting is D9 Channel (channelKind EVENT_SERIES, D9 06 mergedInto); a conference edition or session is a qualifier on the PRESENTED_AT_CONFERENCE Assertion (edition=, session=), and a presentation itself is a D13 DATA_PRESENTATION Event; D13 owns the predicate, D9 owns Channel (Q-D13-25, value 3)"
+    owner: "D9 (Channel EVENT_SERIES) + D13 (predicate)"
+  - name: Community
+    reason: "cut: no D13 question; membership is private data; pinned HOSTS_EVENT/INVOLVES from Community dropped"
+    owner: none
+  - name: Milestone
+    reason: "not a node: a milestone is a lens over eventKind + qualifiers + computed firstness (vocab-frontiers.yaml section 4)"
+    owner: D13 (vocabulary)
+  - name: Breakthrough
+    reason: "not a node or property: computed criteria BC-* over events, or a kernel Assessment (assessmentKind BREAKTHROUGH_JUDGMENT) citing a criterion (vocab-frontiers.yaml section 6)"
+    owner: D13 / K
+  - name: Forecast
+    reason: "not a node: a forecast is a captured Source snapshot plus a FORECASTS assertion with value and capture time (Q-D13-20, value 3)"
+    owner: D13 / D9
+  - name: FinancingRound
+    reason: "not a node: a FINANCING Event with FINANCING_AMOUNT assertions and INVOLVES {INVESTOR, LEAD_INVESTOR, LENDER, UNDERWRITER}; D7 agreed (D7 research notes §3)"
+    owner: D13
+  - name: Guidance
+    reason: "not a node: guided dates are EVENT_SCHEDULED assertions on a PLANNED Event; every restatement is a new assertion, so slips are computed (Q-D13-11)"
+    owner: D13
+mergedInto:
+  - pinned: Event
+    into: Event
+    note: "kept and slimmed: 17 relationship fields → 5; EventCategory (26) + eventType (free string) → EventKind (27); description → summaryText; occurrenceType, maturity, schemaVersion, mongoResearchRunId, search* fields dropped (lastWriterRunId from Entity; retrieval vectors are D9 chunks); scheduled window and qualifier properties added"
+  - pinned: EventCategory
+    into: Event.eventKind (EventKind enum)
+  - pinned: EventStatus
+    into: Event.eventStatus (EventStatus enum, 4 values; ANNOUNCED and UNKNOWN dropped, DELAYED computed)
+  - pinned: ImpactLevel
+    into: "kernel Assessment (deferred with EventImpactAssessment)"
+  - pinned: EventRoleEdgeProperties
+    into: "EventRoleEdgeProperties (kernel AssertedRecordedProperties fields + role: EventRole; participantRole string → EventRole enum; the printed title is the Assertion qualifier roleText, kernel M11(3))"
+  - pinned: CausalEdgeProperties
+    into: "kernel AssertedRecordedProperties on LEADS_TO / RESPONDS_TO; basisKind and speechAct live on the authorizing Assertion"
+  - pinned: RecordingEdgeProperties
+    into: "D9 (RECORDING_OF deferred to D9)"
+  - pinned: EventParticipantTarget
+    into: "two typed INVOLVES fields (Organization, Person); Community dropped"
+  - pinned: EventSubjectTarget
+    into: "kernel subject/object pattern (Assertion predicate EVENT_ABOUT)"
+  - pinned: SponsorableTarget
+    into: "D9 / D7 (SPONSORS_CONTENT deferred)"
+  - pinned: EventRecordTarget
+    into: "typed DOCUMENTED_BY_RECORD (Event → D8 RegulatoryRecord, one member; promoted from predicate-only in the adversarial-review pass)"
+  - pinned: NarrativeArc
+    into: "kernel Report (see deferred)"
+  - pinned: EventImpactAssessment
+    into: "kernel Assessment (see deferred)"
+  - pinned: Conference
+    into: "D9 Channel EVENT_SERIES + qualifiers on PRESENTED_AT_CONFERENCE (see deferred)"
+  - pinned: Community
+    into: "cut (see deferred)"

@@ -1,0 +1,63 @@
+"""
+Purpose: the proposition itself, independent of who said it (00-DIRECTIVE 3.4): the unit that is vetted, monitored,
+researched and reported on. Occurrences are Assertions (assertionKind CLAIM) pointing at it with OCCURRENCE_OF.
+Identity rule: `propositionHash` = sha256 over the normalized proposition plus its structured binding (subject uid,
+predicate, object uid or literal, qualifiers); near-duplicates are separate Claims linked by an EQUIVALENCE
+Assessment, never merged by similarity. A qualified variant ("activates SIRT1 with hydrophobic-motif substrates")
+is its own Claim; an EQUIVALENCE Assessment (`assessmentSubkind: K.claim-relation`, `conclusionCode: REFINES`)
+ASSESSES both, and the narrower Claim
+caches the broader one's uid in `refinesClaimUid`. Lifecycle (00-DIRECTIVE 3.4): occurrences (Assertion CLAIM,
+OCCURRENCE_OF) → VETTING Assessment with disposition → EVIDENCE_MISSION Activity that ASSESSES the Claim → EVIDENCE_REPORT
+Report that ASSESSES it with a lattice verdict. uid token: `claim`. Implements Subjectable so Assessments, Reports,
+Activities and RATES_CLAIM Assertions can point at it. Questions: Q-K-08, Q-K-09, Q-K-11, Q-K-19, Q-K-21, Q-K-23,
+Q-K-26, Q-K-27, Q-K-28.
+"""
+type Claim implements Entity & Subjectable
+  @node(labels: ["Claim", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  "Short label."
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Normalized proposition text."
+  proposition: String!
+  propositionHash: String!
+  claimType: ClaimType!
+  "Projection cache maintained by the lifecycle projection; authority is the Assessments and Reports."
+  lifecycleState: ClaimLifecycleState
+  "Projection cache of the latest published evidence report's verdict."
+  latestVerdict: SemanticVerdict
+  "Projection cache: uid of the broader Claim this one refines (authority: the accepted EQUIVALENCE Assessment with conclusionCode REFINES)."
+  refinesClaimUid: String
+  "Discourse projection cache (R-49, CQ-CL-06): occurrences of this Claim whose asserter states it first-hand. Written by a PROJECTION Activity under discourseMethodVersion; authority is the occurrences (OCCURRENCE_OF) and their DERIVED_FROM / OCCURS_IN chains, never this value."
+  discourseFirstHandCount: Int
+  "Discourse projection cache (R-49, CQ-CL-06, Q-D9-08): occurrences that retell an earlier occurrence."
+  discourseRetellingCount: Int
+  "Discourse projection cache (R-49, CQ-CL-06, Q-D9-08): occurrences in re-published cuts of an earlier work."
+  discourseRecutCount: Int
+  "Discourse projection cache (R-49, CQ-CL-06): independent source families among the occurrences, under discourseMethodVersion."
+  discourseIndependentCount: Int
+  "Discourse projection cache (R-49, Q-D9-08): earliest valid time among the occurrences (first assertion)."
+  discourseFirstOccurrenceAt: DateTime
+  "Method version of the discourse projection cache (R-45 condition 3)."
+  discourseMethodVersion: String @filterable(byValue: false) @sortable(byValue: false)
+  "When the PROJECTION Activity derived the discourse cache (R-45 condition 3)."
+  discourseDerivedAt: DateTime @filterable(byValue: false) @sortable(byValue: false)
+  """class: structural (inverse); cardinality: many; questions: Q-K-09, Q-K-11."""
+  occurrences: [Assertion!]!
+    @relationship(type: "OCCURRENCE_OF", direction: IN, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural (inverse); cardinality: many (vetting, equivalence, insights); questions: Q-K-09, Q-K-19."""
+  assessments: [Assessment!]!
+    @relationship(type: "ASSESSES", direction: IN, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural (inverse); cardinality: many (evidence reports); questions: Q-K-08, Q-K-11."""
+  reports: [Report!]!
+    @relationship(type: "ASSESSES", direction: IN, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

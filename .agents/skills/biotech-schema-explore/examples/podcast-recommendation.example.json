@@ -1,0 +1,109 @@
+{
+  "format": "bks-skill-example.v1",
+  "id": "podcast-recommendation",
+  "kind": "positive",
+  "task": "A podcast guest recommends a supplement in an episode. What do we record and how is it found again?",
+  "lesson": "The episode is a MediaWork; the spoken statement is an Assertion that OCCURS_IN it and cites a SourceLocator (media time range). A recommendation is a claim occurrence with a speech act, not a typed edge to the product. Check the question status: a held question (no fixture-positive template) is not a read route.",
+  "steps": [
+    {
+      "argv": [
+        "search",
+        "podcast episode recommendation",
+        "--json"
+      ],
+      "expect": {
+        "exit": 0,
+        "json": [
+          {
+            "path": "hits.*.id",
+            "includes": "task:ingest-podcast-claims"
+          },
+          {
+            "path": "hits.*.id",
+            "includes": "node:MediaWork"
+          }
+        ]
+      }
+    },
+    {
+      "argv": [
+        "pattern",
+        "--question",
+        "Q-D9-21",
+        "--json"
+      ],
+      "expect": {
+        "exit": 0,
+        "json": [
+          {
+            "path": "status",
+            "equals": "supported"
+          },
+          {
+            "path": "templates.*.id",
+            "includes": "D9/Q-D9-21"
+          }
+        ]
+      }
+    },
+    {
+      "argv": [
+        "pattern",
+        "--question",
+        "Q-D9-01",
+        "--json"
+      ],
+      "expect": {
+        "exit": 0,
+        "json": [
+          {
+            "path": "status",
+            "equals": "held"
+          }
+        ]
+      }
+    },
+    {
+      "argv": [
+        "path",
+        "node:Assertion",
+        "node:MediaWork",
+        "--max-hops",
+        "1",
+        "--json"
+      ],
+      "expect": {
+        "exit": 0,
+        "json": [
+          {
+            "path": "paths.*.hops.0.type",
+            "includes": "OCCURS_IN"
+          },
+          {
+            "path": "instanceClaim",
+            "equals": false
+          }
+        ]
+      }
+    },
+    {
+      "argv": [
+        "find",
+        "--kind",
+        "predicate",
+        "--name",
+        "RECOMMENDS_USE",
+        "--json"
+      ],
+      "expect": {
+        "exit": 0,
+        "json": [
+          {
+            "path": "results.0.predicateKind",
+            "equals": "literal"
+          }
+        ]
+      }
+    }
+  ]
+}

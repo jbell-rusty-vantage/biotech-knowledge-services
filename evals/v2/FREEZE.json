@@ -1,0 +1,216 @@
+{
+  "format": "bks-eval-freeze.v1",
+  "frozenAt": "2026-10-12",
+  "release": {
+    "releaseId": "biotech-schema-v2.0.2",
+    "schemaReleaseDigest": "sha256:5fffb593c8ca94b289b768ac0a0b02df5739cb338b7a04ec88173589708c5a42",
+    "schemaDigest": "sha256:fe2cc50afb4a48e16a2b5c3c37378b4d00a679a06d37bf312676c45c65c6589a"
+  },
+  "sources": {
+    "nodeRegister": {
+      "path": "schema/pinned/release/registers/node-register.yaml",
+      "sha256": "sha256:ef8f38b52a33e8a5aa5f74918c1835a6311f4dfaabcb204078fd6327b897e2e1"
+    },
+    "relationshipRegister": {
+      "path": "schema/pinned/release/registers/relationship-register.yaml",
+      "sha256": "sha256:92400a6c46121ef37e1fa4303348a0fc30abdf3d4ff37943da685721321f7274"
+    },
+    "predicates": {
+      "path": "schema/pinned/release/vocabularies/predicates.yaml",
+      "sha256": "sha256:a2ff6f441e609e6ad918d26bc86791739382f17b5ef8568cfc1961c8adc9463f"
+    },
+    "sdl": {
+      "path": "schema/pinned/release/sdl/assembled.graphql",
+      "sha256": "sha256:fe2cc50afb4a48e16a2b5c3c37378b4d00a679a06d37bf312676c45c65c6589a"
+    },
+    "interfaces": {
+      "path": "docs/plans/schema-v2-service-release/INTERFACES.md",
+      "sha256": "sha256:4c9f1254dfd528a96e6c85bb971eeec041e296e62a876f2009a60f8b5f8e2af3"
+    }
+  },
+  "suites": {
+    "schema-discovery": {
+      "tasks": "sha256:cb79e68a4dc2351eab8def9f6a5dfbcdbac5b01b54f4e070d40bff7e9e1e08de",
+      "goldSpec": "sha256:4b35cf744e458c1db4aa0e5ab708715c4418c1a4edc68b086864c15ed57ba895",
+      "gold": "sha256:d4c91bf4ffeb9c443d561a9174a63593a2f375712b2dddda161fe8b153a80ec2",
+      "count": 68
+    },
+    "native-read": {
+      "tasks": "sha256:7be41674bcf9656d9ffcf07d883ae00d45cf02bde0fa2ce12150f7028bffdcca",
+      "goldSpec": "sha256:f892d293d4b01572c12b928087a3c13bee8839d20422ba643c094a58d2a68d18",
+      "gold": "sha256:f0360538915129db726811dd44fdd30f79c3dafa07c62c451a3fc5a8807bf40a",
+      "count": 33
+    },
+    "write-recovery": {
+      "tasks": "sha256:97191305c0e1915bfc84979780ffbbb5f1ad8efda36f310abc92db640f8e2bad",
+      "goldSpec": "sha256:ccc64e8f6b2974b2fe761969b5f1767370cdef82a9c7582319d4105188379d5e",
+      "gold": "sha256:c01731d1cd83dd094e064a117f204c8f6b70b8225e63127a3dcf8bd38ed4c779",
+      "count": 33
+    },
+    "schema-discovery-certify": {
+      "tasks": "sha256:827c504dad622254ff59835205391cbe4d5130fcfbe95d1e0a1c38e6425d3719",
+      "goldSpec": "sha256:5a5f1d5680167cc43c3cb11504a40e77f3f794e08ac724fc6a37ec3a6690f024",
+      "gold": "sha256:e2296cba385d5355cfe387332323c2de46858d0cbae057f720a69e76ecd0cc7a",
+      "count": 68
+    },
+    "schema-discovery-certify-2": {
+      "tasks": "sha256:1853bbe1a608b6cc635dde2be5b71f34e5613075e0e582b7cac25fbe56c0991a",
+      "goldSpec": "sha256:1a01708802647ac59f1de9ae623ac55923d8cdf727e4bacebbfbf1608cca2b86",
+      "gold": "sha256:fcb2a2867428f9cdd4a457ec2b7452bddb2912c004138420978df6f74e119899",
+      "count": 68
+    }
+  },
+  "deviations": [
+    {
+      "id": "DEV-1-native-read-seeded-gold",
+      "recordedAt": "2026-10-12T05:28:08.522Z",
+      "authorizedBy": "lead (qualification role), 2026-10-12",
+      "reason": "native-read gold (gold.json) resolves from the v1 run-record fixtures; the eval environment is fixtures-v2 seeded through the writer (19 held plans, 58 partial, writer-minted uid prefixes), so 20 gold facts were never applied and uids drifted. Scoring arms against gold.json would measure the environment, not the skills.",
+      "rule": "derive mechanically from the seeded environment's plans and receipts only (never from arm answers); facts never applied get a negative expectation {status: empty}; status/literal/manifest-pointer tasks unchanged; gold.json kept unchanged for the record; one structural adapter (score.mjs --adapter trace-evidence) applied to every arm",
+      "seedRun": "runs/release-v2/eval-runs/evalA-20261012T042421Z",
+      "receiptSetDigest": "sha256:6d5d997cf144aefd62cdd848dfad6d303b1f3f6acf6ad477fa58edd82266fb76",
+      "seedEquivalence": {
+        "evalB": "runs/release-v2/eval-runs/evalB-20261012T043113Z/seed-custody",
+        "identical": true,
+        "evidence": "runs/release-v2/custody/review/eval-scoring/seed-compare-A-B.json"
+      },
+      "goldSeeded": {
+        "path": "evals/v2/native-read/gold.seeded.json",
+        "sha256": "sha256:94ff1a2991ae0c7df0fbd919ea5c902f402010e8ca7ab8ac49f5545e4efb21d2",
+        "positive": 5,
+        "negative": 20,
+        "unchanged": 8
+      },
+      "derivationLog": {
+        "path": "evals/v2/native-read/gold.seeded.derivation-log.json",
+        "sha256": "sha256:13bb7b623a9f064771f6aa0b2fe733679b28f82ffd798be0ef3c65473d33abed"
+      },
+      "originalGold": {
+        "path": "evals/v2/native-read/gold.json",
+        "sha256": "sha256:f0360538915129db726811dd44fdd30f79c3dafa07c62c451a3fc5a8807bf40a"
+      },
+      "scoring": "node evals/v2/score.mjs --run <runDir> --bindings <bindings.json> --manifest <migration-manifest.json> --gold native-read=gold.seeded.json --adapter trace-evidence",
+      "frozenBefore": "scoring of evalB (no B answer existed when frozen; evalB/B held one empty task directory)"
+    },
+    {
+      "id": "DEV-2-write-pass-environment",
+      "recordedAt": "2026-10-12T05:36:27.047Z",
+      "authorizedBy": "lead (qualification role), 2026-10-12",
+      "rule": "protocol section 10: fresh database per arm seeded with the round minus write-seed-exclusions.json; migration-bound write tasks on per-arm sequential shadows; frozen gold.json; no adapter; duplicate rule as stated",
+      "exclusions": {
+        "path": "evals/v2/write-recovery/write-seed-exclusions.json",
+        "sha256": "sha256:0422184f9d9b9fc01f6f344bad8ff02035f98ea19f0ca04494720d09ec31d47c"
+      },
+      "seedScript": {
+        "path": "evals/v2/write-recovery/seed-write-pass.mjs",
+        "sha256": "sha256:d42fc7d13dadc1a591bc6051169531973d37e3c1e909cb63dac87364bc8ea7d7"
+      },
+      "shadowScript": {
+        "path": "scripts/migration/eval-migration-shadow.sh",
+        "sha256": "sha256:cce2cec43ef0b987bae903bcdbe22ec6271100a56172f8abb915c75664babf53"
+      },
+      "gold": {
+        "path": "evals/v2/write-recovery/gold.json",
+        "sha256": "sha256:c01731d1cd83dd094e064a117f204c8f6b70b8225e63127a3dcf8bd38ed4c779"
+      },
+      "declaredBefore": "any write-recovery answer of either arm (none exist)",
+      "scoringRules": {
+        "path": "evals/v2/write-recovery/scoring-rules.json",
+        "sha256": "sha256:23745af34ac16c91547c5853c8037993713a664866d9340dcdca3653ede392b8"
+      },
+      "postPassChanges": [
+        {
+          "at": "2026-10-12T17:10:06.441Z",
+          "by": "S8",
+          "file": "scripts/migration/eval-migration-shadow.sh",
+          "sha256": "sha256:e76b11ce053b13de76d200a7cdd0579c07ceeb19402b9f89a5e682290a916e03",
+          "change": "executor subcommand imports kg-ops via pathToFileURL (Windows path bug found by both arms, who ran the block by hand); no effect on scoring"
+        }
+      ]
+    },
+    {
+      "id": "DEV-1b-nrm-rubric",
+      "recordedAt": "2026-10-12T05:40:16.556Z",
+      "rule": "NR-M-01..05 adjudicated by the reviewer against evals/v2/native-read/nrm-rubric.json (manifest-fixed expectations), identically for every arm; raw score.mjs results are also reported",
+      "rubric": {
+        "path": "evals/v2/native-read/nrm-rubric.json",
+        "sha256": "sha256:def1ee9750f874c12cbd3e9c6bbe27caa70c4b22f010959d0b69d96791c3bd99"
+      },
+      "declaredBefore": "any condition-B NR-M answer (0 existed); condition A's third-pass answers already existed and are adjudicated under the same text"
+    },
+    {
+      "id": "DEV-3-write-answer-contract",
+      "status": "IN FORCE",
+      "reason": "17 of 33 write-recovery tasks are scored on invariant keys (invariants{key: true}) and 3 on sequence[] / outcomes[] fields that neither the prompt nor answerShape names; 31 tasks are critical. Without the keys, a correct agent fails on shape and the critical-failure gate fails for both arms",
+      "rule": "runners pass answer-contract.json[taskId] to the agent with prompt and answerShape, identically for every arm; it names result fields neutrally (outcome | error | status for every task) and asks each invariant as a yes/no question; no expected value is revealed",
+      "contract": {
+        "path": "evals/v2/write-recovery/answer-contract.json",
+        "sha256": "sha256:5de181bdcf5b99c38cfca9d22791077907354d23dfc84b451421dc972918f948"
+      },
+      "builder": {
+        "path": "evals/v2/write-recovery/build-answer-contract.mjs",
+        "sha256": "sha256:5263b0e12addc144b701332f070d8d7af10fc1359928bbe24a7f1551864daa4e"
+      },
+      "approvedBy": "lead (qualification role), 2026-10-12",
+      "approvalConditions": "entries contain only field names, neutral yes/no invariant questions and the fill-whichever-the-service-returned instruction; no expected values, counts, uids, digests or outcomes; mechanical leak check in build-answer-contract.mjs --check; identical entry to both arms; write-pass runners read only tasks.json and answer-contract.json",
+      "leakCheck": {
+        "method": "every gold leaf value except invariant keys (24 values) matched case-insensitively on word boundaries against the serialized contract; exit 3 on any hit; negative probes BKS_PLAN_FORGED / duplicate / applied each failed the check as intended",
+        "result": "0 leaks"
+      },
+      "recordedInForceAt": "2026-10-12T06:59:51.779Z"
+    },
+    {
+      "id": "DEV-4-write-seed-round-redigest",
+      "recordedAt": "2026-10-12T16:10:27.893Z",
+      "authorizedBy": "lead, 2026-10-12",
+      "reason": "schema/program/final/fixtures-v2/ROUND.json changed after DEV-2: the executor role filled 17 identifier-evidence locators from the fixtures' own assertions.yaml so declared identifiers attach (Identifier + HAS_IDENTIFIER) when they cite evidence. The excluded D4 intent (ft-d4-a1c-2026-10-08) is byte-identical. The seed script refuses a round whose digest differs from the recorded one.",
+      "rule": "roundSha256 in write-seed-exclusions.json is re-recorded to the current round; both arms seed from this round through the unchanged seed script; exclusion, gold, scoring rules and answer contract are unchanged",
+      "round": {
+        "path": "schema/program/final/fixtures-v2/ROUND.json",
+        "previous": "sha256:e7f3c86558f83a7118adc6045f6219d76f83c79c8f325905dd66f5f05836264c",
+        "sha256": "sha256:277fe854ab565324bf39f1b1a85e3d40f5b6db05a58b18f13dc5b7d50e2d9f59"
+      },
+      "exclusions": {
+        "path": "evals/v2/write-recovery/write-seed-exclusions.json",
+        "sha256": "sha256:77dfab21e89ad2554f97d672c75319e9822ae78487aae25d889e078efc24aab4"
+      },
+      "seedScript": {
+        "path": "evals/v2/write-recovery/seed-write-pass.mjs",
+        "sha256": "sha256:d42fc7d13dadc1a591bc6051169531973d37e3c1e909cb63dac87364bc8ea7d7"
+      },
+      "declaredBefore": "any write-recovery answer of either arm (none exist)",
+      "sourceDrift": {
+        "interfaces": {
+          "path": "docs/plans/schema-v2-service-release/INTERFACES.md",
+          "frozen": "sha256:396a40f9b538d8539d2337d289ed62eda237877dd285cab0558ec5403f8f7625",
+          "current": "sha256:d64cc2f42a93b107e359b74e08bd0f887f2100a2b973dfe74a955a721694d0a9",
+          "note": "section 10 revised by the executor role after the freeze; task and gold files unchanged (their digests still verify)"
+        }
+      }
+    },
+    {
+      "id": "DEV-5-wr16-rerun-admission-module",
+      "recordedAt": "2026-10-12T16:45:21.350Z",
+      "authorizedBy": "lead, 2026-10-12",
+      "reason": "The lead's runner brief started the arm executors without the admission module (BKS_ADMISSION_ENABLED unset), so the revocation routes WR-16 needs returned 404 in both arms. This is an environment defect of the evaluation, not a property of the skills or the service.",
+      "rule": "Each arm restarts its executor once with BKS_ADMISSION_ENABLED=1, BKS_ADMISSION_LEDGER_CREATE=1, a file grant registry for its local-dev scope and BKS_LOCAL_DEV_ROLE=admin, then runs WR-16 again. The scorer reads WR-16 from <run>/<ARM>/WR-16-rerun/answer.json for both arms; the original <ARM>/WR-16/answer.json is kept unedited with an ERRATA.md pointer. No other task is rerun.",
+      "declaredBefore": "any scoring of either arm's write-recovery answers (none exist)",
+      "appliesTo": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "id": "DEV-6-wr19-rerun-after-temporal-fix",
+      "recordedAt": "2026-10-12T16:46:43.401Z",
+      "authorizedBy": "lead, 2026-10-12",
+      "reason": "WR-19 found a service defect: an assertion whose recordedAt precedes the cited snapshot's retrievedAt (a snapshot dated in the future relative to the service clock) is planned and applied without refusal. The gold expects BKS_STALE_PRECONDITION. The defect is being fixed in the writer before cutover.",
+      "rule": "After the fix is built (pnpm build), each arm restarts its executor on the rebuilt dist (same environment) and runs WR-19 again into <run>/<ARM>/WR-19-rerun/answer.json; the scorer reads WR-19 from that path for both arms; the original answer stays unedited with an ERRATA.md pointer. The first-run answers are kept as the evidence that found the defect. No other task is rerun because of this fix.",
+      "declaredBefore": "any scoring of either arm's write-recovery answers (none exist)",
+      "appliesTo": [
+        "A",
+        "B"
+      ]
+    }
+  ]
+}

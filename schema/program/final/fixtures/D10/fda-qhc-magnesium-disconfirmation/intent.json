@@ -1,0 +1,645 @@
+{
+ "schemaVersion": "biotech-knowledge-intent.v1",
+ "intentId": "ft-d10-fx-fda-qhc-magnesium-disconfirmation",
+ "context": {
+  "actor": {
+   "kind": "agent",
+   "id": "ft-a1-fixtures-stage",
+   "model": "claude-opus-5-5"
+  },
+  "run": {
+   "system": "mission-control",
+   "runId": "run:ft-D10-fda-qhc-magnesium-disconfirmation",
+   "missionId": "mission:ft-D10-fixtures"
+  },
+  "activityKind": "EXTRACTION"
+ },
+ "onStale": "fail",
+ "sources": [
+  {
+   "ref": "snap-fda-qhc-letter",
+   "source": {
+    "canonicalUri": "https://www.fda.gov/media/155304/download",
+    "sourceKind": "PDF",
+    "properties": {
+     "genre": "REGULATORY_DECISION_LETTER"
+    }
+   },
+   "snapshot": {
+    "observedAt": "2026-10-08T21:39:08Z",
+    "retrievedAt": "2026-10-08T21:39:08Z",
+    "contentHash": "sha256:06bb4aff841eac559862dd496e63014284a46ad7311b1593e9c392fd4d35753f",
+    "contentHashBasis": "RAW_BYTES",
+    "captureCompleteness": "COMPLETE",
+    "properties": {
+     "captureMethod": "curl -L (FDA media download)",
+     "mimeType": "application/pdf"
+    }
+   },
+   "locators": [
+    {
+     "ref": "loc-docket",
+     "selectorKind": "PDF_TEXT",
+     "quote": "Docket No. FDA-2016-Q-3770",
+     "quotePrefix": " Blood Pressure (Hypertension) (",
+     "quoteSuffix": ")\r\n\r\nDear Dr. Johnson:\r\n\r\nThis l",
+     "startOffset": 241,
+     "endOffset": 267,
+     "properties": {
+      "quoteHash": "sha256:18df52d6190079989a66dd199c4a43570ad12b79f87f88668a2b2933363b44ab"
+     },
+     "page": 1
+    },
+    {
+     "ref": "loc-petitioner-claim",
+     "selectorKind": "PDF_TEXT",
+     "quote": "Supportive but inconclusive scientific evidence suggests that diets with adequate magnesium may reduce the risk of high blood pressure (hypertension), a condition associated with many factors.",
+     "quotePrefix": "taining magnesium:\r\n\r\n         “",
+     "quoteSuffix": "”\r\n\r\n1 See FDA, “Guidance for In",
+     "startOffset": 1177,
+     "endOffset": 1389,
+     "properties": {
+      "quoteHash": "sha256:8f48e8b300d9116e5033cc0787dd88c5480a0fcccb6d67a3f25ac5170952ae05",
+      "normalization": "whitespace runs collapsed to one space (the projection breaks lines)"
+     },
+     "page": 1
+    },
+    {
+     "ref": "loc-inconsistent",
+     "selectorKind": "PDF_TEXT",
+     "quote": "However, this evidence is inconclusive because the results of the studies are inconsistent.",
+     "quotePrefix": "blood pressure\r\n(hypertension). ",
+     "quoteSuffix": " The findings of the minority of",
+     "startOffset": 77082,
+     "endOffset": 77174,
+     "properties": {
+      "quoteHash": "sha256:976f0a9ef2f4077025408b341e9bd36ff0d49b7a073f26a096c8a6bc39498ab5",
+      "normalization": "whitespace runs collapsed to one space (the projection breaks lines)"
+     },
+     "page": 22
+    },
+    {
+     "ref": "loc-unit-slip",
+     "selectorKind": "PDF_TEXT",
+     "quote": "(181 mg/day to 960 g/day)",
+     "quotePrefix": "and forms of\r\nmagnesium studied ",
+     "quoteSuffix": ", age of study participants (mea",
+     "startOffset": 77948,
+     "endOffset": 77973,
+     "properties": {
+      "quoteHash": "sha256:cbedd17eb567322bbbcf5ff93eeb8121b18f1110f50e445b175cc4c74b912053"
+     },
+     "page": 23
+    },
+    {
+     "ref": "loc-350mg-condition",
+     "selectorKind": "PDF_TEXT",
+     "quote": "we intend to consider, as a factor in the exercise of our enforcement discretion, that dietary supplements bearing the claim do not provide more than 350 mg magnesium combined when used according to their labeling.",
+     "quotePrefix": " 21 CFR 101.14(b)(3)(ii). Thus, ",
+     "quoteSuffix": "\r\n\r\nC. Low Sodium Enforcement Di",
+     "startOffset": 81441,
+     "endOffset": 81657,
+     "properties": {
+      "quoteHash": "sha256:8e4a72041ef3c5d959862d0ef73e7cfd07de6df984197114a967500cd306baa4",
+      "normalization": "whitespace runs collapsed to one space (the projection breaks lines)"
+     },
+     "page": 24
+    },
+    {
+     "ref": "loc-overstates",
+     "selectorKind": "PDF_TEXT",
+     "quote": "describing the level of evidence for the claim as “supportive” overstates and therefore mischaracterizes the strength of the evidence for a relationship between magnesium consumption and reduced risk of high blood pressure (hypertension).",
+     "quotePrefix": "ce supports the claim. However, ",
+     "quoteSuffix": " As discussed in section III of ",
+     "startOffset": 94405,
+     "endOffset": 94646,
+     "properties": {
+      "quoteHash": "sha256:bb7b1d3325a2e9a73988c64a50baa47fb8dbc9e83218856da956721975d77f90",
+      "normalization": "whitespace runs collapsed to one space (the projection breaks lines)"
+     },
+     "page": 27
+    },
+    {
+     "ref": "loc-fda-status",
+     "selectorKind": "PDF_TEXT",
+     "quote": "Thus, FDA intends to consider exercising enforcement discretion for the following qualified health claims for conventional foods and dietary supplements:",
+     "quotePrefix": "e 28 ‒ Guy H. Johnson, Ph.D.\r\n\r\n",
+     "quoteSuffix": "\r\n\r\n“Inconsistent and inconclusi",
+     "startOffset": 95514,
+     "endOffset": 95668,
+     "properties": {
+      "quoteHash": "sha256:8cd21f4eec09c0b54dbb0e4145b5d12d6fe818386d461b8753392e4b1adf90b1",
+      "normalization": "whitespace runs collapsed to one space (the projection breaks lines)"
+     },
+     "page": 28
+    },
+    {
+     "ref": "loc-fda-qualified-claim",
+     "selectorKind": "PDF_TEXT",
+     "quote": "Inconsistent and inconclusive scientific evidence suggests that diets with adequate magnesium may reduce the risk of high blood pressure (hypertension), a condition associated with many factors.",
+     "quotePrefix": "ds and dietary supplements:\r\n\r\n“",
+     "quoteSuffix": "”\r\n“Consuming diets with adequat",
+     "startOffset": 95673,
+     "endOffset": 95869,
+     "properties": {
+      "quoteHash": "sha256:07bfa8456b740f0b357b988b16fe8c232a2847c2b24237197572fb373e2e9548",
+      "normalization": "whitespace runs collapsed to one space (the projection breaks lines)"
+     },
+     "page": 28
+    },
+    {
+     "ref": "loc-fda-qualified-claim-2",
+     "selectorKind": "PDF_TEXT",
+     "quote": "Consuming diets with adequate magnesium may reduce the risk of high blood pressure (hypertension). However, FDA has concluded that the evidence is inconsistent and inconclusive.",
+     "quotePrefix": "ssociated with many factors.”\r\n“",
+     "quoteSuffix": "”\r\n“Some scientific evidence sug",
+     "startOffset": 95873,
+     "endOffset": 96052,
+     "properties": {
+      "quoteHash": "sha256:44cf1db1424d7f1c00b7cdbbd6b6e656b094dafaab613a4cc99f64bf61519faf",
+      "normalization": "whitespace runs collapsed to one space (the projection breaks lines)"
+     },
+     "page": 28
+    },
+    {
+     "ref": "loc-fda-qualified-claim-3",
+     "selectorKind": "PDF_TEXT",
+     "quote": "Some scientific evidence suggests that diets with adequate magnesium may reduce the risk of high blood pressure (hypertension), a condition associated with many factors. FDA has concluded that the scientific evidence supporting this claim is inconsistent and not conclusive.",
+     "quotePrefix": "onsistent and\r\ninconclusive.”\r\n“",
+     "quoteSuffix": "”\r\n\r\nFDA intends to consider exe",
+     "startOffset": 96056,
+     "endOffset": 96333,
+     "properties": {
+      "quoteHash": "sha256:49982151ffe72cb490d894e182b6cf75c207327998d8169a3c7d63b0a5bd2831",
+      "normalization": "whitespace runs collapsed to one space (the projection breaks lines)"
+     },
+     "page": 28
+    },
+    {
+     "ref": "loc-dose-range-p22",
+     "selectorKind": "PDF_TEXT",
+     "quote": "the dose of elemental magnesium ranged from 181 mg/day to 960 mg/day.",
+     "quotePrefix": "d from 1 week to 6\r\nmonths, and ",
+     "quoteSuffix": " The\r\nremaining 20 intervention ",
+     "startOffset": 76258,
+     "endOffset": 76327,
+     "properties": {
+      "quoteHash": "sha256:6bb91b6a1946e4e35c0d42f7e0967c417e382fcd8618dbef04ac005c9a4c2380"
+     },
+     "page": 22
+    },
+    {
+     "ref": "loc-dose-range-nobenefit",
+     "selectorKind": "PDF_TEXT",
+     "quote": "with elemental magnesium intake ranging from 240 mg/day to 720 mg/day.",
+     "quotePrefix": "anged from 1 month to 6 months, ",
+     "quoteSuffix": " One moderate quality study (the",
+     "startOffset": 76498,
+     "endOffset": 76569,
+     "properties": {
+      "quoteHash": "sha256:edebf3cd5aadf6988d7eaa57439398ce83ff5fe988cf0ccd05705827a08566ee",
+      "normalization": "whitespace runs collapsed to one space (the projection breaks lines)"
+     },
+     "page": 22
+    }
+   ]
+  },
+  {
+   "ref": "snap-ods-mg-hp",
+   "source": {
+    "canonicalUri": "https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/",
+    "sourceKind": "WEB_PAGE",
+    "properties": {
+     "genre": "GOVERNMENT_FACT_SHEET"
+    }
+   },
+   "snapshot": {
+    "observedAt": "2026-10-08T21:39:08Z",
+    "retrievedAt": "2026-10-08T21:39:08Z",
+    "contentHash": "sha256:6f0ffe69dd9ed544ab541b462ae696280607d261e6f61c0780a52ca174c96a36",
+    "contentHashBasis": "TOOL_RENDITION",
+    "captureCompleteness": "UNKNOWN",
+    "properties": {
+     "captureMethod": "tavily-extract (tvly 0.1.5, basic, raw_content)",
+     "mimeType": "text/markdown"
+    }
+   },
+   "locators": [
+    {
+     "ref": "loc-ods-approved",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "In 2022, the U.S. Food and Drug Administration (FDA) approved a qualified health claim for conventional foods and dietary supplements that contain magnesium",
+     "quotePrefix": "agnesium cannot be determined.\n\n",
+     "quoteSuffix": " [[34](https://ods.od.nih.gov/fa",
+     "startOffset": 49605,
+     "endOffset": 49761,
+     "properties": {
+      "quoteHash": "sha256:88f939ca9a0732a249f35faf7dd2e3f9ea779b7e5ae3222fb00d1e76d66c5daa"
+     },
+     "section": "Hypertension and cardiovascular disease"
+    }
+   ]
+  },
+  {
+   "ref": "snap-examine-mg",
+   "source": {
+    "canonicalUri": "https://examine.com/supplements/magnesium/",
+    "sourceKind": "WEB_PAGE",
+    "properties": {
+     "genre": "COMMERCIAL_EVIDENCE_DATABASE_PAGE"
+    }
+   },
+   "snapshot": {
+    "observedAt": "2026-10-08T21:39:08Z",
+    "retrievedAt": "2026-10-08T21:39:08Z",
+    "contentHash": "sha256:2acc1500308703e5da1df108257ec0c0a8b55bc052523997be67d9639c7cf2b9",
+    "contentHashBasis": "TOOL_RENDITION",
+    "captureCompleteness": "PARTIAL_EXCERPT",
+    "properties": {
+     "captureMethod": "tavily-extract (tvly 0.1.5, basic, raw_content)",
+     "mimeType": "text/markdown"
+    }
+   },
+   "locators": [
+    {
+     "ref": "loc-examine-dose-range",
+     "selectorKind": "TEXT_QUOTE",
+     "quote": "Doses used in studies have ranged from 30 to 960 *milligrams per day* (mg/day) of *elemental* magnesium.",
+     "quotePrefix": "\n### Range of dosages studied:\n\n",
+     "quoteSuffix": "\n\n**Magnesium RDA**\n\nThe *[recom",
+     "startOffset": 3026,
+     "endOffset": 3130,
+     "properties": {
+      "quoteHash": "sha256:d8cb3f9be4143d3c699b855e4dfd62f54082e8d093073dbd038050d5168df61a"
+     },
+     "section": "Range of dosages studied:"
+    }
+   ]
+  }
+ ],
+ "subjects": [
+  {
+   "ref": "e-claim",
+   "mode": "new",
+   "nodeType": "Claim",
+   "name": "diets with adequate magnesium may reduce the risk of high blood pressure (hypertension)",
+   "onMatch": "use_existing",
+   "properties": {
+    "proposition": "diets with adequate magnesium may reduce the risk of high blood pressure (hypertension)",
+    "propositionHash": "sha256:67c4066593bffae299facb3ac19cfa20330bc44bb4049eabe283f397a4271a95",
+    "claimType": "CAUSAL"
+   },
+   "uidSegment": "fx-d10-mg-diet-reduces-hypertension-risk"
+  },
+  {
+   "ref": "e-mg",
+   "mode": "new",
+   "nodeType": "ChemicalSubstance",
+   "name": "magnesium",
+   "onMatch": "use_existing",
+   "properties": {},
+   "uidSegment": "fx-magnesium"
+  },
+  {
+   "ref": "e-hypertension",
+   "mode": "new",
+   "nodeType": "Condition",
+   "name": "high blood pressure (hypertension)",
+   "onMatch": "use_existing",
+   "properties": {},
+   "uidSegment": "fx-hypertension"
+  },
+  {
+   "ref": "e-fda",
+   "mode": "new",
+   "nodeType": "Organization",
+   "name": "U.S. Food and Drug Administration (letter signed by the Director, Office of Nutrition and Food Labeling, Center for Food Safety and Applied Nutrition)",
+   "onMatch": "use_existing",
+   "properties": {},
+   "uidSegment": "fx-us-fda"
+  },
+  {
+   "ref": "e-cmer",
+   "mode": "new",
+   "nodeType": "Organization",
+   "name": "The Center for Magnesium Education and Research, LLC (petitioner)",
+   "onMatch": "use_existing",
+   "properties": {},
+   "uidSegment": "fx-center-for-magnesium-education-and-research"
+  },
+  {
+   "ref": "e-jns",
+   "mode": "new",
+   "nodeType": "Organization",
+   "name": "Johnson Nutrition Solutions LLC (submitted the petition on the petitioner's behalf)",
+   "onMatch": "use_existing",
+   "properties": {},
+   "uidSegment": "fx-johnson-nutrition-solutions"
+  },
+  {
+   "ref": "e-ods",
+   "mode": "new",
+   "nodeType": "Organization",
+   "name": "NIH Office of Dietary Supplements",
+   "onMatch": "use_existing",
+   "properties": {},
+   "uidSegment": "fx-nih-ods"
+  },
+  {
+   "ref": "e-examine",
+   "mode": "new",
+   "nodeType": "Organization",
+   "name": "Examine.com",
+   "onMatch": "use_existing",
+   "properties": {},
+   "uidSegment": "fx-examine"
+  }
+ ],
+ "proposals": [
+  {
+   "proposalId": "p-a-petitioner-strength",
+   "evidence": [
+    "loc-petitioner-claim"
+   ],
+   "dependsOn": [],
+   "rationale": "qualifiers: proposed model claim for conventional foods and dietary supplements containing magnesium; as restated in FDA's response letter (the petition itself was not captured)",
+   "kind": "assertion.literal",
+   "subjectRef": "e-claim",
+   "predicate": "CHARACTERIZES_EVIDENCE_STRENGTH",
+   "assertion": {
+    "predicate": "CHARACTERIZES_EVIDENCE_STRENGTH",
+    "validity": {
+     "validFrom": "2016-10-04T00:00:00Z",
+     "validFromPrecision": "DAY",
+     "validFromBasis": "STATED_BY_SOURCE"
+    },
+    "polarity": "POSITIVE",
+    "basisKind": "CITED_FROM_PRIOR_WORK",
+    "speechAct": "STATES",
+    "uidSegment": "fx-d10-petitioner-strength-supportive"
+   },
+   "asserterRef": "e-cmer",
+   "valueString": "supportive but inconclusive"
+  },
+  {
+   "proposalId": "p-a-fda-strength",
+   "evidence": [
+    "loc-inconsistent",
+    "loc-overstates"
+   ],
+   "dependsOn": [],
+   "kind": "assertion.literal",
+   "subjectRef": "e-claim",
+   "predicate": "CHARACTERIZES_EVIDENCE_STRENGTH",
+   "assertion": {
+    "predicate": "CHARACTERIZES_EVIDENCE_STRENGTH",
+    "validity": {
+     "validFrom": "2022-01-08T00:00:00Z",
+     "validFromPrecision": "DAY",
+     "validFromBasis": "STATED_BY_SOURCE"
+    },
+    "polarity": "MIXED",
+    "basisKind": "EXPERT_OPINION",
+    "speechAct": "STATES",
+    "uidSegment": "fx-d10-fda-strength-inconsistent-inconclusive"
+   },
+   "asserterRef": "e-fda",
+   "valueString": "inconsistent and inconclusive"
+  },
+  {
+   "proposalId": "p-a-qualified-wording",
+   "evidence": [
+    "loc-fda-status",
+    "loc-fda-qualified-claim"
+   ],
+   "dependsOn": [],
+   "rationale": "qualifiers: qualified claim wording 1 of 3 listed on p. 28; conventional foods and dietary supplements; enforcement discretion, not authorization; docket FDA-2016-Q-3770",
+   "kind": "assertion.literal",
+   "subjectRef": "e-claim",
+   "predicate": "REQUIRES_QUALIFIED_CLAIM_WORDING",
+   "assertion": {
+    "predicate": "REQUIRES_QUALIFIED_CLAIM_WORDING",
+    "validity": {
+     "validFrom": "2022-01-08T00:00:00Z",
+     "validFromPrecision": "DAY",
+     "validFromBasis": "STATED_BY_SOURCE"
+    },
+    "speechAct": "STATES",
+    "uidSegment": "fx-d10-fda-requires-qualified-wording"
+   },
+   "asserterRef": "e-fda",
+   "valueString": "Inconsistent and inconclusive scientific evidence suggests that diets with adequate magnesium may reduce the risk of high blood pressure (hypertension), a condition associated with many factors."
+  },
+  {
+   "proposalId": "p-a-qualified-wording-2",
+   "evidence": [
+    "loc-fda-status",
+    "loc-fda-qualified-claim-2"
+   ],
+   "dependsOn": [],
+   "rationale": "qualifiers: qualified claim wording 2 of 3 listed on p. 28; conventional foods and dietary supplements; enforcement discretion, not authorization; docket FDA-2016-Q-3770; added in the adversarial-review stage",
+   "kind": "assertion.literal",
+   "subjectRef": "e-claim",
+   "predicate": "REQUIRES_QUALIFIED_CLAIM_WORDING",
+   "assertion": {
+    "predicate": "REQUIRES_QUALIFIED_CLAIM_WORDING",
+    "validity": {
+     "validFrom": "2022-01-08T00:00:00Z",
+     "validFromPrecision": "DAY",
+     "validFromBasis": "STATED_BY_SOURCE"
+    },
+    "speechAct": "STATES",
+    "uidSegment": "fx-d10-fda-requires-qualified-wording-2"
+   },
+   "asserterRef": "e-fda",
+   "valueString": "Consuming diets with adequate magnesium may reduce the risk of high blood pressure (hypertension). However, FDA has concluded that the evidence is inconsistent and inconclusive."
+  },
+  {
+   "proposalId": "p-a-qualified-wording-3",
+   "evidence": [
+    "loc-fda-status",
+    "loc-fda-qualified-claim-3"
+   ],
+   "dependsOn": [],
+   "rationale": "qualifiers: qualified claim wording 3 of 3 listed on p. 28; conventional foods and dietary supplements; enforcement discretion, not authorization; docket FDA-2016-Q-3770; added in the adversarial-review stage",
+   "kind": "assertion.literal",
+   "subjectRef": "e-claim",
+   "predicate": "REQUIRES_QUALIFIED_CLAIM_WORDING",
+   "assertion": {
+    "predicate": "REQUIRES_QUALIFIED_CLAIM_WORDING",
+    "validity": {
+     "validFrom": "2022-01-08T00:00:00Z",
+     "validFromPrecision": "DAY",
+     "validFromBasis": "STATED_BY_SOURCE"
+    },
+    "speechAct": "STATES",
+    "uidSegment": "fx-d10-fda-requires-qualified-wording-3"
+   },
+   "asserterRef": "e-fda",
+   "valueString": "Some scientific evidence suggests that diets with adequate magnesium may reduce the risk of high blood pressure (hypertension), a condition associated with many factors. FDA has concluded that the scientific evidence supporting this claim is inconsistent and not conclusive."
+  },
+  {
+   "proposalId": "p-a-fda-status",
+   "evidence": [
+    "loc-fda-status",
+    "loc-docket"
+   ],
+   "dependsOn": [],
+   "kind": "assertion.literal",
+   "subjectRef": "e-claim",
+   "predicate": "RATES_CLAIM",
+   "assertion": {
+    "predicate": "RATES_CLAIM",
+    "validity": {
+     "validFrom": "2022-01-08T00:00:00Z",
+     "validFromPrecision": "DAY",
+     "validFromBasis": "STATED_BY_SOURCE"
+    },
+    "speechAct": "STATES",
+    "uidSegment": "fx-d10-fda-status-enforcement-discretion"
+   },
+   "asserterRef": "e-fda",
+   "valueString": "FDA intends to consider exercising enforcement discretion (qualified health claim)",
+   "rationale": "close-out FU-03: STATES_REGULATORY_STATUS re-keyed to RATES_CLAIM (K; subject the Claim, valueString the status)"
+  },
+  {
+   "proposalId": "p-a-350-condition",
+   "evidence": [
+    "loc-350mg-condition"
+   ],
+   "dependsOn": [],
+   "rationale": "qualifiers: productClass=dietary supplements bearing the claim; magnesium combined; when used according to their labeling; a factor in the exercise of enforcement discretion; the quoted span states no time unit; close-out FU-03 (R-93): CONDITIONS_CLAIM_USE_ON_MAX_AMOUNT re-keyed to HAS_CLAIM_CONDITION (D8), subject the kernel Claim instead of the product-class pseudo-subject (removed)",
+   "kind": "assertion.literal",
+   "subjectRef": "e-claim",
+   "predicate": "HAS_CLAIM_CONDITION",
+   "assertion": {
+    "predicate": "HAS_CLAIM_CONDITION",
+    "validity": {
+     "validFrom": "2022-01-08T00:00:00Z",
+     "validFromPrecision": "DAY",
+     "validFromBasis": "STATED_BY_SOURCE"
+    },
+    "speechAct": "STATES",
+    "uidSegment": "fx-d10-fda-350mg-condition"
+   },
+   "asserterRef": "e-fda",
+   "valueNumber": 350,
+   "unitCode": "mg",
+   "valueString": "not more than 350 mg magnesium combined when used according to their labeling"
+  },
+  {
+   "proposalId": "p-a-unit-slip",
+   "evidence": [
+    "loc-unit-slip"
+   ],
+   "dependsOn": [],
+   "kind": "assertion.literal",
+   "subjectRef": "e-claim",
+   "predicate": "REPORTS_DOSE_RANGE_STUDIED",
+   "assertion": {
+    "predicate": "REPORTS_DOSE_RANGE_STUDIED",
+    "validity": {
+     "validFrom": "2022-01-08T00:00:00Z",
+     "validFromPrecision": "DAY",
+     "validFromBasis": "STATED_BY_SOURCE"
+    },
+    "speechAct": "STATES",
+    "uidSegment": "fx-d10-fda-dose-range-studied"
+   },
+   "asserterRef": "e-fda",
+   "valueString": "(181 mg/day to 960 g/day)"
+  },
+  {
+   "proposalId": "p-a-dose-range-benefit",
+   "evidence": [
+    "loc-dose-range-p22"
+   ],
+   "dependsOn": [],
+   "rationale": "qualifiers: the 18 intervention studies that showed a statistically significant benefit; elemental magnesium; p. 22",
+   "kind": "assertion.literal",
+   "subjectRef": "e-claim",
+   "predicate": "REPORTS_DOSE_RANGE_STUDIED",
+   "assertion": {
+    "predicate": "REPORTS_DOSE_RANGE_STUDIED",
+    "validity": {
+     "validFrom": "2022-01-08T00:00:00Z",
+     "validFromPrecision": "DAY",
+     "validFromBasis": "STATED_BY_SOURCE"
+    },
+    "speechAct": "STATES",
+    "uidSegment": "fx-d10-fda-dose-range-benefit-studies"
+   },
+   "asserterRef": "e-fda",
+   "valueString": "181 mg/day to 960 mg/day"
+  },
+  {
+   "proposalId": "p-a-dose-range-nobenefit",
+   "evidence": [
+    "loc-dose-range-nobenefit"
+   ],
+   "dependsOn": [],
+   "rationale": "qualifiers: the 20 intervention studies that showed no benefit; elemental magnesium intake; p. 22",
+   "kind": "assertion.literal",
+   "subjectRef": "e-claim",
+   "predicate": "REPORTS_DOSE_RANGE_STUDIED",
+   "assertion": {
+    "predicate": "REPORTS_DOSE_RANGE_STUDIED",
+    "validity": {
+     "validFrom": "2022-01-08T00:00:00Z",
+     "validFromPrecision": "DAY",
+     "validFromBasis": "STATED_BY_SOURCE"
+    },
+    "speechAct": "STATES",
+    "uidSegment": "fx-d10-fda-dose-range-no-benefit-studies"
+   },
+   "asserterRef": "e-fda",
+   "valueString": "240 mg/day to 720 mg/day"
+  },
+  {
+   "proposalId": "p-a-examine-dose-range",
+   "evidence": [
+    "loc-examine-dose-range"
+   ],
+   "dependsOn": [],
+   "kind": "assertion.literal",
+   "subjectRef": "e-mg",
+   "predicate": "REPORTS_DOSE_RANGE_STUDIED",
+   "assertion": {
+    "predicate": "REPORTS_DOSE_RANGE_STUDIED",
+    "validity": {
+     "statedAsOf": "2026-09-30T00:00:00Z",
+     "validFromBasis": "OBSERVATION_ONLY",
+     "validFrom": null
+    },
+    "speechAct": "STATES",
+    "uidSegment": "fx-d10-examine-dose-range-studied"
+   },
+   "asserterRef": "e-examine",
+   "valueString": "30 to 960 mg/day of elemental magnesium"
+  },
+  {
+   "proposalId": "p-a-ods-approved",
+   "evidence": [
+    "loc-ods-approved"
+   ],
+   "dependsOn": [],
+   "kind": "assertion.literal",
+   "subjectRef": "e-claim",
+   "predicate": "RATES_CLAIM",
+   "assertion": {
+    "predicate": "RATES_CLAIM",
+    "validity": {
+     "validFrom": "2022-01-01T00:00:00Z",
+     "validFromPrecision": "YEAR",
+     "validFromBasis": "STATED_BY_SOURCE"
+    },
+    "speechAct": "STATES",
+    "uidSegment": "fx-d10-ods-status-approved"
+   },
+   "asserterRef": "e-ods",
+   "valueString": "approved (qualified health claim, 2022)",
+   "rationale": "close-out FU-03: STATES_REGULATORY_STATUS re-keyed to RATES_CLAIM (K; subject the Claim, valueString the status)"
+  }
+ ],
+ "notes": "Generated from locators.yaml + assertions.yaml (fixtures stage, A1, 2026-10-08; regenerated in the adversarial-review stage). useConstraint records are D5-owned derived records (RESOLVES_TO_CONSTRAINT), listed for the BLOCKED_BY trace. FIXTURE ids: missionId/runId and uidSegments are fixture ids. Expressible in biotech-knowledge-intent.v1: sources, snapshots, locators, subjects, assertion.literal, edge.assert, node.upsert (DecisionCriterion). NOT expressible in v1 (no proposal kind; they need report.publish / assessment.record / projection.write intents, see 11-open-questions.md): assessment:s-strength, assessment:s-fidelity-unit, assessment:s-fidelity-status, report:r-evidence-report, reportItem:i-claim-under-test, reportItem:i-evidence-against, reportItem:i-verdict, reportItem:i-harms, reportItem:i-missing-or-disputed. edge.assert proposals carry D10 predicate-only or sibling-owned predicates as relationshipType; v1 has no 'assertion with an entity object but no typed edge' kind, so the planner would reject them until one exists. Captured with sha256 of the bytes (contentHashBasis as stated); verify quotes with locators.yaml."
+}

@@ -1,0 +1,245 @@
+# Assertions for fixture nr-muscle-unstructured (packet D2, fixtures stage, A3, 2026-10-08).
+# Shape: kernel pattern (packets/K/09-reasoning.md, A1): every finding is a kernel Assertion with exactly one subject,
+# one object, one asserter and >= 1 located span (HAS_EVIDENCE -> SourceLocator ids in locators.yaml). D2 adds the
+# OBSERVED_IN_CONTEXT edge (Assertion -> MechanismEvidenceContext) and the context's EXPOSED_TO / IN_STUDY_ARM edges.
+# Types are written <module>.<Type> (D2 = this SDL; K = kernel; D1/D3/D4/D5/D7 = seams in 10-seams.yaml).
+# IDs: every uid, missionId and runId below is a FIXTURE id (namespace "fx-d2"), not a Mission Control or graph id.
+# producedBy.missionId mission:ft-D2-fixtures is the fixture "mission"; runId names the fixture run; derived edges are
+# produced by the fixture projection run run:ft-D2-projection (scratch ft/D2/bin/project.py, method d2.affects-mechanism/v1).
+# Predicates are D2's registered predicate-only values (05-relationship-register.yaml predicateOnly).
+# Adversarial review (2026-10-08): both contexts are a registered group (IN_STUDY_ARM NCT02950441), so the dose of record is
+# D3's InterventionComponent (seamRecords IC-nr-01) and the context exposure fields are empty; the NR → IL-6
+# (MolecularEntity) projection is gone (pair cut), A-nr-05 answers the IL-6 rows directly.
+fixture: nr-muscle-unstructured
+idNote: fixture-scoped ids (hu:<token>:fx-d2-...); mission/run ids are fixture ids, not Mission Control ids
+producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-nr-muscle-unstructured" }
+
+entities:
+  - { ref: nr, type: D1.ChemicalSubstance, uid: "hu:chemical-substance:fx-d2-nicotinamide-riboside", name: nicotinamide riboside,
+      identifiers: [ { scheme: CHEBI, value: "CHEBI:15927", evidence: L-r-09, note: "ChEBI id as Reactome lists N-ribosylnicotinamide (reactome-chembl-reference)" } ] }
+  - { ref: naad, type: D1.ChemicalSubstance, uid: "hu:chemical-substance:fx-d2-naad", name: "nicotinic acid adenine dinucleotide (NAAD)",
+      identifiers: [ { scheme: CHEBI, value: "CHEBI:58437", evidence: L-r-08, note: "Reactome participant 'deamido-NAD(2-)' (charge state; D1 decides parent vs charge form)" } ] }
+  - { ref: nad, type: D1.ChemicalSubstance, uid: "hu:chemical-substance:fx-d2-nad", name: "NAD+",
+      identifiers: [ { scheme: CHEBI, value: "CHEBI:57540", evidence: L-r-07, note: "Reactome participant 'NAD(1-)' (charge state)" } ] }
+  - { ref: m-protein-deacetylation, type: D2.Mechanism, uid: "hu:mechanism:fx-d2-go-0006476", name: protein deacetylation,
+      properties: { key: "go:GO:0006476", mechanismKind: PROCESS, referenceScheme: GO, synonyms: ["sirtuin-mediated deacetylation", "protein deacylation"] },
+      identifiers: [ { scheme: GO, value: "GO:0006476", note: "QuickGO term fetched 2026-10-08 (scratch fresh/quickgo-GO0006476.json)" } ] }
+  - { ref: m-oxphos, type: D2.Mechanism, uid: "hu:mechanism:fx-d2-go-0006119", name: oxidative phosphorylation,
+      properties: { key: "go:GO:0006119", mechanismKind: PROCESS, referenceScheme: GO },
+      identifiers: [ { scheme: GO, value: "GO:0006119", note: "QuickGO term fetched 2026-10-08" } ] }
+  - { ref: me-il6, type: D2.MolecularEntity, uid: "hu:molecular-entity:fx-d2-il6", name: Interleukin-6,
+      properties: { entityKind: PROTEIN, geneSymbol: IL6, organism: HUMAN, ncbiTaxonId: "9606" },
+      identifiers: [ { scheme: UNIPROT, value: P05231, note: "UniProt REST lookup 2026-10-08" } ] }
+  - { ref: arm-nr, type: D3.StudyArm, uid: "hu:study-arm:fx-d2-nct02950441-nicotinamide-riboside", name: "NCT02950441 arm 'Nicotinamide Riboside'",
+      identifiers: [ { scheme: NCT, value: NCT02950441, evidence: L-nr-14 } ] }
+  - { ref: asserter-elhassan2019, type: D7.Person, uid: "hu:person:fx-d2-elhassan-ys", name: "Yasir S. Elhassan (first author, for the author group of PMID 31412242)",
+      note: "ASSERTED_BY needs exactly one asserter; D7 decides how an author group is represented (11-open-questions)" }
+  - { ref: org-chromadex, type: D7.Organization, uid: "hu:organization:fx-d2-chromadex", name: ChromaDex }
+  - { ref: person-cb, type: D7.Person, uid: "hu:person:fx-d2-author-cb", name: "C.B. (author initials as printed in the Declaration of Interests)" }
+
+contexts:
+  - ref: ctx-nr-muscle
+    type: D2.MechanismEvidenceContext
+    uid: "hu:mech-context:fx-d2-elhassan2019-nr-muscle"
+    evidence: [L-nr-05, L-nr-06, L-nr-07]
+    properties:
+      groupLabel: "12 aged men with 1 g NR per day for 21 days"
+      setting: HUMAN_INTERVENTIONAL
+      organism: HUMAN
+      ncbiTaxonId: "9606"
+      sexScope: MALE
+      ageDescriptor: "aged men"
+      sampleSize: 12
+      compartmentKind: TISSUE
+      compartmentOntologyId: "UBERON:0001379"
+      compartmentLabel: "vastus lateralis muscle biopsy"
+      geneticManipulation: NONE
+      # exposure fields empty: registered group; dose of record = D3 InterventionComponent IC-nr-01
+      assayText: "targeted LC-MS/MS NAD+ metabolome; western blot pan-acetylation; high-resolution respirometry"
+  - ref: ctx-nr-serum
+    type: D2.MechanismEvidenceContext
+    uid: "hu:mech-context:fx-d2-elhassan2019-nr-serum"
+    evidence: [L-nr-05, L-nr-08]
+    properties:
+      groupLabel: "12 aged men with 1 g NR per day for 21 days"
+      setting: HUMAN_INTERVENTIONAL
+      organism: HUMAN
+      ncbiTaxonId: "9606"
+      sexScope: MALE
+      ageDescriptor: "aged men"
+      sampleSize: 12
+      compartmentKind: BODY_FLUID
+      compartmentOntologyId: "UBERON:0001977"
+      compartmentLabel: "serum"
+      geneticManipulation: NONE
+      # exposure fields empty: registered group; dose of record = D3 InterventionComponent IC-nr-01
+      assayText: "serum inflammatory cytokine panel (Figure 6)"
+
+structuralEdges:
+  - { type: EXPOSED_TO, from: ctx-nr-muscle, to: nr, properties: { exposureRole: TESTED, orderIndex: 0 }, evidence: [L-nr-05] }
+  - { type: EXPOSED_TO, from: ctx-nr-serum, to: nr, properties: { exposureRole: TESTED, orderIndex: 0 }, evidence: [L-nr-05] }
+  - { type: IN_STUDY_ARM, from: ctx-nr-muscle, to: arm-nr, evidence: [L-nr-14] }
+  - { type: IN_STUDY_ARM, from: ctx-nr-serum, to: arm-nr, evidence: [L-nr-14] }
+  # OBSERVED_IN_CONTEXT (Assertion -> context) is listed on each assertion as `context:`.
+
+assertions:
+  - id: A-nr-01
+    uid: "hu:assertion:fx-d2-nr-01"
+    assertionKind: RELATIONSHIP
+    claimType: MEASUREMENT
+    predicate: NO_CHANGE_IN
+    subject: { ref: nr, type: D1.ChemicalSubstance }
+    object: { ref: m-protein-deacetylation, type: D2.Mechanism }
+    polarity: POSITIVE          # measured null: the source affirms that nothing changed (03 null rule)
+    basisKind: DIRECT_MEASUREMENT
+    speechAct: STATES
+    asserter: { ref: asserter-elhassan2019, type: D7.Person }
+    evidence: [ { locator: L-nr-01, role: SUPPORTS, origin: DECLARED } ]
+    context: ctx-nr-muscle      # OBSERVED_IN_CONTEXT
+    qualifiers: ["readout: western blot pan-acetylation of muscle protein (proxy for sirtuin-mediated deacetylation activity)"]
+    validTime: { validFrom: null, validTo: null, validFromBasis: UNKNOWN }   # timeless biological finding; recorded time only
+    status: ACCEPTED            # after ADJ-nr-01 (CAPTURE_FIDELITY, PASS)
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-nr-muscle-unstructured" }
+  - id: A-nr-02
+    uid: "hu:assertion:fx-d2-nr-02"
+    assertionKind: RELATIONSHIP
+    claimType: MEASUREMENT
+    predicate: INCREASES_LEVEL_OF
+    subject: { ref: nr, type: D1.ChemicalSubstance }
+    object: { ref: naad, type: D1.ChemicalSubstance }
+    polarity: POSITIVE
+    basisKind: DIRECT_MEASUREMENT
+    speechAct: STATES
+    asserter: { ref: asserter-elhassan2019, type: D7.Person }
+    evidence: [ { locator: L-nr-02, role: SUPPORTS, origin: DECLARED } ]
+    context: ctx-nr-muscle
+    qualifiers: ["2-fold vs placebo; NR 0.73 vs placebo 0.35 pmol/mg; p = 0.004"]
+    validTime: { validFrom: null, validTo: null, validFromBasis: UNKNOWN }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-nr-muscle-unstructured" }
+  - id: A-nr-03
+    uid: "hu:assertion:fx-d2-nr-03"
+    assertionKind: RELATIONSHIP
+    claimType: MEASUREMENT
+    predicate: NO_CHANGE_IN
+    subject: { ref: nr, type: D1.ChemicalSubstance }
+    object: { ref: nad, type: D1.ChemicalSubstance }
+    polarity: POSITIVE
+    basisKind: DIRECT_MEASUREMENT
+    speechAct: STATES
+    asserter: { ref: asserter-elhassan2019, type: D7.Person }
+    evidence: [ { locator: L-nr-02, role: SUPPORTS, origin: DECLARED } ]
+    context: ctx-nr-muscle
+    qualifiers: ["NR 210 vs 197 pmol/mg; p = 0.22 (muscle)"]
+    validTime: { validFrom: null, validTo: null, validFromBasis: UNKNOWN }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-nr-muscle-unstructured" }
+  - id: A-nr-04
+    uid: "hu:assertion:fx-d2-nr-04"
+    assertionKind: RELATIONSHIP
+    claimType: MEASUREMENT
+    predicate: NO_CHANGE_IN
+    subject: { ref: nr, type: D1.ChemicalSubstance }
+    object: { ref: m-oxphos, type: D2.Mechanism }
+    polarity: POSITIVE
+    basisKind: DIRECT_MEASUREMENT
+    speechAct: STATES
+    asserter: { ref: asserter-elhassan2019, type: D7.Person }
+    evidence: [ { locator: L-nr-03, role: SUPPORTS, origin: DECLARED }, { locator: L-nr-10, role: SUPPORTS, origin: DECLARED } ]
+    context: ctx-nr-muscle
+    qualifiers: ["complex I- and complex II-mediated oxidative phosphorylation and maximal respiratory capacity, NR vs placebo"]
+    validTime: { validFrom: null, validTo: null, validFromBasis: UNKNOWN }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-nr-muscle-unstructured" }
+  - id: A-nr-05
+    uid: "hu:assertion:fx-d2-nr-05"
+    assertionKind: RELATIONSHIP
+    claimType: MEASUREMENT
+    predicate: DECREASES_LEVEL_OF
+    subject: { ref: nr, type: D1.ChemicalSubstance }
+    object: { ref: me-il6, type: D2.MolecularEntity }
+    polarity: POSITIVE
+    basisKind: DIRECT_MEASUREMENT
+    speechAct: STATES
+    asserter: { ref: asserter-elhassan2019, type: D7.Person }
+    evidence: [ { locator: L-nr-04, role: SUPPORTS, origin: DECLARED } ]
+    context: ctx-nr-serum
+    qualifiers: ["compared to baseline (within the NR phase), not to placebo", "IL-5, IL-2 and TNF-alpha also decreased in the same sentence (not asserted here)"]
+    validTime: { validFrom: null, validTo: null, validFromBasis: UNKNOWN }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-nr-muscle-unstructured" }
+  - id: A-nr-06
+    uid: "hu:assertion:fx-d2-nr-06"
+    assertionKind: RELATIONSHIP
+    claimType: PROVENANCE
+    predicate: HOLDS_EQUITY_IN          # D7-registered predicate (10-seams / 11-open-questions item 19); seam assertion for Q-D2-21
+    subject: { ref: person-cb, type: D7.Person }
+    object: { ref: org-chromadex, type: D7.Organization }
+    polarity: POSITIVE
+    basisKind: DIRECT_MEASUREMENT        # self-disclosure printed in the source
+    speechAct: STATES
+    asserter: { ref: asserter-elhassan2019, type: D7.Person }
+    evidence: [ { locator: L-nr-09, role: SUPPORTS, origin: DECLARED } ]
+    context: null                        # not a mechanism observation: no OBSERVED_IN_CONTEXT
+    validTime: { validFrom: "2019-08-13T00:00:00Z", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-nr-muscle-unstructured" }
+
+adjudications:
+  - id: ADJ-nr-01
+    uid: "hu:adjudication:fx-d2-nr-01"
+    assesses: A-nr-01
+    adjudicationKind: CAPTURE_FIDELITY
+    judgeKind: DETERMINISTIC
+    methodVersion: "d2-fixture-quote-reselect/v1 (scratch ft/D2/bin/build_locators.py: re-fetch, sha256 match, normalized exact found once at the declared offsets)"
+    verdict: DIRECTLY_SUPPORTED
+    policyOutcome: PASS
+    evidence: [ { locator: L-nr-01, role: SUPPORTS, origin: DECLARED } ]
+    note: "Applies equally to A-nr-02..06 (same procedure); one shown. A SUPPORT adjudication (is the finding true?) is not made by a fixture."
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-nr-muscle-unstructured" }
+
+# Directive 3.8 / kernel pattern walk: question -> chunk -> assertion -> locator -> snapshot bytes -> adjudication.
+unstructuredToEntityPath:
+  question: CQ-MX-03   # "Has NR's sirtuin step been measured in humans, with what direction, including null?"
+  step1_chunk:
+    how: "D9 Chunk found by MENTIONS (derived, entity-link) of NR + protein deacetylation, or by vector search (chunk_embedding) on the question"
+    chunk: { textVersion: "derived text jats-xml2txt/v1 sha256:f786011bd4898fb819d08921e3be6ba8787e38b794b6509fc14ed1902e48e130", startOffset: 19556, endOffset: 21115,
+             chunker: "fixture paragraph rule (newline-delimited paragraph of the derived text)", chunkTextDigest: "sha256:301935e9ac168cd5572d8c481ae1c3f70991603c148067ab4807b0fd7d12b930",
+             mentionsInChunk: ["NR (x8)", "sirtuins", "acetylation", "NAD+"] }
+    mentionNoise: "Europe PMC's own mentions for the same sentence link 'NR' to UniProt A0A1A9TAK5 NorRed (L-nr-11) and 'NAD +' to CHEBI_182294 (L-nr-13); only 'acetylation' (L-nr-12, MOP_0000030) is right. MENTIONS are retrieval hints, never evidence."
+  step2_assertion: A-nr-01      # D9 COVERS_LOCATOR (derived span-overlap/v1) joins the chunk to L-nr-01 (20866-21004 lies inside 19556-21115); 03 Q-D2-24
+  step3_locator: L-nr-01        # TEXT_QUOTE, offsets 20866-21004, normalization none
+  step4_snapshot: { id: S-epmc-PMC6702140, contentHash: "sha256:fb1c0ad79ed4a06783c98d48dd51e7ec0a9640f71d8233626bdbd7c245820a03", contentHashBasis: RAW_BYTES }
+  step5_adjudication: ADJ-nr-01
+  answer: "Measured in humans: NR 1 g/day for 21 days did not change muscle protein (pan-)acetylation in 12 aged men (NO_CHANGE_IN, HUMAN_INTERVENTIONAL, vastus lateralis)."
+
+seamRecords:
+  # D3 dose of record for the registered NR group (shape only; D3 builds it from its stating record).
+  - id: IC-nr-01
+    owner: D3
+    type: D3.InterventionComponent
+    arm: arm-nr
+    administers: nr                 # via the D1 material that REALIZES_SUBSTANCE nicotinamide riboside
+    properties: { componentRole: ACTIVE, materialTextVerbatim: "NR", quantity: 1, unitCode: "g", quantityBasis: PER_DAY, route: ORAL, durationIso: P21D,
+                  verbatimDoseText: "1 g NR per day for 21 days" }
+    evidence: [L-nr-05, L-nr-14]
+
+# Derived edges (read-only projection; computed by scratch ft/D2/bin/project.py over all five fixtures, method d2.affects-mechanism/v1).
+# NAAD and NAD+ reach Reactome R-HSA-196807 through PARTICIPATES_IN edges in ../reactome-chembl-reference.
+derivedEdges:
+  - type: AFFECTS_MECHANISM
+    from: nr
+    to: m-protein-deacetylation
+    properties: { derivationRule: d2.affects-mechanism/v1, derivedFromAssertionUids: ["hu:assertion:fx-d2-nr-01"], direction: NO_CHANGE, bestBasis: DIRECT_MEASUREMENT, highestSetting: HUMAN_INTERVENTIONAL, humanMeasured: true, nContexts: 1, nHumanContexts: 1, nNoChangeContexts: 1, viaParticipant: false, score: 1.0 }
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-projection" }
+  - type: AFFECTS_MECHANISM
+    from: nr
+    to: m-oxphos
+    properties: { derivationRule: d2.affects-mechanism/v1, derivedFromAssertionUids: ["hu:assertion:fx-d2-nr-04"], direction: NO_CHANGE, bestBasis: DIRECT_MEASUREMENT, highestSetting: HUMAN_INTERVENTIONAL, humanMeasured: true, nContexts: 1, nHumanContexts: 1, nNoChangeContexts: 1, viaParticipant: false, score: 1.0 }
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-projection" }
+  - type: AFFECTS_MECHANISM
+    from: nr
+    to: m-reactome-196807
+    properties: { derivationRule: d2.affects-mechanism/v1, derivedFromAssertionUids: ["hu:assertion:fx-d2-nr-02", "hu:assertion:fx-d2-nr-03"], direction: MIXED, bestBasis: DIRECT_MEASUREMENT, highestSetting: HUMAN_INTERVENTIONAL, humanMeasured: true, nContexts: 1, nHumanContexts: 1, nNoChangeContexts: 1, viaParticipant: true, score: null }
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-projection" }
+    finding: "v1 collapses 'NAAD up, NAD+ unchanged' in one context to MIXED; the model stage expected INCREASES. See 11-open-questions item 21."

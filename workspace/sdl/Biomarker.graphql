@@ -1,0 +1,38 @@
+"""
+Purpose: the biological referent a measurement is about (NAD+, glycated hemoglobin, IgG glycan profile, pace of
+biological aging). The join point of the compound → mechanism → biomarker → test path: D1 analytes and D2 mechanisms
+attach here, D3 outcome definitions and D5 targets (OPERATIONALIZED_BY) point here, and several Metrics QUANTIFY one
+Biomarker without ever being merged into one series (HbA1c % vs DNAm logA1C).
+Identity rule: curated BellLabs slug (`hu:biomarker:<slug>`). No identifiers of its own: a (scheme, value) such as a
+ChEBI or UniProt id identifies the analyte (D1 ChemicalSubstance / D2 MolecularEntity, reached by HAS_ANALYTE), never
+the Biomarker too. uid token: `biomarker`.
+Questions: Q-D4-01, Q-D4-02, Q-D4-16, Q-D4-17, Q-D4-03, CQ-DX-01.
+"""
+type Biomarker implements Entity & Subjectable
+  @node(labels: ["Biomarker", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  biomarkerKind: BiomarkerKind!
+  description: String
+  "Names, synonyms and analyte names for fulltext entity linking (Q-D4-22)."
+  searchText: String
+  """class: structural; cardinality: zero_or_one (the chemical analyte when the referent is a defined substance: NAD+, NAAD, 25-OH vitamin D); questions: Q-D4-01, Q-D4-16."""
+  analytes: [ChemicalSubstance!]!
+    @relationship(type: "HAS_ANALYTE", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: zero_or_one (the gene product when the referent is a protein or protein modification: IL-6, HbA1c's hemoglobin beta; D2 Q-D2-03 'analyte-participant' branch); questions: Q-D4-01, Q-D4-16."""
+  analyteEntities: [MolecularEntity!]!
+    @relationship(type: "HAS_ANALYTE", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (one Assertion each, citing the paper that establishes the marker, e.g. NAAD for NR utilization); questions: Q-D4-01."""
+  reflectsMechanisms: [Mechanism!]!
+    @relationship(type: "REFLECTS_MECHANISM", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

@@ -1,0 +1,55 @@
+"""
+Purpose: one patent publication at one office (application, grant, reissue). Ownership and licensing are bitemporal
+episodes on ASSIGNED_TO and LICENSED_TO (Dartmouth assignee; ChromaDex/Niagen exclusive licensee; amended after the
+litigation); claim-level standing is a LegalStatus (CLAIMS_HELD_INVALID with claimNumbers) established by the court
+RegulatoryRecord, because the aggregator's 'Active' is an assumption. Merges pinned GrantedPatent, PatentApplication
+(publicationType), PatentFamily (familyId, familyDefinition), PatentClaim (claim numbers on LegalStatus; claim text
+stays in the snapshot), PatentLicense (LICENSED_TO episodes + Assertion qualifiers), IpRightStatus (LegalStatus).
+Identity rule: (office country code, publication number, kind code) = PATENT_PUB identifier. uid token: `patent`.
+Questions: Q-D8-11, Q-D8-12, Q-D8-13, Q-D8-14, Q-D8-21, CQ-EC-01.
+"""
+type Patent implements Entity & Subjectable
+  @node(labels: ["Patent", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  "Title."
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Office country code (US, EP, WO, ...)."
+  office: String!
+  "Publication number without country and kind code (e.g. 8197807)."
+  publicationNumber: String!
+  "Kind code (e.g. B2, A1)."
+  kindCode: String! @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  publicationType: PatentPublicationType!
+  "Family id under the stated definition (e.g. DOCDB simple family id)."
+  familyId: String
+  "Definition the familyId follows (DOCDB, INPADOC, SOURCE_LIST)."
+  familyDefinition: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  priorityDate: DateTime
+  filingDate: DateTime @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  grantDate: DateTime @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "Expiry as stated, with its basis; adjudicated or lapsed standing is a LegalStatus."
+  expiresAt: DateTime
+  expiryBasis: PatentDateBasis @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "Aggregator legal-status text verbatim (e.g. 'Active , expires 2026-11-19'), never a conclusion."
+  aggregatorStatusVerbatim: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  aggregatorStatusObservedAt: DateTime @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  """class: asserted; cardinality: one_or_more, many episodes (assignments change; valid time = assignment period); questions: Q-D8-11, Q-D8-12, CQ-EC-01."""
+  assignees: [Organization!]!
+    @relationship(type: "ASSIGNED_TO", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many, many episodes (grant, amendment, termination; exclusivity, field and territory are qualifiers on the authorizing Assertion); questions: Q-D8-11, Q-D8-21, CQ-EC-01."""
+  licensees: [Organization!]!
+    @relationship(type: "LICENSED_TO", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (topical, not coverage; coverage is an APPLICABILITY assessment; typed ChemicalSubstance, the ingredient-material member was cut without a fixture, R-73); questions: Q-D8-11, Q-D8-13, CQ-EC-01."""
+  concerns: [ChemicalSubstance!]!
+    @relationship(type: "CONCERNS", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

@@ -1,0 +1,12 @@
+{
+  "format": "bks-skill-example.v1",
+  "id": "product-to-source-trace",
+  "kind": "positive",
+  "task": "Trace a fact about a Product back to the captured source span.",
+  "lesson": "Product facts are Assertions with the product as subject; evidence is HAS_EVIDENCE to a SourceLocator inside a SourceSnapshot of a Source. A legal schema path is not proof that the live graph contains one.",
+  "steps": [
+    { "argv": ["path", "node:Product", "node:SourceLocator", "--max-hops", "3", "--json"], "expect": { "exit": 0, "json": [{ "path": "paths.0.hops.0.type", "equals": "HAS_SUBJECT" }, { "path": "paths.0.hops.1.type", "equals": "HAS_EVIDENCE" }, { "path": "instanceClaim", "equals": false }] } },
+    { "argv": ["get", "rule:evidence-path", "--section", "from an assertion to its source"], "expect": { "exit": 0, "stdoutIncludes": ["HAS_LOCATOR", "HAS_SNAPSHOT"] } },
+    { "argv": ["get", "task:trace-answer-to-source"], "expect": { "exit": 0, "stdoutIncludes": ["assertion.trace"] } }
+  ]
+}

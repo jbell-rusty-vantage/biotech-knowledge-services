@@ -1,0 +1,51 @@
+{
+  "name": "@bks/graphql-api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Bounded consumer Neo4j GraphQL API over the pinned BellLabs Biotech schema v2 release (Apollo Server 5 + @neo4j/graphql 7): read-only executable projection, persisted-operation safelist, BFF actor-context verification, readiness against the installed graph release.",
+  "type": "module",
+  "main": "./dist/main.js",
+  "scripts": {
+    "build": "tsc -b",
+    "dev": "tsx --env-file-if-exists=../../.env src/main.ts",
+    "start": "node dist/main.js",
+    "generate": "tsx src/tools/generate.ts all",
+    "print-schema": "tsx src/tools/generate.ts print",
+    "registry": "tsx src/tools/generate.ts registry",
+    "projection:cuts": "tsx src/tools/generate.ts cuts",
+    "check": "tsx src/tools/generate.ts check"
+  },
+  "dependencies": {
+    "@apollo/server": "^5.5.1",
+    "@as-integrations/express5": "^1.1.2",
+    "@neo4j/graphql": "^7.6.3",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "graphql": "^16.14.2",
+    "neo4j-driver": "^6.2.0",
+    "jose": "^6.2.3",
+    "@bks/schema-workspace": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "@graphql-tools/documents": "^1.0.2"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./actor": {
+      "types": "./dist/actor.d.ts",
+      "import": "./dist/actor.js"
+    },
+    "./app": {
+      "types": "./dist/app.d.ts",
+      "import": "./dist/app.js"
+    }
+  },
+  "types": "./dist/index.d.ts"
+}

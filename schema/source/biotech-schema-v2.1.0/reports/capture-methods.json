@@ -1,0 +1,3037 @@
+{
+  "format": "bks-capture-method-report.v1",
+  "releaseId": "biotech-schema-v2.0.0",
+  "decision": "FU-06",
+  "scope": "schema/program/final/fixtures/**/{assertions.yaml,locators.yaml,intent*.json} (BKS 431c8a7); extraction identical to final/_work/lint-capture-methods.mjs (values the regex truncates at ',' or '}' are counted as extracted, as in the close-out measurement)",
+  "counts": {
+    "values": 579,
+    "distinct": 164,
+    "canonical": {
+      "values": 63,
+      "distinct": 16
+    },
+    "mapped": {
+      "values": 478,
+      "distinct": 131
+    },
+    "ambiguous": {
+      "values": 38,
+      "distinct": 17
+    }
+  },
+  "reconciled": true,
+  "note": "Fixtures are not rewritten here (FU-03 fixture round, S3). 'ambiguous' values are explicit errors: each needs adapter evidence naming the capture tool before a canonical id is written.",
+  "rules": [
+    {
+      "id": "firecrawl",
+      "target": "firecrawl-cli",
+      "match": "/^firecrawl[\\s\\-/]|^Firecrawl CLI\\b/i",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "id": "tavily",
+      "target": "tavily-cli",
+      "match": "/^(tavily-extract|tvly extract)\\b/",
+      "why": "Tavily CLI 0.1.5 extract"
+    },
+    {
+      "id": "eutils",
+      "target": "ncbi-eutils-pubmed",
+      "match": "/NCBI E-utilities|\\beutils efetch\\b/",
+      "why": "NCBI E-utilities efetch (registry ncbi-eutils-pubmed; aliases include D3:pmc-jats)"
+    },
+    {
+      "id": "crossref-labs",
+      "target": "crossref-labs",
+      "match": "/Crossref Labs/",
+      "why": "Crossref Labs API"
+    },
+    {
+      "id": "crossref-rest",
+      "target": "crossref-rest",
+      "match": "/Crossref REST/",
+      "why": "Crossref REST API"
+    },
+    {
+      "id": "epmc-fulltext",
+      "target": "europepmc-fulltext-jats",
+      "match": "/Europe PMC REST fullTextXML|europepmc-rest fullTextXML/",
+      "why": "Europe PMC fullTextXML (JATS full text)"
+    },
+    {
+      "id": "epmc-search",
+      "target": "europepmc-rest",
+      "match": "/europepmc-rest search/",
+      "why": "Europe PMC REST search"
+    },
+    {
+      "id": "epmc-bare",
+      "target": "europepmc-rest",
+      "match": "/^curl\\/europepmc-rest$/",
+      "why": "value names the registry id europepmc-rest"
+    },
+    {
+      "id": "dsld",
+      "target": "nih-dsld",
+      "match": "/NIH DSLD API|\\bdsld-api-v9\\b/",
+      "why": "NIH DSLD API v9"
+    },
+    {
+      "id": "sec-edgar",
+      "target": "sec-edgar",
+      "match": "/SEC EDGAR|data\\.sec\\.gov|\\bsec-archives\\b|\\bsec-edgar-http\\b|EDGAR_IDENTITY/",
+      "why": "SEC EDGAR (Archives / data.sec.gov; EDGAR identity User-Agent)"
+    },
+    {
+      "id": "shopify",
+      "target": "shopify-storefront-json",
+      "match": "/Shopify \\/products/",
+      "why": "Shopify storefront public JSON"
+    },
+    {
+      "id": "wikidata",
+      "target": "wikidata",
+      "match": "/Wikidata Special:EntityData/",
+      "why": "Wikidata Special:EntityData"
+    },
+    {
+      "id": "faers",
+      "target": "openfda-faers",
+      "match": "/openFDA drug\\/event/",
+      "why": "openFDA drug/event (FAERS)"
+    },
+    {
+      "id": "openfda-label",
+      "target": "openfda-drug-label",
+      "match": "/openFDA drug label API|openFDA drug\\/label/",
+      "why": "openFDA drug/label"
+    },
+    {
+      "id": "drugsfda",
+      "target": "openfda-drugsfda",
+      "match": "/openFDA drugsfda/",
+      "why": "openFDA drug/drugsfda"
+    },
+    {
+      "id": "food-enforcement",
+      "target": "openfda-food-enforcement",
+      "match": "/openFDA food\\/enforcement/",
+      "why": "openFDA food/enforcement"
+    },
+    {
+      "id": "openfda-device",
+      "target": "openfda-device",
+      "match": "/openFDA device\\//",
+      "why": "openFDA device endpoints"
+    },
+    {
+      "id": "wayback",
+      "target": "internet-archive-wayback",
+      "match": "/Wayback|wayback|web\\.archive\\.org/",
+      "why": "Internet Archive Wayback id_ raw replay"
+    },
+    {
+      "id": "ecfr",
+      "target": "ecfr-versioner",
+      "match": "/eCFR versioner|\\becfr-versioner\\b/",
+      "why": "eCFR versioner API"
+    },
+    {
+      "id": "ctgov",
+      "target": "ctgov-v2-api",
+      "match": "/ClinicalTrials\\.gov API v2|\\bctgov-api-v2\\b/",
+      "why": "ClinicalTrials.gov API v2 (alias D1:tool:ctgov-api-v2)"
+    },
+    {
+      "id": "isrctn",
+      "target": "isrctn",
+      "match": "/ISRCTN query API/",
+      "why": "ISRCTN registry API"
+    },
+    {
+      "id": "openalex",
+      "target": "openalex",
+      "match": "/OpenAlex/",
+      "why": "OpenAlex API"
+    },
+    {
+      "id": "regulations-api",
+      "target": "regulations-gov-api",
+      "match": "/regulations\\.gov API v4/",
+      "why": "regulations.gov API v4"
+    },
+    {
+      "id": "dailymed",
+      "target": "dailymed-spl",
+      "match": "/DailyMed/",
+      "why": "NLM DailyMed web services / SPL zip"
+    },
+    {
+      "id": "fdc",
+      "target": "usda-fdc",
+      "match": "/FDC API v1/",
+      "why": "USDA FoodData Central API v1"
+    },
+    {
+      "id": "bioc",
+      "target": "ncbi-bioc-pmcoa",
+      "match": "/NCBI BioC PMC OA API/",
+      "why": "NCBI BioC PMC OA API"
+    },
+    {
+      "id": "pubchem",
+      "target": "pubchem-pug-rest",
+      "match": "/PubChem PUG REST|\\bpubchem-pug-rest\\b/",
+      "why": "PubChem PUG REST"
+    },
+    {
+      "id": "ols4",
+      "target": "ebi-ols4-chebi",
+      "match": "/(tool:ebi-ols4)/",
+      "why": "EMBL-EBI OLS4 (aliases D2:tool:ols4, D11:ebi-ols4-chebi)"
+    },
+    {
+      "id": "quickgo",
+      "target": "quickgo",
+      "match": "/(tool:quickgo-api)/",
+      "why": "EMBL-EBI QuickGO API (alias D2:tool:quickgo)"
+    },
+    {
+      "id": "gsrs",
+      "target": "fda-gsrs",
+      "match": "/\\bgsrs-api(-v1)?\\b/",
+      "why": "GSRS API (alias D1:tool:gsrs-api)"
+    },
+    {
+      "id": "lnhpd",
+      "target": "health-canada-lnhpd",
+      "match": "/\\blnhpd-api\\b/",
+      "why": "Health Canada LNHPD API (alias D1:tool:lnhpd-api)"
+    },
+    {
+      "id": "gleif",
+      "target": "gleif-lei",
+      "match": "/\\bgleif-api-v1\\b/",
+      "why": "GLEIF API (alias D7:tool:gleif-api)"
+    },
+    {
+      "id": "reporter",
+      "target": "nih-reporter",
+      "match": "/\\bnih-reporter-api-v2\\b/",
+      "why": "NIH RePORTER API v2 (alias D7:tool:nih-reporter-api)"
+    },
+    {
+      "id": "discourse",
+      "target": "community-forums",
+      "match": "/Discourse topic JSON/",
+      "why": "Discourse JSON (alias D5:tool:discourse-json)"
+    },
+    {
+      "id": "apple-docs",
+      "target": "wearable-api-docs",
+      "match": "/Apple documentation JSON endpoint/",
+      "why": "Apple developer docs JSON (alias D4:tool:apple-developer-docs-json)"
+    },
+    {
+      "id": "oura-docs",
+      "target": "wearable-api-docs",
+      "match": "/cloud\\.ouraring\\.com\\/v2\\/docs/",
+      "why": "Oura OpenAPI (alias D4:tool:oura-openapi)"
+    },
+    {
+      "id": "fda-media",
+      "target": "fda-web-pages",
+      "match": "/FDA media download/",
+      "why": "fda.gov media download (alias D10:tool:fda-media-pdf)"
+    },
+    {
+      "id": "local-repo",
+      "target": "local-contracts",
+      "match": "/^local file read of the private repository/",
+      "why": "local repository read (registry local-contracts: local repositories)"
+    },
+    {
+      "id": "http-generic",
+      "target": "http-capture",
+      "match": "/^curl(\\/8| 8\\.x| 8\\.2\\.1)?( \\(browser User-Agent\\)| \\(no auth\\)| -A 'Mozilla\\/5\\.0' \\(origin HTML, no rendering\\))?$|^curl\\/8 \\(browser User-Agent\\)$|^curl \\(browser User-Agent\\)$|^curl 8\\.x \\(browser User-Agent\\)$/",
+      "why": "plain curl of an origin URL, no API named (registry http-capture)"
+    },
+    {
+      "id": "http-pdftotext",
+      "target": "http-capture",
+      "match": "/^curl \\+ pdftotext -layout$/",
+      "why": "plain curl then poppler pdftotext (projection recorded separately)",
+      "projection": "poppler-pdftotext"
+    }
+  ],
+  "values": [
+    {
+      "value": "Firecrawl CLI 1.23.1 scrape --only-main-content --max-age 0",
+      "occurrences": 18,
+      "packets": [
+        "D4"
+      ],
+      "files": [
+        "D4/clock-noise-vs-retest-advice/intent.json",
+        "D4/clock-noise-vs-retest-advice/locators.yaml",
+        "D4/consumer-panel-and-blood-clock/intent.json",
+        "D4/consumer-panel-and-blood-clock/locators.yaml",
+        "D4/hba1c-two-labs-interference/intent.json",
+        "D4/hba1c-two-labs-interference/locators.yaml",
+        "D4/wearable-hrv-algorithm-changes/intent.json",
+        "D4/wearable-hrv-algorithm-changes/locators.yaml"
+      ],
+      "humanDescription": "Firecrawl CLI 1.23.1 scrape --only-main-content --max-age 0",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "Firecrawl ",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "Firecrawl CLI 1.23.1 scrape --only-main-content --max-age 0 (found with Tavily CLI search in the research stage)",
+      "occurrences": 6,
+      "packets": [
+        "D4"
+      ],
+      "files": [
+        "D4/noninvasive-glucose-cgm-recall/intent.json",
+        "D4/noninvasive-glucose-cgm-recall/locators.yaml",
+        "D4/nr-nad-compound-to-test/intent.json",
+        "D4/nr-nad-compound-to-test/locators.yaml",
+        "D4/wearable-hrv-algorithm-changes/intent.json",
+        "D4/wearable-hrv-algorithm-changes/locators.yaml"
+      ],
+      "humanDescription": "Firecrawl CLI 1.23.1 scrape --only-main-content --max-age 0 (found with Tavily CLI search in the research stage)",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "Firecrawl ",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "Firecrawl CLI 1.23.1 scrape --only-main-content --max-age 0 (requested /tests/005009/complete-blood-count-cbc-with-differential-platelet; the site",
+      "occurrences": 1,
+      "packets": [
+        "D4"
+      ],
+      "files": [
+        "D4/consumer-panel-and-blood-clock/locators.yaml"
+      ],
+      "humanDescription": "Firecrawl CLI 1.23.1 scrape --only-main-content --max-age 0 (requested /tests/005009/complete-blood-count-cbc-with-differential-platelet; the site",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "Firecrawl ",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "Firecrawl CLI 1.23.1 scrape --only-main-content --max-age 0 (requested /tests/005009/complete-blood-count-cbc-with-differential-platelet; the site canonicalizes to the URL above)",
+      "occurrences": 1,
+      "packets": [
+        "D4"
+      ],
+      "files": [
+        "D4/consumer-panel-and-blood-clock/intent.json"
+      ],
+      "humanDescription": "Firecrawl CLI 1.23.1 scrape --only-main-content --max-age 0 (requested /tests/005009/complete-blood-count-cbc-with-differential-platelet; the site canonicalizes to the URL above)",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "Firecrawl ",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "Firecrawl CLI 1.23.1 scrape --only-main-content --max-age 0 --wait-for 3000",
+      "occurrences": 2,
+      "packets": [
+        "D4"
+      ],
+      "files": [
+        "D4/consumer-panel-and-blood-clock/intent.json",
+        "D4/consumer-panel-and-blood-clock/locators.yaml"
+      ],
+      "humanDescription": "Firecrawl CLI 1.23.1 scrape --only-main-content --max-age 0 --wait-for 3000",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "Firecrawl ",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "Firecrawl CLI 1.23.1 scrape --only-main-content --max-age 0 --wait-for 3000 (URL found with Tavily CLI search)",
+      "occurrences": 2,
+      "packets": [
+        "D4"
+      ],
+      "files": [
+        "D4/consumer-panel-and-blood-clock/intent.json",
+        "D4/consumer-panel-and-blood-clock/locators.yaml"
+      ],
+      "humanDescription": "Firecrawl CLI 1.23.1 scrape --only-main-content --max-age 0 --wait-for 3000 (URL found with Tavily CLI search)",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "Firecrawl ",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "Firecrawl CLI 1.23.1 scrape --only-main-content --wait-for 3000 --max-age 0",
+      "occurrences": 2,
+      "packets": [
+        "D4"
+      ],
+      "files": [
+        "D4/hba1c-two-labs-interference/intent.json",
+        "D4/hba1c-two-labs-interference/locators.yaml"
+      ],
+      "humanDescription": "Firecrawl CLI 1.23.1 scrape --only-main-content --wait-for 3000 --max-age 0",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "Firecrawl ",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "crossref-rest/curl-8",
+      "occurrences": 4,
+      "packets": [
+        "D11"
+      ],
+      "files": [
+        "D11/resveratrol-retraction-integrity/intent.json",
+        "D11/resveratrol-retraction-integrity/locators.yaml"
+      ],
+      "humanDescription": "crossref-rest/curl-8",
+      "classification": "canonical",
+      "id": "crossref-rest",
+      "evidence": "crossref-rest"
+    },
+    {
+      "value": "ctgov-v2-api/curl-8",
+      "occurrences": 2,
+      "packets": [
+        "D11"
+      ],
+      "files": [
+        "D11/nr-trial-jats-unstructured/intent.json",
+        "D11/nr-trial-jats-unstructured/locators.yaml"
+      ],
+      "humanDescription": "ctgov-v2-api/curl-8",
+      "classification": "canonical",
+      "id": "ctgov-v2-api",
+      "evidence": "ctgov-v2-api"
+    },
+    {
+      "value": "curl (Apple documentation JSON endpoint; the HTML page is JS-rendered)",
+      "occurrences": 2,
+      "packets": [
+        "D4"
+      ],
+      "files": [
+        "D4/wearable-hrv-algorithm-changes/intent.json",
+        "D4/wearable-hrv-algorithm-changes/locators.yaml"
+      ],
+      "humanDescription": "curl (Apple documentation JSON endpoint; the HTML page is JS-rendered)",
+      "classification": "mapped",
+      "id": "wearable-api-docs",
+      "rule": "apple-docs",
+      "evidence": "Apple documentation JSON endpoint",
+      "why": "Apple developer docs JSON (alias D4:tool:apple-developer-docs-json)"
+    },
+    {
+      "value": "curl (Crossref REST /v1/works/{doi",
+      "occurrences": 2,
+      "packets": [
+        "K"
+      ],
+      "files": [
+        "K/retracted-sah-2017-stale-evidence/locators.yaml"
+      ],
+      "humanDescription": "curl (Crossref REST /v1/works/{doi",
+      "classification": "mapped",
+      "id": "crossref-rest",
+      "rule": "crossref-rest",
+      "evidence": "Crossref REST",
+      "why": "Crossref REST API"
+    },
+    {
+      "value": "curl (Crossref REST /v1/works/{doi})",
+      "occurrences": 2,
+      "packets": [
+        "K"
+      ],
+      "files": [
+        "K/retracted-sah-2017-stale-evidence/intent.json"
+      ],
+      "humanDescription": "curl (Crossref REST /v1/works/{doi})",
+      "classification": "mapped",
+      "id": "crossref-rest",
+      "rule": "crossref-rest",
+      "evidence": "Crossref REST",
+      "why": "Crossref REST API"
+    },
+    {
+      "value": "curl (Europe PMC REST fullTextXML)",
+      "occurrences": 2,
+      "packets": [
+        "D10"
+      ],
+      "files": [
+        "D10/mg-bisglycinate-rct-unstructured/intent.json",
+        "D10/mg-bisglycinate-rct-unstructured/locators.yaml"
+      ],
+      "humanDescription": "curl (Europe PMC REST fullTextXML)",
+      "classification": "mapped",
+      "id": "europepmc-fulltext-jats",
+      "rule": "epmc-fulltext",
+      "evidence": "Europe PMC REST fullTextXML",
+      "why": "Europe PMC fullTextXML (JATS full text)"
+    },
+    {
+      "value": "curl (GitHub raw)",
+      "occurrences": 4,
+      "packets": [
+        "D6"
+      ],
+      "files": [
+        "D6/prepared-food-bigmac-mcdonalds/intent.json",
+        "D6/prepared-food-bigmac-mcdonalds/locators.yaml"
+      ],
+      "humanDescription": "curl (GitHub raw)",
+      "classification": "ambiguous",
+      "reason": "free text names no registry tool/API unambiguously; needs adapter evidence (no mechanical guess)"
+    },
+    {
+      "value": "curl (Internet Archive Wayback id_ raw replay)",
+      "occurrences": 2,
+      "packets": [
+        "K"
+      ],
+      "files": [
+        "K/retracted-sah-2017-stale-evidence/intent.json",
+        "K/retracted-sah-2017-stale-evidence/locators.yaml"
+      ],
+      "humanDescription": "curl (Internet Archive Wayback id_ raw replay)",
+      "classification": "mapped",
+      "id": "internet-archive-wayback",
+      "rule": "wayback",
+      "evidence": "Wayback",
+      "why": "Internet Archive Wayback id_ raw replay"
+    },
+    {
+      "value": "curl (MediaWiki API prop=revisions",
+      "occurrences": 1,
+      "packets": [
+        "K"
+      ],
+      "files": [
+        "K/resveratrol-identifier-crosswalk/locators.yaml"
+      ],
+      "humanDescription": "curl (MediaWiki API prop=revisions",
+      "classification": "ambiguous",
+      "reason": "free text names no registry tool/API unambiguously; needs adapter evidence (no mechanical guess)"
+    },
+    {
+      "value": "curl (MediaWiki API prop=revisions, pinned revids)",
+      "occurrences": 1,
+      "packets": [
+        "K"
+      ],
+      "files": [
+        "K/resveratrol-identifier-crosswalk/intent.json"
+      ],
+      "humanDescription": "curl (MediaWiki API prop=revisions, pinned revids)",
+      "classification": "ambiguous",
+      "reason": "free text names no registry tool/API unambiguously; needs adapter evidence (no mechanical guess)"
+    },
+    {
+      "value": "curl (NCBI E-utilities efetch db=pmc",
+      "occurrences": 1,
+      "packets": [
+        "K"
+      ],
+      "files": [
+        "K/hubbard-2013-unstructured-to-entity/locators.yaml"
+      ],
+      "humanDescription": "curl (NCBI E-utilities efetch db=pmc",
+      "classification": "mapped",
+      "id": "ncbi-eutils-pubmed",
+      "rule": "eutils",
+      "evidence": "NCBI E-utilities",
+      "why": "NCBI E-utilities efetch (registry ncbi-eutils-pubmed; aliases include D3:pmc-jats)"
+    },
+    {
+      "value": "curl (NCBI E-utilities efetch db=pmc retmode=xml)",
+      "occurrences": 9,
+      "packets": [
+        "cross-domain"
+      ],
+      "files": [
+        "cross-domain/claim-mission-report/intent-r2.json",
+        "cross-domain/claim-mission-report/locators.yaml"
+      ],
+      "humanDescription": "curl (NCBI E-utilities efetch db=pmc retmode=xml)",
+      "classification": "mapped",
+      "id": "ncbi-eutils-pubmed",
+      "rule": "eutils",
+      "evidence": "NCBI E-utilities",
+      "why": "NCBI E-utilities efetch (registry ncbi-eutils-pubmed; aliases include D3:pmc-jats)"
+    },
+    {
+      "value": "curl (NCBI E-utilities efetch db=pmc, JATS)",
+      "occurrences": 1,
+      "packets": [
+        "K"
+      ],
+      "files": [
+        "K/hubbard-2013-unstructured-to-entity/intent.json"
+      ],
+      "humanDescription": "curl (NCBI E-utilities efetch db=pmc, JATS)",
+      "classification": "mapped",
+      "id": "ncbi-eutils-pubmed",
+      "rule": "eutils",
+      "evidence": "NCBI E-utilities",
+      "why": "NCBI E-utilities efetch (registry ncbi-eutils-pubmed; aliases include D3:pmc-jats)"
+    },
+    {
+      "value": "curl (NCBI E-utilities efetch db=pubmed retmode=xml)",
+      "occurrences": 8,
+      "packets": [
+        "cross-domain"
+      ],
+      "files": [
+        "cross-domain/claim-mission-report/intent-r2.json",
+        "cross-domain/claim-mission-report/locators.yaml"
+      ],
+      "humanDescription": "curl (NCBI E-utilities efetch db=pubmed retmode=xml)",
+      "classification": "mapped",
+      "id": "ncbi-eutils-pubmed",
+      "rule": "eutils",
+      "evidence": "NCBI E-utilities",
+      "why": "NCBI E-utilities efetch (registry ncbi-eutils-pubmed; aliases include D3:pmc-jats)"
+    },
+    {
+      "value": "curl (NCBI E-utilities efetch db=pubmed)",
+      "occurrences": 20,
+      "packets": [
+        "K"
+      ],
+      "files": [
+        "K/hubbard-2013-unstructured-to-entity/intent.json",
+        "K/hubbard-2013-unstructured-to-entity/locators.yaml",
+        "K/resveratrol-identifier-crosswalk/intent.json",
+        "K/resveratrol-identifier-crosswalk/locators.yaml",
+        "K/resveratrol-sirt1-evidence-mission/intent.json",
+        "K/resveratrol-sirt1-evidence-mission/locators.yaml",
+        "K/retracted-sah-2017-stale-evidence/intent.json",
+        "K/retracted-sah-2017-stale-evidence/locators.yaml",
+        "K/seller-claim-occurrences/intent.json",
+        "K/seller-claim-occurrences/locators.yaml"
+      ],
+      "humanDescription": "curl (NCBI E-utilities efetch db=pubmed)",
+      "classification": "mapped",
+      "id": "ncbi-eutils-pubmed",
+      "rule": "eutils",
+      "evidence": "NCBI E-utilities",
+      "why": "NCBI E-utilities efetch (registry ncbi-eutils-pubmed; aliases include D3:pmc-jats)"
+    },
+    {
+      "value": "curl (NCBI E-utilities efetch)",
+      "occurrences": 2,
+      "packets": [
+        "D10"
+      ],
+      "files": [
+        "D10/mg-bisglycinate-rct-unstructured/intent.json",
+        "D10/mg-bisglycinate-rct-unstructured/locators.yaml"
+      ],
+      "humanDescription": "curl (NCBI E-utilities efetch)",
+      "classification": "mapped",
+      "id": "ncbi-eutils-pubmed",
+      "rule": "eutils",
+      "evidence": "NCBI E-utilities",
+      "why": "NCBI E-utilities efetch (registry ncbi-eutils-pubmed; aliases include D3:pmc-jats)"
+    },
+    {
+      "value": "curl (NCBI litarch bulk archive) + tar member extract",
+      "occurrences": 4,
+      "packets": [
+        "D10"
+      ],
+      "files": [
+        "D10/livertox-green-tea-extract-harm/intent.json",
+        "D10/livertox-green-tea-extract-harm/locators.yaml"
+      ],
+      "humanDescription": "curl (NCBI litarch bulk archive) + tar member extract",
+      "classification": "ambiguous",
+      "reason": "free text names no registry tool/API unambiguously; needs adapter evidence (no mechanical guess)"
+    },
+    {
+      "value": "curl (NIH DSLD API v9 /label)",
+      "occurrences": 6,
+      "packets": [
+        "D10"
+      ],
+      "files": [
+        "D10/mg-rankings-criteria-comparison/intent.json",
+        "D10/mg-rankings-criteria-comparison/locators.yaml"
+      ],
+      "humanDescription": "curl (NIH DSLD API v9 /label)",
+      "classification": "mapped",
+      "id": "nih-dsld",
+      "rule": "dsld",
+      "evidence": "NIH DSLD API",
+      "why": "NIH DSLD API v9"
+    },
+    {
+      "value": "curl (NIH DSLD API v9)",
+      "occurrences": 10,
+      "packets": [
+        "D6"
+      ],
+      "files": [
+        "D6/label-versions-truniagen-dsld/intent.json",
+        "D6/label-versions-truniagen-dsld/locators.yaml",
+        "D6/proprietary-blend-ag1/intent.json",
+        "D6/proprietary-blend-ag1/locators.yaml"
+      ],
+      "humanDescription": "curl (NIH DSLD API v9)",
+      "classification": "mapped",
+      "id": "nih-dsld",
+      "rule": "dsld",
+      "evidence": "NIH DSLD API",
+      "why": "NIH DSLD API v9"
+    },
+    {
+      "value": "curl (SEC EDGAR Archives, User-Agent from EDGAR_IDENTITY)",
+      "occurrences": 2,
+      "packets": [
+        "D6"
+      ],
+      "files": [
+        "D6/filing-channels-niagen-10k/intent.json",
+        "D6/filing-channels-niagen-10k/locators.yaml"
+      ],
+      "humanDescription": "curl (SEC EDGAR Archives, User-Agent from EDGAR_IDENTITY)",
+      "classification": "mapped",
+      "id": "sec-edgar",
+      "rule": "sec-edgar",
+      "evidence": "SEC EDGAR",
+      "why": "SEC EDGAR (Archives / data.sec.gov; EDGAR identity User-Agent)"
+    },
+    {
+      "value": "curl (Shopify /products.json)",
+      "occurrences": 2,
+      "packets": [
+        "D6"
+      ],
+      "files": [
+        "D6/recall-moringa-mogo/intent.json",
+        "D6/recall-moringa-mogo/locators.yaml"
+      ],
+      "humanDescription": "curl (Shopify /products.json)",
+      "classification": "mapped",
+      "id": "shopify-storefront-json",
+      "rule": "shopify",
+      "evidence": "Shopify /products",
+      "why": "Shopify storefront public JSON"
+    },
+    {
+      "value": "curl (Shopify /products/<handle>.js)",
+      "occurrences": 2,
+      "packets": [
+        "D6"
+      ],
+      "files": [
+        "D6/offer-roles-price-kinds-truniagen/intent.json",
+        "D6/offer-roles-price-kinds-truniagen/locators.yaml"
+      ],
+      "humanDescription": "curl (Shopify /products/<handle>.js)",
+      "classification": "mapped",
+      "id": "shopify-storefront-json",
+      "rule": "shopify",
+      "evidence": "Shopify /products",
+      "why": "Shopify storefront public JSON"
+    },
+    {
+      "value": "curl (Wikidata Special:EntityData)",
+      "occurrences": 2,
+      "packets": [
+        "K"
+      ],
+      "files": [
+        "K/resveratrol-identifier-crosswalk/intent.json",
+        "K/resveratrol-identifier-crosswalk/locators.yaml"
+      ],
+      "humanDescription": "curl (Wikidata Special:EntityData)",
+      "classification": "mapped",
+      "id": "wikidata",
+      "rule": "wikidata",
+      "evidence": "Wikidata Special:EntityData",
+      "why": "Wikidata Special:EntityData"
+    },
+    {
+      "value": "curl (browser User-Agent)",
+      "occurrences": 11,
+      "packets": [
+        "K"
+      ],
+      "files": [
+        "K/retracted-sah-2017-stale-evidence/intent.json",
+        "K/retracted-sah-2017-stale-evidence/locators.yaml",
+        "K/seller-claim-occurrences/intent.json",
+        "K/seller-claim-occurrences/locators.yaml",
+        "K/two-run-lineage/intent-r2.json",
+        "K/two-run-lineage/intent.json"
+      ],
+      "humanDescription": "curl (browser User-Agent)",
+      "classification": "mapped",
+      "id": "http-capture",
+      "rule": "http-generic",
+      "evidence": "curl (browser User-Agent)",
+      "why": "plain curl of an origin URL, no API named (registry http-capture)"
+    },
+    {
+      "value": "curl (file name discovered from cloud.ouraring.com/v2/docs)",
+      "occurrences": 2,
+      "packets": [
+        "D4"
+      ],
+      "files": [
+        "D4/wearable-hrv-algorithm-changes/intent.json",
+        "D4/wearable-hrv-algorithm-changes/locators.yaml"
+      ],
+      "humanDescription": "curl (file name discovered from cloud.ouraring.com/v2/docs)",
+      "classification": "mapped",
+      "id": "wearable-api-docs",
+      "rule": "oura-docs",
+      "evidence": "cloud.ouraring.com/v2/docs",
+      "why": "Oura OpenAPI (alias D4:tool:oura-openapi)"
+    },
+    {
+      "value": "curl (markdown twin)",
+      "occurrences": 4,
+      "packets": [
+        "D10"
+      ],
+      "files": [
+        "D10/opentargets-association-signal/intent.json",
+        "D10/opentargets-association-signal/locators.yaml"
+      ],
+      "humanDescription": "curl (markdown twin)",
+      "classification": "ambiguous",
+      "reason": "free text names no registry tool/API unambiguously; needs adapter evidence (no mechanical guess)"
+    },
+    {
+      "value": "curl (openFDA drug label API)",
+      "occurrences": 2,
+      "packets": [
+        "D10"
+      ],
+      "files": [
+        "D10/opentargets-association-signal/intent.json",
+        "D10/opentargets-association-signal/locators.yaml"
+      ],
+      "humanDescription": "curl (openFDA drug label API)",
+      "classification": "mapped",
+      "id": "openfda-drug-label",
+      "rule": "openfda-label",
+      "evidence": "openFDA drug label API",
+      "why": "openFDA drug/label"
+    },
+    {
+      "value": "curl (openFDA drug/event API, limit=0: meta only, no report bodies)",
+      "occurrences": 8,
+      "packets": [
+        "D10"
+      ],
+      "files": [
+        "D10/opentargets-association-signal/intent.json",
+        "D10/opentargets-association-signal/locators.yaml"
+      ],
+      "humanDescription": "curl (openFDA drug/event API, limit=0: meta only, no report bodies)",
+      "classification": "mapped",
+      "id": "openfda-faers",
+      "rule": "faers",
+      "evidence": "openFDA drug/event",
+      "why": "openFDA drug/event (FAERS)"
+    },
+    {
+      "value": "curl (publisher CDN; PMC and Europe PMC copies refused: PMC proof-of-work challenge page, EPMC 'not open access')",
+      "occurrences": 2,
+      "packets": [
+        "D12"
+      ],
+      "files": [
+        "D12/upf-diet-rct-unstructured/intent.json",
+        "D12/upf-diet-rct-unstructured/locators.yaml"
+      ],
+      "humanDescription": "curl (publisher CDN; PMC and Europe PMC copies refused: PMC proof-of-work challenge page, EPMC 'not open access')",
+      "classification": "ambiguous",
+      "reason": "free text names no registry tool/API unambiguously; needs adapter evidence (no mechanical guess)"
+    },
+    {
+      "value": "curl + pdftotext -layout",
+      "occurrences": 4,
+      "packets": [
+        "D4"
+      ],
+      "files": [
+        "D4/clock-noise-vs-retest-advice/intent.json",
+        "D4/clock-noise-vs-retest-advice/locators.yaml",
+        "D4/hba1c-two-labs-interference/intent.json",
+        "D4/hba1c-two-labs-interference/locators.yaml"
+      ],
+      "humanDescription": "curl + pdftotext -layout",
+      "classification": "mapped",
+      "id": "http-capture",
+      "rule": "http-pdftotext",
+      "evidence": "curl + pdftotext -layout",
+      "why": "plain curl then poppler pdftotext (projection recorded separately)",
+      "projection": "poppler-pdftotext"
+    },
+    {
+      "value": "curl --compressed (Wayback id_ raw capture)",
+      "occurrences": 2,
+      "packets": [
+        "D6"
+      ],
+      "files": [
+        "D6/offer-roles-price-kinds-truniagen/intent.json",
+        "D6/offer-roles-price-kinds-truniagen/locators.yaml"
+      ],
+      "humanDescription": "curl --compressed (Wayback id_ raw capture)",
+      "classification": "mapped",
+      "id": "internet-archive-wayback",
+      "rule": "wayback",
+      "evidence": "Wayback",
+      "why": "Internet Archive Wayback id_ raw replay"
+    },
+    {
+      "value": "curl --compressed (eCFR versioner v1)",
+      "occurrences": 2,
+      "packets": [
+        "D6"
+      ],
+      "files": [
+        "D6/proprietary-blend-ag1/intent.json",
+        "D6/proprietary-blend-ag1/locators.yaml"
+      ],
+      "humanDescription": "curl --compressed (eCFR versioner v1)",
+      "classification": "mapped",
+      "id": "ecfr-versioner",
+      "rule": "ecfr",
+      "evidence": "eCFR versioner",
+      "why": "eCFR versioner API"
+    },
+    {
+      "value": "curl -> ClinicalTrials.gov API v2",
+      "occurrences": 2,
+      "packets": [
+        "D13"
+      ],
+      "files": [
+        "D13/bioage-strides-discontinuation/intent.json",
+        "D13/bioage-strides-discontinuation/locators.yaml"
+      ],
+      "humanDescription": "curl -> ClinicalTrials.gov API v2",
+      "classification": "mapped",
+      "id": "ctgov-v2-api",
+      "rule": "ctgov",
+      "evidence": "ClinicalTrials.gov API v2",
+      "why": "ClinicalTrials.gov API v2 (alias D1:tool:ctgov-api-v2)"
+    },
+    {
+      "value": "curl -> ClinicalTrials.gov API v2 (adversarial-review pass)",
+      "occurrences": 2,
+      "packets": [
+        "D13"
+      ],
+      "files": [
+        "D13/madrigal-maestro-nash-topline-8k/intent.json",
+        "D13/madrigal-maestro-nash-topline-8k/locators.yaml"
+      ],
+      "humanDescription": "curl -> ClinicalTrials.gov API v2 (adversarial-review pass)",
+      "classification": "mapped",
+      "id": "ctgov-v2-api",
+      "rule": "ctgov",
+      "evidence": "ClinicalTrials.gov API v2",
+      "why": "ClinicalTrials.gov API v2 (alias D1:tool:ctgov-api-v2)"
+    },
+    {
+      "value": "curl -> ClinicalTrials.gov API v2 /studies/{nctId",
+      "occurrences": 2,
+      "packets": [
+        "D3"
+      ],
+      "files": [
+        "D3/aspree-registry-history-harm/locators.yaml",
+        "D3/dq-bone-trial-unstructured/locators.yaml"
+      ],
+      "humanDescription": "curl -> ClinicalTrials.gov API v2 /studies/{nctId",
+      "classification": "mapped",
+      "id": "ctgov-v2-api",
+      "rule": "ctgov",
+      "evidence": "ClinicalTrials.gov API v2",
+      "why": "ClinicalTrials.gov API v2 (alias D1:tool:ctgov-api-v2)"
+    },
+    {
+      "value": "curl -> ClinicalTrials.gov API v2 /studies/{nctId}",
+      "occurrences": 2,
+      "packets": [
+        "D3"
+      ],
+      "files": [
+        "D3/aspree-registry-history-harm/intent.json",
+        "D3/dq-bone-trial-unstructured/intent.json"
+      ],
+      "humanDescription": "curl -> ClinicalTrials.gov API v2 /studies/{nctId}",
+      "classification": "mapped",
+      "id": "ctgov-v2-api",
+      "rule": "ctgov",
+      "evidence": "ClinicalTrials.gov API v2",
+      "why": "ClinicalTrials.gov API v2 (alias D1:tool:ctgov-api-v2)"
+    },
+    {
+      "value": "curl -> Crossref Labs /works/{doi",
+      "occurrences": 1,
+      "packets": [
+        "D3"
+      ],
+      "files": [
+        "D3/resveratrol-retraction/locators.yaml"
+      ],
+      "humanDescription": "curl -> Crossref Labs /works/{doi",
+      "classification": "mapped",
+      "id": "crossref-labs",
+      "rule": "crossref-labs",
+      "evidence": "Crossref Labs",
+      "why": "Crossref Labs API"
+    },
+    {
+      "value": "curl -> Crossref Labs /works/{doi} (research-stage capture, same day)",
+      "occurrences": 1,
+      "packets": [
+        "D3"
+      ],
+      "files": [
+        "D3/resveratrol-retraction/intent.json"
+      ],
+      "humanDescription": "curl -> Crossref Labs /works/{doi} (research-stage capture, same day)",
+      "classification": "mapped",
+      "id": "crossref-labs",
+      "rule": "crossref-labs",
+      "evidence": "Crossref Labs",
+      "why": "Crossref Labs API"
+    },
+    {
+      "value": "curl -> Crossref REST /works/{doi",
+      "occurrences": 2,
+      "packets": [
+        "D3"
+      ],
+      "files": [
+        "D3/resveratrol-retraction/locators.yaml"
+      ],
+      "humanDescription": "curl -> Crossref REST /works/{doi",
+      "classification": "mapped",
+      "id": "crossref-rest",
+      "rule": "crossref-rest",
+      "evidence": "Crossref REST",
+      "why": "Crossref REST API"
+    },
+    {
+      "value": "curl -> Crossref REST /works/{doi} (public pool, no mailto)",
+      "occurrences": 2,
+      "packets": [
+        "D3"
+      ],
+      "files": [
+        "D3/resveratrol-retraction/intent.json"
+      ],
+      "humanDescription": "curl -> Crossref REST /works/{doi} (public pool, no mailto)",
+      "classification": "mapped",
+      "id": "crossref-rest",
+      "rule": "crossref-rest",
+      "evidence": "Crossref REST",
+      "why": "Crossref REST API"
+    },
+    {
+      "value": "curl -> Crossref REST works API",
+      "occurrences": 4,
+      "packets": [
+        "D13"
+      ],
+      "files": [
+        "D13/lesne-2006-retraction/intent.json",
+        "D13/lesne-2006-retraction/locators.yaml"
+      ],
+      "humanDescription": "curl -> Crossref REST works API",
+      "classification": "mapped",
+      "id": "crossref-rest",
+      "rule": "crossref-rest",
+      "evidence": "Crossref REST",
+      "why": "Crossref REST API"
+    },
+    {
+      "value": "curl -> ISRCTN query API (XML)",
+      "occurrences": 2,
+      "packets": [
+        "D3"
+      ],
+      "files": [
+        "D3/aspree-registry-history-harm/intent.json",
+        "D3/aspree-registry-history-harm/locators.yaml"
+      ],
+      "humanDescription": "curl -> ISRCTN query API (XML)",
+      "classification": "mapped",
+      "id": "isrctn",
+      "rule": "isrctn",
+      "evidence": "ISRCTN query API",
+      "why": "ISRCTN registry API"
+    },
+    {
+      "value": "curl -> NCBI E-utilities efetch",
+      "occurrences": 2,
+      "packets": [
+        "D13"
+      ],
+      "files": [
+        "D13/lesne-2006-retraction/intent.json",
+        "D13/lesne-2006-retraction/locators.yaml"
+      ],
+      "humanDescription": "curl -> NCBI E-utilities efetch",
+      "classification": "mapped",
+      "id": "ncbi-eutils-pubmed",
+      "rule": "eutils",
+      "evidence": "NCBI E-utilities",
+      "why": "NCBI E-utilities efetch (registry ncbi-eutils-pubmed; aliases include D3:pmc-jats)"
+    },
+    {
+      "value": "curl -> NCBI E-utilities efetch (first attempt returned the NCBI 3 req/s rate-limit JSON; re-fetched)",
+      "occurrences": 2,
+      "packets": [
+        "D3"
+      ],
+      "files": [
+        "D3/resveratrol-retraction/intent.json",
+        "D3/resveratrol-retraction/locators.yaml"
+      ],
+      "humanDescription": "curl -> NCBI E-utilities efetch (first attempt returned the NCBI 3 req/s rate-limit JSON; re-fetched)",
+      "classification": "mapped",
+      "id": "ncbi-eutils-pubmed",
+      "rule": "eutils",
+      "evidence": "NCBI E-utilities",
+      "why": "NCBI E-utilities efetch (registry ncbi-eutils-pubmed; aliases include D3:pmc-jats)"
+    },
+    {
+      "value": "curl -> NCBI E-utilities efetch db=pmc retmode=xml (human page https://pmc.ncbi.nlm.nih.gov/articles/PMC11705617/)",
+      "occurrences": 2,
+      "packets": [
+        "D3"
+      ],
+      "files": [
+        "D3/dq-bone-trial-unstructured/intent.json",
+        "D3/dq-bone-trial-unstructured/locators.yaml"
+      ],
+      "humanDescription": "curl -> NCBI E-utilities efetch db=pmc retmode=xml (human page https://pmc.ncbi.nlm.nih.gov/articles/PMC11705617/)",
+      "classification": "mapped",
+      "id": "ncbi-eutils-pubmed",
+      "rule": "eutils",
+      "evidence": "NCBI E-utilities",
+      "why": "NCBI E-utilities efetch (registry ncbi-eutils-pubmed; aliases include D3:pmc-jats)"
+    },
+    {
+      "value": "curl -> NCBI E-utilities efetch db=pubmed retmode=xml",
+      "occurrences": 6,
+      "packets": [
+        "D3"
+      ],
+      "files": [
+        "D3/aspree-registry-history-harm/intent.json",
+        "D3/aspree-registry-history-harm/locators.yaml",
+        "D3/dq-bone-trial-unstructured/intent.json",
+        "D3/dq-bone-trial-unstructured/locators.yaml",
+        "D3/resveratrol-retraction/intent.json",
+        "D3/resveratrol-retraction/locators.yaml"
+      ],
+      "humanDescription": "curl -> NCBI E-utilities efetch db=pubmed retmode=xml",
+      "classification": "mapped",
+      "id": "ncbi-eutils-pubmed",
+      "rule": "eutils",
+      "evidence": "NCBI E-utilities",
+      "why": "NCBI E-utilities efetch (registry ncbi-eutils-pubmed; aliases include D3:pmc-jats)"
+    },
+    {
+      "value": "curl -> NCBI E-utilities efetch db=pubmed retmode=xml (PMIDs from the research-stage PubMed search)",
+      "occurrences": 2,
+      "packets": [
+        "D3"
+      ],
+      "files": [
+        "D3/resveratrol-retraction/intent.json",
+        "D3/resveratrol-retraction/locators.yaml"
+      ],
+      "humanDescription": "curl -> NCBI E-utilities efetch db=pubmed retmode=xml (PMIDs from the research-stage PubMed search)",
+      "classification": "mapped",
+      "id": "ncbi-eutils-pubmed",
+      "rule": "eutils",
+      "evidence": "NCBI E-utilities",
+      "why": "NCBI E-utilities efetch (registry ncbi-eutils-pubmed; aliases include D3:pmc-jats)"
+    },
+    {
+      "value": "curl -> OpenAlex /works/doi:{doi",
+      "occurrences": 1,
+      "packets": [
+        "D3"
+      ],
+      "files": [
+        "D3/resveratrol-retraction/locators.yaml"
+      ],
+      "humanDescription": "curl -> OpenAlex /works/doi:{doi",
+      "classification": "mapped",
+      "id": "openalex",
+      "rule": "openalex",
+      "evidence": "OpenAlex",
+      "why": "OpenAlex API"
+    },
+    {
+      "value": "curl -> OpenAlex /works/doi:{doi}",
+      "occurrences": 1,
+      "packets": [
+        "D3"
+      ],
+      "files": [
+        "D3/resveratrol-retraction/intent.json"
+      ],
+      "humanDescription": "curl -> OpenAlex /works/doi:{doi}",
+      "classification": "mapped",
+      "id": "openalex",
+      "rule": "openalex",
+      "evidence": "OpenAlex",
+      "why": "OpenAlex API"
+    },
+    {
+      "value": "curl -> SEC EDGAR Archives (User-Agent from EDGAR_IDENTITY) + h2t-v1 projection",
+      "occurrences": 20,
+      "packets": [
+        "D13"
+      ],
+      "files": [
+        "D13/madrigal-financing-after-readout/intent.json",
+        "D13/madrigal-financing-after-readout/locators.yaml",
+        "D13/madrigal-maestro-nash-topline-8k/intent.json",
+        "D13/madrigal-maestro-nash-topline-8k/locators.yaml",
+        "D13/madrigal-pdufa-to-accelerated-approval/intent.json",
+        "D13/madrigal-pdufa-to-accelerated-approval/locators.yaml"
+      ],
+      "humanDescription": "curl -> SEC EDGAR Archives (User-Agent from EDGAR_IDENTITY) + h2t-v1 projection",
+      "classification": "mapped",
+      "id": "sec-edgar",
+      "rule": "sec-edgar",
+      "evidence": "SEC EDGAR",
+      "why": "SEC EDGAR (Archives / data.sec.gov; EDGAR identity User-Agent)",
+      "projection": "html-text-projection"
+    },
+    {
+      "value": "curl -> data.sec.gov submissions API (User-Agent from EDGAR_IDENTITY)",
+      "occurrences": 6,
+      "packets": [
+        "D13"
+      ],
+      "files": [
+        "D13/bioage-strides-discontinuation/intent.json",
+        "D13/bioage-strides-discontinuation/locators.yaml",
+        "D13/madrigal-financing-after-readout/intent.json",
+        "D13/madrigal-financing-after-readout/locators.yaml",
+        "D13/madrigal-maestro-nash-topline-8k/intent.json",
+        "D13/madrigal-maestro-nash-topline-8k/locators.yaml"
+      ],
+      "humanDescription": "curl -> data.sec.gov submissions API (User-Agent from EDGAR_IDENTITY)",
+      "classification": "mapped",
+      "id": "sec-edgar",
+      "rule": "sec-edgar",
+      "evidence": "data.sec.gov",
+      "why": "SEC EDGAR (Archives / data.sec.gov; EDGAR identity User-Agent)"
+    },
+    {
+      "value": "curl -> openFDA drugsfda",
+      "occurrences": 2,
+      "packets": [
+        "D13"
+      ],
+      "files": [
+        "D13/madrigal-pdufa-to-accelerated-approval/intent.json",
+        "D13/madrigal-pdufa-to-accelerated-approval/locators.yaml"
+      ],
+      "humanDescription": "curl -> openFDA drugsfda",
+      "classification": "mapped",
+      "id": "openfda-drugsfda",
+      "rule": "drugsfda",
+      "evidence": "openFDA drugsfda",
+      "why": "openFDA drug/drugsfda"
+    },
+    {
+      "value": "curl -> web.archive.org id_ capture 20200812221937 (found via the Wayback availability API)",
+      "occurrences": 2,
+      "packets": [
+        "D13"
+      ],
+      "files": [
+        "D13/lesne-2006-retraction/intent.json",
+        "D13/lesne-2006-retraction/locators.yaml"
+      ],
+      "humanDescription": "curl -> web.archive.org id_ capture 20200812221937 (found via the Wayback availability API)",
+      "classification": "mapped",
+      "id": "internet-archive-wayback",
+      "rule": "wayback",
+      "evidence": "web.archive.org",
+      "why": "Internet Archive Wayback id_ raw replay"
+    },
+    {
+      "value": "curl -A 'Mozilla/5.0' (origin HTML, no rendering)",
+      "occurrences": 4,
+      "packets": [
+        "D12"
+      ],
+      "files": [
+        "D12/acrylamide-fried-potato-harm/intent.json",
+        "D12/acrylamide-fried-potato-harm/locators.yaml",
+        "D12/olive-oil-polyphenols-preparation/intent.json",
+        "D12/olive-oil-polyphenols-preparation/locators.yaml"
+      ],
+      "humanDescription": "curl -A 'Mozilla/5.0' (origin HTML, no rendering)",
+      "classification": "mapped",
+      "id": "http-capture",
+      "rule": "http-generic",
+      "evidence": "curl -A 'Mozilla/5.0' (origin HTML, no rendering)",
+      "why": "plain curl of an origin URL, no API named (registry http-capture)"
+    },
+    {
+      "value": "curl -L (FDA media download)",
+      "occurrences": 2,
+      "packets": [
+        "D10"
+      ],
+      "files": [
+        "D10/fda-qhc-magnesium-disconfirmation/intent.json",
+        "D10/fda-qhc-magnesium-disconfirmation/locators.yaml"
+      ],
+      "humanDescription": "curl -L (FDA media download)",
+      "classification": "mapped",
+      "id": "fda-web-pages",
+      "rule": "fda-media",
+      "evidence": "FDA media download",
+      "why": "fda.gov media download (alias D10:tool:fda-media-pdf)"
+    },
+    {
+      "value": "curl -L (J-STAGE open-access PDF",
+      "occurrences": 1,
+      "packets": [
+        "cross-domain"
+      ],
+      "files": [
+        "cross-domain/claim-mission-report/locators.yaml"
+      ],
+      "humanDescription": "curl -L (J-STAGE open-access PDF",
+      "classification": "ambiguous",
+      "reason": "free text names no registry tool/API unambiguously; needs adapter evidence (no mechanical guess)"
+    },
+    {
+      "value": "curl -L (J-STAGE open-access PDF, HTTP 200 application/pdf)",
+      "occurrences": 1,
+      "packets": [
+        "cross-domain"
+      ],
+      "files": [
+        "cross-domain/claim-mission-report/intent-r2.json"
+      ],
+      "humanDescription": "curl -L (J-STAGE open-access PDF, HTTP 200 application/pdf)",
+      "classification": "ambiguous",
+      "reason": "free text names no registry tool/API unambiguously; needs adapter evidence (no mechanical guess)"
+    },
+    {
+      "value": "curl -g (openFDA food/enforcement)",
+      "occurrences": 2,
+      "packets": [
+        "D6"
+      ],
+      "files": [
+        "D6/recall-moringa-mogo/intent.json",
+        "D6/recall-moringa-mogo/locators.yaml"
+      ],
+      "humanDescription": "curl -g (openFDA food/enforcement)",
+      "classification": "mapped",
+      "id": "openfda-food-enforcement",
+      "rule": "food-enforcement",
+      "evidence": "openFDA food/enforcement",
+      "why": "openFDA food/enforcement"
+    },
+    {
+      "value": "curl 8.2.1 (no auth)",
+      "occurrences": 2,
+      "packets": [
+        "D4"
+      ],
+      "files": [
+        "D4/wearable-hrv-algorithm-changes/intent.json",
+        "D4/wearable-hrv-algorithm-changes/locators.yaml"
+      ],
+      "humanDescription": "curl 8.2.1 (no auth)",
+      "classification": "mapped",
+      "id": "http-capture",
+      "rule": "http-generic",
+      "evidence": "curl 8.2.1 (no auth)",
+      "why": "plain curl of an origin URL, no API named (registry http-capture)"
+    },
+    {
+      "value": "curl 8.x",
+      "occurrences": 5,
+      "packets": [
+        "D8"
+      ],
+      "files": [
+        "D8/nmn-us-exclusion-reversal/locators.yaml"
+      ],
+      "humanDescription": "curl 8.x",
+      "classification": "mapped",
+      "id": "http-capture",
+      "rule": "http-generic",
+      "evidence": "curl 8.x",
+      "why": "plain curl of an origin URL, no API named (registry http-capture)"
+    },
+    {
+      "value": "curl 8.x (browser User-Agent)",
+      "occurrences": 12,
+      "packets": [
+        "D8"
+      ],
+      "files": [
+        "D8/certification-listing-lot-scope/intent.json",
+        "D8/certification-listing-lot-scope/locators.yaml",
+        "D8/eu-nrcl-authorisation-data-protection/intent.json",
+        "D8/eu-nrcl-authorisation-data-protection/locators.yaml",
+        "D8/imu-tek-warning-letter-recall/intent.json",
+        "D8/imu-tek-warning-letter-recall/locators.yaml",
+        "D8/us8197807-claims-held-invalid/intent.json",
+        "D8/us8197807-claims-held-invalid/locators.yaml"
+      ],
+      "humanDescription": "curl 8.x (browser User-Agent)",
+      "classification": "mapped",
+      "id": "http-capture",
+      "rule": "http-generic",
+      "evidence": "curl 8.x (browser User-Agent)",
+      "why": "plain curl of an origin URL, no API named (registry http-capture)"
+    },
+    {
+      "value": "curl 8.x (browser User-Agent); Amazon media CDN",
+      "occurrences": 2,
+      "packets": [
+        "D8"
+      ],
+      "files": [
+        "D8/eurofins-coa-quantity-by-input/intent.json",
+        "D8/eurofins-coa-quantity-by-input/locators.yaml"
+      ],
+      "humanDescription": "curl 8.x (browser User-Agent); Amazon media CDN",
+      "classification": "ambiguous",
+      "reason": "free text names no registry tool/API unambiguously; needs adapter evidence (no mechanical guess)"
+    },
+    {
+      "value": "curl 8.x (browser User-Agent); PDF hosted on an Amazon media CDN (marketplace listing attachment)",
+      "occurrences": 2,
+      "packets": [
+        "D8"
+      ],
+      "files": [
+        "D8/eurofins-coa-quantity-by-input/intent.json",
+        "D8/eurofins-coa-quantity-by-input/locators.yaml"
+      ],
+      "humanDescription": "curl 8.x (browser User-Agent); PDF hosted on an Amazon media CDN (marketplace listing attachment)",
+      "classification": "ambiguous",
+      "reason": "free text names no registry tool/API unambiguously; needs adapter evidence (no mechanical guess)"
+    },
+    {
+      "value": "curl 8.x (openFDA REST",
+      "occurrences": 1,
+      "packets": [
+        "D8"
+      ],
+      "files": [
+        "D8/imu-tek-warning-letter-recall/locators.yaml"
+      ],
+      "humanDescription": "curl 8.x (openFDA REST",
+      "classification": "ambiguous",
+      "reason": "free text names no registry tool/API unambiguously; needs adapter evidence (no mechanical guess)"
+    },
+    {
+      "value": "curl 8.x (openFDA REST, no key)",
+      "occurrences": 1,
+      "packets": [
+        "D8"
+      ],
+      "files": [
+        "D8/imu-tek-warning-letter-recall/intent.json"
+      ],
+      "humanDescription": "curl 8.x (openFDA REST, no key)",
+      "classification": "ambiguous",
+      "reason": "free text names no registry tool/API unambiguously; needs adapter evidence (no mechanical guess)"
+    },
+    {
+      "value": "curl 8.x with User-Agent from EDGAR_IDENTITY (.env",
+      "occurrences": 1,
+      "packets": [
+        "D8"
+      ],
+      "files": [
+        "D8/us8197807-claims-held-invalid/locators.yaml"
+      ],
+      "humanDescription": "curl 8.x with User-Agent from EDGAR_IDENTITY (.env",
+      "classification": "mapped",
+      "id": "sec-edgar",
+      "rule": "sec-edgar",
+      "evidence": "EDGAR_IDENTITY",
+      "why": "SEC EDGAR (Archives / data.sec.gov; EDGAR identity User-Agent)"
+    },
+    {
+      "value": "curl 8.x with User-Agent from EDGAR_IDENTITY (.env, not printed)",
+      "occurrences": 1,
+      "packets": [
+        "D8"
+      ],
+      "files": [
+        "D8/us8197807-claims-held-invalid/intent.json"
+      ],
+      "humanDescription": "curl 8.x with User-Agent from EDGAR_IDENTITY (.env, not printed)",
+      "classification": "mapped",
+      "id": "sec-edgar",
+      "rule": "sec-edgar",
+      "evidence": "EDGAR_IDENTITY",
+      "why": "SEC EDGAR (Archives / data.sec.gov; EDGAR identity User-Agent)"
+    },
+    {
+      "value": "curl 8.x with browser User-Agent + Referer + Accept application/pdf",
+      "occurrences": 3,
+      "packets": [
+        "D8"
+      ],
+      "files": [
+        "D8/nmn-us-exclusion-reversal/intent-step2.json",
+        "D8/nmn-us-exclusion-reversal/intent.json",
+        "D8/nmn-us-exclusion-reversal/locators.yaml"
+      ],
+      "humanDescription": "curl 8.x with browser User-Agent + Referer + Accept application/pdf",
+      "classification": "ambiguous",
+      "reason": "free text names no registry tool/API unambiguously; needs adapter evidence (no mechanical guess)"
+    },
+    {
+      "value": "curl 8.x with browser User-Agent + Referer https://www.regulations.gov/ + Accept application/pdf (plain curl gets 403)",
+      "occurrences": 3,
+      "packets": [
+        "D8"
+      ],
+      "files": [
+        "D8/nmn-us-exclusion-reversal/intent-step2.json",
+        "D8/nmn-us-exclusion-reversal/intent.json",
+        "D8/nmn-us-exclusion-reversal/locators.yaml"
+      ],
+      "humanDescription": "curl 8.x with browser User-Agent + Referer https://www.regulations.gov/ + Accept application/pdf (plain curl gets 403)",
+      "classification": "ambiguous",
+      "reason": "free text names no registry tool/API unambiguously; needs adapter evidence (no mechanical guess)"
+    },
+    {
+      "value": "curl 8.x, regulations.gov API v4 with the public DEMO_KEY",
+      "occurrences": 2,
+      "packets": [
+        "D8"
+      ],
+      "files": [
+        "D8/nmn-us-exclusion-reversal/intent-step2.json",
+        "D8/nmn-us-exclusion-reversal/intent.json"
+      ],
+      "humanDescription": "curl 8.x, regulations.gov API v4 with the public DEMO_KEY",
+      "classification": "mapped",
+      "id": "regulations-gov-api",
+      "rule": "regulations-api",
+      "evidence": "regulations.gov API v4",
+      "why": "regulations.gov API v4"
+    },
+    {
+      "value": "curl 8.x, regulations.gov API v4 with the public DEMO_KEY (key not part of canonicalUri)",
+      "occurrences": 2,
+      "packets": [
+        "D8"
+      ],
+      "files": [
+        "D8/nmn-us-exclusion-reversal/intent-step2.json",
+        "D8/nmn-us-exclusion-reversal/intent.json"
+      ],
+      "humanDescription": "curl 8.x, regulations.gov API v4 with the public DEMO_KEY (key not part of canonicalUri)",
+      "classification": "mapped",
+      "id": "regulations-gov-api",
+      "rule": "regulations-api",
+      "evidence": "regulations.gov API v4",
+      "why": "regulations.gov API v4"
+    },
+    {
+      "value": "curl ClinicalTrials.gov API v2",
+      "occurrences": 2,
+      "packets": [
+        "D12"
+      ],
+      "files": [
+        "D12/upf-diet-rct-unstructured/intent.json",
+        "D12/upf-diet-rct-unstructured/locators.yaml"
+      ],
+      "humanDescription": "curl ClinicalTrials.gov API v2",
+      "classification": "mapped",
+      "id": "ctgov-v2-api",
+      "rule": "ctgov",
+      "evidence": "ClinicalTrials.gov API v2",
+      "why": "ClinicalTrials.gov API v2 (alias D1:tool:ctgov-api-v2)"
+    },
+    {
+      "value": "curl ClinicalTrials.gov API v2 (fields filter)",
+      "occurrences": 2,
+      "packets": [
+        "D4"
+      ],
+      "files": [
+        "D4/nr-nad-compound-to-test/intent.json",
+        "D4/nr-nad-compound-to-test/locators.yaml"
+      ],
+      "humanDescription": "curl ClinicalTrials.gov API v2 (fields filter)",
+      "classification": "mapped",
+      "id": "ctgov-v2-api",
+      "rule": "ctgov",
+      "evidence": "ClinicalTrials.gov API v2",
+      "why": "ClinicalTrials.gov API v2 (alias D1:tool:ctgov-api-v2)"
+    },
+    {
+      "value": "curl DailyMed getFile.cfm?type=zip&version=14",
+      "occurrences": 1,
+      "packets": [
+        "D5"
+      ],
+      "files": [
+        "D5/sirolimus-label-interactions-harm/locators.yaml"
+      ],
+      "humanDescription": "curl DailyMed getFile.cfm?type=zip&version=14",
+      "classification": "mapped",
+      "id": "dailymed-spl",
+      "rule": "dailymed",
+      "evidence": "DailyMed",
+      "why": "NLM DailyMed web services / SPL zip"
+    },
+    {
+      "value": "curl DailyMed getFile.cfm?type=zip&version=15",
+      "occurrences": 1,
+      "packets": [
+        "D5"
+      ],
+      "files": [
+        "D5/sirolimus-label-interactions-harm/locators.yaml"
+      ],
+      "humanDescription": "curl DailyMed getFile.cfm?type=zip&version=15",
+      "classification": "mapped",
+      "id": "dailymed-spl",
+      "rule": "dailymed",
+      "evidence": "DailyMed",
+      "why": "NLM DailyMed web services / SPL zip"
+    },
+    {
+      "value": "curl DailyMed web services v2",
+      "occurrences": 1,
+      "packets": [
+        "D5"
+      ],
+      "files": [
+        "D5/sirolimus-label-interactions-harm/locators.yaml"
+      ],
+      "humanDescription": "curl DailyMed web services v2",
+      "classification": "mapped",
+      "id": "dailymed-spl",
+      "rule": "dailymed",
+      "evidence": "DailyMed",
+      "why": "NLM DailyMed web services / SPL zip"
+    },
+    {
+      "value": "curl Discourse topic JSON",
+      "occurrences": 1,
+      "packets": [
+        "D5"
+      ],
+      "files": [
+        "D5/sirolimus-label-interactions-harm/locators.yaml"
+      ],
+      "humanDescription": "curl Discourse topic JSON",
+      "classification": "mapped",
+      "id": "community-forums",
+      "rule": "discourse",
+      "evidence": "Discourse topic JSON",
+      "why": "Discourse JSON (alias D5:tool:discourse-json)"
+    },
+    {
+      "value": "curl Europe PMC REST fullTextXML (no key)",
+      "occurrences": 4,
+      "packets": [
+        "D4"
+      ],
+      "files": [
+        "D4/dunedinpace-paper-unstructured/intent.json",
+        "D4/dunedinpace-paper-unstructured/locators.yaml",
+        "D4/nr-nad-compound-to-test/intent.json",
+        "D4/nr-nad-compound-to-test/locators.yaml"
+      ],
+      "humanDescription": "curl Europe PMC REST fullTextXML (no key)",
+      "classification": "mapped",
+      "id": "europepmc-fulltext-jats",
+      "rule": "epmc-fulltext",
+      "evidence": "Europe PMC REST fullTextXML",
+      "why": "Europe PMC fullTextXML (JATS full text)"
+    },
+    {
+      "value": "curl FDC API v1 (api_key=DEMO_KEY)",
+      "occurrences": 4,
+      "packets": [
+        "D12"
+      ],
+      "files": [
+        "D12/mcdonalds-fries-prepared-food/intent.json",
+        "D12/mcdonalds-fries-prepared-food/locators.yaml"
+      ],
+      "humanDescription": "curl FDC API v1 (api_key=DEMO_KEY)",
+      "classification": "mapped",
+      "id": "usda-fdc",
+      "rule": "fdc",
+      "evidence": "FDC API v1",
+      "why": "USDA FoodData Central API v1"
+    },
+    {
+      "value": "curl FDC API v1 (api_key=DEMO_KEY, key omitted from canonicalUri)",
+      "occurrences": 2,
+      "packets": [
+        "D12"
+      ],
+      "files": [
+        "D12/mcdonalds-fries-prepared-food/intent.json",
+        "D12/mcdonalds-fries-prepared-food/locators.yaml"
+      ],
+      "humanDescription": "curl FDC API v1 (api_key=DEMO_KEY, key omitted from canonicalUri)",
+      "classification": "mapped",
+      "id": "usda-fdc",
+      "rule": "fdc",
+      "evidence": "FDC API v1",
+      "why": "USDA FoodData Central API v1"
+    },
+    {
+      "value": "curl NCBI BioC PMC OA API (no key)",
+      "occurrences": 2,
+      "packets": [
+        "D4"
+      ],
+      "files": [
+        "D4/clock-noise-vs-retest-advice/intent.json",
+        "D4/clock-noise-vs-retest-advice/locators.yaml"
+      ],
+      "humanDescription": "curl NCBI BioC PMC OA API (no key)",
+      "classification": "mapped",
+      "id": "ncbi-bioc-pmcoa",
+      "rule": "bioc",
+      "evidence": "NCBI BioC PMC OA API",
+      "why": "NCBI BioC PMC OA API"
+    },
+    {
+      "value": "curl NCBI E-utilities efetch db=pmc",
+      "occurrences": 2,
+      "packets": [
+        "D12"
+      ],
+      "files": [
+        "D12/mcdonalds-fries-prepared-food/intent.json",
+        "D12/mcdonalds-fries-prepared-food/locators.yaml"
+      ],
+      "humanDescription": "curl NCBI E-utilities efetch db=pmc",
+      "classification": "mapped",
+      "id": "ncbi-eutils-pubmed",
+      "rule": "eutils",
+      "evidence": "NCBI E-utilities",
+      "why": "NCBI E-utilities efetch (registry ncbi-eutils-pubmed; aliases include D3:pmc-jats)"
+    },
+    {
+      "value": "curl NCBI E-utilities efetch db=pmc (JATS, NIH author manuscript)",
+      "occurrences": 2,
+      "packets": [
+        "D12"
+      ],
+      "files": [
+        "D12/upf-diet-rct-unstructured/intent.json",
+        "D12/upf-diet-rct-unstructured/locators.yaml"
+      ],
+      "humanDescription": "curl NCBI E-utilities efetch db=pmc (JATS, NIH author manuscript)",
+      "classification": "mapped",
+      "id": "ncbi-eutils-pubmed",
+      "rule": "eutils",
+      "evidence": "NCBI E-utilities",
+      "why": "NCBI E-utilities efetch (registry ncbi-eutils-pubmed; aliases include D3:pmc-jats)"
+    },
+    {
+      "value": "curl NCBI E-utilities efetch db=pubmed",
+      "occurrences": 6,
+      "packets": [
+        "D12"
+      ],
+      "files": [
+        "D12/predimed-retraction-disconfirmation/intent.json",
+        "D12/predimed-retraction-disconfirmation/locators.yaml",
+        "D12/upf-diet-rct-unstructured/intent.json",
+        "D12/upf-diet-rct-unstructured/locators.yaml"
+      ],
+      "humanDescription": "curl NCBI E-utilities efetch db=pubmed",
+      "classification": "mapped",
+      "id": "ncbi-eutils-pubmed",
+      "rule": "eutils",
+      "evidence": "NCBI E-utilities",
+      "why": "NCBI E-utilities efetch (registry ncbi-eutils-pubmed; aliases include D3:pmc-jats)"
+    },
+    {
+      "value": "curl NCBI E-utilities efetch db=pubmed retmode=xml",
+      "occurrences": 2,
+      "packets": [
+        "D5"
+      ],
+      "files": [
+        "D5/antioxidant-exercise-disconfirmation/locators.yaml"
+      ],
+      "humanDescription": "curl NCBI E-utilities efetch db=pubmed retmode=xml",
+      "classification": "mapped",
+      "id": "ncbi-eutils-pubmed",
+      "rule": "eutils",
+      "evidence": "NCBI E-utilities",
+      "why": "NCBI E-utilities efetch (registry ncbi-eutils-pubmed; aliases include D3:pmc-jats)"
+    },
+    {
+      "value": "curl POST GraphQL (body ot-q1.json)",
+      "occurrences": 2,
+      "packets": [
+        "D10"
+      ],
+      "files": [
+        "D10/opentargets-association-signal/intent.json",
+        "D10/opentargets-association-signal/locators.yaml"
+      ],
+      "humanDescription": "curl POST GraphQL (body ot-q1.json)",
+      "classification": "ambiguous",
+      "reason": "free text names no registry tool/API unambiguously; needs adapter evidence (no mechanical guess)"
+    },
+    {
+      "value": "curl POST GraphQL (body ot-q2.json)",
+      "occurrences": 2,
+      "packets": [
+        "D10"
+      ],
+      "files": [
+        "D10/opentargets-association-signal/intent.json",
+        "D10/opentargets-association-signal/locators.yaml"
+      ],
+      "humanDescription": "curl POST GraphQL (body ot-q2.json)",
+      "classification": "ambiguous",
+      "reason": "free text names no registry tool/API unambiguously; needs adapter evidence (no mechanical guess)"
+    },
+    {
+      "value": "curl PubChem PUG REST",
+      "occurrences": 6,
+      "packets": [
+        "D12"
+      ],
+      "files": [
+        "D12/acrylamide-fried-potato-harm/intent.json",
+        "D12/acrylamide-fried-potato-harm/locators.yaml",
+        "D12/olive-oil-polyphenols-preparation/intent.json",
+        "D12/olive-oil-polyphenols-preparation/locators.yaml"
+      ],
+      "humanDescription": "curl PubChem PUG REST",
+      "classification": "mapped",
+      "id": "pubchem-pug-rest",
+      "rule": "pubchem",
+      "evidence": "PubChem PUG REST",
+      "why": "PubChem PUG REST"
+    },
+    {
+      "value": "curl of the Wayback raw id_ copy (memento-datetime and payload SHA1 checked against the CDX row by D9)",
+      "occurrences": 2,
+      "packets": [
+        "cross-domain"
+      ],
+      "files": [
+        "cross-domain/claim-mission-report/intent-r2.json",
+        "cross-domain/claim-mission-report/locators.yaml"
+      ],
+      "humanDescription": "curl of the Wayback raw id_ copy (memento-datetime and payload SHA1 checked against the CDX row by D9)",
+      "classification": "mapped",
+      "id": "internet-archive-wayback",
+      "rule": "wayback",
+      "evidence": "Wayback",
+      "why": "Internet Archive Wayback id_ raw replay"
+    },
+    {
+      "value": "curl openFDA device/recall (no API key)",
+      "occurrences": 2,
+      "packets": [
+        "D4"
+      ],
+      "files": [
+        "D4/noninvasive-glucose-cgm-recall/intent.json",
+        "D4/noninvasive-glucose-cgm-recall/locators.yaml"
+      ],
+      "humanDescription": "curl openFDA device/recall (no API key)",
+      "classification": "mapped",
+      "id": "openfda-device",
+      "rule": "openfda-device",
+      "evidence": "openFDA device/",
+      "why": "openFDA device endpoints"
+    },
+    {
+      "value": "curl openFDA drug/label (no key)",
+      "occurrences": 1,
+      "packets": [
+        "D5"
+      ],
+      "files": [
+        "D5/sirolimus-label-interactions-harm/locators.yaml"
+      ],
+      "humanDescription": "curl openFDA drug/label (no key)",
+      "classification": "mapped",
+      "id": "openfda-drug-label",
+      "rule": "openfda-label",
+      "evidence": "openFDA drug/label",
+      "why": "openFDA drug/label"
+    },
+    {
+      "value": "curl wayback id_ replay (raw archived HTML)",
+      "occurrences": 1,
+      "packets": [
+        "D5"
+      ],
+      "files": [
+        "D5/sleep-toolkit-unstructured/locators.yaml"
+      ],
+      "humanDescription": "curl wayback id_ replay (raw archived HTML)",
+      "classification": "mapped",
+      "id": "internet-archive-wayback",
+      "rule": "wayback",
+      "evidence": "wayback",
+      "why": "Internet Archive Wayback id_ raw replay"
+    },
+    {
+      "value": "curl/8 (browser User-Agent)",
+      "occurrences": 10,
+      "packets": [
+        "cross-domain"
+      ],
+      "files": [
+        "cross-domain/product-comparison/intent.json",
+        "cross-domain/product-comparison/locators.yaml"
+      ],
+      "humanDescription": "curl/8 (browser User-Agent)",
+      "classification": "mapped",
+      "id": "http-capture",
+      "rule": "http-generic",
+      "evidence": "curl/8 (browser User-Agent)",
+      "why": "plain curl of an origin URL, no API named (registry http-capture)"
+    },
+    {
+      "value": "curl/8 -sS -L (tool:ctgov-api-v2)",
+      "occurrences": 6,
+      "packets": [
+        "cross-domain"
+      ],
+      "files": [
+        "cross-domain/compound-profile/intent.json",
+        "cross-domain/compound-profile/locators.yaml"
+      ],
+      "humanDescription": "curl/8 -sS -L (tool:ctgov-api-v2)",
+      "classification": "mapped",
+      "id": "ctgov-v2-api",
+      "rule": "alias-all-packets-agree:D12:tool:ctgov-api-v2|D1:tool:ctgov-api-v2|D4:tool:ctgov-api-v2",
+      "evidence": "(tool:ctgov-api-v2)"
+    },
+    {
+      "value": "curl/8 -sS -L (tool:ebi-ols4)",
+      "occurrences": 8,
+      "packets": [
+        "cross-domain"
+      ],
+      "files": [
+        "cross-domain/compound-profile/intent.json",
+        "cross-domain/compound-profile/locators.yaml"
+      ],
+      "humanDescription": "curl/8 -sS -L (tool:ebi-ols4)",
+      "classification": "mapped",
+      "id": "ebi-ols4-chebi",
+      "rule": "ols4",
+      "evidence": "tool:ebi-ols4",
+      "why": "EMBL-EBI OLS4 (aliases D2:tool:ols4, D11:ebi-ols4-chebi)"
+    },
+    {
+      "value": "curl/8 -sS -L (tool:europepmc-rest)",
+      "occurrences": 4,
+      "packets": [
+        "cross-domain"
+      ],
+      "files": [
+        "cross-domain/compound-profile/intent.json",
+        "cross-domain/compound-profile/locators.yaml"
+      ],
+      "humanDescription": "curl/8 -sS -L (tool:europepmc-rest)",
+      "classification": "ambiguous",
+      "reason": "free text names no registry tool/API unambiguously; needs adapter evidence (no mechanical guess)"
+    },
+    {
+      "value": "curl/8 -sS -L (tool:gsrs-api)",
+      "occurrences": 4,
+      "packets": [
+        "cross-domain"
+      ],
+      "files": [
+        "cross-domain/compound-profile/intent.json",
+        "cross-domain/compound-profile/locators.yaml"
+      ],
+      "humanDescription": "curl/8 -sS -L (tool:gsrs-api)",
+      "classification": "mapped",
+      "id": "fda-gsrs",
+      "rule": "alias-all-packets-agree:D1:tool:gsrs-api",
+      "evidence": "(tool:gsrs-api)"
+    },
+    {
+      "value": "curl/8 -sS -L (tool:nih-dsld-api)",
+      "occurrences": 2,
+      "packets": [
+        "cross-domain"
+      ],
+      "files": [
+        "cross-domain/compound-profile/intent.json",
+        "cross-domain/compound-profile/locators.yaml"
+      ],
+      "humanDescription": "curl/8 -sS -L (tool:nih-dsld-api)",
+      "classification": "mapped",
+      "id": "nih-dsld",
+      "rule": "alias-all-packets-agree:D10:tool:nih-dsld-api|D6:tool:nih-dsld-api",
+      "evidence": "(tool:nih-dsld-api)"
+    },
+    {
+      "value": "curl/8 -sS -L (tool:quickgo-api)",
+      "occurrences": 2,
+      "packets": [
+        "cross-domain"
+      ],
+      "files": [
+        "cross-domain/compound-profile/intent.json",
+        "cross-domain/compound-profile/locators.yaml"
+      ],
+      "humanDescription": "curl/8 -sS -L (tool:quickgo-api)",
+      "classification": "mapped",
+      "id": "quickgo",
+      "rule": "quickgo",
+      "evidence": "tool:quickgo-api",
+      "why": "EMBL-EBI QuickGO API (alias D2:tool:quickgo)"
+    },
+    {
+      "value": "curl/8 ctgov-api-v2",
+      "occurrences": 2,
+      "packets": [
+        "D1"
+      ],
+      "files": [
+        "D1/nr-trial-unstructured/intent.json",
+        "D1/nr-trial-unstructured/locators.yaml"
+      ],
+      "humanDescription": "curl/8 ctgov-api-v2",
+      "classification": "mapped",
+      "id": "ctgov-v2-api",
+      "rule": "ctgov",
+      "evidence": "ctgov-api-v2",
+      "why": "ClinicalTrials.gov API v2 (alias D1:tool:ctgov-api-v2)"
+    },
+    {
+      "value": "curl/8 ctgov-api-v2 (HTTP 404 body)",
+      "occurrences": 2,
+      "packets": [
+        "D1"
+      ],
+      "files": [
+        "D1/nr-trial-unstructured/intent.json",
+        "D1/nr-trial-unstructured/locators.yaml"
+      ],
+      "humanDescription": "curl/8 ctgov-api-v2 (HTTP 404 body)",
+      "classification": "mapped",
+      "id": "ctgov-v2-api",
+      "rule": "ctgov",
+      "evidence": "ctgov-api-v2",
+      "why": "ClinicalTrials.gov API v2 (alias D1:tool:ctgov-api-v2)"
+    },
+    {
+      "value": "curl/8 dsld-api-v9",
+      "occurrences": 20,
+      "packets": [
+        "D1",
+        "cross-domain"
+      ],
+      "files": [
+        "D1/ashwagandha-plant-part-harm/intent.json",
+        "D1/ashwagandha-plant-part-harm/locators.yaml",
+        "D1/lgg-strain-resolution/intent.json",
+        "D1/lgg-strain-resolution/locators.yaml",
+        "D1/nr-salt-moiety-us-canada/intent.json",
+        "D1/nr-salt-moiety-us-canada/locators.yaml",
+        "D1/vitamin-b6-threshold-harm/intent.json",
+        "D1/vitamin-b6-threshold-harm/locators.yaml",
+        "cross-domain/product-comparison/intent.json",
+        "cross-domain/product-comparison/locators.yaml"
+      ],
+      "humanDescription": "curl/8 dsld-api-v9",
+      "classification": "mapped",
+      "id": "nih-dsld",
+      "rule": "dsld",
+      "evidence": "dsld-api-v9",
+      "why": "NIH DSLD API v9"
+    },
+    {
+      "value": "curl/8 ecfr-versioner --compressed",
+      "occurrences": 2,
+      "packets": [
+        "D1"
+      ],
+      "files": [
+        "D1/ashwagandha-plant-part-harm/intent.json",
+        "D1/ashwagandha-plant-part-harm/locators.yaml"
+      ],
+      "humanDescription": "curl/8 ecfr-versioner --compressed",
+      "classification": "mapped",
+      "id": "ecfr-versioner",
+      "rule": "ecfr",
+      "evidence": "ecfr-versioner",
+      "why": "eCFR versioner API"
+    },
+    {
+      "value": "curl/8 europepmc-rest fullTextXML",
+      "occurrences": 2,
+      "packets": [
+        "D1"
+      ],
+      "files": [
+        "D1/nr-trial-unstructured/intent.json",
+        "D1/nr-trial-unstructured/locators.yaml"
+      ],
+      "humanDescription": "curl/8 europepmc-rest fullTextXML",
+      "classification": "mapped",
+      "id": "europepmc-fulltext-jats",
+      "rule": "epmc-fulltext",
+      "evidence": "europepmc-rest fullTextXML",
+      "why": "Europe PMC fullTextXML (JATS full text)"
+    },
+    {
+      "value": "curl/8 europepmc-rest search",
+      "occurrences": 4,
+      "packets": [
+        "D1"
+      ],
+      "files": [
+        "D1/lgg-strain-resolution/intent.json",
+        "D1/lgg-strain-resolution/locators.yaml",
+        "D1/nr-trial-unstructured/intent.json",
+        "D1/nr-trial-unstructured/locators.yaml"
+      ],
+      "humanDescription": "curl/8 europepmc-rest search",
+      "classification": "mapped",
+      "id": "europepmc-rest",
+      "rule": "epmc-search",
+      "evidence": "europepmc-rest search",
+      "why": "Europe PMC REST search"
+    },
+    {
+      "value": "curl/8 eutils efetch",
+      "occurrences": 10,
+      "packets": [
+        "D1"
+      ],
+      "files": [
+        "D1/ashwagandha-plant-part-harm/intent.json",
+        "D1/ashwagandha-plant-part-harm/locators.yaml",
+        "D1/lgg-strain-resolution/intent.json",
+        "D1/lgg-strain-resolution/locators.yaml"
+      ],
+      "humanDescription": "curl/8 eutils efetch",
+      "classification": "mapped",
+      "id": "ncbi-eutils-pubmed",
+      "rule": "eutils",
+      "evidence": "eutils efetch",
+      "why": "NCBI E-utilities efetch (registry ncbi-eutils-pubmed; aliases include D3:pmc-jats)"
+    },
+    {
+      "value": "curl/8 gsrs-api-v1",
+      "occurrences": 16,
+      "packets": [
+        "D1",
+        "cross-domain"
+      ],
+      "files": [
+        "D1/ashwagandha-plant-part-harm/intent.json",
+        "D1/ashwagandha-plant-part-harm/locators.yaml",
+        "D1/nr-salt-moiety-us-canada/intent.json",
+        "D1/nr-salt-moiety-us-canada/locators.yaml",
+        "D1/vitamin-b6-threshold-harm/intent.json",
+        "D1/vitamin-b6-threshold-harm/locators.yaml",
+        "cross-domain/product-comparison/intent.json",
+        "cross-domain/product-comparison/locators.yaml"
+      ],
+      "humanDescription": "curl/8 gsrs-api-v1",
+      "classification": "mapped",
+      "id": "fda-gsrs",
+      "rule": "gsrs",
+      "evidence": "gsrs-api-v1",
+      "why": "GSRS API (alias D1:tool:gsrs-api)"
+    },
+    {
+      "value": "curl/8 gsrs-api-v1 (adversarial-review capture; two fetches byte-identical)",
+      "occurrences": 2,
+      "packets": [
+        "D1"
+      ],
+      "files": [
+        "D1/ashwagandha-plant-part-harm/intent.json",
+        "D1/ashwagandha-plant-part-harm/locators.yaml"
+      ],
+      "humanDescription": "curl/8 gsrs-api-v1 (adversarial-review capture; two fetches byte-identical)",
+      "classification": "mapped",
+      "id": "fda-gsrs",
+      "rule": "gsrs",
+      "evidence": "gsrs-api-v1",
+      "why": "GSRS API (alias D1:tool:gsrs-api)"
+    },
+    {
+      "value": "curl/8 lnhpd-api",
+      "occurrences": 6,
+      "packets": [
+        "D1"
+      ],
+      "files": [
+        "D1/ashwagandha-plant-part-harm/intent.json",
+        "D1/ashwagandha-plant-part-harm/locators.yaml",
+        "D1/nr-salt-moiety-us-canada/intent.json",
+        "D1/nr-salt-moiety-us-canada/locators.yaml"
+      ],
+      "humanDescription": "curl/8 lnhpd-api",
+      "classification": "mapped",
+      "id": "health-canada-lnhpd",
+      "rule": "lnhpd",
+      "evidence": "lnhpd-api",
+      "why": "Health Canada LNHPD API (alias D1:tool:lnhpd-api)"
+    },
+    {
+      "value": "curl/8 lnhpd-api (bulk)",
+      "occurrences": 2,
+      "packets": [
+        "D1"
+      ],
+      "files": [
+        "D1/nr-salt-moiety-us-canada/intent.json",
+        "D1/nr-salt-moiety-us-canada/locators.yaml"
+      ],
+      "humanDescription": "curl/8 lnhpd-api (bulk)",
+      "classification": "mapped",
+      "id": "health-canada-lnhpd",
+      "rule": "lnhpd",
+      "evidence": "lnhpd-api",
+      "why": "Health Canada LNHPD API (alias D1:tool:lnhpd-api)"
+    },
+    {
+      "value": "curl/8 pubchem-pug-rest",
+      "occurrences": 6,
+      "packets": [
+        "cross-domain"
+      ],
+      "files": [
+        "cross-domain/product-comparison/intent.json",
+        "cross-domain/product-comparison/locators.yaml"
+      ],
+      "humanDescription": "curl/8 pubchem-pug-rest",
+      "classification": "mapped",
+      "id": "pubchem-pug-rest",
+      "rule": "pubchem",
+      "evidence": "pubchem-pug-rest",
+      "why": "PubChem PUG REST"
+    },
+    {
+      "value": "curl/8 sec-archives (identity User-Agent)",
+      "occurrences": 2,
+      "packets": [
+        "D1"
+      ],
+      "files": [
+        "D1/nr-salt-moiety-us-canada/intent.json",
+        "D1/nr-salt-moiety-us-canada/locators.yaml"
+      ],
+      "humanDescription": "curl/8 sec-archives (identity User-Agent)",
+      "classification": "mapped",
+      "id": "sec-edgar",
+      "rule": "sec-edgar",
+      "evidence": "sec-archives",
+      "why": "SEC EDGAR (Archives / data.sec.gov; EDGAR identity User-Agent)"
+    },
+    {
+      "value": "curl/europepmc-rest",
+      "occurrences": 2,
+      "packets": [
+        "D7"
+      ],
+      "files": [
+        "D7/elysium-paper-funding-award/intent.json",
+        "D7/elysium-paper-funding-award/locators.yaml"
+      ],
+      "humanDescription": "curl/europepmc-rest",
+      "classification": "mapped",
+      "id": "europepmc-rest",
+      "rule": "epmc-bare",
+      "evidence": "curl/europepmc-rest",
+      "why": "value names the registry id europepmc-rest"
+    },
+    {
+      "value": "curl/gleif-api-v1",
+      "occurrences": 2,
+      "packets": [
+        "D7"
+      ],
+      "files": [
+        "D7/niagen-ownership-brand-history/intent.json",
+        "D7/niagen-ownership-brand-history/locators.yaml"
+      ],
+      "humanDescription": "curl/gleif-api-v1",
+      "classification": "mapped",
+      "id": "gleif-lei",
+      "rule": "gleif",
+      "evidence": "gleif-api-v1",
+      "why": "GLEIF API (alias D7:tool:gleif-api)"
+    },
+    {
+      "value": "curl/nih-reporter-api-v2 (POST criteria.project_nums=[\\\"R01AG082737*\\\"], sort fiscal_year desc)",
+      "occurrences": 2,
+      "packets": [
+        "D7"
+      ],
+      "files": [
+        "D7/elysium-paper-funding-award/intent.json",
+        "D7/elysium-paper-funding-award/locators.yaml"
+      ],
+      "humanDescription": "curl/nih-reporter-api-v2 (POST criteria.project_nums=[\\\"R01AG082737*\\\"], sort fiscal_year desc)",
+      "classification": "mapped",
+      "id": "nih-reporter",
+      "rule": "reporter",
+      "evidence": "nih-reporter-api-v2",
+      "why": "NIH RePORTER API v2 (alias D7:tool:nih-reporter-api)"
+    },
+    {
+      "value": "curl/sec-edgar-http (declared User-Agent)",
+      "occurrences": 10,
+      "packets": [
+        "D7"
+      ],
+      "files": [
+        "D7/bioage-group-vehicles-stale-role/intent.json",
+        "D7/bioage-group-vehicles-stale-role/locators.yaml",
+        "D7/niagen-ownership-brand-history/intent.json",
+        "D7/niagen-ownership-brand-history/locators.yaml",
+        "D7/sinclair-self-disclosure-unstructured/intent.json",
+        "D7/sinclair-self-disclosure-unstructured/locators.yaml"
+      ],
+      "humanDescription": "curl/sec-edgar-http (declared User-Agent)",
+      "classification": "mapped",
+      "id": "sec-edgar",
+      "rule": "sec-edgar",
+      "evidence": "sec-edgar-http",
+      "why": "SEC EDGAR (Archives / data.sec.gov; EDGAR identity User-Agent)"
+    },
+    {
+      "value": "curl/wayback-id_ (Internet Archive capture 2021-06-21T20:29:48Z, original bytes; check stage)",
+      "occurrences": 2,
+      "packets": [
+        "D7"
+      ],
+      "files": [
+        "D7/attia-cgm-dexcom-recommendation-interest/intent.json",
+        "D7/attia-cgm-dexcom-recommendation-interest/locators.yaml"
+      ],
+      "humanDescription": "curl/wayback-id_ (Internet Archive capture 2021-06-21T20:29:48Z, original bytes; check stage)",
+      "classification": "mapped",
+      "id": "internet-archive-wayback",
+      "rule": "wayback",
+      "evidence": "wayback",
+      "why": "Internet Archive Wayback id_ raw replay"
+    },
+    {
+      "value": "curl/wayback-id_ (Internet Archive capture 2025-09-30T17:25:59Z of the pre-redirect /disclosures/ URL, original bytes after gzip transfer decoding; adversarial-review stage)",
+      "occurrences": 2,
+      "packets": [
+        "D7"
+      ],
+      "files": [
+        "D7/attia-cgm-dexcom-recommendation-interest/intent.json",
+        "D7/attia-cgm-dexcom-recommendation-interest/locators.yaml"
+      ],
+      "humanDescription": "curl/wayback-id_ (Internet Archive capture 2025-09-30T17:25:59Z of the pre-redirect /disclosures/ URL, original bytes after gzip transfer decoding; adversarial-review stage)",
+      "classification": "mapped",
+      "id": "internet-archive-wayback",
+      "rule": "wayback",
+      "evidence": "wayback",
+      "why": "Internet Archive Wayback id_ raw replay"
+    },
+    {
+      "value": "dailymed-spl/curl-8",
+      "occurrences": 4,
+      "packets": [
+        "D11"
+      ],
+      "files": [
+        "D11/sirolimus-spl-boxed-warning/intent.json",
+        "D11/sirolimus-spl-boxed-warning/locators.yaml"
+      ],
+      "humanDescription": "dailymed-spl/curl-8",
+      "classification": "canonical",
+      "id": "dailymed-spl",
+      "evidence": "dailymed-spl"
+    },
+    {
+      "value": "europepmc-annotations/curl-8",
+      "occurrences": 2,
+      "packets": [
+        "D11"
+      ],
+      "files": [
+        "D11/nr-chloride-gsrs-identifier-bridge/intent.json",
+        "D11/nr-chloride-gsrs-identifier-bridge/locators.yaml"
+      ],
+      "humanDescription": "europepmc-annotations/curl-8",
+      "classification": "canonical",
+      "id": "europepmc-annotations",
+      "evidence": "europepmc-annotations"
+    },
+    {
+      "value": "europepmc-fulltext-jats/curl-8",
+      "occurrences": 3,
+      "packets": [
+        "D11"
+      ],
+      "files": [
+        "D11/nr-chloride-gsrs-identifier-bridge/locators.yaml",
+        "D11/nr-trial-jats-unstructured/intent.json",
+        "D11/nr-trial-jats-unstructured/locators.yaml"
+      ],
+      "humanDescription": "europepmc-fulltext-jats/curl-8",
+      "classification": "canonical",
+      "id": "europepmc-fulltext-jats",
+      "evidence": "europepmc-fulltext-jats"
+    },
+    {
+      "value": "fda-gsrs/curl-8",
+      "occurrences": 4,
+      "packets": [
+        "D11"
+      ],
+      "files": [
+        "D11/nr-chloride-gsrs-identifier-bridge/intent.json",
+        "D11/nr-chloride-gsrs-identifier-bridge/locators.yaml"
+      ],
+      "humanDescription": "fda-gsrs/curl-8",
+      "classification": "canonical",
+      "id": "fda-gsrs",
+      "evidence": "fda-gsrs"
+    },
+    {
+      "value": "firecrawl CLI 1.23.1 scrape --max-age 0 (markdown); NOT the document bytes",
+      "occurrences": 3,
+      "packets": [
+        "D8"
+      ],
+      "files": [
+        "D8/nmn-us-exclusion-reversal/intent-step2.json",
+        "D8/nmn-us-exclusion-reversal/intent.json",
+        "D8/nmn-us-exclusion-reversal/locators.yaml"
+      ],
+      "humanDescription": "firecrawl CLI 1.23.1 scrape --max-age 0 (markdown); NOT the document bytes",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "firecrawl ",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "firecrawl CLI 1.23.1 scrape --max-age 0 (markdown; curl gets 403)",
+      "occurrences": 2,
+      "packets": [
+        "D8"
+      ],
+      "files": [
+        "D8/certification-listing-lot-scope/intent.json",
+        "D8/certification-listing-lot-scope/locators.yaml"
+      ],
+      "humanDescription": "firecrawl CLI 1.23.1 scrape --max-age 0 (markdown; curl gets 403)",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "firecrawl ",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "firecrawl MCP scrape (markdown, onlyMainContent, maxAge 0)",
+      "occurrences": 2,
+      "packets": [
+        "D6"
+      ],
+      "files": [
+        "D6/retailer-reformulation-claim-iherb/intent.json",
+        "D6/retailer-reformulation-claim-iherb/locators.yaml"
+      ],
+      "humanDescription": "firecrawl MCP scrape (markdown, onlyMainContent, maxAge 0)",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "firecrawl ",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "firecrawl scrape --only-main-content (CLI 1.23.1)",
+      "occurrences": 2,
+      "packets": [
+        "D13"
+      ],
+      "files": [
+        "D13/lesne-2006-retraction/intent.json",
+        "D13/lesne-2006-retraction/locators.yaml"
+      ],
+      "humanDescription": "firecrawl scrape --only-main-content (CLI 1.23.1)",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "firecrawl ",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "firecrawl scrape --only-main-content (CLI 1.23.1); Tavily cannot fetch nature.com",
+      "occurrences": 2,
+      "packets": [
+        "D13"
+      ],
+      "files": [
+        "D13/lesne-2006-retraction/intent.json",
+        "D13/lesne-2006-retraction/locators.yaml"
+      ],
+      "humanDescription": "firecrawl scrape --only-main-content (CLI 1.23.1); Tavily cannot fetch nature.com",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "firecrawl ",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "firecrawl scrape --wait-for 4000 (CLI 1.23.1)",
+      "occurrences": 1,
+      "packets": [
+        "D3"
+      ],
+      "files": [
+        "D3/aspree-registry-history-harm/locators.yaml"
+      ],
+      "humanDescription": "firecrawl scrape --wait-for 4000 (CLI 1.23.1)",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "firecrawl ",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "firecrawl scrape --wait-for 4000 (CLI 1.23.1), markdown; curl gets a bot holding page",
+      "occurrences": 1,
+      "packets": [
+        "D3"
+      ],
+      "files": [
+        "D3/aspree-registry-history-harm/intent.json"
+      ],
+      "humanDescription": "firecrawl scrape --wait-for 4000 (CLI 1.23.1), markdown; curl gets a bot holding page",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "firecrawl ",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "firecrawl-cli-scrape/1.23.1 (--max-age 0, full page markdown)",
+      "occurrences": 4,
+      "packets": [
+        "D7"
+      ],
+      "files": [
+        "D7/attia-cgm-dexcom-recommendation-interest/intent.json",
+        "D7/attia-cgm-dexcom-recommendation-interest/locators.yaml"
+      ],
+      "humanDescription": "firecrawl-cli-scrape/1.23.1 (--max-age 0, full page markdown)",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "firecrawl-",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "firecrawl-cli-scrape/1.23.1 (--only-main-content --max-age 0)",
+      "occurrences": 4,
+      "packets": [
+        "D7"
+      ],
+      "files": [
+        "D7/attia-cgm-dexcom-recommendation-interest/intent.json",
+        "D7/attia-cgm-dexcom-recommendation-interest/locators.yaml",
+        "D7/ftc-ameribev-paid-dieticians-harm/intent.json",
+        "D7/ftc-ameribev-paid-dieticians-harm/locators.yaml"
+      ],
+      "humanDescription": "firecrawl-cli-scrape/1.23.1 (--only-main-content --max-age 0)",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "firecrawl-",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "firecrawl-cli-scrape/1.23.1 (--only-main-content --max-age 0, markdown)",
+      "occurrences": 2,
+      "packets": [
+        "D7"
+      ],
+      "files": [
+        "D7/sinclair-self-disclosure-unstructured/intent.json",
+        "D7/sinclair-self-disclosure-unstructured/locators.yaml"
+      ],
+      "humanDescription": "firecrawl-cli-scrape/1.23.1 (--only-main-content --max-age 0, markdown)",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "firecrawl-",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "firecrawl-cli-scrape/1.23.1 (--only-main-content --wait-for 4000; markdown rendering)",
+      "occurrences": 2,
+      "packets": [
+        "D12"
+      ],
+      "files": [
+        "D12/mcdonalds-fries-prepared-food/intent.json",
+        "D12/mcdonalds-fries-prepared-food/locators.yaml"
+      ],
+      "humanDescription": "firecrawl-cli-scrape/1.23.1 (--only-main-content --wait-for 4000; markdown rendering)",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "firecrawl-",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "firecrawl-cli-scrape/1.23.1 (PDF parsed to markdown, --max-age 0)",
+      "occurrences": 2,
+      "packets": [
+        "D7"
+      ],
+      "files": [
+        "D7/ftc-ameribev-paid-dieticians-harm/intent.json",
+        "D7/ftc-ameribev-paid-dieticians-harm/locators.yaml"
+      ],
+      "humanDescription": "firecrawl-cli-scrape/1.23.1 (PDF parsed to markdown, --max-age 0)",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "firecrawl-",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "firecrawl-cli-scrape/1.23.1 (scanned PDF, OCR to markdown, --max-age 0)",
+      "occurrences": 2,
+      "packets": [
+        "D7"
+      ],
+      "files": [
+        "D7/ftc-ameribev-paid-dieticians-harm/intent.json",
+        "D7/ftc-ameribev-paid-dieticians-harm/locators.yaml"
+      ],
+      "humanDescription": "firecrawl-cli-scrape/1.23.1 (scanned PDF, OCR to markdown, --max-age 0)",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "firecrawl-",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "firecrawl-cli-scrape/1.23.1 `scrape <url> --only-main-content --max-age 0` (markdown output)",
+      "occurrences": 2,
+      "packets": [
+        "D12"
+      ],
+      "files": [
+        "D12/upf-diet-rct-unstructured/intent.json",
+        "D12/upf-diet-rct-unstructured/locators.yaml"
+      ],
+      "humanDescription": "firecrawl-cli-scrape/1.23.1 `scrape <url> --only-main-content --max-age 0` (markdown output)",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "firecrawl-",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "firecrawl-cli-scrape/1.23.1 `scrape <url> --only-main-content` (markdown output; Firecrawl's rendering, not the origin bytes)",
+      "occurrences": 4,
+      "packets": [
+        "D12"
+      ],
+      "files": [
+        "D12/acrylamide-fried-potato-harm/intent.json",
+        "D12/acrylamide-fried-potato-harm/locators.yaml",
+        "D12/olive-oil-polyphenols-preparation/intent.json",
+        "D12/olive-oil-polyphenols-preparation/locators.yaml"
+      ],
+      "humanDescription": "firecrawl-cli-scrape/1.23.1 `scrape <url> --only-main-content` (markdown output; Firecrawl's rendering, not the origin bytes)",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "firecrawl-",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "firecrawl-cli/1.23.1 scrape (markdown)",
+      "occurrences": 2,
+      "packets": [
+        "D6"
+      ],
+      "files": [
+        "D6/offer-roles-price-kinds-truniagen/intent.json",
+        "D6/offer-roles-price-kinds-truniagen/locators.yaml"
+      ],
+      "humanDescription": "firecrawl-cli/1.23.1 scrape (markdown)",
+      "classification": "canonical",
+      "id": "firecrawl-cli",
+      "evidence": "firecrawl-cli"
+    },
+    {
+      "value": "firecrawl-cli/1.23.1 scrape (markdown) --country US",
+      "occurrences": 10,
+      "packets": [
+        "D6"
+      ],
+      "files": [
+        "D6/offer-roles-price-kinds-truniagen/intent.json",
+        "D6/offer-roles-price-kinds-truniagen/locators.yaml",
+        "D6/recall-moringa-mogo/intent.json",
+        "D6/recall-moringa-mogo/locators.yaml",
+        "D6/retailer-reformulation-claim-iherb/intent.json",
+        "D6/retailer-reformulation-claim-iherb/locators.yaml"
+      ],
+      "humanDescription": "firecrawl-cli/1.23.1 scrape (markdown) --country US",
+      "classification": "canonical",
+      "id": "firecrawl-cli",
+      "evidence": "firecrawl-cli"
+    },
+    {
+      "value": "firecrawl-cli/1.23.1 scrape (markdown) --only-main-content",
+      "occurrences": 4,
+      "packets": [
+        "D6"
+      ],
+      "files": [
+        "D6/recall-moringa-mogo/intent.json",
+        "D6/recall-moringa-mogo/locators.yaml"
+      ],
+      "humanDescription": "firecrawl-cli/1.23.1 scrape (markdown) --only-main-content",
+      "classification": "canonical",
+      "id": "firecrawl-cli",
+      "evidence": "firecrawl-cli"
+    },
+    {
+      "value": "firecrawl-cli/1.23.1 scrape (markdown) --wait-for 3000",
+      "occurrences": 4,
+      "packets": [
+        "D6"
+      ],
+      "files": [
+        "D6/label-versions-truniagen-dsld/intent.json",
+        "D6/label-versions-truniagen-dsld/locators.yaml",
+        "D6/prepared-food-bigmac-mcdonalds/intent.json",
+        "D6/prepared-food-bigmac-mcdonalds/locators.yaml"
+      ],
+      "humanDescription": "firecrawl-cli/1.23.1 scrape (markdown) --wait-for 3000",
+      "classification": "canonical",
+      "id": "firecrawl-cli",
+      "evidence": "firecrawl-cli"
+    },
+    {
+      "value": "firecrawl-cli/1.23.1 scrape --only-main-content --max-age 0 (Markdown)",
+      "occurrences": 8,
+      "packets": [
+        "D1"
+      ],
+      "files": [
+        "D1/ashwagandha-plant-part-harm/intent.json",
+        "D1/ashwagandha-plant-part-harm/locators.yaml",
+        "D1/vitamin-b6-threshold-harm/intent.json",
+        "D1/vitamin-b6-threshold-harm/locators.yaml"
+      ],
+      "humanDescription": "firecrawl-cli/1.23.1 scrape --only-main-content --max-age 0 (Markdown)",
+      "classification": "canonical",
+      "id": "firecrawl-cli",
+      "evidence": "firecrawl-cli"
+    },
+    {
+      "value": "firecrawl-cli/1.23.1 scrape markdown maxAge=0 (scrape id 01a11d83-538b-755d-9e38-01c56ae69e46)",
+      "occurrences": 2,
+      "packets": [
+        "D11"
+      ],
+      "files": [
+        "D11/resveratrol-retraction-integrity/intent.json",
+        "D11/resveratrol-retraction-integrity/locators.yaml"
+      ],
+      "humanDescription": "firecrawl-cli/1.23.1 scrape markdown maxAge=0 (scrape id 01a11d83-538b-755d-9e38-01c56ae69e46)",
+      "classification": "canonical",
+      "id": "firecrawl-cli",
+      "evidence": "firecrawl-cli"
+    },
+    {
+      "value": "firecrawl-scrape/1.23.1 --max-age 0 (PDF parsed to markdown by the tool)",
+      "occurrences": 1,
+      "packets": [
+        "cross-domain"
+      ],
+      "files": [
+        "cross-domain/claim-mission-report/locators.yaml"
+      ],
+      "humanDescription": "firecrawl-scrape/1.23.1 --max-age 0 (PDF parsed to markdown by the tool)",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "firecrawl-",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "firecrawl-scrape/1.23.1 --max-age 0 (PDF parsed to markdown by the tool), Scrape ID 01a11ee3-d060-7382-b3c6-2d234d78d8e7",
+      "occurrences": 1,
+      "packets": [
+        "cross-domain"
+      ],
+      "files": [
+        "cross-domain/claim-mission-report/intent-r2.json"
+      ],
+      "humanDescription": "firecrawl-scrape/1.23.1 --max-age 0 (PDF parsed to markdown by the tool), Scrape ID 01a11ee3-d060-7382-b3c6-2d234d78d8e7",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "firecrawl-",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "firecrawl-scrape/1.23.1 --max-age 0 (markdown)",
+      "occurrences": 5,
+      "packets": [
+        "cross-domain"
+      ],
+      "files": [
+        "cross-domain/claim-mission-report/intent.json",
+        "cross-domain/claim-mission-report/locators.yaml"
+      ],
+      "humanDescription": "firecrawl-scrape/1.23.1 --max-age 0 (markdown)",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "firecrawl-",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "firecrawl-scrape/1.23.1 --only-main-content --max-age 0 (markdown)",
+      "occurrences": 1,
+      "packets": [
+        "cross-domain"
+      ],
+      "files": [
+        "cross-domain/claim-mission-report/locators.yaml"
+      ],
+      "humanDescription": "firecrawl-scrape/1.23.1 --only-main-content --max-age 0 (markdown)",
+      "classification": "mapped",
+      "id": "firecrawl-cli",
+      "rule": "firecrawl",
+      "evidence": "firecrawl-",
+      "why": "Firecrawl CLI 1.23.1 / MCP scrape (registry provider 'Firecrawl (CLI 1.23.1 + MCP)')"
+    },
+    {
+      "value": "local file read of the private repository Overton77/ai-engineer-knowledge-services at commit 28c44222 (file last changed in bb4892b1)",
+      "occurrences": 2,
+      "packets": [
+        "K"
+      ],
+      "files": [
+        "K/seller-claim-occurrences/locators.yaml"
+      ],
+      "humanDescription": "local file read of the private repository Overton77/ai-engineer-knowledge-services at commit 28c44222 (file last changed in bb4892b1)",
+      "classification": "mapped",
+      "id": "local-contracts",
+      "rule": "local-repo",
+      "evidence": "local file read of the private repository",
+      "why": "local repository read (registry local-contracts: local repositories)"
+    },
+    {
+      "value": "ncbi-eutils-pubmed/curl-8",
+      "occurrences": 9,
+      "packets": [
+        "D11"
+      ],
+      "files": [
+        "D11/capture-failures-coverage/assertions.yaml",
+        "D11/capture-failures-coverage/intent.json",
+        "D11/capture-failures-coverage/locators.yaml",
+        "D11/nr-trial-jats-unstructured/intent.json",
+        "D11/nr-trial-jats-unstructured/locators.yaml",
+        "D11/resveratrol-retraction-integrity/intent.json",
+        "D11/resveratrol-retraction-integrity/locators.yaml"
+      ],
+      "humanDescription": "ncbi-eutils-pubmed/curl-8",
+      "classification": "canonical",
+      "id": "ncbi-eutils-pubmed",
+      "evidence": "ncbi-eutils-pubmed"
+    },
+    {
+      "value": "openfda-drug-label/curl-8",
+      "occurrences": 2,
+      "packets": [
+        "D11"
+      ],
+      "files": [
+        "D11/sirolimus-spl-boxed-warning/intent.json",
+        "D11/sirolimus-spl-boxed-warning/locators.yaml"
+      ],
+      "humanDescription": "openfda-drug-label/curl-8",
+      "classification": "canonical",
+      "id": "openfda-drug-label",
+      "evidence": "openfda-drug-label"
+    },
+    {
+      "value": "pmc-idconv/curl-8",
+      "occurrences": 1,
+      "packets": [
+        "D11"
+      ],
+      "files": [
+        "D11/nr-trial-jats-unstructured/locators.yaml"
+      ],
+      "humanDescription": "pmc-idconv/curl-8",
+      "classification": "canonical",
+      "id": "pmc-idconv",
+      "evidence": "pmc-idconv"
+    },
+    {
+      "value": "pubchem-pug-rest/curl-8",
+      "occurrences": 2,
+      "packets": [
+        "D11"
+      ],
+      "files": [
+        "D11/nr-chloride-gsrs-identifier-bridge/intent.json",
+        "D11/nr-chloride-gsrs-identifier-bridge/locators.yaml"
+      ],
+      "humanDescription": "pubchem-pug-rest/curl-8",
+      "classification": "canonical",
+      "id": "pubchem-pug-rest",
+      "evidence": "pubchem-pug-rest"
+    },
+    {
+      "value": "tavily-extract (tvly 0.1.5",
+      "occurrences": 7,
+      "packets": [
+        "D10"
+      ],
+      "files": [
+        "D10/fda-qhc-magnesium-disconfirmation/locators.yaml",
+        "D10/mg-rankings-criteria-comparison/locators.yaml"
+      ],
+      "humanDescription": "tavily-extract (tvly 0.1.5",
+      "classification": "mapped",
+      "id": "tavily-cli",
+      "rule": "tavily",
+      "evidence": "tavily-extract",
+      "why": "Tavily CLI 0.1.5 extract"
+    },
+    {
+      "value": "tavily-extract (tvly 0.1.5, basic, raw_content)",
+      "occurrences": 7,
+      "packets": [
+        "D10"
+      ],
+      "files": [
+        "D10/fda-qhc-magnesium-disconfirmation/intent.json",
+        "D10/mg-rankings-criteria-comparison/intent.json"
+      ],
+      "humanDescription": "tavily-extract (tvly 0.1.5, basic, raw_content)",
+      "classification": "mapped",
+      "id": "tavily-cli",
+      "rule": "tavily",
+      "evidence": "tavily-extract",
+      "why": "Tavily CLI 0.1.5 extract"
+    },
+    {
+      "value": "tavily-extract/cli-0.1.5 (raw_content markdown)",
+      "occurrences": 6,
+      "packets": [
+        "D5"
+      ],
+      "files": [
+        "D5/antioxidant-exercise-disconfirmation/locators.yaml",
+        "D5/pregnancy-magnesium-upper-limit/locators.yaml",
+        "D5/sirolimus-label-interactions-harm/locators.yaml",
+        "D5/sleep-toolkit-unstructured/locators.yaml"
+      ],
+      "humanDescription": "tavily-extract/cli-0.1.5 (raw_content markdown)",
+      "classification": "mapped",
+      "id": "tavily-cli",
+      "rule": "tavily",
+      "evidence": "tavily-extract",
+      "why": "Tavily CLI 0.1.5 extract"
+    },
+    {
+      "value": "tvly extract --json (CLI 0.1.5",
+      "occurrences": 2,
+      "packets": [
+        "D13"
+      ],
+      "files": [
+        "D13/bioage-strides-discontinuation/locators.yaml"
+      ],
+      "humanDescription": "tvly extract --json (CLI 0.1.5",
+      "classification": "mapped",
+      "id": "tavily-cli",
+      "rule": "tavily",
+      "evidence": "tvly extract",
+      "why": "Tavily CLI 0.1.5 extract"
+    },
+    {
+      "value": "tvly extract --json (CLI 0.1.5, PYTHONUTF8=1); raw_content saved as UTF-8 LF markdown",
+      "occurrences": 2,
+      "packets": [
+        "D13"
+      ],
+      "files": [
+        "D13/bioage-strides-discontinuation/intent.json"
+      ],
+      "humanDescription": "tvly extract --json (CLI 0.1.5, PYTHONUTF8=1); raw_content saved as UTF-8 LF markdown",
+      "classification": "mapped",
+      "id": "tavily-cli",
+      "rule": "tavily",
+      "evidence": "tvly extract",
+      "why": "Tavily CLI 0.1.5 extract"
+    }
+  ]
+}

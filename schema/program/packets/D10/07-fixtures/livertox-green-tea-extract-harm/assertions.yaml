@@ -1,0 +1,324 @@
+# Assertions and derived records for fixture livertox-green-tea-extract-harm (D10, fixtures stage, A1, 2026-10-08).
+# Kind: harm. LiverTox (NIDDK) likelihood grades and an avoidance statement, keyed to the most specific preparation the
+# source supports: green tea EXTRACT is blocked, the green tea BEVERAGE is not; ashwagandha is blocked for one population.
+# Conventions: see the header of ../mg-bisglycinate-rct-unstructured/assertions.yaml.
+# Composed-body sentence counts exclude the framing paragraph above the first section (fixture metadata, not report content).
+
+fixture: livertox-green-tea-extract-harm
+producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-livertox-green-tea-extract-harm" }   # fixture ids
+
+entities:
+  - { ref: e-gt-monograph-scope, type: D1.IngredientMaterial, uid: hu:ingredient-material:fx-green-tea-livertox-scope, name: "green tea (Camellia sinensis) as covered by the LiverTox 'Green Tea' monograph", note: "the source's own subject; it grades 'green tea' while its case evidence concerns green tea extract (GTE)" }
+  - { ref: e-gte, type: D1.IngredientMaterial, uid: hu:ingredient-material:fx-green-tea-extract, name: "green tea extract (GTE)" }
+  - { ref: e-gt-beverage, type: D12.FoodItem, uid: hu:food-item:fx-green-tea-beverage, name: "green tea, brewed beverage (drinking green tea)" }
+  - { ref: e-ashwagandha, type: D1.IngredientMaterial, uid: hu:ingredient-material:fx-ashwagandha-livertox-scope, name: "ashwagandha (Withania somnifera) products as covered by the LiverTox 'Ashwagandha' monograph" }
+  - { ref: e-liver-injury, type: D2.Condition, uid: hu:condition:fx-clinically-apparent-liver-injury, name: "clinically apparent liver injury" }
+  - { ref: e-cirrhosis, type: D2.Condition, uid: hu:condition:fx-cirrhosis-or-advanced-cld, name: "cirrhosis or advanced chronic liver disease" }
+  - { ref: e-livertox, type: D7.Organization, uid: hu:organization:fx-niddk-livertox, name: "LiverTox (National Institute of Diabetes and Digestive and Kidney Diseases)" }
+
+assertions:
+  - id: a-gt-likelihood-a
+    uid: hu:assertion:fx-d10-livertox-green-tea-likelihood-a
+    assertionKind: FIELD
+    predicate: ASSIGNS_LIKELIHOOD_SCORE
+    subject: { ref: e-gt-monograph-scope, type: D1.IngredientMaterial }
+    value: { valueString: "A (well established cause of clinically apparent liver injury)" }
+    asserter: { ref: e-livertox, type: D7.Organization }
+    locators: [loc-gte-likelihood-a]
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["scheme: LiverTox likelihood score", "monograph updated 2020-11-20"]
+    validTime: { validFrom: "2020-11-20", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: null, note: "monograph <date date-type=updated>" }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-livertox-green-tea-extract-harm" }
+
+  - id: a-gte-alt
+    uid: hu:assertion:fx-d10-livertox-gte-alt-elevations
+    assertionKind: METRIC
+    predicate: REPORTS_ADVERSE_EVENT_RATE
+    subject: { ref: e-gte, type: D1.IngredientMaterial }
+    value: { valueNumber: 6.7, unitCode: "%", valueString: "ALT elevations in 6.7% of patients vs 0.7% of controls" }
+    asserter: { ref: e-livertox, type: D7.Organization }
+    locators: [loc-gte-alt-trial, loc-gte-not-observed]
+    speechAct: STATES
+    basisKind: CITED_FROM_PRIOR_WORK
+    qualifiers: ["large prospective study", "postmenopausal women at risk for breast cancer", "comparator: 0.7% of controls", "in these studies clinically apparent liver injury was not observed, but the extract was quickly discontinued in patients with ALT elevations (loc-gte-not-observed)", "primary trial not captured (D3 seam)"]
+    validTime: { validFrom: "2020-11-20", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-livertox-green-tea-extract-harm" }
+
+  - id: a-gte-prevalence-low
+    uid: hu:assertion:fx-d10-livertox-gte-prevalence-low
+    assertionKind: CLAIM
+    claimType: OTHER
+    predicate: CHARACTERIZES_INCIDENCE
+    subject: { ref: e-gte, type: D1.IngredientMaterial }
+    object: { ref: e-liver-injury, type: D2.Condition }
+    value: { valueString: "prevalence of green tea extract induced acute liver injury with symptoms or jaundice is not known, but is undoubtedly low in comparison to the wide scale use of these products" }
+    asserter: { ref: e-livertox, type: D7.Organization }
+    locators: [loc-gte-prevalence-low]
+    speechAct: STATES
+    qualifiers: ["added in the adversarial-review stage"]
+    validTime: { validFrom: "2020-11-20", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-livertox-green-tea-extract-harm" }
+
+  - id: a-gt-beverage-not-associated
+    uid: hu:assertion:fx-d10-livertox-beverage-not-associated
+    assertionKind: RELATIONSHIP
+    predicate: ASSOCIATED_WITH_ADVERSE_EFFECT
+    subject: { ref: e-gt-beverage, type: D12.FoodItem }
+    object: { ref: e-liver-injury, type: D2.Condition }
+    asserter: { ref: e-livertox, type: D7.Organization }
+    locators: [loc-gt-beverage-not-associated]
+    speechAct: DENIES
+    polarity: NEGATIVE
+    qualifiers: ["also: no serum aminotransferase elevations"]
+    validTime: { validFrom: "2020-11-20", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-livertox-green-tea-extract-harm" }
+
+  - id: a-gt-infusion-cases
+    uid: hu:assertion:fx-d10-livertox-infusion-cases
+    assertionKind: RELATIONSHIP
+    predicate: ASSOCIATED_WITH_ADVERSE_EFFECT
+    subject: { ref: e-gt-beverage, type: D12.FoodItem }
+    object: { ref: e-liver-injury, type: D2.Condition }
+    asserter: { ref: e-livertox, type: D7.Organization }
+    locators: [loc-gt-infusion-cases]
+    speechAct: REPORTS_PRACTICE
+    polarity: POSITIVE
+    qualifiers: ["a small number of similar cases", "after drinking green tea infusions"]
+    validTime: { validFrom: "2020-11-20", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-livertox-green-tea-extract-harm" }
+
+  - id: a-ash-likelihood-b
+    uid: hu:assertion:fx-d10-livertox-ashwagandha-likelihood-b
+    assertionKind: FIELD
+    predicate: ASSIGNS_LIKELIHOOD_SCORE
+    subject: { ref: e-ashwagandha, type: D1.IngredientMaterial }
+    value: { valueString: "B (likely cause of clinically apparent liver injury)" }
+    asserter: { ref: e-livertox, type: D7.Organization }
+    locators: [loc-ash-likelihood-b]
+    speechAct: STATES
+    qualifiers: ["scheme: LiverTox likelihood score", "monograph updated 2024-12-03"]
+    validTime: { validFrom: "2024-12-03", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: null }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-livertox-green-tea-extract-harm" }
+
+  - id: a-ash-avoid-cirrhosis
+    uid: hu:assertion:fx-d10-livertox-ashwagandha-avoid-cirrhosis
+    assertionKind: CLAIM
+    claimType: RECOMMENDATION
+    predicate: USE_CONSTRAINED_IN       # D5 predicate (05 predicateOnly); resolves to a D5 UseConstraint of kind CONDITION
+    subject: { ref: e-ashwagandha, type: D1.IngredientMaterial }
+    object: { ref: e-cirrhosis, type: D2.Condition }
+    value: { valueString: "AVOID" }    # D5 ConstraintLevel code; the verbatim directive is the locator's exact quote
+    asserter: { ref: e-livertox, type: D7.Organization }
+    locators: [loc-ash-avoid-cirrhosis]
+    speechAct: CAUTIONS
+    polarity: POSITIVE
+    occurrenceOf: hu:claim:fx-d10-avoid-ashwagandha-in-cirrhosis
+    validTime: { validFrom: "2024-12-03", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-livertox-green-tea-extract-harm" }
+
+  - id: a-ash-adulteration
+    uid: hu:assertion:fx-d10-livertox-adulteration-caveat
+    assertionKind: CLAIM
+    claimType: OTHER
+    predicate: STATES_ATTRIBUTION_CAVEAT
+    subject: { ref: e-ashwagandha, type: D1.IngredientMaterial }
+    value: { valueString: "mislabeling or adulteration with hepatotoxic herbal products is always an issue in commercial multiingredient dietary supplements" }
+    asserter: { ref: e-livertox, type: D7.Organization }
+    locators: [loc-ash-adulteration]
+    speechAct: CAUTIONS
+    validTime: { validFrom: "2024-12-03", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-livertox-green-tea-extract-harm" }
+
+assessments:
+  - id: s-gte-harm
+    uid: hu:assessment:fx-d10-harm-causality-gte-liver
+    type: K.Assessment
+    assessmentKind: EVIDENCE_SYNTHESIS
+    assessmentSubkind: D10.harm-causality
+    status: PROPOSED
+    methodVersion: "bl-harm/livertox-likelihood-mirror@0 (fixture)"
+    verdict: SUPPORTED_WITH_QUALIFICATION
+    effectDirection: HARM
+    summary: "Green tea extract can cause clinically apparent liver injury (LiverTox likelihood A for the monograph, case evidence about GTE; ALT elevations 6.7% vs 0.7% in a prospective study in which clinically apparent injury was not observed because the extract was stopped early); LiverTox calls the prevalence of symptomatic injury unknown but undoubtedly low relative to use. The grade is narrowed from the monograph's subject to the extract; drinking the beverage is not graded as harmful."
+    about: [{ ref: e-gte, type: D1.IngredientMaterial }, { ref: e-liver-injury, type: D2.Condition }]
+    inputAssertions: [a-gt-likelihood-a, a-gte-alt, a-gte-prevalence-low, a-gt-beverage-not-associated, a-gt-infusion-cases]
+    evidence:
+      - { locator: loc-gte-likelihood-a, role: SUPPORTS, origin: DECLARED }
+      - { locator: loc-gte-alt-trial, role: SUPPORTS, origin: DECLARED }
+      - { locator: loc-gte-not-observed, role: QUALIFIES, origin: DECLARED }
+      - { locator: loc-gte-prevalence-low, role: QUALIFIES, origin: DECLARED }
+      - { locator: loc-gt-beverage-not-associated, role: QUALIFIES, origin: DECLARED }
+      - { locator: loc-gt-infusion-cases, role: QUALIFIES, origin: DECLARED }
+    recordedAt: "2026-10-08T22:00:00Z"
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-livertox-green-tea-extract-harm" }
+
+  - id: s-ash-harm
+    uid: hu:assessment:fx-d10-harm-causality-ashwagandha-liver
+    type: K.Assessment
+    assessmentKind: EVIDENCE_SYNTHESIS
+    assessmentSubkind: D10.harm-causality
+    status: PROPOSED
+    methodVersion: "bl-harm/livertox-likelihood-mirror@0 (fixture)"
+    verdict: SUPPORTED_WITH_QUALIFICATION
+    effectDirection: HARM
+    summary: "Ashwagandha products are a likely cause of clinically apparent liver injury (LiverTox likelihood B), rare; LiverTox advises avoidance in cirrhosis or advanced chronic liver disease; attribution is complicated by mislabeling and adulteration of multi-ingredient products."
+    about: [{ ref: e-ashwagandha, type: D1.IngredientMaterial }, { ref: e-liver-injury, type: D2.Condition }]
+    inputAssertions: [a-ash-likelihood-b, a-ash-avoid-cirrhosis, a-ash-adulteration]
+    evidence:
+      - { locator: loc-ash-likelihood-b, role: SUPPORTS, origin: DECLARED }
+      - { locator: loc-ash-avoid-cirrhosis, role: SUPPORTS, origin: DECLARED }
+      - { locator: loc-ash-adulteration, role: QUALIFIES, origin: DECLARED }
+    recordedAt: "2026-10-08T22:00:00Z"
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-livertox-green-tea-extract-harm" }
+
+useConstraints:   # D5.UseConstraint records (owner D5; derived by D5's use-constraint-key/v1 resolution, RESOLVES_TO_CONSTRAINT); BLOCKED_BY targets
+  - id: uc-ash-cirrhosis
+    uid: hu:use-constraint:fx-ashwagandha-cirrhosis
+    type: D5.UseConstraint
+    constraintKind: CONDITION
+    identityKey: "use-constraint-key/v1|USE_CONSTRAINED_IN|subject=hu:ingredient-material:fx-ashwagandha-livertox-scope|scope=hu:condition:fx-cirrhosis-or-advanced-cld|populations=|dose=|route=|jurisdiction="
+    identityKeyHash: "sha256:30f0812942245a99742576ab4e9587f7f118fbb35fef318ae12fa9942278251a"
+    identityKeyVersion: "use-constraint-key/v1 (fixture rendering; D5 owns the canonical form)"
+    summary: "use of ashwagandha products in cirrhosis or advanced chronic liver disease"
+    resolvedFrom: [a-ash-avoid-cirrhosis]      # RESOLVES_TO_CONSTRAINT (D5, derived)
+
+reports:
+  - id: r-green-tea-profile
+    uid: hu:report:fx-d10-green-tea-profile-draft-1
+    type: K.Report
+    reportKind: PROFILE
+    skeleton: "d10.compound-profile@1 (section 6 only)"
+    status: PROPOSED
+    policyVersion: "policy:bl-publish@fixture"
+    bodyFile: composed-body-green-tea.txt
+    bodyDigest: "sha256:3a901ecb1f600f663fa95f6cc63a7b2cb09ce4ae1877ec3bcbef7c1f42e84fee"
+    citationCompleteness: 1.0
+    about: [{ ref: e-gt-monograph-scope, type: D1.IngredientMaterial }]
+    citesAssertions: [a-gt-likelihood-a, a-gte-alt, a-gte-prevalence-low, a-gt-beverage-not-associated, a-gt-infusion-cases]
+    citesAssessments: [s-gte-harm]
+    evidence: [loc-gte-likelihood-a, loc-gte-alt-trial, loc-gte-not-observed, loc-gte-prevalence-low, loc-gt-beverage-not-associated, loc-gt-infusion-cases]
+    recordedAt: "2026-10-08T22:00:00Z"
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-livertox-green-tea-extract-harm" }
+  - id: r-ashwagandha-profile
+    uid: hu:report:fx-d10-ashwagandha-profile-draft-1
+    type: K.Report
+    reportKind: PROFILE
+    skeleton: "d10.compound-profile@1 (section 6 only)"
+    status: PROPOSED
+    policyVersion: "policy:bl-publish@fixture"
+    bodyFile: composed-body-ashwagandha.txt
+    bodyDigest: "sha256:de393c8ecb0fe8206a95889181207ab4d341b6957aa1f05402a75804261507a9"
+    citationCompleteness: 1.0
+    about: [{ ref: e-ashwagandha, type: D1.IngredientMaterial }]
+    citesAssertions: [a-ash-likelihood-b, a-ash-avoid-cirrhosis]
+    citesAssessments: [s-ash-harm]
+    evidence: [loc-ash-likelihood-b, loc-ash-avoid-cirrhosis]
+    recordedAt: "2026-10-08T22:00:00Z"
+    producedBy: { missionId: "mission:ft-D10-fixtures", runId: "run:ft-D10-livertox-green-tea-extract-harm" }
+
+reportItems:
+  - id: i-gt-harms
+    uid: hu:report-item:fx-d10-green-tea-profile-draft-1-harms
+    report: r-green-tea-profile
+    orderIndex: 6
+    itemKind: SECTION
+    sectionKind: HARMS_AND_AVOIDANCE
+    itemKey: "sec:harms-and-avoidance"
+    about: [{ ref: e-gt-monograph-scope, type: D1.IngredientMaterial }]
+    citesAssessments: [s-gte-harm]
+    bodyStartOffset: 373
+    bodyEndOffset: 1392
+    uncitedSentenceCount: 0
+    citationCompleteness: 1.0
+    recordedAt: "2026-10-08T22:00:00Z"
+  - id: i-gte-blocked
+    uid: hu:report-item:fx-d10-green-tea-profile-draft-1-row-gte
+    report: r-green-tea-profile
+    orderIndex: 7
+    itemKind: ROW
+    sectionKind: HARMS_AND_AVOIDANCE
+    itemKey: "row:harms/green-tea-extract"
+    parentItemKey: "sec:harms-and-avoidance"
+    name: "green tea extract"
+    disposition: BLOCKED
+    rank: null
+    reason: "LiverTox likelihood A (well established cause of clinically apparent liver injury); case evidence concerns the extract"
+    about: [{ ref: e-gte, type: D1.IngredientMaterial }]             # ASSESSES the most specific subject
+    citesAssertions: [a-gt-likelihood-a, a-gte-alt, a-gte-prevalence-low]   # DERIVED_FROM
+    blockedByAssessments: [s-gte-harm]                                  # BLOCKED_BY -> K.Assessment (no use constraint: LiverTox grades causality, it states no avoidance for GTE)
+    bodyStartOffset: 408
+    bodyEndOffset: 1110
+    uncitedSentenceCount: 0
+    citationCompleteness: 1.0
+    recordedAt: "2026-10-08T22:00:00Z"
+  - id: i-gt-beverage
+    uid: hu:report-item:fx-d10-green-tea-profile-draft-1-row-beverage
+    report: r-green-tea-profile
+    orderIndex: 8
+    itemKind: ROW
+    sectionKind: HARMS_AND_AVOIDANCE
+    itemKey: "row:harms/green-tea-beverage"
+    parentItemKey: "sec:harms-and-avoidance"
+    name: "green tea, brewed beverage"
+    disposition: null                     # not an option row; not blocked
+    reason: "not associated with liver injury per LiverTox; a small number of infusion cases noted"
+    about: [{ ref: e-gt-beverage, type: D12.FoodItem }]
+    citesAssertions: [a-gt-beverage-not-associated, a-gt-infusion-cases]
+    bodyStartOffset: 1112
+    bodyEndOffset: 1392
+    uncitedSentenceCount: 0
+    citationCompleteness: 1.0
+    recordedAt: "2026-10-08T22:00:00Z"
+  - id: i-ash-harms
+    uid: hu:report-item:fx-d10-ashwagandha-profile-draft-1-harms
+    report: r-ashwagandha-profile
+    orderIndex: 6
+    itemKind: SECTION
+    sectionKind: HARMS_AND_AVOIDANCE
+    itemKey: "sec:harms-and-avoidance"
+    about: [{ ref: e-ashwagandha, type: D1.IngredientMaterial }]
+    citesAssessments: [s-ash-harm]
+    bodyStartOffset: 377
+    bodyEndOffset: 711
+    uncitedSentenceCount: 0
+    citationCompleteness: 1.0
+    recordedAt: "2026-10-08T22:00:00Z"
+  - id: i-ash-blocked-cirrhosis
+    uid: hu:report-item:fx-d10-ashwagandha-profile-draft-1-row-cirrhosis
+    report: r-ashwagandha-profile
+    orderIndex: 7
+    itemKind: ROW
+    sectionKind: HARMS_AND_AVOIDANCE
+    itemKey: "row:harms/ashwagandha-cirrhosis"
+    parentItemKey: "sec:harms-and-avoidance"
+    name: "ashwagandha, people with cirrhosis or advanced chronic liver disease"
+    disposition: BLOCKED
+    rank: null
+    reason: "LiverTox: use should be avoided in patients with cirrhosis or advanced chronic liver disease (likelihood B)"
+    about: [{ ref: e-ashwagandha, type: D1.IngredientMaterial }]       # ROW ASSESSES exactly its option; the cirrhosis scope is the UseConstraint's
+    citesAssertions: [a-ash-likelihood-b, a-ash-avoid-cirrhosis]
+    blockedBy: [uc-ash-cirrhosis]                                       # BLOCKED_BY -> D5.UseConstraint
+    blockedByAssessments: [s-ash-harm]
+    bodyStartOffset: 414
+    bodyEndOffset: 711
+    uncitedSentenceCount: 0
+    citationCompleteness: 1.0
+    recordedAt: "2026-10-08T22:00:00Z"
+
+edgesExercised:
+  - { type: BLOCKED_BY, pair: "ReportItem -> K.Assessment", from: i-gte-blocked, to: [s-gte-harm] }
+  - { type: BLOCKED_BY, pair: "ReportItem -> D5.UseConstraint", from: i-ash-blocked-cirrhosis, to: [uc-ash-cirrhosis] }
+  - { type: BLOCKED_BY, pair: "ReportItem -> K.Assessment", from: i-ash-blocked-cirrhosis, to: [s-ash-harm] }
+  - { type: HAS_ITEM, from: r-green-tea-profile, to: [i-gt-harms, i-gte-blocked, i-gt-beverage] }
+  - { type: HAS_ITEM, from: r-ashwagandha-profile, to: [i-ash-harms, i-ash-blocked-cirrhosis] }
+  - { type: ASSESSES, from: i-gte-blocked, to: [e-gte] }
+  - { type: DERIVED_FROM, pair: "ReportItem -> K.Assessment", from: i-gt-harms, to: [s-gte-harm] }

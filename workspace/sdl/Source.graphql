@@ -1,0 +1,37 @@
+"""
+Purpose: stable identity of one retrieval endpoint (one normalized canonicalUri): a page, registry record, PDF,
+API record, feed item or media file. Identity rule: `canonicalUri` (normalized post-redirect endpoint; never an
+identifier resolver). uid token: `source` (hu:source:<host-path-slug>). Implements Subjectable so identifiers
+(DOI of the endpoint, NCT of a registry record page) and assertions about the endpoint (retracted, paywalled) attach
+without a domain type. Editorial containers (MediaWork, Channel) are D9 types; scholarly publications are D3
+Publications (R-09, R-71). A Source is grouped with its work by RENDITION_OF (kernel meaning, asserted, recorded time
+only; declared IN on D9 MediaWork.renditions and D3 Publication.renditions; R-43). Its source family is the
+OCCURS_IN work of the evidence, else its RENDITION_OF work, else the Source itself. Curation files (target and
+frontier vocabularies, the D2 hallmark mapping) are Sources with one snapshot per version (R-26).
+Questions: Q-K-01, Q-K-10, Q-K-20, Q-K-21.
+"""
+type Source implements Entity & Subjectable
+  @node(labels: ["Source", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  "Title as displayed by the endpoint; presentation only."
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Normalized post-redirect endpoint; unique."
+  canonicalUri: String!
+  "Capture-level kind (verification.v1)."
+  sourceKind: SourceKind!
+  "Editorial genre (controlled string from the D9 source register: PEER_REVIEWED_PUBLICATION, TRIAL_REGISTRY_RECORD, PRESS_RELEASE, MARKETING_PAGE, PODCAST_TRANSCRIPT_PAGE, ...)."
+  genre: String
+  "verification.v1 VerificationSource.logicalIdentity when the verifier assigned one."
+  logicalIdentity: String
+  """class: structural; cardinality: many (one per capture); questions: Q-K-02, Q-K-10."""
+  snapshots: [SourceSnapshot!]!
+    @relationship(type: "HAS_SNAPSHOT", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

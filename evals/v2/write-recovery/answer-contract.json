@@ -1,0 +1,582 @@
+{
+  "format": "bks-eval-answer-contract.v1",
+  "suite": "write-recovery",
+  "status": "IN FORCE (DEV-3, lead-approved 2026-10-12): hand contract[taskId] to the agent with the prompt, identically for every arm",
+  "leakCheck": {
+    "goldValuesChecked": 24,
+    "leaks": 0
+  },
+  "tasks": "sha256:97191305c0e1915bfc84979780ffbbb5f1ad8efda36f310abc92db640f8e2bad",
+  "gold": "sha256:c01731d1cd83dd094e064a117f204c8f6b70b8225e63127a3dcf8bd38ed4c779",
+  "contract": {
+    "WR-01": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [
+        {
+          "key": "assertedEdgeBacked",
+          "question": "Is every asserted relationship your write created backed by an Assertion node?"
+        },
+        {
+          "key": "assertion.evidence",
+          "question": "Does every Assertion your write created have HAS_EVIDENCE to the cited locator(s)?"
+        },
+        {
+          "key": "receipt.complete",
+          "question": "Did the effect readback (verify-effects, all pages) confirm every declared effect of the receipt?"
+        }
+      ],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-02": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-03": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-04": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-05": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-06": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-07": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [
+        {
+          "key": "receipt.sameId",
+          "question": "Did both apply calls return the same receiptId?"
+        },
+        {
+          "key": "noNewEffects",
+          "question": "Did the graph stay without any new effect from the call(s) in question (no extra nodes, relationships or graph revision)?"
+        }
+      ],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-08": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-09": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)",
+        "outcomes[] (one entry per concurrent intent: its outcome or error code)"
+      ],
+      "invariants": [
+        {
+          "key": "identity.single",
+          "question": "After both calls, is there exactly one node carrying the contested identity?"
+        }
+      ],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-10": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-11": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [
+        {
+          "key": "episodes.bothRetained",
+          "question": "Are both episodes present in the graph after the second write?"
+        }
+      ],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-12": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-13": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)",
+        "markerStatus"
+      ],
+      "invariants": [
+        {
+          "key": "marker.attemptsAppended",
+          "question": "Does the effect marker record every attempt (attempt history appended)?"
+        },
+        {
+          "key": "marker.notOverwritten",
+          "question": "Did the failed attempt leave the committed marker's recorded state unchanged (not overwritten)?"
+        }
+      ],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-14": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [
+        {
+          "key": "receipt.lookupFirst",
+          "question": "Did you obtain the outcome by receipt lookup before considering any re-apply?"
+        },
+        {
+          "key": "noNewEffects",
+          "question": "Did the graph stay without any new effect from the call(s) in question (no extra nodes, relationships or graph revision)?"
+        },
+        {
+          "key": "noNewIntentId",
+          "question": "Did recovery reuse the original intentId (no new intent identity created)?"
+        }
+      ],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-15": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-16": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-17": {
+      "form": "sequence",
+      "note": "answer.sequence[] has one object per step, in the order the prompt names them",
+      "steps": [
+        {
+          "fields": [
+            "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+          ],
+          "invariants": []
+        },
+        {
+          "fields": [
+            "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+          ],
+          "invariants": []
+        }
+      ],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-18": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [
+        {
+          "key": "readback.allPages",
+          "question": "Did you read every readback page until the service reported no further page?"
+        },
+        {
+          "key": "readback.complete",
+          "question": "Did the readback cover every declared effect?"
+        }
+      ],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-19": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-20": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-21": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [
+        {
+          "key": "payloadDigest.equal",
+          "question": "Is the native payload digest identical before and after the envelope wrapper?"
+        }
+      ],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-22": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [
+        {
+          "key": "verification.distinctFromAdmission",
+          "question": "Does the result report verification state separately from graph admission state?"
+        },
+        {
+          "key": "noNewEffects",
+          "question": "Did the graph stay without any new effect from the call(s) in question (no extra nodes, relationships or graph revision)?"
+        }
+      ],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-23": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [
+        {
+          "key": "receipt.effectReported",
+          "question": "Does the receipt report the committed effect despite the cancellation?"
+        },
+        {
+          "key": "recovery.retained",
+          "question": "Can the effect still be recovered by receipt lookup after the cancellation?"
+        }
+      ],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-24": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [
+        {
+          "key": "notEmpty",
+          "question": "Did the service return a reason or explanation (not an empty body)?"
+        }
+      ],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-25": {
+      "form": "sequence",
+      "note": "answer.sequence[] has one object per step, in the order the prompt names them",
+      "steps": [
+        {
+          "fields": [
+            "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+          ],
+          "invariants": []
+        },
+        {
+          "fields": [
+            "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+          ],
+          "invariants": []
+        }
+      ],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-26": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [
+        {
+          "key": "notEmpty",
+          "question": "Did the service return a reason or explanation (not an empty body)?"
+        },
+        {
+          "key": "evidence.gdsInstalledNotAdmitted",
+          "question": "Does the evidence show the analytics library is present on the server but not admitted for this service?"
+        }
+      ],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-27": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [
+        {
+          "key": "noGraphWrites",
+          "question": "Did the graph stay unchanged by the request?"
+        }
+      ],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-28": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-29": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [
+        {
+          "key": "verify.allChecks",
+          "question": "Did every restore verification check pass?"
+        },
+        {
+          "key": "elementIds.notPreserved",
+          "question": "Do restored elements carry elementIds different from the source export (true if NOT preserved)?"
+        },
+        {
+          "key": "legacyKey.preserved",
+          "question": "Is each restored element matchable to the export by its durable legacy key?"
+        }
+      ],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-30": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [
+        {
+          "key": "dryRun.allInvariants",
+          "question": "Did every migration invariant pass in the dry run?"
+        },
+        {
+          "key": "accounting.reconciles",
+          "question": "Do the migration accounting totals reconcile to the export counts?"
+        },
+        {
+          "key": "held.notVisible",
+          "question": "Is every held record absent from v2 reads (not presented as a v2 fact)?"
+        }
+      ],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-31": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-32": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [
+        {
+          "key": "retryBuffer.reset",
+          "question": "Did each retry attempt start with an empty result buffer?"
+        }
+      ],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    },
+    "WR-33": {
+      "form": "single",
+      "fields": [
+        "outcome | error | status (fill whichever the service returned; error is the BKS_* code)"
+      ],
+      "invariants": [
+        {
+          "key": "legacy.nodesRetained",
+          "question": "Are all legacy nodes still present after the migration?"
+        },
+        {
+          "key": "legacy.relationshipsRetained",
+          "question": "Are all legacy relationships still present after the migration?"
+        },
+        {
+          "key": "nodesDeleted.zero",
+          "question": "Did the migration delete zero nodes?"
+        }
+      ],
+      "always": [
+        "receiptIds[] (when a receipt exists)",
+        "effectKey (when you called apply)"
+      ],
+      "encoding": "fields are top-level in answer.json (or under answer.answer); error is the service code string (e.g. BKS_...); invariants is an object {key: true|false} with exactly the keys listed"
+    }
+  }
+}

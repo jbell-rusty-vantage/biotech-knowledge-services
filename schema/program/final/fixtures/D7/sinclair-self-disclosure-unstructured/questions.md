@@ -1,0 +1,15 @@
+# Questions answered — sinclair-self-disclosure-unstructured
+
+Expected answers over this fixture alone (assertion ids from `assertions.yaml`, locator ids from `locators.yaml`). Every answer cites its spans by TRACE (03-retrieval-patterns.md).
+
+| question | expected answer | from |
+| --- | --- | --- |
+| Q-D7-11 | Companies the person founded, invested in or advises in a product field: Life Biosciences LLC (FOUNDER, DIRECTOR from 2017, open); EdenRoc Sciences companies, a group (FOUNDER, EQUITY, INVESTOR_UNSPECIFIED at group level, no years) whose member MetroBiotech International is printed with the field "NAD boosters" (reached only through PARENT_OF GROUP_MEMBER_UNSPECIFIED, flagged as group membership with no ownership detail); Segterra (InsideTracker) INVESTOR_UNSPECIFIED and ADVISOR from 2011, open. | a-01, a-02, a-04, a-05, a-07..a-10 |
+| CQ-EC-03 | Path from the person to "NAD boosters": Person -HOLDS_STAKE{EQUITY, group level}-> EdenRoc Sciences companies -PARENT_OF{GROUP_MEMBER_UNSPECIFIED}-> MetroBiotech International; tieClass INDIRECT; each hop cites its own line (loc-sin-edenroc, loc-sin-metrobiotech). This is the 00-DIRECTIVE 3.8 walk (`unstructuredPath` in assertions.yaml). | a-07, a-08, a-09, a-10 |
+| CQ-AX-18 | For a statement dated in 2018 about InsideTracker: board role (2011–2017, YEAR) → DISJOINT; advisor/investor/IP (2011–present, observed 2024-10-08) → OVERLAPS. For a statement dated in 2017: board role UNKNOWN (equal at YEAR precision). | a-03, a-04, a-05, a-06 |
+| Q-D7-17 | "Board member of InsideTracker" used after 2017 → flagged: the board episode ended in 2017 (YEAR, stated) while other ties to the same organization continue. | a-03 |
+| CQ-CL-05 | Interests of the speaker available for a conflict check: 12 page assertions with kind, interval and the page's own as-of date; disclosure location = the person's self-published list (not in-container for any D9 statement in this fixture). | a-01..a-12 |
+| CQ-EC-01 | Neighbourhood of Elysium Health Inc. at V = 2018: the person's INVENTOR_ON_LICENSED_IP tie (2018, YEAR) — joins the funding and employment ties of fixture elysium-paper-funding-award on the same Organization uid. | a-12 |
+| Q-D7-03 | People connecting two organizations: the same Person ties Life Biosciences LLC (2017–) and Segterra (2011–) — both open as of 2024-10-08, so the overlap window starts 2017 (YEAR). | a-01, a-04 |
+| Q-D7-08 | Role agreement for (Person, Life Biosciences LLC): AGREE_ON_KIND (page "B" ↔ Form D "Director"); INTERVAL_ONE_SIDED (page: from 2017; Form D: observed 2026-04-24, no start). Conditional on the RESOLUTION hypothesis as-res-01 (the Form D names "David Sinclair" with no identifier) — the Form D assertion a-13 is held until it is accepted. | a-02, a-13, as-res-01, as-agree-01 |
+| Q-D7-20 | Coverage: the page is captured completely but declares itself "not meant to represent a formal list of affiliations" → an organization absent from it is NOT_FOUND_IN_SOURCE_DECLARED_INCOMPLETE_LIST, never "no interest". | as-cov-01 |

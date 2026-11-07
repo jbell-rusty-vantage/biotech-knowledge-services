@@ -1,0 +1,319 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v2",
+  "intentId": "ft-k-fx-two-run-lineage-r2-correction",
+  "pins": {
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+    "policyVersion": "bks-admission-policy/v1"
+  },
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "ft-a1-fixtures-stage",
+      "model": "claude-opus-5-5"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run:ft-K-r2-evidence-mission",
+      "missionId": "mission:ft-K-fixtures"
+    },
+    "activityKind": "INGESTION"
+  },
+  "basis": {
+    "creationOnly": {
+      "reason": "FU-03 v2 fixture round: replay of a packet fixture into a graph without a prior custody snapshot",
+      "expectAbsent": [],
+      "expectPresent": []
+    }
+  },
+  "defaults": {
+    "privacyClass": "PUBLIC"
+  },
+  "sources": [
+    {
+      "ref": "snap-am-r2",
+      "source": {
+        "canonicalUri": "https://www.activemotif.com/catalog/details/14022/resveratrol",
+        "sourceKind": "WEB_PAGE",
+        "genre": "VENDOR_CATALOG_PAGE"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T22:09:18Z",
+        "observedAt": "2026-10-08T22:09:18Z",
+        "contentHash": "sha256:80e67aaf0884fbe002bd824d0a43af3fd09a3afcc856817ede9b44b1156376d1",
+        "contentHashBasis": "RAW_BYTES",
+        "canonicalProjectionHash": "sha256:0be57c968663ef6da9cb465051e01124bc04a1256c53b623e2e7a22892cd6f39",
+        "captureMethodDescription": "curl (browser User-Agent)",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "text/html",
+        "revisionKind": "SILENT_CONTENT_CHANGE",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "loc-am-claim-r2",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "Activates SIRT1 and increases longevity in yeast (ref 2)",
+            "prefix": " anti-platelet effects (ref 1). ",
+            "suffix": ". Ameliorates ageing-related phe",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 490584,
+              "end": 490640
+            },
+            "offsetBasis": "utf8_bytes",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Activates SIRT1 and increases longevity in yeast (ref 2)",
+          "prefix": " anti-platelet effects (ref 1). ",
+          "suffix": ". Ameliorates ageing-related phe",
+          "quoteHash": "sha256:6b73ef410ceec32b1074301b5802922ab5a4e900c522b42b6a5bb5ab2a2f00ea",
+          "startOffset": 490584,
+          "endOffset": 490640,
+          "reanchorsLocatorRef": "loc-am-claim-r1"
+        },
+        {
+          "ref": "loc-am-ref2-r2",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "2. KT Howitz <i>et al. Nature</i> 2003, 425:191",
+            "prefix": ">Life Sci.</i> 2000, 66:663<br>\n",
+            "suffix": "<br>\n3. S-J Park <i>et al. Cell<",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 491124,
+              "end": 491171
+            },
+            "offsetBasis": "utf8_bytes",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "2. KT Howitz <i>et al. Nature</i> 2003, 425:191",
+          "prefix": ">Life Sci.</i> 2000, 66:663<br>\n",
+          "suffix": "<br>\n3. S-J Park <i>et al. Cell<",
+          "quoteHash": "sha256:49618dc66656997b33e54afbaff34d67fdc21cc4ac93c20ff47a5aa91f44ceca",
+          "startOffset": 491124,
+          "endOffset": 491171
+        },
+        {
+          "ref": "loc-am-cas-r2",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "CAS 501-36-0",
+            "prefix": "H<sub>12</sub>O<sub>3</sub><br>\n",
+            "suffix": "<br>\nMP = 253-255°C<br>\n>98% (TL",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 490367,
+              "end": 490379
+            },
+            "offsetBasis": "utf8_bytes",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "CAS 501-36-0",
+          "prefix": "H<sub>12</sub>O<sub>3</sub><br>\n",
+          "suffix": "<br>\nMP = 253-255°C<br>\n>98% (TL",
+          "quoteHash": "sha256:88395fa80ba4b08784c9aea822a9e41bd51f72fda137a3c81b22e442154cefa8",
+          "startOffset": 490367,
+          "endOffset": 490379
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "e-resveratrol",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "resveratrol",
+      "uidSegment": "fx-k-resveratrol",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "e-sirt1",
+      "mode": "new",
+      "nodeType": "MolecularEntity",
+      "name": "SIRT1",
+      "uidSegment": "fx-k-sirt1-human",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "e-activemotif",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "Active Motif (reagent vendor; catalog item 14022 Resveratrol)",
+      "uidSegment": "fx-k-active-motif",
+      "properties": {
+        "entityKind": "UNSPECIFIED"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "p-a-am-occ-r2",
+      "rationale": "claim occurrence (assertionKind CLAIM) of hu:claim:fx-k-resveratrol-directly-activates-sirt1 | DERIVED_FROM hu:assertion:fx-k-occ-howitz-2003 | supersedes hu:assertion:fx-k-occ-activemotif-r1",
+      "dependsOn": [],
+      "kind": "assertion.relate",
+      "subjectRef": "e-resveratrol",
+      "objectRef": "e-sirt1",
+      "assertion": {
+        "predicate": "ACTIVATES",
+        "assertionKind": "CLAIM",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "CITED_FROM_PRIOR_WORK",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "OBSERVATION_ONLY",
+          "validToBasis": "UNKNOWN",
+          "validObservedAt": "2026-10-08T00:00:00Z"
+        },
+        "uidSegment": "fx-k-occ-activemotif-r2",
+        "derivation": {
+          "from": [
+            {
+              "uid": "hu:assertion:fx-k-occ-howitz-2003"
+            }
+          ]
+        },
+        "supersedes": {
+          "uid": "hu:assertion:fx-k-occ-activemotif-r1"
+        }
+      },
+      "evidence": [
+        "loc-am-claim-r2",
+        "loc-am-ref2-r2"
+      ],
+      "asserterRef": "e-activemotif",
+      "hold": {
+        "reason": "FU-03 v1 semantics not mechanically mappable: claim occurrence of hu:claim:fx-k-resveratrol-directly-activates-sirt1 names no claimType (required for assertionKind CLAIM)"
+      }
+    },
+    {
+      "proposalId": "p-close-am-occ-r1",
+      "dependsOn": [],
+      "kind": "edge.close",
+      "relationshipUid": "rel:fx-k-directly-activates-activemotif-r1",
+      "reason": "superseded by hu:assertion:fx-k-occ-activemotif-r2 (R1 used PUBLICATION_PROXY with the retrieval date on an undated page)",
+      "hold": {
+        "reason": "FU-03 round v2 SEMANTIC: EPISODE_NOT_FOUND: no asserted episode with relationshipUid rel:fx-k-directly-activates-activemotif-r1"
+      }
+    }
+  ],
+  "notes": "Generated by scratch ft/K/fixtures/tools/finalize_k.py from locators.yaml + assertions.yaml (K fixtures stage, A1, 2026-10-08). FIXTURE ids: missionId, runId, uidSegments. NOT expressible in biotech-knowledge-intent.v1 (no proposal kind): Claim nodes and OCCURRENCE_OF, assertionKind CLAIM, Assessments, Adjudications, Reports, Activity ASSESSES Claim, the same-asserter supersession link (R-23), EvidenceEdgeProperties authority/independence, the asserter of identifier.attach. edge.assert proposals carry predicate-only values (ACTIVATES, IMPROVES_TARGET, DISTRIBUTES; FU-13 close-out re-keys) as relationshipType: the planner would reject them until v1 has an 'assertion with an entity object but no typed edge' kind (11-open-questions). Run R2 correction of ../two-run-lineage: a new occurrence (OBSERVATION_ONLY) and edge.close of the R1 episode (fixture relationshipUid). v1 cannot carry the same-asserter supersession link (R-23 checked: both records are asserted by Active Motif); the planner would need it to close the R1 Assertion (recordedTo) in the same transaction.",
+  "provenance": {
+    "derivedFrom": {
+      "schemaVersion": "biotech-knowledge-intent.v1",
+      "path": "schema/program/final/fixtures/K/two-run-lineage/intent-r2.json",
+      "rawBytesDigest": "sha256:6f7ad6922c356825f65d9cb4dac7249c366726f5e36007ab5ac2dac8cb6250eb"
+    },
+    "migrator": "bks-migrate-intent-v1/1",
+    "edits": [
+      {
+        "at": "context.activityKind",
+        "rule": "P3-kernel-activity-kind",
+        "from": "EXTRACTION",
+        "to": "INGESTION"
+      },
+      {
+        "at": "onStale",
+        "rule": "strict-stale",
+        "from": "fail",
+        "to": null,
+        "note": "production onStale removed; stale state is a new plan"
+      },
+      {
+        "at": "sources[0].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl (browser User-Agent)",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[0].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis utf8_bytes)"
+      },
+      {
+        "at": "sources[0].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:7f94c7519ad955919de07fce78763be3a5e2b2579325440d5f4bbc1c87a306fa",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis utf8_bytes)"
+      },
+      {
+        "at": "sources[0].locators[1].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:86d67f54dca163ca1feda59a4b9b48ca5dc2016da2140d3a4d63a16b922ed200",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[2].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis utf8_bytes)"
+      },
+      {
+        "at": "sources[0].locators[2].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:a06a978cde2730386df4b779e0966c5764b43ce57bf476bb815740956700acc8",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "proposals[0].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "claim occurrence (assertionKind CLAIM) of hu:claim:fx-k-resveratrol-directly-activates-sirt1"
+      },
+      {
+        "at": "proposals[0].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "DERIVED_FROM hu:assertion:fx-k-occ-howitz-2003"
+      },
+      {
+        "at": "proposals[0].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "supersedes hu:assertion:fx-k-occ-activemotif-r1"
+      },
+      {
+        "at": "proposals[0].kind",
+        "rule": "R-40-assertion.relate",
+        "from": "edge.assert",
+        "to": "assertion.relate",
+        "note": "ACTIVATES is a predicate, not a relationship type"
+      },
+      {
+        "at": "proposals[0].assertion.validity.statedAsOf",
+        "rule": "validObservedAt",
+        "from": "2026-10-08T00:00:00Z",
+        "to": "validObservedAt"
+      },
+      {
+        "at": "subjects[e-activemotif].properties.entityKind",
+        "rule": "schema-unknown-marker",
+        "from": null,
+        "to": "UNSPECIFIED",
+        "note": "not stated by the fixture source; OrganizationEntityKind.UNSPECIFIED is the release's explicit unknown member (OD-24 / OD-25), not a sourced fact"
+      }
+    ]
+  }
+}

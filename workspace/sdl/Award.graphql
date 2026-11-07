@@ -1,0 +1,51 @@
+"""
+Purpose: one funding award — grant, contract, sponsored research agreement, prize, in-kind award — as the join point
+between a funder, the recipient institution and investigator, and the studies and publications that cite it (D3 declares
+Study → Award; funding statements in papers cite award numbers, FundRef award ids and NIH project numbers). Without it a
+paper's "supported by AICO/2021/245" and the funder's own award list cannot meet.
+Identity rule: the award number with its issuer as printed by the citing or issuing source, as a kernel Identifier
+(scheme requested: AWARD_NUMBER, issuer = the funder name as printed; NIH_PROJECT for NIH core project numbers); else
+(normalized title, start year, issuer as printed). Never the funder Organization uid: who funded the award is the asserted
+AWARDED_BY edge, so a contested funder is two AWARDED_BY episodes plus a RESOLUTION Assessment, not two Award nodes. A
+D13 AWARD Event (prize or funding announcement) points at the Award (EVENT_ABOUT) and carries no amount.
+uid token: `award` (hu:award:<opaque>).
+Questions: Q-D7-05, Q-D7-15, Q-D7-16, CQ-EC-04, Q-D7-22, Q-D7-25.
+"""
+type Award implements Entity & Subjectable
+  @node(labels: ["Award", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  "Award title as published."
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  instrument: AwardInstrument!
+  "Award number exactly as printed by the citing or issuing source (the normalized value is an Identifier)."
+  awardNumberVerbatim: String
+  "Funding programme as named by the funder (e.g. an ARPA-H programme acronym); a programme node is deferred."
+  programName: String
+  "Total amount as stated by the funder; null when not disclosed (ARPA-H per-team amounts are not public)."
+  amount: Float
+  "ISO 4217."
+  currency: String
+  "Award period as stated by the funder's record (the award's own clock, not an episode)."
+  startDate: DateTime
+  endDate: DateTime
+  datePrecision: TimePrecision
+  """class: asserted; cardinality: one or more (co-funded awards; one episode per authorizing Assertion; recorded time only, the period is the award's own); questions: Q-D7-05, Q-D7-15, Q-D7-22, CQ-EC-04."""
+  funders: [Organization!]!
+    @relationship(type: "AWARDED_BY", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (recipient institutions as stated per source; recorded time only, the period is the award's own); questions: Q-D7-05, Q-D7-15, Q-D7-16, CQ-EC-04."""
+  recipientOrganizations: [Organization!]!
+    @relationship(type: "AWARDED_TO", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (principal or contact investigator, or the individual recipient of a fellowship or prize; the PI/co-PI distinction is an Assertion qualifier); questions: Q-D7-15, Q-D7-16, Q-D7-25, CQ-EC-04."""
+  recipientPersons: [Person!]!
+    @relationship(type: "AWARDED_TO", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

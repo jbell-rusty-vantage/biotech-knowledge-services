@@ -1,0 +1,103 @@
+# ---- fragment DX ----
+# Domain module template (kernel pattern, packets/K/09-reasoning.md). Copy, rename DX / Example*, delete what you do not use.
+# Compiles together with packets/K/04-schema-proposal.graphql (kernel types are referenced, never re-declared).
+#
+# Rules this template encodes:
+# - every node type: implements Entity & Subjectable; lists the 7 Entity fields verbatim (id, uid, name, privacyClass,
+#   lastWriterRunId, createdAt, updatedAt); @node(labels: [<Primary>, "Entity"]) @query(aggregate: false) @mutation(operations: []);
+#   docstring with Purpose, Identity rule, uid token, Questions.
+# - every @relationship: aggregate: false; nestedOperations declared (structural [CREATE, CONNECT], asserted [CONNECT], derived []);
+#   @filterable(byValue: true, byAggregate: false); docstring "class: ...; cardinality: ...; questions: ...".
+# - asserted edges carry properties: "AssertedEdgeProperties" (bitemporal episode, one Assertion each);
+#   state attachments carry "StateEpisodeProperties"; derived edges carry "DerivedEdgeProperties" and
+#   @settable(onCreate: false, onUpdate: false); structural edges carry "StructuralEdgeProperties" (optional, recommended).
+# - never declare: subject/object/identifier/mention/generatedBy fields (the kernel declares them once, against Subjectable/Entity);
+#   any union target wider than 6; SUPPORTS/CONTRADICTS document→entity edges; good/bad/safe/harmful properties on an entity;
+#   fields on kernel types (declare the edge on your own type with direction IN instead).
+
+"""
+Purpose: <one sentence: what this node is and why a question must filter, join or traverse through it>.
+Identity rule: <identity keys, e.g. UNII when present, else (normalized name, form)>; identifiers attach through the
+kernel (HAS_IDENTIFIER on Identifier.identifies), never as a field here.
+uid token: `example-compound` (hu:example-compound:<opaque>).
+Questions: Q-DX-01, Q-DX-02, Q-DX-03.
+"""
+type ExampleCompound implements Entity & Subjectable
+  @node(labels: ["ExampleCompound", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Domain property a question filters or sorts on (say which in 06-node-register.yaml filterProperties)."
+  exampleClass: String
+  """class: structural; cardinality: many; questions: Q-DX-01."""
+  forms: [ExampleCompound!]!
+    @relationship(type: "HAS_EXAMPLE_FORM", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (one episode per authorizing Assertion); questions: Q-DX-02."""
+  interactsWith: [ExampleCompound!]!
+    @relationship(type: "EXAMPLE_INTERACTS_WITH", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: derived; cardinality: many (projection job example-similarity/v1; regenerable); questions: Q-DX-03."""
+  similarTo: [ExampleCompound!]!
+    @relationship(type: "EXAMPLE_SIMILAR_TO", direction: OUT, properties: "DerivedEdgeProperties", nestedOperations: [], aggregate: false)
+    @settable(onCreate: false, onUpdate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: many (a computed state cites the Assertions it was built from; kernel type, no seam needed); questions: Q-DX-03."""
+  builtFrom: [Assertion!]!
+    @relationship(type: "DERIVED_FROM", direction: OUT, nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+# Further patterns (uncomment and adapt):
+#
+# State attachment (bitemporal episode on the attaching edge; the state node holds payload + payloadHash, no time):
+#   """class: asserted; cardinality: many (EXCLUSIVE: one open episode); questions: Q-DX-04."""
+#   labelVersions: [ExampleLabelVersion!]!
+#     @relationship(type: "HAS_EXAMPLE_LABEL_VERSION", direction: OUT, properties: "StateEpisodeProperties", nestedOperations: [CONNECT], aggregate: false)
+#     @filterable(byValue: true, byAggregate: false)
+#
+# Edge from a kernel node to your node (declared on YOUR type, direction IN; e.g. D9 Episode ← Source):
+#   """class: structural; cardinality: many; questions: Q-D9-05."""
+#   renditions: [Source!]!
+#     @relationship(type: "RENDITION_OF", direction: IN, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+#     @filterable(byValue: true, byAggregate: false)
+#
+# Derived retrieval projection to any entity (D9 Chunk only; kernel relationship type MENTIONS):
+#   """class: derived; cardinality: many (entity-link/vN); questions: Q-D9-01."""
+#   mentions: [Subjectable!]!
+#     @relationship(type: "MENTIONS", direction: OUT, properties: "DerivedEdgeProperties", nestedOperations: [], aggregate: false)
+#     @settable(onCreate: false, onUpdate: false)
+#     @filterable(byValue: true, byAggregate: false)
+#
+# Asserted edge without a valid-time question (model stage; recorded time only, 00-DIRECTIVE rule 9):
+#   """class: asserted; cardinality: many (one episode per authorizing Assertion; recorded time only); questions: Q-DX-05."""
+#   madeBy: [ExampleOrganization!]!
+#     @relationship(type: "EXAMPLE_MADE_BY", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+#     @filterable(byValue: true, byAggregate: false)
+#
+# Domain-local edge-property type (model stage): list EVERY field of one kernel base type verbatim first, then only the
+# qualifiers a question filters on; the edge keeps the base type's class. Record it in 05 (edgeProperties) and 09.
+#   type ExampleContentProperties @relationshipProperties {
+#     relationshipUid: String!
+#     assertionUid: String!
+#     validFrom: DateTime
+#     validTo: DateTime
+#     validFromPrecision: TimePrecision
+#     validToPrecision: TimePrecision
+#     validFromBasis: ValidTimeBasis!
+#     validToBasis: ValidTimeBasis!
+#     recordedFrom: DateTime!
+#     recordedTo: DateTime
+#     lastWriterRunId: String
+#     amount: Float
+#     unitCode: String
+#   }
+#
+# Assessment kinds: use kernel Assessment with assessmentKind / assessmentSubkind and the shared typed slots
+# (gradeScheme, grade, certainty, conclusionCode, facets); register your subkind codes in your 09-reasoning.md.

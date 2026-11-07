@@ -1,0 +1,36 @@
+# Unit gate for every push to main and every pull request. Integration tests need the Neo4j
+# container (scripts/neo4j-test.sh) and stay manual; Fly deploys stay manual via scripts/fly.sh.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4 # version from package.json packageManager
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: workspace matches the pinned release
+        run: pnpm workspace:verify
+      - run: pnpm test
+      - run: pnpm client:pack-check
+      - name: no tracked file changed by the build
+        run: git diff --exit-code

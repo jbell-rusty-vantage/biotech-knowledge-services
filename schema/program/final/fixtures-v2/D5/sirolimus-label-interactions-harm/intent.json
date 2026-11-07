@@ -1,0 +1,2133 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v2",
+  "intentId": "ft-d5-sirolimus-label-interactions-harm",
+  "pins": {
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+    "policyVersion": "bks-admission-policy/v1"
+  },
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "a5-fixtures-stage",
+      "model": "claude-opus-5-5"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run:ft-D5-sirolimus-label-interactions-harm",
+      "missionId": "mission:ft-D5-fixtures"
+    },
+    "activityKind": "INGESTION"
+  },
+  "basis": {
+    "creationOnly": {
+      "reason": "FU-03 v2 fixture round: replay of a packet fixture into a graph without a prior custody snapshot",
+      "expectAbsent": [],
+      "expectPresent": []
+    }
+  },
+  "defaults": {
+    "privacyClass": "PUBLIC"
+  },
+  "sources": [
+    {
+      "ref": "src-label-v22",
+      "source": {
+        "canonicalUri": "https://api.fda.gov/drug/label.json?search=set_id:%225908cd1a-fc5a-462f-99ed-1d8983e253c9%22&limit=1",
+        "title": "Sirolimus tablets label, Mylan Pharmaceuticals Inc., NDA021110, SPL set 5908cd1a-fc5a-462f-99ed-1d8983e253c9, SPL version 22 (openFDA drug/label)",
+        "sourceKind": "API"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:44:41Z",
+        "observedAt": "2026-10-08T21:44:41Z",
+        "contentHash": "sha256:ab1a2c2708312dd5b77e7e11a81234f890032d5a24e9555738e40dd0d88451c2",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "l01-v22-version",
+          "uid": "hu:locator:d5-siro-l01-v22-version",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "22",
+            "prefix": "",
+            "suffix": "",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 0,
+              "end": 2
+            },
+            "jsonPointer": "/results/0/version",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "22",
+          "prefix": "",
+          "suffix": "",
+          "startOffset": 0,
+          "endOffset": 2
+        },
+        {
+          "ref": "l02-v22-effective",
+          "uid": "hu:locator:d5-siro-l02-v22-effective",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "20260326",
+            "prefix": "",
+            "suffix": "",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 0,
+              "end": 8
+            },
+            "jsonPointer": "/results/0/effective_time",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "20260326",
+          "prefix": "",
+          "suffix": "",
+          "startOffset": 0,
+          "endOffset": 8
+        },
+        {
+          "ref": "l03-v22-labeler",
+          "uid": "hu:locator:d5-siro-l03-v22-labeler",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "Mylan Pharmaceuticals Inc.",
+            "prefix": "",
+            "suffix": "",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 0,
+              "end": 26
+            },
+            "jsonPointer": "/results/0/openfda/manufacturer_name/0",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Mylan Pharmaceuticals Inc.",
+          "prefix": "",
+          "suffix": "",
+          "startOffset": 0,
+          "endOffset": 26
+        },
+        {
+          "ref": "l04-v22-grapefruit",
+          "uid": "hu:locator:d5-siro-l04-v22-grapefruit",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "Because grapefruit juice inhibits the CYP3A4-mediated metabolism of sirolimus, it must not be taken with sirolimus",
+            "prefix": " (12.3) ]. 7.3 Grapefruit Juice ",
+            "suffix": " [ see Clinical Pharmacology (12",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 1790,
+              "end": 1904
+            },
+            "section": "7.3 Grapefruit Juice",
+            "jsonPointer": "/results/0/drug_interactions/0",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Because grapefruit juice inhibits the CYP3A4-mediated metabolism of sirolimus, it must not be taken with sirolimus",
+          "prefix": " (12.3) ]. 7.3 Grapefruit Juice ",
+          "suffix": " [ see Clinical Pharmacology (12",
+          "startOffset": 1790,
+          "endOffset": 1904
+        },
+        {
+          "ref": "l05-v22-modulators-caution",
+          "uid": "hu:locator:d5-siro-l05-v22-modulators-caution",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "Exercise caution when using sirolimus with drugs or agents that are modulators of CYP3A4 and P-gp.",
+            "prefix": "r Inhibitors of CYP3A4 and P-gp ",
+            "suffix": " The dosage of sirolimus and/or ",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 2007,
+              "end": 2105
+            },
+            "section": "7.4 Weak and Moderate Inducers or Inhibitors of CYP3A4 and P-gp",
+            "jsonPointer": "/results/0/drug_interactions/0",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Exercise caution when using sirolimus with drugs or agents that are modulators of CYP3A4 and P-gp.",
+          "prefix": "r Inhibitors of CYP3A4 and P-gp ",
+          "suffix": " The dosage of sirolimus and/or ",
+          "startOffset": 2007,
+          "endOffset": 2105
+        },
+        {
+          "ref": "l06-v22-sjw",
+          "uid": "hu:locator:d5-siro-l06-v22-sjw",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "Drugs and other agents that could decrease sirolimus concentrations: Carbamazepine, phenobarbital, phenytoin, rifapentine, St. John's Wort ( Hypericum perforatum )",
+            "prefix": "ne, troleandomycin, verapamil • ",
+            "suffix": " • Drugs with concentrations tha",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 2563,
+              "end": 2726
+            },
+            "section": "7.4",
+            "jsonPointer": "/results/0/drug_interactions/0",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Drugs and other agents that could decrease sirolimus concentrations: Carbamazepine, phenobarbital, phenytoin, rifapentine, St. John's Wort ( Hypericum perforatum )",
+          "prefix": "ne, troleandomycin, verapamil • ",
+          "suffix": " • Drugs with concentrations tha",
+          "startOffset": 2563,
+          "endOffset": 2726
+        },
+        {
+          "ref": "l07-v22-cbd-increase",
+          "uid": "hu:locator:d5-siro-l07-v22-cbd-increase",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "The blood levels of sirolimus may increase upon concomitant use with cannabidiol.",
+            "prefix": "imus: Verapamil 7.5 Cannabidiol ",
+            "suffix": " When cannabidiol and sirolimus ",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 2828,
+              "end": 2909
+            },
+            "section": "7.5 Cannabidiol",
+            "jsonPointer": "/results/0/drug_interactions/0",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "The blood levels of sirolimus may increase upon concomitant use with cannabidiol.",
+          "prefix": "imus: Verapamil 7.5 Cannabidiol ",
+          "suffix": " When cannabidiol and sirolimus ",
+          "startOffset": 2828,
+          "endOffset": 2909
+        },
+        {
+          "ref": "l08-v22-cbd-monitor",
+          "uid": "hu:locator:d5-siro-l08-v22-cbd-monitor",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "When cannabidiol and sirolimus are co-administered, closely monitor for an increase in sirolimus blood levels and for adverse reactions suggestive of sirolimus toxicity.",
+            "prefix": "ncomitant use with cannabidiol. ",
+            "suffix": " A dose reduction of sirolimus s",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 2910,
+              "end": 3079
+            },
+            "section": "7.5 Cannabidiol",
+            "jsonPointer": "/results/0/drug_interactions/0",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "When cannabidiol and sirolimus are co-administered, closely monitor for an increase in sirolimus blood levels and for adverse reactions suggestive of sirolimus toxicity.",
+          "prefix": "ncomitant use with cannabidiol. ",
+          "suffix": " A dose reduction of sirolimus s",
+          "startOffset": 2910,
+          "endOffset": 3079
+        },
+        {
+          "ref": "l09-v22-cbd-dose",
+          "uid": "hu:locator:d5-siro-l09-v22-cbd-dose",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "A dose reduction of sirolimus should be considered as needed when sirolimus is co-administered with cannabidiol",
+            "prefix": "ggestive of sirolimus toxicity. ",
+            "suffix": " [ see Dosage and Administration",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 3080,
+              "end": 3191
+            },
+            "section": "7.5 Cannabidiol",
+            "jsonPointer": "/results/0/drug_interactions/0",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "A dose reduction of sirolimus should be considered as needed when sirolimus is co-administered with cannabidiol",
+          "prefix": "ggestive of sirolimus toxicity. ",
+          "suffix": " [ see Dosage and Administration",
+          "startOffset": 3080,
+          "endOffset": 3191
+        },
+        {
+          "ref": "l10-v22-contraindication",
+          "uid": "hu:locator:d5-siro-l10-v22-contraindication",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "Sirolimus is contraindicated in patients with a hypersensitivity to sirolimus",
+            "prefix": "4 CONTRAINDICATIONS ",
+            "suffix": " [ see Warnings and Precautions ",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 20,
+              "end": 97
+            },
+            "section": "4 CONTRAINDICATIONS",
+            "jsonPointer": "/results/0/contraindications/0",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Sirolimus is contraindicated in patients with a hypersensitivity to sirolimus",
+          "prefix": "4 CONTRAINDICATIONS ",
+          "suffix": " [ see Warnings and Precautions ",
+          "startOffset": 20,
+          "endOffset": 97
+        },
+        {
+          "ref": "l11-v22-boxed",
+          "uid": "hu:locator:d5-siro-l11-v22-boxed",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "Increased susceptibility to infection and the possible development of lymphoma and other malignancies may result from immunosuppression",
+            "prefix": "R OR LUNG TRANSPLANT PATIENTS • ",
+            "suffix": " Increased susceptibility to inf",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 90,
+              "end": 225
+            },
+            "section": "BOXED WARNING",
+            "jsonPointer": "/results/0/boxed_warning/0",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Increased susceptibility to infection and the possible development of lymphoma and other malignancies may result from immunosuppression",
+          "prefix": "R OR LUNG TRANSPLANT PATIENTS • ",
+          "suffix": " Increased susceptibility to inf",
+          "startOffset": 90,
+          "endOffset": 225
+        },
+        {
+          "ref": "l12-v22-indication",
+          "uid": "hu:locator:d5-siro-l12-v22-indication",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "indicated for the prophylaxis of organ rejection in patients aged ≥13 years receiving renal transplants",
+            "prefix": "TOR inhibitor immunosuppressant ",
+            "suffix": ": - Patients at low- to moderate",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 73,
+              "end": 176
+            },
+            "section": "1 INDICATIONS AND USAGE",
+            "jsonPointer": "/results/0/indications_and_usage/0",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "indicated for the prophylaxis of organ rejection in patients aged ≥13 years receiving renal transplants",
+          "prefix": "TOR inhibitor immunosuppressant ",
+          "suffix": ": - Patients at low- to moderate",
+          "startOffset": 73,
+          "endOffset": 176
+        },
+        {
+          "ref": "l13-v22-overdose",
+          "uid": "hu:locator:d5-siro-l13-v22-overdose",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "Reports of overdose with sirolimus have been received; however, experience has been limited.",
+            "prefix": "10 OVERDOSAGE ",
+            "suffix": " In general, the adverse effects",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 14,
+              "end": 106
+            },
+            "section": "10 OVERDOSAGE",
+            "jsonPointer": "/results/0/overdosage/0",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Reports of overdose with sirolimus have been received; however, experience has been limited.",
+          "prefix": "10 OVERDOSAGE ",
+          "suffix": " In general, the adverse effects",
+          "startOffset": 14,
+          "endOffset": 106
+        }
+      ]
+    },
+    {
+      "ref": "src-spl-v14",
+      "source": {
+        "canonicalUri": "https://dailymed.nlm.nih.gov/dailymed/getFile.cfm?setid=5908cd1a-fc5a-462f-99ed-1d8983e253c9&type=zip&version=14",
+        "title": "SIROLIMUS tablet SPL, set 5908cd1a-fc5a-462f-99ed-1d8983e253c9, version 14 (effectiveTime 20191204), DailyMed archived SPL zip, XML member 3a585ac5-fd65-424e-abcd-27a72cad102b.xml",
+        "sourceKind": "REGISTRY"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:45:01Z",
+        "observedAt": "2026-10-08T21:45:01Z",
+        "contentHash": "sha256:d79f784fe7c9b761c1a13e81a04e15126f4088aaa5990a7983bc45cfcfbe53f9",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "l21-v14-grapefruit",
+          "uid": "hu:locator:d5-siro-l21-v14-grapefruit",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "Because grapefruit juice inhibits the CYP3A4-mediated metabolism of sirolimus, it must not be taken with sirolimus",
+            "prefix": "                     <paragraph>",
+            "suffix": " [<content styleCode=\"italics\">s",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 183507,
+              "end": 183621
+            },
+            "section": "7.3 Grapefruit Juice",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Because grapefruit juice inhibits the CYP3A4-mediated metabolism of sirolimus, it must not be taken with sirolimus",
+          "prefix": "                     <paragraph>",
+          "suffix": " [<content styleCode=\"italics\">s",
+          "startOffset": 183507,
+          "endOffset": 183621
+        },
+        {
+          "ref": "l22-v14-version",
+          "uid": "hu:locator:d5-siro-l22-v14-version",
+          "selectorKind": "HTML",
+          "selector": {
+            "type": "CssSelector",
+            "exact": "<versionNumber value=\"14\"/>",
+            "prefix": "5a-462f-99ed-1d8983e253c9\"/>\n   ",
+            "suffix": "\n   <author>\n      <time/>\n     ",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 810,
+              "end": 837
+            },
+            "basis": "raw-capture/v1"
+          },
+          "exact": "<versionNumber value=\"14\"/>",
+          "prefix": "5a-462f-99ed-1d8983e253c9\"/>\n   ",
+          "suffix": "\n   <author>\n      <time/>\n     ",
+          "startOffset": 810,
+          "endOffset": 837
+        },
+        {
+          "ref": "l23-v14-effective",
+          "uid": "hu:locator:d5-siro-l23-v14-effective",
+          "selectorKind": "HTML",
+          "selector": {
+            "type": "CssSelector",
+            "exact": "<effectiveTime value=\"20191204\"",
+            "prefix": " U.S. Approval: 1999</title>\n   ",
+            "suffix": "/>\n   <setId root=\"5908cd1a-fc5a",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 717,
+              "end": 748
+            },
+            "basis": "raw-capture/v1"
+          },
+          "exact": "<effectiveTime value=\"20191204\"",
+          "prefix": " U.S. Approval: 1999</title>\n   ",
+          "suffix": "/>\n   <setId root=\"5908cd1a-fc5a",
+          "startOffset": 717,
+          "endOffset": 748
+        },
+        {
+          "ref": "l24-v14-author",
+          "uid": "hu:locator:d5-siro-l24-v14-author",
+          "selectorKind": "HTML",
+          "selector": {
+            "type": "CssSelector",
+            "exact": "<name>Greenstone LLC</name>",
+            "prefix": ".3.6.1.4.1.519.1\"/>\n            ",
+            "suffix": "\n            <assignedEntity>\n  ",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 999,
+              "end": 1026
+            },
+            "basis": "raw-capture/v1"
+          },
+          "exact": "<name>Greenstone LLC</name>",
+          "prefix": ".3.6.1.4.1.519.1\"/>\n            ",
+          "suffix": "\n            <assignedEntity>\n  ",
+          "startOffset": 999,
+          "endOffset": 1026
+        }
+      ]
+    },
+    {
+      "ref": "src-spl-v15",
+      "source": {
+        "canonicalUri": "https://dailymed.nlm.nih.gov/dailymed/getFile.cfm?setid=5908cd1a-fc5a-462f-99ed-1d8983e253c9&type=zip&version=15",
+        "title": "SIROLIMUS tablet SPL, set 5908cd1a-fc5a-462f-99ed-1d8983e253c9, version 15 (effectiveTime 20220923), DailyMed archived SPL zip, XML member f67f100f-216f-40ab-8c49-ed141512342e.xml",
+        "sourceKind": "REGISTRY"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:45:14Z",
+        "observedAt": "2026-10-08T21:45:14Z",
+        "contentHash": "sha256:b6b375cfc9875520e486c3b8236330dc744c362727e5c1ef6a0cc10a7a9fb6bd",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "l31-v15-cbd-monitor",
+          "uid": "hu:locator:d5-siro-l31-v15-cbd-monitor",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "When cannabidiol and sirolimus are co-administered, closely monitor for an increase in sirolimus",
+            "prefix": "  <content styleCode=\"xmChange\">",
+            "suffix": " blood levels and for adverse re",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 128243,
+              "end": 128339
+            },
+            "section": "5.21 Cannabidiol Drug Interactions / 7.5",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "When cannabidiol and sirolimus are co-administered, closely monitor for an increase in sirolimus",
+          "prefix": "  <content styleCode=\"xmChange\">",
+          "suffix": " blood levels and for adverse re",
+          "startOffset": 128243,
+          "endOffset": 128339
+        },
+        {
+          "ref": "l32-v15-version",
+          "uid": "hu:locator:d5-siro-l32-v15-version",
+          "selectorKind": "HTML",
+          "selector": {
+            "type": "CssSelector",
+            "exact": "<versionNumber value=\"15\"/>",
+            "prefix": "5a-462f-99ed-1d8983e253c9\"/>\n   ",
+            "suffix": "\n   <author>\n      <time/>\n     ",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 812,
+              "end": 839
+            },
+            "basis": "raw-capture/v1"
+          },
+          "exact": "<versionNumber value=\"15\"/>",
+          "prefix": "5a-462f-99ed-1d8983e253c9\"/>\n   ",
+          "suffix": "\n   <author>\n      <time/>\n     ",
+          "startOffset": 812,
+          "endOffset": 839
+        },
+        {
+          "ref": "l33-v15-effective",
+          "uid": "hu:locator:d5-siro-l33-v15-effective",
+          "selectorKind": "HTML",
+          "selector": {
+            "type": "CssSelector",
+            "exact": "<effectiveTime value=\"20220923\"",
+            "prefix": " U.S. Approval: 1999</title>\n   ",
+            "suffix": "/>\n   <setId root=\"5908cd1a-fc5a",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 719,
+              "end": 750
+            },
+            "basis": "raw-capture/v1"
+          },
+          "exact": "<effectiveTime value=\"20220923\"",
+          "prefix": " U.S. Approval: 1999</title>\n   ",
+          "suffix": "/>\n   <setId root=\"5908cd1a-fc5a",
+          "startOffset": 719,
+          "endOffset": 750
+        },
+        {
+          "ref": "l34-v15-author",
+          "uid": "hu:locator:d5-siro-l34-v15-author",
+          "selectorKind": "HTML",
+          "selector": {
+            "type": "CssSelector",
+            "exact": "<name>Greenstone LLC</name>",
+            "prefix": ".3.6.1.4.1.519.1\"/>\n            ",
+            "suffix": "\n            <assignedEntity>\n  ",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 1001,
+              "end": 1028
+            },
+            "basis": "raw-capture/v1"
+          },
+          "exact": "<name>Greenstone LLC</name>",
+          "prefix": ".3.6.1.4.1.519.1\"/>\n            ",
+          "suffix": "\n            <assignedEntity>\n  ",
+          "startOffset": 1001,
+          "endOffset": 1028
+        }
+      ]
+    },
+    {
+      "ref": "src-spl-history",
+      "source": {
+        "canonicalUri": "https://dailymed.nlm.nih.gov/dailymed/services/v2/spls/5908cd1a-fc5a-462f-99ed-1d8983e253c9/history.json",
+        "title": "DailyMed SPL version history, set 5908cd1a-fc5a-462f-99ed-1d8983e253c9",
+        "sourceKind": "API"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:44:42Z",
+        "observedAt": "2026-10-08T21:44:42Z",
+        "contentHash": "sha256:70f2dceae4a55c6a5e6eeadc3d672167ae03462dccdaa9bf811c8b844c05b4b5",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "l41-hist-v15",
+          "uid": "hu:locator:d5-siro-l41-hist-v15",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "Oct 04, 2022",
+            "prefix": "",
+            "suffix": "",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 0,
+              "end": 12
+            },
+            "jsonPointer": "/data/history/7/published_date",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Oct 04, 2022",
+          "prefix": "",
+          "suffix": "",
+          "startOffset": 0,
+          "endOffset": 12
+        },
+        {
+          "ref": "l42-hist-v14",
+          "uid": "hu:locator:d5-siro-l42-hist-v14",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "Dec 05, 2019",
+            "prefix": "",
+            "suffix": "",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 0,
+              "end": 12
+            },
+            "jsonPointer": "/data/history/8/published_date",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Dec 05, 2019",
+          "prefix": "",
+          "suffix": "",
+          "startOffset": 0,
+          "endOffset": 12
+        },
+        {
+          "ref": "l43-hist-v22",
+          "uid": "hu:locator:d5-siro-l43-hist-v22",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "Mar 26, 2026",
+            "prefix": "",
+            "suffix": "",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 0,
+              "end": 12
+            },
+            "jsonPointer": "/data/history/0/published_date",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Mar 26, 2026",
+          "prefix": "",
+          "suffix": "",
+          "startOffset": 0,
+          "endOffset": 12
+        }
+      ]
+    },
+    {
+      "ref": "src-agelessrx",
+      "source": {
+        "canonicalUri": "https://www.agelessrx.com/rapamycin/",
+        "title": "Rapamycin | AgelessRx",
+        "sourceKind": "WEB_PAGE"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:44:31Z",
+        "observedAt": "2026-10-08T21:44:31Z",
+        "contentHash": "sha256:e6d4430022109d3ebdf0d467bff3946d610c448639e112f2abcad21932e87a4a",
+        "contentHashBasis": "TOOL_RENDITION",
+        "captureCompleteness": "COMPLETE",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "l51-agl-mechanism",
+          "uid": "hu:locator:d5-siro-l51-agl-mechanism",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "As a substrate for p-glycoprotein and cytochrome P-450 3A4, Rapamycin may have certain interactions with other drugs or supplements that act on these proteins.",
+            "prefix": "ing started with a free visit.\n\n",
+            "suffix": " These include cyclosporine, rif",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 4134,
+              "end": 4293
+            },
+            "basis": "raw-capture/v1"
+          },
+          "exact": "As a substrate for p-glycoprotein and cytochrome P-450 3A4, Rapamycin may have certain interactions with other drugs or supplements that act on these proteins.",
+          "prefix": "ing started with a free visit.\n\n",
+          "suffix": " These include cyclosporine, rif",
+          "startOffset": 4134,
+          "endOffset": 4293
+        },
+        {
+          "ref": "l52-agl-list",
+          "uid": "hu:locator:d5-siro-l52-agl-list",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "These include cyclosporine, rifampin, ketoconazole, cidofovir, ritonavir, mifepristone, posaconazole, fluconazole, and grapefruit juice.",
+            "prefix": "nts that act on these proteins. ",
+            "suffix": "\n\nBefore taking Rapamycin, be su",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 4294,
+              "end": 4430
+            },
+            "basis": "raw-capture/v1"
+          },
+          "exact": "These include cyclosporine, rifampin, ketoconazole, cidofovir, ritonavir, mifepristone, posaconazole, fluconazole, and grapefruit juice.",
+          "prefix": "nts that act on these proteins. ",
+          "suffix": "\n\nBefore taking Rapamycin, be su",
+          "startOffset": 4294,
+          "endOffset": 4430
+        },
+        {
+          "ref": "l53-agl-consult",
+          "uid": "hu:locator:d5-siro-l53-agl-consult",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "talk to your healthcare provider about any medications you are currently taking.",
+            "prefix": "ns/sirolimus,rapamune.html) and ",
+            "suffix": "\n\nDo not take Rapamycin if you a",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 4591,
+              "end": 4671
+            },
+            "basis": "raw-capture/v1"
+          },
+          "exact": "talk to your healthcare provider about any medications you are currently taking.",
+          "prefix": "ns/sirolimus,rapamune.html) and ",
+          "suffix": "\n\nDo not take Rapamycin if you a",
+          "startOffset": 4591,
+          "endOffset": 4671
+        }
+      ]
+    },
+    {
+      "ref": "src-rapanews",
+      "source": {
+        "canonicalUri": "https://www.rapamycin.news/t/improve-bioavailability-of-rapamycin-2/86",
+        "title": "Improve Bioavailability of Rapamycin (2) (Rapamycin Longevity News forum)",
+        "sourceKind": "WEB_PAGE"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:44:31Z",
+        "observedAt": "2026-10-08T21:44:31Z",
+        "contentHash": "sha256:b39ad118d870829aa2e86d079adb5b3dd991e37639bb883482b37cea1514fa87",
+        "contentHashBasis": "TOOL_RENDITION",
+        "captureCompleteness": "PARTIAL_EXCERPT",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "l61-rn-warning",
+          "uid": "hu:locator:d5-siro-l61-rn-warning",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "be extremely careful with the information below, and be sure to consult your doctor.",
+            "prefix": " cause serious liver damage, so ",
+            "suffix": " Taking rapamycin with grapefrui",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 671,
+              "end": 755
+            },
+            "basis": "raw-capture/v1"
+          },
+          "exact": "be extremely careful with the information below, and be sure to consult your doctor.",
+          "prefix": " cause serious liver damage, so ",
+          "suffix": " Taking rapamycin with grapefrui",
+          "startOffset": 671,
+          "endOffset": 755
+        },
+        {
+          "ref": "l62-rn-boost",
+          "uid": "hu:locator:d5-siro-l62-rn-boost",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "Taking rapamycin with grapefruit juice can dramatically increase the “effective dose” by a factor of 3X to 7X or higher.",
+            "prefix": "be sure to consult your doctor. ",
+            "suffix": " This is not a recommended proto",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 756,
+              "end": 876
+            },
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Taking rapamycin with grapefruit juice can dramatically increase the “effective dose” by a factor of 3X to 7X or higher.",
+          "prefix": "be sure to consult your doctor. ",
+          "suffix": " This is not a recommended proto",
+          "startOffset": 756,
+          "endOffset": 876
+        },
+        {
+          "ref": "l63-rn-disclaimer",
+          "uid": "hu:locator:d5-siro-l63-rn-disclaimer",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "This is not a recommended protocol for people, but is only offered here for informational purposes.",
+            "prefix": "a factor of 3X to 7X or higher. ",
+            "suffix": "\n\n**What are key options to cons",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 877,
+              "end": 976
+            },
+            "basis": "raw-capture/v1"
+          },
+          "exact": "This is not a recommended protocol for people, but is only offered here for informational purposes.",
+          "prefix": "a factor of 3X to 7X or higher. ",
+          "suffix": "\n\n**What are key options to cons",
+          "startOffset": 877,
+          "endOffset": 976
+        },
+        {
+          "ref": "l64-rn-practice",
+          "uid": "hu:locator:d5-siro-l64-rn-practice",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "If instead you take your rapamycin with grapefruit juice (an 8oz glass) and you want the same effective dose",
+            "prefix": "ost of $50/week or $200/month.\n\n",
+            "suffix": ", then your cost structure looks",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 1433,
+              "end": 1541
+            },
+            "basis": "raw-capture/v1"
+          },
+          "exact": "If instead you take your rapamycin with grapefruit juice (an 8oz glass) and you want the same effective dose",
+          "prefix": "ost of $50/week or $200/month.\n\n",
+          "suffix": ", then your cost structure looks",
+          "startOffset": 1433,
+          "endOffset": 1541
+        }
+      ]
+    },
+    {
+      "ref": "src-rapanews-api",
+      "source": {
+        "canonicalUri": "https://www.rapamycin.news/t/86.json",
+        "title": "Discourse topic JSON for t/86 (first page of posts)",
+        "sourceKind": "API"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:46:10Z",
+        "observedAt": "2026-10-08T21:46:10Z",
+        "contentHash": "sha256:1657284b993ce2af137a10e7c3982cc9413d5f8c31bd3260e40cffeed5262515",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "PARTIAL_EXCERPT",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "l71-rnj-username",
+          "uid": "hu:locator:d5-siro-l71-rnj-username",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "RapAdmin",
+            "prefix": "",
+            "suffix": "",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 0,
+              "end": 8
+            },
+            "jsonPointer": "/post_stream/posts/0/username",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "RapAdmin",
+          "prefix": "",
+          "suffix": "",
+          "startOffset": 0,
+          "endOffset": 8
+        },
+        {
+          "ref": "l72-rnj-updated",
+          "uid": "hu:locator:d5-siro-l72-rnj-updated",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "2023-03-07T06:03:54.522Z",
+            "prefix": "",
+            "suffix": "",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 0,
+              "end": 24
+            },
+            "jsonPointer": "/post_stream/posts/0/updated_at",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "2023-03-07T06:03:54.522Z",
+          "prefix": "",
+          "suffix": "",
+          "startOffset": 0,
+          "endOffset": 24
+        },
+        {
+          "ref": "l73-rnj-created",
+          "uid": "hu:locator:d5-siro-l73-rnj-created",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "2021-10-22T20:42:48.946Z",
+            "prefix": "",
+            "suffix": "",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 0,
+              "end": 24
+            },
+            "jsonPointer": "/post_stream/posts/0/created_at",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "2021-10-22T20:42:48.946Z",
+          "prefix": "",
+          "suffix": "",
+          "startOffset": 0,
+          "endOffset": 24
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "siro",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "Sirolimus (rapamycin)",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "gfj",
+      "mode": "new",
+      "nodeType": "FoodItem",
+      "name": "Grapefruit juice",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "sjw",
+      "mode": "new",
+      "nodeType": "IngredientMaterial",
+      "name": "St. John's wort (Hypericum perforatum)",
+      "properties": {
+        "materialKind": "UNRESOLVED"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "cbd",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "Cannabidiol",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "hyp",
+      "mode": "new",
+      "nodeType": "Condition",
+      "name": "Hypersensitivity to sirolimus",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "inf",
+      "mode": "new",
+      "nodeType": "Condition",
+      "name": "Infection (increased susceptibility)",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "lym",
+      "mode": "new",
+      "nodeType": "Condition",
+      "name": "Lymphoma and other malignancies",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "mylan",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "Mylan Pharmaceuticals Inc.",
+      "properties": {
+        "entityKind": "UNSPECIFIED"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "greenstone",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "Greenstone LLC",
+      "properties": {
+        "entityKind": "UNSPECIFIED"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "agelessrx",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "AgelessRx",
+      "properties": {
+        "entityKind": "UNSPECIFIED"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "rapadmin",
+      "mode": "new",
+      "nodeType": "Person",
+      "name": "RapAdmin (pseudonymous forum administrator handle; D9 owns handle-to-speaker resolution)",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "uc-gfj",
+      "mode": "new",
+      "nodeType": "UseConstraint",
+      "name": "sirolimus together with grapefruit juice",
+      "uidSegment": "e6da92cd70f56334",
+      "properties": {
+        "constraintKind": "INTERACTION",
+        "identityKey": "use-constraint-key/v2|kind=INTERACTION|subject=hu:substance:sirolimus|scope=hu:food:grapefruit-juice|dose=|route=|jurisdiction=|timing=",
+        "identityKeyHash": "sha256:e6da92cd70f563340e64b09e96d7ce6c4184ffea5d523b4e282986b8dd9e538d",
+        "identityKeyVersion": "use-constraint-key/v2"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "uc-sjw",
+      "mode": "new",
+      "nodeType": "UseConstraint",
+      "name": "sirolimus together with St. John's wort",
+      "uidSegment": "4b26830145303d6d",
+      "properties": {
+        "constraintKind": "INTERACTION",
+        "identityKey": "use-constraint-key/v2|kind=INTERACTION|subject=hu:substance:sirolimus|scope=hu:material:st-johns-wort-hypericum-perforatum|dose=|route=|jurisdiction=|timing=",
+        "identityKeyHash": "sha256:4b26830145303d6dfa2bfaf7dda4ef52f434ec2add41694e4bc2884be2def61f",
+        "identityKeyVersion": "use-constraint-key/v2"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "uc-cbd",
+      "mode": "new",
+      "nodeType": "UseConstraint",
+      "name": "sirolimus together with cannabidiol",
+      "uidSegment": "7813a0a691936763",
+      "properties": {
+        "constraintKind": "INTERACTION",
+        "identityKey": "use-constraint-key/v2|kind=INTERACTION|subject=hu:substance:sirolimus|scope=hu:substance:cannabidiol|dose=|route=|jurisdiction=|timing=",
+        "identityKeyHash": "sha256:7813a0a69193676352d46d1d809f3908686bc25403cc2c76015cab88fc886ba8",
+        "identityKeyVersion": "use-constraint-key/v2"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "uc-hypersens",
+      "mode": "new",
+      "nodeType": "UseConstraint",
+      "name": "sirolimus in hypersensitivity to sirolimus",
+      "uidSegment": "b70287a24d52e37b",
+      "properties": {
+        "constraintKind": "CONDITION",
+        "identityKey": "use-constraint-key/v2|kind=CONDITION|subject=hu:substance:sirolimus|scope=hu:condition:hypersensitivity-to-sirolimus|dose=|route=|jurisdiction=|timing=",
+        "identityKeyHash": "sha256:b70287a24d52e37bfb13a2fba8db2a27568494235356d0da9a5db849cec5703a",
+        "identityKeyVersion": "use-constraint-key/v2"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "p-r00-v14-grapefruit",
+      "rationale": "qualifiers=population:UNSPECIFIED;section:DRUG_INTERACTIONS;exposureChange:INCREASES_EXPOSURE;mechanism:CYP3A4 valueString=AVOID (intent v1 cannot carry qualifiers/valueString: OQ-D5-27)",
+      "dependsOn": [],
+      "kind": "assertion.relate",
+      "subjectRef": "siro",
+      "objectRef": "gfj",
+      "assertion": {
+        "predicate": "INTERACTS_WITH",
+        "polarity": "POSITIVE",
+        "speechAct": "CAUTIONS",
+        "basisKind": "CITED_FROM_PRIOR_WORK",
+        "qualifiers": [
+          "section:DRUG_INTERACTIONS",
+          "exposureChange:INCREASES_EXPOSURE",
+          "mechanism:CYP3A4 valueString=AVOID (intent v1 cannot carry qualifiers/valueString: OQ-D5-27)"
+        ],
+        "validity": {
+          "validFrom": "2019-12-04T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE"
+        }
+      },
+      "evidence": [
+        "l21-v14-grapefruit",
+        "l22-v14-version",
+        "l23-v14-effective",
+        "l24-v14-author"
+      ],
+      "asserterRef": "greenstone",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: SUBJECT_CONFLICT: gfj (REQUIRED_PROPERTY_MISSING: FoodItem.descriptionVerbatim, definingSystem)"
+      }
+    },
+    {
+      "proposalId": "p-r01-v22-grapefruit",
+      "rationale": "qualifiers=population:UNSPECIFIED;section:DRUG_INTERACTIONS;exposureChange:INCREASES_EXPOSURE;mechanism:CYP3A4 valueString=AVOID (intent v1 cannot carry qualifiers/valueString: OQ-D5-27)",
+      "dependsOn": [],
+      "kind": "assertion.relate",
+      "subjectRef": "siro",
+      "objectRef": "gfj",
+      "assertion": {
+        "predicate": "INTERACTS_WITH",
+        "polarity": "POSITIVE",
+        "speechAct": "CAUTIONS",
+        "basisKind": "CITED_FROM_PRIOR_WORK",
+        "qualifiers": [
+          "section:DRUG_INTERACTIONS",
+          "exposureChange:INCREASES_EXPOSURE",
+          "mechanism:CYP3A4 valueString=AVOID (intent v1 cannot carry qualifiers/valueString: OQ-D5-27)"
+        ],
+        "validity": {
+          "validFrom": "2026-03-26T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE"
+        }
+      },
+      "evidence": [
+        "l04-v22-grapefruit",
+        "l01-v22-version",
+        "l02-v22-effective",
+        "l03-v22-labeler"
+      ],
+      "asserterRef": "mylan",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: SUBJECT_CONFLICT: gfj (REQUIRED_PROPERTY_MISSING: FoodItem.descriptionVerbatim, definingSystem)"
+      }
+    },
+    {
+      "proposalId": "p-r02-v22-sjw",
+      "rationale": "qualifiers=population:UNSPECIFIED;section:DRUG_INTERACTIONS;exposureChange:DECREASES_EXPOSURE;mechanism:CYP3A4/P-gp modulation valueString=USE_WITH_CAUTION (intent v1 cannot carry qualifiers/valueString: OQ-D5-27)",
+      "dependsOn": [],
+      "kind": "assertion.relate",
+      "subjectRef": "siro",
+      "objectRef": "sjw",
+      "assertion": {
+        "predicate": "INTERACTS_WITH",
+        "polarity": "POSITIVE",
+        "speechAct": "CAUTIONS",
+        "basisKind": "UNSTATED",
+        "qualifiers": [
+          "section:DRUG_INTERACTIONS",
+          "exposureChange:DECREASES_EXPOSURE",
+          "mechanism:CYP3A4/P-gp modulation valueString=USE_WITH_CAUTION (intent v1 cannot carry qualifiers/valueString: OQ-D5-27)"
+        ],
+        "validity": {
+          "validFrom": "2026-03-26T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE"
+        }
+      },
+      "evidence": [
+        "l06-v22-sjw",
+        "l05-v22-modulators-caution",
+        "l01-v22-version"
+      ],
+      "asserterRef": "mylan",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: QUALIFIER_REQUIRED: INTERACTS_WITH requires qualifier(s) population"
+      }
+    },
+    {
+      "proposalId": "p-r03-v15-cbd-monitor",
+      "rationale": "qualifiers=population:UNSPECIFIED;section:DRUG_INTERACTIONS;exposureChange:INCREASES_EXPOSURE valueString=MONITOR (intent v1 cannot carry qualifiers/valueString: OQ-D5-27)",
+      "dependsOn": [],
+      "kind": "assertion.relate",
+      "subjectRef": "siro",
+      "objectRef": "cbd",
+      "assertion": {
+        "predicate": "INTERACTS_WITH",
+        "polarity": "POSITIVE",
+        "speechAct": "CAUTIONS",
+        "basisKind": "UNSTATED",
+        "qualifiers": [
+          "section:DRUG_INTERACTIONS",
+          "exposureChangeVerbatim:INCREASES_EXPOSURE valueString=MONITOR (intent v1 cannot carry qualifiers/valueString: OQ-D5-27)"
+        ],
+        "validity": {
+          "validFrom": "2022-09-23T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE"
+        }
+      },
+      "evidence": [
+        "l31-v15-cbd-monitor",
+        "l32-v15-version",
+        "l33-v15-effective",
+        "l34-v15-author",
+        "l41-hist-v15"
+      ],
+      "asserterRef": "greenstone",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: QUALIFIER_REQUIRED: INTERACTS_WITH requires qualifier(s) population"
+      }
+    },
+    {
+      "proposalId": "p-r04-v22-cbd-monitor",
+      "rationale": "qualifiers=population:UNSPECIFIED;section:DRUG_INTERACTIONS;exposureChange:INCREASES_EXPOSURE valueString=MONITOR (intent v1 cannot carry qualifiers/valueString: OQ-D5-27)",
+      "dependsOn": [],
+      "kind": "assertion.relate",
+      "subjectRef": "siro",
+      "objectRef": "cbd",
+      "assertion": {
+        "predicate": "INTERACTS_WITH",
+        "polarity": "POSITIVE",
+        "speechAct": "CAUTIONS",
+        "basisKind": "UNSTATED",
+        "qualifiers": [
+          "section:DRUG_INTERACTIONS",
+          "exposureChangeVerbatim:INCREASES_EXPOSURE valueString=MONITOR (intent v1 cannot carry qualifiers/valueString: OQ-D5-27)"
+        ],
+        "validity": {
+          "validFrom": "2026-03-26T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE"
+        }
+      },
+      "evidence": [
+        "l07-v22-cbd-increase",
+        "l08-v22-cbd-monitor",
+        "l01-v22-version"
+      ],
+      "asserterRef": "mylan",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: QUALIFIER_REQUIRED: INTERACTS_WITH requires qualifier(s) population"
+      }
+    },
+    {
+      "proposalId": "p-r05-v22-cbd-dose",
+      "rationale": "qualifiers=population:UNSPECIFIED;section:DRUG_INTERACTIONS;exposureChange:INCREASES_EXPOSURE valueString=ADJUST_DOSE (intent v1 cannot carry qualifiers/valueString: OQ-D5-27)",
+      "dependsOn": [],
+      "kind": "assertion.relate",
+      "subjectRef": "siro",
+      "objectRef": "cbd",
+      "assertion": {
+        "predicate": "INTERACTS_WITH",
+        "polarity": "POSITIVE",
+        "speechAct": "RECOMMENDS",
+        "basisKind": "UNSTATED",
+        "qualifiers": [
+          "section:DRUG_INTERACTIONS",
+          "exposureChangeVerbatim:INCREASES_EXPOSURE valueString=ADJUST_DOSE (intent v1 cannot carry qualifiers/valueString: OQ-D5-27)"
+        ],
+        "validity": {
+          "validFrom": "2026-03-26T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE"
+        }
+      },
+      "evidence": [
+        "l09-v22-cbd-dose",
+        "l01-v22-version"
+      ],
+      "asserterRef": "mylan",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: QUALIFIER_REQUIRED: INTERACTS_WITH requires qualifier(s) population"
+      }
+    },
+    {
+      "proposalId": "p-r06-v22-contraindicated",
+      "rationale": "qualifiers=population:UNSPECIFIED;section:CONTRAINDICATIONS valueString=CONTRAINDICATED (intent v1 cannot carry qualifiers/valueString: OQ-D5-27)",
+      "dependsOn": [],
+      "kind": "assertion.relate",
+      "subjectRef": "siro",
+      "objectRef": "hyp",
+      "assertion": {
+        "predicate": "USE_CONSTRAINED_IN",
+        "polarity": "POSITIVE",
+        "speechAct": "CAUTIONS",
+        "basisKind": "UNSTATED",
+        "qualifiers": [
+          "sectionVerbatim:CONTRAINDICATIONS valueString=CONTRAINDICATED (intent v1 cannot carry qualifiers/valueString: OQ-D5-27)"
+        ],
+        "validity": {
+          "validFrom": "2026-03-26T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE"
+        }
+      },
+      "evidence": [
+        "l10-v22-contraindication",
+        "l01-v22-version"
+      ],
+      "asserterRef": "mylan",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: QUALIFIER_REQUIRED: USE_CONSTRAINED_IN requires qualifier(s) population"
+      }
+    },
+    {
+      "proposalId": "p-r07-v22-infection",
+      "rationale": "qualifiers=population:IMMUNOSUPPRESSED;section:BOXED_WARNING;sourceKind:LABEL;context:THERAPEUTIC;severity:LABEL_TEXT:boxed warning (intent v1 cannot carry qualifiers/valueString: OQ-D5-27)",
+      "dependsOn": [],
+      "kind": "assertion.relate",
+      "subjectRef": "siro",
+      "objectRef": "inf",
+      "assertion": {
+        "predicate": "CAUSES_ADVERSE_EFFECT",
+        "polarity": "POSITIVE",
+        "speechAct": "CAUTIONS",
+        "basisKind": "UNSTATED",
+        "qualifiers": [
+          "section:BOXED_WARNING",
+          "sourceKind:LABEL",
+          "context:THERAPEUTIC",
+          "severityVerbatim:LABEL_TEXT:boxed warning (intent v1 cannot carry qualifiers/valueString: OQ-D5-27)"
+        ],
+        "validity": {
+          "validFrom": "2026-03-26T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE"
+        }
+      },
+      "evidence": [
+        "l11-v22-boxed",
+        "l12-v22-indication",
+        "l01-v22-version"
+      ],
+      "asserterRef": "mylan",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: QUALIFIER_REQUIRED: CAUSES_ADVERSE_EFFECT requires qualifier(s) population"
+      }
+    },
+    {
+      "proposalId": "p-r08-v22-lymphoma",
+      "rationale": "qualifiers=population:IMMUNOSUPPRESSED;section:BOXED_WARNING;sourceKind:LABEL;context:THERAPEUTIC;severity:LABEL_TEXT:boxed warning (intent v1 cannot carry qualifiers/valueString: OQ-D5-27)",
+      "dependsOn": [],
+      "kind": "assertion.relate",
+      "subjectRef": "siro",
+      "objectRef": "lym",
+      "assertion": {
+        "predicate": "CAUSES_ADVERSE_EFFECT",
+        "polarity": "POSITIVE",
+        "speechAct": "CAUTIONS",
+        "basisKind": "UNSTATED",
+        "qualifiers": [
+          "section:BOXED_WARNING",
+          "sourceKind:LABEL",
+          "context:THERAPEUTIC",
+          "severityVerbatim:LABEL_TEXT:boxed warning (intent v1 cannot carry qualifiers/valueString: OQ-D5-27)"
+        ],
+        "validity": {
+          "validFrom": "2026-03-26T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE"
+        }
+      },
+      "evidence": [
+        "l11-v22-boxed",
+        "l12-v22-indication",
+        "l01-v22-version"
+      ],
+      "asserterRef": "mylan",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: QUALIFIER_REQUIRED: CAUSES_ADVERSE_EFFECT requires qualifier(s) population"
+      }
+    },
+    {
+      "proposalId": "p-r09-agelessrx-grapefruit",
+      "rationale": "qualifiers=population:UNSPECIFIED;section:WEB_PAGE;mechanism:P-gp/CYP3A4;exposureChange:UNKNOWN valueString=CONSULT_CLINICIAN (intent v1 cannot carry qualifiers/valueString: OQ-D5-27)",
+      "dependsOn": [],
+      "kind": "assertion.relate",
+      "subjectRef": "siro",
+      "objectRef": "gfj",
+      "assertion": {
+        "predicate": "INTERACTS_WITH",
+        "polarity": "POSITIVE",
+        "speechAct": "CAUTIONS",
+        "basisKind": "UNSTATED",
+        "qualifiers": [
+          "section:WEB_PAGE",
+          "mechanism:P-gp/CYP3A4",
+          "exposureChangeVerbatim:UNKNOWN valueString=CONSULT_CLINICIAN (intent v1 cannot carry qualifiers/valueString: OQ-D5-27)"
+        ],
+        "validity": {
+          "validFromBasis": "OBSERVATION_ONLY"
+        }
+      },
+      "evidence": [
+        "l52-agl-list",
+        "l51-agl-mechanism",
+        "l53-agl-consult"
+      ],
+      "asserterRef": "agelessrx",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: SUBJECT_CONFLICT: gfj (REQUIRED_PROPERTY_MISSING: FoodItem.descriptionVerbatim, definingSystem)"
+      }
+    },
+    {
+      "proposalId": "p-r10-rapanews-grapefruit",
+      "rationale": "qualifiers=population:UNSPECIFIED;section:FORUM_POST;exposureChange:INCREASES_EXPOSURE;magnitude:3X to 7X or higher;stance:DELIBERATE_USE valueString=CONSULT_CLINICIAN (intent v1 cannot carry qualifiers/valueString: OQ-D5-27)",
+      "dependsOn": [],
+      "kind": "assertion.relate",
+      "subjectRef": "siro",
+      "objectRef": "gfj",
+      "assertion": {
+        "predicate": "INTERACTS_WITH",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "CITED_FROM_PRIOR_WORK",
+        "qualifiers": [
+          "section:FORUM_POST",
+          "exposureChange:INCREASES_EXPOSURE",
+          "magnitudeVerbatim:3X to 7X or higher",
+          "stanceVerbatim:DELIBERATE_USE valueString=CONSULT_CLINICIAN (intent v1 cannot carry qualifiers/valueString: OQ-D5-27)"
+        ],
+        "validity": {
+          "validFrom": "2023-03-07T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "PUBLICATION_PROXY"
+        }
+      },
+      "evidence": [
+        "l62-rn-boost",
+        "l61-rn-warning",
+        "l63-rn-disclaimer",
+        "l64-rn-practice",
+        "l71-rnj-username",
+        "l72-rnj-updated"
+      ],
+      "asserterRef": "rapadmin",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: SUBJECT_CONFLICT: gfj (REQUIRED_PROPERTY_MISSING: FoodItem.descriptionVerbatim, definingSystem)"
+      }
+    }
+  ],
+  "notes": "Fixture intent (fixture ids). The D5 safety predicates are predicate-only Assertions (05 predicateOnly), written here as edge.assert with relationshipType = predicate because biotech-knowledge-intent.v1 has no 'assertion with object node, no typed edge' proposal kind; qualifiers (population, exposureChange, section, stance), valueString (directive level) travel in rationale (OQ-D5-27). R-23: no cross-asserter supersession - the Greenstone LLC (v14/v15) and Mylan (v22) label assertions are separate records; the older ones leave 'current' answers when their SPL label-version state episode closes (not built here). RESOLVES_TO_CONSTRAINT is a projection output, not a proposal; the UseConstraint subjects are listed so the projection's targets are explicit.",
+  "provenance": {
+    "derivedFrom": {
+      "schemaVersion": "biotech-knowledge-intent.v1",
+      "path": "schema/program/final/fixtures/D5/sirolimus-label-interactions-harm/intent.json",
+      "rawBytesDigest": "sha256:dcd436f847507218a92abf777317d824958eb2dd99f4f918af10252e5b31911d"
+    },
+    "migrator": "bks-migrate-intent-v1/1",
+    "edits": [
+      {
+        "at": "context.activityKind",
+        "rule": "P3-kernel-activity-kind",
+        "from": "EXTRACTION",
+        "to": "INGESTION"
+      },
+      {
+        "at": "onStale",
+        "rule": "strict-stale",
+        "from": "fail",
+        "to": null,
+        "note": "production onStale removed; stale state is a new plan"
+      },
+      {
+        "at": "sources[0].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:d2be2f1917c5113bf86ab94d1ce60911927b452bf2716a8f13f099879e6397e8",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[1].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:ea5361974b2619e34e44a296ceeffd4e523ec73e919eb5f68fdcfd50c3cad6f6",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[2].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[2].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:0ff3abe445572d0999b2a289adda814e0b2d42f7ee6e437e1f86941a413de8b1",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[3].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[3].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:5ec438190435fd6f468c260557d79c8f3dfb4c08d1df56bb06786de233267f98",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[4].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[4].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:712d69acfb94b3d4f93822c459e2ad87378ef26c0a9a9ad6fbe459c65caa5b3a",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[5].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[5].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:067955aa50bfcdcd8c86763fa4f78d85aed284bb0cc572d57b79a63d5fccd1de",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[6].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[6].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:9e8399c1f662539f153dda478c0d1460158864d12327e2a9a9325ef437058bff",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[7].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[7].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:42f79c2a8ebc7fe1f30c7270b143b090bb4b9c51c0608eda18e99e5f77ad217e",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[8].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[8].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:6ae0e83f63079354cb7d7b9db415ff63c2c1f338922de1bc1dd10b026039820c",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[9].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[9].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:2d1781ca4ef91395b9b7e1d5c106066c6cd06660e31edff233417d25a271c99a",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[10].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[10].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:1312bf0e76a20150529705ef06e592ae28698fbd6cf2f1068aa56dfff786d742",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[11].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[11].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:793db2facbcf58747de575348df3a3bcd34bb98d4828c5c77c0345f14eb274d5",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[12].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[0].locators[12].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:57c0783cddde4dd9bebf99ee9b35b670bad7a3c6d7f2cfbd8713a6439eb6ccbc",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[1].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[1].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:fce27d942cb2fe842a42a3cac9e368e997854034efac3734b3954d80128a548b",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[1].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[1].locators[1].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:c3d6844326342292e3eacebd343216bd9a6bdd971d0a5410700243631baf9f6b",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[1].locators[2].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[1].locators[2].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:86f77dd7cc4f136436444a39e17ed549124e077db87ed3e2685c35d016d1d113",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[1].locators[3].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[1].locators[3].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:cc4984e594cb972582d9a40fbe72f6f44b4769bd01bb681f6dba177f6170b742",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[2].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[2].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:f2dd97fdbd4e613faf3f93ad8566ba1c8f81d6717bd18b2d8c77a495a457d90a",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[2].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[2].locators[1].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:c367cb1f8da5157913cb1ea2e7e3bdf865dd76794a4e5f4ed8cc6342adc22026",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[2].locators[2].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[2].locators[2].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:9902b4daa03dbe6ee4007bea06b936c2ee764c118b5ead370e418d73680896d7",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[2].locators[3].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[2].locators[3].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:82388bfd65c7e4e0db1e86b63c9c544b885a3e3f13144ae6b5a68891479743b6",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[3].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[3].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:43d755d4785c60c381f7eb75f4ed57e5bf093335b867ae45996cfa63e18cf475",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[3].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[3].locators[1].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:ef4c554913eb0085bf053fbd4931a87a6e7e9e7ec14d862f3cd800d7a5361aad",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[3].locators[2].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[3].locators[2].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:aad68eda9e6dc2c04b513b1405104255033e045342898703fc9f5f53f4df9725",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[4].locators[0].selector",
+        "rule": "FU-03-selector-built-no-basis",
+        "from": null,
+        "to": null,
+        "note": "snapshot basis TOOL_RENDITION: no projection basis can be stated mechanically (R-38); the planner refuses this locator"
+      },
+      {
+        "at": "sources[4].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:0df216a7eadb810199672bc263726f7ec7331bcd2c718d1b555e49f4c1d514ec",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[4].locators[1].selector",
+        "rule": "FU-03-selector-built-no-basis",
+        "from": null,
+        "to": null,
+        "note": "snapshot basis TOOL_RENDITION: no projection basis can be stated mechanically (R-38); the planner refuses this locator"
+      },
+      {
+        "at": "sources[4].locators[1].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:06afc9c203621e4447d3f66757a6498f43165c329de30b950b925faa20bf42b4",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[4].locators[2].selector",
+        "rule": "FU-03-selector-built-no-basis",
+        "from": null,
+        "to": null,
+        "note": "snapshot basis TOOL_RENDITION: no projection basis can be stated mechanically (R-38); the planner refuses this locator"
+      },
+      {
+        "at": "sources[4].locators[2].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:2196271420fed5d0449c150c506fe6bd47c69762db505b9aafa779addc91e89e",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[5].locators[0].selector",
+        "rule": "FU-03-selector-built-no-basis",
+        "from": null,
+        "to": null,
+        "note": "snapshot basis TOOL_RENDITION: no projection basis can be stated mechanically (R-38); the planner refuses this locator"
+      },
+      {
+        "at": "sources[5].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:709076b1064048e3b2c0a5949a048bc646169a90c51a48f24c0e2d5e1b78baeb",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[5].locators[1].selector",
+        "rule": "FU-03-selector-built-no-basis",
+        "from": null,
+        "to": null,
+        "note": "snapshot basis TOOL_RENDITION: no projection basis can be stated mechanically (R-38); the planner refuses this locator"
+      },
+      {
+        "at": "sources[5].locators[1].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:eb18f07dbb49de95ca6c90e308a8816eb6bf4231cb80f1568090528d39f0214b",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[5].locators[2].selector",
+        "rule": "FU-03-selector-built-no-basis",
+        "from": null,
+        "to": null,
+        "note": "snapshot basis TOOL_RENDITION: no projection basis can be stated mechanically (R-38); the planner refuses this locator"
+      },
+      {
+        "at": "sources[5].locators[2].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:e0206e0fb0cf84efeba1405d0f499f5c38d0c47a991d7ff019c333aac55f7ece",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[5].locators[3].selector",
+        "rule": "FU-03-selector-built-no-basis",
+        "from": null,
+        "to": null,
+        "note": "snapshot basis TOOL_RENDITION: no projection basis can be stated mechanically (R-38); the planner refuses this locator"
+      },
+      {
+        "at": "sources[5].locators[3].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:c177ce263ee22a33f4ac7ad612f6de8019a0d33cc4e76276c07281a7bba53647",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[6].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[6].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:a95318f897de5cba6ba0ee5cb4d0ed2f8a91868e207f70c1f9ba39d49b9a26ec",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[6].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[6].locators[1].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:f83568e186e8b5a111551fe393d9773b23722ced4014e478f695148ef12bac94",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[6].locators[2].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[6].locators[2].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:148a8de2e714babe0aff23f1287c2c576dc93d81eab85028bd41ded0f688a6ef",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "proposals[0].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "qualifiers=population:UNSPECIFIED;section:DRUG_INTERACTIONS;exposureChange:INCREASES_EXPOSURE;mechanism:CYP3A4 valueString=AVOID (intent v1 cannot carry qualifi"
+      },
+      {
+        "at": "proposals[0].kind",
+        "rule": "R-40-assertion.relate",
+        "from": "edge.assert",
+        "to": "assertion.relate",
+        "note": "INTERACTS_WITH is a predicate, not a relationship type"
+      },
+      {
+        "at": "proposals[1].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "qualifiers=population:UNSPECIFIED;section:DRUG_INTERACTIONS;exposureChange:INCREASES_EXPOSURE;mechanism:CYP3A4 valueString=AVOID (intent v1 cannot carry qualifi"
+      },
+      {
+        "at": "proposals[1].kind",
+        "rule": "R-40-assertion.relate",
+        "from": "edge.assert",
+        "to": "assertion.relate",
+        "note": "INTERACTS_WITH is a predicate, not a relationship type"
+      },
+      {
+        "at": "proposals[2].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "qualifiers=population:UNSPECIFIED;section:DRUG_INTERACTIONS;exposureChange:DECREASES_EXPOSURE;mechanism:CYP3A4/P-gp modulation valueString=USE_WITH_CAUTION (int"
+      },
+      {
+        "at": "proposals[2].kind",
+        "rule": "R-40-assertion.relate",
+        "from": "edge.assert",
+        "to": "assertion.relate",
+        "note": "INTERACTS_WITH is a predicate, not a relationship type"
+      },
+      {
+        "at": "proposals[3].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "qualifiers=population:UNSPECIFIED;section:DRUG_INTERACTIONS;exposureChange:INCREASES_EXPOSURE valueString=MONITOR (intent v1 cannot carry qualifiers/valueString"
+      },
+      {
+        "at": "proposals[3].kind",
+        "rule": "R-40-assertion.relate",
+        "from": "edge.assert",
+        "to": "assertion.relate",
+        "note": "INTERACTS_WITH is a predicate, not a relationship type"
+      },
+      {
+        "at": "proposals[4].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "qualifiers=population:UNSPECIFIED;section:DRUG_INTERACTIONS;exposureChange:INCREASES_EXPOSURE valueString=MONITOR (intent v1 cannot carry qualifiers/valueString"
+      },
+      {
+        "at": "proposals[4].kind",
+        "rule": "R-40-assertion.relate",
+        "from": "edge.assert",
+        "to": "assertion.relate",
+        "note": "INTERACTS_WITH is a predicate, not a relationship type"
+      },
+      {
+        "at": "proposals[5].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "qualifiers=population:UNSPECIFIED;section:DRUG_INTERACTIONS;exposureChange:INCREASES_EXPOSURE valueString=ADJUST_DOSE (intent v1 cannot carry qualifiers/valueSt"
+      },
+      {
+        "at": "proposals[5].kind",
+        "rule": "R-40-assertion.relate",
+        "from": "edge.assert",
+        "to": "assertion.relate",
+        "note": "INTERACTS_WITH is a predicate, not a relationship type"
+      },
+      {
+        "at": "proposals[6].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "qualifiers=population:UNSPECIFIED;section:CONTRAINDICATIONS valueString=CONTRAINDICATED (intent v1 cannot carry qualifiers/valueString: OQ-D5-27)"
+      },
+      {
+        "at": "proposals[6].kind",
+        "rule": "R-40-assertion.relate",
+        "from": "edge.assert",
+        "to": "assertion.relate",
+        "note": "USE_CONSTRAINED_IN is a predicate, not a relationship type"
+      },
+      {
+        "at": "proposals[7].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "qualifiers=population:IMMUNOSUPPRESSED;section:BOXED_WARNING;sourceKind:LABEL;context:THERAPEUTIC;severity:LABEL_TEXT:boxed warning (intent v1 cannot carry qual"
+      },
+      {
+        "at": "proposals[7].kind",
+        "rule": "R-40-assertion.relate",
+        "from": "edge.assert",
+        "to": "assertion.relate",
+        "note": "CAUSES_ADVERSE_EFFECT is a predicate, not a relationship type"
+      },
+      {
+        "at": "proposals[8].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "qualifiers=population:IMMUNOSUPPRESSED;section:BOXED_WARNING;sourceKind:LABEL;context:THERAPEUTIC;severity:LABEL_TEXT:boxed warning (intent v1 cannot carry qual"
+      },
+      {
+        "at": "proposals[8].kind",
+        "rule": "R-40-assertion.relate",
+        "from": "edge.assert",
+        "to": "assertion.relate",
+        "note": "CAUSES_ADVERSE_EFFECT is a predicate, not a relationship type"
+      },
+      {
+        "at": "proposals[9].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "qualifiers=population:UNSPECIFIED;section:WEB_PAGE;mechanism:P-gp/CYP3A4;exposureChange:UNKNOWN valueString=CONSULT_CLINICIAN (intent v1 cannot carry qualifiers"
+      },
+      {
+        "at": "proposals[9].kind",
+        "rule": "R-40-assertion.relate",
+        "from": "edge.assert",
+        "to": "assertion.relate",
+        "note": "INTERACTS_WITH is a predicate, not a relationship type"
+      },
+      {
+        "at": "proposals[10].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "qualifiers=population:UNSPECIFIED;section:FORUM_POST;exposureChange:INCREASES_EXPOSURE;magnitude:3X to 7X or higher;stance:DELIBERATE_USE valueString=CONSULT_CL"
+      },
+      {
+        "at": "proposals[10].kind",
+        "rule": "R-40-assertion.relate",
+        "from": "edge.assert",
+        "to": "assertion.relate",
+        "note": "INTERACTS_WITH is a predicate, not a relationship type"
+      },
+      {
+        "at": "subjects[sjw].properties.materialKind",
+        "rule": "schema-unknown-marker",
+        "from": null,
+        "to": "UNRESOLVED",
+        "note": "not stated by the fixture source; MaterialKind.UNRESOLVED is the release's explicit unknown member (OD-24 / OD-25), not a sourced fact"
+      },
+      {
+        "at": "subjects[mylan].properties.entityKind",
+        "rule": "schema-unknown-marker",
+        "from": null,
+        "to": "UNSPECIFIED",
+        "note": "not stated by the fixture source; OrganizationEntityKind.UNSPECIFIED is the release's explicit unknown member (OD-24 / OD-25), not a sourced fact"
+      },
+      {
+        "at": "subjects[greenstone].properties.entityKind",
+        "rule": "schema-unknown-marker",
+        "from": null,
+        "to": "UNSPECIFIED",
+        "note": "not stated by the fixture source; OrganizationEntityKind.UNSPECIFIED is the release's explicit unknown member (OD-24 / OD-25), not a sourced fact"
+      },
+      {
+        "at": "subjects[agelessrx].properties.entityKind",
+        "rule": "schema-unknown-marker",
+        "from": null,
+        "to": "UNSPECIFIED",
+        "note": "not stated by the fixture source; OrganizationEntityKind.UNSPECIFIED is the release's explicit unknown member (OD-24 / OD-25), not a sourced fact"
+      }
+    ]
+  }
+}

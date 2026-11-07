@@ -1,0 +1,148 @@
+version: 1
+module: D8
+# MODEL stage, A7, 2026-10-08. 6 node types (budget 8) from 35 pinned types in W11–W14.
+# Identifier scheme codes: existing ones from packets/K/identifier-schemes.yaml (FDA_APPLICATION, NPN, PATENT_PUB, UNII,
+# DSLD, NDC); new ones requested in 11-open-questions.md (marked "requested").
+# Adversarial-review revision (2026-10-08): properties outside filterProperties carry @filterable(byValue: false,
+# byAggregate: false) @sortable(byValue: false) in the SDL (readable and Cypher-filterable, no GraphQL filter inputs);
+# QualityResult identity falls back when no issuer is named; Device (D4) joins the record-topic and status-subject unions.
+nodes:
+  - name: RegulatoryRecord
+    uidToken: reg-record
+    identityKeys: [issuedBy.uid, recordKind, recordNumber]
+    identifierSchemes: [FDA_APPLICATION, NPN, FDA_NDI (requested), FDA_GRN (requested), FDA_WARNING_LETTER (requested), FDA_RECALL (requested), FDA_RECALL_EVENT (requested), FDA_DOCKET (requested), CELEX (requested), LNHPD_ID (requested), COURT_DOCKET (requested), PTAB_TRIAL (requested)]
+    whyNode: >-
+      Every D8 regulatory and enforcement question filters on the record (issuer, kind, number, date, outcome) and joins
+      through it: CQ-MF-02 and Q-D8-20 traverse status → record; Q-D8-02/03 list a firm's records by kind and date;
+      Q-D8-04 reaches a lot through a recall; Q-D8-12 reaches a patent's claim-level standing through the court decision that
+      establishes it (STATUS_FROM); Q-D8-23 lists device recalls and clearances; Q-D8-22 dedupes on its identity; CQ-MF-03,
+      Q-D8-15 and Q-D8-16 make it the object of claim occurrences, citations and RATES_CLAIM findings. Folding enforcement actions
+      and court decisions in keeps one identity rule and one ISSUED_BY for every authority act.
+    filterProperties: [recordKind, recordFamily, pathway, jurisdiction, recordNumber, docketId, issuedAt, outcome, violationCategories, recallClass, recallStatus, facilityFei]
+    otherProperties: 13
+    archetype: Entity & Subjectable (authority record)
+    mutations: { create: false, update: false, delete: false }
+  - name: LegalStatus
+    uidToken: legal-status
+    identityKeys: [statusOf.uid, jurisdiction, pathway, statusKind, marketStatus, claimNumbers]
+    identifierSchemes: []
+    whyNode: >-
+      A standing is produced by more than one record (NMN: the 2022 NDI responses, then the 2025 petition response) and
+      holds over valid time that differs from any record's date, so it needs its own node with an episode edge (STATUS_OF)
+      and record links (STATUS_FROM). CQ-MF-02, Q-D8-01 (as-of and reversal), CQ-AX-23 (what it is not), Q-D8-12 (claim-level
+      patent standing vs aggregator 'Active'), Q-D8-13 (when protection ends), Q-D8-20 (backed only by a filing) and Q-D8-18
+      (avoid list) filter on statusKind/jurisdiction and traverse through it.
+    filterProperties: [statusKind, statusFamily, jurisdiction, pathway, marketStatus, claimNumbers]
+    otherProperties: 1
+    archetype: Entity & Subjectable (immutable state; time on the STATUS_OF episode)
+    mutations: { create: false, update: false, delete: false }
+  - name: Lot
+    uidToken: lot
+    identityKeys: [lotOf.uid, lotCode (normalized)]
+    identifierSchemes: [LOT_CODE (requested; issuer = brand or manufacturer)]
+    whyNode: >-
+      The join key for "is the thing I hold real and lawful": Q-D8-04 (is my lot recalled) joins recall → lot → product;
+      CQ-AX-19 and Q-D8-05 join lot → results; Q-D8-08 joins listing → lot episodes; Q-D8-07 counterfeit reports name lots.
+      A lot code alone is not unique, so it cannot be a property of the recall or the result without losing the join.
+    filterProperties: [lotCode, expiresAt]
+    otherProperties: 1
+    archetype: Entity & Subjectable
+    mutations: { create: false, update: false, delete: false }
+  - name: QualityResult
+    uidToken: quality-result
+    identityKeys: [issuedBy.uid (when named), reportNumber or source canonicalUri, analyteVerbatim (normalized), resultFor.uid, testedAt; when no issuer is named — source canonicalUri, snapshot contentHash, row selector]
+    identifierSchemes: [LAB_REPORT (requested; issuer = laboratory)]
+    whyNode: >-
+      CQ-AX-19 (what do measurements say vs label for my lot), Q-D8-05 (is this COA a measurement: per-row resultBasis),
+      Q-D8-06 (products measured far below claim, by whom), Q-D8-09 (against which criterion) and Q-D8-19 (rank on quality
+      evidence) all filter on result rows (resultBasis, valueQualifier, analyte) and join them to lot/product, analyte and
+      issuer. A COA is a Source, not a node, because its rows — not the document — carry the facts.
+    filterProperties: [resultBasis, valueQualifier, value, unitCode, percentOfLabelClaimStated, testedAt, sampleKind, statedVerdict, specBasis, specPeriod]
+    otherProperties: 12
+    archetype: Entity & Subjectable (observation record)
+    mutations: { create: false, update: false, delete: false }
+  - name: CertificationListing
+    uidToken: cert-listing
+    identityKeys: [issuedBy.uid, programme, listingId (else canonical listing URL)]
+    identifierSchemes: [CERT_LISTING (requested; issuer = certifier)]
+    whyNode: >-
+      CQ-PF-03 (what does a certification cover — product, lot, facility — under which programme, as of when) and Q-D8-08
+      (has a lot dropped off, has the listing lapsed) traverse listing → COVERS episodes; Q-D8-19 joins it to products.
+      Programme and scope are properties: no question traverses a programme. A facility-level listing covers no typed target
+      (its operator is predicate-only LISTING_COVERS_FACILITY_OF until Facility is promoted).
+    filterProperties: [programme, standard, coverageKind, status, certifiedAt]
+    otherProperties: 3
+    archetype: Entity & Subjectable (authority record)
+    mutations: { create: false, update: false, delete: false }
+  - name: Patent
+    uidToken: patent
+    identityKeys: [office, publicationNumber, kindCode]
+    identifierSchemes: [PATENT_PUB, PATENT_APPLICATION (requested)]
+    whyNode: >-
+      Q-D8-11 (which patents does C own or license around X, with expiry), Q-D8-12 (has any claim been adjudicated; is
+      'Active' misleading), Q-D8-13 (when does protection end), Q-D8-14 (marked patents) and Q-D8-21 (licence terms over
+      time) traverse patent → holders, patent → topic and status → patent (the court record is reached through the status's
+      STATUS_FROM; infringement-only holdings are predicate-only ADJUDICATES_PATENT).
+    filterProperties: [office, publicationNumber, publicationType, familyId, expiresAt, priorityDate]
+    otherProperties: 7
+    archetype: Entity & Subjectable
+    mutations: { create: false, update: false, delete: false }
+deferred:
+  - name: EnforcementAction
+    reason: research-stage candidate; folded into RegulatoryRecord (recordFamily ENFORCEMENT) — same identity rule (issuer, kind, number), same issuer edge; recall-only properties are nullable on one type (measured — 6 types, 11 relationship types, 29 pairs)
+  - name: Facility
+    reason: no D8 question at value 1 traverses a facility; inspections and GMP findings name the firm, the address and an FEI; facility address stays verbatim on the record, a facility-level certification names its operator through predicate-only LISTING_COVERS_FACILITY_OF (Organization left COVERS in the adversarial review); promote when FDA Data Dashboard (FEI-keyed inspection classifications) access exists — see 11-open-questions (D7 offered the type to D8)
+  - name: Specification (ManufacturingSpecification, SpecificationVersion, SpecificationCriterion)
+    reason: specifications are mostly invisible; they surface as a limit beside a result (inline on QualityResult), as regulator text (RegulatoryRecord.conditionsVerbatim / snapshot) or as a certifier scope sentence; no value ≤ 2 question traverses a specification
+  - name: ManufacturingProcess / ManufacturingStep
+    reason: process text appears only inside regulator letters; no question
+  - name: ManufacturingCapability
+    reason: CQ-MF-04 is value 3; predicate HAS_CAPABILITY_STAGE with valid time
+  - name: Trademark
+    reason: no question at value ≤ 2; USPTO TSDR needs an API key; brand identity is D6/D7
+  - name: PatentClaim
+    reason: claim-level standing is LegalStatus.claimNumbers; claim text stays in the captured snapshot; coverage is an APPLICABILITY assessment
+  - name: PatentFamily
+    reason: familyId + familyDefinition on Patent; no question traverses a family as a thing
+  - name: CertificationProgram
+    reason: programme and standard are listing properties
+mergedInto:
+  # W11 Manufacturing (5)
+  - { pinned: ManufacturingSpecification, into: deferred (see deferred Specification), note: "criterion inline on QualityResult" }
+  - { pinned: SpecificationVersion, into: deferred (see deferred Specification) }
+  - { pinned: ManufacturingProcess, into: deferred }
+  - { pinned: ManufacturingStep, into: deferred }
+  - { pinned: ManufacturingCapability, into: "Assertion.predicate HAS_CAPABILITY_STAGE (deferred as node)" }
+  # W12 Quality testing and certification (13)
+  - { pinned: ProductLot, into: Lot }
+  - { pinned: TestSample, into: QualityResult, note: sampleKind }
+  - { pinned: TestExecution, into: QualityResult }
+  - { pinned: TestMethod, into: QualityResult, note: "method, methodReference" }
+  - { pinned: TestingLaboratory, into: D7.Organization, note: "via ISSUED_BY" }
+  - { pinned: MeasuredResult, into: QualityResult }
+  - { pinned: SpecificationCriterion, into: QualityResult, note: "specComparator, specLow, specHigh, specVerbatim, specBasis, specPeriod" }
+  - { pinned: PassFailInterpretation, into: QualityResult, note: "statedVerdict when source-stated; evaluated verdicts are kernel Assessment QUALITY subkind D8.spec-conformance" }
+  - { pinned: LotTestSummary, into: "K.Source (genre TEST_SUMMARY) + QualityResult rows", note: "COA-vs-test-summary rule is Assessment QUALITY subkind D8.coa-classification" }
+  - { pinned: CertificateOfAnalysis, into: "K.Source (genre COA) + QualityResult rows", note: "Q-D8-05" }
+  - { pinned: CertificationProgram, into: CertificationListing, note: "programme, standard" }
+  - { pinned: CertificationListing, into: CertificationListing }
+  - { pinned: CertificationScope, into: CertificationListing, note: "scopeVerbatim, coverageKind + COVERS episodes" }
+  # W13 Regulation and jurisdictions (10)
+  - { pinned: RegulatoryAgency, into: D7.Organization, note: "via ISSUED_BY" }
+  - { pinned: RegulatoryPathway, into: "enum RegulatoryPathway" }
+  - { pinned: RegulatoryPathwayVersion, into: "RegulatoryRecord.legalBasisCitation", note: "versioned pathway deferred (OQ-L3-07)" }
+  - { pinned: RegulatoryStep, into: deferred, note: "stage implied by recordKind (03 mapping table)" }
+  - { pinned: RegulatorySubmission, into: RegulatoryRecord, note: "recordKind NDI_NOTIFICATION, GRAS_NOTICE, CITIZEN_PETITION, ..." }
+  - { pinned: RegulatoryResponse, into: RegulatoryRecord, note: "recordKind NDI_RESPONSE, GRAS_RESPONSE, ...; outcome" }
+  - { pinned: RegulatoryStatus, into: LegalStatus }
+  - { pinned: OrphanDesignation, into: LegalStatus, note: "statusKind DESIGNATED, pathway US_ORPHAN_DESIGNATION" }
+  - { pinned: DrugApproval, into: LegalStatus, note: "statusKind APPROVED + RegulatoryRecord DRUG_APPLICATION_ACTION" }
+  - { pinned: RegulatoryInspection, into: RegulatoryRecord, note: "INSPECTION_CLASSIFICATION / FORM_483 records, or inspection window on the warning letter" }
+  # W14 IP and licensing (7)
+  - { pinned: PatentFamily, into: Patent, note: "familyId, familyDefinition" }
+  - { pinned: Trademark, into: deferred }
+  - { pinned: PatentApplication, into: Patent, note: "publicationType APPLICATION" }
+  - { pinned: GrantedPatent, into: Patent }
+  - { pinned: PatentClaim, into: LegalStatus, note: "claimNumbers; claim text in the snapshot (deferred as node)" }
+  - { pinned: PatentLicense, into: "Patent.licensees (LICENSED_TO episodes; terms as Assertion qualifiers)" }
+  - { pinned: IpRightStatus, into: LegalStatus, note: "statusFamily IP_RIGHT" }

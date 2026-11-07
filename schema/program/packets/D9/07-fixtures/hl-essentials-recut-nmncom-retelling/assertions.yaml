@@ -1,0 +1,160 @@
+# hl-essentials-recut-nmncom-retelling — assertions (fixtures stage, A8, 2026-10-08)
+# Disconfirmation of independence: the 2025 "Essentials" episode re-publishes (RECUT) the 2021 interview under new
+# sponsors, and an NMN.com article retells the re-cut, citing the Essentials YouTube video in its reference list (n6) but
+# no span or timestamp. Three containers, one act of speech: the independence count for "Sinclair takes NMN" is 1, not 3.
+# Locator refs are ids in ./locators.yaml. Adversarial review (2026-10-08): the fixtures stage had missed the reference
+# and recorded the link as a BellLabs match; corrected to EXPLICIT_CITATION at container level, and the YouTube rendition
+# of the re-cut (Ykvkg2Jz3X8) is now recorded. REPUBLISHES is a predicate-only Assertion (no typed edge).
+# producedBy ids are FIXTURE ids, not Mission Control ids.
+producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl-essentials-recut-nmncom-retelling" }
+
+nodes:
+  - { ref: ch-hl, type: D9.Channel, sameAs: "hl52-transcript-nmn-practice#ch-hl" }
+  - { ref: w-52, type: D9.MediaWork, sameAs: "hl52-transcript-nmn-practice#w-52" }
+  - { ref: w-ess, type: D9.MediaWork, name: "Essentials: The Biology of Slowing & Reversing Aging | Dr. David Sinclair", workKind: PODCAST_EPISODE, republicationKind: RECUT, publishedAt: "2025-10-30T08:00:00Z", publishedAtPrecision: INSTANT, durationSeconds: 2347, canonicalUrl: "https://www.hubermanlab.com/episode/essentials-biology-slowing-reversing-aging-dr-david-sinclair", identity: "RSS guid 0c8f2198-b53a-11f0-adf1-ef0fcf25d744", evidence: [e1, e2, e5, e10] }
+  - { ref: src-ess-audio, type: K.Source, canonicalUri: "https://traffic.megaphone.fm/SCIM4508633460.mp3", sourceKind: AUDIO, snapshot: null }
+  - { ref: src-ess-yt, type: K.Source, canonicalUri: "https://www.youtube.com/watch?v=Ykvkg2Jz3X8", sourceKind: VIDEO, snapshot: "locators.yaml#ess-yt (uploadDate microdata only) and #ess-yt-oembed (title, author)", note: "the video NMN.com cites (n6)" }
+  - { ref: ch-nmncom, type: D9.Channel, name: "NMN.com", channelKind: BLOG_OR_SITE, platform: WEB, homeUrl: "https://www.nmn.com/" }
+  - { ref: w-nmn, type: D9.MediaWork, name: "Huberman Lab Essentials: \"The Biology of Slowing & Reversing Aging\" with David Sinclair", workKind: ARTICLE, publishedAt: "2025-11-06T19:12:00Z", publishedAtPrecision: INSTANT, canonicalUrl: "https://www.nmn.com/news/huberman-lab-essentials-the-biology-of-slowing-reversing-aging-with-david-sinclair", evidence: [n1], note: "11:12 am PST = 19:12 UTC" }
+  - { ref: src-nmn, type: K.Source, canonicalUri: "https://www.nmn.com/news/huberman-lab-essentials-the-biology-of-slowing-reversing-aging-with-david-sinclair", sourceKind: WEB_PAGE, snapshot: "locators.yaml#nmncom" }
+  - { ref: p-huberman, type: D7.Person, name: "Andrew Huberman" }
+  - { ref: p-sinclair, type: D7.Person, name: "David A. Sinclair" }
+  - { ref: p-ciardha, type: D7.Person, name: "Victor Ciardha", note: "byline printed 'ByVictor Ciardha'" }
+  - { ref: org-scicomm, type: D7.Organization, name: "Scicomm Media" }
+  - { ref: b-agz, type: D7.Brand, name: "AGZ by AG1" }
+  - { ref: b-david, type: D7.Brand, name: "David" }
+  - { ref: b-eightsleep, type: D7.Brand, name: "Eight Sleep" }
+  - { ref: cs-nmn, type: D1.ChemicalSubstance, name: "NMN (nicotinamide mononucleotide)" }
+
+assertions:
+  # ---------------- structural ----------------
+  - { id: s-pub-ess, class: structural, relationship: PUBLISHES, from: ch-hl, to: w-ess, evidence: [e10], producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl-essentials-recut-nmncom-retelling" } }
+  - { id: s-ren-ess, class: structural, relationship: RENDITION_OF, from: src-ess-audio, to: w-ess, evidence: [e6], producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl-essentials-recut-nmncom-retelling" } }
+  - { id: s-pub-nmn, class: structural, relationship: PUBLISHES, from: ch-nmncom, to: w-nmn, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl-essentials-recut-nmncom-retelling" } }
+  - { id: s-ren-nmn, class: structural, relationship: RENDITION_OF, from: src-nmn, to: w-nmn, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl-essentials-recut-nmncom-retelling" } }
+  - { id: s-ren-ess-yt, class: structural, relationship: RENDITION_OF, from: src-ess-yt, to: w-ess, evidence: [yo1, yo2, yw1], note: "oEmbed title equals the re-cut's RSS title (e1); author Andrew Huberman; uploaded 2025-10-30T05:01:11-07:00, the RSS pubDate day of the re-cut (e2)", producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl-essentials-recut-nmncom-retelling" } }
+  - { id: s-occ-nmn, class: structural, relationship: OCCURS_IN, from: [ret-nmn-takes, ret-nmn-double], to: w-nmn, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl-essentials-recut-nmncom-retelling" } }
+
+  # ---------------- REPUBLISHES (predicate-only Assertion; BellLabs match, the publisher does not name the original) ----------------
+  - id: rp-recut
+    class: asserted-predicate
+    predicate: REPUBLISHES
+    asserter: "K.Agent bks-curation (BellLabs match)"
+    subject: w-ess
+    object: w-52
+    nodeProperty: { "w-ess.republicationKind": RECUT }
+    qualifiers: ["matchBasis:same title with 'Essentials:' prefix (e1 vs e9), same guest (e7), same channel, chapter topics in the same order; audio not compared", "linkBasis:BELLLABS_MATCH"]
+    evidence: [{ locator: e1, role: SUPPORTS }, { locator: e9, role: SUPPORTS }, { locator: e7, role: SUPPORTS }, { locator: yo1, role: SUPPORTS }, { locator: e5, role: CONTEXT }]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN, note: "recorded-time only" }
+    status: { initial: PROPOSED, note: "an audio fingerprint or transcript match would raise it to ACCEPTED" }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl-essentials-recut-nmncom-retelling" }
+
+  # ---------------- re-cut sponsors (own window, starting at the re-cut's publication) ----------------
+  - { id: sp-ess-agz, class: asserted, relationship: CONTENT_SPONSORED_BY, asserter: org-scicomm, subject: w-ess, object: b-agz, qualifiers: ["segment:SPONSOR_READ", "rendition:src-ess-audio"], evidence: [{ locator: e3a, role: SUPPORTS }, { locator: e8b, role: SUPPORTS }], validTime: { validFrom: "2025-10-30T08:00:00Z", validFromPrecision: INSTANT, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: OBSERVATION_ONLY, observedAt: "2026-10-08" }, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl-essentials-recut-nmncom-retelling" } }
+  - { id: sp-ess-david, class: asserted, relationship: CONTENT_SPONSORED_BY, asserter: org-scicomm, subject: w-ess, object: b-david, qualifiers: ["segment:SPONSOR_READ", "rendition:src-ess-audio"], evidence: [{ locator: e3b, role: SUPPORTS }, { locator: e8a, role: SUPPORTS }], validTime: { validFrom: "2025-10-30T08:00:00Z", validFromPrecision: INSTANT, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: OBSERVATION_ONLY, observedAt: "2026-10-08" }, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl-essentials-recut-nmncom-retelling" } }
+  - { id: sp-ess-eightsleep, class: asserted, relationship: CONTENT_SPONSORED_BY, asserter: org-scicomm, subject: w-ess, object: b-eightsleep, qualifiers: ["segment:SPONSOR_READ", "rendition:src-ess-audio"], evidence: [{ locator: e3c, role: SUPPORTS }, { locator: e8c, role: SUPPORTS }], validTime: { validFrom: "2025-10-30T08:00:00Z", validFromPrecision: INSTANT, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: OBSERVATION_ONLY, observedAt: "2026-10-08" }, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl-essentials-recut-nmncom-retelling" } }
+
+  # ---------------- appearances ----------------
+  - { id: a-app-ess-host, class: asserted, relationship: APPEARS_IN, asserter: org-scicomm, subject: p-huberman, object: w-ess, edgeProperties: { appearanceRole: HOST }, evidence: [{ locator: e7, role: SUPPORTS }], validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl-essentials-recut-nmncom-retelling" } }
+  - { id: a-app-ess-guest, class: asserted, relationship: APPEARS_IN, asserter: org-scicomm, subject: p-sinclair, object: w-ess, edgeProperties: { appearanceRole: GUEST }, qualifiers: ["credited-name:Dr. David Sinclair"], evidence: [{ locator: e7, role: SUPPORTS }], validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl-essentials-recut-nmncom-retelling" } }
+  - { id: a-app-nmn-author, class: asserted, relationship: APPEARS_IN, asserter: "D9 Channel ch-nmncom (byline)", subject: p-ciardha, object: w-nmn, edgeProperties: { appearanceRole: AUTHOR }, qualifiers: ["credited-name:ByVictor Ciardha"], evidence: [{ locator: n4, role: SUPPORTS }], validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }, producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl-essentials-recut-nmncom-retelling" } }
+
+  # ---------------- the original spans in the 2021 interview (located by this run in the web transcript) ----------------
+  - id: o7
+    class: claim-occurrence
+    occurrenceOf: "claim: David Sinclair takes NMN (same Claim as hl52-transcript-nmn-practice#o1, no amount)"
+    asserter: p-sinclair
+    speechAct: REPORTS_PRACTICE
+    basisKind: PERSONAL_EXPERIENCE
+    predicate: TAKES
+    subject: p-sinclair
+    object: cs-nmn
+    qualifiers: ["segment:EDITORIAL"]
+    container: w-52
+    evidence: [{ locator: l11, role: SUPPORTS }]
+    validTime: { validFrom: "2021-12-27T09:00:00Z", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl-essentials-recut-nmncom-retelling" }
+  - id: o8
+    class: claim-occurrence
+    occurrenceOf: "claim: taking NMN for about two weeks doubles blood NAD levels on average"
+    asserter: p-sinclair
+    speechAct: STATES
+    basisKind: INFERRED_FROM_MEASUREMENT
+    predicate: INCREASES_LEVEL
+    subject: cs-nmn
+    valueNumber: 2
+    unitCode: "fold"
+    qualifiers: ["measure:NAD in blood", "time:about two weeks", "aggregate:on average", "basis-note:unpublished clinical trials (l13)", "segment:EDITORIAL"]
+    container: w-52
+    evidence: [{ locator: l12, role: SUPPORTS }, { locator: l13, role: QUALIFIES }]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl-essentials-recut-nmncom-retelling" }
+  - { id: s-occ-52, class: structural, relationship: OCCURS_IN, from: [o7, o8], to: w-52, note: "the act happened in the 2021 interview; the re-cut carries it again (REPUBLISHES), it is not a new act", producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl-essentials-recut-nmncom-retelling" } }
+
+  # ---------------- the retelling's occurrences ----------------
+  - id: ret-nmn-takes
+    class: claim-occurrence
+    occurrenceOf: "claim of o7"
+    asserter: p-ciardha
+    speechAct: STATES
+    basisKind: CITED_FROM_PRIOR_WORK
+    predicate: TAKES
+    subject: p-sinclair
+    object: cs-nmn
+    qualifiers: ["retellingLinkBasis:EXPLICIT_CITATION (container level: n6 cites the Essentials YouTube video; no span or timestamp)", "retold-via:w-ess (the cited video is the re-cut; o7 OCCURS_IN w-52, which w-ess re-publishes)", "citationMetadata:MISMATCH (cited year 2023 vs upload 2025-10-30, yw1; cited title differs from the video title, yo1)"]
+    derivedFrom: [o7]     # kernel retelling convention (K M5: DERIVED_FROM with basisKind CITED_FROM_PRIOR_WORK)
+    container: w-nmn
+    evidence: [{ locator: n2, role: SUPPORTS }, { locator: n6, role: CONTEXT }, { locator: n5, role: CONTEXT }]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl-essentials-recut-nmncom-retelling" }
+  - id: ret-nmn-double
+    class: claim-occurrence
+    occurrenceOf: "claim of o8"
+    asserter: p-ciardha
+    speechAct: STATES
+    basisKind: CITED_FROM_PRIOR_WORK
+    predicate: INCREASES_LEVEL
+    subject: cs-nmn
+    valueNumber: 2
+    unitCode: "fold"
+    qualifiers: ["measure:NAD+ in blood", "time:about two weeks", "attributed-to:Sinclair ('He notes')", "retellingLinkBasis:EXPLICIT_CITATION (container level, n6)"]
+    derivedFrom: [o8]
+    container: w-nmn
+    evidence: [{ locator: n3, role: SUPPORTS }, { locator: n6, role: CONTEXT }]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: UNKNOWN }
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl-essentials-recut-nmncom-retelling" }
+
+  # ---------------- assessments ----------------
+  - id: rf-nmn
+    class: assessment
+    assessmentKind: RETELLING_FIDELITY
+    status: PROPOSED
+    methodVersion: "fixture-manual/v0"
+    about: "Claim of o7 / hl52-transcript-nmn-practice#o1"
+    derivedFrom: [ret-nmn-takes, o7, "hl52-transcript-nmn-practice#o1", "hl52-transcript-nmn-practice#o2"]
+    verdict: SUPPORTED_WITH_QUALIFICATION
+    facets: ["retelling=ret-nmn-takes", "original=o7", "matchedSpan=l11 (near-verbatim: 'takes a precursor to NAD+ called NMN'; span matched by BellLabs, the citation names only the video)", "linkBasis=EXPLICIT_CITATION (container level, n6)", "citationMetadataMismatch=year 2023 vs upload 2025-10-30 (yw1); title 'Huberman Lab Essentials: Dr. David Sinclair – The Science of Aging, Longevity, and Actionable Protocols' vs 'Essentials: The Biology of Slowing & Reversing Aging | Dr. David Sinclair' (yo1)", "lostQualificationKinds=INDIVIDUAL_VARIATION (o2 not retold)", "amountChanged=dropped (1 g/day of o1 not retold)", "speechActFrom=REPORTS_PRACTICE", "speechActTo=STATES (reported practice)"]
+    evidence: [{ locator: n2, role: SUPPORTS }, { locator: l11, role: SUPPORTS }, { locator: n6, role: SUPPORTS }, { locator: yo1, role: CONTEXT }, { locator: yw1, role: CONTEXT }, { locator: "hl52-transcript-nmn-practice/locators.yaml#l2", role: QUALIFIES }]
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl-essentials-recut-nmncom-retelling" }
+  - id: rf-double
+    class: assessment
+    assessmentKind: RETELLING_FIDELITY
+    status: PROPOSED
+    methodVersion: "fixture-manual/v0"
+    about: "Claim of o8"
+    derivedFrom: [ret-nmn-double, o8]
+    verdict: SUPPORTED_WITH_QUALIFICATION
+    facets: ["retelling=ret-nmn-double", "original=o8", "matchedSpan=l12", "lostQualificationKinds=BASIS (l13: 'not public information', unpublished trials), AGGREGATE ('on average')", "amountChanged=false (double)", "linkBasis=EXPLICIT_CITATION (container level, n6; span matched by BellLabs)"]
+    evidence: [{ locator: n3, role: SUPPORTS }, { locator: l12, role: SUPPORTS }, { locator: n6, role: SUPPORTS }, { locator: l13, role: QUALIFIES }]
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl-essentials-recut-nmncom-retelling" }
+  - id: ind-nmn
+    class: assessment
+    assessmentKind: OTHER            # interim; kernel request K-10 DISCOURSE_METRIC
+    assessmentSubkind: "D9.independence"
+    status: PROPOSED
+    methodVersion: "discourse-independence/v1 (03#CQ-CL-06)"
+    about: "Claim: David Sinclair takes NMN"
+    derivedFrom: ["hl52-transcript-nmn-practice#o1", o7, ret-nmn-takes, rp-recut]
+    score: 1
+    facets: ["independentAsserters=1 (David A. Sinclair, first-hand in w-52: o1, o7)", "echoes=2 (w-ess RECUT of w-52, predicate-only REPUBLISHES rp-recut; ret-nmn-takes DERIVED_FROM o7)", "containersCarrying=3 (w-52, w-ess, w-nmn)"]
+    producedBy: { missionId: "mission:ft-D9-fixtures", runId: "run:ft-D9-hl-essentials-recut-nmncom-retelling" }

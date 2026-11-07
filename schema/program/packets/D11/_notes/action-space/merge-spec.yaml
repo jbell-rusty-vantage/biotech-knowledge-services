@@ -1,0 +1,799 @@
+# Cross-packet merge specification for tooling/action-space.yaml (packet D11, agent A8, 2026-10-08).
+#
+# Read by _notes/action-space/build-action-space.mjs together with:
+#   - every packet's 08-sources-and-tools.md (the 12-column scored tables; K, D1-D13 from their worktrees),
+#   - every packet's _notes/tool-log.md (lines matching `match` count as exercise evidence),
+#   - every packet's 05-relationship-register.yaml (populatedBy -> questions) and 02-questions.md (value, sources column),
+#   - D11's own packet-local registry _notes/action-space/d11-local-registry.yaml (D11's 59 scored entries, gaps G1-G10).
+#
+# Judgment lives here, mechanics live in the script. Every editorial decision (which local ids are the same tool, which
+# readiness wins when packets disagree, which custom tooling clusters a gap) is a line in this file with its reason.
+#
+# rules: applied in order to every packet-local row id (prefix tool:/src:/job:/agent:/curation: stripped, star removed);
+#   first match wins. `when` (optional, case-insensitive regex) must match the row's full text. `packets` restricts a rule.
+#   A row id not matched by any rule is a build error (the script refuses to guess).
+# entries: canonical entries that are not in the D11-local registry. D11-local ids are canonical by default (they are
+#   already the toolId / captureMethod prefix vocabulary of D11's CaptureAttempt and fixtures).
+# match: case-insensitive regex per canonical id; used on tool-log lines (exercise evidence) and on the `sources`
+#   column of 02-questions.md (which questions need the tool). Canonical ids and alias local ids also match as whole
+#   words (case-sensitive) in the sources column.
+# overrides: readiness adjudications by D11 where sibling evidence revises a score; each carries its reason.
+# gaps: the custom tooling clusters (G1-G10 from the D11-local registry, G11+ from the other packets' "custom tooling"
+#   sections). `entries` are canonical ids; `blocks` adds question ids named in a packet's text.
+
+version: 1
+
+rules:
+  # ---------------------------------------------------------------- literature
+  - { to: ncbi-eutils-pubmed, ids: [ncbi-eutils, pubmed-eutils, pubmed, pubmed-records, pmc-jats, cochrane-via-pubmed, ncbi-taxonomy-eutils] }
+  - { to: europepmc-fulltext-jats, ids: [europepmc-rest, europe-pmc-rest, europepmc, europepmc-fulltext], when: 'fullText|JATS' }
+  - { to: europepmc-fulltext-jats, ids: [jats-funding-group, jats-competing-interests] }
+  - { to: europepmc-rest, ids: [europepmc-rest, europe-pmc-rest, europepmc, europepmc-search] }
+  - { to: europepmc-annotations, ids: [europepmc-annotations] }
+  - { to: pmc-idconv, ids: [pmc-idconv] }
+  - { to: openalex, ids: [openalex] }
+  - { to: crossref-rest, ids: [crossref, crossref-api, crossref-rest] }
+  - { to: crossref-labs, ids: [crossref-labs] }
+  - { to: crossref-event-data, ids: [crossref-event-data] }
+  - { to: biorxiv-api, ids: [medrxiv-api] }
+  - { to: mcp-biorxiv, ids: [biorxiv-mcp] }
+  - { to: mcp-pubmed, ids: [pubmed-mcp] }
+  - { to: mcp-clinicaltrials, ids: [ctgov-mcp, clinicaltrials-mcp] }
+  - { to: firecrawl-research-index, ids: [firecrawl-research-index, firecrawl-research-mcp] }
+  - { to: exa-mcp, ids: [exa] }
+  - { to: ncbi-bookshelf-livertox, ids: [livertox, ncbi-litarch, ncbi-bookshelf-html, ncbi-bookshelf-best] }
+  - { to: ncbi-bioc-pmcoa, ids: [ncbi-bioc] }
+  - { to: ncbi-web-pages, ids: [pubmed-web, pmc-html-scrape] }
+  - { to: nlm-mesh-rdf, ids: [mesh-lookup] }
+  - { to: publisher-pages, ids: [publisher-supplement-fetch] }
+  - { to: altmetric, ids: [altmetric-api] }
+  - { to: ai-answer-engines, ids: [ai-answer-engines] }
+  # ---------------------------------------------------------------- trials
+  - { to: ctgov-v2-api, ids: [ctgov-v2, ctgov-api-v2, clinicaltrials-v2, clinicaltrials-gov-v2] }
+  - { to: ctgov-record-history, ids: [ctgov-history, clinicaltrials-gov-history] }
+  - { to: who-ictrp, ids: [ictrp] }
+  - { to: isrctn, ids: [isrctn, isrctn-web] }
+  - { to: prospero, ids: [prospero] }
+  - { to: mpd-itp, ids: [mpd-itp] }
+  # ---------------------------------------------------------------- substances, biology
+  - { to: pubchem-pug-rest, ids: [pubchem-pug-rest, pubchem-rest] }
+  - { to: repo-mcp-servers, ids: [repo-mcp-servers, pubchem-mcp, edgartools-mcp] }
+  - { to: fda-gsrs, ids: [gsrs-api] }
+  - { to: cas-common-chemistry, ids: [cas-common-chemistry] }
+  - { to: ebi-ols4-chebi, ids: [chebi-ols, ols4] }
+  - { to: uniprot-rest, ids: [uniprot-rest] }
+  - { to: quickgo, ids: [quickgo] }
+  - { to: chembl-rest, ids: [chembl-rest] }
+  - { to: reactome-content-service, ids: [reactome-content-service] }
+  - { to: kegg-rest, ids: [kegg-rest] }
+  - { to: open-targets, ids: [opentargets-graphql, opentargets-docs] }
+  - { to: hagr, ids: [hagr-genage, hagr-drugage-bulk] }
+  - { to: open-genes, ids: [open-genes-api] }
+  - { to: nih-dsld, ids: [dsld-api, nih-dsld-api] }
+  - { to: health-canada-lnhpd, ids: [lnhpd-api, hc-lnhpd-api] }
+  - { to: health-canada-nhpid, ids: [hc-nhpid, hc-nhp-monographs] }
+  - { to: nih-ods-api, ids: [nih-ods-factsheets, ods-factsheets] }
+  - { to: tga-safety-updates, ids: [tga-safety-updates] }
+  - { to: atcc-catalog, ids: [atcc-catalog] }
+  - { to: supplier-pages, ids: [supplier-pages] }
+  - { to: licensed-out-sources, ids: [independent-testers, licensed-interaction-dbs, nccdb-licensed] }
+  # ---------------------------------------------------------------- food
+  - { to: usda-fdc, ids: [usda-fdc-api] }
+  - { to: usda-fdc-portal, ids: [fdc-portal-data] }
+  - { to: open-food-facts, ids: [openfoodfacts-api, open-food-facts-api] }
+  - { to: phenol-explorer, ids: [phenol-explorer-scrape] }
+  - { to: foodon, ids: [foodon-ontology] }
+  - { to: efsa-food-composition, ids: [efsa-food-composition] }
+  - { to: fsis-recall-api, ids: [fsis-recall-api] }
+  - { to: restaurant-menu-pages, ids: [restaurant-menu-pages, mcdonalds-menu-page] }
+  # ---------------------------------------------------------------- regulation, quality, IP
+  - { to: openfda-caers, ids: [openfda-caers] }
+  - { to: openfda-faers, ids: [openfda-faers] }
+  - { to: openfda-drug-label, ids: [openfda-label] }
+  - { to: openfda-food-enforcement, ids: [openfda-food-enforcement, openfda-enforcement] }
+  - { to: openfda-drugsfda, ids: [openfda-drugsfda] }
+  - { to: openfda-device, ids: [openfda-device] }
+  - { to: dailymed-spl, ids: [dailymed-spl-history, us-drug-labels] }
+  - { to: regulations-gov-api, ids: [regulations-gov-docket] }
+  - { to: fda-web-pages, ids: [fda-web-pages, fda-warning-letters, fda-recall-outbreak-pages, fda-safety-communications, fda-media-pdf, fda-bt-approvals-pdf] }
+  - { to: fda-gras-inventory, ids: [fda-gras-inventory] }
+  - { to: fda-clia-db, ids: [fda-clia-db] }
+  - { to: fda-data-dashboard, ids: [fda-data-dashboard] }
+  - { to: federal-register-api, ids: [federal-register-api] }
+  - { to: ecfr-versioner, ids: [ecfr-api, ecfr-versioner] }
+  - { to: eurlex, ids: [eurlex-html] }
+  - { to: efsa-journal-wiley, ids: [efsa-journal-wiley] }
+  - { to: uspto-tsdr, ids: [uspto-tsdr] }
+  - { to: patentsview, ids: [patentsview] }
+  - { to: google-patents, ids: [google-patents] }
+  - { to: cafc-opinions, ids: [cafc-opinions] }
+  - { to: certification-databases, ids: [nsf-listings, informed-sport, nsf-certified-for-sport] }
+  - { to: coa-pdf, ids: [coa-pdf-capture] }
+  - { to: company-report-pdf, ids: [company-report-pdf] }
+  - { to: ftc-pages, ids: [ftc-warning-letter] }
+  # ---------------------------------------------------------------- organizations, people, money
+  - { to: sec-edgar, ids: [sec-edgar, sec-edgar-http, sec-edgar-archives, sec-edgar-submissions, edgar-submissions, sec-def14a, sec-form-d, sec-form-4, sec-schedule-13d-13g, sec-10k, sec-10k-exhibit-21] }
+  - { to: gleif-lei, ids: [gleif-api, gleif-level2] }
+  - { to: nppes-npi, ids: [npi-mcp, npi-registry-mcp, npi-registry-other-names] }
+  - { to: companies-house, ids: [companies-house-web, companies-house-psc, companies-house-officers] }
+  - { to: nih-reporter, ids: [nih-reporter, nih-reporter-api] }
+  - { to: orcid, ids: [orcid-api, orcid-employments, orcid-fundings] }
+  - { to: cms-open-payments, ids: [cms-open-payments, cms-open-payments-api] }
+  - { to: propublica-dollars-for-profs, ids: [propublica-nih-fcoi] }
+  - { to: funder-award-pages, ids: [funder-award-list] }
+  - { to: self-disclosure-pages, ids: [self-disclosure-page] }
+  - { to: in-container-disclosures, ids: [in-container-disclosure] }
+  - { to: product-label-contact, ids: [product-label-contact] }
+  - { to: brand-pages, ids: [brand-site-legal-page] }
+  - { to: company-press-releases, ids: [company-press-release] }
+  - { to: trade-press, ids: [trade-press] }
+  - { to: forecast-markets, ids: [forecast-markets] }
+  - { to: rejuvenation-roadmap, ids: [rejuvenation-roadmap] }
+  # ---------------------------------------------------------------- products and commerce
+  - { to: shopify-storefront-json, ids: [shopify-storefront-json] }
+  - { to: amazon-pages, ids: [amazon-detail-page] }
+  - { to: amazon-pa-api, ids: [amazon-pa-api] }
+  - { to: keepa-api, ids: [keepa-api] }
+  - { to: camelcamelcamel, ids: [camelcamelcamel] }
+  - { to: iherb-pages, ids: [iherb-product-page] }
+  - { to: retailer-partner-apis, ids: [retailer-partner-apis] }
+  - { to: impact-affiliate-api, ids: [impact-affiliate-api] }
+  - { to: gs1-verified, ids: [gs1-verified] }
+  - { to: economist-bigmac-data, ids: [economist-bigmac-data] }
+  - { to: sponsor-affiliate-pages, ids: [sponsor-and-affiliate-pages] }
+  # ---------------------------------------------------------------- measurement and devices
+  - { to: loinc, ids: [nlm-clinicaltables-loinc, loinc-org] }
+  - { to: lab-test-menus, ids: [labcorp-test-menu, quest-test-directory] }
+  - { to: consumer-test-vendor-pages, ids: [vendor-bioage-pages, vendor-dtc-test-pages] }
+  - { to: ngsp, ids: [ngsp] }
+  - { to: wearable-api-docs, ids: [oura-openapi, whoop-api-docs, apple-developer-docs-json] }
+  - { to: wearable-vendor-changelogs, ids: [wearable-vendor-changelogs] }
+  - { to: icd10cm-pcs, ids: [icd10-mcp] }
+  # ---------------------------------------------------------------- media and discourse
+  - { to: podcast-rss, ids: [podcast-rss] }
+  - { to: itunes-search-api, ids: [itunes-search-api] }
+  - { to: substack-api, ids: [substack-api] }
+  - { to: youtube-oembed, ids: [youtube-oembed] }
+  - { to: youtube-pages, ids: [video-page-captions] }
+  - { to: publisher-episode-pages, ids: [publisher-episode-page] }
+  - { to: community-forums, ids: [community-forum, community-forums, discourse-json] }
+  - { to: reddit, ids: [reddit-json, community-reddit] }
+  - { to: protocol-pages, ids: [protocol-pages] }
+  - { to: telehealth-clinic-pages, ids: [telehealth-clinic-pages] }
+  - { to: manufacturer-articles, ids: [manufacturer-articles] }
+  # ---------------------------------------------------------------- general web capture and identity services
+  - { to: tavily-cli, ids: [tavily-cli, tavily-search, tavily-extract] }
+  - { to: firecrawl-cli, ids: [firecrawl-cli, firecrawl-scrape, firecrawl-search, firecrawl-map, firecrawl-search-mcp] }
+  - { to: firecrawl-change-tracking, ids: [firecrawl-change-tracking] }
+  - { to: internet-archive-wayback, ids: [wayback-archive, wayback-cdx, web-archive] }
+  - { to: http-capture, ids: [http-capture] }
+  - { to: browser-fallback, ids: [browser-fallback] }
+  - { to: wikidata, ids: [wikidata-api] }
+  - { to: bioregistry, ids: [bioregistry-api] }
+  - { to: nanopub-registry, ids: [nanopub-registry] }
+  # ---------------------------------------------------------------- BellLabs internal (writers, jobs, local parsers)
+  - { to: kg-executor, ids: [kg-executor, kg-ops-source-uid, biotech-knowledge-intent-v1] }
+  - { to: bks-intent-contract, ids: [bks-intent-contract, intent-validator, intent-contract-validator] }
+  - { to: local-contracts, ids: [local-contracts] }
+  - { to: ks-verification, ids: [ks-verification, verification-v1] }
+  - { to: mission-control, ids: [mission-control, mission-control-evidence-mission] }
+  - { to: bks-entity-link-projection, ids: [entity-link-projection] }
+  - { to: bks-entity-resolution, ids: [entity-link, entity-resolution-agent] }
+  - { to: bks-curation-agent, ids: [bks-curation, ks-curation, curation-agent] }
+  - { to: d2-hallmark-curation, ids: [bellabs-hallmark-map] }
+  - { to: d13-frontier-curator, ids: [d13-frontier-curator] }
+  - { to: d13-event-linker, ids: [d13-event-linker] }
+  - { to: bks-projection-job, ids: [bks-projection-job, ks-projection, d2.affects-mechanism-v1, d2.influences-outcome-v1] }
+  - { to: bks-chunker, ids: [bks-chunker] }
+  - { to: bks-claim-extraction, ids: [bks-claim-extraction] }
+  - { to: bks-comparison-engine, ids: [bks-comparison-engine] }
+  - { to: bks-criteria-registry, ids: [bks-criteria-registry] }
+  - { to: bks-report-publish, ids: [bks-report-publish] }
+  - { to: neo4j-gds, ids: [neo4j-gds] }
+  - { to: nova-classifier, ids: [nova-classifier] }
+  - { to: poppler-pdftotext, ids: [pdftotext, pdf-text-extract] }
+  - { to: poppler-pdftoppm, ids: [pdf-page-render] }
+  - { to: html-text-projection, ids: [h2t-projection, h2t-v1, html-text-extract] }
+  - { to: locator-builder-verifier, ids: [locator-builder, quote-verifier, fixture-locator-verifier, fixture-builder-v1] }
+
+# Canonical entries beyond the D11-local registry. class: external (a provider's API, data or pages, or a third-party
+# tool) | internal (BellLabs-built writer, job or local parser; readiness uses K's internal scale 0 not built,
+# 1 designed, 2 partially built, 3 in use). provider/auth/rateLimits/gap fall back to the best-scored packet row.
+entries:
+  - { id: crossref-labs, class: external, kind: [verify], access: [api], provider: "Crossref Labs (api.labs.crossref.org; unstable keys)" }
+  - { id: ncbi-bioc-pmcoa, class: external, kind: [fetch, parse], access: [api], provider: "NCBI BioNLP BioC PMC OA API" }
+  - { id: ncbi-web-pages, class: external, kind: [fetch], access: [scrape], provider: "NCBI web UIs (pubmed.ncbi.nlm.nih.gov, pmc.ncbi.nlm.nih.gov article HTML; challenge / proof-of-work pages)" }
+  - { id: nlm-mesh-rdf, class: external, kind: [resolve], access: [api], provider: "NLM MeSH RDF lookup (id.nlm.nih.gov)" }
+  - { id: ai-answer-engines, class: external, kind: [search], access: [scrape], provider: "AI answer engines (Consensus, Elicit result pages)" }
+  - { id: prospero, class: external, kind: [fetch], access: [scrape], provider: "PROSPERO systematic-review register" }
+  - { id: mpd-itp, class: external, kind: [fetch], access: [scrape], provider: "Mouse Phenome Database, NIA Interventions Testing Program" }
+  - { id: repo-mcp-servers, class: external, kind: [search, fetch], access: [mcp], provider: "repo .mcp.json servers (pubmed, pubchem, clinicaltrialsgov, edgartools) — not loaded in the coordinator sessions" }
+  - { id: quickgo, class: external, kind: [resolve], access: [api], provider: "EMBL-EBI QuickGO" }
+  - { id: chembl-rest, class: external, kind: [resolve, fetch], access: [api], provider: "EMBL-EBI ChEMBL REST" }
+  - { id: reactome-content-service, class: external, kind: [fetch, resolve], access: [api], provider: "Reactome ContentService" }
+  - { id: kegg-rest, class: external, kind: [fetch], access: [api], provider: "Kanehisa Laboratories KEGG REST (academic use; commercial licence)" }
+  - { id: hagr, class: external, kind: [fetch], access: [scrape, bulk], provider: "Human Ageing Genomic Resources (GenAge pages, DrugAge bulk zip)" }
+  - { id: open-genes, class: external, kind: [fetch], access: [api], provider: "Open Genes API" }
+  - { id: health-canada-nhpid, class: external, kind: [fetch], access: [api], provider: "Health Canada Natural Health Products Ingredients Database and monographs" }
+  - { id: tga-safety-updates, class: external, kind: [fetch], access: [scrape], provider: "Australian TGA Medicine Safety Updates" }
+  - { id: atcc-catalog, class: external, kind: [fetch], access: [scrape], provider: "ATCC product catalog" }
+  - { id: supplier-pages, class: external, kind: [fetch], access: [scrape], provider: "ingredient suppliers' own pages" }
+  - { id: usda-fdc-portal, class: external, kind: [fetch], access: [api], provider: "FoodData Central web-app JSON (fdc.nal.usda.gov/portal-data; undocumented)" }
+  - { id: open-food-facts, class: external, kind: [search, fetch], access: [api], provider: "Open Food Facts API v2" }
+  - { id: phenol-explorer, class: external, kind: [fetch, parse], access: [scrape], provider: "Phenol-Explorer 3.6 report pages" }
+  - { id: foodon, class: external, kind: [resolve], access: [bulk], provider: "FoodOn ontology (OBO)" }
+  - { id: efsa-food-composition, class: external, kind: [fetch], access: [bulk], provider: "EFSA food consumption / composition datasets" }
+  - { id: fsis-recall-api, class: external, kind: [fetch], access: [api], provider: "USDA FSIS recall API" }
+  - { id: restaurant-menu-pages, class: external, kind: [fetch], access: [scrape], provider: "restaurant chain menu item pages (mcdonalds.com, wendys.com, ...)" }
+  - { id: openfda-faers, class: external, kind: [search, fetch], access: [api], provider: "FDA openFDA drug/event (FAERS)" }
+  - { id: openfda-drugsfda, class: external, kind: [search, fetch], access: [api], provider: "FDA openFDA drug/drugsfda (Drugs@FDA)" }
+  - { id: openfda-device, class: external, kind: [search, fetch], access: [api], provider: "FDA openFDA device endpoints (recall, 510k, classification)" }
+  - { id: fda-gras-inventory, class: external, kind: [fetch], access: [scrape], provider: "FDA HFP GRAS Notice Inventory (HTML per notice, PDF letters)" }
+  - { id: fda-clia-db, class: external, kind: [search, fetch], access: [scrape], provider: "FDA CLIA test-complexity database (form POST)" }
+  - { id: federal-register-api, class: external, kind: [search, fetch], access: [api], provider: "Federal Register API" }
+  - { id: ecfr-versioner, class: external, kind: [fetch], access: [api], provider: "eCFR versioner API (GPO / OFR)" }
+  - { id: eurlex, class: external, kind: [fetch], access: [scrape], provider: "EUR-Lex (Publications Office of the EU), HTML by CELEX" }
+  - { id: patentsview, class: external, kind: [search, fetch], access: [api], provider: "USPTO PatentsView" }
+  - { id: google-patents, class: external, kind: [fetch], access: [scrape], provider: "Google Patents" }
+  - { id: cafc-opinions, class: external, kind: [fetch], access: [scrape], provider: "U.S. Court of Appeals for the Federal Circuit opinions (PDF)" }
+  - { id: coa-pdf, class: external, kind: [fetch, parse], access: [scrape], provider: "certificates of analysis hosted by brands and marketplaces (PDF)" }
+  - { id: company-report-pdf, class: external, kind: [fetch, parse], access: [scrape], provider: "brand-published market-surveillance reports (PDF)" }
+  - { id: ftc-pages, class: external, kind: [fetch], access: [scrape], provider: "US Federal Trade Commission letters and press releases (PDF/HTML)" }
+  - { id: companies-house, class: external, kind: [search, fetch], access: [scrape, api], provider: "UK Companies House (public web; API needs key)" }
+  - { id: nih-reporter, class: external, kind: [search, fetch], access: [api], provider: "NIH RePORTER v2" }
+  - { id: orcid, class: external, kind: [resolve, fetch], access: [api], provider: "ORCID public API v3.0" }
+  - { id: cms-open-payments, class: external, kind: [search, fetch], access: [api], provider: "CMS Open Payments datastore" }
+  - { id: propublica-dollars-for-profs, class: external, kind: [fetch], access: [scrape], provider: "ProPublica Dollars for Profs" }
+  - { id: funder-award-pages, class: external, kind: [fetch], access: [scrape], provider: "funders' own award releases (ARPA-H, Hevolution, ...)" }
+  - { id: self-disclosure-pages, class: external, kind: [fetch], access: [scrape], provider: "self-published disclosure and affiliation pages of people and labs" }
+  - { id: in-container-disclosures, class: external, kind: [fetch, parse], access: [scrape], provider: "disclosures inside the content container (article, episode, video)" }
+  - { id: product-label-contact, class: external, kind: [parse], access: [scrape], provider: "product label 'distributed by / manufactured for' blocks (via D6 label capture)" }
+  - { id: company-press-releases, class: external, kind: [fetch], access: [scrape], provider: "sponsor IR pages and newswires" }
+  - { id: trade-press, class: external, kind: [fetch], access: [scrape], provider: "trade press (BioPharma Dive, STAT, Endpoints, Fierce)" }
+  - { id: forecast-markets, class: external, kind: [fetch], access: [scrape, api], provider: "forecast markets (Metaculus, Manifold, ...)" }
+  - { id: rejuvenation-roadmap, class: external, kind: [fetch], access: [scrape], provider: "Lifespan.io Rejuvenation Roadmap (JS-rendered)" }
+  - { id: shopify-storefront-json, class: external, kind: [fetch], access: [api], provider: "Shopify storefront public JSON (/products.json, /products/<handle>.js)" }
+  - { id: amazon-pages, class: external, kind: [fetch], access: [scrape], provider: "Amazon.com detail pages" }
+  - { id: amazon-pa-api, class: external, kind: [search, fetch], access: [api], provider: "Amazon Product Advertising API (account required)" }
+  - { id: keepa-api, class: external, kind: [fetch], access: [api], provider: "Keepa (Amazon price history; key required)" }
+  - { id: camelcamelcamel, class: external, kind: [fetch], access: [scrape], provider: "camelcamelcamel price tracker" }
+  - { id: iherb-pages, class: external, kind: [fetch], access: [scrape], provider: "iHerb product pages" }
+  - { id: retailer-partner-apis, class: external, kind: [fetch], access: [api], provider: "retailer partner APIs (Walmart, iHerb; partnership required)" }
+  - { id: impact-affiliate-api, class: external, kind: [fetch], access: [api], provider: "impact.com affiliate API" }
+  - { id: gs1-verified, class: external, kind: [resolve], access: [api], provider: "GS1 Verified by GS1 / GEPIR (membership required)" }
+  - { id: economist-bigmac-data, class: external, kind: [fetch], access: [bulk], provider: "The Economist big-mac-data (GitHub CSV, CC BY)" }
+  - { id: sponsor-affiliate-pages, class: external, kind: [fetch], access: [scrape], provider: "podcast sponsor pages and affiliate-tagged URLs" }
+  - { id: lab-test-menus, class: external, kind: [fetch], access: [scrape], provider: "laboratory test menus and sample reports (Labcorp, Quest)" }
+  - { id: consumer-test-vendor-pages, class: external, kind: [fetch], access: [scrape], provider: "consumer test vendors (biological-age clocks, DTC panels)" }
+  - { id: ngsp, class: external, kind: [fetch], access: [scrape], provider: "NGSP (HbA1c interference tables, certified methods)" }
+  - { id: wearable-api-docs, class: external, kind: [fetch], access: [api], provider: "wearable vendor API documentation (Oura OpenAPI, WHOOP developer API, Apple developer docs JSON)" }
+  - { id: wearable-vendor-changelogs, class: external, kind: [fetch], access: [scrape], provider: "wearable vendor changelogs and community posts" }
+  - { id: podcast-rss, class: external, kind: [fetch], access: [api], provider: "podcast RSS feeds (show host, e.g. Megaphone)" }
+  - { id: itunes-search-api, class: external, kind: [search, resolve], access: [api], provider: "Apple iTunes Search / Lookup API" }
+  - { id: substack-api, class: external, kind: [fetch], access: [api], provider: "Substack public post API" }
+  - { id: youtube-oembed, class: external, kind: [resolve], access: [api], provider: "YouTube oEmbed" }
+  - { id: youtube-pages, class: external, kind: [fetch], access: [scrape], provider: "YouTube watch pages and caption tracks" }
+  - { id: publisher-episode-pages, class: external, kind: [fetch], access: [scrape], provider: "show publishers' episode pages (show notes, transcripts)" }
+  - { id: community-forums, class: external, kind: [fetch], access: [scrape, api], provider: "community forums (Discourse JSON, IP.Board pages: rapamycin.news, LongeCity)" }
+  - { id: protocol-pages, class: external, kind: [fetch], access: [scrape], provider: "published protocol pages (podcasters, Blueprint, clinics)" }
+  - { id: telehealth-clinic-pages, class: external, kind: [fetch], access: [scrape], provider: "telehealth clinic pages (AgelessRx and peers)" }
+  - { id: manufacturer-articles, class: external, kind: [fetch], access: [scrape], provider: "ingredient manufacturer articles" }
+  - { id: firecrawl-change-tracking, class: external, kind: [verify], access: [api], provider: "Firecrawl changeTracking format / monitor" }
+  - { id: internet-archive-wayback, class: external, kind: [search, fetch], access: [api], provider: "Internet Archive Wayback Machine (availability API, CDX, id_ raw replay)" }
+  - { id: http-capture, class: external, kind: [fetch], access: [api, scrape], provider: "plain HTTP capture with curl (raw bytes; browser User-Agent where needed)" }
+  - { id: browser-fallback, class: external, kind: [fetch], access: [manual], provider: "interactive browser (claude.ai built-in browser, Playwright, agent-browser)" }
+  - { id: wikidata, class: external, kind: [resolve], access: [api], provider: "Wikidata (Special:EntityData, wbsearchentities, revisions)" }
+  - { id: bioregistry, class: external, kind: [resolve], access: [api], provider: "Bioregistry API" }
+  - { id: nanopub-registry, class: external, kind: [fetch], access: [api], provider: "Knowledge Pixels nanopub registry" }
+  # internal
+  - { id: kg-executor, class: internal, kind: [compute], access: [internal], provider: "BellLabs biotech-knowledge-services intent executor (kg-ops plan/apply)" }
+  - { id: bks-intent-contract, class: internal, kind: [verify], access: [internal], provider: "@bks/contracts biotech-knowledge-intent.v1 (zod IngestionIntent) and validators" }
+  - { id: local-contracts, class: internal, kind: [fetch], access: [internal], provider: "local repositories (verification.v1 contracts, ADRs)" }
+  - { id: ks-verification, class: internal, kind: [verify], access: [internal], provider: "ai-engineer-knowledge-services verification.v1" }
+  - { id: mission-control, class: internal, kind: [compute], access: [internal], provider: "BellLabs Mission Control (runs, evidence missions)" }
+  - { id: bks-entity-link-projection, class: internal, kind: [compute], access: [internal], provider: "BellLabs entity-linking projection job (derived MENTIONS)" }
+  - { id: bks-entity-resolution, class: internal, kind: [resolve], access: [internal], provider: "BellLabs entity-resolution agent (RESOLUTION / EQUIVALENCE assessments)" }
+  - { id: bks-curation-agent, class: internal, kind: [parse], access: [internal], provider: "BellLabs curation agents writing through intents (D3, D4, D5, D9)" }
+  - { id: d2-hallmark-curation, class: internal, kind: [resolve], access: [internal], provider: "BellLabs D2 hallmark-map curation (BELLLABS_CURATED)" }
+  - { id: d13-frontier-curator, class: internal, kind: [resolve], access: [internal], provider: "BellLabs D13 frontier-curator agent (frontier-classification/v1)" }
+  - { id: d13-event-linker, class: internal, kind: [compute], access: [internal], provider: "BellLabs D13 event-linker agent" }
+  - { id: bks-projection-job, class: internal, kind: [compute], access: [internal], provider: "BellLabs executor PROJECTION Activity (method-versioned jobs, e.g. d2.affects-mechanism-v1, use-constraint-key/v2)" }
+  - { id: bks-chunker, class: internal, kind: [parse], access: [internal], provider: "BellLabs chunker (DocumentTextVersion -> Chunk)" }
+  - { id: bks-claim-extraction, class: internal, kind: [parse], access: [internal], provider: "BellLabs claim extraction through the executor" }
+  - { id: bks-comparison-engine, class: internal, kind: [compute], access: [internal], provider: "BellLabs comparison engine (DecisionCriterion rules)" }
+  - { id: bks-criteria-registry, class: internal, kind: [compute], access: [internal], provider: "BellLabs DecisionCriterion registry" }
+  - { id: bks-report-publish, class: internal, kind: [compute], access: [internal], provider: "BellLabs report publication (Report + ReportItems)" }
+  - { id: neo4j-gds, class: internal, kind: [compute], access: [internal], provider: "Neo4j Graph Data Science (Cypher procedures on the BellLabs graph)" }
+  - { id: nova-classifier, class: internal, kind: [compute], access: [internal], provider: "BellLabs rule nova-markers/v1" }
+  - { id: poppler-pdftotext, class: internal, kind: [parse], access: [internal], provider: "poppler pdftotext 4.00 (local)" }
+  - { id: poppler-pdftoppm, class: internal, kind: [parse], access: [internal], provider: "poppler pdftoppm (local page render)" }
+  - { id: html-text-projection, class: internal, kind: [parse], access: [internal], provider: "HTML -> visible-text projection scripts (h2t v1/v2, edgar-text/v5)" }
+  - { id: locator-builder-verifier, class: internal, kind: [verify], access: [internal], provider: "locator builders and re-selection verifiers (fixture prototypes in D4, D7, D8, D13)" }
+
+# Match patterns (case-insensitive JS regex) for tool-log lines and the 02 sources column.
+match:
+  ncbi-eutils-pubmed: 'E-?utilities|\beutils|efetch|esearch|esummary|\bPubMed\b(?!\s*(MCP|connector))|MEDLINE|PMC JATS|pmc-jats|Cochrane|NCBI Taxonomy'
+  pmc-idconv: 'idconv|ID Converter'
+  europepmc-rest: 'Europe ?PMC(?!\s*(annotation|full))|europepmc[^ |]*search|resultType=core|grantsList|authorIdList'
+  europepmc-fulltext-jats: 'fullTextXML|Europe ?PMC[^|]{0,40}(JATS|full ?text)|\bJATS\b'
+  europepmc-annotations: 'annotationsByArticleIds|Europe ?PMC annotations?|Annotations API'
+  openalex: 'OpenAlex'
+  crossref-rest: 'Crossref(?!\s*(Labs|Event))|api\.crossref\.org'
+  crossref-labs: 'Crossref Labs|api\.labs\.crossref'
+  crossref-event-data: 'Event Data'
+  unpaywall: 'Unpaywall'
+  semantic-scholar: 'Semantic Scholar|semanticscholar'
+  biorxiv-api: 'api\.biorxiv\.org|(bio|med)Rxiv API|medrxiv-api|details/(bio|med)rxiv|pubs/(bio|med)rxiv|\bmedRxiv\b'
+  mcp-biorxiv: 'bioRxiv (MCP|connector)|get_preprint|biorxiv-mcp'
+  mcp-pubmed: 'PubMed (MCP|connector)|mcp__claude_ai_PubMed|pubmed-mcp|get_article_metadata|search_articles'
+  mcp-clinicaltrials: 'Clinical ?Trials(\.gov)? (MCP|connector)|mcp__claude_ai_Clinical|get_trial_details|ctgov-mcp|clinicaltrials-mcp'
+  firecrawl-research-index: 'firecrawl_research|research[_ ]index|search_papers|inspect_paper|firecrawl-research'
+  exa-mcp: '\bExa\b|web_search_exa'
+  ncbi-bookshelf-livertox: 'LiverTox|Bookshelf|litarch|\bNBK[0-9]'
+  ncbi-bioc-pmcoa: '\bBioC\b'
+  ncbi-web-pages: 'pubmed\.ncbi\.nlm\.nih\.gov|pmc\.ncbi\.nlm\.nih\.gov|PubMed web|proof-of-work|cloudpmc'
+  nlm-mesh-rdf: 'MeSH RDF|id\.nlm\.nih\.gov|mesh-lookup'
+  publisher-pages: 'publisher (page|CDN|site)|journals\.physiology|Atypon|supplementary (file|PDF)s?'
+  altmetric: 'Altmetric'
+  ai-answer-engines: '\bConsensus\b|\bElicit\b'
+  ctgov-v2-api: 'api/v2/studies|ClinicalTrials\.gov( API)? v2|ctgov-v2|ctgov-api-v2|CT\.?gov v2|ClinicalTrials\.gov|\bCTG\b'
+  ctgov-record-history: 'history=true|api/int|record history|ctgov-history|clinicaltrials-gov-history|registry history'
+  who-ictrp: 'ICTRP'
+  eu-ctis-public: '\bCTIS\b|EU CTR|EudraCT|clinicaltrialsregister'
+  isrctn: 'ISRCTN'
+  prospero: 'PROSPERO'
+  mpd-itp: 'Mouse Phenome|\bITP\b|phenome\.jax'
+  pubchem-pug-rest: 'PubChem|\bPUG\b'
+  repo-mcp-servers: '\.mcp\.json|edgartools'
+  fda-gsrs: 'GSRS|precision\.fda|gsrs\.ncats'
+  cas-common-chemistry: 'Common Chemistry|commonchemistry'
+  ebi-ols4-chebi: '\bOLS4?\b|ChEBI|ebi\.ac\.uk/ols'
+  uniprot-rest: 'UniProt'
+  quickgo: 'QuickGO'
+  chembl-rest: 'ChEMBL'
+  reactome-content-service: 'Reactome'
+  kegg-rest: 'KEGG'
+  open-targets: 'Open ?Targets|opentargets'
+  hagr: 'GenAge|DrugAge|\bHAGR\b|genomics\.senescence'
+  open-genes: 'Open Genes|open-genes'
+  nlm-rxnav: 'RxNav|RxNorm|rxcui'
+  nih-dsld: '\bDSLD\b'
+  health-canada-lnhpd: 'LNHPD'
+  health-canada-nhpid: 'NHPID|NHP monograph'
+  nih-ods-api: 'ODS (fact|API)|ods\.od\.nih\.gov|fact ?sheets?'
+  tga-safety-updates: '\bTGA\b'
+  atcc-catalog: '\bATCC\b'
+  supplier-pages: 'supplier (page|site)s?|Ixoreal'
+  licensed-out-sources: 'DrugBank|Natural Medicines|NatMed|Lexicomp|ConsumerLab|Labdoor|NCCDB|Crunchbase'
+  usda-fdc: 'FoodData Central|\bFDC\b|api\.nal\.usda'
+  usda-fdc-portal: 'portal-data'
+  open-food-facts: 'Open ?Food ?Facts|openfoodfacts'
+  phenol-explorer: 'Phenol-?Explorer'
+  foodon: 'FoodOn'
+  efsa-food-composition: 'EFSA (comprehensive|food (consumption|composition))|FoodEx|OpenFoodTox'
+  fsis-recall-api: '\bFSIS\b'
+  restaurant-menu-pages: 'mcdonalds|wendys|menu (item|page)'
+  openfda-caers: 'food/event|CAERS'
+  openfda-faers: 'drug/event|FAERS'
+  openfda-drug-label: 'drug/label|openFDA (drug )?label|openfda-label'
+  openfda-food-enforcement: '(food|drug)/enforcement|openfda-(food-)?enforcement|Recall Enterprise'
+  openfda-drugsfda: 'drugsfda|Drugs@FDA'
+  openfda-device: 'device/(recall|510k|event|classification)|openfda-device'
+  dailymed-spl: 'DailyMed|\bSPL\b'
+  regulations-gov-api: 'regulations\.gov(?!/document)|api\.regulations'
+  regulations-gov-attachments: 'downloads\.regulations\.gov'
+  fda-web-pages: '(?<!api\.)fda\.gov|warning[- ]letters?|FDA (media|safety communications?|constituent update|outbreak|BT approvals|recall page)'
+  fda-gras-inventory: 'GRAS (Notice )?Inventory|\bGRN\b'
+  fda-clia-db: '\bCLIA\b'
+  fda-data-dashboard: 'Data Dashboard'
+  federal-register-api: 'Federal Register|federalregister'
+  ecfr-versioner: '\beCFR\b|ecfr\.gov'
+  eurlex: 'EUR-?Lex|CELEX'
+  efsa-journal-wiley: 'EFSA Journal|efsa\.onlinelibrary'
+  uspto-tsdr: '\bTSDR\b'
+  patentsview: 'PatentsView'
+  google-patents: 'Google Patents|patents\.google'
+  cafc-opinions: '\bCAFC\b|Federal Circuit'
+  certification-databases: '\bNSF\b|Informed Sport|USP Verified|nsfsport|Certified for Sport'
+  coa-pdf: '\bCOAs?\b|certificates? of analysis'
+  company-report-pdf: 'market-surveillance'
+  ftc-pages: '\bFTC\b|ftc\.gov'
+  sec-edgar: 'EDGAR|sec\.gov|DEF 14A|Form D\b|Form 4\b|\b10-K\b|\b8-K\b|13[DG]\b'
+  gleif-lei: 'GLEIF|\bLEI\b'
+  nppes-npi: '\bNPI\b|NPPES'
+  opencorporates: 'OpenCorporates'
+  companies-house: 'Companies House'
+  nih-reporter: 'RePORTER'
+  orcid: '\bORCID\b'
+  cms-open-payments: 'Open Payments'
+  propublica-dollars-for-profs: 'ProPublica|Dollars for Profs'
+  funder-award-pages: 'ARPA-H|Hevolution|award (list|release)'
+  self-disclosure-pages: 'self-disclosure|disclosures? page|/disclosures'
+  in-container-disclosures: 'in-container|ad read|sponsor read'
+  product-label-contact: 'distributed by|manufactured (by|for)'
+  brand-pages: 'brand (page|site|storefront)s?|truniagen|storefront terms|legal page'
+  company-press-releases: 'press release|newswire|GlobeNewswire|Business Wire|PR Newswire|\bIR page'
+  trade-press: 'BioPharma Dive|STAT News|Endpoints News|Fierce ?(Biotech|Pharma)'
+  forecast-markets: 'Metaculus|Manifold|Polymarket'
+  rejuvenation-roadmap: 'Rejuvenation Roadmap|lifespan\.io'
+  shopify-storefront-json: 'Shopify|products\.json'
+  amazon-pages: 'Amazon(\.com)? (detail|page|store|listing)|\bASIN\b'
+  amazon-pa-api: 'Product Advertising'
+  keepa-api: 'Keepa'
+  camelcamelcamel: 'camelcamelcamel'
+  iherb-pages: 'iHerb'
+  retailer-partner-apis: 'partner API|Walmart'
+  impact-affiliate-api: 'impact\.com'
+  gs1-verified: '\bGS1\b|GEPIR'
+  economist-bigmac-data: 'big-?mac'
+  sponsor-affiliate-pages: 'affiliate|sponsor page|promo code'
+  loinc: 'LOINC|clinicaltables'
+  ucum: '\bUCUM\b'
+  lab-test-menus: 'Labcorp|Quest Diagnostics|Quest test|test menu'
+  consumer-test-vendor-pages: 'TruDiagnostic|TruAge|Jinfiniti|InsideTracker|biological[- ]age vendor'
+  ngsp: '\bNGSP\b'
+  wearable-api-docs: '\bOura\b|WHOOP (API|Developer|OpenAPI)|developer\.whoop|Apple Developer|HealthKit'
+  wearable-vendor-changelogs: "What's new|WHOOP Community|changelog"
+  fda-gudid: 'GUDID'
+  icd10cm-pcs: 'ICD-?10'
+  podcast-rss: '\bRSS\b|Megaphone|podcast feed'
+  itunes-search-api: 'iTunes|itunes\.apple'
+  substack-api: 'Substack'
+  youtube-oembed: 'oEmbed'
+  youtube-pages: 'YouTube|caption track'
+  publisher-episode-pages: 'hubermanlab|episode page|show notes'
+  community-forums: 'Discourse|LongeCity|rapamycin\.news|forum'
+  reddit: 'Reddit'
+  protocol-pages: 'protocol pages?|Blueprint|bryanjohnson|Toolkit for'
+  telehealth-clinic-pages: 'AgelessRx|telehealth'
+  manufacturer-articles: '\bBTSA\b|manufacturer article'
+  tavily-cli: 'tvly|Tavily'
+  firecrawl-cli: 'firecrawl (scrape|search|map|crawl|CLI)|firecrawl_(scrape|search|map)|Firecrawl (CLI|MCP|scrape|search|rendition|markdown)|firecrawl-(scrape|search|map|cli)'
+  firecrawl-change-tracking: 'changeTracking|change tracking|firecrawl monitor'
+  internet-archive-wayback: 'Wayback|web\.archive\.org|\bCDX\b|Internet Archive|memento'
+  http-capture: '\bcurl\b'
+  browser-fallback: 'browser fallback|agent-browser|Playwright|computer use|built-in browser'
+  wikidata: 'Wikidata'
+  bioregistry: 'Bioregistry'
+  nanopub-registry: 'nanopub'
+  kg-executor: 'kg-ops|executor|plan/apply'
+  bks-intent-contract: 'IngestionIntent|@bks/contracts|intent\.json|validate_intents|build_intents'
+  local-contracts: 'model\.ts|verification/README|docs/architecture|\bADR\b'
+  ks-verification: 'verification\.v1'
+  mission-control: 'Mission Control'
+  bks-entity-link-projection: 'entity[- ]link(ing)? projection|derived MENTIONS'
+  bks-entity-resolution: 'entity[- ]resolution|RESOLUTION assessment'
+  bks-curation-agent: 'curation agent|curator'
+  d2-hallmark-curation: 'hallmark'
+  d13-frontier-curator: 'frontier-classification|frontier curator'
+  d13-event-linker: 'event-linker|LEADS_TO'
+  bks-projection-job: 'project\.py|projection job|PROJECTION Activity|use-constraint-key'
+  bks-chunker: '\bchunker\b|chunks?\b.*fixture-turn-window'
+  bks-claim-extraction: 'claim extraction'
+  bks-comparison-engine: 'comparison engine'
+  bks-criteria-registry: 'DecisionCriterion'
+  bks-report-publish: 'report\.publish|composed-body'
+  neo4j-gds: '\bGDS\b|Graph Data Science'
+  nova-classifier: '\bNOVA\b|nova-markers'
+  poppler-pdftotext: 'pdftotext'
+  poppler-pdftoppm: 'pdftoppm'
+  html-text-projection: '\bh2t|html2txt|edgar-text|xml2txt|html-text'
+  locator-builder-verifier: 'build_locators|gen_locators|locator builder|reselect|verify_fixtures|fxlib|gen\.py|q\.py|validate_fixtures|build_fixtures'
+
+# Readiness adjudications (D11, 2026-10-08). D11-local scores stand unless listed here; non-D11 entries take the lower
+# median of the packets' current scores unless listed here.
+overrides:
+  nih-ods-api:
+    readiness: 2
+    reason: "D1 and D5 (adversarial review): the fact-sheet page answers 200 to a browser User-Agent and to Tavily/Firecrawl; the ODS API itself stays 403. D11's research-stage 1 predates that re-test."
+  certification-databases:
+    readiness: 1
+    reason: "D8 fixtures stage captured NSF listing pages by curl and Informed Sport through a rendering service; D6 scraped NSF Certified for Sport. Scrape-only (1), not blocked (0)."
+  sec-edgar:
+    readiness: 2
+    reason: "D7, D8 and D13 adversarial reviews: EDGAR Archives HTML carries an injected per-client script tag, so raw-byte digests do not reproduce on re-fetch; identity needs a registered text projection (edgar-text/v5, h2t-v1) or a strip rule. JSON (submissions, Form 4/13G XML) stays agent-ready; the entry scores its weakest needed artifact."
+  open-targets:
+    readiness: 2
+    reason: "D2 fixtures stage (final): the GraphQL schema drifts between releases (maximumClinicalTrialPhase removed), so API_RECORD paths need introspection and a pinned release; D10 scored 3 on a single pinned call."
+  internet-archive-wayback:
+    readiness: 2
+    reason: "K, D5, D6, D7, D9: the only route to what a page said before; CDX intermittently 'Temporarily Offline' and replay can substitute another capture (verify memento-datetime and payload SHA1)."
+  firecrawl-cli:
+    readiness: 2
+    reason: "Every packet: renditions are not byte-stable across fetches (D4, D6, D9, D12, D13); quotes re-anchor by context, digests do not. D7's '3 for static pages' holds for one fetch only."
+
+# Custom tooling clusters. G1-G10 come from the D11-local registry (titles kept); G11+ from the other packets.
+gaps:
+  - id: G1
+    title: "Self-observed registry versions (CT.gov history blocked) and an ISRCTN history-prose parser"
+    entries: [ctgov-record-history, ctgov-v2-api, isrctn]
+    requestedBy: [D3, D11, D13]
+    owner: tooling
+    build: "trials.observe_versions: poll CT.gov v2 by lastUpdatePostDate and snapshot every change as OBSERVED RegistrationVersions; ISRCTN 'Provided at time of registration / Updated as of / Amended' blocks and Editorial Notes → RECONSTRUCTED versions."
+  - id: G2
+    title: "Integrity checker (retraction, correction, expression of concern) reconciling Crossref updated-by, PubMed CommentsCorrections and Retraction Watch"
+    entries: [crossref-rest, ncbi-eutils-pubmed, openalex, crossref-labs]
+    requestedBy: [K, D3, D11, D13]
+    owner: tooling
+    build: "literature.check_integrity: one HAS_REVISION_STATUS Assertion per authority (K M6) and REVISES episodes when the notice is identified (D3); RW reasons from the CSV; status-only flags (OpenAlex is_retracted) never become REVISES. Blocked on the K/D3 REVISES vs HAS_REVISION_STATUS ruling (D3 open question 33)."
+  - id: G3
+    title: "Substance identity bridge with form awareness (GSRS authority; salt / moiety / quantity basis)"
+    entries: [fda-gsrs, pubchem-pug-rest, nih-dsld, ebi-ols4-chebi, chembl-rest, nlm-rxnav]
+    requestedBy: [D1, D11, D5]
+    owner: tooling
+    blocks: [Q-D1-26]
+    build: "substances.resolve: DSLD row + form UNII → GSRS record → ACTIVE MOIETY, never a PubChem name→CID hit alone; RESOLUTION assessments as output; rule table for mw-ratio / nutrient-equivalent / daily-max pinned to a GSRS record version."
+  - id: G4
+    title: "Capture normalizer and text-projection registry (named, versioned JATS/SPL/HTML/PDF → text rules, UTF-8 + LF, NBSP/hyphen normalization, canonicalProjectionHash)"
+    entries: [europepmc-fulltext-jats, dailymed-spl, ctgov-v2-api, html-text-projection, poppler-pdftotext, ncbi-eutils-pubmed, sec-edgar, firecrawl-cli, tavily-cli]
+    requestedBy: [K, D2, D3, D4, D6, D7, D8, D10, D11, D13]
+    owner: tooling
+    build: "One registry of derivation rules (jats-xml2txt/v1, html2txt/v1, edgar-text/v5, h2t-v1, pdftotext -layout -enc UTF-8) with output encoding, newline convention and digest; shared normalization profile nbsp-nnbsp-hyphen/v1 with the verifier; the projection is part of the snapshot (kernel canonicalProjectionHash)."
+  - id: G5
+    title: "GTIN normalizer and listing resolver (UPC-A/EAN-13 → GTIN-14, check digit, ASIN/retailer id ↔ GTIN ↔ Package)"
+    entries: [nih-dsld, openfda-food-enforcement, usda-fdc, brand-pages, shopify-storefront-json, amazon-pages, open-food-facts, gs1-verified]
+    requestedBy: [D6, D11, D12]
+    owner: tooling
+    build: "gtin14-v1 normalizer applied to DSLD upcSku, openFDA free text, FDC gtinUpc, Shopify barcode, OFF barcodes; listing resolver emitting EQUIVALENCE assessments; recall-to-listing matching from free-text lot codes."
+  - id: G6
+    title: "Keys, quotas and service identity for team runs (data.gov, OpenAlex, Semantic Scholar, NCBI, Crossref polite pool, FDA Data Dashboard, USPTO, Companies House, Keepa)"
+    entries: [usda-fdc, openalex, semantic-scholar, regulations-gov-api, ncbi-eutils-pubmed, crossref-rest, fda-data-dashboard, uspto-tsdr, companies-house, keepa-api, cas-common-chemistry]
+    requestedBy: [D3, D6, D7, D8, D11, D12]
+    owner: owner
+    build: "A secret-store-backed service identity per provider (never printed, never in requestUri), quota accounting per run, and the repo .mcp.json servers loaded in agent sessions."
+  - id: G7
+    title: "Label image and PDF parsers (Supplement Facts / Nutrition Facts OCR, panel images, COA row parser, PDF table reconstruction with page-render cross-check)"
+    entries: [brand-pages, nih-dsld, coa-pdf, company-report-pdf, consumer-test-vendor-pages, poppler-pdftoppm, poppler-pdftotext, regulations-gov-attachments]
+    requestedBy: [D4, D6, D8, D11, D12]
+    owner: tooling
+    build: "OCR with BOUNDING_BOX selectors for label and panel images; COA row parser emitting resultBasis per row; PDF table reconstruction cross-checked against pdftoppm renders; page-addressed PDF_TEXT locators."
+  - id: G8
+    title: "Change-tracked capture and scheduled re-capture for pages that version in place (FDA pages, certifier lists, brand and protocol pages, SPL archives)"
+    entries: [fda-web-pages, regulations-gov-attachments, certification-databases, brand-pages, protocol-pages, firecrawl-change-tracking, dailymed-spl, wearable-vendor-changelogs]
+    requestedBy: [D5, D6, D8, D11]
+    owner: tooling
+    blocks: [Q-D5-24]
+    build: "Firecrawl monitor / scheduled re-capture with diff → NEW_VERSION snapshots; SPL version differ over DailyMed archived zips; certifier COVERS episodes from re-capture."
+  - id: G9
+    title: "Person and organization identifier resolution as hypotheses (NPI homonyms, CIK↔LEI stale names, name-only persons across filings and pages)"
+    entries: [nppes-npi, sec-edgar, gleif-lei, orcid, nih-reporter, companies-house, opencorporates]
+    requestedBy: [D7, D9, D11]
+    owner: tooling
+    build: "RESOLUTION assessments requiring a second key (licence, address, ORCID-linked affiliation); never identity by name."
+  - id: G10
+    title: "Capture-attempt recorder (FAILED / PARTIAL CaptureAttempts, credential stripping, soft-failure detection, captureMethod stamping)"
+    entries: []
+    allEntries: true
+    requestedBy: [D11, K]
+    owner: tooling
+    blocks: [Q-D11-17, CQ-AX-04, Q-D11-01, Q-D11-07]
+    build: "Every adapter emits a D11 CaptureAttempt for FAILED and PARTIAL requests, writes authoritative empties as COMPLETE snapshots plus FIELD_NOT_REPORTED, strips credentials, detects 200-with-challenge pages and stamps SourceSnapshot.captureMethod = '<entry id>/<version>'."
+  - id: G11
+    title: "Selector builder and verifier (locators computed from bytes; unique-occurrence growth of prefix/suffix; value-keyed JSON selectors; re-anchoring store)"
+    entries: [locator-builder-verifier, ks-verification, firecrawl-cli, tavily-cli, uniprot-rest, reactome-content-service, sec-edgar]
+    requestedBy: [K, D1, D2, D4, D6, D8, D10, D13]
+    owner: tooling
+    build: "A locator compiler in the ingestion path (quotes from bytes, never from model output) that refuses ambiguous quotes, grows context until unique, keys JSON selectors by value (edgar-accession/v1, @displayName=…), and re-selects on every capture."
+  - id: G12
+    title: "Byte-faithful capture, durable artifact storage and per-publisher snapshot-identity rules (raw bytes beside renditions; EDGAR injected-script strip rule; TOOL_RENDITION hash basis)"
+    entries: [http-capture, firecrawl-cli, tavily-cli, sec-edgar, publisher-pages, internet-archive-wayback, ftc-pages]
+    requestedBy: [K, D4, D5, D7, D11, D13]
+    owner: kernel
+    build: "Store raw HTTP bytes (and PDF bytes) next to every rendition in durable blob storage (kernel storageUri); identity rules per publisher for rotating content; a contentHashBasis for tool renditions and extracted text (requested from K: TOOL_RENDITION / EXTRACTED_TEXT_BYTES)."
+  - id: G13
+    title: "Intent contract v1 extensions (predicate-only Assertions with an object node, claim occurrences, assessments, qualifiers, supersedesUid, held proposals, report.publish, projection.write)"
+    # the writers that reach the graph only through intents inherit the contract gaps
+    entries: [kg-executor, bks-intent-contract, bks-curation-agent, bks-claim-extraction, bks-entity-resolution, d2-hallmark-curation, d13-frontier-curator, d13-event-linker, bks-report-publish, bks-criteria-registry]
+    requestedBy: [K, D1, D2, D3, D4, D5, D6, D7, D9, D10, D12, D13]
+    owner: kernel
+    build: "Contract and executor work in packages/contracts and kg-ops: assertion.object, assertion.claim, assessment.record, assertion.hold / project-on-adjudication, qualifiers and supersedesUid on AssertionCore, asserter on identifier.attach and edge.structural, report.publish and projection.write intents."
+  - id: G14
+    title: "Fixture-mode verification.v1 runner (locators.yaml + assertions.yaml → Adjudications)"
+    entries: [ks-verification, locator-builder-verifier]
+    requestedBy: [D13, K, D10]
+    owner: kernel
+    build: "Run verification.v1 over a fixture's captured artifacts and emit SUPPORT / CONTRADICT adjudications so gated typed edges (LEADS_TO, RESPONDS_TO) can be projected."
+  - id: G15
+    title: "Projection runner, entity-link projection and chunker (method-versioned derived edges with inputSetDigest)"
+    entries: [bks-projection-job, bks-entity-link-projection, bks-chunker, bks-entity-resolution, neo4j-gds, europepmc-annotations]
+    requestedBy: [K, D2, D5, D9, D10, D12]
+    owner: kernel
+    build: "Promote the fixture stand-ins (project.py, gen.mjs) into executor PROJECTION Activities with method versions and inputSetDigest; MENTIONS from entity linking with identifier-scheme checks; the chunker over DocumentTextVersions."
+  - id: G16
+    title: "Audio and video capture with ASR, cue times and diarization; re-cut detection"
+    entries: [podcast-rss, youtube-pages, publisher-episode-pages]
+    requestedBy: [D9]
+    owner: D9
+    build: "Enclosure download + ASR with cue times + diarization writing a text version with textBasis ASR; audio fingerprint or transcript alignment for REPUBLISHES."
+  - id: G17
+    title: "Archive-first capture with memento verification"
+    entries: [internet-archive-wayback, self-disclosure-pages, protocol-pages]
+    requestedBy: [D5, D7, D9, K]
+    owner: tooling
+    build: "Internet Archive id_ copy of the pre-redirect URL (gzip-decode, hash, project), accepted only when the served memento-datetime and payload SHA1 match the CDX row; snapshot ordering by coalesce(observedAt, retrievedAt); browser capture only when no archive copy exists, logged as a readiness exception."
+  - id: G18
+    title: "SEC filing extractors (item-code routing, beneficial-ownership tables and footnotes, accession-keyed selection)"
+    entries: [sec-edgar, html-text-projection]
+    requestedBy: [D7, D13]
+    owner: D7
+    build: "EDGAR fetcher with 8-K item routing and a registered HTML→text projection; ownership-table parser (holder, shares, percent, basis wording, voting/dispositive power, cited 13D/13G)."
+  - id: G19
+    title: "Trial results extractor (CT.gov resultsSection → one JSON pointer per reported number; paper numbers as TEXT_QUOTE)"
+    entries: [ctgov-v2-api, europepmc-fulltext-jats, ncbi-eutils-pubmed]
+    requestedBy: [D3]
+    owner: D3
+    build: "Estimates, bounds, n, P and AE affected / at risk mapped to arms; paper text numbers inside verified sentences."
+  - id: G20
+    title: "Regulatory document parsers (warning-letter sections and index crawler, recall code_info lot parser, regulator survey tables)"
+    entries: [fda-web-pages, openfda-food-enforcement, fda-gras-inventory, regulations-gov-attachments, ftc-pages, eurlex]
+    requestedBy: [D8, D12, D6, D7]
+    owner: D8
+    build: "Section parser and crawler for warning letters; recall code_info lot parser; FDA survey tables with group labels and sampling windows carried to every row."
+  - id: G21
+    title: "Food composition loaders and resolution (FDC bulk loader, Phenol-Explorer parser, NOVA classifier, food entity resolution)"
+    entries: [usda-fdc, usda-fdc-portal, phenol-explorer, open-food-facts, restaurant-menu-pages, nova-classifier, foodon]
+    requestedBy: [D12]
+    owner: D12
+    build: "FDC bulk download → FoodItem and FOOD_CONTAINS with derivation code, n, min, max; food × compound rows from Phenol-Explorer; nova-markers/v<n> CALCULATED assertions; food RESOLUTION across FDC, menus, Phenol-Explorer and OFF."
+  - id: G22
+    title: "Protocol and safety extractors (protocol step extractor and aligner, dose-vs-limit comparator, label sub-section splitter, CAERS reaction normalizer)"
+    entries: [protocol-pages, openfda-drug-label, openfda-caers, openfda-faers, dailymed-spl, nih-ods-api]
+    requestedBy: [D5]
+    owner: D5
+    blocks: [Q-D5-06, Q-D5-24]
+    build: "Canonical step payload + payloadHash + stepKey aligner across in-place editions; query-time dose-vs-limit comparator (unit, period, intake scope, population, elemental-vs-salt mass); openFDA section-blob splitter; reaction-term normalization before any count."
+  - id: G23
+    title: "Comparison engine, criteria registry and report publication"
+    entries: [bks-comparison-engine, bks-criteria-registry, bks-report-publish]
+    requestedBy: [D10]
+    owner: kernel
+    build: "DecisionCriterion rules with BLOCK-before-SCORE and NOT_EVALUATED on unknown inputs; report.publish transaction for Report + ReportItems with body and ledger digests."
+  - id: G24
+    title: "LOINC resolution and gated lab-menu capture"
+    entries: [loinc, lab-test-menus, consumer-test-vendor-pages, ucum]
+    requestedBy: [D4]
+    owner: D4
+    build: "Licensed LOINC table or FHIR access to map vendor metric names to LOINC; Firecrawl interact or a browser profile for service-area-gated sections (recorded readiness exceptions); UCUM conversion as a deterministic compute tool."
+  - id: G25
+    title: "Licence decisions (DrugBank, Natural Medicines, KEGG commercial, CAS, LOINC table, CPT, ConsumerLab/Labdoor, Altmetric, Reddit, Amazon PA, retailer and affiliate APIs)"
+    entries: [licensed-out-sources, kegg-rest, cas-common-chemistry, altmetric, reddit, amazon-pa-api, retailer-partner-apis, impact-affiliate-api, efsa-journal-wiley, opencorporates]
+    requestedBy: [D1, D2, D5, D6, D7, D9, D11, D12]
+    owner: owner
+    build: "Owner decisions: license, store identifiers only, or skip; never store licensed content in the shared graph beyond identifiers and our own cited assertions."
+
+# Identifier-scheme detection on identifiersEmitted text (case-insensitive regex; codes not listed use the code itself
+# as a word, underscores matching space/hyphen/underscore). A hit names a candidate authority route for the scheme in
+# the identifier reconciliation; it is a pointer to verify, not a verified bridge.
+schemeDetect:
+  PMID: '\bPMIDs?\b'
+  PMCID: '\bPMCIDs?\b|\bPMC id'
+  DOI: '\bDOIs?\b'
+  OPENALEX: 'OpenAlex'
+  NCT: '\bNCT\b'
+  EUCT: '\bEU CT\b|EUCT'
+  EUDRACT: 'EudraCT'
+  RW_RECORD: 'Retraction Watch'
+  UNII: '\bUNII\b'
+  CAS_RN: '\bCAS\b'
+  PUBCHEM_CID: '\bCID\b'
+  CHEBI: 'ChEBI'
+  INCHIKEY: 'InChIKey'
+  DRUGBANK: 'DrugBank'
+  RXCUI: 'RxCUI'
+  MESH: '\bMeSH\b'
+  UNIPROT: 'UniProt'
+  HGNC: '\bHGNC\b'
+  NCBI_GENE: 'NCBI Gene|Entrez'
+  ENSEMBL_GENE: 'Ensembl'
+  REACTOME: 'Reactome|R-HSA'
+  GO: '\bGO\b'
+  MONDO: '\bMONDO\b'
+  HPO: '\bHPO\b|\bHP:|\bHP\b'
+  ICD10CM: 'ICD-?10'
+  SNOMEDCT: 'SNOMED'
+  LOINC: 'LOINC'
+  GTIN: 'GTIN|\bUPC\b|\bEAN\b|barcode'
+  ASIN: '\bASIN\b'
+  SKU: '\bSKU\b'
+  DSLD: 'DSLD (label )?id'
+  FDC_ID: 'fdcId|\bFDC id'
+  NDC: '\bNDC\b'
+  FDA_APPLICATION: 'application_number|FDA application|\bNDA\b|\bANDA\b|\bBLA\b'
+  NPN: '\bNPN\b'
+  PATENT_PUB: 'patent (publication )?number|publication number|patent number'
+  LEI: '\bLEI\b'
+  SEC_CIK: '\bCIK\b'
+  ROR: '\bROR\b'
+  ORCID: 'ORCID'
+  NPI: '\bNPI\b'
+  WIKIDATA: 'Wikidata|\bQID'
+  YOUTUBE_VIDEO: 'video id'
+  PODCAST_GUID: '\bguid\b'
+  PODCAST_INDEX_FEED: 'Podcast Index'
+  NIHMS: 'NIHMS'
+  NANOPUB: 'nanopub|trusty URI'
+  UMLS_CUI: 'UMLS|\bCUI\b'
+  CHEMBL: 'ChEMBL'
+  CHEMSPIDER: 'ChemSpider'
+  NCBI_TAXON: 'taxonomy id|\btaxid|NCBI Taxonomy|TaxId'
+  CULTURE_COLLECTION: '\bATCC\b|DSMZ|deposit (number|id)'
+  DSLD_INGREDIENT: 'ingredientId'
+  LNHPD_INGREDIENT: 'medicinal ingredient'
+  SUPPLIER_CODE: 'supplier (material )?code'
+  FDC_NUTRIENT: 'nutrient ids?'
+  WIKIPATHWAYS: 'WikiPathways|\bWP[0-9]'
+  ORPHANET: 'Orphanet|ORPHA'
+  OMIM: '\bOMIM\b'
+  EFO: '\bEFO\b'
+  KEGG_PATHWAY: 'KEGG|map ids'
+  LAB_TEST_CODE: 'test code|order code|test number'
+  CPT: '\bCPT\b'
+  UDI_DI: '\bUDI'
+  FDA_510K: '510\(?k\)?|\bK numbers?\b|k_number'
+  FDA_PRODUCT_CODE: 'product code'
+  RETAILER_ITEM_ID: 'retailer item'
+  STOREFRONT_PRODUCT_ID: 'Shopify product|storefront product|product id'
+  STOREFRONT_VARIANT_ID: 'variant id'
+  MARKETPLACE_SELLER_ID: 'seller id'
+  WEB_DOMAIN: 'web domain|registrable domain'
+  COMPANY_NUMBER: 'company number|registration authority id|entity id'
+  UEI: '\bUEI\b'
+  CROSSREF_FUNDER: 'funder DOI|Funder Registry|funder id'
+  AWARD_NUMBER: 'award (number|id)|grant ids?'
+  NIH_PROJECT: 'project number|core project|appl_id|grant ids'
+  NIH_PROFILE_ID: 'profile[ _]id'
+  TICKER: 'ticker'
+  SEC_ACCESSION: 'accession'
+  FDA_NDI: '\bNDI'
+  FDA_GRN: '\bGRN\b|GRAS notice'
+  FDA_WARNING_LETTER: 'MARCS|warning letter'
+  FDA_RECALL: 'recall_number|recall number'
+  FDA_RECALL_EVENT: 'event_id|recall event'
+  FDA_DOCKET: 'docket'
+  FDA_FEI: '\bFEI\b'
+  CELEX: 'CELEX'
+  LNHPD_ID: 'lnhpd_id|licence id|LNHPD (product )?id'
+  COURT_DOCKET: 'court docket|docket number|case number'
+  PTAB_TRIAL: 'PTAB|\bIPR\b'
+  PATENT_APPLICATION: 'patent application|application serial'
+  CERT_LISTING: 'certificate|listing ids?'
+  LAB_REPORT: 'report number|COA number|lab report'
+  LOT_CODE: '\blot\b'
+  YOUTUBE_CHANNEL: 'channel id'
+  APPLE_PODCAST: 'collectionId|trackId|Apple Podcasts|iTunes id'
+  SPOTIFY: 'Spotify'
+  X_ACCOUNT: 'X account|Twitter account'
+  X_POST: 'tweet|X post'
+  SUBSTACK_POST: 'Substack (post|slug)|post id'
+  ISSN: '\bISSN\b'
+  ISBN: '\bISBN\b'
+  ISRCTN: 'ISRCTN'
+  SPL_SET_ID: 'set[ _-]?id'
+  EIN: '\bEIN\b'
+  ORG_STUDY_ID: 'org(anization)? study id|orgStudyId'
+  NCIT: '\bNCIt\b'
+  NDB_NUMBER: '\bNDB\b'
+  FNDDS_FOOD_CODE: 'FNDDS'
+  FOODEX2: 'FoodEx ?2'
+  FOODON: 'FoodOn'
+  LANGUAL: 'LanguaL'
+  WWEIA_CATEGORY: 'WWEIA'
+  PHENOL_EXPLORER_FOOD: 'Phenol-?Explorer'
+
+# Detection hits rejected on reading the packet rows (the word matched, the scheme is not what the tool emits).
+schemeExclude:
+  uniprot-rest: [SEC_ACCESSION]
+  europepmc-fulltext-jats: [SEC_ACCESSION]
+  iherb-pages: [FDA_PRODUCT_CODE, STOREFRONT_PRODUCT_ID]
+  cafc-opinions: [FDA_DOCKET]
+  fda-web-pages: [COURT_DOCKET]
+  chembl-rest: [SPL_SET_ID]
+  cms-open-payments: [NIH_PROFILE_ID]
+  community-forums: [SUBSTACK_POST]
+  reddit: [SUBSTACK_POST]
+
+# Schemes an entry emits that its free-text identifiersEmitted names in another way (read from the packet rows).
+schemeInclude:
+  google-patents: [PATENT_APPLICATION]   # D8 row: "application number" next to the publication number
+  iherb-pages: [RETAILER_ITEM_ID]        # D6 row: iHerb product code / item number
+  retailer-partner-apis: [RETAILER_ITEM_ID]

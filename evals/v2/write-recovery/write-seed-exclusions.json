@@ -1,0 +1,30 @@
+{
+  "format": "bks-eval-write-seed-exclusions.v1",
+  "round": "schema/program/final/fixtures-v2/ROUND.json",
+  "roundSha256": "sha256:277fe854ab565324bf39f1b1a85e3d40f5b6db05a58b18f13dc5b7d50e2d9f59",
+  "exclude": [
+    {
+      "path": "schema/program/final/fixtures-v2/D4/hba1c-two-labs-interference/intent.json",
+      "intentId": "ft-d4-a1c-2026-10-08",
+      "sha256": "sha256:fa08d231b1b654eeeec6514db10cd0277a2645b7e11ad916875b5f020084a1ff",
+      "roundIndex": 36,
+      "tasks": [
+        "WR-01",
+        "WR-21"
+      ],
+      "reason": "WR-01 re-submits this fixture (Labcorp Hemoglobin A1c 001453 MEASURES_METRIC LOINC 4548-4, proposal p01-d01); WR-21 wraps the WR-01 intent. Pre-seeding it would turn the gold applied into a legitimate duplicate.",
+      "dependencyCheck": "no other round intent references a subject created only by this intent; the shared subjects labcorp and bks-curation-d4 are mode new / onMatch use_existing in their other intents"
+    }
+  ],
+  "note": "Decided by the lead 2026-10-12 (write pass: fresh database per arm, round minus these exclusions). Every other write task builds its own synthetic intents and does not depend on seeded fixture facts.",
+  "roundHistory": [
+    {
+      "sha256": "sha256:e7f3c86558f83a7118adc6045f6219d76f83c79c8f325905dd66f5f05836264c",
+      "note": "round at DEV-2 (2026-10-12T05:36Z)"
+    },
+    {
+      "sha256": "sha256:277fe854ab565324bf39f1b1a85e3d40f5b6db05a58b18f13dc5b7d50e2d9f59",
+      "note": "round after the executor role's 17 identifier-evidence locator fills (lead re-record DEV-4, 2026-10-12)"
+    }
+  ]
+}

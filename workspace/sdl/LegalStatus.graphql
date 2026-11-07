@@ -1,0 +1,46 @@
+"""
+Purpose: one legal standing of one subject — an ingredient's or product's market-access standing in one jurisdiction
+under one pathway (excluded / not excluded from the supplement definition, no-questions, authorised, licensed,
+approved), an exclusivity (EU data protection until 2025-02-20), or a patent's standing at claim level (claims 1–3
+held invalid while the aggregator says "Active"). The node is immutable; WHEN it holds is the bitemporal episode on
+STATUS_OF, and WHICH record established it is STATUS_FROM. NMN in the US is two statuses: EXCLUDED_FROM_DEFINITION
+(valid 2022-10-11 → 2025-09-29, from NDI 1259 response) and NOT_EXCLUDED_FROM_DEFINITION (valid from 2025-09-29,
+from the FDA-2023-P-0872 response). A device clearance is CLEARED with pathway US_DEVICE_510K, STATUS_OF the D6 Product
+that DELIVERS the D4 Device (R-72); a prescription-only standing is PRESCRIPTION_ONLY in its jurisdiction (R-88); a
+designation is DESIGNATED with its programme as pathway (US_BREAKTHROUGH_THERAPY, US_ORPHAN_DESIGNATION, EU_PRIME ...).
+Merges pinned RegulatoryStatus, DrugApproval, OrphanDesignation, IpRightStatus.
+Identity rule: (subject uid, jurisdiction, pathway, statusKind, marketStatus, sorted claimNumbers); a change of any of
+these is a new LegalStatus whose STATUS_OF episode opens as the old one closes. uid token: `legal-status`.
+Questions: CQ-MF-02, Q-D8-01, CQ-AX-23, Q-D8-12, Q-D8-13, Q-D8-18, Q-D8-20, Q-D8-14, Q-D8-23, CQ-EC-01.
+"""
+type LegalStatus implements Entity & Subjectable
+  @node(labels: ["LegalStatus", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  statusKind: LegalStatusKind!
+  statusFamily: LegalStatusFamily!
+  "ISO 3166-1 alpha-2 code, or EU; for patents the office's country code."
+  jurisdiction: String!
+  pathway: RegulatoryPathway
+  "The status words as the issuer or registry printed them (e.g. 'Licence Status: Active')."
+  statusVerbatim: String @filterable(byValue: false, byAggregate: false) @sortable(byValue: false)
+  "Licences only: marketed or not, as the registry states."
+  marketStatus: MarketStatus
+  "IP_RIGHT only: the claim numbers the status applies to; empty means the whole patent."
+  claimNumbers: [Int!]
+  """class: asserted; cardinality: exactly_one subject per status, many episodes (valid time = when the standing holds; recorded time = when BellLabs knew); questions: CQ-MF-02, Q-D8-01, CQ-AX-23, Q-D8-12, Q-D8-13, Q-D8-14, Q-D8-18, Q-D8-20, Q-D8-23."""
+  statusOf: [LegalStatusSubject!]!
+    @relationship(type: "STATUS_OF", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: one_or_more (every record that establishes, confirms or ends this standing); questions: CQ-MF-02, Q-D8-01, CQ-AX-23, CQ-PF-04, Q-D8-12, Q-D8-20, Q-D8-23."""
+  establishedBy: [RegulatoryRecord!]!
+    @relationship(type: "STATUS_FROM", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

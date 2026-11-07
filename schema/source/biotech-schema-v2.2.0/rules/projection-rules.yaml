@@ -1,0 +1,539 @@
+# Projection rules (bks-rules.v1)
+# GENERATED at promotion by scripts/release/lib/registries.mjs 1.0.0 (S1 schema authority) from the frozen candidate
+# (biotech-knowledge-services schema/program/final @ 431c8a7) and the promoted release sources. Upstream authority after
+# promotion: edit here through a release revision; re-running promotion on the same frozen inputs reproduces these bytes.
+# Closes: MD-D10-06, MD-D10-05, MD-D8-02, MD-D8-03, OD-37, OD-19, KN-15, OD-25, MD-D10-01, MD-D13-01, FU-01.
+# Inputs (sha256):
+#   final/node-register.yaml  8cb701d7ab42a0d3343066eb66b74251bd66b57b2bfcd612496eadda178ef536
+#   release/sdl/modules/D1.graphql  5bb58e9fc1fa9c0140736fb5b24f611ae54e48a57fd50217e0db4b430bfb1257
+#   release/sdl/modules/D10.graphql  e2dce9e712e0ea6a17debbcfecd747080114d1a685b2d5e3213f52a5a63769fb
+#   release/sdl/modules/D11.graphql  ec9a90a90a15bb7cea1390504fdaf1df115a32a0312bd51238a28f1fea286ee6
+#   release/sdl/modules/D12.graphql  f7c6b4107e27f4db9f787db9de971e344522da674b6f1631e7c6132483fec4c0
+#   release/sdl/modules/D13.graphql  54d56da432d763a9e3cdb1831d7553727fa26b515b5d066fc5f7e9d1de50525b
+#   release/sdl/modules/D2.graphql  3d1f1a729fcd2ec595e875abcabe9d3b7de1931496120cfbe5f7d0d3b8421b71
+#   release/sdl/modules/D3.graphql  6a3cdc8982074fc479ae467dee456865ee6f019958070d8f07906cfc83e2df75
+#   release/sdl/modules/D4.graphql  b62054b09a7740809ade7b6f3f01c9c424b7097d312a101cb090182201a1bb00
+#   release/sdl/modules/D5.graphql  7fb18a838e1b29b4576b4eedea3c20d0f86798b12cbc4fd21edf4f0e7a52a251
+#   release/sdl/modules/D6.graphql  6b14b735ef1a80f479264325feb62140ee078a81082661f79e78253d3abd1523
+#   release/sdl/modules/D7.graphql  da9146a94314d8c402c7f2cfba7f9265ac75ccc3d3cc6aa621fe6bb38b30768d
+#   release/sdl/modules/D8.graphql  735106bbfc1f667079b5d72bf5869d054eb0ec398ebc073bc352ee7e70029627
+#   release/sdl/modules/D9.graphql  216af59fccffbfd9d1ac09b309e69fc076b0450c0e975d7650f5160b971c7519
+#   release/sdl/modules/kernel.graphql  7a125ee568a97371e83a72bf7fad18a8099ff643d0b0899acd62c160fe7c2325
+# Research only, not medical advice.
+
+format: bks-rules.v1
+ruleSet: projection
+version: 1.0.0
+closes:
+  - MD-D10-06
+  - MD-D10-05
+  - MD-D8-02
+  - MD-D8-03
+  - OD-37
+  - OD-19
+  - KN-15
+  - OD-25
+  - MD-D10-01
+  - MD-D13-01
+  - FU-01
+policies:
+  - id: PR-01
+    decision: MD-D10-05
+    name: status-nonimplication/v1
+    owner: D8 (meanings); D10 consumes for answers
+    rule: One versioned status non-implication policy. A status fact never implies another without its own sourced record.
+    negativeCases:
+      - decision: MD-D8-02
+        premise: licence valid (LegalStatus family EXCLUSIVITY / MARKET_ACCESS licence)
+        notImplied: product marketed
+        rule: licence validity and market presence are distinct sourced status families
+      - decision: MD-D8-03
+        premise: EFSA scientific opinion
+        notImplied: EU authorization
+        rule: requires a captured operative Commission act for that jurisdiction and date; until then status is unknown/unverified
+      - decision: MD-D10-05
+        premise: patent granted or listed
+        notImplied: product approved, marketed or effective
+        rule: IP status is not market or efficacy status
+      - decision: MD-D10-05
+        premise: regulatory approval for one indication/jurisdiction
+        notImplied: approval for another indication, jurisdiction or form
+        rule: approval is scoped to its record
+      - decision: MD-D10-05
+        premise: registration / listing / GRAS notice filed
+        notImplied: approval
+        rule: only statusKind APPROVAL is approval
+      - decision: MD-D10-05
+        premise: market withdrawal or no current listing
+        notImplied: licence revoked
+        rule: absence of market presence is not a licence status
+  - id: PR-02
+    decision: OD-37
+    name: goal-polarity/v1
+    rule: Harm, risk, avoidance and disconfirmed benefit are harm-facing; workflow queues, misstatement audits and ranking differences remain neutral.
+    examples:
+      - statement: WORSENS_TARGET / CAUSES_ADVERSE_EFFECT
+        polarity: harm
+      - statement: USE_CONSTRAINED_IN / INTERACTS_WITH stance AVOID
+        polarity: harm (avoidance)
+      - statement: EVIDENCE_SYNTHESIS concluding NOT_SUPPORTED for a benefit claim
+        polarity: harm (disconfirmed benefit)
+      - statement: re-review queue item after a rule change
+        polarity: neutral (workflow)
+      - statement: RETELLING_FIDELITY misstatement audit
+        polarity: neutral (audit)
+      - statement: two products ranked differently
+        polarity: neutral (ranking difference)
+  - id: PR-03
+    decision: OD-19
+    name: external-rating-mapping/v1
+    rule: Third-party text and scale are preserved. A rating maps to the verdict lattice only through a registered exact (provider, rubric version) row, as that provider's interpretation; it is never a BellLabs adjudication. Unknown rubric versions stay unmapped. Applied at query time (R-31), never stored.
+    mappings:
+      - provider: Science Feedback
+        rubricVersion: registered at capture; must match exactly
+        rating: Unsupported
+        maps: NOT_SUPPORTED (provider interpretation only)
+  - id: PR-04
+    decision: KN-15
+    name: claim-lifecycle-decision-table/v1
+    rule: Frozen decision table for Assertion status and current-per-asserter projection.
+    table:
+      - state: EXTRACTED
+        meaning: captured but unadjudicated
+      - event: mechanical CAPTURE_FIDELITY failure
+        effect: the assertion is not accepted; no human decision overrides a mechanical failure
+      - event: human REJECT of a held assertion
+        effect: prevents acceptance only through an attributed superseding adjudication (asserter, time, locator)
+      - event: conflicting asserters
+        effect: disagreement is preserved; there is no scalar highest-verdict ranking; each asserter has its own current projection
+      - event: admissible positive verdicts
+        effect: DIRECTLY_SUPPORTED and SUPPORTED_WITH_QUALIFICATION admit support; ties between asserters stay a disagreement
+    identity: outcomeUid is the entity identity of an outcome; outcome / outcomeVerbatim carries named text under a separate grammar (vocabularies/qualifiers.yaml)
+  - id: PR-05
+    decision: OD-25 / OD-24
+    name: not-reported/v1
+    rule: A value, a missing value and an explicitly inapplicable value are distinct. Types with a notReported list (below) record checked-and-not-reported fields there; other types use the kernel FIELD_NOT_REPORTED Assertion on a COMPLETE snapshot. NOT_APPLICABLE is never inferred from absence; where material it is a registered qualifier/assessment, otherwise the answer is unknown. Unreported assay/instrument/software details stay explicit UNKNOWN (OD-24).
+  - id: PR-06
+    decision: MD-D10-01
+    name: nutrient-conversion-tables
+    rule: Nutrient and mass-basis conversion rules are versioned, source-backed calculation tables distributed with the projection rules, not graph nodes; every derived value cites the rule/table version (rule:mw-ratio.v1, rule:nutrient-equivalent.v1, rule:daily-max.v1, rule:extract-ratio-dhe.v1 named by D1).
+    tablesShipped: []
+    status: "contract only in this release: no table content is shipped; a derived value whose table is absent is not computed"
+  - id: PR-07
+    decision: MD-D10-02 / MD-D10-03
+    name: decision-criterion-rules
+    rule: Numeric thresholds live in a versioned typed DecisionCriterion rule artifact (value, unit, comparator, scope); query templates load allowed rules and never parse prose; the exact criteria set is bound by digest/version in the Assessment method/result artifact (no APPLIES_CRITERION edge).
+  - id: PR-08
+    decision: MD-D10-04
+    name: ci-excludes-null
+    rule: A derived ciExcludesNull is allowed only with interval, scale, null value and derivation evidence; it is not an unreported p-value nor a study-quality judgment.
+  - id: PR-09
+    decision: MD-D13-01
+    name: frontier-anchors
+    rule: Frontier anchors live in versioned frontier curation config keyed to Mechanism ids (frontiers.yaml); queries resolve the configured mapping and cite its version; no anchorMechanismKeys property.
+  - id: PR-10
+    decision: OD-23 / FU-01 / FU-11
+    name: materialization
+    rule: Compute first; materialize only when repeated whole-graph work or a measured p95 > 200 ms justifies it, with semantic-equivalence and invalidation proof. Each retained cache has authority, method version, input digest and freshness policy. Per-frontier influence is a versioned D10 ranking Report, not a property per frontier.
+  - id: PR-11
+    decision: OD-42
+    name: hallmark-mapping-authority
+    rule: A versioned curation Source is authoritative for hallmark mappings; a Report view cites that source and exact mapping version and is not a second authority.
+decisionCriterionPublisherUid:
+  decision: MD-D10-06
+  field: DecisionCriterion.publisherUid
+  rule: "Retained ONLY with generated stamps: publisherUidMethodVersion (String), publisherUidDerivedAt (DateTime) and publisherUidAuthorityUid (String: uid of the authorizing Assertion or the BellLabs Activity it was derived from). Without all three stamps in the SDL the cache is omitted from the product projection and the publisher is resolved directly through the authorizing Assertion (Q-D10-10)."
+  stampFields:
+    - publisherUidMethodVersion
+    - publisherUidDerivedAt
+    - publisherUidAuthorityUid
+  stampFieldsPresentInSdl:
+    - publisherUidMethodVersion
+    - publisherUidDerivedAt
+    - publisherUidAuthorityUid
+  effective: retained-with-stamps
+caches:
+  Channel.influenceScore:
+    module: D9
+    type: Float
+    description: "Discourse projection cache (R-49, Q-D9-19): influence score of this channel over the retelling graph (PageRank class), graph-wide, under influenceMethodVersion. A per-topic or per-frontier score is not stored here (open-questions FU-11). Authority: the occurrences and retellings it was computed from."
+    authority: named in the field docstring; the cache never answers alone
+    stampFieldsOnType:
+      - influenceDerivedAt
+      - influenceMethodVersion
+    requirement: write only with the stamp fields set by the projecting Activity (methodVersion/derivedAt and input or authority reference)
+  ChemicalSubstance.molecularWeight:
+    module: D1
+    type: Float
+    description: Average molecular weight of the defining record (g/mol). A derivation cites the FIELD Assertion that recorded it (authority snapshot + record version), never this cache.
+    authority: named in the field docstring; the cache never answers alone
+    stampFieldsOnType: []
+    requirement: rewritten only by the authorized writer named in the docstring (FIELD Assertion, projection job or atomic assessment update); answers cite the authority, never the cache
+  Claim.lifecycleState:
+    module: K
+    type: ClaimLifecycleState
+    description: Projection cache maintained by the lifecycle projection; authority is the Assessments and Reports.
+    authority: the Assessments and Reports
+    stampFieldsOnType: []
+    requirement: rewritten only by the authorized writer named in the docstring (FIELD Assertion, projection job or atomic assessment update); answers cite the authority, never the cache
+  Claim.latestVerdict:
+    module: K
+    type: SemanticVerdict
+    description: Projection cache of the latest published evidence report's verdict.
+    authority: named in the field docstring; the cache never answers alone
+    stampFieldsOnType: []
+    requirement: rewritten only by the authorized writer named in the docstring (FIELD Assertion, projection job or atomic assessment update); answers cite the authority, never the cache
+  Claim.refinesClaimUid:
+    module: K
+    type: String
+    description: "Projection cache: uid of the broader Claim this one refines (authority: the accepted EQUIVALENCE Assessment with conclusionCode REFINES)."
+    authority: named in the field docstring; the cache never answers alone
+    stampFieldsOnType: []
+    requirement: rewritten only by the authorized writer named in the docstring (FIELD Assertion, projection job or atomic assessment update); answers cite the authority, never the cache
+  Claim.discourseFirstHandCount:
+    module: K
+    type: Int
+    description: "Discourse projection cache (R-49, CQ-CL-06): occurrences of this Claim whose asserter states it first-hand. Written by a PROJECTION Activity under discourseMethodVersion; authority is the occurrences (OCCURRENCE_OF) and their DERIVED_FROM / OCCURS_IN chains, never this value."
+    authority: the occurrences (OCCURRENCE_OF) and their DERIVED_FROM / OCCURS_IN chains, never this value
+    stampFieldsOnType:
+      - discourseDerivedAt
+      - discourseMethodVersion
+    requirement: write only with the stamp fields set by the projecting Activity (methodVersion/derivedAt and input or authority reference)
+  Claim.discourseRetellingCount:
+    module: K
+    type: Int
+    description: "Discourse projection cache (R-49, CQ-CL-06, Q-D9-08): occurrences that retell an earlier occurrence."
+    authority: named in the field docstring; the cache never answers alone
+    stampFieldsOnType:
+      - discourseDerivedAt
+      - discourseMethodVersion
+    requirement: write only with the stamp fields set by the projecting Activity (methodVersion/derivedAt and input or authority reference)
+  Claim.discourseRecutCount:
+    module: K
+    type: Int
+    description: "Discourse projection cache (R-49, CQ-CL-06, Q-D9-08): occurrences in re-published cuts of an earlier work."
+    authority: named in the field docstring; the cache never answers alone
+    stampFieldsOnType:
+      - discourseDerivedAt
+      - discourseMethodVersion
+    requirement: write only with the stamp fields set by the projecting Activity (methodVersion/derivedAt and input or authority reference)
+  Claim.discourseIndependentCount:
+    module: K
+    type: Int
+    description: "Discourse projection cache (R-49, CQ-CL-06): independent source families among the occurrences, under discourseMethodVersion."
+    authority: named in the field docstring; the cache never answers alone
+    stampFieldsOnType:
+      - discourseDerivedAt
+      - discourseMethodVersion
+    requirement: write only with the stamp fields set by the projecting Activity (methodVersion/derivedAt and input or authority reference)
+  Claim.discourseFirstOccurrenceAt:
+    module: K
+    type: DateTime
+    description: "Discourse projection cache (R-49, Q-D9-08): earliest valid time among the occurrences (first assertion)."
+    authority: named in the field docstring; the cache never answers alone
+    stampFieldsOnType:
+      - discourseDerivedAt
+      - discourseMethodVersion
+    requirement: write only with the stamp fields set by the projecting Activity (methodVersion/derivedAt and input or authority reference)
+  DecisionCriterion.publisherUid:
+    module: D10
+    type: String
+    description: "Cache only (R-45, R-46, MD-D10-06): uid of the Organization or Agent that defines the criterion (BellLabs, or a third-party ranker). The authority is the criterion set's authorizing Assertion (ASSERTED_BY the publisher) or, for BellLabs criteria, WAS_GENERATED_BY the BellLabs Activity; answers cite that, never this property. Written only together with publisherUidMethodVersion, publisherUidDerivedAt and publisherUidAuthorityUid; a value without all three stamps is unproven and is not projected (rules/projection-rules.yaml)."
+    authority: the criterion set's authorizing Assertion (ASSERTED_BY the publisher) or, for BellLabs criteria, WAS_GENERATED_BY the BellLabs Activity
+    stampFieldsOnType:
+      - publisherUidAuthorityUid
+      - publisherUidDerivedAt
+      - publisherUidMethodVersion
+    requirement: write only with the stamp fields set by the projecting Activity (methodVersion/derivedAt and input or authority reference)
+  LabelVersion.firstObservedAt:
+    module: D6
+    type: DateTime
+    description: "Observation cache (executor-maintained from evidencing snapshots; read-only semantics): first and last retrievedAt."
+    authority: named in the field docstring; the cache never answers alone
+    stampFieldsOnType: []
+    requirement: rewritten only by the authorized writer named in the docstring (FIELD Assertion, projection job or atomic assessment update); answers cite the authority, never the cache
+  Offer.firstObservedAt:
+    module: D6
+    type: DateTime
+    description: "Observation cache (executor-maintained, read-only semantics) from the price/availability Assertions: CQ-AX-06, CQ-CM-05."
+    authority: named in the field docstring; the cache never answers alone
+    stampFieldsOnType: []
+    requirement: rewritten only by the authorized writer named in the docstring (FIELD Assertion, projection job or atomic assessment update); answers cite the authority, never the cache
+  Person.influenceScore:
+    module: D7
+    type: Float
+    description: "Discourse projection cache (R-49, Q-D9-19): influence score of this person over the retelling graph (PageRank class), graph-wide, under influenceMethodVersion. A per-topic or per-frontier score is not stored here (open-questions FU-11). Authority: the occurrences and retellings it was computed from."
+    authority: named in the field docstring; the cache never answers alone
+    stampFieldsOnType:
+      - influenceDerivedAt
+      - influenceMethodVersion
+    requirement: write only with the stamp fields set by the projecting Activity (methodVersion/derivedAt and input or authority reference)
+  ProtocolStep.locatorUid:
+    module: D5
+    type: String
+    description: "uid of the SourceLocator of this step's span on the edition's snapshot. A cache (R-46): the provenance path is the HAS_EDITION authorizing Assertion's HAS_EVIDENCE."
+    authority: named in the field docstring; the cache never answers alone
+    stampFieldsOnType: []
+    requirement: rewritten only by the authorized writer named in the docstring (FIELD Assertion, projection job or atomic assessment update); answers cite the authority, never the cache
+  Publication.revisionStatus:
+    module: D3
+    type: SourceRevisionKind
+    description: Read-only projection cache over incoming REVISES and kernel HAS_REVISION_STATUS Assertions (method publication-revision-status/v2), typed by the kernel SourceRevisionKind; null = none known (R-44). The single work-level cache; authority stays with those per-asserter Assertions. Filter to exclude retracted work.
+    authority: those per-asserter Assertions
+    methodVersion: publication-revision-status/v2
+    stampFieldsOnType:
+      - revisionStatusDerivedAt
+      - revisionStatusMethodVersion
+    requirement: write only with the stamp fields set by the projecting Activity (methodVersion/derivedAt and input or authority reference)
+  SourceSnapshot.revisionKind:
+    module: K
+    type: SourceRevisionKind
+    description: Publisher revision this snapshot records, if any (capture cache; the authority is the REVISES episode or HAS_REVISION_STATUS Assertion, R-44).
+    authority: the REVISES episode or HAS_REVISION_STATUS Assertion, R-44)
+    stampFieldsOnType: []
+    requirement: rewritten only by the authorized writer named in the docstring (FIELD Assertion, projection job or atomic assessment update); answers cite the authority, never the cache
+  Study.phase:
+    module: D3
+    type: "[TrialPhase!]"
+    description: "Projection cache: phase of the latest registry version (Q-D3-10)."
+    authority: named in the field docstring; the cache never answers alone
+    stampFieldsOnType:
+      - projectionDerivedAt
+      - projectionMethodVersion
+      - projectionOfRegistrationVersionUid
+    requirement: write only with the stamp fields set by the projecting Activity (methodVersion/derivedAt and input or authority reference)
+  Study.overallStatus:
+    module: D3
+    type: RegistryStatus
+    description: "Projection cache: status of the latest registry version (Q-D3-02, Q-D3-10, Q-D3-18)."
+    authority: named in the field docstring; the cache never answers alone
+    stampFieldsOnType:
+      - projectionDerivedAt
+      - projectionMethodVersion
+      - projectionOfRegistrationVersionUid
+    requirement: write only with the stamp fields set by the projecting Activity (methodVersion/derivedAt and input or authority reference)
+  Study.primaryCompletionDate:
+    module: D3
+    type: DateTime
+    description: "Projection cache: expected or actual primary completion of the latest version (Q-D3-02, Q-D3-10)."
+    authority: named in the field docstring; the cache never answers alone
+    stampFieldsOnType:
+      - projectionDerivedAt
+      - projectionMethodVersion
+      - projectionOfRegistrationVersionUid
+    requirement: write only with the stamp fields set by the projecting Activity (methodVersion/derivedAt and input or authority reference)
+  Study.resultsPosted:
+    module: D3
+    type: Boolean
+    description: "Projection cache: true when the latest registry version has posted results (Q-D3-02)."
+    authority: named in the field docstring; the cache never answers alone
+    stampFieldsOnType:
+      - projectionDerivedAt
+      - projectionMethodVersion
+      - projectionOfRegistrationVersionUid
+    requirement: write only with the stamp fields set by the projecting Activity (methodVersion/derivedAt and input or authority reference)
+registerProjections:
+  Study:
+    method: study-registry-projection/v1
+    fields:
+      - phase
+      - overallStatus
+      - primaryCompletionDate
+      - primaryCompletionDateType
+      - resultsPosted
+    provenance:
+      - projectionOfRegistrationVersionUid
+      - projectionMethodVersion
+      - projectionDerivedAt
+    writer: PROJECTION Activity
+    readOnly: true
+notReported:
+  AlgorithmVersion:
+    module: D4
+    field: notReported
+    itemType: MeasurementField
+    values:
+      - METHOD_PRINCIPLE
+      - INSTRUMENT_MODEL
+      - REAGENT_KIT
+      - SOFTWARE_VERSION
+      - SPECIMEN
+      - CALIBRATION_TRACEABILITY
+      - PERFORMING_LAB
+      - UNIT
+      - MEASURAND_SYSTEM
+      - METRIC_METHOD
+      - VERSION_LABEL
+      - INPUT_PLATFORM
+      - INPUT_FEATURES
+      - TRAINING_POPULATION
+      - RELIABILITY
+      - INTERVAL_DERIVATION
+      - INTERVAL_PARTITION
+      - EFFECTIVE_DATE
+      - FIRMWARE_VERSION
+  AssayVersion:
+    module: D4
+    field: notReported
+    itemType: MeasurementField
+    values:
+      - METHOD_PRINCIPLE
+      - INSTRUMENT_MODEL
+      - REAGENT_KIT
+      - SOFTWARE_VERSION
+      - SPECIMEN
+      - CALIBRATION_TRACEABILITY
+      - PERFORMING_LAB
+      - UNIT
+      - MEASURAND_SYSTEM
+      - METRIC_METHOD
+      - VERSION_LABEL
+      - INPUT_PLATFORM
+      - INPUT_FEATURES
+      - TRAINING_POPULATION
+      - RELIABILITY
+      - INTERVAL_DERIVATION
+      - INTERVAL_PARTITION
+      - EFFECTIVE_DATE
+      - FIRMWARE_VERSION
+  Device:
+    module: D4
+    field: notReported
+    itemType: MeasurementField
+    values:
+      - METHOD_PRINCIPLE
+      - INSTRUMENT_MODEL
+      - REAGENT_KIT
+      - SOFTWARE_VERSION
+      - SPECIMEN
+      - CALIBRATION_TRACEABILITY
+      - PERFORMING_LAB
+      - UNIT
+      - MEASURAND_SYSTEM
+      - METRIC_METHOD
+      - VERSION_LABEL
+      - INPUT_PLATFORM
+      - INPUT_FEATURES
+      - TRAINING_POPULATION
+      - RELIABILITY
+      - INTERVAL_DERIVATION
+      - INTERVAL_PARTITION
+      - EFFECTIVE_DATE
+      - FIRMWARE_VERSION
+  LabTest:
+    module: D4
+    field: notReported
+    itemType: MeasurementField
+    values:
+      - METHOD_PRINCIPLE
+      - INSTRUMENT_MODEL
+      - REAGENT_KIT
+      - SOFTWARE_VERSION
+      - SPECIMEN
+      - CALIBRATION_TRACEABILITY
+      - PERFORMING_LAB
+      - UNIT
+      - MEASURAND_SYSTEM
+      - METRIC_METHOD
+      - VERSION_LABEL
+      - INPUT_PLATFORM
+      - INPUT_FEATURES
+      - TRAINING_POPULATION
+      - RELIABILITY
+      - INTERVAL_DERIVATION
+      - INTERVAL_PARTITION
+      - EFFECTIVE_DATE
+      - FIRMWARE_VERSION
+  Metric:
+    module: D4
+    field: notReported
+    itemType: MeasurementField
+    values:
+      - METHOD_PRINCIPLE
+      - INSTRUMENT_MODEL
+      - REAGENT_KIT
+      - SOFTWARE_VERSION
+      - SPECIMEN
+      - CALIBRATION_TRACEABILITY
+      - PERFORMING_LAB
+      - UNIT
+      - MEASURAND_SYSTEM
+      - METRIC_METHOD
+      - VERSION_LABEL
+      - INPUT_PLATFORM
+      - INPUT_FEATURES
+      - TRAINING_POPULATION
+      - RELIABILITY
+      - INTERVAL_DERIVATION
+      - INTERVAL_PARTITION
+      - EFFECTIVE_DATE
+      - FIRMWARE_VERSION
+  ProtocolStep:
+    module: D5
+    field: notReportedFields
+    itemType: String
+    values: field names of the type (strings)
+  ReferenceIntervalVersion:
+    module: D4
+    field: notReported
+    itemType: MeasurementField
+    values:
+      - METHOD_PRINCIPLE
+      - INSTRUMENT_MODEL
+      - REAGENT_KIT
+      - SOFTWARE_VERSION
+      - SPECIMEN
+      - CALIBRATION_TRACEABILITY
+      - PERFORMING_LAB
+      - UNIT
+      - MEASURAND_SYSTEM
+      - METRIC_METHOD
+      - VERSION_LABEL
+      - INPUT_PLATFORM
+      - INPUT_FEATURES
+      - TRAINING_POPULATION
+      - RELIABILITY
+      - INTERVAL_DERIVATION
+      - INTERVAL_PARTITION
+      - EFFECTIVE_DATE
+      - FIRMWARE_VERSION
+operationalExclusions:
+  releaseId: biotech-schema-v2.0.1
+  rule: Every operational name of rules/operational-names.yaml is excluded from the consumer projection, from typed reads and from catalog templates; legacy nodes (LegacyV0) are never returned as v2 facts.
+  labels:
+    - LegacyV0
+    - LegacyV0_Biomarker
+    - LegacyV0_Compound
+    - LegacyV0_CompoundForm
+    - LegacyV0_Event
+    - LegacyV0_LabTest
+    - LegacyV0_Listing
+    - LegacyV0_ListingSnapshot
+    - LegacyV0_Organization
+    - LegacyV0_OrganizationSnapshot
+    - LegacyV0_PanelDefinition
+    - LegacyV0_Person
+    - LegacyV0_PhysicalLocation
+    - LegacyV0_Product
+    - LegacyV0_ProductSnapshot
+    - LegacyV0_RegulatoryStatus
+    - LegacyV0_Study
+    - LegacyV0_TechnologyPlatform
+    - LegacyV0_Document
+    - LegacyV0_BellLabsSchemaDeploymentEvidence
+    - Document
+    - BellLabsSchemaDeploymentEvidence
+    - KsWriteFence
+    - KsIntentMarker
+    - KsReleaseMarker
+    - KsRevocationFence
+  relationshipTypes:
+    - MIGRATED_FROM
+  properties:
+    - legacyLabels
+    - legacyExportDigest
+  qualifierPrefixes:
+    - legacy:recordedFrom=
+    - legacy:extractedAt=
+    - legacy:runId=
+  decision: CUTOVER.md Compatibility decisions

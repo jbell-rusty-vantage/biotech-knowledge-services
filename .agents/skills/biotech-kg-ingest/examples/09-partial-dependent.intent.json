@@ -1,0 +1,225 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v2",
+  "intentId": "skill-partial-1",
+  "pins": {
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+    "policyVersion": "bks-admission-policy/v1"
+  },
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "biotech-kg-ingest-examples",
+      "model": "example"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run-skill-partial-1",
+      "missionId": "mission-skill-partial",
+      "operationId": "op-skill-partial-1"
+    },
+    "activityKind": "INGESTION"
+  },
+  "basis": {
+    "creationOnly": {
+      "reason": "biotech-kg-ingest example partial: first capture of synthetic example entities"
+    }
+  },
+  "sources": [
+    {
+      "ref": "label",
+      "source": {
+        "canonicalUri": "https://examples.bks.test/partial/label",
+        "sourceKind": "WEB_PAGE"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T08:00:00Z",
+        "observedAt": "2026-10-08T08:00:00Z",
+        "contentHash": "sha256:f077b41706b669a872bc5b05496ed213db1636fb4dc18d129adfda0ed5fe8d66",
+        "contentHashBasis": "SYNTHETIC_FIXTURE",
+        "captureMethod": "bks-example/1",
+        "captureCompleteness": "COMPLETE"
+      },
+      "locators": [
+        {
+          "ref": "l-servings",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "raw-capture/v1",
+            "type": "TextQuoteSelector",
+            "exact": "Take up to 3 capsules daily",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 30,
+              "end": 57
+            }
+          },
+          "exact": "Take up to 3 capsules daily",
+          "startOffset": 30,
+          "endOffset": 57,
+          "reportsFields": [
+            "LabelVersion.maxDailyServings"
+          ]
+        },
+        {
+          "ref": "l-owner",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "raw-capture/v1",
+            "type": "TextQuoteSelector",
+            "exact": "Example Partial Co owns Example Partial Brand",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 90,
+              "end": 135
+            }
+          },
+          "exact": "Example Partial Co owns Example Partial Brand",
+          "startOffset": 90,
+          "endOffset": 135
+        },
+        {
+          "ref": "l-supply",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "raw-capture/v1",
+            "type": "TextQuoteSelector",
+            "exact": "supplied by an undisclosed partner",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 150,
+              "end": 184
+            }
+          },
+          "exact": "supplied by an undisclosed partner",
+          "startOffset": 150,
+          "endOffset": 184
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "org",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "Example Partial Co",
+      "uidSegment": "skill-partial-org",
+      "properties": {
+        "entityKind": "LEGAL_ENTITY"
+      },
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "brand",
+      "mode": "new",
+      "nodeType": "Brand",
+      "name": "Example Partial Brand",
+      "uidSegment": "skill-partial-brand",
+      "properties": {
+        "brandKind": "CONSUMER_PRODUCT"
+      },
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "lv",
+      "mode": "new",
+      "nodeType": "LabelVersion",
+      "name": "Example partial label v1",
+      "uidSegment": "skill-partial-lv",
+      "properties": {
+        "panelKind": "SUPPLEMENT_FACTS",
+        "contentDigest": "sha256:2be50e8b29210f072c1e068ff9089f7efbe45ccf4ec3519f84190a983b5d373e",
+        "compositionDigest": "sha256:3b95be8f30de00817c849018349e83d188ecce3cf6899bf8697f412ebc46c7ea"
+      },
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "mat",
+      "mode": "new",
+      "nodeType": "IngredientMaterial",
+      "name": "Example partial material",
+      "uidSegment": "skill-partial-mat",
+      "properties": {
+        "materialKind": "UNRESOLVED"
+      },
+      "onMatch": "use_existing"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "servings",
+      "kind": "node.upsert",
+      "subjectRef": "lv",
+      "properties": {
+        "maxDailyServings": 3
+      },
+      "fieldEvidence": {
+        "maxDailyServings": [
+          "l-servings"
+        ]
+      },
+      "asserterRef": "org"
+    },
+    {
+      "proposalId": "daily-total",
+      "kind": "assertion.literal",
+      "subjectRef": "lv",
+      "dependsOn": [
+        "servings"
+      ],
+      "assertion": {
+        "predicate": "CALCULATED_SERVING_MASS_TOTAL",
+        "basisKind": "CALCULATED",
+        "derivation": {
+          "rule": "example-serving-total/v1",
+          "from": [
+            {
+              "proposal": "servings"
+            }
+          ]
+        },
+        "validity": {}
+      },
+      "value": {
+        "valueNumber": 900,
+        "unitCode": "mg/d"
+      },
+      "evidence": [
+        "l-servings"
+      ]
+    },
+    {
+      "proposalId": "owns",
+      "kind": "edge.assert",
+      "relationshipType": "OWNS_BRAND",
+      "fromRef": "org",
+      "toRef": "brand",
+      "asserterRef": "org",
+      "evidence": [
+        "l-owner"
+      ],
+      "assertion": {
+        "speechAct": "STATES",
+        "validity": {}
+      }
+    },
+    {
+      "proposalId": "supplies",
+      "kind": "assertion.relate",
+      "subjectRef": "org",
+      "objectRef": "mat",
+      "asserterRef": "org",
+      "evidence": [
+        "l-supply"
+      ],
+      "hold": {
+        "reason": "the supplier is undisclosed; the buyer/supplier identity needs source work before this is written"
+      },
+      "assertion": {
+        "predicate": "SUPPLIES_MATERIAL",
+        "speechAct": "STATES",
+        "validity": {}
+      }
+    }
+  ]
+}

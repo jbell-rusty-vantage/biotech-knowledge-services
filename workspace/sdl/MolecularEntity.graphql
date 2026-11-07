@@ -1,0 +1,34 @@
+"""
+Purpose: a gene, protein, protein complex, protein family or non-coding RNA that is a curated participant in a
+mechanism or the object of a compound's molecular-target Assertion (ChEMBL: sirolimus INHIBITS FKBP1A), so that
+"compound → molecular target → pathway" is an Assertion hop plus PARTICIPATES_IN, without a MechanismChain node. Default organism human; orthologs are separate nodes
+only when a question needs them (Q-D2-20 model-organism genes).
+Identity rule: (organism ncbiTaxonId, primary identifier) — UniProt accession for proteins, HGNC id for human genes
+(NCBI Gene / Ensembl otherwise); identifiers attach through the kernel (UNIPROT, HGNC, NCBI_GENE, ENSEMBL_GENE).
+uid token: `molecular-entity` (hu:molecular-entity:<opaque>).
+Questions: Q-D2-08, Q-D2-11, Q-D2-19, Q-D2-20, Q-D2-03.
+"""
+type MolecularEntity implements Entity & Subjectable
+  @node(labels: ["MolecularEntity", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  entityKind: MolecularEntityKind
+  "Official symbol (HGNC for human), e.g. SIRT1, MTOR, FKBP1A."
+  geneSymbol: String
+  organism: ModelOrganism
+  "NCBI Taxonomy id as a string (9606 human, 10090 mouse)."
+  ncbiTaxonId: String
+  description: String
+  synonyms: [String!]
+  """class: asserted; cardinality: many (Reactome participants, GO annotations, GenAge; one Assertion per authority record and release, MechanismReferenceProperties with role and release); questions: Q-D2-11, Q-D2-02, Q-D2-03, Q-D2-19."""
+  participatesIn: [Mechanism!]!
+    @relationship(type: "PARTICIPATES_IN", direction: OUT, properties: "MechanismReferenceProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

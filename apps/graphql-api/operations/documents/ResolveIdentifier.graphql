@@ -1,0 +1,20 @@
+# Identifier resolution: (scheme, value) -> Identifier -> HAS_IDENTIFIER -> identified subjects.
+# No root sort: with `sort: uid` + LIMIT the planner may walk the uid index in order and filter (scheme, value) per
+# row instead of seeking identifier_scheme_value; at most a handful of issuers share a (scheme, value).
+# List form, not identifiesConnection: the connection over the 56-member Subjectable interface costs ~100 ms of
+# synchronous @neo4j/graphql 7.6.3 work per request (measured; p95 2.8 s at 20 clients) against ~12 ms for the list.
+# Assignment episodes (isPrimary, valid time) are excluded: operations/excluded/IdentifierAssignmentsPage.graphql.
+query ResolveIdentifier($scheme: String!, $value: String!) {
+  identifiers(where: { scheme: { eq: $scheme }, value: { eq: $value } }, limit: 5) {
+    uid
+    scheme
+    issuer
+    value
+    normalizationRule
+    validFrom
+    validTo
+    identifies(limit: 10, sort: [{ uid: ASC }]) {
+      ...SubjectRef
+    }
+  }
+}

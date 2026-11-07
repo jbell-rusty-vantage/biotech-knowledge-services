@@ -1,0 +1,120 @@
+version: 1
+module: D10
+# Source: packets/D10/06-node-register.yaml (sha256 3ea63fd6…), edited by the S module editor for D10 on 2026-10-08 per
+# final/decision-report.md and final/_work/rulings.yaml (global, modules.D10). Every entry keeps the 01-PACKET-CONTRACT
+# fields and adds `module: D10`. Synthesis edits:
+#   R-17/R-48  Association stored labels ["Association"] (it does not implement Subjectable); `labels` recorded per node.
+#   R-46  DecisionCriterion.publisherUid is a cache; Q-D10-10 reaches the publisher through the criterion set's
+#         authorizing Assertion (ASSERTED_BY) or WAS_GENERATED_BY the BellLabs Activity.
+#   R-48  Association lifecycle: WAS_GENERATED_BY a PROJECTION Activity; superseded uncited records may be removed.
+#   R-03  `mutations` read as { graphql: none, executor: ... } (every type has @mutation(operations: [])).
+#   R-33  PolicyVersion stays a string (deferred row cites the ruling).
+# Node types unchanged (3); filterProperties and otherProperties unchanged.
+nodes:
+  - name: DecisionCriterion
+    module: D10
+    uidToken: decision-criterion
+    identityKeys: [criterionKey, version]
+    identifierSchemes: []   # no external identifier scheme; criteria are BellLabs or ranker-defined keys
+    labels: [DecisionCriterion, Entity]   # implements Subjectable, keeps the Entity label (R-17)
+    whyNode: >-
+      Q-D10-01 computes a ranking by reading the criteria of one criteria set at one version (filter on
+      criteriaSetKey, criteriaSetVersion, targetKeys); Q-D10-02 / CQ-RC-01 / CQ-RC-02 traverse Report → USES_CRITERION
+      → criterion to show the exact versions a published comparison applied; CQ-RC-07 traverses criterion →
+      reports to find every report a superseded criterion affected; Q-D10-10 / Q-D10-11 join a third-party ranker's
+      criteria to its method-page Assertions (criterion is their subject) and compare two rankers criterion by
+      criterion. The publisher is reached through the criterion set's authorizing Assertion (ASSERTED_BY the
+      publisher; WAS_GENERATED_BY the BellLabs Activity for our own); publisherUid is a cache of it (R-46).
+      A property on the Report cannot be traversed from the criterion side and a kernel type cannot gain fields.
+    filterProperties: [criterionKey, version, criteriaSetKey, criteriaSetVersion, criterionKind, targetKeys, publisherUid, recordedTo]   # targetKeys: Q-D10-01 criteria filter (targets@0.2.2, R-60); publisherUid: cache (R-46)
+    otherProperties: 11
+    archetype: Entity
+    implements: [Entity, Subjectable]
+    mutations: { graphql: none, executor: "create (node.upsert); a new version is a new node naming supersedesUid; never update or delete" }   # R-03
+    writes: "intent node.upsert by the criteria-registry agent (tool:bks-criteria-registry); new version = new node naming supersedesUid; never updated after a Report uses it; validFrom/validTo are BellLabs policy validity, not world valid time (R-24)"
+
+  - name: ReportItem
+    module: D10
+    uidToken: report-item
+    identityKeys: [reportUid, itemKey]
+    identifierSchemes: []
+    labels: [ReportItem, InformationArtifact]
+    whyNode: >-
+      CQ-RC-06 filters rows by disposition BLOCKED and traverses BLOCKED_BY to the D5 UseConstraint (and on to the resolving Assertion and its locator) or the harm Assessment (R-75);
+      CQ-RC-01 lists options by disposition and rank with the reason (ASSESSES → option); Q-D10-13 / CQ-AX-11
+      traverse DERIVED_FROM from a superseded or re-adjudicated input back to the exact row or section that cited it;
+      CQ-AX-01 / Q-D10-14 filter sections with uncitedSentenceCount > 0. All four need a record below the report
+      level; parsing the stored body at query time would make them unanswerable in Cypher and in GraphQL.
+    filterProperties: [itemKind, sectionKind, itemKey, disposition, rank, uncitedSentenceCount, citationCompleteness]
+    otherProperties: 8
+    archetype: InformationArtifact
+    implements: [Entity]
+    mutations: { graphql: none, executor: "create only, with its Report (report.publish); insert-only" }   # R-03
+    writes: "intent report.publish (tool:bks-report-publish) in the same transaction as the kernel Report; insert-only"
+
+  - name: Association
+    module: D10
+    uidToken: association
+    identityKeys: [associationKind, memberUids, methodVersion, inputSetDigest]
+    identifierSchemes: []
+    labels: [Association]   # R-17, R-48: Entity label dropped (not Subjectable)
+    whyNode: >-
+      Q-D10-05 filters associations by member and kind and returns score, components, method version and inputs;
+      CQ-AX-08 traverses Association → DERIVED_FROM → Assertion to find records citing withdrawn inputs and checks
+      the input digest. Directive 3.6 forbids the alternative (a plain edge between two domain entities carrying a
+      score), and a derived edge cannot carry a breakdown, a statistic, an input set or supersession. Only
+      BellLabs-computed projections are Associations (fixture: FAERS PRR from four openFDA counts); external scores
+      are Assertions by their producer. Adversarial-review stage: no longer Subjectable (Q-D10-06's interpretation
+      ASSESSES the drug and the event, not the record). Q-D2-18's ranking reads EVIDENCE_AGGREGATE Associations, one per
+      modulator × mechanism (R-47). Discourse metrics are not Associations (projection-cache properties, R-49).
+    filterProperties: [associationKind, anchorUid, score, methodVersion, computedAt, staleAfter, recordedTo]
+    otherProperties: 9
+    archetype: Entity
+    implements: [Entity]
+    mutations: { graphql: none, executor: "projection job only: create; close with recordedTo on recompute; may delete a superseded record no Report or ReportItem cites (R-48)" }   # R-03
+    writes: "projection job only (tool:bks-projection-job; GDS through tool:neo4j-gds), as a PROJECTION Activity with methodVersion (WAS_GENERATED_BY, R-48); planner rejects other writers (DERIVED_EDGE_READ_ONLY extended to Association)"
+
+deferred:
+  - name: PolicyVersion
+    reason: >-
+      Kernel map gives it to D10 "as a node only if a question traverses it". None does: CQ-RC-02 reads the policy id
+      on the Report; "which reports were published under policy P" is a property filter on Report.policyVersion /
+      Activity.policyVersion. The policy document itself is a registered artifact in the store (payloadHash). Promote
+      when a question asks for policy → criteria → reports traversals across policy versions (11-open-questions #21).
+      Confirmed: PolicyVersion stays a string (R-33).
+  - name: Insight
+    reason: "PLAN 6.1: an insight is a kernel Assessment (assessmentKind INSIGHT)."
+  - name: Recommendation (BellLabs)
+    reason: "A BellLabs recommendation is a kernel Report (reportKind RECOMMENDATION or COMPARISON) whose ROW items have disposition SELECTED; a person's recommendation is a kernel claim occurrence (speechAct RECOMMENDS, predicate RECOMMENDS_USE / RECOMMENDS_AGAINST registered by D9, R-83)."
+  - name: Community / Cluster
+    reason: "Q-D10-20 runs GDS Leiden over a per-question projection; community ids are streamed or written by a PROJECTION Activity as non-schema properties; a cluster summary that leaves the graph is a Report (PROFILE) re-grounded on assertions. Value-3 question; no node."
+  - name: SimilarityResult
+    reason: "Q-D10-19 similarity is an Association of kind SIMILARITY; no separate type."
+  - name: EntitySnapshot (frozen state of X at T)
+    reason: "Kernel decision 3 (computed state cites DERIVED_FROM + inputSetDigest); a compound profile is a Report whose items cite assertions; no D10 snapshot type."
+  - name: UseContextProfile (W10)
+    reason: "Personalization is out of scope (brief); a comparison's context (population, dose, target) is recorded as the read intent's parameters (Report.queryDigest) and the criteria's targetKeys. Flagged 'possibly never used' in OPEN-QUESTIONS."
+  - name: Comparison / Ranking (unpublished)
+    reason: "Directive 3.5: an unpublished comparison is computed at query time; nothing is stored but the criteria."
+  - name: AnswerLog (ad hoc answers)
+    reason: "Only published answers are kernel Reports (reportKind ANSWER); ad hoc answer traces stay in the answer service's logs (Activity of kind ANSWER may be written when an answer is published)."
+
+mergedInto:
+  - from: EvidenceSynthesis (W10)
+    into: K.Assessment (assessmentKind EVIDENCE_SYNTHESIS)
+  - from: EvidenceStrengthAssessment (W10)
+    into: K.Assessment (assessmentKind EVIDENCE_SYNTHESIS, assessmentSubkind D10.strength; scheme/grade requested as kernel fields, 11-open-questions)
+  - from: ClaimEvidenceAssessment (W21, via CLAIM_EVIDENCE_BASED_ON)
+    into: K.Assessment (assessmentKind EVIDENCE_SYNTHESIS or VETTING)
+  - from: AnswerRecord (W23)
+    into: K.Report (reportKind ANSWER, queryDigest) — kernel decision; D10 adds ReportItem for its sections
+  - from: PolicyVersion (W23)
+    into: kernel string id Report.policyVersion / Activity.policyVersion (node deferred, see deferred; R-33)
+  - from: DecisionCriterion (W23)
+    into: D10.DecisionCriterion (kept; adds version, criteriaSetKey/Version, direction, weight, rule, inputPredicates, targetKeys, publisherUid (cache, R-46), policy validity and recorded time)
+  - from: RecommendationOption (pinned private-store design, CQ-RC-01 trace) — public part
+    into: D10.ReportItem (itemKind ROW, disposition, rank, cellValues)
+  - from: Association (retired pinned type)
+    into: D10.Association (revived as a read-only materialized projection record)
+  - from: EvidenceApplicability, ApplicabilityDimension, EndpointClassification, ResultInterpretation (W10)
+    into: "D3 (owner of evidence assessment content; kernel Assessment kinds APPLICABILITY etc.); D10 only cites them"

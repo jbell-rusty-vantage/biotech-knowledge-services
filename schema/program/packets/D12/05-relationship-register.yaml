@@ -1,0 +1,238 @@
+version: 1
+module: D12
+# Model stage (A2, 2026-10-08); check stage and adversarial-review pass the same day. Kernel pattern:
+# packets/K/09-reasoning.md (A1). Every asserted edge below is authorized by exactly one kernel Assertion whose predicate
+# equals the edge type. Edge-property types: AssertedEdgeProperties for the two episode edges, AssertedRecordedProperties
+# for PATTERN_COMPONENT, and the D12-local superset FoodContentProperties (kernel M11) for FOOD_CONTAINS, which types the
+# amount a question filters on. Roles, derivation codes, n, min/max, portion labels and conditions stay in
+# Assertion.valueString / qualifiers, written in the grammar below. Tool ids are listed in 08-sources-and-tools.md.
+qualifierGrammar:
+  rule: >-
+    Every entry of Assertion.qualifiers is `key:VALUE` — no space after the colon, key lowerCamel, VALUE an enum value
+    when the key names an enum (so `('key:' + $value) IN a.qualifiers` matches exactly), otherwise a token without spaces
+    (numbers, ISO 8601 durations, uids). Free text a source prints goes under a key ending in `Verbatim`
+    (`preparationVerbatim:frying (repeated)`), which no pattern filters on. One entry per value; repeat the key for
+    several values (`preparationMethod:FRIED_DEEP`, `preparationMethod:FRIED_PAN`).
+  keys:
+    - { key: preparationMethod, value: "D12 PreparationMethod value", usedBy: [PREPARATION_CHANGES_CONTENT, FORMS_DURING_PREPARATION], filteredBy: [Q-D12-02, Q-D12-03] }
+    - { key: preparationVerbatim, value: "source wording (free text)", usedBy: [PREPARATION_CHANGES_CONTENT, FORMS_DURING_PREPARATION] }
+    - { key: temperatureC, value: number, usedBy: [PREPARATION_CHANGES_CONTENT] }
+    - { key: duration, value: "ISO 8601 duration", usedBy: [PREPARATION_CHANGES_CONTENT] }
+    - { key: cycles, value: "integer, or `<=N` for 'up to N'", usedBy: [PREPARATION_CHANGES_CONTENT] }
+    - { key: direction, value: "INCREASE | DECREASE | NO_CHANGE", usedBy: [PREPARATION_CHANGES_CONTENT] }
+    - { key: changeLow, value: "percent (signed)", usedBy: [PREPARATION_CHANGES_CONTENT] }
+    - { key: changeHigh, value: "percent (signed)", usedBy: [PREPARATION_CHANGES_CONTENT] }
+    - { key: comparator, value: "GE | GT | LE | LT | APPROX (D1 convention; absent = EQ)", usedBy: [FOOD_CONTAINS, PREPARATION_CHANGES_CONTENT] }
+    - { key: range, value: "<low>-<high>", usedBy: [FOOD_CONTAINS] }
+    - { key: portion, value: "portion label, spaces as '_' (medium_serving)", usedBy: [FOOD_CONTAINS, HAS_PORTION_WEIGHT] }
+    - { key: derivation, value: "source derivation code, FDC:A | FDC:NC | ...", usedBy: [FOOD_CONTAINS] }
+    - { key: dataPoints, value: integer, usedBy: [FOOD_CONTAINS] }
+    - { key: min, value: number, usedBy: [FOOD_CONTAINS] }
+    - { key: max, value: number, usedBy: [FOOD_CONTAINS] }
+    - { key: dataType, value: "FOUNDATION | SR_LEGACY | SURVEY | ANALYTICAL_DB", usedBy: [FOOD_CONTAINS] }
+    - { key: role, value: "INCLUDES | EMPHASIZES | LIMITS | EXCLUDES (PATTERN_COMPONENT keeps it in valueString; the key is for predicate-only pattern statements)", usedBy: [] }
+    - { key: frequency, value: "PER_DAY | PER_WEEK", usedBy: [PATTERN_COMPONENT] }
+    - { key: population, value: "D5 PopulationGroup code or D3 StudyPopulation uid (D5 vocab-targets 0.2.x requiredQualifiers)", usedBy: [WORSENS_TARGET, IMPROVES_TARGET, NO_EFFECT_ON_TARGET, MIXED_EFFECT_ON_TARGET, CAUSES_ADVERSE_EFFECT], filteredBy: [Q-D12-08, Q-D12-26, Q-D12-28] }
+    - { key: populationVerbatim, value: "source wording of the population", usedBy: [WORSENS_TARGET, CAUSES_ADVERSE_EFFECT] }
+    - { key: outcome, value: "D4 Metric | D4 Biomarker | D2 Outcome uid, or outcomeVerbatim:<text>", usedBy: [WORSENS_TARGET, CAUSES_ADVERSE_EFFECT] }
+    - { key: species, value: "NCBI taxon uid or HUMAN | LABORATORY_ANIMALS", usedBy: [CAUSES_ADVERSE_EFFECT] }
+    - { key: doseContext, value: "ABOVE_DIETARY_EXPOSURE | AT_DIETARY_EXPOSURE | NOT_STATED", usedBy: [CAUSES_ADVERSE_EFFECT] }
+    - { key: issueDate, value: "ISO date (print issue of a notice)", usedBy: [HAS_REVISION_STATUS] }
+relationships:
+  - type: FOOD_CONTAINS
+    class: asserted
+    from: FoodItem
+    to: [D1.ChemicalSubstance, D1.Constituent]
+    edgeProperties: FoodContentProperties
+    cardinality: many (FoodItem → component; one line per authorizing Assertion; a revised value supersedes through recordedTo, never overwrites)
+    temporal: recorded-only
+    questions: [Q-D12-01, Q-D12-02, Q-D12-20, Q-D12-21, Q-D12-24]
+    pattern: 03#Q-D12-01
+    populatedBy: [tool:usda-fdc-api, tool:phenol-explorer-scrape, tool:ncbi-eutils]
+    fixture: 07-fixtures/mcdonalds-fries-prepared-food
+    nestedOperations: [CONNECT]
+    aggregate: false
+    edgeCarries: "statementKind (D1 ContentStatementKind), quantity (point value only), unitCode (UCUM), amountBasis (D6 AmountBasis: PER_100G | PER_100ML | PER_SERVING)"
+    assertionCarries: "valueNumber + unitCode (same amount), qualifiers portion:<label> (PER_SERVING), comparator:<..> / range:<lo>-<hi> (then quantity is null), derivation:<FDC:A|FDC:NC>, dataPoints:<n>, min:<v>, max:<v>, dataType:<..>; validFrom/To only when the source states a sampling period"
+    rationale: >-
+      The backbone of the domain: every composition, preparation-difference, nutrient-threshold and similarity
+      question traverses food → component, and FDC (nutrients, derivation codes, n, min/max) and Phenol-Explorer
+      (polyphenols FDC lacks) populate it at scale. Typed edge because Q-D12-01/21 filter and rank by component and
+      Q-D12-20 projects it into GDS. Adversarial review (2026-10-08): the amount moved onto the edge — Q-D12-21 ("at least
+      A of C per 100 g") filters `quantity`, `unitCode` and `amountBasis`, which as qualifier strings forced a join over
+      ~1M Assertions at FDC scale and could not be filtered in GraphQL at all; Q-D12-24 reads `statementKind`
+      (measured vs calculated). The superset is D12-local (kernel M11) and reuses D1's ContentStatementKind and D6's
+      AmountBasis so material, label and food content share vocabularies (D1 keeps only statementKind on its edge
+      because no D1 question filters an amount; OQ-D12-01). Recorded-only (also adversarial review): none of the five
+      composition rows in the fixtures, and no FDC or Phenol-Explorer record read, states a sampling period, so valid
+      time on the edge was always null; a release revision is recorded-time behaviour (supersession). A source that
+      does state a sampling period puts it on the Assertion. Separate name from D1's MATERIAL_CONTAINS (module-unique
+      names, kernel rule); a cross-module read uses [:MATERIAL_CONTAINS|FOOD_CONTAINS].
+  - type: IN_FOOD_CATEGORY
+    class: asserted
+    from: [FoodItem, D6.Product]
+    to: FoodCategory
+    edgeProperties: AssertedEdgeProperties
+    cardinality: many (a food or product belongs to one category per system, several systems)
+    temporal: episode
+    questions: [Q-D12-14, Q-D12-15, Q-D12-08, Q-D12-26, Q-D12-31]
+    pattern: 03#Q-D12-14
+    populatedBy: [tool:usda-fdc-api, tool:openfoodfacts-api, tool:firecrawl-scrape, tool:ncbi-eutils, tool:nova-classifier]
+    fixture: 07-fixtures/mcdonalds-fries-prepared-food  # also exercised by acrylamide-fried-potato-harm (dated survey grouping)
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Group-level harm and benefit statements (NOVA 4 and cardiometabolic outcomes, IARC processed meat) are made
+      about categories; this edge is how a question about one food or one menu item reaches them. Source-stated
+      membership (FDC category, IARC agent definition, a paper's NOVA coding, Open Food Facts nova_group) is an
+      ordinary Assertion; membership we compute (NOVA from ingredient markers) is a CALCULATED Assertion with
+      derivationRule nova-markers/v<n> and DERIVED_FROM inputs, so Q-D12-14's "stated or computed, by which method"
+      is answered from Assertion.basisKind and derivationRule without a second relationship type. Episode because a
+      product's category changes with reformulation (the acrylamide fixture's survey grouping is dated: 2003-10-01 to
+      2004-10-07) and a rule version supersedes the previous computation. The Product → FoodCategory field is declared
+      on FoodCategory (direction IN) so the D6 Product hub does not grow.
+  - type: HAS_REFERENCE_FOOD
+    class: asserted
+    from: D6.Product
+    to: FoodItem
+    edgeProperties: AssertedEdgeProperties
+    cardinality: many (a product maps to zero or more reference foods; a reference food to many products)
+    temporal: episode
+    questions: [Q-D12-04, Q-D12-05, Q-D12-30, Q-D12-34, Q-D12-03]
+    pattern: 03#Q-D12-04
+    populatedBy: [tool:entity-resolution-agent, tool:usda-fdc-api, tool:firecrawl-scrape]
+    fixture: 07-fixtures/mcdonalds-fries-prepared-food
+    nestedOperations: [CONNECT]
+    aggregate: false
+    assertionCarries: "valueString match basis: SAME_ITEM_IN_REFERENCE_DB | INGREDIENT_STATEMENT | CURATED_GENERIC; basisKind EXPERT_OPINION or CALCULATED (+derivationRule) when an agent resolves it"
+    rationale: >-
+      The one bridge between what an organization sells (D6 Product: declared nutrition, formulation, allergens, as-of
+      date) and what a reference source says the food is (D12 FoodItem: composition by preparation). It is what keeps
+      FDC 170721 "McDONALD'S, french fries" (frozen, ~378 kcal per 117 g medium serving) and the chain's current
+      320 Cal as two dated statements instead of one merged fact. Episode because reformulation ends a mapping's
+      validity. Declared on FoodItem (direction IN) so Product stays small.
+  - type: PATTERN_COMPONENT
+    class: asserted
+    from: DietaryPattern
+    to: [FoodItem, FoodCategory, D1.Constituent]
+    edgeProperties: AssertedRecordedProperties
+    cardinality: many (pattern → component; one edge per defining statement)
+    temporal: recorded-only
+    questions: [Q-D12-11, Q-D12-08, Q-D12-23, Q-D12-25]
+    pattern: 03#Q-D12-11
+    populatedBy: [tool:firecrawl-scrape, tool:ncbi-eutils, tool:entity-resolution-agent]
+    fixture: 07-fixtures/predimed-retraction-disconfirmation
+    nestedOperations: [CONNECT]
+    aggregate: false
+    assertionCarries: "valueString role INCLUDES | EMPHASIZES | LIMITS | EXCLUDES; valueNumber + unitCode for a stated quantity (e.g. >= 4 tablespoons/day EVOO, < 10 % energy saturated fat); qualifiers frequency:<PER_DAY|PER_WEEK>, comparator:<..>"
+    rationale: >-
+      What a pattern includes, emphasizes, limits or excludes is the pattern; questions traverse it both ways
+      ("what does MedDiet+EVOO contain", "which patterns exclude ultra-processed food / limit added sugar"). One type
+      with the role on the Assertion instead of four role-named types (cost 3 pairs, not 12); a role-filtered read
+      joins the Assertion it already needs for provenance (03 Q-D12-08 / Q-D12-23 bind edge and Assertion in one
+      OPTIONAL MATCH). Recorded-only: the version lives in DietaryPattern identity (a new guideline edition is a new
+      node). Constituent is a member because guidelines limit nutrients (added sugars, sodium, saturated fat), not foods.
+predicateOnly:
+  - predicate: VARIANT_OF
+    subjectObject: "FoodItem (variant) → FoodItem (base)"
+    carries: "asserter = the curation Agent (basisKind EXPERT_OPINION) or a source that states the pairing; variantKind and preparationMethod stay properties of the variant FoodItem"
+    questions: [Q-D12-02]
+    promoteWhen: "a source publishes base ↔ variant links as data (FoodEx2 facets, FNDDS inputFoods) and a question traverses variant chains across many foods; then a typed edge with AssertedRecordedProperties"
+    note: "demoted from a typed edge in the adversarial review: FDC does not state the link (fixture mcd-05 is a curator's pairing), tool:entity-resolution-agent does not exist yet, and only Q-D12-02 traverses it (−1 relationship type, −1 pair)"
+  - predicate: PREPARATION_CHANGES_CONTENT
+    subjectObject: "FoodItem → D1 ChemicalSubstance | Constituent"
+    carries: "valueNumber (percent change, signed) or valueString; qualifiers preparationMethod, preparationVerbatim, temperatureC, duration, cycles, direction, changeLow, changeHigh, comparator (grammar above)"
+    questions: [Q-D12-02]
+    promoteWhen: "a question ranks preparations by retained content across many foods (e.g. 'which cooking method keeps most polyphenols'), needing a GDS or aggregate traversal over preparation effects"
+  - predicate: FORMS_DURING_PREPARATION
+    subjectObject: "D1 ChemicalSubstance (acrylamide, HCA, PAH) → FoodItem | FoodCategory"
+    carries: "qualifiers preparationMethod (one entry per method), preparationVerbatim, temperature/time conditions"
+    questions: [Q-D12-03]
+    promoteWhen: "a harm question must traverse 'which foods form compound C under preparation P' across hundreds of foods (the FDA/EFSA process-contaminant tables at scale)"
+  - predicate: HAS_HAZARD_CLASSIFICATION
+    subjectObject: "FoodCategory | FoodItem → literal (valueString 'Group 1'), asserter = classifier organization (IARC)"
+    carries: "valueString hazard group, qualifiers outcome, quantified risk per portion (valueNumber 18 %, unitCode %, portion 50 g/day)"
+    questions: [Q-D12-15, Q-D12-08]
+    promoteWhen: "classifications become a filter across many classifiers (IARC, EFSA, Prop 65) and a question joins classifier → classified group"
+  - predicate: HAS_PORTION_WEIGHT
+    subjectObject: "FoodItem → literal (valueNumber grams; qualifier portion:<label>)"
+    carries: "FDC foodPortions gramWeight + modifier; per-serving answers are computed at query time"
+    questions: [Q-D12-01, Q-D12-04, Q-D12-21]
+    promoteWhen: "never as an edge; becomes a FoodItem property list only if the kernel adds a structured list type"
+  - predicate: FOOD_FROM_TAXON
+    subjectObject: "FoodItem → D1 Taxon"
+    carries: "plant or animal part in qualifiers"
+    questions: [Q-D12-34]
+    promoteWhen: "a question traverses taxon → foods (e.g. 'all foods from Olea europaea and their hydroxytyrosol content'); then a typed D12 edge"
+    note: "renamed from DERIVED_FROM_TAXON in the adversarial review: D1 declares DERIVED_FROM_TAXON as a typed edge (IngredientMaterial → Taxon), and the executor materializes an edge whenever a predicate equals an edge type"
+  - predicate: HAS_RECIPE_INGREDIENT
+    subjectObject: "FoodItem (FNDDS survey food) → FoodItem (SR ingredient)"
+    carries: "valueNumber grams in recipe, orderIndex qualifier"
+    questions: [Q-D12-05]
+    promoteWhen: "a question decomposes survey foods into ingredients at scale (FNDDS inputFoods), e.g. 'which mixed dishes contain more than 30 g of processed meat'"
+  - predicate: HAS_GLYCEMIC_INDEX
+    subjectObject: "FoodItem → literal (valueNumber GI, qualifiers reference food glucose|white bread, method)"
+    carries: "GI/GL values from GI tables"
+    questions: [Q-D12-08]
+    promoteWhen: "glycemic-response questions with D4 CGM data enter the value-1 set"
+  - predicate: HAS_DATA_QUALITY_WARNING
+    subjectObject: "FoodItem | D6 Product → literal (valueString warning code as the source prints it, e.g. OFF 'en:nutrition-value-very-high-for-category-energy')"
+    carries: "asserter = the database that raises it (Open Food Facts, FDC)"
+    questions: [Q-D12-24]
+    promoteWhen: "a question filters foods by warning class across a catalog (then a FoodItem property list, not an edge)"
+    note: "registered in the adversarial review (09 D-9 and 03 Q-D12-24 used it unregistered)"
+  - predicate: USED_FOOD_CLASSIFICATION
+    subjectObject: "D3 Study → literal (valueString classification system and citation, e.g. 'NOVA (Monteiro et al., 2018)'); optional object D12 FoodCategory system"
+    carries: "asserter = the study authors"
+    questions: [Q-D12-25]
+    promoteWhen: "a question traverses classification method → studies at volume (then D3 decides; offered to D3)"
+    note: "registered in the adversarial review; D12 owns it until D3 takes it (OQ-D12-27)"
+  - predicate: USED_COMPOSITION_DATABASE
+    subjectObject: "D3 Study → literal (valueString database and release, e.g. 'USDA SR Release 26; FNDDS 4.0')"
+    carries: "asserter = the study authors"
+    questions: [Q-D12-25]
+    promoteWhen: "a question compares studies by composition database release (then D3 decides; offered to D3)"
+    note: "registered in the adversarial review; D12 owns it until D3 takes it (OQ-D12-27)"
+  - predicate: "IMPROVES_TARGET | WORSENS_TARGET | NO_EFFECT_ON_TARGET | MIXED_EFFECT_ON_TARGET | INTENDED_FOR_TARGET (D5 vocabulary 0.2.1, consumed as-is)"
+    subjectObject: "FoodItem | FoodCategory | DietaryPattern | D6 Product → D5 Target"
+    carries: "population:<code|uid> qualifier (population:UNSPECIFIED explicit), basisKind"
+    questions: [Q-D12-08, Q-D12-09, Q-D12-13, Q-D12-23, Q-D12-26]
+    promoteWhen: "never (D5 seam rule: no typed edge from a means to a Target)"
+    note: "FoodCategory as subject is not yet in D5's seam subjects (request OQ-D12-28, owner D5)"
+  - predicate: "CAUSES_ADVERSE_EFFECT (D5 vocabulary, consumed as-is)"
+    subjectObject: "D1 ChemicalSubstance → D2 Condition (D5 seam subjects; a food or category as subject would need D5 to add it)"
+    carries: "qualifiers species, doseContext, population, outcome / outcomeVerbatim; the hazard statement of a regulator or study, never a person-level target effect"
+    questions: [Q-D12-03, Q-D12-06]
+    promoteWhen: "never (D5 predicate)"
+    note: "used by the acrylamide fixture (acr-05: FDA 'high levels of acrylamide caused cancer in laboratory animals', object D2 Condition 'cancer'); D5 10-seams lists it with subjects D1.ChemicalSubstance | D1.IngredientMaterial | D6.Product | D5.Intervention and object D2.Condition"
+  - predicate: "HAS_ACTION_LEVEL | HAS_CLAIM_CONDITION (D8 predicates per synthesis ruling R-93, consumed as-is)"
+    subjectObject: "HAS_ACTION_LEVEL: D1 ChemicalSubstance → D12 FoodCategory | FoodItem; HAS_CLAIM_CONDITION: the authorizing D8 RegulatoryRecord (a product-class condition takes the kernel Claim as subject, qualifier productClass=)"
+    carries: "valueNumber + unitCode (HAS_ACTION_LEVEL; qualifiers status=PROPOSED|ADOPTED, jurisdiction, basis; asserted by the regulator); the condition in valueString + qualifiers (HAS_CLAIM_CONDITION)"
+    questions: [Q-D12-06, Q-D12-18]
+    promoteWhen: "never in D12 (D8 is the registrar)"
+    note: "listed in the pattern-lint close-out (2026-10-09) so 03 uses registered names: 03 had marked both as unregistered placeholders (OQ-D12-31); R-93 makes D8 the registrar, and D8's packet register does not carry them yet"
+deferred:
+  - type: VARIANT_OF (typed FoodItem → FoodItem)
+    reason: "Demoted to predicate-only in the adversarial review (see predicateOnly): no source states it, the populating tool does not exist, one question traverses it."
+  - type: COMPUTED_FOOD_CATEGORY (derived FoodItem|Product → FoodCategory)
+    reason: "Computed NOVA membership is a CALCULATED Assertion projected onto IN_FOOD_CATEGORY (basisKind + derivationRule + DERIVED_FROM inputs); a second, read-only type would add 2 pairs and split one question across two edge types."
+  - type: FOOD_SIMILAR_TO (derived FoodItem → FoodItem) and D10 Association ASSOCIATES for similarity
+    reason: "Q-D12-20 is value 3; similarity is computed on demand (GDS node similarity over a Cypher projection of FOOD_CONTAINS quantities) and returned, not stored, neither as a derived edge nor as a D10 Association (OQ-D12-29 asks D10 to drop the Q-D12-20 citation). Promote only if latency requires it."
+  - type: PATTERN_INCLUDES / PATTERN_LIMITS (role-split pattern edges)
+    reason: "Role lives on the PATTERN_COMPONENT Assertion; four role types would cost 12 pairs for a filter the provenance join already performs."
+  - type: QUANTITATIVELY_CONTAINS (pinned name) and PROVIDES_CONSTITUENT
+    reason: "Renamed to the module-unique FOOD_CONTAINS (the kernel rule makes relationship names unique per module; D1 owns MATERIAL_CONTAINS for materials). Qualitative 'provides' statements are FOOD_CONTAINS lines with statementKind QUALITATIVE_PROVIDES and no quantity."
+  - type: HAS_SAFETY_SIGNAL (pinned FoodItem → SafetySignal)
+    reason: "Safety signals are kernel Assessments (kind SAFETY_SIGNAL, effectDirection HARM) about a FoodItem through ASSESSES; no D12 edge."
+  - type: HAS_IDENTIFIER (pinned FoodItem → Identifier)
+    reason: "Kernel-declared once on Identifier.identifies (HAS_IDENTIFIER); schemes listed in 06-node-register.yaml."
+  - type: SUPPORTED_BY_DOCUMENT / SUPPORTED_BY_CHUNK (pinned)
+    reason: "Forbidden by 00-DIRECTIVE 3.8; chunks reach foods through D9 Chunk.mentions (MENTIONS, derived) and support is HAS_EVIDENCE record → SourceLocator."
+  - type: AFFECTS_MECHANISM / ASSOCIATED_WITH_CONDITION / ASSOCIATED_WITH_OUTCOME (pinned Lifestyle projections)
+    reason: "Associations are D10 Association records (ASSOCIATES, derived); Lifestyle itself moves to D5 Intervention."
+  - type: HAS_EXPOSURE_AGENT (pinned Exposure → ExposureAgentTarget)
+    reason: "Exposure deferred (no D12 question filters through a characterized exposure); contaminant exposure is D8 QualityResult + D5 safety assertions."
+  - type: ADMINISTERS_PATTERN (StudyArm → DietaryPattern)
+    reason: "Not D12's to declare: D3 owns ADMINISTERS (InterventionComponent → union AdministeredMaterial, which has FoodItem and DietaryPattern)."
+  - type: DEFINED_BY (DietaryPattern → Source)
+    reason: "The defining statements already reach their Source through Assertion → SourceLocator → SourceSnapshot → Source; identity uses definedBySourceUid + patternKey + version."

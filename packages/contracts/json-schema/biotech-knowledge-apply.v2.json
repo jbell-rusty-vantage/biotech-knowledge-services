@@ -1,0 +1,103 @@
+{
+  "$id": "https://belllabs.dev/contracts/biotech-knowledge-apply.v2.json",
+  "title": "biotech-knowledge-apply.v2",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "biotech-knowledge-apply.v2"
+    },
+    "planRef": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "expectedPlanDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "intentDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "intentId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+    },
+    "effectKey": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,199}$"
+    },
+    "partialPolicy": {
+      "default": "all",
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "all"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "include": {
+              "minItems": 1,
+              "maxItems": 500,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              }
+            }
+          },
+          "required": [
+            "include"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "witness": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "type": "string",
+          "const": "bks-apply-witness.v1"
+        },
+        "alg": {
+          "type": "string",
+          "const": "Ed25519"
+        },
+        "kid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "payload": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "signature": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]+$"
+        }
+      },
+      "required": [
+        "format",
+        "alg",
+        "kid",
+        "payload",
+        "signature"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "planRef",
+    "expectedPlanDigest",
+    "intentDigest",
+    "effectKey",
+    "witness"
+  ],
+  "additionalProperties": false
+}

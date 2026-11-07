@@ -1,0 +1,304 @@
+version: 1
+module: D1
+# Source: packets/D1/05-relationship-register.yaml (sha256 32ff110c…), edited by the S module editor for D1, 2026-10-08,
+# per final/decision-report.md and final/_work/rulings.yaml (global + modules.D1). Every entry keeps the 01-PACKET-CONTRACT
+# fields and adds `module: D1`; fixtures point at final/fixtures/D1/<folder>. Synthesis edits:
+#   R-14  PHYSICAL_FORM, MATERIAL_GRADE, PLANT_PART, EXTRACT_RATIO registered as the FIELD predicates of the
+#         IngredientMaterial properties they authorize (the node values are caches, R-45; OQ-D1-26 closed for D1's four).
+#   R-52  D1 registers SOURCED_FROM_COUNTRY (material origin; D6 recall-moringa-mogo e17). The five target predicates
+#         (INTENDED_FOR_TARGET, IMPROVES_TARGET, WORSENS_TARGET, NO_EFFECT_ON_TARGET, MIXED_EFFECT_ON_TARGET) are removed:
+#         D5 registers them; D1 lists them in D1.seams.yaml predicateSeams.
+#   R-68  MANUFACTURES_MATERIAL (renamed MANUFACTURES) and SUPPLIES_MATERIAL are removed: D7 registers both; D1 lists
+#         them in predicateSeams.
+#   R-73  MEASURED_CONTENT_IN_PRODUCT / CONTAINS_UNDECLARED_SUBSTANCE: surveys that name no lot, subject D6 Product |
+#         ProductVariant; a lot-identified result is a D8 QualityResult.
+#   R-85  EXCEEDS_DOSE_THRESHOLD is registered here as report-only: never stored as a graph Assertion; written only
+#         inside a published Report; Q-D1-03 is retrieved (threshold screens computed at query time over the
+#         materialized daily amounts).
+#   R-64  MATERIAL_CONTAINS rationale states the four ContentEdgeProperties qualifiers the SDL declares (statementKind,
+#         quantity, comparator, unitCode; the packet 05 rationale still described the statementKind-only option) and the
+#         aligned names with D12 FOOD_CONTAINS.
+#   R-53  DERIVED_FROM_TAXON stays the D1 typed edge; D12's food predicate is FOOD_FROM_TAXON (no predicateOnly value
+#         equals a relationship type name).
+# Unchanged: 6 relationship types, 7 from→to pairs (MATERIAL_CONTAINS has two target fields), no unions; every edge
+# asserted with nestedOperations [CONNECT] (R-03); no entry is `exclusive` or `projectionGate: SUPPORT`.
+# temporal: every asserted edge carries an authorizing Assertion (kernel rule). "recorded-only" edges use the kernel
+# AssertedRecordedProperties; "episode" edges use AssertedEdgeProperties or the D1 superset ContentEdgeProperties.
+# populatedBy ids are stable tool/source ids listed in packets/D1/08-sources-and-tools.md.
+relationships:
+  - type: HAS_ACTIVE_MOIETY
+    module: D1
+    class: asserted
+    from: ChemicalSubstance
+    to: ChemicalSubstance
+    edgeProperties: AssertedRecordedProperties
+    cardinality: zero_or_more
+    temporal: recorded-only
+    questions: [Q-D1-01, Q-D1-03, Q-D1-04, Q-D1-05, Q-D1-24]
+    pattern: 03#Q-D1-01
+    populatedBy: [fda-gsrs]
+    fixture: final/fixtures/D1/nr-salt-moiety-us-canada
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Salt, ester and hydrate forms are separate substances in GSRS and PubChem; the form→moiety step is the first hop
+      of every normalization (moiety-equivalent amounts, "contains S in any form", cross-jurisdiction reconciliation).
+      Copied from the GSRS "ACTIVE MOIETY" relationship of the form's record. Chemistry does not change over valid
+      time; a correction is a superseding Assertion (recorded time). Pinned type kept, unchanged meaning.
+  - type: COUNTS_TOWARD_NUTRIENT
+    module: D1
+    class: asserted
+    from: ChemicalSubstance
+    to: Constituent
+    edgeProperties: AssertedRecordedProperties
+    cardinality: zero_or_more
+    temporal: recorded-only
+    questions: [Q-D1-03, Q-D1-04, Q-D1-19, Q-D1-22, Q-D1-28]
+    pattern: 03#Q-D1-03
+    populatedBy: [nih-ods-api, tga-safety-updates, fda-gsrs, nih-dsld]
+    fixture: final/fixtures/D1/vitamin-b6-threshold-harm
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      New. GSRS gives P5P as its own active moiety, so HAS_ACTIVE_MOIETY cannot carry vitamer→nutrient membership;
+      harm thresholds (TGA B6 > 50 mg/day, UL 100 mg) and food composition are stated on the nutrient. Replaces the
+      pinned nutrient-membership implied by Nutrient.quantifiedInMaterials. Conversion factors are NOT on the edge:
+      they are the versioned rule rule:nutrient-equivalent.v1 applied by the projection job (CALCULATED Assertions).
+  - type: REALIZES_SUBSTANCE
+    module: D1
+    class: asserted
+    from: IngredientMaterial
+    to: ChemicalSubstance
+    edgeProperties: AssertedRecordedProperties
+    cardinality: zero_or_more
+    temporal: recorded-only
+    questions: [Q-D1-05, Q-D1-07, CQ-ID-03, CQ-ID-06, CQ-ST-02, Q-D1-17, Q-D1-26]
+    pattern: 03#Q-D1-05
+    populatedBy: [nih-dsld, health-canada-lnhpd, fda-gsrs, sec-edgar, europepmc-fulltext-jats]
+    fixture: final/fixtures/D1/nr-salt-moiety-us-canada
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      The material→substance step every label and trial path crosses (DSLD forms[].uniiCode; LNHPD source_material;
+      10-K "proprietary form of nicotinamide riboside chloride"). A material's defining substance is part of its
+      identity, so it does not change over valid time; a specification change makes a new material (identity rule).
+      Pinned type kept; absorbs FORM_OF_SUBSTANCE / HAS_CHEMICAL_FORM (ChemicalForm cut). Also the hop from a
+      material to the patents that concern its substance (D8 CONCERNS Patent → ChemicalSubstance only, R-73).
+  - type: MATERIAL_CONTAINS
+    module: D1
+    class: asserted
+    from: IngredientMaterial
+    to: ChemicalSubstance | Constituent (two fields, no union)
+    edgeProperties: ContentEdgeProperties
+    cardinality: zero_or_more (one open episode per content statement)
+    temporal: episode
+    questions: [CQ-ID-03, Q-D1-11, Q-D1-13]
+    pattern: 03#Q-D1-13
+    populatedBy: [nih-dsld, health-canada-lnhpd, supplier-pages]
+    fixture: final/fixtures/D1/ashwagandha-plant-part-harm
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Merges the pinned QUANTITATIVELY_CONTAINS and PROVIDES_CONSTITUENT into one type; the CQ-ID-03 distinction and
+      the non-inference rule (provides ⇏ contains an amount) survive as statementKind QUALITATIVE_PROVIDES with null
+      quantity. Composition of a material changes when a supplier specification changes and standardization claims
+      are dated by their source, so it carries an episode. Edge-property type ContentEdgeProperties = the eleven
+      AssertedEdgeProperties fields verbatim + the four qualifiers Q-D1-11 filters on ("standardized to ≥ X % of
+      marker M"): statementKind (D1 ContentStatementKind), quantity, comparator (D1 QuantityComparator, R-57) and
+      unitCode (kernel M11 rule 3). Range bounds, content basis and mass basis are qualifiers of the authorizing
+      Assertion. Kept separate from D12 FOOD_CONTAINS with aligned qualifier names statementKind / quantity / unitCode;
+      the cross-module read is [:MATERIAL_CONTAINS|FOOD_CONTAINS] (R-64). Lot results (D8 QualityResult), label
+      declarations (D6) and the purity of a trial batch (D3 ADMINISTERED_MATERIAL_PURITY, fixture
+      nr-trial-unstructured t02) never become this edge.
+  - type: DERIVED_FROM_TAXON
+    module: D1
+    class: asserted
+    from: IngredientMaterial
+    to: Taxon
+    edgeProperties: AssertedRecordedProperties
+    cardinality: zero_or_more (one per strain of a consortium)
+    temporal: recorded-only
+    questions: [Q-D1-11, Q-D1-12, Q-D1-14, Q-D1-15]
+    pattern: 03#Q-D1-11
+    populatedBy: [nih-dsld, health-canada-lnhpd, ncbi-eutils-pubmed, supplier-pages]
+    fixture: final/fixtures/D1/lgg-strain-resolution
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      One type for the botanical source organism and for each strain of a microbial preparation (replaces pinned
+      HAS_STRAIN). Definitional for the material, so recorded-only. Plant part is a material property (enum, cache of
+      the FIELD predicate PLANT_PART, R-14), not an edge property, because the harm question filters on it with the
+      material. The name is D1's typed edge only: D12's food → taxon predicate is FOOD_FROM_TAXON (R-53).
+  - type: PARENT_TAXON
+    module: D1
+    class: asserted
+    from: Taxon
+    to: Taxon
+    edgeProperties: AssertedEdgeProperties
+    cardinality: zero_or_one open episode
+    temporal: episode
+    questions: [Q-D1-11, Q-D1-14, Q-D1-15]
+    pattern: 03#Q-D1-15
+    populatedBy: [ncbi-eutils-pubmed]
+    fixture: final/fixtures/D1/lgg-strain-resolution
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Replaces pinned STRAIN_OF and the implicit genus/species links. Needed to fall back from a strain to its species
+      (strain-matched vs species-only evidence) and to find every preparation of a genus. Reclassification has a real
+      valid-from (the 2020 Lactobacillus split), so the edge carries an episode; renaming never changes uids.
+
+predicateOnly:
+  # Assertion.predicate values registered by D1 (registrar D1, R-52); subject/object through the kernel. Each entry:
+  # predicate · use · promoteWhen; `assertionKind` where the kind is fixed.
+  - predicate: PHYSICAL_FORM
+    module: D1
+    registrar: D1
+    assertionKind: FIELD
+    use: >-
+      FIELD Assertion authorizing IngredientMaterial.physicalForm (and formDescriptor as qualifier "formDescriptor:");
+      subject the IngredientMaterial, valueString a PhysicalFormKind value, asserted by the issuer (R-14, R-16). The node
+      property is a cache (R-45). Fixture nr-salt-moiety-us-canada (Niagen CRYSTAL_FORM).
+    promoteWhen: never as an edge (a property of the material's identity)
+  - predicate: MATERIAL_GRADE
+    module: D1
+    registrar: D1
+    assertionKind: FIELD
+    use: >-
+      FIELD Assertion authorizing IngredientMaterial.grade; valueString a MaterialGrade value (R-14). Fixture
+      nr-salt-moiety-us-canada (Niagen FOOD_GRADE).
+    promoteWhen: never as an edge
+  - predicate: PLANT_PART
+    module: D1
+    registrar: D1
+    assertionKind: FIELD
+    use: >-
+      FIELD Assertion authorizing IngredientMaterial.plantPart; valueString a PlantPart value, verbatim wording as a
+      qualifier (R-14). Fixture ashwagandha-plant-part-harm w02 (KSM-66 ROOT).
+    promoteWhen: never as an edge (Q-D1-12 filters the cached property)
+  - predicate: EXTRACT_RATIO
+    module: D1
+    registrar: D1
+    assertionKind: FIELD
+    use: >-
+      FIELD Assertion authorizing IngredientMaterial.extractRatioLow / extractRatioHigh; valueString the ratio as printed
+      ("1:5"), numerator / denominator and dried-herb equivalent as qualifiers; rule:extract-ratio-dhe.v1 for the
+      dried-herb-equivalent check (R-14). Fixture ashwagandha-plant-part-harm w07.
+    promoteWhen: never as an edge
+  - predicate: SOURCED_FROM_COUNTRY
+    module: D1
+    registrar: D1
+    assertionKind: FIELD
+    use: >-
+      Material origin: subject IngredientMaterial, valueString the country as the source states it, asserted by the
+      issuer (FDA outbreak notice in D6 fixture recall-moringa-mogo e17: moringa leaf powder sourced from India).
+      Registered by D1 (R-52; D6 OQ-D6-27 request).
+    promoteWhen: a question traverses or filters materials by origin country (none in 02)
+  - predicate: NUTRIENT_EXPRESSED_AS
+    module: D1
+    registrar: D1
+    use: >-
+      Constituent(NUTRIENT) → ChemicalSubstance (the reference form a nutrient amount is stated in: vitamin B6 "as the
+      equivalent amount of pyridoxine"; magnesium as the cation), jurisdiction as a qualifier ("jurisdiction AU"), valid
+      time on the Assertion. The projection reads it as
+      `(a:Assertion {predicate:'NUTRIENT_EXPRESSED_AS'})-[:HAS_SUBJECT]->(n)` filtered by jurisdiction and $vt and cites
+      `a` in DERIVED_FROM (fixture vitamin-b6-threshold-harm b05).
+    promoteWhen: >-
+      a question traverses reference forms across many nutrients by graph hop (none in 02). Demoted in the adversarial
+      review: only Q-D1-02 read it (one OPTIONAL MATCH), the jurisdiction lived in a qualifier so an edge episode filter
+      returned every jurisdiction at once, and the projection cites the Assertion, not the edge.
+  - predicate: SALT_OR_SOLVATE_OF
+    module: D1
+    registrar: D1
+    use: GSRS "SALT/SOLVATE->PARENT" (pyridoxine HCl → pyridoxine) when it differs from ACTIVE MOIETY
+    promoteWhen: a question traverses parent compounds that are not active moieties (none in 02)
+  - predicate: MEMBER_OF_CLASS
+    module: D1
+    registrar: D1
+    use: ChemicalSubstance → Constituent(CHEMICAL_CLASS) (withaferin A ∈ withanolides)
+    promoteWhen: Q-D1-13 rises to value 1 or a class-membership traversal question appears ("every withanolide in product P")
+  - predicate: HAS_MIXTURE_COMPONENT
+    module: D1
+    registrar: D1
+    use: IngredientMaterial → IngredientMaterial for named complexes / premixes (pinned edge)
+    promoteWhen: a question traverses branded complex materials (Q-D1-21 is about D6 label blends, not materials)
+  - predicate: MOIETY_EQUIVALENT_AMOUNT
+    module: D1
+    registrar: D1
+    assertionKind: COMPUTATION
+    use: CALCULATED Assertion, subject = D6 declaration owner (formulation version) or D3 arm, object = moiety ChemicalSubstance; rule:mw-ratio.v1; DERIVED_FROM declaration + two MW FIELD assertions + HAS_ACTIVE_MOIETY assertion
+    promoteWhen: never as an edge — it is the materialized projection of Q-D1-02/03/05/24 (method version on the PROJECTION Activity)
+  - predicate: NUTRIENT_EQUIVALENT_AMOUNT
+    module: D1
+    registrar: D1
+    assertionKind: COMPUTATION
+    use: CALCULATED Assertion, object = Constituent(NUTRIENT); rule:nutrient-equivalent.v1
+    promoteWhen: never as an edge (same reason)
+  - predicate: PER_MAX_DAILY_DOSE_AMOUNT
+    module: D1
+    registrar: D1
+    assertionKind: COMPUTATION
+    use: CALCULATED Assertion; rule:daily-max.v1 (per serving × maxDailyServings from the D6 label version); the materialized daily amount threshold screens read (R-85)
+    promoteWhen: never as an edge (same reason)
+  - predicate: DECLARATION_STOICHIOMETRY_CHECK
+    module: D1
+    registrar: D1
+    assertionKind: COMPUTATION
+    use: CALCULATED Assertion (Q-D1-20) comparing a declared elemental/moiety amount with the derived one; valueBoolean + residual
+    promoteWhen: never (a check, not a fact; never a fraud finding)
+  - predicate: EXCEEDS_DOSE_THRESHOLD
+    module: D1
+    registrar: D1
+    storage: report-only
+    use: >-
+      Not stored as a graph Assertion (R-85). A threshold screen (daily amount from PER_MAX_DAILY_DOSE_AMOUNT vs a D5
+      HAS_UPPER_LIMIT threshold, rule:threshold-compare.v1 of D5) is computed at query time; Q-D1-03 is answered
+      retrieved. The predicate is written only inside a published Report (D10 method), citing the daily-amount and
+      threshold Assertions. The packet fixture vitamin-b6-threshold-harm still writes c10a–c10d as stored COMPUTATION
+      Assertions; under R-85 they belong inside the published Report (fixture edit outside this register).
+    promoteWhen: never (a comparison, not a fact)
+  - predicate: MEASURED_CONTENT_IN_PRODUCT
+    module: D1
+    registrar: D1
+    use: >-
+      Analytical-survey finding that names no lot (R-73): subject D6 Product | ProductVariant, object ChemicalSubstance,
+      valueNumber + qualifiers (n, method, % of declared). A lot-identified measurement is a D8 QualityResult
+      (MEASURES_ANALYTE), never this predicate.
+    promoteWhen: a survey fixture promotes the D8 QualityResult Product member (R-73), or Q-D1-09 becomes value 1 and needs GraphQL filtering by measured % of declared
+  - predicate: CONTAINS_UNDECLARED_SUBSTANCE
+    module: D1
+    registrar: D1
+    use: >-
+      Survey finding that names no lot (Q-D1-10; R-73): subject D6 Product | ProductVariant, object ChemicalSubstance (CBD
+      in melatonin gummies). An undeclared drug is also a D8 record with violationCategory UNDECLARED_DRUG_INGREDIENT.
+    promoteWhen: a recurring adulteration feed (FDA tainted-products list) makes it a high-volume traversal, or a survey fixture promotes the Product member (R-73)
+  - predicate: MARKETED_UNDER_MARK
+    module: D1
+    registrar: D1
+    use: IngredientMaterial → D7 mark owner (or the mark as a literal) ("Niagen … trademarks of ChromaDex"); D8 Trademark is deferred in D8 05
+    promoteWhen: Q-D1-16 needs mark-owner traversal across many materials (D8 would own Trademark)
+  - predicate: PROCESS_ALLERGEN_NOTE
+    module: D1
+    registrar: D1
+    use: "IngredientMaterial → D5 allergen concept (label statement Contains: Milk. on a milk-extracted KSM-66 label)"
+    promoteWhen: an allergen-avoidance question becomes value 1 (D5 owns risk knowledge)
+
+deferred:
+  - QUANTITATIVELY_CONTAINS — merged into MATERIAL_CONTAINS (statementKind distinguishes declared/standardized/measured/calculated)
+  - PROVIDES_CONSTITUENT — merged into MATERIAL_CONTAINS (statementKind QUALITATIVE_PROVIDES, quantity null)
+  - FORM_OF_SUBSTANCE, HAS_CHEMICAL_FORM — ChemicalForm node cut; physical form is IngredientMaterial.physicalForm/formDescriptor (OQ-D1-04 with D8)
+  - HAS_STRAIN — replaced by DERIVED_FROM_TAXON to a Taxon of rank STRAIN
+  - STRAIN_OF — replaced by PARENT_TAXON
+  - HAS_MIXTURE_COMPONENT — predicate-only (no material-mixture traversal question)
+  - HAS_IDENTIFIER — kernel pattern (Identifier.identifies → Subjectable); D1 declares nothing; K registers the predicate (R-52)
+  - MARKETED_UNDER_MARK — predicate-only; D8 owns Trademark (deferred there)
+  - MANUFACTURES_MATERIAL — renamed MANUFACTURES, predicate-only, registered by D7 (R-68)
+  - SUPPLIES_MATERIAL — predicate-only, registered by D7 with qualifiers exclusivity= and buyer= (R-68)
+  - INTENDED_FOR_TARGET, IMPROVES_TARGET, WORSENS_TARGET, NO_EFFECT_ON_TARGET, MIXED_EFFECT_ON_TARGET — predicate-only, registered by D5 (R-52)
+  - GOVERNED_BY_SPECIFICATION, PRODUCED_BY_PROCESS, CAPABILITY_FOR_MATERIAL, INPUTS, OUTPUTS — D8 (quality/manufacturing) declares into IngredientMaterial if a D8 question traverses them
+  - AFFECTS_MECHANISM, MODULATES — D2 derived projections over mechanism assertions (D2 declares, seam)
+  - HAS_SAFETY_SIGNAL — kernel Assessment SAFETY_SIGNAL (D5 kind) ASSESSES the D1 node; no typed edge
+  - HAS_EXPOSURE_AGENT (W05) — D5 (Exposure) declares into ChemicalSubstance if kept
+  - DERIVED_FROM_TAXON from FoodItem (W05) — D12 predicate FOOD_FROM_TAXON (R-53)
+  - VARIANT_OF, ASSOCIATED_WITH_CONDITION, ASSOCIATED_WITH_OUTCOME, SUPPORTED_BY_CHUNK, SUPPORTED_BY_DOCUMENT (W05) — D12/D5/D10 or the kernel HAS_EVIDENCE pattern; never D1
+  - derived NORMALIZES_TO (substance → moiety/nutrient closure) — considered for Q-D1-04 speed; cut, the two-hop Cypher is bounded (≤ 2 hops) and cheap

@@ -1,0 +1,298 @@
+# Fixture upf-diet-rct-unstructured — assertions and the 00-DIRECTIVE 3.8 path (question → chunk → assertion → locator →
+# snapshot bytes). Fixture stage (A2, 2026-10-08). Kernel shapes: final/schema/kernel.graphql; D9 Chunk shape:
+# ../biotech-knowledge-services-A8 final/schema/D9.graphql (Chunk, CHUNK_OF, COVERS_LOCATOR, MENTIONS).
+# uids are fixture-scoped; producedBy ids are FIXTURE ids, not real Mission Control runs. Research is not medical advice.
+# Adversarial-review pass (2026-10-08): qualifiers in the 05 qualifierGrammar (`key:VALUE`; population = D3 StudyPopulation
+# uid per D5 vocab-targets 0.2.x); the article's two errata recorded (upf-07, upf-07b); the text version is rebuilt by the
+# committed extractor extract_text_version.py (text-version/v1). `notes` are fixture annotations.
+# Close-out (FU-03, 2026-10-09): the errata are identified notices, so each is a D3 REVISES by PubMed (R-44); the paper's own
+# statements are asserted by the D3 Publication (R-15); PMID/DOI sit on the Publication, PMCID on the JATS Source (R-42);
+# the JATS Source is grouped under the work by an asserted RENDITION_OF (R-43/R-26); STATED_IN points at the Publication.
+version: 1
+fixture: upf-diet-rct-unstructured
+producedBy: &run { missionId: "mission:ft-D12-fixtures", runId: "run:ft-D12-upf-diet-rct-unstructured", note: "fixture ids, not a real Mission Control run" }
+
+entities:
+  - { uid: "hu:publication:pmid-31105044", type: D3.Publication, name: "Ultra-Processed Diets Cause Excess Calorie Intake and Weight Gain (Cell Metab 2019)", owner: D3, properties: { publicationKind: ARTICLE, venueName: "Cell Metab", revisionStatus: ERRATUM }, identifiers: [ { scheme: PMID, value: "31105044" }, { scheme: DOI, value: "10.1016/j.cmet.2019.05.008" } ], note: "R-15: the 25-author work asserts what it states (was first author Kevin D. Hall); R-42: PMID/DOI moved here from the Source; revisionStatus is the cache over upf-07/07b" }
+  - { uid: "hu:publication:pmid-31269427", type: D3.Publication, name: "Erratum, Cell Metab 2019;30(1):226", owner: D3, properties: { publicationKind: CORRECTION_NOTICE, venueName: "Cell Metab" }, identifiers: [ { scheme: PMID, value: "31269427" }, { scheme: DOI, value: "10.1016/j.cmet.2019.05.020" } ], note: "identified only by the ErratumIn citation (loc-hall-erratum-2019); its text was not read" }
+  - { uid: "hu:publication:pmid-33027677", type: D3.Publication, name: "Correction, Cell Metab 2020;32(4):690", owner: D3, properties: { publicationKind: CORRECTION_NOTICE, venueName: "Cell Metab" }, identifiers: [ { scheme: PMID, value: "33027677" }, { scheme: DOI, value: "10.1016/j.cmet.2020.08.014" } ], note: "identified by the ErratumIn citation (loc-hall-erratum-2020); its scope sentence captured (loc-hall-erratum-2020-scope)" }
+  - { uid: "hu:agent:d12-curation-agent", type: K.Agent, name: "D12 curation agent (fixture)", owner: K, note: "asserter of the RENDITION_OF grouping (curator classification)" }
+  - { uid: "hu:study:hall-2019-nct03407053", type: D3.Study, name: "Effect of Ultra Processed Versus Unprocessed Diets on Energy Intake (NCT03407053)", owner: D3, identifiers: [ { scheme: NCT, value: "NCT03407053" } ] }
+  - { uid: "hu:source:pmc7946062", type: K.Source, name: "Ultra-Processed Diets Cause Excess Calorie Intake and Weight Gain (JATS, PMC7946062)", identifiers: [ { scheme: PMCID, value: "PMC7946062" } ], note: "rendition of hu:publication:pmid-31105044 (RENDITION_OF upf-08); PMID/DOI moved to the Publication (R-42). Two published errata (PubMed CommentsCorrections ErratumIn: Cell Metab 2019;30(1):226, PMID 31269427; Cell Metab 2020;32(4):690, PMID 33027677) — REVISES upf-07/07b; the numbers this fixture quotes are outside the 2020 correction's stated scope" }
+  - { uid: "hu:org:nlm", type: D7.Organization, name: "U.S. National Library of Medicine (PubMed)", owner: D7 }
+  - { uid: "hu:study-population:hall-2019", type: D3.StudyPopulation, name: "Hall 2019: 20 weight-stable adults, NIH Clinical Center inpatients", owner: D3, note: "object of the D5 population qualifier (vocab-targets 0.2.x)" }
+  - { uid: "hu:dietary-pattern:hall-2019-ultra-processed-diet", type: D12.DietaryPattern, name: "Hall 2019 ultra-processed diet (14 days, ad libitum)", properties: { definedBySourceUid: "hu:source:pmc7946062", patternKey: "ultra-processed-diet", version: "7-day rotating menu (Supplemental Information)", definedBy: "Hall et al. 2019, Cell Metab (NCT03407053)", patternKind: COMPOSITION, definitionScope: TRIAL_ARM, synonyms: ["ultra-processed diet"] } }
+  - { uid: "hu:dietary-pattern:hall-2019-unprocessed-diet", type: D12.DietaryPattern, name: "Hall 2019 unprocessed diet (14 days, ad libitum)", properties: { definedBySourceUid: "hu:source:pmc7946062", patternKey: "unprocessed-diet", version: "7-day rotating menu (Supplemental Information)", definedBy: "Hall et al. 2019, Cell Metab (NCT03407053)", patternKind: COMPOSITION, definitionScope: TRIAL_ARM, synonyms: ["unprocessed diet"] } }
+  - { uid: "hu:food-category:nova-4", type: D12.FoodCategory, name: "NOVA group 4 — ultra-processed foods", properties: { system: NOVA, code: "4", systemVersion: "Monteiro et al. 2018 (as cited by Hall 2019)", label: "ultra-processed foods" } }
+  - { uid: "hu:target:body-composition", type: D5.Target, name: "body composition", owner: D5, note: "vocab-targets.yaml id target:body-composition" }
+  - { uid: "hu:study-result:hall-2019-energy-intake-difference", type: D3.StudyResult, name: "Ad libitum energy intake, ultra-processed vs unprocessed diet", owner: D3, properties: { estimate: 508, unitCode: "kcal/d", dispersionKind: STANDARD_ERROR, dispersionValue: 106, pValueText: "p=0.0001", sampleSize: 20, resultText: "Energy intake was greater during the ultra-processed diet (508±106 kcal/d; p=0.0001)" }, note: "mean±SE per the Summary ('aged (mean±SE)'); pValueText / resultText are the candidate D3 field names (values unchanged)" }
+
+assertions:
+  - id: "hu:assertion:ft-d12-upf-01"
+    predicate: WORSENS_TARGET
+    owner: "D5 vocabulary consumed as-is (predicate-only, no typed edge; 05 predicateOnly)"
+    assertionKind: RELATIONSHIP
+    subject: { uid: "hu:dietary-pattern:hall-2019-ultra-processed-diet", type: D12.DietaryPattern }
+    object: { uid: "hu:target:body-composition", type: D5.Target }
+    asserter: { uid: "hu:publication:pmid-31105044", type: D3.Publication, note: "R-15 (was first author Kevin D. Hall)" }
+    locators:
+      - { ref: loc-hall-weight, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-hall-energy, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-hall-population, role: QUALIFIES, origin: DECLARED }
+      - { ref: loc-hall-matched, role: QUALIFIES, origin: DECLARED }
+      - { ref: loc-hall-guard, role: QUALIFIES, origin: DECLARED }
+    basisKind: DIRECT_MEASUREMENT
+    polarity: POSITIVE
+    speechAct: STATES
+    claimType: CAUSAL
+    proposition: "Compared with an unprocessed diet matched for presented calories and macronutrients, the ad libitum ultra-processed diet increased energy intake and body weight over 14 days."
+    qualifiers: ["population:hu:study-population:hall-2019", "populationVerbatim:20 inpatient adults (weight-stable), NIH Clinical Center; randomized crossover, 14 days per diet", "comparator:hu:dietary-pattern:hall-2019-unprocessed-diet", "outcomeVerbatim:body weight change and ad libitum energy intake"]
+    notes:
+      - "outcome values: body weight +0.9±0.3 kg (p=0.009) vs −0.9±0.3 kg (p=0.007); energy intake +508±106 kcal/d"
+      - "guard (travels with any answer): the study was not designed to identify the cause of the energy-intake difference"
+      - "target mapping: weight change → target:body-composition (D5 vocabulary); no fat-mass claim is made here"
+    validTime: { validFrom: "2018-03-01T00:00:00Z", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validFromLocator: loc-ctgov-start, validTo: null, validToBasis: UNKNOWN, note: "start of the registered study (registry); the paper prints no enrolment window" }
+    status: PROPOSED
+    expectedAfterAdjudication: "ACCEPTED (capture fidelity); a SUPPORT adjudication should read SUPPORTED_WITH_QUALIFICATION because of the population and the guard"
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-upf-02"
+    predicate: STATED_IN
+    owner: D3
+    assertionKind: METRIC
+    edge: { type: STATED_IN, class: asserted, edgeProperties: AssertedRecordedProperties, from: D3.StudyResult, to: D3.Publication }
+    subject: { uid: "hu:study-result:hall-2019-energy-intake-difference", type: D3.StudyResult }
+    object: { uid: "hu:publication:pmid-31105044", type: D3.Publication, note: "StatingRecord = RegistrationVersion | Publication; the JATS Source is reached by RENDITION_OF (upf-08)" }
+    asserter: { uid: "hu:publication:pmid-31105044", type: D3.Publication, note: "R-15 (was first author Kevin D. Hall)" }
+    locators:
+      - { ref: loc-hall-energy, role: SUPPORTS, origin: DECLARED }
+    valueNumber: 508
+    unitCode: "kcal/d"
+    basisKind: DIRECT_MEASUREMENT
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["dispersionKind:STANDARD_ERROR", "dispersion:106", "pValueVerbatim:p=0.0001"]
+    notes: ["comparison: ultra-processed vs unprocessed diet, within-subject crossover; the primary outcome, which the 2020 correction states it did not affect (loc-hall-erratum-2020-scope)"]
+    validTime: { validFrom: "2018-03-01T00:00:00Z", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validFromLocator: loc-ctgov-start }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-upf-03"
+    predicate: PATTERN_COMPONENT
+    assertionKind: RELATIONSHIP
+    edge: { type: PATTERN_COMPONENT, class: asserted, edgeProperties: AssertedRecordedProperties, temporal: recorded-only }
+    subject: { uid: "hu:dietary-pattern:hall-2019-ultra-processed-diet", type: D12.DietaryPattern }
+    object: { uid: "hu:food-category:nova-4", type: D12.FoodCategory }
+    asserter: { uid: "hu:publication:pmid-31105044", type: D3.Publication, note: "R-15 (was first author Kevin D. Hall)" }
+    locators:
+      - { ref: loc-hall-t1-upf-share, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-hall-t1-footnote, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-hall-nova-method, role: CONTEXT, origin: DECLARED }
+    valueString: INCLUDES
+    valueNumber: 81.3
+    unitCode: "%"
+    basisKind: CALCULATED
+    derivationRule: "source-side: share of presented diet energy from NOVA group 4 (Table 1 footnote 1); not a BellLabs computation"
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["measure:SHARE_OF_PRESENTED_ENERGY", "scopeVerbatim:Daily Meals + Snacks, average 7-day rotating menu (Table 1)"]
+    notes: ["role INCLUDES is the valueString", "other scopes in the same table: three daily meals 83.5 %, snacks 75.9 %"]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, note: "recorded-only edge; the version lives in the pattern's identity (menu version)" }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-upf-04"
+    predicate: PATTERN_COMPONENT
+    assertionKind: RELATIONSHIP
+    edge: { type: PATTERN_COMPONENT, class: asserted, edgeProperties: AssertedRecordedProperties, temporal: recorded-only }
+    subject: { uid: "hu:dietary-pattern:hall-2019-unprocessed-diet", type: D12.DietaryPattern }
+    object: { uid: "hu:food-category:nova-4", type: D12.FoodCategory }
+    asserter: { uid: "hu:publication:pmid-31105044", type: D3.Publication, note: "R-15 (was first author Kevin D. Hall)" }
+    locators:
+      - { ref: loc-hall-t1-upf-share, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-hall-t1-footnote, role: SUPPORTS, origin: DECLARED }
+    valueString: EXCLUDES
+    valueNumber: 0
+    unitCode: "%"
+    basisKind: CALCULATED
+    derivationRule: "source-side: share of presented diet energy from NOVA group 4 (Table 1 footnote 1)"
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["measure:SHARE_OF_PRESENTED_ENERGY", "scopeVerbatim:Daily Meals + Snacks, average 7-day rotating menu (Table 1)"]
+    notes: ["role EXCLUDES is the valueString: 0 % of presented energy from NOVA group 4 in every Table 1 scope"]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-upf-05"
+    predicate: USED_FOOD_CLASSIFICATION
+    owner: "D12 predicate-only (05 predicateOnly since the adversarial review; offered to D3, OQ-D12-27)"
+    assertionKind: FIELD
+    subject: { uid: "hu:study:hall-2019-nct03407053", type: D3.Study }
+    object: null
+    asserter: { uid: "hu:publication:pmid-31105044", type: D3.Publication, note: "R-15 (was first author Kevin D. Hall)" }
+    locators:
+      - { ref: loc-hall-nova-method, role: SUPPORTS, origin: DECLARED }
+    valueString: "NOVA (Monteiro et al., 2018)"
+    basisKind: UNSTATED
+    polarity: POSITIVE
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-upf-06"
+    predicate: USED_COMPOSITION_DATABASE
+    owner: "D12 predicate-only (05 predicateOnly since the adversarial review; offered to D3, OQ-D12-27)"
+    assertionKind: FIELD
+    subject: { uid: "hu:study:hall-2019-nct03407053", type: D3.Study }
+    object: null
+    asserter: { uid: "hu:publication:pmid-31105044", type: D3.Publication, note: "R-15 (was first author Kevin D. Hall)" }
+    locators:
+      - { ref: loc-hall-composition-db, role: SUPPORTS, origin: DECLARED }
+    valueString: "USDA National Nutrient Database for Standard Reference, Release 26; USDA Food and Nutrient Database for Dietary Studies, 4.0"
+    basisKind: UNSTATED
+    polarity: POSITIVE
+    speechAct: STATES
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  # ---- revision status (R-44): both errata are identified notices (ErratumIn PMIDs), so each is a D3 REVISES by PubMed with
+  # revisionKind ERRATUM (was one kernel status-flag Assertion over both errata).
+  - id: "hu:assertion:ft-d12-upf-07"
+    predicate: REVISES
+    owner: D3
+    assertionKind: RELATIONSHIP
+    edge: { type: REVISES, class: asserted, edgeProperties: RevisionEdgeProperties, properties: { revisionKind: ERRATUM } }
+    subject: { uid: "hu:publication:pmid-31269427", type: D3.Publication, note: "the 2019 erratum" }
+    object: { uid: "hu:publication:pmid-31105044", type: D3.Publication }
+    asserter: { uid: "hu:org:nlm", type: D7.Organization, note: "authority PubMed (ErratumIn citation on the article record)" }
+    locators:
+      - { ref: loc-hall-erratum-2019, role: SUPPORTS, origin: DECLARED }
+    basisKind: UNSTATED
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["erratumIn:PMID:31269427"]
+    notes:
+      - "the 2019 erratum (PMID 31269427, Cell Metab 2019;30(1):226) was not read: PubMed holds no text for it; its existence is all this fixture records"
+    validTime: { validFrom: "2019-07-02T00:00:00Z", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validFromLocator: loc-hall-erratum-2019, note: "issue date of the erratum as printed in the ErratumIn citation" }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  - id: "hu:assertion:ft-d12-upf-07b"
+    predicate: REVISES
+    owner: D3
+    assertionKind: RELATIONSHIP
+    edge: { type: REVISES, class: asserted, edgeProperties: RevisionEdgeProperties, properties: { revisionKind: ERRATUM } }
+    subject: { uid: "hu:publication:pmid-33027677", type: D3.Publication, note: "the 2020 correction" }
+    object: { uid: "hu:publication:pmid-31105044", type: D3.Publication }
+    asserter: { uid: "hu:org:nlm", type: D7.Organization, note: "authority PubMed (ErratumIn citation on the article record)" }
+    locators:
+      - { ref: loc-hall-erratum-2020, role: SUPPORTS, origin: DECLARED }
+      - { ref: loc-hall-erratum-2020-scope, role: QUALIFIES, origin: DECLARED }
+    basisKind: UNSTATED
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["erratumIn:PMID:33027677"]
+    notes:
+      - "2020 correction (captured): 'This error did not affect the primary outcome of the study (diet differences in total daily ad libitum energy intake) or the snack intake data, but the error did affect the reported diet differences between breakfast, lunch, and dinner.' The fixture's 508±106 kcal/d (loc-hall-energy) is that primary outcome, so it is unaffected as stated."
+      - "the ±0.9 kg weight changes (loc-hall-weight) are not meal-level data; the correction does not mention them, so 'unaffected' is an inference, not a source statement"
+    validTime: { validFrom: "2020-10-06T00:00:00Z", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validFromLocator: loc-hall-erratum-2020, note: "issue date of the correction as printed in the ErratumIn citation (Cell Metab. 2020 Oct 6)" }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+  # ---- rendition (R-43 / R-26): the PMC JATS Source is a rendition of the work (asserted, recorded time only).
+  - id: "hu:assertion:ft-d12-upf-08"
+    predicate: RENDITION_OF
+    assertionKind: RELATIONSHIP
+    edge: { type: RENDITION_OF, class: asserted, edgeProperties: AssertedRecordedProperties, temporal: recorded-only }
+    subject: { uid: "hu:source:pmc7946062", type: K.Source }
+    object: { uid: "hu:publication:pmid-31105044", type: D3.Publication }
+    asserter: { uid: "hu:agent:d12-curation-agent", type: K.Agent }
+    locators:
+      - { ref: loc-hall-population, role: CONTEXT, origin: DECLARED }
+    basisKind: CURATOR_CLASSIFICATION
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["renditionRule:PMC JATS full text of the article"]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, note: "recorded time only (R-26)" }
+    status: PROPOSED
+    expectedAfterAdjudication: ACCEPTED
+    producedBy: *run
+
+# What this fixture refuses to write (no invented membership). The paper codes foods by NOVA only in aggregate (Table 1
+# energy shares); the menu in the Supplemental Information names items per diet but prints no NOVA group per item, and the
+# ultra-processed diet is 81.3 % (not 100 %) NOVA 4 by energy. So "French fries (Monarch)" being on the ultra-processed menu
+# does NOT license IN_FOOD_CATEGORY → NOVA 4. The intent stages these as mentions (mention.stage), not assertions.
+refusedInferences:
+  - surfaceForm: "French fries (Monarch)"
+    locator: loc-hall-supp-fries
+    wouldBe: "IN_FOOD_CATEGORY D6.Product 'French fries (Monarch)' → NOVA 4"
+    why: "menu placement is not a NOVA coding; a verifier would return CONTEXT_ONLY. Membership needs a source-stated NOVA group or a CALCULATED nova-markers/v1 assertion over the product's ingredient statement (not captured)."
+  - surfaceForm: "Baked russet potato with olive oil"
+    locator: loc-hall-supp-baked-potato
+    wouldBe: "PATTERN_COMPONENT hall-2019-unprocessed-diet → hu:food:fdc-170030 (Potatoes, Russet, flesh and skin, baked)"
+    why: "a dish (with olive oil) is not the FDC reference record; staged as a mention with candidate FoodItem fdc-170030 for a RESOLUTION assessment."
+
+# 00-DIRECTIVE 3.8 effectiveness test, walked on real bytes.
+path38:
+  question: "Q-D12-26 — what is the evidence that ultra-processed food exposure worsens target T (here target:body-composition), and is it randomized or associational?"
+  step1_chunk:
+    chunk:
+      uid: "hu:chunk:ft-d12-hall2019-summary"
+      type: D9.Chunk
+      text: "the article Summary paragraph (1,080 code points; sha256 of the chunk text sha256:e3772265175833920421983e21af0425075b207661f651690efae2806ad16212)"
+      textVersion: { file: "ft/D12/raw/pmc-PMC7946062.txt (session scratchpad; rebuildable)", textVersionHash: "sha256:25b62c8f9852e42ec2a35cd80a8104df4fbc84af3c37a7e4f42f9b58444c1faa", textBasis: JATS_XML, extractorVersion: "text-version/v1 = final/fixtures/D12/upf-diet-rct-unstructured/extract_text_version.py: UTF-8 decode; every tag <[^>]+> -> one space; every run of \\s whitespace -> one space; no entity unescaping, no trim, no normalization", normalizationVersion: "none", chunkerVersion: "fixture-manual/1 (one chunk = the Summary paragraph)", rebuildCheck: "re-run on the re-fetched JATS (sha256 e95aca15…29ae3) in the adversarial-review pass: 66,807 code points, textVersionHash 25b62c8f… and chunk sha256 e3772265… reproduced exactly" }
+      startOffset: 2050
+      endOffset: 3130
+      chunkOf: { snapshot: snap-hall-jats, contentHash: "sha256:e95aca1562741ad9a7534d8fdbef31032713b82bd3d975b63a4b5b47d0e29ae3", relationship: "CHUNK_OF (D9, structural)" }
+    found_by:
+      - mode: MENTIONS (derived, DerivedEdgeProperties, derivationRule entity-link/v1 — fixture)
+        mentions:
+          - { surfaceForm: "ultra-processed foods", textVersionOffset: 2074, resolvedTo: "hu:food-category:nova-4" }
+          - { surfaceForm: "ultra-processed diet", textVersionOffset: 2605, resolvedTo: "hu:dietary-pattern:hall-2019-ultra-processed-diet" }
+          - { surfaceForm: "unprocessed diet", textVersionOffset: 3000, resolvedTo: "hu:dietary-pattern:hall-2019-unprocessed-diet" }
+      - mode: "vector index on Chunk embeddings (D9 chunk index; query embedding of the question text) — alternative entry, same chunk"
+  step2_assertions:
+    via: "COVERS_LOCATOR (D9, derived span-overlap/v1): the chunk span [2050, 3130) in the text version covers loc-hall-matched [2383, 2498), loc-hall-energy [2568, 2652) and loc-hall-weight [2883, 3016); the assertions that cite those locators through HAS_EVIDENCE are the answer rows"
+    assertions: ["hu:assertion:ft-d12-upf-01 (WORSENS_TARGET → target:body-composition)", "hu:assertion:ft-d12-upf-02 (D3 StudyResult +508 kcal/d)"]
+  step3_locator:
+    ref: loc-hall-energy
+    selectorKind: TEXT_QUOTE
+    exact: "Energy intake was greater during the ultra-processed diet (508±106 kcal/d; p=0.0001)"
+    snapshotOffsets: [10079, 10163]
+    textVersionOffsets: [2568, 2652]
+  step4_snapshot:
+    ref: snap-hall-jats
+    contentHash: "sha256:e95aca1562741ad9a7534d8fdbef31032713b82bd3d975b63a4b5b47d0e29ae3"
+    bytes: "162,623 bytes, application/xml; re-fetched 2026-10-08T21:37:11Z with identical sha256"
+  verifierReselection: "verification.v1 re-selects the same TextQuoteSelector (exact + 32-char prefix/suffix, offsets 10079–10163) on the snapshot bytes and compares quoteHash sha256:f4febe46…; the chunk is not consulted — the path used for retrieval and the path the verifier checks meet at the SourceLocator."
+  guard: "The answer must carry loc-hall-guard ('Our study was not designed to identify the cause of the observed differences in energy intake.') as QUALIFIES evidence, and separate this randomized inpatient result from cohort associations (Q-D12-26 answer shape)."
+  cypher: |
+    // entry by MENTIONS (vector entry: CALL db.index.vector.queryNodes('chunk_embedding', 20, $q) YIELD node AS ch)
+    MATCH (ch:Chunk)-[:MENTIONS]->(:FoodCategory {system: 'NOVA', code: '4'})
+    MATCH (ch)-[:COVERS_LOCATOR]->(loc:SourceLocator)<-[ev:HAS_EVIDENCE]-(a:Assertion)
+    WHERE a.predicate IN ['WORSENS_TARGET','IMPROVES_TARGET','NO_EFFECT_ON_TARGET','MIXED_EFFECT_ON_TARGET']
+      AND a.recordedTo IS NULL
+    MATCH (a)-[:HAS_OBJECT]->(t:Target {uid: $targetUid})
+    MATCH (a)-[:HAS_SUBJECT]->(s)
+    MATCH (loc)<-[:HAS_LOCATOR]-(snap:SourceSnapshot)<-[:HAS_SNAPSHOT]-(src:Source)
+    OPTIONAL MATCH (a)-[q:HAS_EVIDENCE {role: 'QUALIFIES'}]->(guard:SourceLocator)
+    RETURN s.uid, a.predicate, a.qualifiers, loc.exact, loc.startOffset, loc.endOffset,
+           snap.contentHash, src.canonicalUri, collect(guard.exact) AS guards
+
+relationshipsExercised:
+  PATTERN_COMPONENT: ["hu:assertion:ft-d12-upf-03 (INCLUDES NOVA 4, 81.3 %)", "hu:assertion:ft-d12-upf-04 (EXCLUDES NOVA 4, 0 %)"]
+  IN_FOOD_CATEGORY: "not authorized here: refusedInferences shows why the paper's aggregate NOVA coding does not license item-level membership; the register's IN_FOOD_CATEGORY fixture is mcdonalds-fries-prepared-food (source-stated + CALCULATED)"
+  predicateOnly: { WORSENS_TARGET: ["hu:assertion:ft-d12-upf-01"], USED_FOOD_CLASSIFICATION: ["hu:assertion:ft-d12-upf-05"], USED_COMPOSITION_DATABASE: ["hu:assertion:ft-d12-upf-06"] }
+  REVISES: ["hu:assertion:ft-d12-upf-07 (2019 erratum -> article, ERRATUM, by NLM)", "hu:assertion:ft-d12-upf-07b (2020 correction -> article, ERRATUM, by NLM)"]
+  RENDITION_OF: ["hu:assertion:ft-d12-upf-08 (PMC JATS Source -> article)"]
+  seams: { "D3 STATED_IN (StudyResult -> Publication)": ["hu:assertion:ft-d12-upf-02"], "D3 ADMINISTERS (StudyArm → DietaryPattern)": "not written (D3 owns; 10-seams.yaml)", "D9 Chunk CHUNK_OF / COVERS_LOCATOR / MENTIONS": "path38" }

@@ -1,0 +1,226 @@
+{
+  "format": "bks-eval-gold-spec.v1",
+  "gold": {
+    "WR-01": {
+      "invariants": [
+        "assertedEdgeBacked",
+        "assertion.evidence",
+        "receipt.complete"
+      ],
+      "kind": "outcome",
+      "outcome": "applied"
+    },
+    "WR-02": {
+      "code": "EVIDENCE_UNVERIFIED",
+      "kind": "error"
+    },
+    "WR-03": {
+      "code": "PLAN_FORGED",
+      "kind": "error"
+    },
+    "WR-04": {
+      "code": "PLAN_DIGEST_MISMATCH",
+      "kind": "error"
+    },
+    "WR-05": {
+      "code": "SNAPSHOT_UNVERIFIED",
+      "kind": "error"
+    },
+    "WR-06": {
+      "code": "EVIDENCE_UNVERIFIED",
+      "kind": "error"
+    },
+    "WR-07": {
+      "invariants": [
+        "receipt.sameId",
+        "noNewEffects"
+      ],
+      "kind": "outcome",
+      "outcome": "duplicate"
+    },
+    "WR-08": {
+      "code": "EFFECT_CONFLICT",
+      "kind": "error"
+    },
+    "WR-09": {
+      "invariants": [
+        "identity.single"
+      ],
+      "kind": "race",
+      "oneOf": [
+        "applied"
+      ],
+      "otherOneOf": [
+        "IDENTITY_CONFLICT",
+        "STALE_REVISION",
+        "STALE_PRECONDITION"
+      ]
+    },
+    "WR-10": {
+      "code": "SLOT_CONFLICT",
+      "kind": "error"
+    },
+    "WR-11": {
+      "invariants": [
+        "episodes.bothRetained"
+      ],
+      "kind": "outcome",
+      "outcome": "applied"
+    },
+    "WR-12": {
+      "code": "STALE_REVISION",
+      "kind": "error"
+    },
+    "WR-13": {
+      "invariants": [
+        "marker.attemptsAppended",
+        "marker.notOverwritten"
+      ],
+      "kind": "marker",
+      "status": "applied"
+    },
+    "WR-14": {
+      "invariants": [
+        "receipt.lookupFirst",
+        "noNewEffects",
+        "noNewIntentId"
+      ],
+      "kind": "outcome",
+      "outcome": "applied"
+    },
+    "WR-15": {
+      "code": "WITNESS_EXPIRED",
+      "kind": "error"
+    },
+    "WR-16": {
+      "code": "WITNESS_REVOKED",
+      "kind": "error"
+    },
+    "WR-17": {
+      "kind": "sequence",
+      "steps": [
+        {
+          "kind": "outcome",
+          "outcome": "rejected"
+        },
+        {
+          "kind": "outcome",
+          "outcome": "partial"
+        }
+      ]
+    },
+    "WR-18": {
+      "invariants": [
+        "readback.allPages",
+        "readback.complete"
+      ],
+      "kind": "outcome",
+      "outcome": "applied"
+    },
+    "WR-19": {
+      "code": "STALE_PRECONDITION",
+      "kind": "error"
+    },
+    "WR-20": {
+      "code": "RELEASE_MISMATCH",
+      "kind": "error"
+    },
+    "WR-21": {
+      "invariants": [
+        "payloadDigest.equal"
+      ],
+      "kind": "invariant"
+    },
+    "WR-22": {
+      "invariants": [
+        "verification.distinctFromAdmission",
+        "noNewEffects"
+      ],
+      "kind": "outcome",
+      "outcome": "unresolved"
+    },
+    "WR-23": {
+      "invariants": [
+        "receipt.effectReported",
+        "recovery.retained"
+      ],
+      "kind": "outcome",
+      "outcome": "applied"
+    },
+    "WR-24": {
+      "invariants": [
+        "notEmpty"
+      ],
+      "kind": "status",
+      "status": "unsupported"
+    },
+    "WR-25": {
+      "kind": "sequence",
+      "steps": [
+        {
+          "code": "PARSE_REJECTED",
+          "kind": "error"
+        },
+        {
+          "code": "PROCEDURE_FORBIDDEN",
+          "kind": "error"
+        }
+      ]
+    },
+    "WR-26": {
+      "invariants": [
+        "notEmpty",
+        "evidence.gdsInstalledNotAdmitted"
+      ],
+      "kind": "status",
+      "status": "unsupported"
+    },
+    "WR-27": {
+      "invariants": [
+        "noGraphWrites"
+      ],
+      "kind": "status",
+      "status": "unsupported"
+    },
+    "WR-28": {
+      "code": "UNSUPPORTED",
+      "kind": "error"
+    },
+    "WR-29": {
+      "invariants": [
+        "verify.allChecks",
+        "elementIds.notPreserved",
+        "legacyKey.preserved"
+      ],
+      "kind": "migrationRun"
+    },
+    "WR-30": {
+      "invariants": [
+        "dryRun.allInvariants",
+        "accounting.reconciles",
+        "held.notVisible"
+      ],
+      "kind": "migrationRun"
+    },
+    "WR-31": {
+      "code": "VISIBILITY_DENIED",
+      "kind": "error"
+    },
+    "WR-32": {
+      "invariants": [
+        "retryBuffer.reset"
+      ],
+      "kind": "status",
+      "status": "stale"
+    },
+    "WR-33": {
+      "invariants": [
+        "legacy.nodesRetained",
+        "legacy.relationshipsRetained",
+        "nodesDeleted.zero"
+      ],
+      "kind": "migrationRun"
+    }
+  },
+  "suite": "write-recovery"
+}

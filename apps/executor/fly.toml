@@ -1,0 +1,65 @@
+# Fly.io deployment of the native knowledge executor (Neo4j stays on Aura). Run from the repository root so the workspace
+# packages, schema/pinned and workspace/ are in the build context:
+#   bash scripts/fly.sh deploy . --config apps/executor/fly.toml --dockerfile apps/executor/Dockerfile --remote-only
+# Deployed 2026-10-12 (S9, biotech-schema-v2.0.2). Deploy ON HOLD since 2026-11-07 (owner): see docs/ENVIRONMENT.md first.
+# Secrets (S9 operator; names only, never values):
+#   BKS_BIOTECH_GRAPH_URI, BKS_BIOTECH_GRAPH_USERNAME, BKS_BIOTECH_GRAPH_PASSWORD     (writer principal of the canonical graph)
+#   BKS_EXECUTOR_TOKENS (or legacy EXECUTOR_API_KEY)  (JSON principals; tokenSha256 preferred)
+#   BKS_BIOTECH_DB_VERIFICATION_DSN [, BKS_BIOTECH_DB_VERIFICATION_READ_DSN] (only with the dispatch consumer / official reads)
+#   BKS_WITNESS_ISSUER_KEYS, BKS_WITNESS_ISSUER   (pinned admission witness keys); BKS_WITNESS_SIGNING_KEY only if this
+#                                                  executor also hosts the admission service (BKS_ADMISSION_*)
+#   BKS_VERIFIER_ISSUER_KEYS                      (sealed verification keys)
+#   BKS_READ_BINDINGS (+ the env names it references) (read-only reader principals for /kg/read/cypher)
+#   OPENAI_API_KEY                                 (only if semantic schema search is served; otherwise unset)
+# Plan custody: the file PlanStore / receipts / snapshots live on the /data volume (BKS_RELEASE_RUNS_DIR=/data/runs).
+# Supabase Storage custody (S7 patch P4, bucket knowledge-artifacts) is not wired into the executor yet; the volume is custody.
+app = "bks-biotech-executor"
+primary_region = "iad"
+
+[env]
+  EXECUTOR_PORT = "4020"
+  NODE_ENV = "production"
+  # Required by the production guard: without it the executor refuses Aura (*.databases.neo4j.io) connections.
+  BKS_TARGET = "production"
+  BKS_NO_ENV_FILE = "1"
+  BKS_BIOTECH_GRAPH_DATABASE = "neo4j"
+  BKS_RELEASE_RUNS_DIR = "/data/runs"
+  BKS_NEO4J_ACQUISITION_TIMEOUT_MS = "5000"
+  BKS_NEO4J_CONNECT_TIMEOUT_MS = "3000"
+  # Never in production: BKS_LOCAL_DEV, BKS_ENABLE_BASELINE_TOOLS.
+
+[[mounts]]
+  source = "bks_executor_data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 4020
+  force_https = true
+  auto_stop_machines = "off"
+  auto_start_machines = true
+  min_machines_running = 1
+  [http_service.concurrency]
+    type = "requests"
+    soft_limit = 20
+    hard_limit = 40
+
+# Liveness (process serves; reports database reachability honestly).
+[[http_service.checks]]
+  grace_period = "30s"
+  interval = "30s"
+  method = "GET"
+  path = "/healthz"
+  timeout = "5s"
+
+# Traffic readiness: database answers, latest KsReleaseMarker is the served release, writer fences and DDL ONLINE.
+[[http_service.checks]]
+  grace_period = "60s"
+  interval = "30s"
+  method = "GET"
+  path = "/readyz"
+  timeout = "8s"
+
+[[vm]]
+  memory = "1gb"
+  cpu_kind = "shared"
+  cpus = 1

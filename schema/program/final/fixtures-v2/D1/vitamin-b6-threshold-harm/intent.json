@@ -1,0 +1,1918 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v2",
+  "intentId": "ft-d1-vitamin-b6-threshold-harm",
+  "pins": {
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+    "policyVersion": "bks-admission-policy/v1"
+  },
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "a2-d1-fixtures",
+      "model": "claude-opus-5-5"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run:ft-D1-vitamin-b6-threshold-harm",
+      "missionId": "mission:ft-D1-fixtures"
+    },
+    "activityKind": "INGESTION"
+  },
+  "basis": {
+    "creationOnly": {
+      "reason": "FU-03 v2 fixture round: replay of a packet fixture into a graph without a prior custody snapshot",
+      "expectAbsent": [],
+      "expectPresent": []
+    }
+  },
+  "defaults": {
+    "privacyClass": "PUBLIC"
+  },
+  "sources": [
+    {
+      "ref": "snap-tga-b6-safety-update",
+      "source": {
+        "canonicalUri": "https://www.tga.gov.au/news/safety-updates/medicines-containing-vitamin-b6-pyridoxine-pyridoxal-or-pyridoxamine",
+        "title": "TGA Medicine Safety Update 'Medicines containing vitamin B6 (pyridoxine, pyridoxal or pyridoxamine)'",
+        "sourceKind": "WEB_PAGE"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:39:39Z",
+        "observedAt": "2026-10-08T21:39:39Z",
+        "contentHash": "sha256:1fde192f063285fe0590ba77f4e854de631cc6ee331c85ba20c42600caba2bb2",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "firecrawl-cli/1.23.1 scrape --only-main-content --max-age 0 (Markdown)",
+        "captureCompleteness": "PARTIAL_EXCERPT",
+        "mimeType": "text/markdown",
+        "metadata": {
+          "bytes": 16727
+        }
+      },
+      "locators": [
+        {
+          "ref": "l-tga-b6-schedule",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "Oral preparations containing more than 50 mg but not more than 200 mg per recommended daily dose of vitamin B6 will be",
+            "prefix": "Copy link to heading\") Summary\n\n",
+            "suffix": " [rescheduled as Pharmacist Only",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 481,
+              "end": 599
+            },
+            "section": "Summary",
+            "offsetBasis": "CODE_POINT",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Oral preparations containing more than 50 mg but not more than 200 mg per recommended daily dose of vitamin B6 will be",
+          "prefix": "Copy link to heading\") Summary\n\n",
+          "suffix": " [rescheduled as Pharmacist Only",
+          "quoteHash": "sha256:e3212f3b54eb2707d38d03a0dc7f552631fa01f5de28666017dcb96d9a2502ad",
+          "startOffset": 481,
+          "endOffset": 599
+        },
+        {
+          "ref": "l-tga-b6-effective",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "The effect of our decision is that from 1 June 2027 products with low doses of vitamin B6 will continue to be available for general sale",
+            "prefix": "e, pyridoxal, or pyridoxamine.\n\n",
+            "suffix": ", while products containing high",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 1073,
+              "end": 1209
+            },
+            "section": "Summary",
+            "offsetBasis": "CODE_POINT",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "The effect of our decision is that from 1 June 2027 products with low doses of vitamin B6 will continue to be available for general sale",
+          "prefix": "e, pyridoxal, or pyridoxamine.\n\n",
+          "suffix": ", while products containing high",
+          "quoteHash": "sha256:cb65af1dd3ba3e841f94358153140a91391216481ce5462a0d68e10568bea132",
+          "startOffset": 1073,
+          "endOffset": 1209
+        },
+        {
+          "ref": "l-tga-b6-neuropathy",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "Vitamin B6 can cause peripheral neuropathy, and while the risk is greatest for higher intakes of vitamin B6, it cannot be excluded for doses less than 50 mg/day.",
+            "prefix": "nue to require a prescription.\n\n",
+            "suffix": " It can be difficult for consume",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 1768,
+              "end": 1929
+            },
+            "section": "Summary",
+            "offsetBasis": "CODE_POINT",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Vitamin B6 can cause peripheral neuropathy, and while the risk is greatest for higher intakes of vitamin B6, it cannot be excluded for doses less than 50 mg/day.",
+          "prefix": "nue to require a prescription.\n\n",
+          "suffix": " It can be difficult for consume",
+          "quoteHash": "sha256:f7d52091e65c28be0fb916599e08ad1cfef4a2cbee0be46644c5f34c157efd9d",
+          "startOffset": 1768,
+          "endOffset": 1929
+        },
+        {
+          "ref": "l-tga-b6-chemname",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "Adverse event reports also suggest a lack of awareness about the presence of vitamin B6 in medicines, particularly if the label lists the chemical name without the common name ‘vitamin B6’.",
+            "prefix": "ines to be safe and effective.\n\n",
+            "suffix": " Health professionals should be ",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 3850,
+              "end": 4039
+            },
+            "section": "What health professionals should do",
+            "offsetBasis": "CODE_POINT",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Adverse event reports also suggest a lack of awareness about the presence of vitamin B6 in medicines, particularly if the label lists the chemical name without the common name ‘vitamin B6’.",
+          "prefix": "ines to be safe and effective.\n\n",
+          "suffix": " Health professionals should be ",
+          "quoteHash": "sha256:34e550caa27be601c184b2e319161ed71c17c46c3f05a6b1ce46ba2e066487c9",
+          "startOffset": 3850,
+          "endOffset": 4039
+        },
+        {
+          "ref": "l-tga-b6-forms",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "- pyridoxine hydrochloride\n- pyridoxal 5-phosphate\n- pyridoxal 5-phosphate monohydrate.",
+            "prefix": "market through self-selection:\n\n",
+            "suffix": "\n\nWhen included as active ingred",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 4480,
+              "end": 4567
+            },
+            "section": "What health professionals should do",
+            "offsetBasis": "CODE_POINT",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "- pyridoxine hydrochloride\n- pyridoxal 5-phosphate\n- pyridoxal 5-phosphate monohydrate.",
+          "prefix": "market through self-selection:\n\n",
+          "suffix": "\n\nWhen included as active ingred",
+          "quoteHash": "sha256:907261fdf2396c3b218232326eebd6059f5a1492cf5fbc1f395bfa9102c4042d",
+          "startOffset": 4480,
+          "endOffset": 4567
+        },
+        {
+          "ref": "l-tga-b6-asequivalent",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "The available PDF summary will list the vitamin B6 ingredient, if present, using one of the above names and state how much is in the medicine as the equivalent amount of pyridoxine.",
+            "prefix": " of Therapeutic Goods (ARTG)\"). ",
+            "suffix": "\n\n## [Copy link to heading](http",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 4958,
+              "end": 5139
+            },
+            "section": "What health professionals should do",
+            "offsetBasis": "CODE_POINT",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "The available PDF summary will list the vitamin B6 ingredient, if present, using one of the above names and state how much is in the medicine as the equivalent amount of pyridoxine.",
+          "prefix": " of Therapeutic Goods (ARTG)\"). ",
+          "suffix": "\n\n## [Copy link to heading](http",
+          "quoteHash": "sha256:ae846c5641d2b23d127d6e6f786953def861ce1ea1416bba5089b74b3732bb9e",
+          "startOffset": 4958,
+          "endOffset": 5139
+        },
+        {
+          "ref": "l-tga-b6-count",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "At the time of the final decision, there were at least 125 medicines on the Australian market providing more than 50 mg but not more than 200 mg vitamin B6 per maximum recommended daily dose.",
+            "prefix": "vitamin-b6-interim-decision/).\n\n",
+            "suffix": " Of these, 116 were listed compl",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 9327,
+              "end": 9518
+            },
+            "section": "Background",
+            "offsetBasis": "CODE_POINT",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "At the time of the final decision, there were at least 125 medicines on the Australian market providing more than 50 mg but not more than 200 mg vitamin B6 per maximum recommended daily dose.",
+          "prefix": "vitamin-b6-interim-decision/).\n\n",
+          "suffix": " Of these, 116 were listed compl",
+          "quoteHash": "sha256:555788772b203be7ae9aa267de8a101bba0fa684b0fc124010cc2920e6afa9ca",
+          "startOffset": 9327,
+          "endOffset": 9518
+        },
+        {
+          "ref": "l-tga-b6-final",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "(vitamin B6)\") on 25 November 2025.",
+            "prefix": "xine, pyridoxal or pyridoxamine ",
+            "suffix": "\n\nA wide range of materials was ",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 8426,
+              "end": 8461
+            },
+            "section": "Background",
+            "offsetBasis": "CODE_POINT",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "(vitamin B6)\") on 25 November 2025.",
+          "prefix": "xine, pyridoxal or pyridoxamine ",
+          "suffix": "\n\nA wide range of materials was ",
+          "quoteHash": "sha256:ac36b089e5c2304c2b09d5e4a88537137d72af78943f01a57de7297fcb50712e",
+          "startOffset": 8426,
+          "endOffset": 8461
+        },
+        {
+          "ref": "l-tga-b6-warning2022",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "since 1 March 2022, medicines containing daily doses of vitamin B6 over 10 mg or equivalent have been required to carry the following statement",
+            "prefix": "disease.\n\nBecause of this risk, ",
+            "suffix": ":\n\n> “WARNING - Stop taking this",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 6535,
+              "end": 6678
+            },
+            "section": "Background",
+            "offsetBasis": "CODE_POINT",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "since 1 March 2022, medicines containing daily doses of vitamin B6 over 10 mg or equivalent have been required to carry the following statement",
+          "prefix": "disease.\n\nBecause of this risk, ",
+          "suffix": ":\n\n> “WARNING - Stop taking this",
+          "quoteHash": "sha256:fa7cf5974c917df74485d4d0c120722ba12f4d71556b721bcd8993053ab7fcdb",
+          "startOffset": 6535,
+          "endOffset": 6678
+        }
+      ]
+    },
+    {
+      "ref": "snap-ods-b6-hp",
+      "source": {
+        "canonicalUri": "https://ods.od.nih.gov/factsheets/VitaminB6-HealthProfessional/",
+        "title": "NIH ODS 'Vitamin B6 - Health Professional Fact Sheet'",
+        "sourceKind": "WEB_PAGE"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:39:49Z",
+        "observedAt": "2026-10-08T21:39:49Z",
+        "contentHash": "sha256:ae2193892e2c851288e9a40368d85727f74536f90ff53f5147de42e68a24ba7d",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "firecrawl-cli/1.23.1 scrape --only-main-content --max-age 0 (Markdown)",
+        "captureCompleteness": "PARTIAL_EXCERPT",
+        "mimeType": "text/markdown",
+        "metadata": {
+          "bytes": 74658
+        }
+      },
+      "locators": [
+        {
+          "ref": "l-ods-vitamers",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "It is the generic name for six compounds (vitamers) with vitamin B6 activity: pyridoxine, an alcohol; pyridoxal, an aldehyde; and pyridoxamine, which contains an amino group; and their respective 5’-phosphate esters.",
+            "prefix": "ilable as a dietary supplement. ",
+            "suffix": " Pyridoxal 5’ phosphate (PLP) an",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 486,
+              "end": 702
+            },
+            "section": "Introduction",
+            "offsetBasis": "CODE_POINT",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "It is the generic name for six compounds (vitamers) with vitamin B6 activity: pyridoxine, an alcohol; pyridoxal, an aldehyde; and pyridoxamine, which contains an amino group; and their respective 5’-phosphate esters.",
+          "prefix": "ilable as a dietary supplement. ",
+          "suffix": " Pyridoxal 5’ phosphate (PLP) an",
+          "quoteHash": "sha256:140aa0aeb9059f9fbc7e96788383c44442841ed8802cab906b60ccf01fff24f2",
+          "startOffset": 486,
+          "endOffset": 702
+        }
+      ]
+    },
+    {
+      "ref": "snap-dsld-label-326829",
+      "source": {
+        "canonicalUri": "https://api.ods.od.nih.gov/dsld/v9/label/326829",
+        "title": "NIH DSLD label 326829 'P-5-P 50 mg' (Country Life)",
+        "sourceKind": "API"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:38:44Z",
+        "observedAt": "2026-10-08T21:38:44Z",
+        "contentHash": "sha256:f63958566cc707f701b6cd1f06a50ad92b859ce184cf8dcadd9f178915b04ec3",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "curl/8 dsld-api-v9",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {
+          "bytes": 7082
+        }
+      },
+      "locators": [
+        {
+          "ref": "l-dsld326829-b6",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"operator\":\"=\",\"quantity\":34,\"unit\":\"mg\"",
+            "prefix": "rder\":1,\"servingSizeQuantity\":1,",
+            "suffix": ",\"dailyValueTargetGroup\":[{\"name",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 4843,
+              "end": 4883
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/ingredientRows/0/quantity/0/quantity",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"operator\":\"=\",\"quantity\":34,\"unit\":\"mg\"",
+          "prefix": "rder\":1,\"servingSizeQuantity\":1,",
+          "suffix": ",\"dailyValueTargetGroup\":[{\"name",
+          "quoteHash": "sha256:26cc24d85348c6f3076f291a7f4f2559c05ff8245d01a8a08ac687bc8d890386",
+          "startOffset": 4843,
+          "endOffset": 4883
+        },
+        {
+          "ref": "l-dsld326829-b6name",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"name\":\"Vitamin B6\",\"category\":\"vitamin\",\"ingredientGroup\":\"Vitamin B6\",\"uniiCode\":\"KV2JZ1BI6Z\"",
+            "prefix": "\":\"Tablet(s)\"}],\"nestedRows\":[],",
+            "suffix": ",\"alternateNames\":[],\"forms\":[{\"",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 5058,
+              "end": 5153
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/ingredientRows/0/uniiCode",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"name\":\"Vitamin B6\",\"category\":\"vitamin\",\"ingredientGroup\":\"Vitamin B6\",\"uniiCode\":\"KV2JZ1BI6Z\"",
+          "prefix": "\":\"Tablet(s)\"}],\"nestedRows\":[],",
+          "suffix": ",\"alternateNames\":[],\"forms\":[{\"",
+          "quoteHash": "sha256:86ce245b4860bef3ef32acddc76089970a82efd204c2afeefce9a7300b5c10ef",
+          "startOffset": 5058,
+          "endOffset": 5153
+        },
+        {
+          "ref": "l-dsld326829-p5p",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"operator\":\"=\",\"quantity\":50,\"unit\":\"mg\"",
+            "prefix": "rder\":1,\"servingSizeQuantity\":1,",
+            "suffix": ",\"dailyValueTargetGroup\":[{\"name",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 5474,
+              "end": 5514
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/ingredientRows/1/quantity/0/quantity",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"operator\":\"=\",\"quantity\":50,\"unit\":\"mg\"",
+          "prefix": "rder\":1,\"servingSizeQuantity\":1,",
+          "suffix": ",\"dailyValueTargetGroup\":[{\"name",
+          "quoteHash": "sha256:07b85bd5b1eb4ad271ad7d03688f6ab09f24b53203cbb1ba1a60a6f2e8d5c77f",
+          "startOffset": 5474,
+          "endOffset": 5514
+        },
+        {
+          "ref": "l-dsld326829-p5pname",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"name\":\"Pyridoxal 5-Phosphate\",\"category\":\"vitamin\",\"ingredientGroup\":\"Vitamin B6\",\"uniiCode\":\"F06SGE49M6\"",
+            "prefix": "\":\"Tablet(s)\"}],\"nestedRows\":[],",
+            "suffix": ",\"alternateNames\":[\"P-5-P\"],\"for",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 5715,
+              "end": 5821
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/ingredientRows/1/uniiCode",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"name\":\"Pyridoxal 5-Phosphate\",\"category\":\"vitamin\",\"ingredientGroup\":\"Vitamin B6\",\"uniiCode\":\"F06SGE49M6\"",
+          "prefix": "\":\"Tablet(s)\"}],\"nestedRows\":[],",
+          "suffix": ",\"alternateNames\":[\"P-5-P\"],\"for",
+          "quoteHash": "sha256:ce64821b20a74e2bc5c663d1f0dfb71ad9b7988ef4fb7d339f2be82064ddfeed",
+          "startOffset": 5715,
+          "endOffset": 5821
+        },
+        {
+          "ref": "l-dsld326829-maxdaily",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"maxDailyServings\":1,\"unit\":\"Tablet(s)\"",
+            "prefix": "uantity\":1,\"minDailyServings\":1,",
+            "suffix": ",\"notes\":\"\",\"inSFB\":true}],\"targ",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 1195,
+              "end": 1234
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/servingSizes/0/maxDailyServings",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"maxDailyServings\":1,\"unit\":\"Tablet(s)\"",
+          "prefix": "uantity\":1,\"minDailyServings\":1,",
+          "suffix": ",\"notes\":\"\",\"inSFB\":true}],\"targ",
+          "quoteHash": "sha256:5ce993a7a49ae32b3525ff98b866ad7c65661618e7244559f30b11410ef3b59b",
+          "startOffset": 1195,
+          "endOffset": 1234
+        }
+      ]
+    },
+    {
+      "ref": "snap-dsld-label-309443",
+      "source": {
+        "canonicalUri": "https://api.ods.od.nih.gov/dsld/v9/label/309443",
+        "title": "NIH DSLD label 309443 'Magnesium + P-5-P' (EuroMedica)",
+        "sourceKind": "API"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:38:45Z",
+        "observedAt": "2026-10-08T21:38:45Z",
+        "contentHash": "sha256:8d84822407fbc7bd336709bf555e9073c74a3745c662f4be4df3a7ce87db5b02",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "curl/8 dsld-api-v9",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {
+          "bytes": 6389
+        }
+      },
+      "locators": [
+        {
+          "ref": "l-dsld309443-b6",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"operator\":\"=\",\"quantity\":10,\"unit\":\"mg\"",
+            "prefix": "rder\":1,\"servingSizeQuantity\":1,",
+            "suffix": ",\"dailyValueTargetGroup\":[{\"name",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 3546,
+              "end": 3586
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/ingredientRows/0/quantity/0/quantity",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"operator\":\"=\",\"quantity\":10,\"unit\":\"mg\"",
+          "prefix": "rder\":1,\"servingSizeQuantity\":1,",
+          "suffix": ",\"dailyValueTargetGroup\":[{\"name",
+          "quoteHash": "sha256:1abfe319dd46e13cccd7df39a1b643b4b79b7051f1fc2f56e3ad0d6653f7bb60",
+          "startOffset": 3546,
+          "endOffset": 3586
+        },
+        {
+          "ref": "l-dsld309443-b6group",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"ingredientGroup\":\"Vitamin B6 (pyridoxal 5-phosphate)\"",
+            "prefix": "itamin B6\",\"category\":\"vitamin\",",
+            "suffix": ",\"uniiCode\":null,\"alternateNames",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 3802,
+              "end": 3856
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/ingredientRows/0/ingredientGroup",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"ingredientGroup\":\"Vitamin B6 (pyridoxal 5-phosphate)\"",
+          "prefix": "itamin B6\",\"category\":\"vitamin\",",
+          "suffix": ",\"uniiCode\":null,\"alternateNames",
+          "quoteHash": "sha256:8aa0c8ae7eec7afe750351703b07175b4b7df8d060f83eafd3ce7969b503f882",
+          "startOffset": 3802,
+          "endOffset": 3856
+        },
+        {
+          "ref": "l-dsld309443-maxdaily",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"maxDailyServings\":4,\"unit\":\"Capsule(s)\"",
+            "prefix": "uantity\":1,\"minDailyServings\":1,",
+            "suffix": ",\"notes\":\"\",\"inSFB\":true}],\"targ",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 1166,
+              "end": 1206
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/servingSizes/0/maxDailyServings",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"maxDailyServings\":4,\"unit\":\"Capsule(s)\"",
+          "prefix": "uantity\":1,\"minDailyServings\":1,",
+          "suffix": ",\"notes\":\"\",\"inSFB\":true}],\"targ",
+          "quoteHash": "sha256:80fc58630032dde386c456bd4c5a7671dba596093f065182800fd7ff76b86aae",
+          "startOffset": 1166,
+          "endOffset": 1206
+        }
+      ]
+    },
+    {
+      "ref": "snap-gsrs-f06sge49m6-full",
+      "source": {
+        "canonicalUri": "https://gsrs.ncats.nih.gov/api/v1/substances(F06SGE49M6)?view=full",
+        "title": "FDA GSRS substance 'Pyridoxal phosphate anhydrous' (UNII F06SGE49M6)",
+        "sourceKind": "API"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:38:49Z",
+        "observedAt": "2026-10-08T21:38:49Z",
+        "contentHash": "sha256:792e5a24603f323772e33058a7f80787a8fb29f6e42ceb7d5c599677661c7859",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "curl/8 gsrs-api-v1",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {
+          "bytes": 31655
+        }
+      },
+      "locators": [
+        {
+          "ref": "l-gsrsf06-mwt",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"mwt\":247.1422",
+            "prefix": "reo\":0,\"ezCenters\":0,\"charge\":0,",
+            "suffix": ",\"count\":1,\"createdBy\":\"ADMIN\",\"",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 28519,
+              "end": 28533
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/structure/mwt",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"mwt\":247.1422",
+          "prefix": "reo\":0,\"ezCenters\":0,\"charge\":0,",
+          "suffix": ",\"count\":1,\"createdBy\":\"ADMIN\",\"",
+          "quoteHash": "sha256:3fffb96d33fe7d3cfa44eaf75cc9bc1e87ceab6da7d7681cf70fb06a8200f580",
+          "startOffset": 28519,
+          "endOffset": 28533
+        },
+        {
+          "ref": "l-gsrsf06-moiety",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"type\":\"ACTIVE MOIETY\"",
+            "prefix": "65-3c40-48bc-ad41-605df9ec80a8\",",
+            "suffix": ",\"references\":[],\"access\":[]},{\"",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 14270,
+              "end": 14292
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/relationships/1/type",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"type\":\"ACTIVE MOIETY\"",
+          "prefix": "65-3c40-48bc-ad41-605df9ec80a8\",",
+          "suffix": ",\"references\":[],\"access\":[]},{\"",
+          "quoteHash": "sha256:4355fb49d0fc716fcb9a5fc1f316b6f6f6df38a2503bfdaff6f9a5f959040630",
+          "startOffset": 14270,
+          "endOffset": 14292
+        },
+        {
+          "ref": "l-gsrsf06-version",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"version\":\"32\"",
+            "prefix": ":\"chemical\",\"status\":\"approved\",",
+            "suffix": ",\"approvedBy\":\"FDA_SRS\",\"names\":",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 264,
+              "end": 278
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/version",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"version\":\"32\"",
+          "prefix": ":\"chemical\",\"status\":\"approved\",",
+          "suffix": ",\"approvedBy\":\"FDA_SRS\",\"names\":",
+          "quoteHash": "sha256:eb1ad7d71be4f4d82660504493a5c0a18d377c529e0a575fd4b19768f484d2cc",
+          "startOffset": 264,
+          "endOffset": 278
+        }
+      ]
+    },
+    {
+      "ref": "snap-gsrs-kv2jz1bi6z-full",
+      "source": {
+        "canonicalUri": "https://gsrs.ncats.nih.gov/api/v1/substances(KV2JZ1BI6Z)?view=full",
+        "title": "FDA GSRS substance PYRIDOXINE (UNII KV2JZ1BI6Z)",
+        "sourceKind": "API"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:38:50Z",
+        "observedAt": "2026-10-08T21:38:50Z",
+        "contentHash": "sha256:b0f2dc8c79b55146a83ebaf27bf2b09455f4ad09515d588bf84fbe37111d5475",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "curl/8 gsrs-api-v1",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {
+          "bytes": 48104
+        }
+      },
+      "locators": [
+        {
+          "ref": "l-gsrskv2-mwt",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"mwt\":169.1782",
+            "prefix": "reo\":0,\"ezCenters\":0,\"charge\":0,",
+            "suffix": ",\"count\":1,\"createdBy\":\"ADMIN\",\"",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 45382,
+              "end": 45396
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/structure/mwt",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"mwt\":169.1782",
+          "prefix": "reo\":0,\"ezCenters\":0,\"charge\":0,",
+          "suffix": ",\"count\":1,\"createdBy\":\"ADMIN\",\"",
+          "quoteHash": "sha256:14cbc653e20abc5cab18f59edbf7e4de45bda9a90b6b792ef0914262f66ab758",
+          "startOffset": 45382,
+          "endOffset": 45396
+        },
+        {
+          "ref": "l-gsrskv2-version",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"version\":\"38\"",
+            "prefix": ":\"chemical\",\"status\":\"approved\",",
+            "suffix": ",\"approvedBy\":\"FDA_SRS\",\"names\":",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 264,
+              "end": 278
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/version",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"version\":\"38\"",
+          "prefix": ":\"chemical\",\"status\":\"approved\",",
+          "suffix": ",\"approvedBy\":\"FDA_SRS\",\"names\":",
+          "quoteHash": "sha256:0028024f5c45ac28278ec34056e53f7244cbac7ab7431a5150cff736aa30d5fa",
+          "startOffset": 264,
+          "endOffset": 278
+        }
+      ]
+    },
+    {
+      "ref": "snap-gsrs-68y4cf58bv-full",
+      "source": {
+        "canonicalUri": "https://gsrs.ncats.nih.gov/api/v1/substances(68Y4CF58BV)?view=full",
+        "title": "FDA GSRS substance PYRIDOXINE HYDROCHLORIDE (UNII 68Y4CF58BV)",
+        "sourceKind": "API"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:40:27Z",
+        "observedAt": "2026-10-08T21:40:27Z",
+        "contentHash": "sha256:fdd7a45eab90a93bca3a401559949d4556c99acea61e33053e440b0690711dd7",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "curl/8 gsrs-api-v1",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {
+          "bytes": 51335
+        }
+      },
+      "locators": [
+        {
+          "ref": "l-gsrs68y4-moiety",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"type\":\"ACTIVE MOIETY\"",
+            "prefix": "cc-647f-4b43-b549-e3ed932ad917\",",
+            "suffix": ",\"references\":[],\"access\":[]},{\"",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 27404,
+              "end": 27426
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/relationships/0/type",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"type\":\"ACTIVE MOIETY\"",
+          "prefix": "cc-647f-4b43-b549-e3ed932ad917\",",
+          "suffix": ",\"references\":[],\"access\":[]},{\"",
+          "quoteHash": "sha256:4355fb49d0fc716fcb9a5fc1f316b6f6f6df38a2503bfdaff6f9a5f959040630",
+          "startOffset": 27404,
+          "endOffset": 27426
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "con-b6",
+      "mode": "new",
+      "nodeType": "Constituent",
+      "name": "Vitamin B6",
+      "properties": {
+        "constituentKind": "NUTRIENT",
+        "nutrientKind": "VITAMIN",
+        "referenceUnitCode": "mg",
+        "searchText": "vitamin B6 | pyridoxine | pyridoxal | pyridoxamine | P-5-P | P5P | pyridoxal 5-phosphate | pyridoxine hydrochloride"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "sub-p5p",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "Pyridoxal phosphate anhydrous",
+      "properties": {
+        "substanceClass": "CHEMICAL",
+        "molecularFormula": "C8H10NO6P",
+        "molecularWeight": 247.1422
+      },
+      "identifiers": [
+        {
+          "scheme": "UNII",
+          "issuer": "FDA GSRS",
+          "value": "F06SGE49M6",
+          "evidence": [
+            "l-gsrsf06-version"
+          ]
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "sub-pyridoxine",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "PYRIDOXINE",
+      "properties": {
+        "substanceClass": "CHEMICAL",
+        "molecularFormula": "C8H11NO3",
+        "molecularWeight": 169.1782
+      },
+      "identifiers": [
+        {
+          "scheme": "UNII",
+          "issuer": "FDA GSRS",
+          "value": "KV2JZ1BI6Z",
+          "evidence": [
+            "l-gsrskv2-version"
+          ]
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "sub-pyridoxine-hcl",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "PYRIDOXINE HYDROCHLORIDE",
+      "properties": {
+        "substanceClass": "CHEMICAL",
+        "molecularFormula": "C8H11NO3.ClH"
+      },
+      "identifiers": [
+        {
+          "scheme": "UNII",
+          "issuer": "FDA GSRS",
+          "value": "68Y4CF58BV"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "mat-p5p-cl",
+      "mode": "new",
+      "nodeType": "IngredientMaterial",
+      "name": "Pyridoxal 5-Phosphate (as listed on Country Life P-5-P 50 mg)",
+      "properties": {
+        "materialKind": "CHEMICALLY_DEFINED"
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "lv-us-326829",
+      "mode": "new",
+      "nodeType": "LabelVersion",
+      "name": "Country Life P-5-P 50 mg — US label (DSLD 326829)",
+      "properties": {
+        "maxDailyServings": 1
+      },
+      "identifiers": [
+        {
+          "scheme": "DSLD",
+          "issuer": "NIH ODS",
+          "value": "326829"
+        }
+      ],
+      "onMatch": "review"
+    },
+    {
+      "ref": "lv-us-309443",
+      "mode": "new",
+      "nodeType": "LabelVersion",
+      "name": "EuroMedica Magnesium + P-5-P — US label (DSLD 309443)",
+      "properties": {
+        "maxDailyServings": 4
+      },
+      "identifiers": [
+        {
+          "scheme": "DSLD",
+          "issuer": "NIH ODS",
+          "value": "309443"
+        }
+      ],
+      "onMatch": "review"
+    },
+    {
+      "ref": "org-tga",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "Therapeutic Goods Administration (Australia)",
+      "properties": {
+        "entityKind": "UNSPECIFIED"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "org-nih-ods",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "NIH Office of Dietary Supplements",
+      "properties": {
+        "entityKind": "UNSPECIFIED"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "org-fda-srs",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "FDA Substance Registration System (GSRS)",
+      "properties": {
+        "entityKind": "UNSPECIFIED"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "org-country-life",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "Country Life (label brand)",
+      "properties": {
+        "entityKind": "UNSPECIFIED"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "org-euromedica",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "EuroMedica (label brand)",
+      "properties": {
+        "entityKind": "UNSPECIFIED"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "agent-projection",
+      "mode": "new",
+      "nodeType": "Agent",
+      "name": "agent:d1-amount-projection (d1-amounts/v1)",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "b01-p5p-counts-tga",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "COUNTS_TOWARD_NUTRIENT",
+      "fromRef": "sub-p5p",
+      "toRef": "con-b6",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "qualifiers": [
+          "jurisdiction:AU"
+        ],
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        },
+        "uidSegment": "b01-p5p-counts-tga"
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "l-tga-b6-forms"
+      ],
+      "asserterRef": "org-tga"
+    },
+    {
+      "proposalId": "b02-p5p-counts-ods",
+      "rationale": "ODS: six vitamers incl. 'their respective 5'-phosphate esters' — pyridoxal 5'-phosphate is one of them",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "COUNTS_TOWARD_NUTRIENT",
+      "fromRef": "sub-p5p",
+      "toRef": "con-b6",
+      "assertion": {
+        "speechAct": "STATES",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        },
+        "uidSegment": "b02-p5p-counts-ods"
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "l-ods-vitamers"
+      ],
+      "asserterRef": "org-nih-ods"
+    },
+    {
+      "proposalId": "b03-pyridoxine-hcl-counts",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "COUNTS_TOWARD_NUTRIENT",
+      "fromRef": "sub-pyridoxine-hcl",
+      "toRef": "con-b6",
+      "assertion": {
+        "speechAct": "STATES",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        },
+        "uidSegment": "b03-pyridoxine-hcl-counts"
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "l-tga-b6-forms"
+      ],
+      "asserterRef": "org-tga"
+    },
+    {
+      "proposalId": "b04-pyridoxine-counts",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "COUNTS_TOWARD_NUTRIENT",
+      "fromRef": "sub-pyridoxine",
+      "toRef": "con-b6",
+      "assertion": {
+        "speechAct": "STATES",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        },
+        "uidSegment": "b04-pyridoxine-counts"
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "l-ods-vitamers"
+      ],
+      "asserterRef": "org-nih-ods"
+    },
+    {
+      "proposalId": "b06-hcl-moiety",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "HAS_ACTIVE_MOIETY",
+      "fromRef": "sub-pyridoxine-hcl",
+      "toRef": "sub-pyridoxine",
+      "assertion": {
+        "speechAct": "STATES",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        },
+        "uidSegment": "b06-hcl-moiety"
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "l-gsrs68y4-moiety"
+      ],
+      "asserterRef": "org-fda-srs"
+    },
+    {
+      "proposalId": "b08-mw-p5p",
+      "rationale": "GSRS record F06SGE49M6 version 32 (/structure/mwt)",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "sub-p5p",
+      "assertion": {
+        "speechAct": "STATES",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        },
+        "uidSegment": "b08-mw-p5p",
+        "predicate": "MOLECULAR_WEIGHT"
+      },
+      "value": {
+        "valueNumber": 247.1422,
+        "unitCode": "g/mol"
+      },
+      "evidence": [
+        "l-gsrsf06-mwt",
+        "l-gsrsf06-version"
+      ],
+      "asserterRef": "org-fda-srs"
+    },
+    {
+      "proposalId": "b09-mw-pyridoxine",
+      "rationale": "GSRS record KV2JZ1BI6Z version 38 (/structure/mwt)",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "sub-pyridoxine",
+      "assertion": {
+        "speechAct": "STATES",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        },
+        "uidSegment": "b09-mw-pyridoxine",
+        "predicate": "MOLECULAR_WEIGHT"
+      },
+      "value": {
+        "valueNumber": 169.1782,
+        "unitCode": "g/mol"
+      },
+      "evidence": [
+        "l-gsrskv2-mwt",
+        "l-gsrskv2-version"
+      ],
+      "asserterRef": "org-fda-srs"
+    },
+    {
+      "proposalId": "b10-realizes-p5p",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "REALIZES_SUBSTANCE",
+      "fromRef": "mat-p5p-cl",
+      "toRef": "sub-p5p",
+      "assertion": {
+        "speechAct": "STATES",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        },
+        "uidSegment": "b10-realizes-p5p"
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "l-dsld326829-p5pname"
+      ],
+      "asserterRef": "org-nih-ods"
+    },
+    {
+      "proposalId": "b11-declares-p5p",
+      "rationale": "qualifiers: declaredName:Pyridoxal 5-Phosphate | D6 ComponentLineProperties (asserted line, AssertedRecordedProperties superset, D6 adversarial review); massBasis SALT_FORM (D1 MassBasis) = 'the listed salt/ester/hydrate form as named' (P5P is a phosphate ester); statedAsOf = DSLD entryDate 2025-03-25",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "DECLARES_COMPONENT",
+      "fromRef": "lv-us-326829",
+      "toRef": "mat-p5p-cl",
+      "assertion": {
+        "speechAct": "STATES",
+        "basisKind": "MANUFACTURER_CLAIM",
+        "qualifiers": [
+          "declaredName:Pyridoxal 5-Phosphate"
+        ],
+        "validity": {
+          "validFromBasis": "OBSERVATION_ONLY",
+          "validObservedAt": "2025-03-25T00:00:00Z"
+        },
+        "uidSegment": "b11-declares-p5p"
+      },
+      "edgeProperties": {
+        "orderIndex": 1,
+        "lineRole": "DIETARY_INGREDIENT",
+        "amount": 50,
+        "unitCode": "mg",
+        "amountReferent": "AS_NAMED",
+        "amountBasis": "PER_SERVING",
+        "massBasis": "SALT_FORM"
+      },
+      "evidence": [
+        "l-dsld326829-p5p",
+        "l-dsld326829-p5pname"
+      ],
+      "asserterRef": "org-country-life",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: SUBJECT_CONFLICT: lv-us-326829 (REQUIRED_PROPERTY_MISSING: LabelVersion.panelKind, contentDigest, compositionDigest)"
+      }
+    },
+    {
+      "proposalId": "b12-declares-b6",
+      "rationale": "qualifiers: declaredName:Vitamin B6; form:Pyridoxal 5-Phosphate | DSLD maps the nutrient row to UNII KV2JZ1BI6Z (pyridoxine): DSLD's convention, consistent with the pyridoxine-equivalent reading the stoichiometry check c07 confirms",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "DECLARES_COMPONENT",
+      "fromRef": "lv-us-326829",
+      "toRef": "con-b6",
+      "assertion": {
+        "speechAct": "STATES",
+        "basisKind": "MANUFACTURER_CLAIM",
+        "qualifiers": [
+          "declaredName:Vitamin B6",
+          "form:Pyridoxal 5-Phosphate"
+        ],
+        "validity": {
+          "validFromBasis": "OBSERVATION_ONLY",
+          "validObservedAt": "2025-03-25T00:00:00Z"
+        },
+        "uidSegment": "b12-declares-b6"
+      },
+      "edgeProperties": {
+        "orderIndex": 0,
+        "lineRole": "NUTRIENT",
+        "amount": 34,
+        "unitCode": "mg",
+        "amountReferent": "AS_NUTRIENT",
+        "amountBasis": "PER_SERVING",
+        "massBasis": "NUTRIENT_EQUIVALENT"
+      },
+      "evidence": [
+        "l-dsld326829-b6",
+        "l-dsld326829-b6name"
+      ],
+      "asserterRef": "org-country-life",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: SUBJECT_CONFLICT: lv-us-326829 (REQUIRED_PROPERTY_MISSING: LabelVersion.panelKind, contentDigest, compositionDigest)"
+      }
+    },
+    {
+      "proposalId": "b13-max-daily-326829",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "lv-us-326829",
+      "assertion": {
+        "speechAct": "RECOMMENDS",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "OBSERVATION_ONLY",
+          "validObservedAt": "2025-03-25T00:00:00Z"
+        },
+        "uidSegment": "b13-max-daily-326829",
+        "predicate": "MAX_DAILY_SERVINGS"
+      },
+      "value": {
+        "valueNumber": 1,
+        "unitCode": "{serving}/d"
+      },
+      "evidence": [
+        "l-dsld326829-maxdaily"
+      ],
+      "asserterRef": "org-country-life",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: SUBJECT_CONFLICT: lv-us-326829 (REQUIRED_PROPERTY_MISSING: LabelVersion.panelKind, contentDigest, compositionDigest)"
+      }
+    },
+    {
+      "proposalId": "b14-declares-309443",
+      "rationale": "qualifiers: declaredName:Vitamin B6; form:Pyridoxal 5-Phosphate | the label does not say whether 10 mg is P5P mass or pyridoxine equivalent (CQ-PF-01): massBasis UNSPECIFIED, both readings computed in c09",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "DECLARES_COMPONENT",
+      "fromRef": "lv-us-309443",
+      "toRef": "con-b6",
+      "assertion": {
+        "speechAct": "STATES",
+        "basisKind": "MANUFACTURER_CLAIM",
+        "qualifiers": [
+          "declaredName:Vitamin B6",
+          "form:Pyridoxal 5-Phosphate"
+        ],
+        "validity": {
+          "validFromBasis": "OBSERVATION_ONLY",
+          "validObservedAt": "2024-05-23T00:00:00Z"
+        },
+        "uidSegment": "b14-declares-309443"
+      },
+      "edgeProperties": {
+        "orderIndex": 0,
+        "lineRole": "NUTRIENT",
+        "amount": 10,
+        "unitCode": "mg",
+        "amountReferent": "AS_NUTRIENT",
+        "amountBasis": "PER_SERVING",
+        "massBasis": "UNSPECIFIED"
+      },
+      "evidence": [
+        "l-dsld309443-b6",
+        "l-dsld309443-b6group"
+      ],
+      "asserterRef": "org-euromedica",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: SUBJECT_CONFLICT: lv-us-309443 (REQUIRED_PROPERTY_MISSING: LabelVersion.panelKind, contentDigest, compositionDigest)"
+      }
+    },
+    {
+      "proposalId": "b15-max-daily-309443",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "lv-us-309443",
+      "assertion": {
+        "speechAct": "RECOMMENDS",
+        "qualifiers": [],
+        "validity": {
+          "validFromBasis": "OBSERVATION_ONLY",
+          "validObservedAt": "2024-05-23T00:00:00Z"
+        },
+        "uidSegment": "b15-max-daily-309443",
+        "predicate": "MAX_DAILY_SERVINGS"
+      },
+      "value": {
+        "valueNumber": 4,
+        "unitCode": "{serving}/d"
+      },
+      "evidence": [
+        "l-dsld309443-maxdaily"
+      ],
+      "asserterRef": "org-euromedica",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: SUBJECT_CONFLICT: lv-us-309443 (REQUIRED_PROPERTY_MISSING: LabelVersion.panelKind, contentDigest, compositionDigest)"
+      }
+    },
+    {
+      "proposalId": "d01-threshold-au-2027",
+      "rationale": "limitKind:SCHEDULING_THRESHOLD; jurisdiction AU; per (maximum) recommended daily dose, oral preparations; > 50 mg to <= 200 mg: Pharmacist Only Medicine; > 200 mg: prescription; final decision released 25 November 2025; at least 125 medicines above 50 mg at the time of the decision",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "con-b6",
+      "assertion": {
+        "speechAct": "STATES",
+        "qualifiers": [
+          "jurisdiction:AU"
+        ],
+        "validity": {
+          "validFrom": "2027-06-01T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE",
+          "validToBasis": "UNKNOWN"
+        },
+        "uidSegment": "d01-threshold-au-2027",
+        "predicate": "HAS_UPPER_LIMIT"
+      },
+      "value": {
+        "valueNumber": 50,
+        "unitCode": "mg/d"
+      },
+      "evidence": [
+        "l-tga-b6-schedule",
+        "l-tga-b6-effective",
+        "l-tga-b6-final",
+        "l-tga-b6-count"
+      ],
+      "asserterRef": "org-tga",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: QUALIFIER_REQUIRED: HAS_UPPER_LIMIT requires qualifier(s) population"
+      }
+    },
+    {
+      "proposalId": "d02-warning-threshold-au-2022",
+      "rationale": "limitKind:LABEL_WARNING_THRESHOLD; jurisdiction AU; label warning statement required for daily doses over 10 mg 'or equivalent'",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "con-b6",
+      "assertion": {
+        "speechAct": "STATES",
+        "qualifiers": [
+          "jurisdiction:AU"
+        ],
+        "validity": {
+          "validFrom": "2022-03-01T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE",
+          "validToBasis": "UNKNOWN"
+        },
+        "uidSegment": "d02-warning-threshold-au-2022",
+        "predicate": "HAS_UPPER_LIMIT"
+      },
+      "value": {
+        "valueNumber": 10,
+        "unitCode": "mg/d"
+      },
+      "evidence": [
+        "l-tga-b6-warning2022"
+      ],
+      "asserterRef": "org-tga",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: QUALIFIER_REQUIRED: HAS_UPPER_LIMIT requires qualifier(s) population"
+      }
+    }
+  ],
+  "notes": "FIXTURE intent (A2, 2026-10-08), generated from assertions.yaml + locators.yaml by build_intents.py; run/mission ids are fixture ids. Written against the D1 proposal SDL (04-schema-proposal.graphql) plus seam types of D3/D6/D7/D9 as of 2026-10-08; the pinned executor schema would reject the new D1 types/properties. Not expressible in biotech-knowledge-intent.v1 and therefore left out: b05-expressed-as-pyridoxine (NUTRIENT_EXPRESSED_AS: object-bearing predicate-only or non-written edge; the intent contract has no proposal kind for an Assertion with an object node but no typed edge); b07-p5p-self-moiety (HAS_ACTIVE_MOIETY: object-bearing predicate-only or non-written edge; the intent contract has no proposal kind for an Assertion with an object node but no typed edge); c06-nutrient-equivalent-326829 (CALCULATED: written by a PROJECTION activity, not an ingestion intent); c07-stoichiometry-326829 (CALCULATED: written by a PROJECTION activity, not an ingestion intent); c08-max-day-326829 (CALCULATED: written by a PROJECTION activity, not an ingestion intent); c09-max-day-309443 (CALCULATED: written by a PROJECTION activity, not an ingestion intent); s01-b6-neuropathy-signal (SAFETY_SIGNAL assessment: no intent proposal kind for kernel Assessments); rpt-b6-threshold-screen with ROW items c10a-c10d (R-85: EXCEEDS_DOSE_THRESHOLD is report-only and is written only inside the published Report; v1 has no Report / ReportItem proposal kind). R-30 (close-out 2026-10-09): DECLARES_COMPONENT verbatim fields moved from edgeProperties to Assertion qualifiers (declaredName:/form:); intent v1 edge.assert.assertion has no qualifiers field, so each affected proposal's rationale starts with 'qualifiers: ...' (gap recorded; assertions.yaml carries the qualifiers).",
+  "provenance": {
+    "derivedFrom": {
+      "schemaVersion": "biotech-knowledge-intent.v1",
+      "path": "schema/program/final/fixtures/D1/vitamin-b6-threshold-harm/intent.json",
+      "rawBytesDigest": "sha256:8492007183307616d7de7c893aae82b98196bf118a9271ff0a57b335addad33f"
+    },
+    "migrator": "bks-migrate-intent-v1/1",
+    "edits": [
+      {
+        "at": "context.activityKind",
+        "rule": "P3-kernel-activity-kind",
+        "from": "EXTRACTION",
+        "to": "INGESTION"
+      },
+      {
+        "at": "onStale",
+        "rule": "strict-stale",
+        "from": "fail",
+        "to": null,
+        "note": "production onStale removed; stale state is a new plan"
+      },
+      {
+        "at": "sources[0].source.properties",
+        "rule": "not-a-source-field",
+        "from": {
+          "tool": "tool:tga-safety-updates"
+        },
+        "to": null
+      },
+      {
+        "at": "sources[0].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "firecrawl-cli/1.23.1 scrape --only-main-content --max-age 0 (Markdown)",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[0].snapshot.metadata",
+        "rule": "retained-not-written",
+        "from": [
+          "bytes"
+        ]
+      },
+      {
+        "at": "sources[0].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[2].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[3].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[4].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[5].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[6].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[7].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[8].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[1].source.properties",
+        "rule": "not-a-source-field",
+        "from": {
+          "tool": "tool:nih-ods-factsheets"
+        },
+        "to": null
+      },
+      {
+        "at": "sources[1].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "firecrawl-cli/1.23.1 scrape --only-main-content --max-age 0 (Markdown)",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[1].snapshot.metadata",
+        "rule": "retained-not-written",
+        "from": [
+          "bytes"
+        ]
+      },
+      {
+        "at": "sources[1].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[2].source.properties",
+        "rule": "not-a-source-field",
+        "from": {
+          "tool": "tool:dsld-api"
+        },
+        "to": null
+      },
+      {
+        "at": "sources[2].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl/8 dsld-api-v9",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[2].snapshot.metadata",
+        "rule": "retained-not-written",
+        "from": [
+          "bytes"
+        ]
+      },
+      {
+        "at": "sources[2].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[2].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[2].locators[2].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[2].locators[3].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[2].locators[4].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[3].source.properties",
+        "rule": "not-a-source-field",
+        "from": {
+          "tool": "tool:dsld-api"
+        },
+        "to": null
+      },
+      {
+        "at": "sources[3].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl/8 dsld-api-v9",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[3].snapshot.metadata",
+        "rule": "retained-not-written",
+        "from": [
+          "bytes"
+        ]
+      },
+      {
+        "at": "sources[3].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[3].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[3].locators[2].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[4].source.properties",
+        "rule": "not-a-source-field",
+        "from": {
+          "tool": "tool:gsrs-api"
+        },
+        "to": null
+      },
+      {
+        "at": "sources[4].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl/8 gsrs-api-v1",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[4].snapshot.metadata",
+        "rule": "retained-not-written",
+        "from": [
+          "bytes"
+        ]
+      },
+      {
+        "at": "sources[4].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[4].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[4].locators[2].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[5].source.properties",
+        "rule": "not-a-source-field",
+        "from": {
+          "tool": "tool:gsrs-api"
+        },
+        "to": null
+      },
+      {
+        "at": "sources[5].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl/8 gsrs-api-v1",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[5].snapshot.metadata",
+        "rule": "retained-not-written",
+        "from": [
+          "bytes"
+        ]
+      },
+      {
+        "at": "sources[5].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[5].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[6].source.properties",
+        "rule": "not-a-source-field",
+        "from": {
+          "tool": "tool:gsrs-api"
+        },
+        "to": null
+      },
+      {
+        "at": "sources[6].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl/8 gsrs-api-v1",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[6].snapshot.metadata",
+        "rule": "retained-not-written",
+        "from": [
+          "bytes"
+        ]
+      },
+      {
+        "at": "sources[6].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "proposals[0].assertion.jurisdiction",
+        "rule": "qualifier",
+        "from": "AU",
+        "to": "jurisdiction:AU"
+      },
+      {
+        "at": "proposals[0].assertion.extractionMethod",
+        "rule": "no-v2-field",
+        "from": "manual-fixture/a2-d1 (quotes re-selected by build_locators.py)",
+        "to": null,
+        "note": "method lives on the generating Activity (methodVersion)"
+      },
+      {
+        "at": "proposals[1].assertion.extractionMethod",
+        "rule": "no-v2-field",
+        "from": "manual-fixture/a2-d1 (quotes re-selected by build_locators.py)",
+        "to": null,
+        "note": "method lives on the generating Activity (methodVersion)"
+      },
+      {
+        "at": "proposals[2].assertion.extractionMethod",
+        "rule": "no-v2-field",
+        "from": "manual-fixture/a2-d1 (quotes re-selected by build_locators.py)",
+        "to": null,
+        "note": "method lives on the generating Activity (methodVersion)"
+      },
+      {
+        "at": "proposals[3].assertion.extractionMethod",
+        "rule": "no-v2-field",
+        "from": "manual-fixture/a2-d1 (quotes re-selected by build_locators.py)",
+        "to": null,
+        "note": "method lives on the generating Activity (methodVersion)"
+      },
+      {
+        "at": "proposals[4].assertion.extractionMethod",
+        "rule": "no-v2-field",
+        "from": "manual-fixture/a2-d1 (quotes re-selected by build_locators.py)",
+        "to": null,
+        "note": "method lives on the generating Activity (methodVersion)"
+      },
+      {
+        "at": "proposals[5].assertion.extractionMethod",
+        "rule": "no-v2-field",
+        "from": "manual-fixture/a2-d1 (quotes re-selected by build_locators.py)",
+        "to": null,
+        "note": "method lives on the generating Activity (methodVersion)"
+      },
+      {
+        "at": "proposals[6].assertion.extractionMethod",
+        "rule": "no-v2-field",
+        "from": "manual-fixture/a2-d1 (quotes re-selected by build_locators.py)",
+        "to": null,
+        "note": "method lives on the generating Activity (methodVersion)"
+      },
+      {
+        "at": "proposals[7].assertion.extractionMethod",
+        "rule": "no-v2-field",
+        "from": "manual-fixture/a2-d1 (quotes re-selected by build_locators.py)",
+        "to": null,
+        "note": "method lives on the generating Activity (methodVersion)"
+      },
+      {
+        "at": "proposals[8].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "qualifiers: declaredName:Pyridoxal 5-Phosphate"
+      },
+      {
+        "at": "proposals[8].assertion.extractionMethod",
+        "rule": "no-v2-field",
+        "from": "manual-fixture/a2-d1 (quotes re-selected by build_locators.py)",
+        "to": null,
+        "note": "method lives on the generating Activity (methodVersion)"
+      },
+      {
+        "at": "proposals[8].assertion.validity.statedAsOf",
+        "rule": "validObservedAt",
+        "from": "2025-03-25T00:00:00Z",
+        "to": "validObservedAt"
+      },
+      {
+        "at": "proposals[9].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "qualifiers: declaredName:Vitamin B6; form:Pyridoxal 5-Phosphate"
+      },
+      {
+        "at": "proposals[9].assertion.extractionMethod",
+        "rule": "no-v2-field",
+        "from": "manual-fixture/a2-d1 (quotes re-selected by build_locators.py)",
+        "to": null,
+        "note": "method lives on the generating Activity (methodVersion)"
+      },
+      {
+        "at": "proposals[9].assertion.validity.statedAsOf",
+        "rule": "validObservedAt",
+        "from": "2025-03-25T00:00:00Z",
+        "to": "validObservedAt"
+      },
+      {
+        "at": "proposals[10].assertion.extractionMethod",
+        "rule": "no-v2-field",
+        "from": "manual-fixture/a2-d1 (quotes re-selected by build_locators.py)",
+        "to": null,
+        "note": "method lives on the generating Activity (methodVersion)"
+      },
+      {
+        "at": "proposals[10].assertion.validity.statedAsOf",
+        "rule": "validObservedAt",
+        "from": "2025-03-25T00:00:00Z",
+        "to": "validObservedAt"
+      },
+      {
+        "at": "proposals[11].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "qualifiers: declaredName:Vitamin B6; form:Pyridoxal 5-Phosphate"
+      },
+      {
+        "at": "proposals[11].assertion.extractionMethod",
+        "rule": "no-v2-field",
+        "from": "manual-fixture/a2-d1 (quotes re-selected by build_locators.py)",
+        "to": null,
+        "note": "method lives on the generating Activity (methodVersion)"
+      },
+      {
+        "at": "proposals[11].assertion.validity.statedAsOf",
+        "rule": "validObservedAt",
+        "from": "2024-05-23T00:00:00Z",
+        "to": "validObservedAt"
+      },
+      {
+        "at": "proposals[12].assertion.extractionMethod",
+        "rule": "no-v2-field",
+        "from": "manual-fixture/a2-d1 (quotes re-selected by build_locators.py)",
+        "to": null,
+        "note": "method lives on the generating Activity (methodVersion)"
+      },
+      {
+        "at": "proposals[12].assertion.validity.statedAsOf",
+        "rule": "validObservedAt",
+        "from": "2024-05-23T00:00:00Z",
+        "to": "validObservedAt"
+      },
+      {
+        "at": "proposals[13].assertion.jurisdiction",
+        "rule": "qualifier",
+        "from": "AU",
+        "to": "jurisdiction:AU"
+      },
+      {
+        "at": "proposals[13].assertion.extractionMethod",
+        "rule": "no-v2-field",
+        "from": "manual-fixture/a2-d1 (quotes re-selected by build_locators.py)",
+        "to": null,
+        "note": "method lives on the generating Activity (methodVersion)"
+      },
+      {
+        "at": "proposals[14].assertion.jurisdiction",
+        "rule": "qualifier",
+        "from": "AU",
+        "to": "jurisdiction:AU"
+      },
+      {
+        "at": "proposals[14].assertion.extractionMethod",
+        "rule": "no-v2-field",
+        "from": "manual-fixture/a2-d1 (quotes re-selected by build_locators.py)",
+        "to": null,
+        "note": "method lives on the generating Activity (methodVersion)"
+      },
+      {
+        "at": "subjects[org-tga].properties.entityKind",
+        "rule": "schema-unknown-marker",
+        "from": null,
+        "to": "UNSPECIFIED",
+        "note": "not stated by the fixture source; OrganizationEntityKind.UNSPECIFIED is the release's explicit unknown member (OD-24 / OD-25), not a sourced fact"
+      },
+      {
+        "at": "subjects[org-nih-ods].properties.entityKind",
+        "rule": "schema-unknown-marker",
+        "from": null,
+        "to": "UNSPECIFIED",
+        "note": "not stated by the fixture source; OrganizationEntityKind.UNSPECIFIED is the release's explicit unknown member (OD-24 / OD-25), not a sourced fact"
+      },
+      {
+        "at": "subjects[org-fda-srs].properties.entityKind",
+        "rule": "schema-unknown-marker",
+        "from": null,
+        "to": "UNSPECIFIED",
+        "note": "not stated by the fixture source; OrganizationEntityKind.UNSPECIFIED is the release's explicit unknown member (OD-24 / OD-25), not a sourced fact"
+      },
+      {
+        "at": "subjects[org-country-life].properties.entityKind",
+        "rule": "schema-unknown-marker",
+        "from": null,
+        "to": "UNSPECIFIED",
+        "note": "not stated by the fixture source; OrganizationEntityKind.UNSPECIFIED is the release's explicit unknown member (OD-24 / OD-25), not a sourced fact"
+      },
+      {
+        "at": "subjects[org-euromedica].properties.entityKind",
+        "rule": "schema-unknown-marker",
+        "from": null,
+        "to": "UNSPECIFIED",
+        "note": "not stated by the fixture source; OrganizationEntityKind.UNSPECIFIED is the release's explicit unknown member (OD-24 / OD-25), not a sourced fact"
+      }
+    ]
+  }
+}

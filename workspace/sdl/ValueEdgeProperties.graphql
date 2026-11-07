@@ -1,0 +1,22 @@
+"""
+RECEIVES_VALUE_FROM episode: AssertedEdgeProperties plus what was received. `amount` and `unitCode` (kernel convention
+`iso4217:<CODE>`, R-30) only when stated; `valueBucket` is a source's own bucket verbatim (e.g. an institution's FCOI value range). A regulator's hedged
+finding ("It appears that ... paid ...") keeps its modality on the authorizing Assertion, not here.
+"""
+type ValueEdgeProperties @relationshipProperties {
+  relationshipUid: String!
+  assertionUid: String!
+  validFrom: DateTime
+  validTo: DateTime
+  validFromPrecision: TimePrecision
+  validToPrecision: TimePrecision
+  validFromBasis: ValidTimeBasis!
+  validToBasis: ValidTimeBasis!
+  recordedFrom: DateTime!
+  recordedTo: DateTime
+  lastWriterRunId: String
+  valueKind: ValueTransferKind!
+  amount: Float
+  unitCode: String
+  valueBucket: String
+}

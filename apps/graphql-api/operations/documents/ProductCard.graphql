@@ -1,0 +1,38 @@
+# Product card: the product, its brand and owners, and the first page of variants.
+query ProductCard($uid: String!) {
+  products(where: { uid: { eq: $uid } }, limit: 1) {
+    uid
+    name
+    privacyClass
+    productKind
+    marketedName
+    jurisdiction
+    createdAt
+    updatedAt
+    brand(limit: 1) {
+      uid
+      name
+      brandKind
+      owners(limit: 5, sort: [{ uid: ASC }]) {
+        uid
+        name
+      }
+    }
+    variantsConnection(first: 10, sort: [{ node: { uid: ASC } }]) {
+      totalCount
+      pageInfo {
+        ...PageInfoFields
+      }
+      edges {
+        node {
+          uid
+          name
+          dosageForm
+          strengthVerbatim
+          flavor
+          jurisdiction
+        }
+      }
+    }
+  }
+}

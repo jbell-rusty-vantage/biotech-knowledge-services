@@ -1,0 +1,663 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v1",
+  "intentId": "ft-d12-predimed-2026-10-08",
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "a2-d12-fixtures-stage",
+      "model": "claude-opus-5-5"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run:ft-D12-predimed-retraction-disconfirmation",
+      "missionId": "mission:ft-D12-fixtures"
+    },
+    "activityKind": "INGESTION"
+  },
+  "onStale": "fail",
+  "sources": [
+    {
+      "ref": "snap-predimed",
+      "source": {
+        "canonicalUri": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=23432189,29897866&retmode=xml",
+        "title": "PubMed XML — PMID 23432189 (retracted) and 29897866 (corrected and republished)",
+        "sourceKind": "API",
+        "properties": {
+          "genre": "BIBLIOGRAPHIC_RECORD"
+        }
+      },
+      "snapshot": {
+        "observedAt": "2026-10-08T20:55:00Z",
+        "retrievedAt": "2026-10-08T20:55:00Z",
+        "contentHash": "sha256:29d54857a3360ca03356e68e434f90d2bf587f7e015618858d5dab0133bc77a3",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "captureMethod": "curl NCBI E-utilities efetch db=pubmed",
+          "mimeType": "application/xml"
+        }
+      },
+      "locators": [
+        {
+          "ref": "loc-p13-pubtype",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "<PublicationType UI=\"D016441\">Retracted Publication</PublicationType>",
+          "quotePrefix": "Non-U.S. Gov't</PublicationType>",
+          "quoteSuffix": "</PublicationTypeList><ArticleDa",
+          "startOffset": 6221,
+          "endOffset": 6290,
+          "properties": {
+            "selectorDigest": "sha256:20623af7dd30a4407ce2ee4deb767ff53d688f98387e0881199b3e2a9703fc0b",
+            "quoteHash": "sha256:f84461dbc57722842da1bcf27a0321917c009fff6d04702c363b833d8dd8a677"
+          },
+          "section": "PMID 23432189 PublicationTypeList"
+        },
+        {
+          "ref": "loc-p13-retraction-in",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "<CommentsCorrections RefType=\"RetractionIn\"><RefSource>N Engl J Med. 2018 Jun 21;378(25):2441-2442. doi: 10.1056/NEJMc1806491.</RefSource><PMID Version=\"1\">29897867</PMID>",
+          "quotePrefix": "866</PMID></CommentsCorrections>",
+          "quoteSuffix": "</CommentsCorrections></Comments",
+          "startOffset": 10193,
+          "endOffset": 10364,
+          "properties": {
+            "selectorDigest": "sha256:40b2017f6a1ac55c644f30fcbf2fc0e8ac4fa3826dff326e84c9c11d7f682ad0",
+            "quoteHash": "sha256:05e5324f27218c2244a7f6e1179a832049ac2f62e957a2d7d0904fea1860d9e9"
+          },
+          "section": "PMID 23432189 CommentsCorrectionsList"
+        },
+        {
+          "ref": "loc-p13-epub",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "<ArticleDate DateType=\"Electronic\"><Year>2013</Year><Month>02</Month><Day>25</Day></ArticleDate>",
+          "quotePrefix": "ationType></PublicationTypeList>",
+          "quoteSuffix": "</Article><MedlineJournalInfo><C",
+          "startOffset": 6312,
+          "endOffset": 6408,
+          "properties": {
+            "selectorDigest": "sha256:b7536d25a24d714e4bb5a630d2f64e1dc89bf32c87aac0bca9194c9c3656521f",
+            "quoteHash": "sha256:99386280fa85315bfd2d38b2586e452cd4466b481133ffb2e05aed60c9b2cde7"
+          },
+          "section": "PMID 23432189 Article"
+        },
+        {
+          "ref": "loc-p13-conclusion",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "a Mediterranean diet supplemented with extra-virgin olive oil or nuts reduced the incidence of major cardiovascular events",
+          "quotePrefix": "ns at high cardiovascular risk, ",
+          "quoteSuffix": ". (Funded by the Spanish governm",
+          "startOffset": 3019,
+          "endOffset": 3141,
+          "properties": {
+            "selectorDigest": "sha256:f488b89022deff8e2deb8dc503246a2838fdf563bd414ee832bfc00977c39dd8",
+            "quoteHash": "sha256:6beb598003ab3d805068df053de3ef63f367daf90f33f817da41bb64168b9320"
+          },
+          "section": "PMID 23432189 abstract CONCLUSIONS"
+        },
+        {
+          "ref": "loc-p13-hr",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "The multivariable-adjusted hazard ratios were 0.70 (95% confidence interval [CI], 0.54 to 0.92)",
+          "quotePrefix": "t occurred in 288 participants. ",
+          "quoteSuffix": " and 0.72 (95% CI, 0.54 to 0.96)",
+          "startOffset": 2543,
+          "endOffset": 2638,
+          "properties": {
+            "selectorDigest": "sha256:e9e13a1eea78da14e5d5658f312179cb22001f1fb12ab266ed04da1b7d881dc7",
+            "quoteHash": "sha256:588da0c5eace5890518d57186628d7afa90159e9e62fecd06b911cf5c0f4ca77"
+          },
+          "section": "PMID 23432189 abstract RESULTS"
+        },
+        {
+          "ref": "loc-p18-arms",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "a Mediterranean diet supplemented with extra-virgin olive oil, a Mediterranean diet supplemented with mixed nuts, or a control diet (advice to reduce dietary fat)",
+          "quotePrefix": "ollment, to one of three diets: ",
+          "quoteSuffix": ". Participants received quarterl",
+          "startOffset": 42053,
+          "endOffset": 42215,
+          "properties": {
+            "selectorDigest": "sha256:3f4bece09d76c2c15c62abfe62c0511adaa6fc022eaf79e555c18557a74e055f",
+            "quoteHash": "sha256:a9a72bcc2321ccb02422c1452718f540a4e16312a1c6f650f8fc6fdef1acbdef"
+          },
+          "section": "PMID 29897866 abstract METHODS"
+        },
+        {
+          "ref": "loc-p18-provision",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "free provision of extra-virgin olive oil, mixed nuts, or small nonfood gifts",
+          "quotePrefix": " depending on group assignment, ",
+          "quoteSuffix": ". The primary end point was a ma",
+          "startOffset": 42306,
+          "endOffset": 42382,
+          "properties": {
+            "selectorDigest": "sha256:338022ab87fc616dfe825a7fb3f8f8f945bc800de165eb28c40664bae0e3167f",
+            "quoteHash": "sha256:6261523bd10fda9ea6579ca72a5a0ae11c9afaa094a608eca55fb6bba3b226a0"
+          },
+          "section": "PMID 29897866 abstract METHODS"
+        },
+        {
+          "ref": "loc-p18-withdrawn",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "We have withdrawn our previously published report and now report revised effect estimates based on analyses that do not rely exclusively on the assumption that all the participants were randomly assigned.",
+          "quotePrefix": "ization tables at another site. ",
+          "quoteSuffix": "</AbstractText><AbstractText Lab",
+          "startOffset": 42973,
+          "endOffset": 43177,
+          "properties": {
+            "selectorDigest": "sha256:dc37f97affbacd0864677c65623e09a384304b93f000fbb29f0bd0d90675af3f",
+            "quoteHash": "sha256:7adf83329d1e3b3fceaf62b358b06cb9a5c5fb207f13503c83fdf529bdaab044"
+          },
+          "section": "PMID 29897866 abstract METHODS"
+        },
+        {
+          "ref": "loc-p18-hr",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "the hazard ratio was 0.69 (95% confidence interval [CI], 0.53 to 0.91) for a Mediterranean diet with extra-virgin olive oil",
+          "quotePrefix": "eristics and propensity scores, ",
+          "quoteSuffix": " and 0.72 (95% CI, 0.54 to 0.95)",
+          "startOffset": 43617,
+          "endOffset": 43740,
+          "properties": {
+            "selectorDigest": "sha256:a49d55bf2d20d4c71734f2bf1bdb0f0b5e2d75940e921b91d7d0b42c698d4a9b",
+            "quoteHash": "sha256:56a272808dcdcb132be7a2af6919333c5cf3b2a10386d6201bbbf7b512324897"
+          },
+          "section": "PMID 29897866 abstract RESULTS"
+        },
+        {
+          "ref": "loc-p18-conclusion",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "the incidence of major cardiovascular events was lower among those assigned to a Mediterranean diet supplemented with extra-virgin olive oil or nuts than among those assigned to a reduced-fat diet",
+          "quotePrefix": "ns at high cardiovascular risk, ",
+          "quoteSuffix": ". (Funded by Instituto de Salud ",
+          "startOffset": 44104,
+          "endOffset": 44300,
+          "properties": {
+            "selectorDigest": "sha256:24691a18e6c3ff39d3accf4b6611b9bc1560c9e630bc6b3c9c003c471e803946",
+            "quoteHash": "sha256:1bac73ed212555d82efabe59989a9df785b134442b9e4f2e68fac4a458e4eca6"
+          },
+          "section": "PMID 29897866 abstract CONCLUSIONS"
+        },
+        {
+          "ref": "loc-p18-pubtype",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "<PublicationType UI=\"D016439\">Corrected and Republished Article</PublicationType>",
+          "quotePrefix": "ournal Article</PublicationType>",
+          "quoteSuffix": "</PublicationTypeList><ArticleDa",
+          "startOffset": 107340,
+          "endOffset": 107421,
+          "properties": {
+            "selectorDigest": "sha256:ac4f45ce2680c4fb48c2eac9c9752205d5729221a07204c89496df77344fd971",
+            "quoteHash": "sha256:f54139902b5d334828d30e40a5baffdd893aa0c341d10990308b6fce81fd69eb"
+          },
+          "section": "PMID 29897866 PublicationTypeList"
+        },
+        {
+          "ref": "loc-p18-epub",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "<ArticleDate DateType=\"Electronic\"><Year>2018</Year><Month>06</Month><Day>13</Day></ArticleDate>",
+          "quotePrefix": "ationType></PublicationTypeList>",
+          "quoteSuffix": "</Article><MedlineJournalInfo><C",
+          "startOffset": 107443,
+          "endOffset": 107539,
+          "properties": {
+            "selectorDigest": "sha256:60030975ceb10b3df1e345d68081c0c2bf075a8d2279e1b76e0a5612bfd62759",
+            "quoteHash": "sha256:6ab328da6faca68206b96f24491df06b4c33a8d514b7395395934171f117f0bb"
+          },
+          "section": "PMID 29897866 Article"
+        }
+      ]
+    },
+    {
+      "ref": "snap-predimed-notice",
+      "source": {
+        "canonicalUri": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=29897867&retmode=xml",
+        "title": "PubMed XML — PMID 29897867 (Retraction and Republication notice, NEJM 2018)",
+        "sourceKind": "API",
+        "properties": {
+          "genre": "BIBLIOGRAPHIC_RECORD"
+        }
+      },
+      "snapshot": {
+        "observedAt": "2026-10-09T01:50:03Z",
+        "retrievedAt": "2026-10-09T01:50:03Z",
+        "contentHash": "sha256:9c63f4492be4ed8b9f221c249cb9ca063dd2c9688ce0dc861f524ebc591fa50e",
+        "contentHashBasis": "RAW_BYTES",
+        "captureCompleteness": "COMPLETE",
+        "properties": {
+          "captureMethod": "curl NCBI E-utilities efetch db=pubmed",
+          "mimeType": "application/xml"
+        }
+      },
+      "locators": [
+        {
+          "ref": "loc-notice-title",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "<ArticleTitle>Retraction and Republication: Primary Prevention of Cardiovascular Disease with a Mediterranean Diet. N Engl J Med 2013;368:1279-90.</ArticleTitle>",
+          "quotePrefix": " Med</ISOAbbreviation></Journal>",
+          "quoteSuffix": "<Pagination><StartPage>2441</Sta",
+          "startOffset": 719,
+          "endOffset": 880,
+          "properties": {
+            "selectorDigest": "sha256:5b3d97db56da4286b41cbde6e70b4d9a0881ce04828d01ffa07dc80552e6bae0",
+            "quoteHash": "sha256:50802f93d9157b5465231f49a55b9dd2aa43af0d28899244b93dbd8951ddbaf2"
+          },
+          "section": "PMID 29897867 Article"
+        },
+        {
+          "ref": "loc-notice-pubtype",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "<PublicationType UI=\"D016440\">Retraction Notice</PublicationType>",
+          "quotePrefix": "ournal Article</PublicationType>",
+          "quoteSuffix": "</PublicationTypeList><ArticleDa",
+          "startOffset": 5313,
+          "endOffset": 5378,
+          "properties": {
+            "selectorDigest": "sha256:4bb17cf0be786b5047f1dd9f83fa75502f21b12f80c87aff3b258006222e42a2",
+            "quoteHash": "sha256:00814de8b3cdf1a5e8646379a670af25c5e559b5e14455ff57d378a661e4f490"
+          },
+          "section": "PMID 29897867 PublicationTypeList"
+        },
+        {
+          "ref": "loc-notice-epub",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "<ArticleDate DateType=\"Electronic\"><Year>2018</Year><Month>06</Month><Day>13</Day></ArticleDate>",
+          "quotePrefix": "ationType></PublicationTypeList>",
+          "quoteSuffix": "</Article><MedlineJournalInfo><C",
+          "startOffset": 5400,
+          "endOffset": 5496,
+          "properties": {
+            "selectorDigest": "sha256:6dfdb663872330f6799a8df5e67efcbcc81b4a5c1e96c7f23a2efdf3f1765dab",
+            "quoteHash": "sha256:6ab328da6faca68206b96f24491df06b4c33a8d514b7395395934171f117f0bb"
+          },
+          "section": "PMID 29897867 Article"
+        },
+        {
+          "ref": "loc-notice-issue",
+          "selectorKind": "TEXT_QUOTE",
+          "quote": "<PubDate><Year>2018</Year><Month>Jun</Month><Day>21</Day></PubDate>",
+          "quotePrefix": "me>378</Volume><Issue>25</Issue>",
+          "quoteSuffix": "</JournalIssue><Title>The New En",
+          "startOffset": 530,
+          "endOffset": 597,
+          "properties": {
+            "selectorDigest": "sha256:d837aa474d0d48b1c7307f00d43d2a5d3e1265b3a5ce7b524d99c21125a305cb",
+            "quoteHash": "sha256:ffbf1e2abc9ad87f9e4039254bc918cbbb12a8d2ad6a2fbf8b44229a823e350f"
+          },
+          "section": "PMID 29897867 JournalIssue (print issue date)"
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "estruch",
+      "mode": "new",
+      "nodeType": "Person",
+      "name": "Ramón Estruch",
+      "uidSegment": "estruch-ramon",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "nlm",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "U.S. National Library of Medicine (PubMed)",
+      "uidSegment": "nlm",
+      "properties": {},
+      "identifiers": [
+        {
+          "scheme": "DOMAIN",
+          "issuer": "DNS",
+          "value": "nlm.nih.gov"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "nejm",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "The New England Journal of Medicine",
+      "uidSegment": "nejm",
+      "properties": {},
+      "identifiers": [
+        {
+          "scheme": "DOMAIN",
+          "issuer": "DNS",
+          "value": "nejm.org"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "src-2013",
+      "mode": "new",
+      "nodeType": "Source",
+      "name": "Estruch et al., NEJM 2013 (PMID 23432189)",
+      "uidSegment": "pubmed-23432189",
+      "properties": {
+        "canonicalUri": "https://pubmed.ncbi.nlm.nih.gov/23432189/",
+        "sourceKind": "WEB_PAGE"
+      },
+      "identifiers": [
+        {
+          "scheme": "PMID",
+          "issuer": "NLM",
+          "value": "23432189"
+        },
+        {
+          "scheme": "DOI",
+          "issuer": "Crossref",
+          "value": "10.1056/NEJMoa1200303"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "src-2018",
+      "mode": "new",
+      "nodeType": "Source",
+      "name": "Estruch et al., NEJM 2018 (PMID 29897866)",
+      "uidSegment": "pubmed-29897866",
+      "properties": {
+        "canonicalUri": "https://pubmed.ncbi.nlm.nih.gov/29897866/",
+        "sourceKind": "WEB_PAGE"
+      },
+      "identifiers": [
+        {
+          "scheme": "PMID",
+          "issuer": "NLM",
+          "value": "29897866"
+        },
+        {
+          "scheme": "DOI",
+          "issuer": "Crossref",
+          "value": "10.1056/NEJMoa1800389"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "evoo-arm",
+      "mode": "new",
+      "nodeType": "DietaryPattern",
+      "name": "PREDIMED Mediterranean diet supplemented with extra-virgin olive oil",
+      "uidSegment": "predimed-meddiet-evoo",
+      "properties": {
+        "definedBySourceUid": "hu:source:pubmed-29897866",
+        "patternKey": "meddiet-evoo-arm",
+        "version": "",
+        "definedBy": "PREDIMED (Estruch et al., NEJM 2018, arms as stated in the abstract)",
+        "patternKind": "COMPOSITION",
+        "definitionScope": "TRIAL_ARM"
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "nuts-arm",
+      "mode": "new",
+      "nodeType": "DietaryPattern",
+      "name": "PREDIMED Mediterranean diet supplemented with mixed nuts",
+      "uidSegment": "predimed-meddiet-nuts",
+      "properties": {
+        "definedBySourceUid": "hu:source:pubmed-29897866",
+        "patternKey": "meddiet-nuts-arm",
+        "version": "",
+        "definedBy": "PREDIMED (Estruch et al., NEJM 2018, arms as stated in the abstract)",
+        "patternKind": "COMPOSITION",
+        "definitionScope": "TRIAL_ARM"
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "control-arm",
+      "mode": "new",
+      "nodeType": "DietaryPattern",
+      "name": "PREDIMED control diet (advice to reduce dietary fat)",
+      "uidSegment": "predimed-control-reduced-fat",
+      "properties": {
+        "definedBySourceUid": "hu:source:pubmed-29897866",
+        "patternKey": "control-reduced-fat-arm",
+        "version": "",
+        "definedBy": "PREDIMED (Estruch et al., NEJM 2018, arms as stated in the abstract)",
+        "patternKind": "COMPOSITION",
+        "definitionScope": "TRIAL_ARM"
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "evoo",
+      "mode": "new",
+      "nodeType": "FoodItem",
+      "name": "extra-virgin olive oil",
+      "uidSegment": "curated-extra-virgin-olive-oil",
+      "properties": {
+        "descriptionVerbatim": "extra-virgin olive oil",
+        "definingSystem": "CURATED",
+        "preparationMethod": "NOT_STATED",
+        "variantKind": "BASE",
+        "synonyms": [
+          "EVOO"
+        ]
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "nuts",
+      "mode": "new",
+      "nodeType": "FoodItem",
+      "name": "mixed nuts",
+      "uidSegment": "curated-mixed-nuts",
+      "properties": {
+        "descriptionVerbatim": "mixed nuts",
+        "definingSystem": "CURATED",
+        "preparationMethod": "NOT_STATED",
+        "variantKind": "BASE"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "total-fat",
+      "mode": "new",
+      "nodeType": "Constituent",
+      "name": "total fat (dietary fat)",
+      "uidSegment": "total-fat",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "target-cm",
+      "mode": "resolved",
+      "uid": "hu:target:cardiometabolic-health",
+      "nodeType": "Target"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "p01-evoo",
+      "kind": "edge.assert",
+      "relationshipType": "PATTERN_COMPONENT",
+      "fromRef": "evoo-arm",
+      "toRef": "evoo",
+      "evidence": [
+        "loc-p18-arms",
+        "loc-p18-provision"
+      ],
+      "asserterRef": "estruch",
+      "assertion": {
+        "validity": {},
+        "basisKind": "UNSTATED",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "uidSegment": "ft-d12-pred-01"
+      },
+      "rationale": "role EMPHASIZES. intent v1 gap: edge.assert carries neither edge-property values (D12 FoodContentProperties statementKind/quantity/unitCode/amountBasis) nor valueNumber/unitCode/valueString/qualifiers on the authorizing Assertion (AssertionCore), so the amount and its qualifiers ride only in this rationale and in assertions.yaml (OQ-D12-23)."
+    },
+    {
+      "proposalId": "p02-nuts",
+      "kind": "edge.assert",
+      "relationshipType": "PATTERN_COMPONENT",
+      "fromRef": "nuts-arm",
+      "toRef": "nuts",
+      "evidence": [
+        "loc-p18-arms",
+        "loc-p18-provision"
+      ],
+      "asserterRef": "estruch",
+      "assertion": {
+        "validity": {},
+        "basisKind": "UNSTATED",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "uidSegment": "ft-d12-pred-02"
+      },
+      "rationale": "role EMPHASIZES. intent v1 gap: edge.assert carries neither edge-property values (D12 FoodContentProperties statementKind/quantity/unitCode/amountBasis) nor valueNumber/unitCode/valueString/qualifiers on the authorizing Assertion (AssertionCore), so the amount and its qualifiers ride only in this rationale and in assertions.yaml (OQ-D12-23)."
+    },
+    {
+      "proposalId": "p03-control-fat",
+      "kind": "edge.assert",
+      "relationshipType": "PATTERN_COMPONENT",
+      "fromRef": "control-arm",
+      "toRef": "total-fat",
+      "evidence": [
+        "loc-p18-arms"
+      ],
+      "asserterRef": "estruch",
+      "assertion": {
+        "validity": {},
+        "basisKind": "UNSTATED",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "uidSegment": "ft-d12-pred-03"
+      },
+      "rationale": "role LIMITS. intent v1 gap: edge.assert carries neither edge-property values (D12 FoodContentProperties statementKind/quantity/unitCode/amountBasis) nor valueNumber/unitCode/valueString/qualifiers on the authorizing Assertion (AssertionCore), so the amount and its qualifiers ride only in this rationale and in assertions.yaml (OQ-D12-23)."
+    },
+    {
+      "proposalId": "p04-claim-2013",
+      "kind": "assertion.literal",
+      "subjectRef": "evoo-arm",
+      "predicate": "IMPROVES_TARGET",
+      "valueString": "hu:target:cardiometabolic-health",
+      "evidence": [
+        "loc-p13-conclusion",
+        "loc-p13-hr"
+      ],
+      "asserterRef": "estruch",
+      "assertion": {
+        "validity": {
+          "validFrom": "2013-02-25T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "PUBLICATION_PROXY"
+        },
+        "basisKind": "DIRECT_MEASUREMENT",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "uidSegment": "ft-d12-pred-04"
+      },
+      "rationale": "claim occurrence (assertionKind CLAIM, claimType CAUSAL) OCCURRENCE_OF hu:claim:meddiet-evoo-or-nuts-lowers-major-cardiovascular-events. intent v1 gap: no assertionKind/claimType/occurrenceOf fields. intent v1 gap: no proposal kind binds an object node to a predicate-only Assertion (assertion.literal has no objectRef); the object uid is carried in valueString (OQ-D12-23)."
+    },
+    {
+      "proposalId": "p05-status-2013",
+      "kind": "assertion.literal",
+      "subjectRef": "src-2013",
+      "predicate": "HAS_REVISION_STATUS",
+      "valueString": "RETRACTION",
+      "evidence": [
+        "loc-p13-pubtype",
+        "loc-p13-retraction-in",
+        "loc-notice-epub"
+      ],
+      "asserterRef": "nlm",
+      "assertion": {
+        "validity": {
+          "validFrom": "2018-06-13T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "PUBLICATION_PROXY"
+        },
+        "basisKind": "UNSTATED",
+        "uidSegment": "ft-d12-pred-05"
+      },
+      "rationale": "kernel predicate convention, authority PubMed; qualifier issueDate:2018-06-21 (print issue), validFrom = the notice's electronic date."
+    },
+    {
+      "proposalId": "p05b-status-2013-nejm",
+      "kind": "assertion.literal",
+      "subjectRef": "src-2013",
+      "predicate": "HAS_REVISION_STATUS",
+      "valueString": "RETRACTION",
+      "evidence": [
+        "loc-notice-title",
+        "loc-notice-pubtype",
+        "loc-notice-epub",
+        "loc-notice-issue"
+      ],
+      "asserterRef": "nejm",
+      "assertion": {
+        "validity": {
+          "validFrom": "2018-06-13T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE"
+        },
+        "basisKind": "UNSTATED",
+        "uidSegment": "ft-d12-pred-05b"
+      },
+      "rationale": "kernel predicate convention, authority the publisher (notice 'Retraction and Republication', PMID 29897867)."
+    },
+    {
+      "proposalId": "p06-status-2018",
+      "kind": "assertion.literal",
+      "subjectRef": "src-2018",
+      "predicate": "HAS_REVISION_STATUS",
+      "valueString": "CORRECTED_AND_REPUBLISHED",
+      "evidence": [
+        "loc-p18-pubtype",
+        "loc-p18-withdrawn"
+      ],
+      "asserterRef": "nlm",
+      "assertion": {
+        "validity": {
+          "validFrom": "2018-06-13T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "STATED_BY_SOURCE"
+        },
+        "basisKind": "UNSTATED",
+        "uidSegment": "ft-d12-pred-06"
+      }
+    },
+    {
+      "proposalId": "p07-claim-2018",
+      "kind": "assertion.literal",
+      "subjectRef": "evoo-arm",
+      "predicate": "IMPROVES_TARGET",
+      "valueString": "hu:target:cardiometabolic-health",
+      "evidence": [
+        "loc-p18-conclusion",
+        "loc-p18-hr",
+        "loc-p18-withdrawn"
+      ],
+      "asserterRef": "estruch",
+      "assertion": {
+        "validity": {
+          "validFrom": "2018-06-13T00:00:00Z",
+          "validFromPrecision": "DAY",
+          "validFromBasis": "PUBLICATION_PROXY"
+        },
+        "basisKind": "DIRECT_MEASUREMENT",
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "uidSegment": "ft-d12-pred-07"
+      },
+      "rationale": "claim occurrence (claimType COMPARATIVE) of the same Claim; wording downgraded from 'reduced' to 'was lower among those assigned'. intent v1 gap: no proposal kind binds an object node to a predicate-only Assertion (assertion.literal has no objectRef); the object uid is carried in valueString (OQ-D12-23)."
+    }
+  ],
+  "notes": "Fixture intent for packet D12 (predimed-retraction-disconfirmation), fixture stage A2 2026-10-08, regenerated in the adversarial-review pass (scripts4/gen_intents.mjs). runId/missionId are FIXTURE ids, not real Mission Control runs. Validated against IngestionIntent (packages/contracts); not planned or applied against a database. Node types from other modules (Product, Brand, LabelVersion, QualityResult, Study, Person, Organization, ChemicalSubstance, Constituent, Target) are seam types; uidSegments match assertions.yaml. Gaps of intent v1 found while writing it are stated in proposal rationales (OQ-D12-23)."
+}

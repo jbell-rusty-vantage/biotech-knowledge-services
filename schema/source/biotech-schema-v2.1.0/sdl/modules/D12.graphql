@@ -1,0 +1,309 @@
+# ---- fragment D12 ----
+# Module D12 — food and nutrition. Model stage (Wave 2) by A2, 2026-10-08.
+# Kernel pattern: packets/K/09-reasoning.md (A1, published 2026-10-08). Kernel types are referenced, never re-declared.
+# Every @node: implements Entity & Subjectable, lists the 7 Entity fields verbatim, @query(aggregate: false) @mutation(operations: []).
+# Every @relationship: aggregate: false, nestedOperations declared, @filterable(byValue: true, byAggregate: false).
+# Subject/object/identifier/mention/lineage edges are kernel-declared (nothing here). Harm and benefit are never properties:
+# they are kernel Assertions with D5 target-effect predicates or kernel Assessments with effectDirection (00-DIRECTIVE 3.2).
+# Composition amounts are typed on the edge (adversarial-review pass, 2026-10-08): FOOD_CONTAINS carries the D12-local
+# superset FoodContentProperties (kernel M11: the five AssertedRecordedProperties fields verbatim first, then D1's
+# statementKind and the quantity, unit and basis that Q-D12-01/19/21 filter on), reusing D1's ContentStatementKind and
+# D6's AmountBasis so food, material and label content share vocabularies. Roles and
+# free-text qualifiers stay on the authorizing Assertion (valueString, qualifiers in the grammar of 05 `qualifierGrammar`).
+# Episode edges (IN_FOOD_CATEGORY, HAS_REFERENCE_FOOD) use AssertedEdgeProperties; recorded-only edges (FOOD_CONTAINS,
+# PATTERN_COMPONENT) use the kernel's AssertedRecordedProperties or its superset (00-DIRECTIVE rule 9). VARIANT_OF is
+# predicate-only since the review (no source states it; a curator pairs records).
+# Seam targets: D1 ChemicalSubstance, D1 Constituent, D6 Product (10-seams.yaml); shared enums D1 ContentStatementKind and
+# D6 AmountBasis (10-seams.yaml sharedVocabularies).
+# Synthesis (S module editor, 2026-10-08; final/decision-report.md, final/_work/rulings.yaml modules.D12): docstrings only.
+# R-63 DietaryPattern is the only eating-pattern node (TRE, fasting-mimicking included), an admissible D5 STEP_USES target;
+# R-62 HAS_REFERENCE_FOOD licensed by a RESOLUTION Assessment when a resolver chose it; R-46 definedBySourceUid is a
+# frozen identity key, the provenance trace is the attach Assertion's HAS_EVIDENCE; R-58 AmountBasis is D6's single enum;
+# R-57 comparator qualifier values are D1 QuantityComparator values (GTE/LTE, not GE/LE).
+# No type, field, union or relationship changed.
+
+# =====================================================================================================
+# Edge-property type (one, D12-local; superset of kernel AssertedRecordedProperties per kernel M11)
+# =====================================================================================================
+
+"""
+Asserted, recorded-time-only FOOD_CONTAINS line: the five AssertedRecordedProperties fields verbatim (executor-set,
+copied from the one authorizing Assertion; nothing deleted, a revised value supersedes through recordedTo), then
+`statementKind` (D1's enum, the same tail D1's ContentEdgeProperties keeps), then the three fields a D12 question filters
+on: `quantity` + `unitCode` (Q-D12-19/21 "at least A of C") and `amountBasis` (Q-D12-01/21 per 100 g vs per serving).
+`quantity` is set only for a point value (FDC and Phenol-Explorer amounts); a bounded or ranged statement leaves it null
+and carries `comparator:<GTE|GT|LTE|LT>` (D1 QuantityComparator values, R-57) / `range:<low>-<high>` in Assertion.qualifiers, as D1 does, so a threshold filter
+never matches a "< LOQ" or a range by accident. The authorizing Assertion carries the same number in valueNumber/unitCode,
+any source-stated valid time, n / min / max / derivation code (qualifiers; no question filters on them) and the verbatim
+text through its locator. No valid-time fields: no reference-composition source read in this packet states a sampling
+period per value (adversarial review, 2026-10-08).
+"""
+type FoodContentProperties @relationshipProperties {
+  relationshipUid: String!
+  assertionUid: String!
+  recordedFrom: DateTime!
+  recordedTo: DateTime
+  lastWriterRunId: String
+  "D1 ContentStatementKind: MEASURED_IN_SAMPLE (FDC derivation A), CALCULATED (FDC NC), TYPICAL_COMPOSITION_REPORTED (Phenol-Explorer content value), QUALITATIVE_PROVIDES (no amount) (filter: Q-D12-24)."
+  statementKind: ContentStatementKind!
+  "Point amount per amountBasis; null for bounded, ranged or qualitative statements (filter: Q-D12-19, Q-D12-21 >= A)."
+  quantity: Float
+  "UCUM unit of quantity ('mg', 'kcal', 'ug'); null only for QUALITATIVE_PROVIDES (filter: Q-D12-21)."
+  unitCode: String
+  "D6 AmountBasis (the single amount-basis enum, R-58); D12 writes PER_100G | PER_100ML | PER_SERVING (a named portion; its label is the Assertion qualifier portion:<label>) (filter: Q-D12-01, Q-D12-21)."
+  amountBasis: AmountBasis
+}
+
+# =====================================================================================================
+# Enums (controlled vocabularies; none of them encodes good or bad)
+# =====================================================================================================
+
+"The preparation a reference-food record names (FDC 170027 raw vs 170030 baked). Verbatim descriptors stay in FoodItem.processingVerbatim."
+enum PreparationMethod {
+  RAW
+  BOILED
+  STEAMED
+  BAKED
+  ROASTED
+  FRIED_DEEP
+  FRIED_PAN
+  GRILLED_OR_BARBECUED
+  MICROWAVED
+  SOUS_VIDE
+  FERMENTED
+  DRIED
+  SMOKED
+  CURED
+  CANNED
+  REFINED
+  PASTEURIZED
+  STORED
+  MULTIPLE
+  OTHER
+  NOT_STATED
+}
+
+"Axis on which a FoodItem differs from the base food named by its VARIANT_OF Assertion (predicate-only; pinned FoodVariantKind plus BASE for records with no base)."
+enum FoodVariantKind {
+  BASE
+  PREPARATION
+  PROCESSING
+  CULTIVAR_OR_BREED
+  PRODUCTION_SYSTEM
+  PLANT_OR_ANIMAL_PART
+  OTHER
+}
+
+"The reference system that defines a FoodItem record. Branded/GTIN records (FDC Branded Foods, Open Food Facts) are D6 Products, not FoodItems."
+enum FoodDataSystem {
+  FDC_FOUNDATION
+  FDC_SR_LEGACY
+  FDC_SURVEY_FNDDS
+  FDC_EXPERIMENTAL
+  PHENOL_EXPLORER
+  FOODON
+  NATIONAL_COMPOSITION_TABLE
+  CURATED
+  OTHER
+}
+
+"The classification system that defines a FoodCategory."
+enum FoodCategorySystem {
+  NOVA
+  IARC_AGENT
+  WWEIA
+  FDC_FOOD_CATEGORY
+  FOODEX2
+  LANGUAL
+  DIETARY_GUIDELINE
+  SOURCE_DEFINED
+}
+
+"What a dietary pattern constrains."
+enum DietaryPatternKind {
+  COMPOSITION
+  TIMING
+  ENERGY_RESTRICTION
+  MIXED
+}
+
+"Who defines the pattern and for what purpose; a filter, not a judgement."
+enum DietaryPatternScope {
+  GUIDELINE
+  TRIAL_ARM
+  POPULAR_DIET
+  COMMERCIAL_PROGRAM
+  POPULATION_DESCRIPTIVE
+}
+
+"Members a PATTERN_COMPONENT edge may point at (3: two D12 types and the D1 nutrient concept for 'limit added sugars')."
+union PatternComponentTarget = FoodItem | FoodCategory | Constituent
+
+"Composition targets of FOOD_CONTAINS (2, both D1): a structure-defined substance (hydroxytyrosol, acrylamide) or a nutrient/class concept (energy, protein, vitamin B6, total polyphenols)."
+union FoodComponentTarget = ChemicalSubstance | Constituent
+
+# =====================================================================================================
+# FoodItem
+# =====================================================================================================
+
+"""
+Purpose: a reference food concept as one composition or food-ontology source defines it, at the preparation it names
+("Potatoes, russet, flesh and skin, raw", FDC 170027; "…, baked", FDC 170030; "McDONALD'S, french fries", FDC 170721,
+a frozen SR Legacy record). It is what composition, preparation and category questions join through, and the subject of
+food claims and target-effect assertions. Anything an organization sells today (a menu item, a packaged food, a branded
+longevity oil) is a D6 Product that points here through HAS_REFERENCE_FOOD; the two are never merged.
+Identity rule: (definingSystem, sourceRecordId) whenever the system issues a record id (FDC_ID, NDB number, FNDDS food
+code, PHENOL_EXPLORER_FOOD id, FoodOn IRI; the id also attaches as a kernel Identifier); only CURATED / OTHER records
+without an id use (definingSystem, normalized descriptionVerbatim: NFC, case-folded, whitespace-collapsed), so a
+re-cased or re-suffixed description in a later release never mints a second node. Two records of one system that
+differ in preparation, part or processing are two FoodItems related by the predicate-only VARIANT_OF Assertion; records
+of different systems are merged only by an EQUIVALENCE Assessment, never by name.
+uid token: `food` (hu:food:<opaque>).
+Questions: Q-D12-01, Q-D12-02, Q-D12-03, Q-D12-04, Q-D12-05, Q-D12-09, Q-D12-11, Q-D12-16, Q-D12-20, Q-D12-21,
+Q-D12-24, Q-D12-30, Q-D12-34.
+"""
+type FoodItem implements Entity & Subjectable
+  @node(labels: ["FoodItem", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "The defining source's description, verbatim (identity key only for CURATED / OTHER records without a record id)."
+  descriptionVerbatim: String!
+  "The system that defines the record (identity key; filter: Q-D12-24 data type)."
+  definingSystem: FoodDataSystem!
+  "Record id issued by the defining system ('170721' for FDC; FoodOn IRI); identity key with definingSystem; null only for CURATED / OTHER."
+  sourceRecordId: String
+  "Preparation the record names; NOT_STATED when the description names none (filter: Q-D12-02, Q-D12-03)."
+  preparationMethod: PreparationMethod
+  "How this record differs from the base its VARIANT_OF Assertion names; BASE when it has none (filter: Q-D12-02)."
+  variantKind: FoodVariantKind
+  "Verbatim processing/preparation descriptors of the source (FDC 'flesh and skin', 'baked', FoodOn process terms)."
+  processingVerbatim: [String!]
+  "Brand named inside a reference-database record (FDC 170721 'McDONALD'S'); never makes the record a Product."
+  brandNameVerbatim: String
+  "Scientific name as the source prints it; the taxon link is the predicate FOOD_FROM_TAXON (predicate-only; renamed from DERIVED_FROM_TAXON, which is a D1 edge type)."
+  scientificNameVerbatim: String
+  "Source flags the record as historical / no longer maintained (FDC isHistoricalReference) (filter: Q-D12-24, Q-D12-30)."
+  isHistoricalReference: Boolean
+  "Publication date of the record in its source release (FDC publicationDate) (sort: Q-D12-24)."
+  sourcePublishedAt: DateTime
+  "Synonyms and common names for entity linking ('EVOO'); feeds fulltext index food_item_search (Q-D12-34)."
+  synonyms: [String!]
+  """class: asserted; cardinality: many (recorded time only: D12 FoodContentProperties = AssertedRecordedProperties + statementKind, quantity, unitCode, amountBasis; comparator/range, n, min/max, derivation code on the Assertion); questions: Q-D12-01, Q-D12-02, Q-D12-20, Q-D12-21, Q-D12-24."""
+  components: [FoodComponentTarget!]!
+    @relationship(type: "FOOD_CONTAINS", direction: OUT, properties: "FoodContentProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (source-stated membership, or a CALCULATED Assertion with derivationRule such as nova-markers/v1); questions: Q-D12-14, Q-D12-15, Q-D12-08, Q-D12-26."""
+  categories: [FoodCategory!]!
+    @relationship(type: "IN_FOOD_CATEGORY", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (stored Product -> FoodItem; declared here so the D6 hub does not grow; the only Product-FoodItem link, never a merge, licensed by a RESOLUTION Assessment when a resolver chose it, R-62); questions: Q-D12-04, Q-D12-05, Q-D12-30, Q-D12-34, Q-D12-03."""
+  referencedByProducts: [Product!]!
+    @relationship(type: "HAS_REFERENCE_FOOD", direction: IN, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+# =====================================================================================================
+# FoodCategory
+# =====================================================================================================
+
+"""
+Purpose: a food group as one classification system defines it (NOVA group 4 "ultra-processed food and drink products";
+IARC agent "processed meat"; WWEIA 3702 "Burgers"; FDC food category "Fast Foods"; a guideline group such as DGA
+"highly processed foods"). It is the subject of hazard classifications and of target-effect assertions that are made
+about a group rather than one food (UPF and cardiometabolic outcomes; processed meat and colorectal cancer), and it
+lets a question expand from a food or product to the evidence about its group. Hierarchy is the property parentCode
+(no edge). Membership is IN_FOOD_CATEGORY (asserted when a source states it; a CALCULATED Assertion with a method
+version when we compute it, e.g. NOVA from ingredient markers).
+Identity rule: (system, systemVersion, code); label is presentation.
+uid token: `food-category` (hu:food-category:<system>-<code>).
+Questions: Q-D12-08, Q-D12-14, Q-D12-15, Q-D12-26, Q-D12-31, Q-D12-11.
+"""
+type FoodCategory implements Entity & Subjectable
+  @node(labels: ["FoodCategory", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Classification system (identity key; filter: Q-D12-14 NOVA, Q-D12-15 IARC_AGENT)."
+  system: FoodCategorySystem!
+  "Code within the system ('4' for NOVA group 4; '3702' for WWEIA; 'processed-meat' for an IARC agent) (identity key)."
+  code: String!
+  "Version or edition of the system definition (identity key; 'NOVA-2019', 'IARC Vol 114', 'WWEIA 2021-2023')."
+  systemVersion: String
+  "Label as the system prints it."
+  label: String
+  "Definition text of the system, verbatim (the locator lives on the defining Assertion)."
+  definitionVerbatim: String
+  "Parent code in the same system (hierarchy as a property; no relationship type spent)."
+  parentCode: String
+  """class: asserted; cardinality: many (stored Product -> FoodCategory; OFF categories, stated or computed NOVA of a sold item); questions: Q-D12-14, Q-D12-31, Q-D12-08."""
+  memberProducts: [Product!]!
+    @relationship(type: "IN_FOOD_CATEGORY", direction: IN, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+# =====================================================================================================
+# DietaryPattern
+# =====================================================================================================
+
+"""
+Purpose: a dietary pattern as one defining source states it — what foods, groups or nutrients it includes, emphasizes,
+limits or excludes, and when or how much one eats (Mediterranean diet + EVOO as the PREDIMED arm defined it; the DGA
+2025–2030 pattern; Hall 2019's ultra-processed and unprocessed 14-day diets; time-restricted eating as TREAT defined
+it). It is what trial arms administer (D3 seam), what guidelines recommend, and the subject of pattern-level claims and
+target-effect assertions. It is the only node for any eating pattern defined by what, when or how much is eaten,
+including time-restricted eating and fasting-mimicking diets (R-63; OQ-D12-03 closed): D5 Intervention never mints a
+diet, D3 AdministeredMaterial administers an eating pattern as a DietaryPattern, and D5 STEP_USES reaches it through
+Subjectable as an admissible target. A new edition of a guideline or a different trial's definition is a new node; equivalence of
+two definitions is an EQUIVALENCE Assessment. Non-dietary practices (sauna, training) are D5 Interventions.
+Identity rule: (definedBySourceUid, patternKey, version) — the kernel Source uid of the defining document (DOI / PMID /
+normalized URL), a non-null key for the pattern within it, and the edition the source names (empty string when none);
+the free-text citation `definedBy` is presentation only. definedBySourceUid is a frozen identity key, never the
+provenance path: the "defined by" trace is the attach Assertion's HAS_EVIDENCE (R-46).
+uid token: `dietary-pattern` (hu:dietary-pattern:<opaque>).
+Questions: Q-D12-11, Q-D12-08, Q-D12-09, Q-D12-12, Q-D12-13, Q-D12-23, Q-D12-25.
+"""
+type DietaryPattern implements Entity & Subjectable
+  @node(labels: ["DietaryPattern", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "uid of the kernel Source that defines the pattern (e.g. hu:source:pubmed-29897866; from DOI / PMID / normalized URL) (identity key)."
+  definedBySourceUid: String!
+  "Key of the pattern within its defining source, lower-kebab ('meddiet-evoo-arm', 'ultra-processed-diet') (identity key)."
+  patternKey: String!
+  "Edition or version the defining source names; empty string when it names none (identity key)."
+  version: String!
+  "Short human citation of the defining source ('DGA 2025-2030', 'PREDIMED protocol, MedDiet+EVOO arm'); presentation only."
+  definedBy: String
+  "What the pattern constrains (filter: Q-D12-11, Q-D12-13 timing patterns)."
+  patternKind: DietaryPatternKind!
+  "Who defines it and for what (filter: Q-D12-12 trial arms vs Q-D12-11 guidelines)."
+  definitionScope: DietaryPatternScope
+  "The defining text, verbatim (the locator lives on the defining Assertions)."
+  definitionVerbatim: String
+  "Names used in discourse ('MedDiet', 'TRE', 'carnivore'); feeds fulltext index dietary_pattern_search."
+  synonyms: [String!]
+  """class: asserted; cardinality: many (recorded time only: kernel AssertedRecordedProperties; role INCLUDES|EMPHASIZES|LIMITS|EXCLUDES in Assertion.valueString, quantity in valueNumber + unitCode); questions: Q-D12-11, Q-D12-08, Q-D12-23, Q-D12-25."""
+  components: [PatternComponentTarget!]!
+    @relationship(type: "PATTERN_COMPONENT", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

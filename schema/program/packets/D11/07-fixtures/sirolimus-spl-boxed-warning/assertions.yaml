@@ -1,0 +1,150 @@
+# Assertions for fixture sirolimus-spl-boxed-warning (FIXTURES stage, A8, 2026-10-08) — HARM. Research, not medical advice.
+# Kernel Assertion shape (A1); D6 Package / LabelVersion / HAS_LABEL_VERSION (StateEpisodeProperties) / DECLARES_COMPONENT (A6);
+# D1 IngredientMaterial / ChemicalSubstance / REALIZES_SUBSTANCE (A2); D7 Organization (A6).
+# producedBy ids are FIXTURE ids (mission:ft-D11-fixtures / run:ft-D11-<fixture>), not live Mission Control ids.
+# Why rapamycin: sirolimus is used off-label for longevity (D5/D13 threads; PEARL NCT04488601). The label's boxed warning is the
+# authoritative harm statement; the openFDA copy is an AGGREGATOR RENDITION that loses the section id and LOINC code.
+fixture: sirolimus-spl-boxed-warning
+producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-sirolimus-spl-boxed-warning" }
+activities:
+  - { ref: act-ingest, activityKind: INGESTION, agent: agent-a8-fixtures, missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-sirolimus-spl-boxed-warning", note: "3 captures: SPL XML v11, DailyMed history, openFDA label by set_id" }
+
+nodes:
+  - { ref: prod-sirolimus-vp, module: D6, type: Product, uid: "hu:product:sirolimus-oral-solution-vistapharm", name: "Sirolimus oral solution (VistaPharm, LLC)", identifiers: [ { scheme: NDC, issuer: FDA, value: "66689-347", note: "product NDC (labeler-product)" } ] }
+  - { ref: pkg-sirolimus-vp-kit, module: D6, type: Package, uid: "hu:package:ndc-66689-347-02", name: "Sirolimus oral solution, package NDC 66689-347-02 (KIT in CARTON)", properties: { packageKind: KIT }, identifiers: [ { scheme: NDC, issuer: FDA, value: "66689-347-02", evidence: l-spl-ndc-package } ], note: "Product -> ProductVariant -> Package chain is D6's; only the Package is needed for HAS_LABEL_VERSION" }
+  - { ref: lv-spl-v11, module: D6, type: LabelVersion, uid: "hu:label-version:spl-19880f51-v11", name: "SIROLIMUS SOLUTION [VISTAPHARM, LLC] SPL version 11", properties: { panelKind: OTHER, labelVersionCode: "11", jurisdiction: "US", responsiblePartyRole: UNSTATED, responsiblePartyVerbatim: "VistaPharm, LLC", warningsText: "WARNING: IMMUNOSUPPRESSION, USE IS NOT RECOMMENDED IN LIVER OR LUNG TRANSPLANT PATIENTS", contentDigest: "sha256:78a1edf8dba1144e83c42ad1b06d14f84afa99b125034b7da986143915d1b837 (fixture: digest of the SPL bytes; D6 computes it over the normalized panel)" }, identifiers: [ { scheme: "SPL_SET_ID (requested kernel scheme; 11-open-questions)", issuer: "FDA SPL (labeler)", value: "19880f51-badb-4846-a02a-592a210690ab", evidence: l-spl-setid } ], note: "panelKind OTHER: D6 PanelKind has no prescription-label value (DRUG_FACTS is OTC); raised to D6 in 11-open-questions" }
+  - { ref: mat-sirolimus, module: D1, type: IngredientMaterial, uid: "hu:material:sirolimus-api", name: "Sirolimus (active ingredient as declared in SPL)" }
+  - { ref: sub-sirolimus, module: D1, type: ChemicalSubstance, uid: "hu:substance:unii-w36zg6ft64", name: "SIROLIMUS", identifiers: [ { scheme: UNII, issuer: "FDA GSRS", value: "W36ZG6FT64", evidence: l-spl-unii }, { scheme: RXCUI, issuer: "NLM RxNorm", value: "35302", note: "bridge B11 (nlm-rxnav, research capture raw/rxnav-rxclass-sirolimus.json); not re-captured in this fixture" } ] }
+  - { ref: src-spl, module: K, type: Source, name: "DailyMed SPL 19880f51-badb-4846-a02a-592a210690ab (XML)", properties: { canonicalUri: "https://dailymed.nlm.nih.gov/dailymed/services/v2/spls/19880f51-badb-4846-a02a-592a210690ab.xml", sourceKind: API, genre: DRUG_LABEL_SPL }, snapshots: [snap-spl-19880f51-v11] }
+  - { ref: src-dm-history, module: K, type: Source, name: "DailyMed SPL history 19880f51", properties: { canonicalUri: "https://dailymed.nlm.nih.gov/dailymed/services/v2/spls/19880f51-badb-4846-a02a-592a210690ab/history.json", sourceKind: API, genre: DRUG_LABEL_VERSION_INDEX }, snapshots: [snap-dailymed-history-19880f51] }
+  - { ref: src-openfda, module: K, type: Source, name: "openFDA drug/label set_id 19880f51 (aggregator rendition)", properties: { canonicalUri: "https://api.fda.gov/drug/label.json?search=set_id:\"19880f51-badb-4846-a02a-592a210690ab\"", sourceKind: API, genre: AGGREGATOR_RENDITION }, snapshots: [snap-openfda-label-19880f51] }
+  - { ref: org-vistapharm, module: D7, type: Organization, name: "VistaPharm, LLC (labeler; DUNS 048458728 printed as representedOrganization id)" }
+  - { ref: org-nlm, module: D7, type: Organization, name: "U.S. National Library of Medicine (DailyMed)" }
+  - { ref: agent-a8-fixtures, module: K, type: Agent, name: "agent:a8-d11-fixtures", properties: { agentKind: AUTOMATED_AGENT } }
+
+assertions:
+  # ---------- the label version attached to the package, valid from the label's effectiveTime ----------
+  - id: s01-has-label-version
+    predicate: HAS_LABEL_VERSION
+    assertionKind: RELATIONSHIP
+    subject: { ref: pkg-sirolimus-vp-kit, type: Package, module: D6 }
+    object: { ref: lv-spl-v11, type: LabelVersion, module: D6 }
+    asserter: { ref: org-vistapharm, type: Organization, module: D7 }
+    locators: [l-spl-effective, l-spl-setid, l-spl-version, l-spl-labeler, l-spl-ndc-package]
+    speechAct: STATES
+    basisKind: UNSTATED
+    validTime: { validFrom: "2024-04-30T00:00:00Z", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: UNKNOWN }
+    edge: { type: HAS_LABEL_VERSION, module: D6, properties: StateEpisodeProperties, episode: "state.attach; recordedFrom service-assigned (>= 2026-10-08T21:54:52Z). Three clocks stay apart: validFrom 2024-04-30 (SPL effectiveTime), SourceSnapshot.publishedAt 2026-01-14 (DailyMed published v11, l-dm-history-v11), retrievedAt 2026-10-08" }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-sirolimus-spl-boxed-warning" }
+  - id: s02-boxed-warning-use-constraint
+    predicate: USE_CONSTRAINED_IN
+    assertionKind: FIELD
+    subject: { ref: prod-sirolimus-vp, type: Product, module: D6 }
+    literal: { valueString: "NOT_RECOMMENDED" }
+    proposition: "WARNING: IMMUNOSUPPRESSION, USE IS NOT RECOMMENDED IN LIVER OR LUNG TRANSPLANT PATIENTS"
+    qualifiers: ["section:BOXED_WARNING", "population:liver transplant recipients", "population:lung transplant recipients", "sectionCode=LOINC 34066-1 (BOXED WARNING SECTION)", "sectionId=LINK_b7e90274-8447-41bf-8803-c34d58d232cd", "also states: only physicians experienced in immunosuppressive therapy and management of renal transplant patients should use sirolimus for prophylaxis of organ rejection"]
+    asserter: { ref: org-vistapharm, type: Organization, module: D7 }
+    locators: [l-spl-bw-section, l-spl-bw-code, l-spl-bw-title, l-spl-bw-physicians]
+    speechAct: CAUTIONS
+    polarity: POSITIVE
+    basisKind: UNSTATED
+    validTime: { validFrom: "2024-04-30T00:00:00Z", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: UNKNOWN }
+    note: "D5's use-constraint predicate (D5 05 predicateOnly USE_CONSTRAINED_IN: valueString = ConstraintLevel NOT_RECOMMENDED, proposition = verbatim directive, no object because the scope is a population). Adversarial review: replaces D11's dropped has_boxed_warning; section:BOXED_WARNING is not yet in D5's section list (11-open-questions item 39). The label version is found through the HAS_LABEL_VERSION assertion s01 citing the same SPL snapshot. The SPL section@ID + LOINC code make the locator re-selectable across label versions (CQ-PV-02)"
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-sirolimus-spl-boxed-warning" }
+  - id: s03-declares-component
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    subject: { ref: lv-spl-v11, type: LabelVersion, module: D6 }
+    object: { ref: mat-sirolimus, type: IngredientMaterial, module: D1 }
+    asserter: { ref: org-vistapharm, type: Organization, module: D7 }
+    locators: [l-spl-unii]
+    edge: { type: DECLARES_COMPONENT, module: D6, properties: ComponentLineProperties, class: "structural (internal shape of one captured LabelVersion; the s01 episode's Assertion cites the panel)", lineProperties: { orderIndex: 0, lineRole: "ACTIVE_INGREDIENT (D6 ComponentLineRole has no Rx value; DIETARY_INGREDIENT is wrong — open question to D6)", declaredNameVerbatim: "SIROLIMUS", amount: 1, unitCode: "mg/mL", statementVerbatim: "numerator 1 mg / denominator 1 mL" } }
+    note: "D6 declares DECLARES_COMPONENT as structural; it is listed here only to show the hop Q-D11-11 takes. No separate episode."
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, note: "identifier and composition statements carry no valid time of their own; the episode is recorded-time only" }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-sirolimus-spl-boxed-warning" }
+  - id: s04-realizes-sirolimus
+    predicate: REALIZES_SUBSTANCE
+    assertionKind: RELATIONSHIP
+    subject: { ref: mat-sirolimus, type: IngredientMaterial, module: D1 }
+    object: { ref: sub-sirolimus, type: ChemicalSubstance, module: D1 }
+    asserter: { ref: org-vistapharm, type: Organization, module: D7 }
+    locators: [l-spl-unii]
+    speechAct: STATES
+    basisKind: UNSTATED
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    edge: { type: REALIZES_SUBSTANCE, module: D1, properties: AssertedEdgeProperties }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-sirolimus-spl-boxed-warning" }
+  - id: i01-labelversion-setid
+    predicate: HAS_IDENTIFIER
+    assertionKind: FIELD
+    subject: { ref: lv-spl-v11, type: LabelVersion, module: D6 }
+    identifiers: [ { scheme: "SPL_SET_ID (requested)", issuer: "FDA SPL", value: "19880f51-badb-4846-a02a-592a210690ab" } ]
+    asserter: { ref: org-vistapharm, type: Organization, module: D7 }
+    locators: [l-spl-setid, l-spl-version]
+    note: "the set id identifies the label LINE; version 11 is a qualifier of this LabelVersion (labelVersionCode). Requested scheme SPL_SET_ID (identifier-bridges.yaml kernelCode; 11-open-questions)"
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, note: "identifier and composition statements carry no valid time of their own; the episode is recorded-time only" }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-sirolimus-spl-boxed-warning" }
+
+  # ---------- the aggregator rendition (CQ-PV-05) ----------
+  - id: i02-openfda-source-setid
+    predicate: HAS_IDENTIFIER
+    assertionKind: FIELD
+    subject: { ref: src-openfda, type: Source, module: K }
+    identifiers: [ { scheme: "SPL_SET_ID (requested)", issuer: "FDA SPL", value: "19880f51-badb-4846-a02a-592a210690ab" } ]
+    asserter: { ref: org-vistapharm, type: Organization, module: D7, note: "the identifier is the labeler's; openFDA only relays it" }
+    locators: [l-ofda-setid, l-ofda-version, l-ofda-effective]
+    note: "src-spl carries the same SPL_SET_ID (l-spl-setid): the two Sources join through the shared Identifier — that is how CQ-PV-05 finds the primary record for the rendition (no source-to-source edge, 05 deferred RENDITION_OF_RECORD)"
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, note: "identifier and composition statements carry no valid time of their own; the episode is recorded-time only" }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-sirolimus-spl-boxed-warning" }
+  - id: s05-boxed-warning-openfda
+    predicate: USE_CONSTRAINED_IN
+    assertionKind: FIELD
+    subject: { ref: prod-sirolimus-vp, type: Product, module: D6 }
+    literal: { valueString: "NOT_RECOMMENDED" }
+    proposition: "WARNING: IMMUNOSUPPRESSION, USE IS NOT RECOMMENDED IN LIVER OR LUNG TRANSPLANT PATIENTS"
+    qualifiers: ["section:BOXED_WARNING", "population:liver transplant recipients", "population:lung transplant recipients", "rendition:openFDA drug/label"]
+    asserter: { ref: org-vistapharm, type: Organization, module: D7 }
+    locators: [l-ofda-bw]
+    speechAct: CAUTIONS
+    polarity: POSITIVE
+    basisKind: UNSTATED
+    validTime: { validFrom: "2024-04-30T00:00:00Z", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE }
+    note: "RENDITION corroboration of s02: same statement, located only by JSON_POINTER /results/0/boxed_warning/0; the string concatenates the full-prescribing and highlights boxed warnings, has no section id and no LOINC code, and carries openFDA's own disclaimer (l-ofda-disclaimer). A verifier can confirm the quote but cannot re-anchor it to a section; prefer s02 for citation"
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-sirolimus-spl-boxed-warning" }
+  - id: s06-dailymed-published
+    predicate: RECORD_LAST_UPDATED
+    assertionKind: FIELD
+    subject: { ref: src-spl, type: Source, module: K }
+    literal: { valueString: "SPL version 11 published Jan 14, 2026 (previous version 10: Feb 09, 2024)" }
+    asserter: { ref: org-nlm, type: Organization, module: D7 }
+    locators: [l-dm-history-v11, l-dm-history-v10]
+    speechAct: STATES
+    validTime: { validObservedAt: "2026-10-08T21:54:52Z", validFromBasis: OBSERVATION_ONLY }
+    note: "predicate-only RECORD_LAST_UPDATED (05 predicateOnly, owner D11 convention / K). It also sets snap-spl-19880f51-v11.publishedAt = 2026-01-14"
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-sirolimus-spl-boxed-warning" }
+
+queries:
+  Q-D11-11: |
+    // from a UNII to every current label version that carries a boxed warning (Research; not medical advice)
+    // same as 03-retrieval-patterns.md Q-D11-11: the D5 use constraint in the boxed-warning section of the label snapshot
+    MATCH (s:ChemicalSubstance)-[:HAS_IDENTIFIER]->(:Identifier {scheme: 'UNII', value: 'W36ZG6FT64'})
+    MATCH (s)<-[:REALIZES_SUBSTANCE]-(:IngredientMaterial)<-[:DECLARES_COMPONENT]-(lv:LabelVersion)<-[e:HAS_LABEL_VERSION]-(p:Package)
+    WHERE e.recordedTo IS NULL
+    MATCH (ha:Assertion {uid: e.assertionUid})-[:HAS_EVIDENCE]->(:SourceLocator)<-[:HAS_LOCATOR]-(snap:SourceSnapshot)
+    MATCH (a:Assertion {predicate: 'USE_CONSTRAINED_IN'})-[:HAS_EVIDENCE {role: 'SUPPORTS'}]->(loc:SourceLocator)<-[:HAS_LOCATOR]-(snap)
+    WHERE 'section:BOXED_WARNING' IN a.qualifiers AND a.recordedTo IS NULL AND loc.selectorKind = 'HTML'
+    RETURN DISTINCT p.uid, lv.labelVersionCode, e.validFrom, a.proposition, a.valueString, loc.selectorJson, snap.publishedAt, snap.retrievedAt
+  CQ-PV-05: |
+    // is this source primary or a rendition, and how stale: Sources sharing the SPL set id
+    MATCH (src:Source {uid: $openfdaSourceUid})-[:HAS_IDENTIFIER]->(id:Identifier)<-[:HAS_IDENTIFIER]-(other:Source)
+    WHERE other <> src
+    MATCH (src)-[:HAS_SNAPSHOT]->(s1:SourceSnapshot), (other)-[:HAS_SNAPSHOT]->(s2:SourceSnapshot)
+    RETURN src.genre, other.genre, id.scheme, id.value, s1.retrievedAt, s2.publishedAt, s2.retrievedAt

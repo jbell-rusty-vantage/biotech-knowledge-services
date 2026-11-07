@@ -1,0 +1,685 @@
+# D8 fixture certification-listing-lot-scope — assertions (fixtures stage, A7, 2026-10-08). COVERS episodes carry the coverage window.
+# producedBy ids are fixture-scoped.
+fixture: certification-listing-lot-scope
+producedBy:
+  missionId: mission:ft-D8-fixtures
+  runId: run:ft-D8-certification-listing-lot-scope
+  note: fixture-scoped ids, not Mission Control ids
+entities:
+- ref: nsf
+  type: D7.Organization
+  name: NSF (NSF International)
+  onMatch: use_existing
+- ref: lgc
+  type: D7.Organization
+  name: LGC Group (operator of Informed Sport)
+  onMatch: use_existing
+- ref: elysium
+  type: D7.Organization
+  name: Elysium Health, Inc.
+  onMatch: use_existing
+- ref: prod-basis
+  type: D6.Product
+  name: Basis (Elysium Health), capsules, 60 count
+  onMatch: use_existing
+- ref: prod-codeage
+  type: D6.Product
+  name: Codeage Liposomal Nicotinamide Riboside+ capsules
+  onMatch: review
+- ref: prod-creatine
+  type: D6.Product
+  name: Applied Nutrition Creatine Monohydrate Professional
+  onMatch: review
+- ref: var-creatine-unflav
+  type: D6.ProductVariant
+  name: Applied Nutrition Creatine Monohydrate Professional — Unflavoured
+  onMatch: review
+- ref: lot-p043-01
+  type: Lot
+  name: Basis — lot P043-01
+  uidSegment: elysium-basis-lot-P043-01
+  properties:
+    lotCode: P043-01
+  identifiers:
+  - scheme: LOT_CODE
+    issuer: Elysium Health, Inc.
+    value: P043-01
+    requested: true
+  propertyEvidence:
+  - loc-nsfs-lots
+  onMatch: review
+- ref: lot-m070-01
+  type: Lot
+  name: Basis — lot M070-01
+  uidSegment: elysium-basis-lot-M070-01
+  properties:
+    lotCode: M070-01
+  identifiers:
+  - scheme: LOT_CODE
+    issuer: Elysium Health, Inc.
+    value: M070-01
+    requested: true
+  propertyEvidence:
+  - loc-nsfs-lots
+  onMatch: review
+- ref: lot-r212-01
+  type: Lot
+  name: Basis — lot R212-01
+  uidSegment: elysium-basis-lot-R212-01
+  properties:
+    lotCode: R212-01
+  identifiers:
+  - scheme: LOT_CODE
+    issuer: Elysium Health, Inc.
+    value: R212-01
+    requested: true
+  propertyEvidence:
+  - loc-nsfs-lots
+  onMatch: review
+- ref: lot-h26246
+  type: Lot
+  name: Creatine Monohydrate Professional (Unflavoured) — batch H26246
+  uidSegment: applied-nutrition-creatine-professional-batch-H26246
+  properties:
+    lotCode: H26246
+    expiresAt: '2028-09-30T00:00:00Z'
+  propertyEvidence:
+  - loc-is-h26246
+  - loc-is-h26246-exp
+  onMatch: review
+- ref: lot-a24176
+  type: Lot
+  name: Creatine Monohydrate Professional (Unflavoured) — batch A24176
+  uidSegment: applied-nutrition-creatine-professional-batch-A24176
+  properties:
+    lotCode: A24176
+    expiresAt: '2026-06-30T00:00:00Z'
+  propertyEvidence:
+  - loc-is-a24176
+  onMatch: review
+- ref: cl-nsfsport-1451522
+  type: CertificationListing
+  name: NSF Certified for Sport listing 1451522 — Basis
+  uidSegment: nsf-certified_for_sport-1451522
+  properties:
+    programme: NSF Certified for Sport
+    listingId: '1451522'
+    coverageKind: LOT
+    status: LISTED
+    categoryLabelsVerbatim:
+    - Energy Enhancement
+    - Pre-Workout
+    - Post-Workout
+    - Sleep Aid
+  identifiers:
+  - scheme: CERT_LISTING
+    issuer: NSF
+    value: '1451522'
+    requested: true
+  propertyEvidence:
+  - loc-nsfs-title
+  - loc-nsfs-lots
+  - loc-nsfs-goals
+  onMatch: review
+  note: standard not printed on this page; scope sentence not printed on this page
+- ref: cl-nsf173-codeage
+  type: CertificationListing
+  name: NSF/ANSI 173 listing — Codeage LLC — Liposomal Nicotinamide Riboside+
+  uidSegment: nsf-ansi_173-codeage-liposomal-nr-plus
+  properties:
+    programme: NSF Dietary Supplements Certification
+    standard: NSF/ANSI 173
+    coverageKind: PRODUCT_ALL_SIZES
+    status: LISTED
+  propertyEvidence:
+  - loc-nsf173-std
+  - loc-nsf173-row
+  - loc-nsf173-cols
+  onMatch: review
+  note: Product ID 'All' = all sizes/IDs of the trade designation; no lots listed
+- ref: cl-is-1146294
+  type: CertificationListing
+  name: Informed Sport — Applied Nutrition Creatine Monohydrate Professional
+  uidSegment: informed_sport-node-1146294
+  properties:
+    programme: Informed Sport
+    listingId: '1146294'
+    coverageKind: LOT
+    certifiedAt: '2022-08-05T00:00:00Z'
+    status: LISTED
+    categoryLabelsVerbatim:
+    - Build Muscle
+    - Workout Support
+  identifiers:
+  - scheme: CERT_LISTING
+    issuer: Informed Sport (LGC)
+    value: '1146294'
+    requested: true
+  propertyEvidence:
+  - loc-is-product
+  - loc-is-certified
+  onMatch: review
+assertions:
+- id: k01
+  predicate: ISSUED_BY
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: cl-nsfsport-1451522
+    type: CertificationListing
+  object:
+    ref: nsf
+    type: D7.Organization
+  asserter:
+    ref: nsf
+    type: D7.Organization
+  locators:
+  - loc-nsfs-title
+  - loc-nsfs-nsf
+  edge:
+    type: ISSUED_BY
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-certification-listing-lot-scope
+- id: k02
+  predicate: COVERS
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: cl-nsfsport-1451522
+    type: CertificationListing
+  object:
+    ref: prod-basis
+    type: D6.Product
+  asserter:
+    ref: nsf
+    type: D7.Organization
+  locators:
+  - loc-nsfs-product
+  - loc-nsfs-brand
+  edge:
+    type: COVERS
+    class: asserted
+    properties: AssertedEdgeProperties
+  validTime:
+    validFrom: '2026-10-08'
+    validFromPrecision: DAY
+    validFromBasis: OBSERVATION_ONLY
+    validTo: null
+    note: coverage observed on the retrieval date; start unknown; the episode stays open until a later observation shows the lot gone
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-certification-listing-lot-scope
+- id: k03
+  predicate: COVERS
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: cl-nsfsport-1451522
+    type: CertificationListing
+  object:
+    ref: lot-p043-01
+    type: Lot
+  asserter:
+    ref: nsf
+    type: D7.Organization
+  locators:
+  - loc-nsfs-lots
+  edge:
+    type: COVERS
+    class: asserted
+    properties: AssertedEdgeProperties
+  validTime:
+    validFrom: '2026-10-08'
+    validFromPrecision: DAY
+    validFromBasis: OBSERVATION_ONLY
+    validTo: null
+    note: coverage observed on the retrieval date; start unknown; the episode stays open until a later observation shows the lot gone
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-certification-listing-lot-scope
+- id: k06
+  predicate: LOT_OF
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: lot-p043-01
+    type: Lot
+  object:
+    ref: prod-basis
+    type: D6.Product
+  asserter:
+    ref: nsf
+    type: D7.Organization
+  locators:
+  - loc-nsfs-lots
+  - loc-nsfs-product
+  edge:
+    type: LOT_OF
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-certification-listing-lot-scope
+- id: k04
+  predicate: COVERS
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: cl-nsfsport-1451522
+    type: CertificationListing
+  object:
+    ref: lot-m070-01
+    type: Lot
+  asserter:
+    ref: nsf
+    type: D7.Organization
+  locators:
+  - loc-nsfs-lots
+  edge:
+    type: COVERS
+    class: asserted
+    properties: AssertedEdgeProperties
+  validTime:
+    validFrom: '2026-10-08'
+    validFromPrecision: DAY
+    validFromBasis: OBSERVATION_ONLY
+    validTo: null
+    note: coverage observed on the retrieval date; start unknown; the episode stays open until a later observation shows the lot gone
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-certification-listing-lot-scope
+- id: k07
+  predicate: LOT_OF
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: lot-m070-01
+    type: Lot
+  object:
+    ref: prod-basis
+    type: D6.Product
+  asserter:
+    ref: nsf
+    type: D7.Organization
+  locators:
+  - loc-nsfs-lots
+  - loc-nsfs-product
+  edge:
+    type: LOT_OF
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-certification-listing-lot-scope
+- id: k05
+  predicate: COVERS
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: cl-nsfsport-1451522
+    type: CertificationListing
+  object:
+    ref: lot-r212-01
+    type: Lot
+  asserter:
+    ref: nsf
+    type: D7.Organization
+  locators:
+  - loc-nsfs-lots
+  edge:
+    type: COVERS
+    class: asserted
+    properties: AssertedEdgeProperties
+  validTime:
+    validFrom: '2026-10-08'
+    validFromPrecision: DAY
+    validFromBasis: OBSERVATION_ONLY
+    validTo: null
+    note: coverage observed on the retrieval date; start unknown; the episode stays open until a later observation shows the lot gone
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-certification-listing-lot-scope
+- id: k08
+  predicate: LOT_OF
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: lot-r212-01
+    type: Lot
+  object:
+    ref: prod-basis
+    type: D6.Product
+  asserter:
+    ref: nsf
+    type: D7.Organization
+  locators:
+  - loc-nsfs-lots
+  - loc-nsfs-product
+  edge:
+    type: LOT_OF
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-certification-listing-lot-scope
+- id: k09
+  predicate: ISSUED_BY
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: cl-nsf173-codeage
+    type: CertificationListing
+  object:
+    ref: nsf
+    type: D7.Organization
+  asserter:
+    ref: nsf
+    type: D7.Organization
+  locators:
+  - loc-nsf173-std
+  - loc-nsf173-asof
+  edge:
+    type: ISSUED_BY
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-certification-listing-lot-scope
+- id: k10
+  predicate: COVERS
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: cl-nsf173-codeage
+    type: CertificationListing
+  object:
+    ref: prod-codeage
+    type: D6.Product
+  asserter:
+    ref: nsf
+    type: D7.Organization
+  locators:
+  - loc-nsf173-row
+  - loc-nsf173-std
+  edge:
+    type: COVERS
+    class: asserted
+    properties: AssertedEdgeProperties
+  validTime:
+    validFrom: null
+    validFromBasis: UNKNOWN
+    statedAsOf: '2026-10-08T04:15:00Z'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - Product ID 'All'
+  - listing 'current as of Thursday, October 8, 2026 at 12:15 a.m. Eastern Time' (= 04:15 UTC)
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-certification-listing-lot-scope
+- id: k11
+  predicate: ISSUED_BY
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: cl-is-1146294
+    type: CertificationListing
+  object:
+    ref: lgc
+    type: D7.Organization
+  asserter:
+    ref: lgc
+    type: D7.Organization
+  locators:
+  - loc-is-lgc
+  - loc-is-product
+  edge:
+    type: ISSUED_BY
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - operator inferred from the LGC Group logo/link on the page; the page itself is branded Informed Sport
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-certification-listing-lot-scope
+- id: k12
+  predicate: COVERS
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: cl-is-1146294
+    type: CertificationListing
+  object:
+    ref: prod-creatine
+    type: D6.Product
+  asserter:
+    ref: lgc
+    type: D7.Organization
+  locators:
+  - loc-is-product
+  - loc-is-certified
+  edge:
+    type: COVERS
+    class: asserted
+    properties: AssertedEdgeProperties
+  validTime:
+    validFrom: '2022-08-05'
+    validFromPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+    validTo: null
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-certification-listing-lot-scope
+- id: k13
+  predicate: COVERS
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: cl-is-1146294
+    type: CertificationListing
+  object:
+    ref: lot-h26246
+    type: Lot
+  asserter:
+    ref: lgc
+    type: D7.Organization
+  locators:
+  - loc-is-h26246
+  - loc-is-h26246-test
+  - loc-is-h26246-exp
+  - loc-is-rule
+  edge:
+    type: COVERS
+    class: asserted
+    properties: AssertedEdgeProperties
+  validTime:
+    validFrom: '2026-09-30'
+    validFromPrecision: DAY
+    validFromBasis: INFERRED
+    validFromNote: coverage start taken as the batch test date; the page states test dates and expiry, not when coverage begins (adversarial review, re-scraped 2026-10-08 with Firecrawl maxAge 0)
+    validTo: '2028-09-30'
+    validToPrecision: DAY
+    validToBasis: STATED_BY_SOURCE
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  note: valid from the batch test date (inferred start) to the batch expiry (stated; the page's own display rule, loc-is-rule)
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-certification-listing-lot-scope
+- id: k14
+  predicate: COVERS
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: cl-is-1146294
+    type: CertificationListing
+  object:
+    ref: lot-a24176
+    type: Lot
+  asserter:
+    ref: lgc
+    type: D7.Organization
+  locators:
+  - loc-is-a24176
+  - loc-is-rule
+  edge:
+    type: COVERS
+    class: asserted
+    properties: AssertedEdgeProperties
+  validTime:
+    validFrom: '2024-07-17'
+    validFromPrecision: DAY
+    validFromBasis: INFERRED
+    validFromNote: coverage start taken as the batch test date; the page states test dates and expiry, not when coverage begins (adversarial review, re-scraped 2026-10-08 with Firecrawl maxAge 0)
+    validTo: '2026-06-30'
+    validToPrecision: DAY
+    validToBasis: STATED_BY_SOURCE
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - '''tested but is not listed below'' (technical issue)'
+  - expired 2026-06-30 yet still displayed on 2026-10-08, contrary to the page's display rule
+  expectedStatus: PROPOSED
+  note: 'harm case (Q-D8-08): as of 2026-10-08 this batch is NOT covered (episode closed by its own expiry); a buyer holding A24176 sees it on the page'
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-certification-listing-lot-scope
+- id: k15
+  predicate: LOT_OF
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: lot-h26246
+    type: Lot
+  object:
+    ref: var-creatine-unflav
+    type: D6.ProductVariant
+  asserter:
+    ref: lgc
+    type: D7.Organization
+  locators:
+  - loc-is-h26246
+  - loc-is-product
+  edge:
+    type: LOT_OF
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-certification-listing-lot-scope
+- id: k16
+  predicate: LOT_OF
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: lot-a24176
+    type: Lot
+  object:
+    ref: var-creatine-unflav
+    type: D6.ProductVariant
+  asserter:
+    ref: lgc
+    type: D7.Organization
+  locators:
+  - loc-is-a24176
+  - loc-is-product
+  edge:
+    type: LOT_OF
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-certification-listing-lot-scope
+reobservation_protocol:
+  purpose: 'Q-D8-08 harm variant: a lot drops off a certifier page between two observations'
+  how: re-capture snap-nsfsport and snap-is (Firecrawl change tracking or scheduled capture); for each open COVERS episode whose lot is absent in the new snapshot,
+    edge.close the open episode (recordedTo) and write a successor episode with validTo = the last observation date that showed it (validToBasis OBSERVATION_ONLY);
+    never delete
+  observed_today: 'two captures on 2026-10-08 (research: NSF 20:55 UTC, Informed Sport 21:01 UTC; fixtures: 21:38 UTC) list the same 24 Informed Sport batch rows
+    and the same three NSF lots: no drop-off yet'
+  note: Informed Sport removes a batch row at batch expiry by rule (loc-is-rule), so absence after expiry is NOT evidence of failure; absence before expiry is the
+    signal worth an Assessment

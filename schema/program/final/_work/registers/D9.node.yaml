@@ -1,0 +1,209 @@
+version: 1
+module: D9
+# Source: packets/D9/06-node-register.yaml (sha256 e21fa2ec…), edited by the S module editor for D9 2026-10-08 per
+# final/decision-report.md and final/_work/rulings.yaml (modules.D9). Every entry keeps the 01-PACKET-CONTRACT fields and
+# adds `module: D9`. Synthesis edits:
+#   R-65  mergedInto row Conference: D9 Channel EVENT_SERIES + D13 DATA_PRESENTATION Events (edition/session qualifiers on
+#         D13's PRESENTED_AT_CONFERENCE, object D9.Channel); no Conference, Session or per-edition Event node (closes D13-2).
+#   R-17  confirmed: Chunk keeps labels ["Chunk"] (no Entity label; closes C-6, C-10).
+#   R-03  `mutations` is read as { graphql: none, executor: [...] } (the executor is the only writer).
+#   R-15  MediaWork whyNode: a multi-byline work is an ASSERTED_BY target in its own voice.
+#   R-55  mergedInto row ConflictRelevanceAssessment: registrar D7; D9 contributes the disclosure facets.
+# Model stage, A8, 2026-10-08; adversarial review 2026-10-08 (Chunk is projection output, no recordedTo). Three node types (budget 8). Identifier scheme codes from packets/K/identifier-schemes.yaml;
+# schemes marked (requested) are asked for in 11-open-questions.md (K-8).
+nodes:
+  - name: Channel
+    module: D9
+    uidToken: channel
+    identityKeys: [platform, platformAccountId]
+    identityFallback: normalized feedUrl, else normalized homeUrl
+    identifierSchemes: [PODCAST_INDEX_FEED, ISSN, WIKIDATA, YOUTUBE_CHANNEL (requested), APPLE_PODCAST (requested), SPOTIFY (requested), X_ACCOUNT (requested)]
+    whyNode: >-
+      CQ-CL-05 joins a statement to "the channel's" financial interest through predicate-only OPERATED_BY Assertions (subject
+      Channel, valid time on the Assertion) and the channel's works' CONTENT_SPONSORED_BY; CQ-CL-07 / Q-D9-11 need a pseudonymous asserter that is not a Person (an ACCOUNT channel, as D7 asks);
+      Q-D9-19 and Q-D9-14 score voices and authority per channel; Q-D9-16 coverage enumerates a channel's works. A property on
+      MediaWork cannot be an asserter, an assessment target or the subject of an operator Assertion.
+    filterProperties: [channelKind, platform, platformAccountId, handle, isPseudonymous, language, influenceScore]
+    otherProperties: 4
+    archetype: Entity
+    implements: [Entity, Subjectable]
+    mutations: { create: false, update: false, delete: false }
+    mutationsNote: "@mutation(operations: []); the intent executor is the only writer (create + update through intents; nothing is deleted)"
+  - name: MediaWork
+    module: D9
+    uidToken: media-work
+    identityKeys: [channel, publisherItemKey]
+    identityFallback: platform item id (YouTube video id, X post id, Substack post id, forum topic id), else normalized canonicalUrl
+    identifierSchemes: [PODCAST_GUID, YOUTUBE_VIDEO, ISBN, DOI, WIKIDATA, X_POST (requested), SUBSTACK_POST (requested), SPOTIFY (requested)]
+    whyNode: >-
+      Every claim occurrence OCCURS_IN one work (CQ-CL-01, Q-D9-01, Q-D9-02 use its publishedAt as the statement time T);
+      renditions (kernel Sources) diverge and are joined only here (Q-D9-06, CQ-PV-02); sponsorship episodes attach here
+      (Q-D9-06, CQ-CL-08); re-cuts and clips carry republicationKind and a predicate-only REPUBLISHES Assertion to the original (CQ-CL-06, Q-D9-07); IMAGE works carry figure reuse
+      and generation mode (Q-D9-17); a work with several bylines is the ASSERTED_BY target of what it states in its own
+      voice (R-15). Without it the container would be smeared across Sources (one per rendition) and the
+      independence count would double-count every re-cut.
+    filterProperties: [workKind, publishedAt, republicationKind, language, episodeNumber, generationMode]
+    otherProperties: 6
+    archetype: Entity
+    implements: [Entity, Subjectable]
+    mutations: { create: false, update: false, delete: false }
+    mutationsNote: "@mutation(operations: []); executor writes through intents"
+  - name: Chunk
+    module: D9
+    uidToken: chunk
+    identityKeys: [snapshot, textVersionHash, chunkerVersion, chunkIndex]
+    identifierSchemes: []
+    whyNode: >-
+      Q-D9-20 (directive 3.8 path): the vector and fulltext indexes need one node per retrieval span with its embedding; the
+      path continues to the located assertions (COVERS_LOCATOR) and the mentioned entities (MENTIONS). A property cannot hold
+      a vector index entry per span. Implements Entity only (pure retrieval structure; never a subject, never evidence).
+    filterProperties: [textBasis, language, workUid, channelUid, publishedAt, chunkerVersion, textVersionHash, chunkIndex]
+    otherProperties: 12
+    archetype: Entity
+    implements: [Entity]
+    mutations: { create: false, update: false, delete: false }
+    mutationsNote: "projection output, written only by the chunking/embedding projection Activity; a new chunkerVersion or text version rebuilds the chunks and deletes the old ones (derived structure, no recordedTo; adversarial review). Labels [\"Chunk\"] only, the kernel-accepted exception (R-17); lineage never scans :Entity"
+
+deferred:
+  - name: EpisodeSegment
+    reason: >-
+      Segment kind (sponsor read, editorial, intro, correction note) is a property of the span; carried as the occurrence
+      qualifier `segment:<KIND>` until the kernel adds Assertion.segmentKind (K-5), and as MEDIA_TIMECODE locators. Promote only if
+      a question must traverse one segment shared by many occurrences.
+  - name: DiscourseAssessment
+    reason: research-stage candidate; kernel Assessment kinds RETELLING_FIDELITY / CONFLICT_RELEVANCE / SOURCE_AUTHORITY cover it (A1's map)
+  - name: PseudonymousActor
+    reason: a handle is a Channel with channelKind ACCOUNT and isPseudonymous (D7 says handles are D9 accounts); kernel request K-6 admits it as an asserter
+  - name: Community (offline)
+    reason: no D9 question at value ≤ 2; online communities are Channels (FORUM)
+  - name: GraphView
+    reason: a saved view specification is application state, not knowledge; no question
+  - name: MediaSuitabilityAssessment
+    reason: no D9 question; if needed it is a kernel Assessment (QUALITY) about an IMAGE MediaWork
+  - name: MediaRightsRecord
+    reason: rights as captured are MediaWork.rightsStatementVerbatim; no question needs rights versions as nodes in pass one
+  - name: ProductLabelRegion
+    reason: label regions are kernel BOUNDING_BOX locators on a D6 label snapshot (A1's map); D6 owns label content
+  - name: DocumentTextVersion
+    reason: folded into Chunk properties (textBasis, textVersionHash, extractorVersion, normalizationVersion, textReviewNote); no question filters text versions without their chunks
+  - name: Segmentation
+    reason: folded into Chunk.chunkerVersion (operational envelope, not knowledge)
+  - name: Publication (scholarly)
+    reason: D3 owns scholarly works (agreed with A4's research notes); MediaWork excludes them
+
+mergedInto:
+  # every pinned type from W18, W20, W21, W22 (the D9 brief's fragments) and where it went
+  - pinned: Platform
+    into: "Channel.platform (MediaPlatform enum)"
+    fragment: W21
+  - pinned: Channel
+    into: "Channel"
+    fragment: W21
+  - pinned: Series
+    into: "Channel (channelKind SHOW); sub-series such as Essentials → MediaWork.republicationKind"
+    fragment: W21
+  - pinned: Episode
+    into: "MediaWork (workKind PODCAST_EPISODE, VIDEO, LIVESTREAM, TALK_RECORDING)"
+    fragment: W21
+  - pinned: EpisodeSegment
+    into: "deferred (occurrence qualifier segment:<KIND> + MEDIA_TIMECODE locator)"
+    fragment: W21
+  - pinned: Claim
+    into: "K.Claim"
+    fragment: W21
+  - pinned: ClaimOccurrence
+    into: "K.Assertion (assertionKind CLAIM; no extra label, F-05) + D9 OCCURS_IN"
+    fragment: W21
+  - pinned: RelationshipAssertion
+    into: "K.Assertion"
+    fragment: W21
+  - pinned: ClaimEvidenceAssessment
+    into: "K.Assessment (EVIDENCE_SYNTHESIS; D3/D10 own the kind)"
+    fragment: W21
+  - pinned: RetellingFidelityAssessment
+    into: "K.Assessment (RETELLING_FIDELITY; D9 owns kind values and questions)"
+    fragment: W21
+  - pinned: ConflictRelevanceAssessment
+    into: "K.Assessment (CONFLICT_RELEVANCE; one register entry D7.conflict-relevance, registrar D7; D9 contributes the disclosure facets disclosureFinding, disclosurePlacement and completeness, R-55)"
+    fragment: W21
+  - pinned: Community
+    into: "Channel (channelKind FORUM) for online communities; offline deferred"
+    fragment: W18
+  - pinned: Conference
+    into: "D9 Channel (channelKind EVENT_SERIES) for the recurring meeting + D13 DATA_PRESENTATION Events for presentations with a data claim; edition and session are qualifiers on D13's PRESENTED_AT_CONFERENCE (object D9.Channel); recordings are MediaWorks linked by the D9 predicate RECORDING_OF → Event; no Conference, Session or per-edition Event node (R-65)"
+    fragment: W18
+  - pinned: Event
+    into: "D13.Event"
+    fragment: W18
+  - pinned: NarrativeArc
+    into: "D13 (decides; D9 has no arc question)"
+    fragment: W18
+  - pinned: EventImpactAssessment
+    into: "K.Assessment (D13 kind)"
+    fragment: W18
+  - pinned: Document
+    into: "K.Source"
+    fragment: W20
+  - pinned: DocumentTextVersion
+    into: "Chunk properties (textBasis, textVersionHash, extractorVersion, normalizationVersion)"
+    fragment: W20
+  - pinned: Segmentation
+    into: "Chunk.chunkerVersion"
+    fragment: W20
+  - pinned: Chunk
+    into: "Chunk"
+    fragment: W20
+  - pinned: MediaAsset
+    into: "MediaWork (workKind IMAGE)"
+    fragment: W22
+  - pinned: MediaVariant
+    into: "K.Source + K.SourceSnapshot (one rendition endpoint, its captures)"
+    fragment: W22
+  - pinned: MediaAnnotation
+    into: "K.SourceLocator (BOUNDING_BOX / MEDIA_TIMECODE selector)"
+    fragment: W22
+  - pinned: FigurePanel
+    into: "K.SourceLocator (BOUNDING_BOX) on an IMAGE work's rendition"
+    fragment: W22
+  - pinned: ProductLabelRegion
+    into: "K.SourceLocator on a D6 label snapshot (deferred as a type)"
+    fragment: W22
+  - pinned: GraphView
+    into: "deferred"
+    fragment: W22
+  - pinned: MediaSuitabilityAssessment
+    into: "deferred (K.Assessment QUALITY if ever needed)"
+    fragment: W22
+  - pinned: MediaRightsRecord
+    into: "MediaWork.rightsStatementVerbatim"
+    fragment: W22
+  - pinned: SourceAuthorityAssessment
+    into: "K.Assessment (SOURCE_AUTHORITY); register content D9 (vocab-source-genres.yaml)"
+    fragment: W19
+  - pinned: SourceDiscoveryRecord
+    into: "D11 action-space registry (not graph)"
+    fragment: W19
+  - pinned: SourceCoverageRequirement
+    into: "D11 action-space registry (not graph); answer-time coverage per 03#Q-D9-16"
+    fragment: W19
+unionsRetired:
+  - union: MediaSubjectTarget
+    members: 75
+    replacedBy: "kernel Subjectable pattern (predicate DEPICTS)"
+  - union: EpisodeMentionableTarget
+    members: 9
+    replacedBy: "Chunk.mentions → Subjectable (MENTIONS, derived)"
+  - union: ClaimSpeakerTarget
+    members: 4
+    replacedBy: "kernel ASSERTED_BY → Subjectable"
+  - union: OccurrenceContainerTarget
+    members: 3
+    replacedBy: "OCCURS_IN → MediaWork only (scholarly retellings are Assertion → Assertion)"
+  - union: SponsorableTarget
+    replacedBy: "CONTENT_SPONSORED_BY from MediaWork only (2-member ContentSponsor target)"
+  - union: DocumentAuthorTarget
+    replacedBy: "APPEARS_IN {AUTHOR} → Person"
+  - union: EventParticipantTarget / EventSubjectTarget / EventRecordTarget
+    replacedBy: "D13"
+  - union: MediaVisualizableRelationshipTarget
+    replacedBy: "deferred (GraphView cut)"

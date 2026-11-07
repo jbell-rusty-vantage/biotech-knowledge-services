@@ -1,0 +1,41 @@
+# Shared fragments of the safelisted consumer operations. Codegen and the server registry resolve them per operation.
+
+fragment SubjectRef on Subjectable {
+  __typename
+  uid
+  name
+}
+
+fragment PageInfoFields on PageInfo {
+  hasNextPage
+  endCursor
+}
+
+fragment EvidenceLocator on SourceLocator {
+  uid
+  selectorKind
+  exact
+  prefix
+  suffix
+  page
+  startOffset
+  endOffset
+  mediaStartSeconds
+  mediaEndSeconds
+  snapshot(limit: 1) {
+    uid
+    retrievedAt
+    publishedAt
+    contentHash
+    mimeType
+    language
+    captureCompleteness
+    source(limit: 1) {
+      uid
+      name
+      canonicalUri
+      sourceKind
+      genre
+    }
+  }
+}

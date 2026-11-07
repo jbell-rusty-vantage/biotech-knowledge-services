@@ -1,0 +1,53 @@
+version: 1
+module: D2
+stage: model (Wave 2), A3, 2026-10-08; revised after the adversarial review (2026-10-08)
+# Every reference from D2's SDL to a type outside the module (beyond packet-check's kernel allowlist) and every edge
+# another module declares into a D2 type. owner: this = declared in D2's 04-schema-proposal.graphql; other = declared
+# by the named module (D2 consumes it). Names re-checked against the sibling SDLs on 2026-10-08 (adversarial review):
+# D1 (A2), D3 (A4), D4 (A3), D5 (A5), D6 (A6), D9 (A8), D10 (A1), D13 (A7).
+# Property types from other modules (kernel and D3 enums, kernel edge-property types outside the allowlist) are not
+# relationships: they are listed under sharedVocabularies (K pattern change 9), not here.
+seams:
+  # ---- declared by D2 (owner: this) ----
+  - { type: PARTICIPATES_IN, from: D1.ChemicalSubstance, to: D2.Mechanism, questions: [Q-D2-11, Q-D2-03], direction: "IN (field Mechanism.metaboliteParticipants; stored D1 → D2)", owner: this, note: "asserted (MechanismReferenceProperties ⊇ AssertedRecordedProperties); endogenous metabolites (NAD+, NAAD, NMN) are D1 ChemicalSubstances; D1's hub gets no field" }
+  - { type: AFFECTS_MECHANISM, from: D1.ChemicalSubstance, to: D2.Mechanism, questions: [CQ-MX-05, Q-D2-02, Q-D2-03, Q-D2-06, Q-D2-18, Q-D2-26], direction: "IN (field Mechanism.affectedBy, union MechanismModulator)", owner: this, note: "derived, read-only; projection d2.affects-mechanism/v1" }
+  - { type: AFFECTS_MECHANISM, from: D5.Intervention, to: D2.Mechanism, questions: [Q-D2-02, Q-D2-10], direction: "IN (field Mechanism.affectedBy, union MechanismModulator)", owner: this, note: "non-substance means (exercise, fasting); D5 lists the reverse seam (owner: other)" }
+  - { type: EXPOSED_TO, from: D2.MechanismEvidenceContext, to: D1.ChemicalSubstance, questions: [CQ-MX-02, Q-D2-04, Q-D2-09], direction: OUT, owner: this }
+  - { type: EXPOSED_TO, from: D2.MechanismEvidenceContext, to: D1.IngredientMaterial, questions: [CQ-MX-04], direction: OUT, owner: this }
+  - { type: EXPOSED_TO, from: D2.MechanismEvidenceContext, to: D5.Intervention, questions: [Q-D2-09], direction: OUT, owner: this, note: "BACKGROUND co-exposure such as aerobic exercise training (FC-3)" }
+  - { type: IN_STUDY_ARM, from: D2.MechanismEvidenceContext, to: D3.StudyArm, questions: [CQ-MX-02, Q-D2-06, Q-D2-27, Q-D2-04], direction: OUT, owner: this, note: "a registered group's dose of record is read through it: StudyArm -HAS_COMPONENT-> InterventionComponent -ADMINISTERS-> material (D3)" }
+  - { type: OBSERVED_IN_CONTEXT, from: K.Assertion, to: D2.MechanismEvidenceContext, questions: [CQ-MX-01, CQ-MX-02, CQ-MX-03], direction: "IN (field MechanismEvidenceContext.assertions)", owner: this, note: "kernel type is allowlisted; listed for completeness and because A1 may adopt it as a shared qualifier edge; D2 mechanism Assertions only (not D5 adverse-effect Assertions)" }
+  # ---- declared by other modules into D2 types (owner: other) ----
+  - { type: REFLECTS_MECHANISM, from: D4.Biomarker, to: D2.Mechanism, questions: [Q-D2-03, Q-D2-04, Q-D2-22], direction: "OUT from Biomarker (declared by D4)", owner: other, note: "asserted, recorded only in the D4 SDL (AssertedRecordedProperties, one Assertion per marker paper); the D2 → D4 hop of the compound → mechanism → biomarker → test path" }
+  - { type: HAS_ANALYTE, from: D4.Biomarker, to: D2.MolecularEntity, questions: [Q-D2-03, Q-D2-04, Q-D2-22], direction: "OUT from Biomarker (declared by D4)", owner: other, note: "structural in the D4 SDL (field Biomarker.analyteEntities); protein biomarkers (IL-6); metabolite biomarkers use Biomarker.analytes → D1.ChemicalSubstance; replaces pinned ENCODES" }
+  # INDICATES (D4.Biomarker → D2.Condition) is NOT a seam: D4 deferred it to the Assertion predicate indicates_condition
+  # (D4 05-register deferred list, checked 2026-10-08). Q-D2-14 reads biomarker → condition links as Assertions (kernel HAS_OBJECT).
+  - { type: MEASURES, from: D3.OutcomeDefinition, to: D2.Outcome, questions: [Q-D2-07, Q-D2-26], direction: "OUT (declared by D3, union OutcomeMeasureTarget = Metric | Biomarker | Outcome | Condition)", owner: other }
+  - { type: MEASURES, from: D3.OutcomeDefinition, to: D2.Condition, questions: [Q-D2-07, Q-D2-15], direction: "OUT (declared by D3, same union)", owner: other, note: "incident disease and adverse-event endpoints" }
+  - { type: INVESTIGATES, from: D3.Study, to: D2.Condition, questions: [Q-D2-06], direction: "OUT (declared by D3)", owner: other }
+  - { type: OPERATIONALIZED_BY, from: D5.Target, to: D2.Outcome, questions: [Q-D2-26], direction: "OUT (declared by D5, union TargetMeasure = Biomarker | Metric | Outcome)", owner: other, note: "D5 added D2.Outcome in its check stage at D2's request (D5 10-seams; closes D2 11 item 27); structural in the D5 SDL" }
+  - { type: ASSOCIATES, from: D10.Association, to: "D2.Mechanism | D2.Outcome | D2.Condition (via Subjectable)", questions: [Q-D2-14], direction: "OUT from Association (declared by D10, kernel Subjectable target)", owner: other, note: "D10 materialized association records (EVIDENCE_AGGREGATE, GDS similarity, external scores); replaces D2's INFLUENCES_OUTCOME (demoted); D10's claim that it also replaces AFFECTS_MECHANISM is contested (11-open-questions item 1)" }
+  - { type: HAS_SUBJECT, from: K.Assertion, to: "D2.Mechanism | D2.MolecularEntity | D2.Condition | D2.Outcome (via Subjectable)", questions: [Q-D2-14, Q-D2-20], direction: "declared by K", owner: other }
+  - { type: HAS_OBJECT, from: K.Assertion, to: "D2.Mechanism | D2.MolecularEntity | D2.Condition | D2.Outcome (via Subjectable)", questions: [CQ-MX-01, Q-D2-01, Q-D2-05], direction: "declared by K", owner: other }
+  - { type: ASSESSES, from: K.Assessment, to: "K.Claim or D2 Subjectable types (e.g. EVIDENCE_SYNTHESIS about the Claim a mechanism claim occurrence is OCCURRENCE_OF; never an Assertion, which Adjudication ASSESSES)", questions: [Q-D2-16, CQ-MX-04], direction: "declared by K", owner: other, note: "kernel Assessment is not allowlisted; D2 assessment subkinds: D2.marketing-mechanism-support, D2.conflict-relevance" }
+  - { type: OCCURRENCE_OF, from: K.Assertion, to: K.Claim, questions: [Q-D2-28, Q-D2-16], direction: "declared by K", owner: other, note: "mechanism claims in marketing/podcasts are claim occurrences whose object is a D2 type" }
+  - { type: MENTIONS, from: D9.Chunk, to: "D2 Subjectable types", questions: [Q-D2-24, Q-D2-23], direction: "declared by D9 (derived)", owner: other }
+  - { type: COVERS_LOCATOR, from: D9.Chunk, to: K.SourceLocator, questions: [Q-D2-24], direction: "declared by D9 (derived span-overlap/v1)", owner: other, note: "D2's chunk → assertion hop (00-DIRECTIVE 3.8); D2 no longer recomputes offset overlap" }
+
+# Assertion-level seams: predicates whose subject or object crosses a module boundary (kernel HAS_SUBJECT / HAS_OBJECT
+# against Subjectable, so no typed edge and no union). Not relationship types (adversarial review: the inventory read them
+# as undeclared relationships); listed so owners keep the types Subjectable.
+predicateSeams:
+  - { predicate: "USE_CONSTRAINED_IN | CAUSES_ADVERSE_EFFECT", registeredBy: D5, subjects: [D1.ChemicalSubstance, D1.IngredientMaterial, D6.Product, D5.Intervention], object: D2.Condition, questions: [Q-D2-15], note: "contraindication scope and adverse-effect phenotypes are Conditions (conditionKind PHENOTYPE/DISEASE); answers D5 OQ-D5-03. Their population scope is D5's qualifier, never a D2 context" }
+  - { predicate: EVENT_ABOUT, registeredBy: D13, subjects: [D13.Event], object: D2.Condition, questions: [Q-D2-27] }
+  - { predicate: MEDIATES_TARGET, registeredBy: D2, subjects: [D2.Mechanism], object: D5.Target, questions: [Q-D2-10], note: "accepted by D5 (OQ-D5-37, D5 10-seams predicateSeams)" }
+  - { predicate: DEVELOPS_THERAPY_TARGETING, registeredBy: D2, subjects: [D7.Organization], objects: [D2.Mechanism, D2.MolecularEntity], questions: [Q-D2-17] }
+
+sharedVocabularies:
+  - { name: targets, ref: "packets/D5/vocab-targets.yaml@0.2.1", use: "object of predicate MEDIATES_TARGET (Q-D2-10; accepted by D5, OQ-D5-37); D5 Target OPERATIONALIZED_BY → D2.Outcome (D5 TargetMeasure)" }
+  - { name: frontiers, ref: "packets/D13/vocab-frontiers.yaml@0.2.0", use: "Q-D2-27 path Frontier ← ON_FRONTIER − Study → arm → context; frontier `scope.anchors.mechanisms` names map to Mechanism keys by curation (no edge, D13 rule)" }
+  - { name: identifier-schemes, ref: "packets/K/identifier-schemes.yaml", use: "REACTOME, GO, UNIPROT, HGNC, NCBI_GENE, ENSEMBL_GENE, MONDO, HPO, ICD10CM, SNOMEDCT, MESH, WIKIDATA; CHEMBL (compound and target ids, one namespace), WIKIPATHWAYS, ORPHANET, OMIM, EFO, KEGG_PATHWAY (all present in identifier-schemes v2 as status requested; CHEMBL_TARGET folded into CHEMBL)" }
+  - { name: kernel-types, ref: "packets/K/04-schema-proposal.graphql (A1)", use: "enum BasisKind on MechanismProjectionProperties.bestBasis; AssertedRecordedProperties as the base of MechanismReferenceProperties; DerivedEdgeProperties as the base of MechanismProjectionProperties (allowlisted; superset base requested, 11 item 1); enum PrivacyClass (Entity field)" }
+  - { name: d3-enums, ref: "packets/D3/04-schema-proposal.graphql (A4)", use: "SexScope (MechanismEvidenceContext.sexScope), AdministrationRoute (.route), QuantityBasis (.exposureBasis); D2 requests IN_MEDIUM, INTRAPERITONEAL and MEDIUM_CONCENTRATION (11 item 30)" }
+  - { name: compartment-ontology-ids, ref: "UBERON / CL / Cellosaurus CURIEs (value convention shared with D4 Metric.systemOntologyId and AssayVersion.specimenOntologyIds)", use: "Q-D2-03 / Q-D2-04 compartment equality check across D2 contexts and D4 metrics" }
+  - { name: ModelOrganism, ref: "D2 enum (offered to D3 and D4 as the shared organism vocabulary; D2 owns)", use: "organism filter on contexts (CQ-MX-03, Q-D2-13, Q-D2-20)" }

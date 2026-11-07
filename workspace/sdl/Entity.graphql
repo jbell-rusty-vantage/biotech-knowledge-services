@@ -1,0 +1,17 @@
+"""
+Every node type of every module implements Entity and lists these fields verbatim (GraphQL requires the listing;
+a module never changes their type, nullability or directives). `uid` (`hu:<token>:<opaque>`) is identity;
+`id` is the opaque segment; `name` is presentation only. `lastWriterRunId` is the Mission Control run id of the
+last intent that wrote the node (replaces `mongoResearchRunId`); authoritative lineage is WAS_GENERATED_BY an
+Activity with that `runId`. `createdAt`/`updatedAt` are executor-set (updatedAt is the precondition clock).
+Target of Activity.generated (WAS_GENERATED_BY). Questions: Q-K-03, Q-K-04, Q-K-05.
+"""
+interface Entity @query(aggregate: false) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+}

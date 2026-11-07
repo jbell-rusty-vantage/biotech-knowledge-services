@@ -1,0 +1,343 @@
+# ---- fragment D9 ----
+# Module D9 — sources, media and discourse: the editorial containers in which people say things, and the retrieval
+# structure (chunks) over captured text. Model stage, agent A8, 2026-10-08; adversarial review 2026-10-08 (OPERATED_BY and
+# REPUBLISHES demoted to predicate-only Assertions, ChannelOperator union and Chunk.recordedTo removed, question lists
+# trimmed to the 03 patterns that traverse each edge). Kernel pattern: packets/K/09-reasoning.md ("Kernel pattern for
+# subject, object, identifier and mention edges", published 2026-10-08, A1).
+#
+# What D9 does NOT declare (kernel records, A1's ownership map): Claim; claim occurrences and recommendations
+# (Assertion with assertionKind CLAIM, stored label ClaimOccurrence, speechAct RECOMMENDS); retelling-fidelity,
+# conflict-relevance and source-authority judgments (kernel Assessment kinds RETELLING_FIDELITY, CONFLICT_RELEVANCE,
+# SOURCE_AUTHORITY); Mention; Source / SourceSnapshot / SourceLocator; any stored RECOMMENDS edge (00-DIRECTIVE 3.9:
+# derived only; none is declared, see 09-reasoning.md). Person, Organization and Brand are D7 (10-seams.yaml).
+#
+# Rules this file follows: every node type implements Entity (and Subjectable when an assertion, identifier,
+# assessment or asserter can point at it) and lists the 7 Entity fields verbatim; @query(aggregate: false);
+# @mutation(operations: []) (the executor is the only writer); every @relationship has aggregate: false, declared
+# nestedOperations and @filterable(byValue: true, byAggregate: false); derived edges are read-only. Edges whose stored
+# direction starts at a kernel node (RENDITION_OF from Source, OCCURS_IN from Assertion) are declared here with
+# direction IN. Structural edges to existing kernel records use [CONNECT] (kernel practice; 11-open-questions.md).
+
+# =====================================================================================================
+# Enums (controlled vocabularies owned by D9)
+# =====================================================================================================
+
+"Kind of editorial container. An online community is a FORUM; a handle on any platform (named or pseudonymous) is an ACCOUNT."
+enum ChannelKind {
+  "Podcast or video series published as numbered or dated works (Huberman Lab, Lifespan)."
+  SHOW
+  "A video platform channel that is not organized as one show."
+  VIDEO_CHANNEL
+  NEWSLETTER
+  "A blog, personal site or company education site that publishes articles and protocol pages."
+  BLOG_OR_SITE
+  NEWS_OUTLET
+  "A platform account or handle (X, Instagram, TikTok, a forum member). Its operator may be unknown (isPseudonymous)."
+  ACCOUNT
+  "A discussion community: web forum, subreddit, Discord server."
+  FORUM
+  "The media channel of a recurring meeting (conference talk recordings)."
+  EVENT_SERIES
+}
+
+"Distribution platform of a channel (replaces the pinned Platform node)."
+enum MediaPlatform {
+  RSS
+  APPLE_PODCASTS
+  SPOTIFY
+  YOUTUBE
+  SUBSTACK
+  X
+  INSTAGRAM
+  TIKTOK
+  FACEBOOK
+  LINKEDIN
+  REDDIT
+  DISCORD
+  WEB_FORUM
+  WEB
+  OTHER
+}
+
+"Kind of media work. Scholarly works (articles, preprints, notices) are D3 Publications, not media works."
+enum WorkKind {
+  PODCAST_EPISODE
+  VIDEO
+  LIVESTREAM
+  TALK_RECORDING
+  NEWSLETTER_ISSUE
+  ARTICLE
+  "A protocol, product-education or self-disclosure page that is quoted as a work."
+  WEB_PAGE
+  PRESS_RELEASE
+  SOCIAL_POST
+  FORUM_THREAD
+  BOOK
+  "A still image, chart or figure tracked as a work so its reuse across sources is visible (absorbs MediaAsset)."
+  IMAGE
+  OTHER
+}
+
+"How a work re-publishes an earlier one (the link to the original is a predicate-only REPUBLISHES Assertion); null on an original."
+enum RepublicationKind {
+  RECUT
+  CLIP
+  REPOST
+  REUPLOAD
+  COMPILATION
+  TRANSLATION
+}
+
+"How an image or text was produced, as stated by the source (Q-D9-17); never a quality judgment."
+enum GenerationMode {
+  AUTHORED_OR_CAPTURED
+  AI_GENERATED
+  AI_ASSISTED
+  UNKNOWN
+}
+
+"Role of a person in a media work (APPEARS_IN)."
+enum AppearanceRole {
+  HOST
+  CO_HOST
+  GUEST
+  INTERVIEWER
+  PANELIST
+  PRESENTER
+  MODERATOR
+  AUTHOR
+  "Reads a sponsor segment or narration without being host or guest."
+  READER
+}
+
+"Where the text of a chunk came from; decides how far a quote from it can be trusted before verification."
+enum TextBasis {
+  PUBLISHER_TRANSCRIPT
+  PUBLISHER_CAPTIONS
+  AUTO_CAPTIONS
+  ASR
+  OCR
+  HTML_EXTRACT
+  PDF_TEXT_LAYER
+  JATS_XML
+  API_TEXT
+  MANUAL
+}
+
+# =====================================================================================================
+# Edge-property type (D9 specialization of kernel AssertedRecordedProperties; base fields verbatim + role)
+# =====================================================================================================
+
+"""
+APPEARS_IN episode, recorded time only: the kernel AssertedRecordedProperties fields verbatim and in order (executor-set,
+one authorizing Assertion with predicate APPEARS_IN), then the one qualifier a question filters on: the appearance role
+(host vs guest decides whose interests a sponsor read touches, CQ-CL-08; AUTHOR / PRESENTER feed Q-D9-16 and Q-D9-18).
+Valid time is not on the edge (00-DIRECTIVE rule 9, kernel M10): the time of an appearance is the work's publishedAt and
+any stated time stays on the authorizing Assertion. The name as credited is wording, so it stays in the Assertion's
+qualifiers (`credited-name:<verbatim>`, kernel rule M11.3). Superset rule: kernel 09-reasoning.md "Domain-local
+edge-property types" (model stage; resolves 11-open-questions D7-3).
+"""
+type AppearanceEdgeProperties @relationshipProperties {
+  relationshipUid: String!
+  assertionUid: String!
+  recordedFrom: DateTime!
+  recordedTo: DateTime
+  lastWriterRunId: String
+  appearanceRole: AppearanceRole!
+}
+
+# =====================================================================================================
+# Union (D7 seam target; 2 members)
+# =====================================================================================================
+
+"Who sponsors a work: the legal organization when the read or note names it, else the brand it names ('AG1', 'LMNT')."
+union ContentSponsor = Organization | Brand
+
+# =====================================================================================================
+# Node types
+# =====================================================================================================
+
+"""
+Purpose: an editorial container that publishes works over time — a podcast show, a video channel, a newsletter, a
+site, a forum, or an account/handle on a platform (named or pseudonymous). It is what PUBLISHES works, where "the
+channel's" financial interest (CQ-CL-05) attaches through its operators (predicate-only OPERATED_BY Assertions, subject
+Channel, object D7 Person or Organization, valid time on the Assertion), what a pseudonymous asserter is (channelKind
+ACCOUNT, isPseudonymous; admitted by the kernel ASSERTED_BY contract; D7 holds no handles), and the unit of influence and
+coverage questions. Absorbs the pinned Platform (→ `platform`), Series (→ channelKind SHOW; sub-series such as
+"Essentials" are works with republicationKind), Community-online (→ channelKind FORUM), ON_PLATFORM (→ `platform`) and
+HOSTS_CHANNEL / OPERATES_CHANNEL / SERVES_ON_CHANNEL (→ the OPERATED_BY predicate; host role is APPEARS_IN HOST per work).
+Identity rule: (platform, platformAccountId) when the platform issues one (YouTube channel id, Apple collectionId,
+Substack subdomain, X handle id, forum member id); else the normalized feed URL (RSS) or home URL. A show carried on
+several platforms is one Channel per platform account only when a question separates them; by default one Channel
+per show with its feed as identity and platform ids attached as Identifiers. Identifiers attach through the kernel.
+uid token: `channel` (hu:channel:<opaque>).
+Questions: CQ-CL-05, CQ-CL-07, Q-D9-11, Q-D9-12, Q-D9-14, Q-D9-19.
+"""
+type Channel implements Entity & Subjectable
+  @node(labels: ["Channel", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  "Display name of the show, channel, publication, forum or handle."
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  channelKind: ChannelKind!
+  platform: MediaPlatform!
+  "Platform-issued account or collection id (YouTube channel id, Apple collectionId, forum member id)."
+  platformAccountId: String
+  "Handle as displayed (@bryan_johnson, Hermuller); presentation and lookup, never identity across platforms."
+  handle: String
+  "Normalized RSS/Atom feed URL when the channel has one (joins to the feed's kernel Source.canonicalUri)."
+  feedUrl: String
+  "Home page or profile URL."
+  homeUrl: String
+  "True when no publicly identified operator stands behind an ACCOUNT (a forum handle). A resolution to a Person is a kernel RESOLUTION Assessment, never a merge."
+  isPseudonymous: Boolean
+  "BCP 47 language tag of the channel's works."
+  language: String
+}
+
+"""
+Purpose: one editorial work — a podcast episode, video, talk recording, newsletter issue, article, protocol page, social
+post, forum thread, book or image — independent of the renditions it is distributed in. It is the container every claim
+occurrence OCCURS_IN (who said it where, CQ-CL-01), the thing sponsors are read in (CONTENT_SPONSORED_BY, per observation
+window), the unit of re-cuts and clips (republicationKind; the link to the original is a predicate-only REPUBLISHES
+Assertion, Q-D9-07), and the
+join between renditions (kernel Sources: publisher page, YouTube video, RSS enclosure, Spotify page, archive copy) whose
+wording, duration and sponsor reads diverge. Absorbs pinned Episode, EpisodeSegment (→ locators + segment qualifier),
+MediaAsset (→ workKind IMAGE), MediaVariant (→ kernel Source/SourceSnapshot) and MediaRightsRecord (→ rights
+properties). Scholarly publications are D3's.
+Identity rule: (channel, publisher item key): the RSS guid of the item in the channel's own feed when one exists, else
+the platform item id (YouTube video id, X post id, Substack post id, forum topic id), else the normalized canonical page
+URL; a re-cut, clip or repost is a new work (republicationKind set, REPUBLISHES Assertion to the original), never a merge. Identifiers (PODCAST_GUID,
+YOUTUBE_VIDEO, DOI of a book chapter, ISBN) attach through the kernel.
+uid token: `media-work` (hu:media-work:<opaque>).
+Questions: CQ-CL-01, CQ-CL-05, CQ-CL-06, CQ-CL-08, CQ-PV-02, Q-D9-01, Q-D9-02, Q-D9-04, Q-D9-06, Q-D9-07, Q-D9-08, Q-D9-10,
+Q-D9-11, Q-D9-12, Q-D9-16, Q-D9-17, Q-D9-18, Q-D9-21, Q-D9-23.
+"""
+type MediaWork implements Entity & Subjectable
+  @node(labels: ["MediaWork", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  "Title as published by the channel."
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  workKind: WorkKind!
+  "Issuer's first publication time of this work (RSS pubDate, upload date, post date, byline date)."
+  publishedAt: DateTime
+  publishedAtPrecision: TimePrecision
+  "Set when this work re-publishes another (Essentials re-cut, clip, repost); null on an original."
+  republicationKind: RepublicationKind
+  "Publisher's own page for the work (show-notes page), when it has one."
+  canonicalUrl: String
+  "Duration in seconds as declared by the publisher for its primary rendition (renditions differ; see 11-open-questions.md)."
+  durationSeconds: Int
+  episodeNumber: Int
+  seasonNumber: Int
+  "BCP 47 language tag."
+  language: String
+  "IMAGE and AI-touched works: how the source says it was produced ('made with ChatGPT')."
+  generationMode: GenerationMode
+  "Rights or licence statement as captured beside the work ('Figure from the Nature paper', CC BY 4.0); verbatim, not a legal finding."
+  rightsStatementVerbatim: String
+  """class: structural; cardinality: one_or_more (the channel(s) whose feed or listing carries the work); questions: CQ-CL-05, Q-D9-12."""
+  channels: [Channel!]!
+    @relationship(type: "PUBLISHES", direction: IN, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: many (kernel Source → this work; one Source per rendition endpoint: publisher page, video, audio enclosure, platform page, archive copy); questions: CQ-CL-01 (TRACE), CQ-CL-05, CQ-PV-02, Q-D9-02, Q-D9-06, Q-D9-07, Q-D9-16, Q-D9-17, Q-D9-18."""
+  renditions: [Source!]!
+    @relationship(type: "RENDITION_OF", direction: IN, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: many (kernel claim occurrences, Assertion assertionKind CLAIM, written from the capture the occurrence was extracted from, the work in which the act of asserting was first published; corrected only by supersession; exactly_one container per occurrence; seam K.Assertion → D9.MediaWork, read by K Q-K-09); questions: CQ-CL-01, CQ-CL-02, CQ-CL-05, CQ-CL-06, CQ-CL-08, CQ-CM-04, Q-D9-01, Q-D9-02, Q-D9-04, Q-D9-07, Q-D9-08, Q-D9-09, Q-D9-10, Q-D9-11, Q-D9-13, Q-D9-18, Q-D9-19, Q-D9-21, Q-D9-23."""
+  occurrences: [Assertion!]!
+    @relationship(type: "OCCURS_IN", direction: IN, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (D7 Person → this work, role on the edge; one episode per authorizing Assertion, recorded time only); questions: CQ-CL-08, Q-D9-16, Q-D9-18."""
+  appearances: [Person!]!
+    @relationship(type: "APPEARS_IN", direction: IN, properties: "AppearanceEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (bitemporal episode on the work: valid time separates the sponsors of the original publication from those of later re-cut renditions; which rendition carried the read is the authorizing Assertion's locator or its `rendition:<source uid>` qualifier, a kernel-registered prefix); questions: CQ-CL-05, CQ-CL-08, Q-D9-06."""
+  sponsors: [ContentSponsor!]!
+    @relationship(type: "CONTENT_SPONSORED_BY", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+"""
+Purpose: a derived retrieval unit — a span of the text extracted from one captured SourceSnapshot (publisher transcript,
+caption track, ASR, OCR, HTML or PDF text) with its embedding — used only to find text for a question (vector or
+fulltext index) and to hop to the located assertions it covers (COVERS_LOCATOR) and the entities it mentions
+(MENTIONS). Never evidence, never a locator, never a mutation input (00-DIRECTIVE 3.8). Absorbs the pinned
+DocumentTextVersion (→ textBasis, textVersionHash, extractorVersion, textReviewNote) and Segmentation
+(→ chunkerVersion) as properties, and the pinned NEXT_CHUNK (→ chunkIndex), HAS_CHUNK / FROM_TEXT_VERSION /
+TEXT_OF_SNAPSHOT (→ CHUNK_OF). The embedding vector is a store property read by the vector index, not a GraphQL field.
+Identity rule: (snapshot, textVersionHash, chunkerVersion, chunkIndex). Chunks are projection output (kernel rule for
+derived structure): a new chunkerVersion or text version makes the projection Activity write new chunks and delete the
+old ones; nothing is closed or edited, so there is no recordedTo. uid token: `chunk` (hu:chunk:<opaque>).
+Questions: Q-D9-20, Q-D9-16, CQ-PV-04.
+"""
+type Chunk implements Entity
+  @node(labels: ["Chunk"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "The chunk text (normalized per normalizationVersion)."
+  text: String!
+  "0-based order within its text version (replaces NEXT_CHUNK)."
+  chunkIndex: Int!
+  "[startOffset, endOffset) in the text version, in the offset basis of normalizationVersion."
+  startOffset: Int!
+  endOffset: Int!
+  "Media time on the rendition's own timeline when the text carries cue times."
+  mediaStartSeconds: Float
+  mediaEndSeconds: Float
+  "Speaker labels printed inside the span, in order (what the source printed, not attribution)."
+  speakerLabelsInSource: [String!]
+  textBasis: TextBasis!
+  "sha256:<hex> of the full extracted text the offsets refer to (the pinned DocumentTextVersion identity)."
+  textVersionHash: String!
+  "Extractor and version that produced the text (e.g. firecrawl-markdown/1.23, whisper-large-v3, tesseract/5)."
+  extractorVersion: String!
+  "Text normalization applied before offsets were counted (NFC, NBSP and thin-space handling)."
+  normalizationVersion: String!
+  "Chunking configuration digest or name@version (the pinned Segmentation)."
+  chunkerVersion: String!
+  "Embedding model of the stored vector (e.g. text-embedding-3-small@1536)."
+  embeddingModel: String
+  tokenCount: Int
+  "Publisher caveat on the text as captured ('This transcript is currently under human review and may contain errors.')."
+  textReviewNote: String
+  "Denormalized filter keys for in-index vector filtering (written by the chunker from the CHUNK_OF → Source → RENDITION_OF → PUBLISHES path, and re-stamped whenever a RENDITION_OF or PUBLISHES supersession touches the snapshot's Source)."
+  workUid: String
+  channelUid: String
+  publishedAt: DateTime
+  language: String
+  """class: structural; cardinality: exactly_one (the captured snapshot whose text this chunk spans); questions: Q-D9-20, Q-D9-16."""
+  snapshot: [SourceSnapshot!]!
+    @relationship(type: "CHUNK_OF", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: derived; cardinality: many (projection span-overlap/v1 over chunk and locator offsets in the same snapshot and text version; read-only, regenerable, never evidence); questions: Q-D9-20, CQ-PV-04."""
+  locators: [SourceLocator!]!
+    @relationship(type: "COVERS_LOCATOR", direction: OUT, properties: "DerivedEdgeProperties", nestedOperations: [], aggregate: false)
+    @settable(onCreate: false, onUpdate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: derived; cardinality: many (projection entity-link/vN; kernel MENTIONS type with kernel meaning; read-only, regenerable, never evidence); questions: Q-D9-20."""
+  mentions: [Subjectable!]!
+    @relationship(type: "MENTIONS", direction: OUT, properties: "DerivedEdgeProperties", nestedOperations: [], aggregate: false)
+    @settable(onCreate: false, onUpdate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

@@ -1,0 +1,362 @@
+version: 1
+module: D8
+# MODEL stage, A7, 2026-10-08. 11 relationship types, 29 from→to pairs (union members counted), widest union 5.
+# Every edge is asserted (one authorizing kernel Assertion per episode). Episodes (valid time declared,
+# AssertedEdgeProperties) matter on STATUS_OF, COVERS, ASSIGNED_TO and LICENSED_TO; every other edge links two immutable
+# records and carries recorded time only (kernel AssertedRecordedProperties, K change 1 / M10, adopted in the check stage
+# 2026-10-08; any valid time the source states stays on the authorizing Assertion). Tool ids in populatedBy are rows of
+# 08-sources-and-tools.md.
+# Adversarial-review revision (2026-10-08): RESULT_FOR -> QUALITY_RESULT_FOR (D3 declares RESULT_FOR with another meaning;
+# K: relationship names are unique to a module); D4.Device replaces Patent in CONCERNS' record-topic union and joins
+# STATUS_OF; Organization leaves COVERS; every `questions` list now names only questions whose 03 pattern traverses the edge.
+relationships:
+  - type: ISSUED_BY
+    class: asserted
+    from: [RegulatoryRecord, QualityResult, CertificationListing]
+    to: D7.Organization
+    edgeProperties: AssertedRecordedProperties
+    cardinality: exactly_one per RegulatoryRecord and CertificationListing; zero_or_one per QualityResult (a COA can name no issuer, OQ-D8-22)
+    temporal: recorded-only
+    questions: [CQ-MF-02, Q-D8-02, CQ-PF-03, Q-D8-05, Q-D8-06, Q-D8-12, Q-D8-22, CQ-AX-19]
+    pattern: 03#Q-D8-02
+    populatedBy: [tool:fda-warning-letters, tool:openfda-food-enforcement, tool:fda-gras-inventory, tool:regulations-gov-docket, tool:eurlex-html, tool:hc-lnhpd-api, tool:cafc-opinions, tool:coa-pdf-capture, tool:nsf-listings, tool:informed-sport]
+    fixture: 07-fixtures/imu-tek-warning-letter-recall
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      One accountable issuer per record (regulator, court, laboratory, certifier). Replaces the pinned RegulatoryAgency and
+      TestingLaboratory node types and COA_ISSUED_BY / PERFORMED_BY_LAB / CONDUCTED_BY. A string issuer code would filter but
+      not join: Q-D8-06 must reach the tester's financial interest (D7) and Q-D8-22 dedupes on the issuer's uid.
+  - type: ADDRESSED_TO
+    class: asserted
+    from: RegulatoryRecord
+    to: D7.Organization
+    edgeProperties: AssertedRecordedProperties
+    cardinality: one_or_more
+    temporal: recorded-only
+    questions: [Q-D8-02, Q-D8-03, Q-D8-17, CQ-EC-01, CQ-MF-06]
+    pattern: 03#Q-D8-03
+    populatedBy: [tool:fda-warning-letters, tool:openfda-food-enforcement, tool:regulations-gov-docket, tool:fda-gras-inventory, tool:cafc-opinions, tool:eurlex-html]
+    fixture: 07-fixtures/imu-tek-warning-letter-recall
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      The party the act is addressed to (notifier, applicant, petitioner, licence holder, warned or recalling firm, litigant).
+      Kept apart from CONCERNS because "which firms received warning letters" (Q-D8-02) and the firm's enforcement chain
+      (Q-D8-03) filter on the addressee without returning products; Organization as a CONCERNS member would mix the two
+      readings. (K change 2 would allow a role property on one edge; two types on one recorded-only base need no extra
+      edge-property type.) Replaces SUBMITTED_BY.
+  - type: CONCERNS
+    class: asserted
+    from: [RegulatoryRecord, Patent]
+    to: [D1.ChemicalSubstance, D1.IngredientMaterial, D6.Product, Lot, D4.Device]
+    edgeProperties: AssertedRecordedProperties
+    cardinality: many
+    temporal: recorded-only
+    questions: [Q-D8-02, Q-D8-04, Q-D8-10, Q-D8-11, Q-D8-13, Q-D8-16, Q-D8-17, Q-D8-18, Q-D8-19, Q-D8-23, CQ-EC-01]
+    pattern: 03#Q-D8-04
+    populatedBy: [tool:openfda-food-enforcement, tool:fda-warning-letters, tool:regulations-gov-docket, tool:fda-gras-inventory, tool:eurlex-html, tool:hc-lnhpd-api, tool:cafc-opinions, tool:google-patents]
+    fixture: 07-fixtures/imu-tek-warning-letter-recall
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      What a record or a patent is about. RegulatoryRecord → union RegulatoryRecordTopic (5: substance, ingredient material,
+      product, lot, D4 device); Patent → union PatentTopic (2: substance, ingredient material), topical only — claim coverage is an
+      APPLICABILITY assessment. One type for both because the meaning ("is about") is the same; replaces SUBMISSION_ABOUT,
+      INSPECTED_FACILITY's product side, the recall→product/lot links and LICENSE_COVERS' topical half. Device replaced Patent
+      in the record-topic union (adversarial review): the only patent question (Q-D8-12) reaches the court record through
+      STATUS_OF / STATUS_FROM, while D4's value-1 harm question Q-D4-08 (mirrored here as Q-D8-23) had no path. Device
+      fixture: D4's 07-fixtures/noninvasive-glucose-cgm-recall (openFDA device recall Z-1020-2026; FDA safety communication
+      2024-02-21); D8's own CONCERNS fixture stays imu-tek-warning-letter-recall.
+  - type: STATUS_OF
+    class: asserted
+    from: LegalStatus
+    to: [D1.ChemicalSubstance, D1.IngredientMaterial, D6.Product, Patent, D4.Device]
+    edgeProperties: AssertedEdgeProperties
+    cardinality: exactly_one subject per status; many episodes
+    temporal: episode
+    questions: [CQ-MF-02, Q-D8-01, CQ-AX-23, CQ-PF-04, Q-D8-12, Q-D8-13, Q-D8-14, Q-D8-18, Q-D8-20, Q-D8-23]
+    pattern: 03#Q-D8-01
+    populatedBy: [tool:regulations-gov-docket, tool:fda-gras-inventory, tool:eurlex-html, tool:hc-lnhpd-api, tool:openfda-drugsfda, tool:cafc-opinions]
+    fixture: 07-fixtures/nmn-us-exclusion-reversal
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      The as-of edge. Standing changes (NMN excluded 2022-10-11 → not excluded 2025-09-29; EU data protection ended
+      2025-02-20; claims held invalid 2023-02-13), and "what would the graph have said on date D as recorded then" (Q-D8-01)
+      needs valid and recorded time on this edge. Replaces HAS_REGULATORY_STATUS, STATUS_OF (W13) and IP_STATUS_OF. Device
+      member (D4): a 510(k) clearance or De Novo / PMA authorisation as of date D (Q-D8-23, D4 Q-D4-10).
+  - type: STATUS_FROM
+    class: asserted
+    from: LegalStatus
+    to: RegulatoryRecord
+    edgeProperties: AssertedRecordedProperties
+    cardinality: one_or_more
+    temporal: recorded-only
+    questions: [CQ-MF-02, Q-D8-01, CQ-AX-23, CQ-PF-04, Q-D8-12, Q-D8-20, Q-D8-23]
+    pattern: 03#CQ-MF-02
+    populatedBy: [tool:regulations-gov-docket, tool:fda-gras-inventory, tool:eurlex-html, tool:hc-lnhpd-api, tool:cafc-opinions]
+    fixture: 07-fixtures/nmn-us-exclusion-reversal
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Which record established (or confirmed, or ended) a standing — "filing is not capability": Q-D8-20 asks whether the
+      latest record behind a status is a filing, an opinion or an act. Asserted rather than structural because reading a letter
+      as establishing a status is an interpretation the verifier must be able to check against the record's locator. Replaces
+      RESULTS_FROM_RESPONSE and SUBMISSION_HAS_RESPONSE.
+  - type: LOT_OF
+    class: asserted
+    from: Lot
+    to: [D6.Product, D6.ProductVariant]
+    edgeProperties: AssertedRecordedProperties
+    cardinality: exactly_one
+    temporal: recorded-only
+    questions: [Q-D8-04, CQ-AX-19, Q-D8-06, Q-D8-08, Q-D8-18]
+    pattern: 03#Q-D8-04
+    populatedBy: [tool:openfda-food-enforcement, tool:coa-pdf-capture, tool:nsf-listings, tool:informed-sport]
+    fixture: 07-fixtures/imu-tek-warning-letter-recall
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Lot is the join key across recalls, COAs, certifier tables and counterfeit reports; LOT_OF reaches the product, its
+      label claims (D6 formulation) and its brand. Variant when the source distinguishes it, else product (union of 2).
+      D6.Package is not a member (D6 OQ-D6-13 asks for it): a lot is a production batch packed into several sizes, and no D8
+      source scopes a lot to one package; package size stays in productDescriptionVerbatim / scopeVerbatim (OQ-D8-04).
+  - type: QUALITY_RESULT_FOR
+    class: asserted
+    from: QualityResult
+    to: [Lot, D6.Product]
+    edgeProperties: AssertedRecordedProperties
+    cardinality: exactly_one
+    temporal: recorded-only
+    questions: [CQ-AX-19, Q-D8-05, Q-D8-06, Q-D8-09, Q-D8-18, Q-D8-19]
+    pattern: 03#CQ-AX-19
+    populatedBy: [tool:coa-pdf-capture, tool:company-report-pdf, tool:europepmc-rest]
+    fixture: 07-fixtures/eurofins-coa-quantity-by-input
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      A result row is for a lot (COA, certifier batch) or, when the source names no lot (competitor surveys), for a product.
+      Replaces SAMPLE_FROM, TESTED_SAMPLE, PRODUCED_RESULT, INTERPRETS_TESTING_OF and SUMMARIZES_TESTING. Renamed from
+      RESULT_FOR (adversarial review): D3 declares RESULT_FOR (StudyResult → OutcomeDefinition, structural) and Neo4j
+      relationship-property indexes are per type, so one name would carry two property schemas (OQ-D8-30).
+  - type: MEASURES_ANALYTE
+    class: asserted
+    from: QualityResult
+    to: [D1.ChemicalSubstance, D1.IngredientMaterial, D1.Constituent]
+    edgeProperties: AssertedRecordedProperties
+    cardinality: zero_or_one
+    temporal: recorded-only
+    questions: [Q-D8-06, CQ-AX-19]
+    pattern: 03#Q-D8-06
+    populatedBy: [tool:coa-pdf-capture, tool:company-report-pdf, tool:europepmc-rest]
+    fixture: 07-fixtures/eurofins-coa-quantity-by-input
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      "Products containing X measured far below claim" (Q-D8-06) starts from the analyte, not from free text; analyteVerbatim
+      stays on the row. Union of 3 because COA rows name substances (lead, NMN), ingredient materials (root extract 450 mg)
+      and constituent classes (total withanolides).
+  - type: COVERS
+    class: asserted
+    from: CertificationListing
+    to: [D6.Product, D6.ProductVariant, Lot]
+    edgeProperties: AssertedEdgeProperties
+    cardinality: zero_or_more; many episodes
+    temporal: episode
+    questions: [CQ-PF-03, Q-D8-08, Q-D8-19]
+    pattern: 03#Q-D8-08
+    populatedBy: [tool:nsf-listings, tool:informed-sport, tool:firecrawl-change-tracking]
+    fixture: 07-fixtures/certification-listing-lot-scope
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Certifier pages change in place: a lot appears, a lot drops off, a listing lapses. The episode's valid time is the
+      observed coverage window; recorded time is when BellLabs saw it. Organization was dropped as a member (adversarial
+      review: no fixture, no fixtured question, and it overloaded "covers"): a facility-level listing keeps its facility in
+      scopeVerbatim and names the operator through predicate-only LISTING_COVERS_FACILITY_OF until Facility is promoted
+      (OQ-D8-03). Replaces COVERS (W12), HAS_CERTIFICATION_SCOPE, CERTIFIED_UNDER, PROGRAM_HAS_LISTING, CERTIFIES_RESULTS_FOR.
+  - type: ASSIGNED_TO
+    class: asserted
+    from: Patent
+    to: D7.Organization
+    edgeProperties: AssertedEdgeProperties
+    cardinality: one_or_more; many episodes
+    temporal: episode
+    questions: [Q-D8-10, Q-D8-11, CQ-EC-01]
+    pattern: 03#Q-D8-11
+    populatedBy: [tool:google-patents, tool:sec-edgar, tool:cafc-opinions]
+    fixture: 07-fixtures/us8197807-claims-held-invalid
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Who owns the right, and since when (assignments change). Kept split from LICENSED_TO for a measured size reason, not a
+      kernel limit (K change 2 now allows a domain-local edge-property type): one HOLDS_PATENT_RIGHT edge with a
+      PatentRightProperties superset (role, exclusive) printed +4,069 bytes and the same 309 input types against the current
+      kernel (09-reasoning), and no D8 question filters by exclusivity (Q-D8-11 returns it). Replaces ASSIGNED_PATENT.
+  - type: LICENSED_TO
+    class: asserted
+    from: Patent
+    to: D7.Organization
+    edgeProperties: AssertedEdgeProperties
+    cardinality: many; many episodes
+    temporal: episode
+    questions: [Q-D8-11, Q-D8-21, CQ-EC-01]
+    pattern: 03#Q-D8-11
+    populatedBy: [tool:sec-edgar, tool:cafc-opinions]
+    fixture: 07-fixtures/us8197807-claims-held-invalid
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Licences are granted and terminated; the episode is the licence's term, authorized by one Assertion whose qualifiers
+      carry exclusivity, field of use and territory as disclosed. A change of terms that neither starts nor ends the licence
+      (a royalty waiver after litigation) is a dated literal Assertion D8.LICENCE_TERMS_AMENDED on the patent, never a new
+      episode whose validFrom would read as the licence start (fixture us8197807 p05). Replaces the PatentLicense node,
+      LICENSES_PATENT and GRANTS_PATENT_LICENSE.
+predicateOnly:
+  - predicate: REVISES_DETERMINATION_OF
+    use: RegulatoryRecord → RegulatoryRecord (the 2025 citizen-petition response revises the 2022 NDI determinations)
+    promoteWhen: Q-D8-01 needs record-to-record supersession chains that status episodes cannot show (more than one revising record per status)
+  - predicate: CITES_AS_EVIDENCE
+    use: RegulatoryRecord → D3 Study / RegulatoryRecord (FDA's NMN exclusion cites MIB-626 registrations)
+    promoteWhen: Q-D8-15 becomes value 1 and is asked across many records ("which trials did FDA rely on for all exclusions")
+  - predicate: CHARACTERIZES_REGULATORY_RECORD
+    use: company claim occurrence (kernel Assertion CLAIM) whose object is a RegulatoryRecord; weighed by a RETELLING_FIDELITY assessment
+    promoteWhen: CQ-MF-03 is asked as a ranking across many companies (then a D10 derived projection, not a stored edge)
+  - predicate: MANUFACTURES
+    use: D7.Organization → D6.Product / D1.IngredientMaterial (valid time on the Assertion)
+    promoteWhen: CQ-MF-01 must traverse in GraphQL; D8 owns no type at either end, so D7 or D6 would declare it (see 11-open-questions)
+  - predicate: CONTRACT_MANUFACTURES_FOR
+    use: D7.Organization → D7.Organization (CMO for brand), qualifier product
+    promoteWhen: same as MANUFACTURES
+  - predicate: SUPPLIES_INGREDIENT
+    use: D7.Organization → D1.IngredientMaterial / D7.Organization
+    promoteWhen: Q-D8-10 supply-concentration questions run across many ingredients
+  - predicate: EXCLUSIVE_SUPPLIER_OF
+    use: D7.Organization (supplier) → D1.IngredientMaterial (Grace is the exclusive supplier of NR; the buyer, Niagen, is a qualifier), valid time = supply term
+    promoteWhen: Q-D8-10 / Q-D8-13 need "exclusivity ends" across many ingredients
+  - predicate: DISTRIBUTES
+    use: D7.Organization → D6.Product
+    promoteWhen: CQ-MF-01 distributor questions (D6 owns commerce roles)
+  - predicate: REPORTED_COUNTERFEIT
+    use: reporter Organization asserts subject Lot or D6.Product (indicators in qualifiers)
+    promoteWhen: Q-D8-07 becomes value 1 or counterfeit reports become a structured feed
+  - predicate: MARKED_WITH_PATENT
+    use: D6.Product → Patent (patent-marking pages)
+    promoteWhen: Q-D8-14 becomes value ≤ 2 and marking pages are captured routinely
+  - predicate: CLAIMS_CGMP_COMPLIANCE
+    use: D7.Organization or D6.Product self-claim, weighed by a QUALITY assessment (CQ-MF-06)
+    promoteWhen: never as a typed edge (self-claims are claim occurrences)
+  - predicate: HAS_CAPABILITY_STAGE
+    use: D7.Organization → D1.IngredientMaterial with literal stage (OPERATING, PILOT, PLANNED, SUSPENDED, DISCONTINUED) and valid time
+    promoteWhen: CQ-MF-04 rises above value 3 and a source states capacity with units
+  - predicate: COMMISSIONED_TEST
+    use: D7.Organization (brand) → QualityResult (who paid for the test, when the source says)
+    promoteWhen: Q-D8-06 independence questions need it beyond the tester's D7 financial interests
+  - predicate: INTENDED_FOR_TARGET
+    use: D5 shared predicate; D8 reads it (Q-D8-18) and maps certifier category labels to targets through it
+    promoteWhen: "owned by D5 (seam rule: Assertion.predicate only)"
+  # Added in the adversarial-review revision (2026-10-08). K 09: the assembled predicateOnly lists are the predicate registry.
+  - predicate: RATES_CLAIM
+    use: >-
+      kernel convention (K item 9 / M4), D8 content: a regulator's finding on a claim (warning letter "these claims establish
+      that the product is a drug") is an Assertion RATES_CLAIM asserted by the regulator, subject the kernel Claim, object the
+      RegulatoryRecord that carries the finding, rating in valueString (e.g. DRUG_CLAIM). Read by Q-D8-16; fixture
+      imu-tek-warning-letter-recall i17. Replaces the research-stage CITED_AS_DRUG_CLAIM.
+    promoteWhen: never as a D8 edge (kernel predicate)
+  - predicate: HAS_APPROVED_INDICATION
+    use: >-
+      regulator → indication: subject D6.Product or D1.ChemicalSubstance, object D2.Condition, asserter the regulator (FDA,
+      EMA), evidence the DRUG_APPLICATION_ACTION record or the approved label it cites; valid time = approval or label
+      version. Named for D5 (OQ-D5-22, Q-D5-16 approved vs off-label); D5 reads it beside its target statements.
+    promoteWhen: a question filters products by indication in GraphQL at value ≤ 2 (then D2 or D6 declares it; D8 owns neither end)
+  - predicate: ADJUDICATES_PATENT
+    use: RegulatoryRecord (COURT_DECISION / PTAB_DECISION) → Patent for holdings that establish no LegalStatus (infringement only); claim numbers in qualifiers
+    promoteWhen: a question at value ≤ 2 lists infringement holdings per patent (Patent left RegulatoryRecordTopic for D4.Device)
+  - predicate: LISTING_COVERS_FACILITY_OF
+    use: CertificationListing (coverageKind FACILITY, e.g. a GMP registration) → D7.Organization operating the facility; address in scopeVerbatim
+    promoteWhen: Facility is promoted (OQ-D8-03); then COVERS gains Facility
+  # Literal (property-provenance) predicates, convention D8.<FIELD>: the subject is a D8 node, the value is a literal, the
+  # locator is the span that states it (OQ-D8-12). Never promoted to edges; they become node properties or stay literals.
+  - predicate: D8.INSPECTION_WINDOW
+    use: RegulatoryRecord (warning letter) → literal start/end of the inspection it reports (Q-D8-03; fixture imu-tek i10)
+    promoteWhen: never (backs inspectionStartedAt / inspectionEndedAt)
+  - predicate: D8.FORM_483_ISSUED_AND_RESPONSE
+    use: RegulatoryRecord (warning letter) → literal 483 date and the firm's response date (Q-D8-03; imu-tek i11)
+    promoteWhen: an inspection becomes a D13 Event or a FORM_483 record is captured on its own (OQ-D8-18)
+  - predicate: D8.CGMP_FINDING
+    use: RegulatoryRecord → literal CFR citation and finding (CQ-MF-06; imu-tek i13, i14)
+    promoteWhen: CQ-MF-06 filters findings by CFR section at value ≤ 2 (then a list property)
+  - predicate: D8.RECALL_INITIATED_BY_FIRM
+    use: RegulatoryRecord (recall) → literal voluntary / mandated and initiation date (Q-D8-03; imu-tek i15)
+    promoteWhen: never (record property provenance)
+  - predicate: D8.RECALL_STATUS
+    use: RegulatoryRecord (recall) → literal status with the date it took effect (Q-D8-04; imu-tek i16)
+    promoteWhen: never (backs recallStatus / terminatedAt)
+  - predicate: D8.ISSUED_AT
+    use: RegulatoryRecord → literal date of record, with its basis (signature timestamp, docket postedDate) (Q-D8-01; nmn n19)
+    promoteWhen: never (backs issuedAt)
+  - predicate: D8.ISSUED_AT_AS_PRINTED
+    use: RegulatoryRecord → literal date as printed when it disagrees with the date of record ("September 29, 2029"; nmn n20)
+    promoteWhen: never
+  - predicate: D8.CITED_TRIAL_ID_AS_PARSED
+    use: RegulatoryRecord → literal identifier as a parser projection read it, kept to document a parser error (nmn n09, tool-log E6)
+    promoteWhen: never
+  - predicate: D8.ENTRY_INTO_FORCE_COMPUTED
+    use: RegulatoryRecord → literal date computed from the act's own rule (Article 4), kept beside the Annex's stated date (eu-nrcl e08, OQ-D8-27)
+    promoteWhen: never (basisKind CALCULATED)
+  - predicate: D8.LOT_EXPIRY_AS_PRINTED
+    use: Lot → literal expiry as printed when it does not parse to a day ("08/2027"; eurofins c15)
+    promoteWhen: never (backs Lot.expiresAt with month precision)
+  - predicate: D8.DISTRICT_COURT_INVALIDITY
+    use: Patent → literal lower-court holding and date as restated by the appellate opinion (Q-D8-12; us8197807 p14)
+    promoteWhen: the district-court opinion is captured as its own COURT_DECISION record
+  - predicate: D8.ORGANIZATION_RENAMED
+    use: D7.Organization → literal former name and effective date as a filing states it (us8197807 p15)
+    promoteWhen: owned by D7 (name episodes); D8 hands it over (OQ-D8-26)
+  - predicate: D8.LICENCE_TERMS_AMENDED
+    use: Patent → literal amendment of an existing licence's terms with its date (Supplemental Agreement 2024-11-27, royalty waiver; Q-D8-21; us8197807 p05)
+    promoteWhen: Q-D8-21 rises to value ≤ 2 and asks for terms as filters (then a licence node, 09 "twice the budget")
+deferred:
+  - type: SUPERSEDES_RECORD
+    reason: status episodes plus REVISES_DETERMINATION_OF (predicate) answer Q-D8-01; no question traverses record chains
+  - type: ADJUDICATES
+    reason: a decision establishes a LegalStatus (CLAIMS_HELD_INVALID with claimNumbers) that is STATUS_OF the patent and STATUS_FROM the decision; infringement-only holdings are predicate-only ADJUDICATES_PATENT. CONCERNS no longer reaches Patent (Device took the union slot)
+  - type: ACTION_AGAINST / ACTION_CONCERNS / RECORD_CONCERNS
+    reason: research-stage names; EnforcementAction folded into RegulatoryRecord, so ADDRESSED_TO and CONCERNS cover them
+  - type: HOLDS_IP_RIGHT / HOLDS_PATENT_RIGHT
+    reason: re-decided after K change 2 (domain-local edge-property types allowed); measured against the current kernel, one HOLDS_PATENT_RIGHT with PatentRightProperties (role, exclusive) printed +4,069 bytes and the same input count as ASSIGNED_TO + LICENSED_TO, and no D8 question filters by exclusivity; split kept
+  - type: TESTED_BY
+    reason: merged into ISSUED_BY (the laboratory that reported the row is its issuer)
+  - type: MANUFACTURES / CONTRACTS_MANUFACTURING / PERFORMS_PROCESS / HOSTS_PROCESS / INPUTS / OUTPUTS / PRODUCED_BY_PROCESS / USES_EQUIPMENT / USES_PLATFORM / HAS_STEP
+    reason: W11 process graph; no D8 question traverses a process; manufacturer roles are predicate-only (D8 owns no type at either end)
+  - type: CAPABILITY_FOR_MATERIAL / CAPABILITY_FOR_PROCESS / HAS_CAPABILITY_STATE
+    reason: CQ-MF-04 is value 3; HAS_CAPABILITY_STAGE predicate with valid time
+  - type: GOVERNED_BY_SPECIFICATION / VERSION_OF_SPECIFICATION / CRITERION_OF_SPECIFICATION / APPLIES_CRITERION / EVALUATED_AGAINST / MANUFACTURED_UNDER
+    reason: specifications are not nodes; the criterion printed beside a result is inline on QualityResult, a regulator's specification is text on its record
+  - type: SAMPLE_FROM / TESTED_SAMPLE / PRODUCED_RESULT / USED_METHOD / PERFORMED_BY_LAB / COA_ISSUED_BY / INTERPRETS_RESULT / INTERPRETS_TESTING_OF / SUMMARIZES_TESTING / SUPPORTED_BY / CERTIFIES_RESULTS_FOR
+    reason: W12 test chain collapsed into one QualityResult row (QUALITY_RESULT_FOR, MEASURES_ANALYTE, ISSUED_BY); SUPPORTED_BY is kernel HAS_EVIDENCE
+  - type: UNIT_FROM_LOT / MATCHES_COMMERCE_ITEM
+    reason: no public source for individual units; commerce matching is a D6 EQUIVALENCE assessment
+  - type: HAS_CERTIFICATION_SCOPE / CERTIFIED_UNDER / PROGRAM_HAS_LISTING
+    reason: programme and scope are properties of CertificationListing; coverage is COVERS
+  - type: FOLLOWS_PATHWAY / UNDER_PATHWAY / UNDER_LEGAL_BASIS / UNDER_LEGAL_BASIS_VERSION / HAS_PATHWAY_VERSION / HAS_REGULATORY_STEP / OVERSEES
+    reason: pathway is an enum, legal basis a citation string; no question traverses a pathway node
+  - type: SUBMITTED_BY / SUBMISSION_ABOUT / SUBMISSION_HAS_RESPONSE / SUPERSEDES_SUBMISSION / RESULTS_FROM_RESPONSE / HAS_REGULATORY_STATUS / CONDUCTED_BY / INSPECTED_FACILITY
+    reason: submission and response are both RegulatoryRecords (ADDRESSED_TO, CONCERNS, STATUS_FROM); inspections are reported by the warning letter (inspection window properties) or are INSPECTION_CLASSIFICATION records
+  - type: HAS_IDENTIFIER
+    reason: kernel relationship; D8 lists its schemes in 06-node-register.yaml
+  - type: FAMILY_HAS_APPLICATION / APPLICATION_GRANTED_AS / HAS_PATENT_CLAIM
+    reason: family id and publication type are Patent properties; claim text stays in the snapshot; claim numbers on LegalStatus
+  - type: ASSIGNED_PATENT / LICENSES_PATENT / GRANTS_PATENT_LICENSE / LICENSE_COVERS / IP_STATUS_OF
+    reason: replaced by ASSIGNED_TO, LICENSED_TO (episodes), CONCERNS (topical) and STATUS_OF (LegalStatus)
+  - type: OWNS_TRADEMARK / MARKETED_UNDER_MARK
+    reason: Trademark deferred (no question at value ≤ 2; USPTO TSDR needs an API key); brand names are D6/D7 identifiers
+  - type: DOCUMENTED_BY_RECORD
+    reason: declared by D13 on Event (Event.regulatoryRecords, typed, AssertedRecordedProperties, since D13's adversarial-review pass); D8 declares no inverse because no D8 question traverses from an event
+  - type: RESULT_FOR
+    reason: renamed QUALITY_RESULT_FOR (D3 owns RESULT_FOR with another meaning and edge-property type)
+  - type: CITED_AS_DRUG_CLAIM / MAKES_CLAIM (predicates)
+    reason: replaced by the kernel conventions — a regulator's finding is RATES_CLAIM by the regulator; a quoted firm claim captured only inside the regulator's letter is a CLAIM occurrence asserted by the regulator as a retelling (basisKind CITED_FROM_PRIOR_WORK) until the firm's own page is captured
+  - type: CONCERNS → D7.Organization / COVERS → D7.Organization / LOT_OF → D6.Package / COVERS → D6.Package / CONCERNS → D9.MediaWork / CONCERNS → D4.LabTest
+    reason: union members considered and not added (addressee is ADDRESSED_TO; facility listing is predicate-only until Facility; Package not a lot or listing scope in any D8 source; MediaWork and LabTest would exceed the 5-member union or have no D8 question — D9 keeps CITES_CONTENT, D4 reaches CLIA/LDT standing through the laboratory Organization)

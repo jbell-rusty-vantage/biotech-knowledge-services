@@ -1,0 +1,177 @@
+# assertions.yaml — fixture attia-cgm-dexcom-recommendation-interest (D7, fixtures stage, A6, 2026-10-08)
+#
+# Financial-interest fixture for the D9 seam (00-DIRECTIVE 3.9): a recommendation by a person is a kernel claim
+# occurrence (Assertion assertionKind CLAIM, speechAct RECOMMENDS, OCCURRENCE_OF a Claim, ASSERTED_BY the Person); the
+# person's financial interest is reachable from the same ASSERTED_BY Person through the D7 interest family. The
+# CONFLICT_RELEVANCE Assessment is DERIVED_FROM the occurrence and the interest Assertions and ASSESSES the Person and
+# the Claim. producedBy ids are FIXTURE-SCOPED (not Mission Control ids). Locators in ./locators.yaml.
+#
+# Check stage (A6, 2026-10-08): page metadata article:modified_time 2024-12-09 (published 2021-06-20); the Internet
+# Archive rendition of 2021-06-21 (snap-attia-cgm-wb2021) carries the recommendation but NOT the Dexcom disclosure
+# (loc-wb-closing), so the disclosure dates from a later revision (r-06, DISCLOSED_IN_LATER_REVISION).
+# Adversarial-review stage (A6, 2026-10-08): the author's own disclosure list, archived by the Internet Archive on
+# 2025-09-30 from the pre-redirect URL /disclosures/ (snap-attia-disclosures-wb2025; the live URL now redirects to
+# /about/, whose capture lacks the list), states "Dexcom (September 2020 – Aug 2021)" under "Companies I advise" ->
+# "Previous:". The role (r-02) therefore held on 2021-06-20 (OVERLAPS at MONTH precision) and had ended more than three
+# years before the 2024-12-09 revision added "I am a paid advisor to Dexcom" in the present tense (r-07, a stale
+# title; as-stale-01, Q-D7-17). The fixture-stage OVERLAPS was right for the wrong reason (the 2021 date line) and the
+# check-stage UNKNOWN is superseded by this dated first-party source.
+fixture: attia-cgm-dexcom-recommendation-interest
+producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-attia-cgm-dexcom-recommendation-interest" }
+
+entities:
+  - { uid: "hu:person:peter-attia", type: Person, name: "Peter Attia", credentialsVerbatim: "MD", publicActorBasis: [SPEAKER_OR_CREATOR, CLINICIAN_PUBLIC_COMMENTATOR], privacyClass: PUBLIC, note: "site owner and author of the article (first person); 'MD' from the site title 'Peter Attia MD'" }
+  - { uid: "hu:org:dexcom", type: Organization, name: "Dexcom", entityKind: UNSPECIFIED, organizationKind: DIAGNOSTICS_OR_DEVICE, note: "printed 'Dexcom; a company that develops, manufactures, and distributes CGMs' (article) and 'Dexcom' (disclosure list); legal entity (DexCom, Inc., SEC CIK) not resolved in this fixture" }
+  - { uid: "hu:org:kosterina", type: Organization, name: "Kosterina", entityKind: UNSPECIFIED, organizationKind: FOOD_OR_BEVERAGE, note: "listed as a member-discount partner and under 'Companies I have invested in'; brand vs legal entity not resolved (D6/D12 seam)" }
+  - { uid: "hu:claim:cgm-use-worthwhile-without-diabetes", type: Claim, kernel: true, name: "The speaker favours continuous glucose monitor use in his patients, including those without diabetes", nameBasis: "BellLabs paraphrase of the located span (loc-cgm-proponent); population = the speaker's patients, not people without diabetes in general", note: "kernel Claim (the proposition); D9 owns the container and the occurrence typing; the uid slug predates the narrowed wording and is opaque" }
+  - { uid: "hu:device:continuous-glucose-monitor", type: Device, module: D4, seam: true, name: "continuous glucose monitor (CGM)", note: "D4-owned device category; the SUBJECT of the recommendation occurrence r-01 (kernel HAS_SUBJECT through Subjectable; 10-seams); no typed path links it to Dexcom (D4 platform roles are predicate-only), so the product-category link is the CONFLICT_RELEVANCE Assessment's, read from the disclosing span itself" }
+
+assertions:
+  # ---- the recommendation (kernel claim occurrence; D9 container = the article)
+  - id: r-01
+    predicate: RECOMMENDS_USE
+    assertionKind: CLAIM
+    claimType: RECOMMENDATION
+    occurrenceOf: "hu:claim:cgm-use-worthwhile-without-diabetes"
+    asserter: { uid: "hu:person:peter-attia", type: Person }
+    subject: { uid: "hu:device:continuous-glucose-monitor", type: Device, module: D4 }
+    object: { literal: { valueString: "use in his patients, including those without diabetes" } }
+    validTime: { validFrom: "2021-06-20T00:00:00Z", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN }
+    polarity: POSITIVE
+    speechAct: RECOMMENDS
+    basisKind: EXPERT_OPINION
+    qualifiers: ["phrased as advocacy ('I’m a proponent of ... in my patients'), population: his patients, 'even if they don’t have diabetes'", "statement date = article date line (June 20, 2021); the sentence is already in the 2021-06-21 archived rendition (loc-wb-proponent)"]
+    evidence: [{ locator: loc-cgm-proponent, role: SUPPORTS, origin: DECLARED }, { locator: loc-cgm-date, role: QUALIFIES, origin: DECLARED }, { locator: loc-wb-proponent, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-attia-cgm-dexcom-recommendation-interest" }
+
+  # ---- the advisory tie: interval from the author's archived disclosure list (r-02), payment from the article (r-03),
+  #      and the article's present-tense restatement in a later revision (r-07, stale title)
+  - id: r-02
+    predicate: HOLDS_ROLE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:person:peter-attia", type: Person }
+    subject: { uid: "hu:person:peter-attia", type: Person }
+    object: { uid: "hu:org:dexcom", type: Organization }
+    edge: { type: HOLDS_ROLE, properties: { roleKind: ADVISOR, roleTitleVerbatim: "Companies I advise / Previous: Dexcom (September 2020 – Aug 2021)" } }
+    validTime: { validFrom: "2020-09-01T00:00:00Z", validFromPrecision: MONTH, validFromBasis: STATED_BY_SOURCE, validTo: "2021-08-01T00:00:00Z", validToPrecision: MONTH, validToBasis: STATED_BY_SOURCE, validObservedAt: "2025-09-30T17:25:59Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["listed under 'Companies I advise' -> 'Previous:' in the author's disclosure list as archived 2025-09-30 (Internet Archive, pre-redirect URL /disclosures/)", "validTo is the month the source names (Aug 2021) at MONTH precision; OVERLAP truncates the statement date to the month before comparing", "the list says it is 'updated regularly': the interval is the list's statement at the archive capture time"]
+    evidence: [{ locator: loc-dl-dexcom, role: SUPPORTS, origin: DECLARED }, { locator: loc-dl-previous, role: SUPPORTS, origin: DECLARED }, { locator: loc-dl-groups, role: CONTEXT, origin: DECLARED }, { locator: loc-dl-updated, role: QUALIFIES, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-attia-cgm-dexcom-recommendation-interest" }
+  - id: r-03
+    predicate: RECEIVES_VALUE_FROM
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:person:peter-attia", type: Person }
+    subject: { uid: "hu:person:peter-attia", type: Person }
+    object: { uid: "hu:org:dexcom", type: Organization }
+    edge: { type: RECEIVES_VALUE_FROM, properties: { valueKind: SALARY_OR_FEES } }
+    validTime: { validFrom: "2020-09-01T00:00:00Z", validFromPrecision: MONTH, validFromBasis: INFERRED, validTo: "2021-08-01T00:00:00Z", validToPrecision: MONTH, validToBasis: INFERRED, validObservedAt: "2024-12-09T15:35:10Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["'paid advisor' (article as revised 2024-12-09): payment for the advisory role; no amount or form stated", "interval INFERRED from the advisory interval the disclosure list states for the same tie (r-02): the list does not say 'paid' and the article gives no dates, so neither source states the payment interval"]
+    evidence: [{ locator: loc-cgm-paid-advisor, role: SUPPORTS, origin: DECLARED }, { locator: loc-dl-dexcom, role: QUALIFIES, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-attia-cgm-dexcom-recommendation-interest" }
+  - id: r-07
+    predicate: HOLDS_ROLE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:person:peter-attia", type: Person }
+    subject: { uid: "hu:person:peter-attia", type: Person }
+    object: { uid: "hu:org:dexcom", type: Organization }
+    edge: { type: HOLDS_ROLE, properties: { roleKind: ADVISOR, roleTitleVerbatim: "paid advisor" } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2024-12-09T15:35:10Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["present tense ('I am a paid advisor to Dexcom') in the closing DISCLOSURE paragraph of the article as revised 2024-12-09 (snapshot publishedAt = page metadata article:modified_time; retrieved 2026-10-08)", "absent from the 2021-06-21 rendition (r-06)", "STALE TITLE: the author's own list states the role ended Aug 2021 (r-02), more than three years before this revision; as-stale-01 records ROLE_CLOSED and Q-D7-17 flags this statement (TITLE_USED_AFTER_ROLE_ENDED)"]
+    evidence: [{ locator: loc-cgm-paid-advisor, role: SUPPORTS, origin: DECLARED }, { locator: loc-wb-closing, role: QUALIFIES, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-attia-cgm-dexcom-recommendation-interest" }
+
+  # ---- discounts page: an investor disclosure and a denial of sponsorship money on the same page
+  - id: r-04
+    predicate: HOLDS_STAKE
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:person:peter-attia", type: Person }
+    subject: { uid: "hu:person:peter-attia", type: Person }
+    object: { uid: "hu:org:kosterina", type: Organization }
+    edge: { type: HOLDS_STAKE, properties: { stakeKind: INVESTOR_UNSPECIFIED, stakeBand: UNSTATED, ownershipBasis: UNSTATED, stakeClassVerbatim: "investor" } }
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY, validObservedAt: "2025-09-30T17:25:59Z" }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["the discounts page is undated (retrieved 2026-10-08); the archived disclosure list of 2025-09-30 also lists Kosterina under 'Companies I have invested in', the earliest dated observation (validObservedAt)"]
+    evidence: [{ locator: loc-disc-kosterina, role: SUPPORTS, origin: DECLARED }, { locator: loc-dl-kosterina, role: SUPPORTS, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-attia-cgm-dexcom-recommendation-interest" }
+
+  - id: r-05
+    predicate: RECEIVES_VALUE_FROM
+    assertionKind: RELATIONSHIP
+    asserter: { uid: "hu:person:peter-attia", type: Person }
+    subject: { uid: "hu:person:peter-attia", type: Person }
+    object: { uid: "hu:org:kosterina", type: Organization }
+    edge: null   # NEGATIVE polarity: no RECEIVES_VALUE_FROM episode is written; the Assertion alone records the denial
+    valueKind: SPONSORSHIP_PAYMENT
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, validTo: null, validToBasis: OBSERVATION_ONLY }
+    polarity: NEGATIVE
+    speechAct: DENIES
+    qualifiers: ["'any of these companies' = the partner companies listed on the discounts page, Kosterina among them", "denies sponsorship money; does not deny the investor stake (r-04): sponsorship ≠ equity"]
+    evidence: [{ locator: loc-disc-no-dime, role: SUPPORTS, origin: DECLARED }, { locator: loc-disc-kosterina, role: CONTEXT, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-attia-cgm-dexcom-recommendation-interest" }
+
+
+  # ---- check stage: the 2021 rendition of the same container, read for the disclosure (kernel predicate convention)
+  - id: r-06
+    predicate: FIELD_NOT_REPORTED
+    predicateClass: kernelConvention
+    assertionKind: FIELD
+    asserter: { agent: "BellLabs check-stage agent A6 (kernel Agent)", note: "BellLabs reading of an archived rendition; not the speaker's statement" }
+    subject: { source: "https://peterattiamd.com/are-continuous-glucose-monitors-a-waste-of-time-for-people-without-diabetes/", snapshot: snap-attia-cgm-wb2021 }
+    object: { literal: { valueString: "financial-relationship disclosure (Dexcom advisory role) in the article body" } }
+    validTime: { validFrom: "2021-06-21T20:29:48Z", validFromPrecision: DAY, validFromBasis: OBSERVATION_ONLY, validTo: null, validToBasis: UNKNOWN }
+    polarity: POSITIVE
+    speechAct: STATES
+    qualifiers: ["section read: the article body up to its closing sentence (loc-wb-closing); 'Dexcom' occurs in this capture only in reader comments", "the recommendation itself is present (loc-wb-proponent), so the 2021 statement was published without the disclosure"]
+    evidence: [{ locator: loc-wb-closing, role: SUPPORTS, origin: DECLARED }, { locator: loc-wb-proponent, role: CONTEXT, origin: DECLARED }, { locator: loc-wb-date, role: QUALIFIES, origin: DECLARED }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-attia-cgm-dexcom-recommendation-interest" }
+
+assessments:
+  - id: as-cr-01
+    assessmentKind: CONFLICT_RELEVANCE
+    assessmentSubkind: "D7.conflict-relevance"
+    status: PROPOSED
+    methodVersion: "fixture-expected/2"
+    conclusionCode: DIRECT   # relevanceLevel (K M9 slot)
+    about: [{ uid: "hu:person:peter-attia", type: Person }, { uid: "hu:claim:cgm-use-worthwhile-without-diabetes", type: Claim }]
+    inputAssertions: [r-01, r-02, r-03, r-06, r-07]
+    facets: ["relevanceBasis=SAME_PRODUCT_CATEGORY", "temporalOverlap=OVERLAPS", "disclosureFinding=DISCLOSED_IN_LATER_REVISION"]   # kernel <facet>=<value> codes (10-seams conflict-relevance-subkinds)
+    summary: "The speaker recommends CGM use in his patients (2021-06-20). His archived disclosure list (2025-09-30) states he advised Dexcom from September 2020 to August 2021, so the tie was in force when he made the statement (OVERLAPS: 2020-09 < 2021-06 < 2021-08 at MONTH precision); the article as revised 2024-12-09 calls it a paid advisory role with a company that 'develops, manufactures, and distributes CGMs' (same product category, stated in the disclosing span). The rendition archived on 2021-06-21 has the recommendation and no disclosure, so the original audience did not see it (DISCLOSED_IN_LATER_REVISION). Superseded expectations: fixture stage OVERLAPS + DISCLOSED_IN_CONTAINER (dated by the article's date line); check stage temporalOverlap UNKNOWN (no dated source for the tie had been captured)."
+    evidence: [{ locator: loc-cgm-proponent, role: CONTEXT }, { locator: loc-dl-dexcom, role: SUPPORTS }, { locator: loc-cgm-paid-advisor, role: SUPPORTS }, { locator: loc-wb-closing, role: SUPPORTS }, { locator: loc-wb-proponent, role: CONTEXT }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-attia-cgm-dexcom-recommendation-interest" }
+  - id: as-stale-01
+    assessmentKind: EVIDENCE_SYNTHESIS
+    assessmentSubkind: "D7.role-agreement"
+    status: PROPOSED
+    methodVersion: "fixture-expected/1"
+    conclusionCode: ROLE_CLOSED
+    facets: ["kindAgreement=AGREE", "intervalAgreement=CONFLICT"]
+    about: [{ uid: "hu:person:peter-attia", type: Person }, { uid: "hu:org:dexcom", type: Organization }]
+    inputAssertions: [r-02, r-07]
+    outcome: "ROLE_CLOSED: the author's list states the Dexcom advisory role ran September 2020 – August 2021 (r-02); the article revision of 2024-12-09 restates it in the present tense (r-07). Same kind (ADVISOR), conflicting tense: the later present-tense statement is a stale title (Q-D7-17 flag TITLE_USED_AFTER_ROLE_ENDED; t = 2024-12-09 is after validTo 2021-08). The open r-07 episode is not edited by this Assessment; answers take the interval from r-02 and show r-07 as stale."
+    evidence: [{ locator: loc-dl-dexcom, role: SUPPORTS }, { locator: loc-cgm-paid-advisor, role: CONTEXT }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-attia-cgm-dexcom-recommendation-interest" }
+  - id: as-cov-01
+    assessmentKind: QUALITY
+    assessmentSubkind: "D7.disclosure-coverage"
+    status: PROPOSED
+    methodVersion: "fixture-expected/2"
+    conclusionCode: SOURCE_DECLARED_INCOMPLETE
+    facets: ["captureCompleteness=COMPLETE", "captureCompleteness=PARTIAL_EXCERPT"]   # archived list (2025-09-30) COMPLETE; live /about/ (2026) PARTIAL_EXCERPT
+    verdict: INSUFFICIENT_EVIDENCE
+    about: [{ uid: "hu:person:peter-attia", type: Person }]
+    finding: "As of 2025-09-30 the author's disclosure list is captured COMPLETE through the Internet Archive id_ copy of the pre-redirect URL /disclosures/ (13 companies invested in; advisory roles: 8 present, 3 previous). The list itself excludes 'investments in companies that have no involvement whatsoever in my sphere of influence or line of work' and says it is 'updated regularly' (SOURCE_DECLARED_INCOMPLETE). The live list (2026: /disclosures/ redirects to /about/, list behind a script-driven panel) is still PARTIAL_EXCERPT. 'No other relevant interest' is answerable only as of 2025-09-30 and only within the list's declared scope; for 2026 it stays NOT_FOUND_IN_PARTIAL_CAPTURE. Supersedes fixture-expected/1 (NOT_FOUND_IN_PARTIAL_CAPTURE; the archive path had not been tried)."
+    sourcesSearched:
+      - { snapshot: snap-attia-cgm, captureCompleteness: COMPLETE, found: [r-03, r-07] }
+      - { snapshot: snap-attia-cgm-wb2021, captureCompleteness: COMPLETE, found: [], note: "2021 rendition of the same article: no disclosure (r-06)" }
+      - { snapshot: snap-attia-disclosures-wb2025, captureCompleteness: COMPLETE, found: [r-02, r-04], note: "complete list as of 2025-09-30 within its declared scope" }
+      - { snapshot: snap-attia-discounts, captureCompleteness: COMPLETE, found: [r-04] }
+      - { snapshot: snap-attia-about, captureCompleteness: PARTIAL_EXCERPT, found: [], note: "live 2026 rendition; the list is not in the capture" }
+    evidence: [{ locator: loc-cgm-full-list, role: SUPPORTS }, { locator: loc-dl-groups, role: SUPPORTS }, { locator: loc-dl-scope-note, role: SUPPORTS }, { locator: loc-dl-updated, role: QUALIFIES }, { locator: loc-about-disclosures, role: SUPPORTS }]
+    producedBy: { missionId: "mission:ft-D7-fixtures", runId: "run:ft-D7-attia-cgm-dexcom-recommendation-interest" }

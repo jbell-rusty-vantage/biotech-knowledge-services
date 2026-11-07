@@ -1,0 +1,264 @@
+# Assertions for fixture sirt1-activation-disconfirmation (packet D2, fixtures stage, A3, 2026-10-08).
+# Same conventions as ../nr-muscle-unstructured/assertions.yaml (kernel Assertion shape, <module>.<Type> typing,
+# fixture-scoped ids, producedBy on every record). The disagreement between sources is never an edge: it shows up as
+# direction MIXED in the AFFECTS_MECHANISM projection and per context in Q-D2-05. Adversarial review (2026-10-08): the
+# INFLUENCES_OUTCOME projection and the resveratrol → SIRT1 (MolecularEntity) projection are gone (relationship and pair
+# cut); Q-D2-14 / Q-D2-26 read A-s-06a/06b/07 directly; SRT1720 resolved to ChEMBL / PubChem ids.
+# KEGG (A-s-05) is captured and asserted but flagged licence-gated (11-open-questions item 11); the projection is
+# computed with and without it and the result is the same (MIXED).
+# Close-out FU-03 (2026-10-09, S fixture editor): R-15 asserters A-s-01..03 = D3 Publication pub-pacholec2010, A-s-04 =
+# pub-howitz2003 (multi-author papers; were first authors); R-58 cell-free contexts route IN_MEDIUM, exposureBasis
+# MEDIUM_CONCENTRATION; R-47 derived-edge fields (below).
+fixture: sirt1-activation-disconfirmation
+idNote: fixture-scoped ids (hu:<token>:fx-d2-...); mission/run ids are fixture ids, not Mission Control ids
+producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-sirt1-activation-disconfirmation" }
+
+entities:
+  - { ref: resveratrol, type: D1.ChemicalSubstance, uid: "hu:chemical-substance:fx-d2-resveratrol", name: resveratrol,
+      identifiers: [ { scheme: CHEMBL, value: CHEMBL165, note: "ChEMBL molecule lookup 2026-10-08; CHEMBL is not yet a kernel scheme (11-open-questions item 10)" } ] }
+  - { ref: srt1720, type: D1.ChemicalSubstance, uid: "hu:chemical-substance:fx-d2-srt1720", name: SRT1720,
+      identifiers: [ { scheme: CHEMBL, value: CHEMBL257991, evidence: L-s-13, note: "free base; ChEMBL molecule search q=SRT1720 (pref_name is null, so a pref_name lookup finds nothing); the HCl salt is CHEMBL4639328 in the same result" },
+                     { scheme: PUBCHEM_CID, value: "25232708", evidence: L-s-14, note: "PubChem name lookup 'SRT1720': the hydrochloride; same parent structure as CHEMBL257991; D1 decides salt vs parent" } ],
+      note: "adversarial review 2026-10-08: resolved by search and structure (the fixtures stage had tried only a pref_name match)" }
+  - { ref: me-sirt1, type: D2.MolecularEntity, uid: "hu:molecular-entity:fx-d2-sirt1", name: NAD-dependent protein deacetylase sirtuin-1,
+      properties: { entityKind: PROTEIN, geneSymbol: SIRT1, organism: HUMAN, ncbiTaxonId: "9606" },
+      identifiers: [ { scheme: UNIPROT, value: Q96EB6, evidence: L-s-12 }, { scheme: HGNC, value: "HGNC:14929", note: "UniProt cross-reference in the same capture" } ] }
+  - { ref: m-protein-deacetylation, type: D2.Mechanism, uid: "hu:mechanism:fx-d2-go-0006476", name: protein deacetylation, note: "declared in ../nr-muscle-unstructured" }
+  - { ref: m-mito-respiration, type: D2.Mechanism, uid: "hu:mechanism:fx-d2-mitochondrial-respiration", name: mitochondrial respiration, note: "declared in ../reactome-chembl-reference" }
+  - { ref: o-lifespan, type: D2.Outcome, uid: "hu:outcome:fx-d2-lifespan", name: lifespan,
+      properties: { key: "bellabs:outcome:lifespan", outcomeKind: SURVIVAL } }
+  - { ref: pub-pacholec2010, type: D3.Publication, uid: "hu:publication:fx-d2-doi-10-1074-jbc-m109-088682", name: "SRT1720, SRT2183, SRT1460, and resveratrol are not direct activators of SIRT1",
+      properties: { publicationKind: ARTICLE, venueName: "J Biol Chem", citationText: "J Biol Chem 2010;285(11):8340-51" },
+      identifiers: [ { scheme: PMID, issuer: NLM, value: "20061378" }, { scheme: PMCID, issuer: NLM, value: "PMC2832984" }, { scheme: DOI, issuer: Crossref, value: "10.1074/jbc.M109.088682" } ],
+      note: "R-15: the multi-author paper is the asserter (identifiers as printed in source.md); first author Michelle Pacholec (affiliation Pfizer, L-s-04) is reached by AUTHORED_BY (D3/D7)" }
+  - { ref: pub-howitz2003, type: D3.Publication, uid: "hu:publication:fx-d2-doi-10-1038-nature01960", name: "Small molecule activators of sirtuins extend Saccharomyces cerevisiae lifespan",
+      properties: { publicationKind: ARTICLE, venueName: "Nature", citationText: "Nature 2003;425:191-6" },
+      identifiers: [ { scheme: PMID, issuer: NLM, value: "12939617" }, { scheme: DOI, issuer: Crossref, value: "10.1038/nature01960" } ],
+      note: "R-15: the multi-author paper is the asserter (identifiers as printed in source.md); first author Konrad T. Howitz (affiliation BIOMOL Research Laboratories, L-s-10) is reached by AUTHORED_BY (D3/D7)" }
+  - { ref: org-kegg, type: D7.Organization, uid: "hu:organization:fx-d2-kegg", name: "KEGG (Kanehisa Laboratories)" }
+  - { ref: org-hagr, type: D7.Organization, uid: "hu:organization:fx-d2-hagr", name: "Human Ageing Genomic Resources (HAGR, GenAge)" }
+  - { ref: org-uniprot, type: D7.Organization, uid: "hu:organization:fx-d2-uniprot", name: "UniProt Consortium (UniProtKB)", note: "asserter of the GO annotation behind the PARTICIPATES_IN edge (adversarial review: reference edges are asserted)" }
+
+contexts:
+  - ref: ctx-pacholec-resv-native
+    type: D2.MechanismEvidenceContext
+    uid: "hu:mech-context:fx-d2-pacholec2010-resveratrol-native-substrate"
+    evidence: [L-s-01]
+    properties: { groupLabel: "resveratrol; native peptide or full-length protein substrates", setting: IN_VITRO_CELL_FREE, organism: NOT_APPLICABLE, compartmentKind: CELL_FREE, geneticManipulation: NONE, route: IN_MEDIUM, exposureBasis: MEDIUM_CONCENTRATION, assayText: "SIRT1 deacetylation with native peptide or full-length protein substrates (abstract; concentrations not in the PubMed record)" }
+  - ref: ctx-pacholec-resv-fluor
+    type: D2.MechanismEvidenceContext
+    uid: "hu:mech-context:fx-d2-pacholec2010-resveratrol-fluorophore-substrate"
+    evidence: [L-s-01]
+    properties: { groupLabel: "resveratrol; peptide substrate containing a covalently attached fluorophore", setting: IN_VITRO_CELL_FREE, organism: NOT_APPLICABLE, compartmentKind: CELL_FREE, geneticManipulation: NONE, route: IN_MEDIUM, exposureBasis: MEDIUM_CONCENTRATION, assayText: "SIRT1 deacetylation with a fluorophore-tagged peptide substrate" }
+  - ref: ctx-pacholec-srt1720-hfd
+    type: D2.MechanismEvidenceContext
+    uid: "hu:mech-context:fx-d2-pacholec2010-srt1720-hfd-mice"
+    evidence: [L-s-02]
+    properties: { groupLabel: "SRT1720; mice fed a high fat diet", setting: IN_VIVO_MAMMAL, organism: MOUSE, ncbiTaxonId: "10090", compartmentKind: NOT_REPORTED, geneticManipulation: NONE, route: NOT_REPORTED, assayText: "mitochondrial capacity (abstract wording; tissue and dose not in the PubMed record)" }
+  - ref: ctx-howitz-resv
+    type: D2.MechanismEvidenceContext
+    uid: "hu:mech-context:fx-d2-howitz2003-resveratrol-sirt1"
+    evidence: [L-s-09]
+    properties: { groupLabel: "resveratrol; SIRT1 with the acetylated substrate and NAD(+)", setting: IN_VITRO_CELL_FREE, organism: NOT_APPLICABLE, compartmentKind: CELL_FREE, geneticManipulation: NONE, route: IN_MEDIUM, exposureBasis: MEDIUM_CONCENTRATION, assayText: "SIRT1 kinetics (Michaelis constant); substrate type not named in the abstract" }
+  - ref: ctx-genage-fly
+    type: D2.MechanismEvidenceContext
+    uid: "hu:mech-context:fx-d2-genage-sirt1-homologue-fly"
+    evidence: [L-s-06]
+    properties: { groupLabel: "Increasing the levels of SIRT1 homologues in fruit flies [1284]", setting: IN_VIVO_NONMAMMAL, organism: FLY, compartmentKind: WHOLE_ORGANISM, geneticManipulation: GAIN_OF_FUNCTION }
+  - ref: ctx-genage-worm
+    type: D2.MechanismEvidenceContext
+    uid: "hu:mech-context:fx-d2-genage-sirt1-homologue-worm"
+    evidence: [L-s-06]
+    properties: { groupLabel: "Increasing the levels of SIRT1 homologues in ... roundworms [199]", setting: IN_VIVO_NONMAMMAL, organism: WORM, compartmentKind: WHOLE_ORGANISM, geneticManipulation: GAIN_OF_FUNCTION }
+  - ref: ctx-genage-mouse
+    type: D2.MechanismEvidenceContext
+    uid: "hu:mech-context:fx-d2-genage-sirt1-moderate-overexpression-mouse"
+    evidence: [L-s-07]
+    properties: { groupLabel: "whole-body moderate overexpression of Sirt1 [3266]", setting: IN_VIVO_MAMMAL, organism: MOUSE, ncbiTaxonId: "10090", compartmentKind: WHOLE_ORGANISM, geneticManipulation: GAIN_OF_FUNCTION }
+
+structuralEdges:
+  - { type: EXPOSED_TO, from: ctx-pacholec-resv-native, to: resveratrol, properties: { exposureRole: TESTED, orderIndex: 0 }, evidence: [L-s-01] }
+  - { type: EXPOSED_TO, from: ctx-pacholec-resv-fluor, to: resveratrol, properties: { exposureRole: TESTED, orderIndex: 0 }, evidence: [L-s-01] }
+  - { type: EXPOSED_TO, from: ctx-pacholec-srt1720-hfd, to: srt1720, properties: { exposureRole: TESTED, orderIndex: 0 }, evidence: [L-s-02] }
+  - { type: EXPOSED_TO, from: ctx-howitz-resv, to: resveratrol, properties: { exposureRole: TESTED, orderIndex: 0 }, evidence: [L-s-09] }
+  # GenAge contexts are gene manipulations: no TESTED exposure (SDL rule "exactly one TESTED unless geneticManipulation is set").
+
+# Cell-free contexts: route IN_MEDIUM (D3 AdministrationRoute) and exposureBasis MEDIUM_CONCENTRATION (D6 AmountBasis), R-58,
+# close-out FU-03 2026-10-09; exposureAmount / exposureUnitCode stay null (no concentration in the captured abstracts).
+
+assertedEdges:
+  # Reference edge (asserted, recorded only since the adversarial review): MechanismReferenceProperties + authorizing Assertion.
+  - { type: PARTICIPATES_IN, from: me-sirt1, to: m-protein-deacetylation, properties: { referenceScheme: GO, referenceRelease: "UniProtKB Q96EB6 entry version 226 (GO annotation IDA, ECO:0000314)", participantRole: CATALYST },
+      assertion: { id: A-s-ref-01, uid: "hu:assertion:fx-d2-s-ref-01", asserter: org-uniprot, basisKind: DIRECT_MEASUREMENT, polarity: POSITIVE, speechAct: STATES, status: ACCEPTED, evidence: [ { locator: L-s-11, role: SUPPORTS, origin: DECLARED } ],
+        note: "IDA = inferred from direct assay (ECO:0000314), so the basis is DIRECT_MEASUREMENT by the annotating source" } }
+
+assertions:
+  - id: A-s-01
+    uid: "hu:assertion:fx-d2-s-01"
+    assertionKind: RELATIONSHIP
+    claimType: MEASUREMENT
+    predicate: NO_CHANGE_IN
+    subject: { ref: resveratrol, type: D1.ChemicalSubstance }
+    object: { ref: me-sirt1, type: D2.MolecularEntity }
+    polarity: POSITIVE
+    basisKind: DIRECT_MEASUREMENT
+    speechAct: STATES
+    asserter: { ref: pub-pacholec2010, type: D3.Publication }
+    evidence: [ { locator: L-s-01, role: SUPPORTS, origin: DECLARED }, { locator: L-s-03, role: SUPPORTS, origin: DECLARED } ]
+    context: ctx-pacholec-resv-native
+    qualifiers: ["SIRT1 activity with native peptide or full-length protein substrates"]
+    validTime: { validFrom: null, validTo: null, validFromBasis: UNKNOWN }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-sirt1-activation-disconfirmation" }
+  - id: A-s-02
+    uid: "hu:assertion:fx-d2-s-02"
+    assertionKind: RELATIONSHIP
+    claimType: MEASUREMENT
+    predicate: INCREASES_ACTIVITY_OF
+    subject: { ref: resveratrol, type: D1.ChemicalSubstance }
+    object: { ref: me-sirt1, type: D2.MolecularEntity }
+    polarity: POSITIVE
+    basisKind: DIRECT_MEASUREMENT
+    speechAct: STATES
+    asserter: { ref: pub-pacholec2010, type: D3.Publication }
+    evidence: [ { locator: L-s-01, role: SUPPORTS, origin: DECLARED } ]
+    context: ctx-pacholec-resv-fluor
+    qualifiers: ["only with a peptide substrate carrying a covalently attached fluorophore (assay artefact per the authors' conclusion, L-s-03)"]
+    validTime: { validFrom: null, validTo: null, validFromBasis: UNKNOWN }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-sirt1-activation-disconfirmation" }
+  - id: A-s-03
+    uid: "hu:assertion:fx-d2-s-03"
+    assertionKind: RELATIONSHIP
+    claimType: MEASUREMENT
+    predicate: NO_CHANGE_IN
+    subject: { ref: srt1720, type: D1.ChemicalSubstance }
+    object: { ref: m-mito-respiration, type: D2.Mechanism }
+    polarity: POSITIVE
+    basisKind: DIRECT_MEASUREMENT
+    speechAct: STATES
+    asserter: { ref: pub-pacholec2010, type: D3.Publication }
+    evidence: [ { locator: L-s-02, role: SUPPORTS, origin: DECLARED } ]
+    context: ctx-pacholec-srt1720-hfd
+    qualifiers: ["'mitochondrial capacity' in high-fat-diet mice; mapped to the curated mechanism mitochondrial respiration"]
+    validTime: { validFrom: null, validTo: null, validFromBasis: UNKNOWN }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-sirt1-activation-disconfirmation" }
+  - id: A-s-04
+    uid: "hu:assertion:fx-d2-s-04"
+    assertionKind: RELATIONSHIP
+    claimType: MEASUREMENT
+    predicate: INCREASES_ACTIVITY_OF
+    subject: { ref: resveratrol, type: D1.ChemicalSubstance }
+    object: { ref: me-sirt1, type: D2.MolecularEntity }
+    polarity: POSITIVE
+    basisKind: DIRECT_MEASUREMENT
+    speechAct: STATES
+    asserter: { ref: pub-howitz2003, type: D3.Publication }
+    evidence: [ { locator: L-s-09, role: SUPPORTS, origin: DECLARED } ]
+    context: ctx-howitz-resv
+    qualifiers: ["lowers the Michaelis constant of SIRT1 for the acetylated substrate and NAD(+)"]
+    validTime: { validFrom: null, validTo: null, validFromBasis: UNKNOWN }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-sirt1-activation-disconfirmation" }
+  - id: A-s-05
+    uid: "hu:assertion:fx-d2-s-05"
+    assertionKind: RELATIONSHIP
+    claimType: CAUSAL
+    predicate: INCREASES_ACTIVITY_OF
+    subject: { ref: resveratrol, type: D1.ChemicalSubstance }
+    object: { ref: me-sirt1, type: D2.MolecularEntity }
+    polarity: POSITIVE
+    basisKind: CITED_FROM_PRIOR_WORK
+    speechAct: STATES
+    asserter: { ref: org-kegg, type: D7.Organization }
+    evidence: [ { locator: L-s-05, role: SUPPORTS, origin: DECLARED } ]
+    context: null                 # a reference narrative: no evidence context
+    qualifiers: ["KEGG hsa04211 DESCRIPTION: 'resveratrol, by activating SIRT1 activity'"]
+    licenceGate: "KEGG REST: academic use only; not ingestible until the owner decides (11-open-questions item 11)"
+    validTime: { validFrom: null, validTo: null, validFromBasis: UNKNOWN }
+    status: PROPOSED              # held: licence gate, not a fidelity problem (the quote re-selects exactly)
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-sirt1-activation-disconfirmation" }
+  - id: A-s-06a
+    uid: "hu:assertion:fx-d2-s-06a"
+    assertionKind: RELATIONSHIP
+    claimType: CAUSAL
+    predicate: INCREASES_LEVEL_OF
+    subject: { ref: me-sirt1, type: D2.MolecularEntity }
+    object: { ref: o-lifespan, type: D2.Outcome }
+    polarity: POSITIVE
+    basisKind: CITED_FROM_PRIOR_WORK
+    speechAct: STATES
+    asserter: { ref: org-hagr, type: D7.Organization }
+    evidence: [ { locator: L-s-06, role: SUPPORTS, origin: DECLARED } ]
+    context: ctx-genage-fly
+    qualifiers: ["fly homologue gain of function", "GenAge adds: 'these findings have been questioned by other studies [3321]'"]
+    validTime: { validFrom: null, validTo: null, validFromBasis: UNKNOWN }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-sirt1-activation-disconfirmation" }
+  - id: A-s-06b
+    uid: "hu:assertion:fx-d2-s-06b"
+    assertionKind: RELATIONSHIP
+    claimType: CAUSAL
+    predicate: INCREASES_LEVEL_OF
+    subject: { ref: me-sirt1, type: D2.MolecularEntity }
+    object: { ref: o-lifespan, type: D2.Outcome }
+    polarity: POSITIVE
+    basisKind: CITED_FROM_PRIOR_WORK
+    speechAct: STATES
+    asserter: { ref: org-hagr, type: D7.Organization }
+    evidence: [ { locator: L-s-06, role: SUPPORTS, origin: DECLARED } ]
+    context: ctx-genage-worm
+    qualifiers: ["worm homologue gain of function", "questioned by other studies [3321]"]
+    validTime: { validFrom: null, validTo: null, validFromBasis: UNKNOWN }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-sirt1-activation-disconfirmation" }
+  - id: A-s-07
+    uid: "hu:assertion:fx-d2-s-07"
+    assertionKind: RELATIONSHIP
+    claimType: CAUSAL
+    predicate: NO_CHANGE_IN
+    subject: { ref: me-sirt1, type: D2.MolecularEntity }
+    object: { ref: o-lifespan, type: D2.Outcome }
+    polarity: POSITIVE
+    basisKind: CITED_FROM_PRIOR_WORK
+    speechAct: STATES
+    asserter: { ref: org-hagr, type: D7.Organization }
+    evidence: [ { locator: L-s-07, role: SUPPORTS, origin: DECLARED } ]
+    context: ctx-genage-mouse
+    qualifiers: ["whole-body moderate overexpression; GenAge: 'improves healthy ageing but does not increase mice lifespan'"]
+    validTime: { validFrom: null, validTo: null, validFromBasis: UNKNOWN }
+    status: ACCEPTED
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-sirt1-activation-disconfirmation" }
+
+adjudications:
+  - id: ADJ-s-01
+    uid: "hu:adjudication:fx-d2-s-01"
+    assesses: A-s-01
+    adjudicationKind: CAPTURE_FIDELITY
+    judgeKind: DETERMINISTIC
+    methodVersion: "d2-fixture-quote-reselect/v1"
+    verdict: DIRECTLY_SUPPORTED
+    policyOutcome: PASS
+    evidence: [ { locator: L-s-01, role: SUPPORTS, origin: DECLARED } ]
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-sirt1-activation-disconfirmation" }
+
+# Derived edges (scratch ft/D2/bin/project.py; d2.affects-mechanism/v1). The method still rolls the MolecularEntity object (SIRT1) up to its Mechanism.
+# Close-out FU-03 (2026-10-09): R-47 dropped nNoChangeContexts from MechanismProjectionProperties and keeps score null on
+# AFFECTS_MECHANISM (executor-validated, directive 3.6); support counts and rankings (Q-D2-18) are D10 Association records.
+derivedEdges:
+  - type: AFFECTS_MECHANISM
+    from: resveratrol
+    to: m-protein-deacetylation
+    properties: { derivationRule: d2.affects-mechanism/v1, derivedFromAssertionUids: ["hu:assertion:fx-d2-s-01", "hu:assertion:fx-d2-s-02", "hu:assertion:fx-d2-s-04"], direction: MIXED, bestBasis: DIRECT_MEASUREMENT, highestSetting: IN_VITRO_CELL_FREE, humanMeasured: false, nContexts: 3, nHumanContexts: 0, viaParticipant: true, score: null }
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-projection" }
+  - type: AFFECTS_MECHANISM
+    from: srt1720
+    to: m-mito-respiration
+    properties: { derivationRule: d2.affects-mechanism/v1, derivedFromAssertionUids: ["hu:assertion:fx-d2-s-03"], direction: NO_CHANGE, bestBasis: DIRECT_MEASUREMENT, highestSetting: IN_VIVO_MAMMAL, humanMeasured: false, nContexts: 1, nHumanContexts: 0, viaParticipant: false, score: null }
+    producedBy: { missionId: "mission:ft-D2-fixtures", runId: "run:ft-D2-projection" }
+# Query-time result, not a stored edge (INFLUENCES_OUTCOME demoted in the adversarial review): Q-D2-14 / Q-D2-26 hop 2 for
+# protein deacetylation → lifespan reads A-s-06a, A-s-06b, A-s-07 (subject SIRT1, a CATALYST participant of GO:0006476):
+# A-s-06a / A-s-06b INCREASES_LEVEL_OF lifespan (fly, worm gain of function) and A-s-07 NO_CHANGE_IN lifespan (mouse
+# moderate overexpression): signs +, +, 0, so the hop reads as mixed; all three CITED_FROM_PRIOR_WORK (GenAge narrative);
+# no human context. The same three Assertions were the inputs of the retired d2.influences-outcome/v1 edge (MIXED).

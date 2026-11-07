@@ -1,0 +1,30 @@
+{
+  "name": "@bks/graphql-client",
+  "version": "0.1.0",
+  "description": "Typed, transport-neutral client for the bounded BellLabs Biotech consumer GraphQL API (safelisted persisted operations only). Generated from the printed executable schema and the reviewed operation documents.",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
+    "./operations": { "types": "./dist/generated/graphql.d.ts", "import": "./dist/generated/graphql.js" },
+    "./compatibility": { "types": "./dist/compatibility.d.ts", "import": "./dist/compatibility.js" },
+    "./package.json": "./package.json"
+  },
+  "files": ["dist"],
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "build": "tsc -b",
+    "codegen": "graphql-codegen --config codegen.ts && node scripts/compatibility.mjs"
+  },
+  "dependencies": {
+    "@graphql-typed-document-node/core": "^3.2.0"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^7.4.6",
+    "@graphql-codegen/client-preset": "^6.2.3",
+    "graphql": "^16.14.2",
+    "typescript": "^5.9.3"
+  }
+}

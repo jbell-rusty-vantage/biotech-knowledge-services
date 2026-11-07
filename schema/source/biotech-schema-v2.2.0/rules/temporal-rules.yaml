@@ -1,0 +1,805 @@
+# Temporal rules (bks-rules.v1)
+# GENERATED at promotion by scripts/release/lib/registries.mjs 1.0.0 (S1 schema authority) from the frozen candidate
+# (biotech-knowledge-services schema/program/final @ 431c8a7) and the promoted release sources. Upstream authority after
+# promotion: edit here through a release revision; re-running promotion on the same frozen inputs reproduces these bytes.
+# Closes: OD-05, KN-05, MD-D8-05.
+# Inputs (sha256):
+#   final/relationship-register.yaml  1db01e03e55d1708ae8c26f250ea9383ae5df6cce989f0ef27538163b506a501
+# Research only, not medical advice.
+
+format: bks-rules.v1
+ruleSet: temporal
+version: 1.0.0
+closes:
+  - OD-05
+  - KN-05
+  - MD-D8-05
+definitions:
+  AS-OF(x, $asOf): "x.recordedAt <= $asOf AND (x.recordedTo IS NULL OR x.recordedTo > $asOf); current = x.recordedTo IS NULL (records with recordedAt/recordedTo: Assertion, Adjudication, Assessment, Report, Association, DecisionCriterion)"
+  EPISODE-AT(r, $asOf): r.recordedFrom <= $asOf AND (r.recordedTo IS NULL OR r.recordedTo > $asOf) on an asserted edge
+  VALID-AT(x, $V): (x.validFrom IS NULL OR x.validFrom <= $V) AND (x.validTo IS NULL OR x.validTo > $V); half-open; a null bound is unknown, never ongoing, and is returned flagged
+  recorded-only: edge carries recorded time only (recordedFrom/recordedTo); valid time, when needed, is read from the authorizing Assertion via r.assertionUid
+  episode: edge carries valid time (validFrom/validTo with basis/precision) and recorded time
+rules:
+  - id: TM-01
+    decision: OD-05 / KN-05
+    rule: "Exclusive (non-overlapping) episodes are scoped to (subject, relationship/predicate slot, asserter): same-asserter overlap is rejected; different asserters coexist and cross-source disagreement is preserved. Separately defined global identity constraints are not weakened. K owns CQ-TM-05 and the exclusivity contract; module register rows supply slot policies (exclusive: true)."
+  - id: TM-02
+    decision: MD-D8-05
+    rule: Each source date is retained with its semantic role and locator (e.g. article-effective date vs annex authorization date); no single event clock is chosen silently.
+  - id: TM-03
+    decision: MD-D11-01
+    rule: Provider cache age and fetch metadata are recorded; fetched time is never called observed content time; stale or unknown content clocks remain explicit.
+  - id: TM-04
+    decision: EX-02
+    rule: event-clock/v1 deterministically rematerializes accepted event clocks/status after assertion changes; SUPPORT gates causal edges (LEADS_TO / RESPONDS_TO projectionGate); accepted equivalence is required for event merging.
+  - id: TM-05
+    decision: OD-16
+    rule: Registry history starts at the first retained observation; older versions are imported only from trustworthy captures; coverage start and unavailable historical intervals are shown, never implied complete.
+  - id: TM-06
+    decision: R-24
+    rule: validObservedAt / source record times are the source's own clocks; recordedAt/recordedFrom are BellLabs recording times; the two are never interchanged.
+counts:
+  relationshipTypes: 106
+  byTemporal:
+    episode: 26
+    recorded-only (derivedAt): 1
+    recorded-only: 79
+  exclusive: 3
+relationshipTypes:
+  ADDRESSED_TO:
+    modules:
+      - D8
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  ADMINISTERS:
+    modules:
+      - D3
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  AFFECTS_MECHANISM:
+    modules:
+      - D2
+    class: derived
+    temporal: recorded-only
+    edgeProperties: MechanismProjectionProperties
+    exclusive: false
+  APPEARS_IN:
+    modules:
+      - D9
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AppearanceEdgeProperties
+    exclusive: false
+  ASSERTED_BY:
+    modules:
+      - K
+    class: structural
+    temporal: recorded-only
+    edgeProperties: null
+    exclusive: false
+  ASSESSES:
+    modules:
+      - D10
+      - K
+    class: structural
+    temporal: recorded-only
+    edgeProperties: null
+    exclusive: false
+  ASSIGNED_TO:
+    modules:
+      - D8
+    class: asserted
+    temporal: episode
+    edgeProperties: AssertedEdgeProperties
+    exclusive: false
+  ASSOCIATES:
+    modules:
+      - D10
+    class: derived
+    temporal: recorded-only
+    edgeProperties: DerivedEdgeProperties
+    exclusive: false
+  AWARDED_BY:
+    modules:
+      - D7
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  AWARDED_TO:
+    modules:
+      - D7
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  BLOCKED_BY:
+    modules:
+      - D10
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  BRANDED_AS:
+    modules:
+      - D6
+    class: asserted
+    temporal: episode
+    edgeProperties: AssertedEdgeProperties
+    exclusive: false
+  CHUNK_OF:
+    modules:
+      - D9
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  CONCERNS:
+    modules:
+      - D8
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  CONTENT_SPONSORED_BY:
+    modules:
+      - D9
+    class: asserted
+    temporal: episode
+    edgeProperties: AssertedEdgeProperties
+    exclusive: false
+  COUNTS_TOWARD_NUTRIENT:
+    modules:
+      - D1
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  COVERS:
+    modules:
+      - D8
+    class: asserted
+    temporal: episode
+    edgeProperties: AssertedEdgeProperties
+    exclusive: false
+  COVERS_LOCATOR:
+    modules:
+      - D9
+    class: derived
+    temporal: recorded-only
+    edgeProperties: DerivedEdgeProperties
+    exclusive: false
+  DECLARES_COMPONENT:
+    modules:
+      - D6
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: ComponentLineProperties
+    exclusive: false
+  DELIVERS:
+    modules:
+      - D4
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  DERIVED_FROM:
+    modules:
+      - D10
+      - K
+    class: structural
+    temporal: recorded-only
+    edgeProperties: null
+    exclusive: false
+  DERIVED_FROM_ALGORITHM_VERSION:
+    modules:
+      - D4
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  DERIVED_FROM_TAXON:
+    modules:
+      - D1
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  DOCUMENTED_BY_RECORD:
+    modules:
+      - D13
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+    temporalNote: the record's issuedAt (D8) and the Event's clocks carry valid time; the episode records when BellLabs believed the record documents this occurrence
+  EXPOSED_TO:
+    modules:
+      - D2
+    class: structural
+    temporal: recorded-only
+    edgeProperties: ExposureRoleProperties
+    exclusive: false
+  FOOD_CONTAINS:
+    modules:
+      - D12
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: FoodContentProperties
+    exclusive: false
+  HAS_ACTIVE_MOIETY:
+    modules:
+      - D1
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  HAS_ANALYTE:
+    modules:
+      - D4
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  HAS_ARM:
+    modules:
+      - D3
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  HAS_COMPONENT:
+    modules:
+      - D3
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  HAS_EDITION:
+    modules:
+      - D5
+    class: asserted
+    temporal: episode
+    edgeProperties: AssertedEdgeProperties
+    exclusive: true
+    exclusivityScope: (subject, relationship type, asserter)
+  HAS_EVIDENCE:
+    modules:
+      - K
+    class: structural
+    temporal: recorded-only
+    edgeProperties: EvidenceEdgeProperties
+    exclusive: false
+  HAS_IDENTIFIER:
+    modules:
+      - K
+    class: asserted
+    temporal: episode
+    edgeProperties: IdentifierLinkProperties
+    exclusive: false
+  HAS_ITEM:
+    modules:
+      - D10
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  HAS_LABEL_VERSION:
+    modules:
+      - D6
+    class: asserted
+    temporal: episode
+    edgeProperties: AssertedEdgeProperties
+    exclusive: true
+    exclusiveNote: "R-10 sets exclusive: true (StateEpisodeProperties retired). The packet had declared this type NON-EXCLUSIVE: several open episodes coexist, one per asserting source (brand, DSLD, crowd database) and per attested version, and readers group by LabelVersion (packet 03 Q-D6-01; adversarial-review fix M14). R-22 keeps one episode per (from, to, type, asserter). Whether the executor's non-overlap check runs per (package, type) or per (package, type, asserter) is not fixed by R-10; the D6 fixtures are consistent with the per-asserter reading (one asserter, NIH ODS, closes V09.2 before V12.3 opens on the 30-count package). Owner/integrator confirms the scope."
+    exclusivityScope: (subject, relationship type, asserter)
+  HAS_LOCATOR:
+    modules:
+      - K
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  HAS_OBJECT:
+    modules:
+      - K
+    class: structural
+    temporal: recorded-only
+    edgeProperties: null
+    exclusive: false
+  HAS_OFFER:
+    modules:
+      - D6
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  HAS_OUTCOME:
+    modules:
+      - D3
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  HAS_PACKAGE:
+    modules:
+      - D6
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  HAS_POPULATION:
+    modules:
+      - D3
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  HAS_REFERENCE_FOOD:
+    modules:
+      - D12
+    class: asserted
+    temporal: episode
+    edgeProperties: AssertedEdgeProperties
+    exclusive: false
+  HAS_REGISTRATION_VERSION:
+    modules:
+      - D3
+    class: asserted
+    temporal: episode
+    edgeProperties: AssertedEdgeProperties
+    exclusive: true
+    exclusivityScope: (subject, relationship type, asserter)
+  HAS_SNAPSHOT:
+    modules:
+      - K
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  HAS_STEP:
+    modules:
+      - D5
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  HAS_STUDY_ROLE:
+    modules:
+      - D3
+    class: asserted
+    temporal: episode
+    edgeProperties: StudyRoleEdgeProperties
+    exclusive: false
+  HAS_SUBJECT:
+    modules:
+      - K
+    class: structural
+    temporal: recorded-only
+    edgeProperties: null
+    exclusive: false
+  HAS_VARIANT:
+    modules:
+      - D6
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  HOLDS_ROLE:
+    modules:
+      - D7
+    class: asserted
+    temporal: episode
+    edgeProperties: RoleEdgeProperties
+    exclusive: false
+  HOLDS_STAKE:
+    modules:
+      - D7
+    class: asserted
+    temporal: episode
+    edgeProperties: StakeEdgeProperties
+    exclusive: false
+  INCLUDES_TEST:
+    modules:
+      - D4
+    class: asserted
+    temporal: episode
+    edgeProperties: AssertedEdgeProperties
+    exclusive: false
+  INTERVAL_FOR:
+    modules:
+      - D4
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  INVESTIGATES:
+    modules:
+      - D3
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  INVOLVES:
+    modules:
+      - D13
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: EventRoleEdgeProperties
+    exclusive: false
+    temporalNote: "EventRoleEdgeProperties = kernel AssertedRecordedProperties fields verbatim and in order + role (the one qualifier questions filter on: Q-D13-03, Q-D13-06, Q-D13-14, Q-D13-33); the printed title is the authorizing Assertion's qualifier roleText=<label> (kernel rule M11(3); roleTitleVerbatim removed in the adversarial-review pass); an involvement has no validity of its own beyond the event's clocks"
+  IN_FOOD_CATEGORY:
+    modules:
+      - D12
+    class: asserted
+    temporal: episode
+    edgeProperties: AssertedEdgeProperties
+    exclusive: false
+  IN_STUDY_ARM:
+    modules:
+      - D2
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  ISSUED_BY:
+    modules:
+      - D8
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  LEADS_TO:
+    modules:
+      - D13
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+    temporalNote: valid time of the link is the later event's own clock; the recorded-time episode (AssertedRecordedProperties) records when BellLabs believed the link (recordedFrom/recordedTo)
+    projectionGate: SUPPORT
+  LICENSED_TO:
+    modules:
+      - D8
+    class: asserted
+    temporal: episode
+    edgeProperties: AssertedEdgeProperties
+    exclusive: false
+  LISTING_FOR:
+    modules:
+      - D6
+    class: asserted
+    temporal: episode
+    edgeProperties: AssertedEdgeProperties
+    exclusive: false
+  LOT_OF:
+    modules:
+      - D8
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  MATERIAL_CONTAINS:
+    modules:
+      - D1
+    class: asserted
+    temporal: episode
+    edgeProperties: ContentEdgeProperties
+    exclusive: false
+  MEASURES:
+    modules:
+      - D3
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  MEASURES_ANALYTE:
+    modules:
+      - D8
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  MEASURES_METRIC:
+    modules:
+      - D4
+    class: asserted
+    temporal: episode
+    edgeProperties: AssertedEdgeProperties
+    exclusive: false
+  MENTIONS:
+    modules:
+      - D9
+    class: derived
+    temporal: recorded-only
+    edgeProperties: DerivedEdgeProperties
+    exclusive: false
+  NAMES_RESPONSIBLE_PARTY:
+    modules:
+      - D6
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  OBSERVED_IN_CONTEXT:
+    modules:
+      - D2
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  OCCURRENCE_OF:
+    modules:
+      - K
+    class: structural
+    temporal: recorded-only
+    edgeProperties: null
+    exclusive: false
+  OCCURS_IN:
+    modules:
+      - D9
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  ON_FRONTIER:
+    modules:
+      - D13
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+    temporalNote: "kernel AssertedRecordedProperties (recorded time only, 00-DIRECTIVE rule 9): a classification has no validity of its own; reclassification on a vocabulary bump closes the episode (recordedTo) and opens a new one from a superseding Assertion"
+  OPERATIONALIZED_BY:
+    modules:
+      - D5
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  OUTPUTS_METRIC:
+    modules:
+      - D4
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  OWNS_BRAND:
+    modules:
+      - D7
+    class: asserted
+    temporal: episode
+    edgeProperties: AssertedEdgeProperties
+    exclusive: false
+  PARENT_OF:
+    modules:
+      - D7
+    class: asserted
+    temporal: episode
+    edgeProperties: ControlEdgeProperties
+    exclusive: false
+  PARENT_TAXON:
+    modules:
+      - D1
+    class: asserted
+    temporal: episode
+    edgeProperties: AssertedEdgeProperties
+    exclusive: false
+  PARTICIPATES_IN:
+    modules:
+      - D2
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: MechanismReferenceProperties
+    exclusive: false
+  PART_OF_MECHANISM:
+    modules:
+      - D2
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: MechanismReferenceProperties
+    exclusive: false
+  PATTERN_COMPONENT:
+    modules:
+      - D12
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  PERFORMED_BY_LAB:
+    modules:
+      - D4
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  PERFORMED_WITH_VERSION:
+    modules:
+      - D4
+    class: asserted
+    temporal: episode
+    edgeProperties: AssertedEdgeProperties
+    exclusive: false
+  PUBLISHES:
+    modules:
+      - D9
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  QUALITY_RESULT_FOR:
+    modules:
+      - D8
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  QUANTIFIES:
+    modules:
+      - D4
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  REALIZES_SUBSTANCE:
+    modules:
+      - D1
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  RECEIVES_VALUE_FROM:
+    modules:
+      - D7
+    class: asserted
+    temporal: episode
+    edgeProperties: ValueEdgeProperties
+    exclusive: false
+  REFLECTS_MECHANISM:
+    modules:
+      - D4
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  RENDITION_OF:
+    modules:
+      - D3
+      - D9
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  REPORTS_ON:
+    modules:
+      - D3
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  REQUIRES_INPUT_METRIC:
+    modules:
+      - D4
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  RESOLVES_TO_CONSTRAINT:
+    modules:
+      - D5
+    class: derived
+    temporal: recorded-only
+    edgeProperties: DerivedEdgeProperties
+    exclusive: false
+  RESPONDS_TO:
+    modules:
+      - D13
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+    temporalNote: same as LEADS_TO
+    projectionGate: SUPPORT
+  RESULT_FOR:
+    modules:
+      - D3
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  RESULT_FOR_ARM:
+    modules:
+      - D3
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  REVISES:
+    modules:
+      - D3
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: RevisionEdgeProperties
+    exclusive: false
+  RUNS_ON_DEVICE:
+    modules:
+      - D4
+    class: asserted
+    temporal: episode
+    edgeProperties: AssertedEdgeProperties
+    exclusive: false
+  SELLER_OF_RECORD:
+    modules:
+      - D6
+    class: asserted
+    temporal: episode
+    edgeProperties: AssertedEdgeProperties
+    exclusive: false
+  STATED_IN:
+    modules:
+      - D3
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  STATES_CONSTRAINT:
+    modules:
+      - D5
+    class: derived
+    temporal: recorded-only (derivedAt)
+    edgeProperties: DerivedEdgeProperties
+    exclusive: false
+  STATUS_FROM:
+    modules:
+      - D8
+    class: asserted
+    temporal: recorded-only
+    edgeProperties: AssertedRecordedProperties
+    exclusive: false
+  STATUS_OF:
+    modules:
+      - D8
+    class: asserted
+    temporal: episode
+    edgeProperties: AssertedEdgeProperties
+    exclusive: false
+  STEP_USES:
+    modules:
+      - D5
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  USES_CRITERION:
+    modules:
+      - D10
+    class: structural
+    temporal: recorded-only
+    edgeProperties: StructuralEdgeProperties
+    exclusive: false
+  WAS_ASSOCIATED_WITH:
+    modules:
+      - K
+    class: structural
+    temporal: recorded-only
+    edgeProperties: null
+    exclusive: false
+  WAS_GENERATED_BY:
+    modules:
+      - K
+    class: structural
+    temporal: recorded-only
+    edgeProperties: null
+    exclusive: false
+  WAS_INFORMED_BY:
+    modules:
+      - K
+    class: structural
+    temporal: recorded-only
+    edgeProperties: null
+    exclusive: false

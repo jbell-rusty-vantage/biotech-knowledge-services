@@ -1,0 +1,25 @@
+"""
+Asserted edge episode (bitemporal). One relationship per recorded-time episode, authorized by exactly one
+Assertion (`assertionUid`; its predicate equals the edge type, its subject/object equal the endpoints). Valid
+bounds, precisions and bases are copied from the Assertion (half-open; null = unknown, never 'ongoing');
+`recordedFrom` is service-assigned at commit; `recordedTo` is written once when the episode closes; nothing is
+deleted. Every field is executor-set. `lastWriterRunId` names the writing Mission Control run.
+An edge is projected only from a current POSITIVE Assertion (types registered with `projectionGate: SUPPORT` also
+need a SUPPORT Adjudication); one episode per (from, to, type, asserter), other Assertions corroborate (R-22).
+Entity → versioned-state attachments (formulation, label version, protocol edition, registration version) use this
+type; a relationship type registered with `exclusive: true` may not overlap in valid and recorded time (an open
+episode is closed before the next opens), enforced by the executor per relationship type (R-10).
+"""
+type AssertedEdgeProperties @relationshipProperties {
+  relationshipUid: String!
+  assertionUid: String!
+  validFrom: DateTime
+  validTo: DateTime
+  validFromPrecision: TimePrecision
+  validToPrecision: TimePrecision
+  validFromBasis: ValidTimeBasis!
+  validToBasis: ValidTimeBasis!
+  recordedFrom: DateTime!
+  recordedTo: DateTime
+  lastWriterRunId: String
+}

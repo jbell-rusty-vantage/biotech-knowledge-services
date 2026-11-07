@@ -1,0 +1,104 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v2",
+  "intentId": "skill-recovery-1",
+  "pins": {
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+    "policyVersion": "bks-admission-policy/v1"
+  },
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "biotech-kg-ingest-examples",
+      "model": "example"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run-skill-recovery-1",
+      "missionId": "mission-skill-recovery",
+      "operationId": "op-skill-recovery-1"
+    },
+    "activityKind": "INGESTION"
+  },
+  "basis": {
+    "creationOnly": {
+      "reason": "biotech-kg-ingest example recovery: first capture of synthetic example entities"
+    }
+  },
+  "sources": [
+    {
+      "ref": "s",
+      "source": {
+        "canonicalUri": "https://examples.bks.test/recovery/page",
+        "sourceKind": "WEB_PAGE"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-09T08:00:00Z",
+        "observedAt": "2026-10-09T08:00:00Z",
+        "contentHash": "sha256:f38a14ce059a4edfa3a2085cd188f8b77dd20148b314fdfcea6d0344a77b96a7",
+        "contentHashBasis": "SYNTHETIC_FIXTURE",
+        "captureMethod": "bks-example/1",
+        "captureCompleteness": "COMPLETE"
+      },
+      "locators": [
+        {
+          "ref": "l",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "raw-capture/v1",
+            "type": "TextQuoteSelector",
+            "exact": "Example Recovery Co owns Example Recovery Brand",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 10,
+              "end": 57
+            }
+          },
+          "exact": "Example Recovery Co owns Example Recovery Brand",
+          "startOffset": 10,
+          "endOffset": 57
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "org",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "Example Recovery Co",
+      "uidSegment": "skill-recovery-org",
+      "properties": {
+        "entityKind": "LEGAL_ENTITY"
+      },
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "brand",
+      "mode": "new",
+      "nodeType": "Brand",
+      "name": "Example Recovery Brand",
+      "uidSegment": "skill-recovery-brand",
+      "properties": {
+        "brandKind": "CONSUMER_PRODUCT"
+      },
+      "onMatch": "use_existing"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "owns",
+      "kind": "edge.assert",
+      "relationshipType": "OWNS_BRAND",
+      "fromRef": "org",
+      "toRef": "brand",
+      "asserterRef": "org",
+      "evidence": [
+        "l"
+      ],
+      "assertion": {
+        "speechAct": "STATES",
+        "validity": {}
+      }
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v2",
+  "intentId": "skill-derived-1",
+  "pins": {
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+    "policyVersion": "bks-admission-policy/v1"
+  },
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "biotech-kg-ingest-examples",
+      "model": "example"
+    },
+    "run": {
+      "system": "projection",
+      "runId": "proj-skill-derived-1"
+    },
+    "activityKind": "PROJECTION"
+  },
+  "basis": {
+    "creationOnly": {
+      "reason": "example projection job over the claim occurrence of example 06"
+    }
+  },
+  "subjects": [
+    {
+      "ref": "nr",
+      "mode": "resolved",
+      "uid": "${step:ex06.subject.nr}",
+      "nodeType": "ChemicalSubstance"
+    },
+    {
+      "ref": "mech",
+      "mode": "resolved",
+      "uid": "${step:ex06.subject.mech}",
+      "nodeType": "Mechanism"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "affects",
+      "kind": "projection.write",
+      "projection": {
+        "target": "derived-edge",
+        "relationshipType": "AFFECTS_MECHANISM",
+        "fromRef": "nr",
+        "toRef": "mech",
+        "derivationRule": "mechanism-rollup/v1",
+        "derivedFromAssertions": [
+          {
+            "uid": "${step:ex06.mint.occurrence.assertion}"
+          }
+        ]
+      }
+    }
+  ]
+}

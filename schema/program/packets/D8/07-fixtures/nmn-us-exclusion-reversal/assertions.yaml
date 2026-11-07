@@ -1,0 +1,836 @@
+# D8 fixture nmn-us-exclusion-reversal — assertions (fixtures stage, A7, 2026-10-08). Two ingestion steps (intent.json, intent-step2.json)
+# replay the recorded-time history. producedBy ids are fixture-scoped, not Mission Control ids.
+fixture: nmn-us-exclusion-reversal
+producedBy:
+  missionId: mission:ft-D8-fixtures
+  runId: run:ft-D8-nmn-us-exclusion-reversal
+  note: fixture-scoped ids, not Mission Control ids
+entities:
+- ref: fda
+  type: D7.Organization
+  name: U.S. Food and Drug Administration
+  onMatch: use_existing
+- ref: kingdomway
+  type: D7.Organization
+  name: Inner Mongolia Kingdomway Pharmaceutical Limited
+  onMatch: use_existing
+- ref: npa
+  type: D7.Organization
+  name: Natural Products Association
+  onMatch: use_existing
+- ref: anh
+  type: D7.Organization
+  name: Alliance for Natural Health USA
+  onMatch: use_existing
+- ref: nmn
+  type: D1.ChemicalSubstance
+  name: β-nicotinamide mononucleotide (NMN)
+  onMatch: use_existing
+  note: D1 owns identity (UNII/PubChem CID resolved by D1, not asserted here)
+- ref: agent-a7
+  type: Agent
+  name: BellLabs fixtures agent A7 (ft-D8)
+  onMatch: use_existing
+- ref: st-05038488
+  type: D3.Study
+  name: NCT05038488 — MIB-626 vs placebo, COVID-19 + early AKI (Phase 2a)
+  identifiers:
+  - scheme: NCT
+    issuer: NLM ClinicalTrials.gov
+    value: NCT05038488
+  onMatch: use_existing
+- ref: st-05040321
+  type: D3.Study
+  name: NCT05040321 — Sirtuin-NAD activator in Alzheimer's disease
+  identifiers:
+  - scheme: NCT
+    issuer: NLM ClinicalTrials.gov
+    value: NCT05040321
+  onMatch: use_existing
+- ref: st-04817111
+  type: D3.Study
+  name: NCT04817111 — NAD+ precursor in Friedreich's ataxia (Phase 2a)
+  identifiers:
+  - scheme: NCT
+    issuer: NLM ClinicalTrials.gov
+    value: NCT04817111
+  onMatch: use_existing
+- ref: rr-ndi1259
+  type: RegulatoryRecord
+  name: FDA response to NDI notification 1259 (β-NMN, Inner Mongolia Kingdomway), 2022-10-11
+  uidSegment: fda-ndi_response-1259
+  properties:
+    recordKind: NDI_RESPONSE
+    recordFamily: MARKET_ACCESS
+    pathway: US_NDI
+    jurisdiction: US
+    recordNumber: '1259'
+    docketId: FDA-2022-S-0023
+    issuedAt: '2022-10-11T00:00:00Z'
+    issuingOffice: Division of Research and Evaluation, Office of Dietary Supplement Programs, CFSAN
+    outcome: EXCLUDED_FROM_DEFINITION
+    outcomeVerbatim: Accordingly, we conclude that NMN is excluded from the dietary supplement definition under 21 U.S.C. § 321(ff)(3)(B)(ii) and may not be marketed
+      as or in a dietary supplement.
+    legalBasisCitation: 21 U.S.C. § 321(ff)(3)(B)(ii)
+  identifiers:
+  - scheme: FDA_NDI
+    issuer: FDA ODSP
+    value: '1259'
+    requested: true
+  - scheme: FDA_DOCKET
+    issuer: regulations.gov
+    value: FDA-2022-S-0023-0051
+    requested: true
+  propertyEvidence:
+  - loc-ndi-date
+  - loc-ndi-signature
+  - loc-fc-determination
+  - loc-dkt-ndi-title
+  onMatch: review
+- ref: rr-cp0872
+  type: RegulatoryRecord
+  name: FDA response to citizen petition FDA-2023-P-0872 (NPA, ANH-USA) on β-NMN, 2025-09-29
+  uidSegment: fda-citizen_petition_response-FDA-2023-P-0872-2754
+  properties:
+    recordKind: CITIZEN_PETITION_RESPONSE
+    recordFamily: PETITION
+    pathway: US_DIETARY_SUPPLEMENT
+    jurisdiction: US
+    recordNumber: FDA-2023-P-0872-2754
+    docketId: FDA-2023-P-0872
+    issuedAt: '2025-09-29T00:00:00Z'
+    issuingOffice: Human Foods Program
+    outcome: GRANTED_IN_PART
+    outcomeVerbatim: In light of FDA’s revised interpretation of the race-to-market clause in section 201(ff)(3)(B), we now conclude that NMN is not excluded from
+      the definition of dietary supplement under section 201(ff)(3)(B).
+    legalBasisCitation: FD&C Act section 201(ff)(3)(B); 21 CFR 10.30(e)(3)
+  identifiers:
+  - scheme: FDA_DOCKET
+    issuer: regulations.gov
+    value: FDA-2023-P-0872-2754
+    requested: true
+  propertyEvidence:
+  - loc-cp-docket
+  - loc-cp-decision
+  - loc-cp-conclusion
+  - loc-cp-signature
+  - loc-dkt-cp-posted
+  - loc-dkt-cp-subtype
+  onMatch: review
+  note: issuedAt from the digital signature and the docket postedDate, NOT from the printed date (loc-cp-printed-date says 2029)
+- ref: ls-nmn-excluded
+  type: LegalStatus
+  name: β-NMN — US — excluded from the dietary supplement definition
+  uidSegment: nmn-us-dietary_supplement-excluded
+  properties:
+    statusKind: EXCLUDED_FROM_DEFINITION
+    statusFamily: MARKET_ACCESS
+    jurisdiction: US
+    pathway: US_DIETARY_SUPPLEMENT
+    statusVerbatim: excluded from the dietary supplement definition under 21 U.S.C. § 321(ff)(3)(B)(ii)
+  propertyEvidence:
+  - loc-fc-determination
+  onMatch: review
+- ref: ls-nmn-not-excluded
+  type: LegalStatus
+  name: β-NMN — US — not excluded from the dietary supplement definition
+  uidSegment: nmn-us-dietary_supplement-not_excluded
+  properties:
+    statusKind: NOT_EXCLUDED_FROM_DEFINITION
+    statusFamily: MARKET_ACCESS
+    jurisdiction: US
+    pathway: US_DIETARY_SUPPLEMENT
+    statusVerbatim: not excluded from the definition of dietary supplement under section 201(ff)(3)(B)
+  propertyEvidence:
+  - loc-cp-conclusion
+  onMatch: review
+assertions:
+- id: n01
+  predicate: ISSUED_BY
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: rr-ndi1259
+    type: RegulatoryRecord
+  object:
+    ref: fda
+    type: D7.Organization
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-ndi-letterhead
+  - loc-ndi-signature
+  edge:
+    type: ISSUED_BY
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  intentStep: 1
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-nmn-us-exclusion-reversal
+- id: n02
+  predicate: ADDRESSED_TO
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: rr-ndi1259
+    type: RegulatoryRecord
+  object:
+    ref: kingdomway
+    type: D7.Organization
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-ndi-notifier
+  - loc-dkt-ndi-title
+  edge:
+    type: ADDRESSED_TO
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - addressee name redacted (b)(4) in the public copy; the letter answers a notification submitted on behalf of the named notifier
+  expectedStatus: PROPOSED
+  intentStep: 1
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-nmn-us-exclusion-reversal
+- id: n03
+  predicate: CONCERNS
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: rr-ndi1259
+    type: RegulatoryRecord
+  object:
+    ref: nmn
+    type: D1.ChemicalSubstance
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-ndi-subject
+  edge:
+    type: CONCERNS
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  intentStep: 1
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-nmn-us-exclusion-reversal
+- id: n04
+  predicate: STATUS_OF
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: ls-nmn-excluded
+    type: LegalStatus
+  object:
+    ref: nmn
+    type: D1.ChemicalSubstance
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-ndi-determination
+  - loc-fc-determination
+  edge:
+    type: STATUS_OF
+    class: asserted
+    properties: AssertedEdgeProperties
+  validTime:
+    validFrom: '2022-10-11'
+    validFromPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+    validTo: null
+  recordedTime:
+    recordedAt: service-assigned at step-1 commit (R1)
+    recordedTo: written once at step-2 commit (R2)
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  intentStep: 1
+  note: 'episode 1: open-ended as known in 2022; closed (recordedTo) when step 2 is ingested; never deleted'
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-nmn-us-exclusion-reversal
+- id: n05
+  predicate: STATUS_FROM
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: ls-nmn-excluded
+    type: LegalStatus
+  object:
+    ref: rr-ndi1259
+    type: RegulatoryRecord
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-ndi-determination
+  - loc-fc-determination
+  edge:
+    type: STATUS_FROM
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  intentStep: 1
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-nmn-us-exclusion-reversal
+- id: n06
+  predicate: CITES_AS_EVIDENCE
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: rr-ndi1259
+    type: RegulatoryRecord
+  object:
+    ref: st-05038488
+    type: D3.Study
+  value: NCT05038488
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-ndi-fn1
+  edge: false
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'no typed edge (literal or predicate-only assertion): valid bounds unknown'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  intentStep: 1
+  note: predicate-only (05 predicateOnly); intent v1 has no 'assertion with object node, no typed edge' proposal, so the intent carries the NCT id as a literal
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-nmn-us-exclusion-reversal
+- id: n07
+  predicate: CITES_AS_EVIDENCE
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: rr-ndi1259
+    type: RegulatoryRecord
+  object:
+    ref: st-05040321
+    type: D3.Study
+  value: NCT05040321
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-ndi-fn2
+  edge: false
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'no typed edge (literal or predicate-only assertion): valid bounds unknown'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  intentStep: 1
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-nmn-us-exclusion-reversal
+- id: n08
+  predicate: CITES_AS_EVIDENCE
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: rr-ndi1259
+    type: RegulatoryRecord
+  object:
+    ref: st-04817111
+    type: D3.Study
+  value: NCT04817111
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-fc-fn3
+  edge: false
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'no typed edge (literal or predicate-only assertion): valid bounds unknown'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  intentStep: 1
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-nmn-us-exclusion-reversal
+- id: n09
+  predicate: D8.CITED_TRIAL_ID_AS_PARSED
+  assertionKind: FIELD
+  subject:
+    ref: rr-ndi1259
+    type: RegulatoryRecord
+  value: NCT05040321 (footnote 1, rank=1)
+  asserter:
+    ref: agent-a7
+    type: Agent
+  locators:
+  - loc-fc-fn1-misread
+  edge: false
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'no typed edge (literal or predicate-only assertion): valid bounds unknown'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: REJECTED
+  intentStep: 1
+  note: 'the research-stage reading (Firecrawl projection). Re-selection against the projection passes, so a projection snapshot alone cannot catch it; re-selection
+    against the PDF bytes (loc-ndi-fn1) and the rendered page contradicts it. Expected: CAPTURE_FIDELITY adjudication on the PDF snapshot → CONTRADICTED → REJECTED.
+    This retracts the research-stage claim that FDA mis-cited the trial.'
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-nmn-us-exclusion-reversal
+- id: n10
+  predicate: ISSUED_BY
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: rr-cp0872
+    type: RegulatoryRecord
+  object:
+    ref: fda
+    type: D7.Organization
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-cp-letterhead
+  - loc-cp-signature
+  edge:
+    type: ISSUED_BY
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  intentStep: 2
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-nmn-us-exclusion-reversal
+- id: n11
+  predicate: ADDRESSED_TO
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: rr-cp0872
+    type: RegulatoryRecord
+  object:
+    ref: npa
+    type: D7.Organization
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-cp-npa
+  - loc-dkt-cp-title
+  edge:
+    type: ADDRESSED_TO
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  intentStep: 2
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-nmn-us-exclusion-reversal
+- id: n12
+  predicate: ADDRESSED_TO
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: rr-cp0872
+    type: RegulatoryRecord
+  object:
+    ref: anh
+    type: D7.Organization
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-cp-anh
+  - loc-dkt-cp-title
+  edge:
+    type: ADDRESSED_TO
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  intentStep: 2
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-nmn-us-exclusion-reversal
+- id: n13
+  predicate: CONCERNS
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: rr-cp0872
+    type: RegulatoryRecord
+  object:
+    ref: nmn
+    type: D1.ChemicalSubstance
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-cp-subject
+  edge:
+    type: CONCERNS
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  intentStep: 2
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-nmn-us-exclusion-reversal
+- id: n14
+  predicate: STATUS_OF
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: ls-nmn-excluded
+    type: LegalStatus
+  object:
+    ref: nmn
+    type: D1.ChemicalSubstance
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-ndi-determination
+  - loc-cp-conclusion
+  - loc-dkt-cp-posted
+  edge:
+    type: STATUS_OF
+    class: asserted
+    properties: AssertedEdgeProperties
+  validTime:
+    validFrom: '2022-10-11'
+    validFromPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+    validTo: '2025-09-29'
+    validToPrecision: DAY
+    validToBasis: STATED_BY_SOURCE
+  recordedTime:
+    recordedAt: R2
+  supersedes: n04
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  intentStep: 2
+  note: 'episode 2 of the same status: valid [2022-10-11, 2025-09-29); supersedes n04 (supersedesUid)'
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-nmn-us-exclusion-reversal
+- id: n15
+  predicate: STATUS_OF
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: ls-nmn-not-excluded
+    type: LegalStatus
+  object:
+    ref: nmn
+    type: D1.ChemicalSubstance
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-cp-conclusion
+  - loc-cp-signature
+  - loc-dkt-cp-posted
+  edge:
+    type: STATUS_OF
+    class: asserted
+    properties: AssertedEdgeProperties
+  validTime:
+    validFrom: '2025-09-29'
+    validFromPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+    validTo: null
+  recordedTime:
+    recordedAt: R2
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  intentStep: 2
+  note: validFrom from the signature timestamp and the docket postedDate (2025-09-29), not the printed '2029'
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-nmn-us-exclusion-reversal
+- id: n16
+  predicate: STATUS_FROM
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: ls-nmn-not-excluded
+    type: LegalStatus
+  object:
+    ref: rr-cp0872
+    type: RegulatoryRecord
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-cp-conclusion
+  edge:
+    type: STATUS_FROM
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  intentStep: 2
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-nmn-us-exclusion-reversal
+- id: n17
+  predicate: STATUS_FROM
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: ls-nmn-excluded
+    type: LegalStatus
+  object:
+    ref: rr-cp0872
+    type: RegulatoryRecord
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-cp-conclusion
+  edge:
+    type: STATUS_FROM
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  intentStep: 2
+  note: the record that ENDED the excluded status (STATUS_FROM covers establish, confirm or end)
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-nmn-us-exclusion-reversal
+- id: n18
+  predicate: REVISES_DETERMINATION_OF
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: rr-cp0872
+    type: RegulatoryRecord
+  object:
+    ref: rr-ndi1259
+    type: RegulatoryRecord
+  value: NDI 1259 response of 2022-10-11
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-cp-conclusion
+  edge: false
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'no typed edge (literal or predicate-only assertion): valid bounds unknown'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  intentStep: 2
+  note: predicate-only (05 predicateOnly)
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-nmn-us-exclusion-reversal
+- id: n19
+  predicate: D8.ISSUED_AT
+  assertionKind: FIELD
+  subject:
+    ref: rr-cp0872
+    type: RegulatoryRecord
+  value: '2025-09-29'
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-cp-signature
+  - loc-dkt-cp-posted
+  edge: false
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'no typed edge (literal or predicate-only assertion): valid bounds unknown'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  intentStep: 2
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-nmn-us-exclusion-reversal
+- id: n20
+  predicate: D8.ISSUED_AT_AS_PRINTED
+  assertionKind: FIELD
+  subject:
+    ref: rr-cp0872
+    type: RegulatoryRecord
+  value: September 29, 2029
+  asserter:
+    ref: fda
+    type: D7.Organization
+  locators:
+  - loc-cp-printed-date
+  edge: false
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'no typed edge (literal or predicate-only assertion): valid bounds unknown'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  intentStep: 2
+  note: 'faithful capture of a typo in the letter: CAPTURE_FIDELITY passes; the CONFLICT assessment below keeps n19 as the date of record'
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-nmn-us-exclusion-reversal
+adjudications:
+- about: n09
+  kind: CAPTURE_FIDELITY
+  evidence:
+  - locator: loc-ndi-fn1
+    role: CONTRADICTS
+  - locator: loc-fc-fn1-misread
+    role: CONTEXT
+  expectedVerdict: CONTRADICTED
+  expectedStatus: REJECTED
+  judge: verification.v1 re-selection on the PDF bytes + rendered-page check
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-nmn-us-exclusion-reversal
+assessments:
+- id: as-nmn-fn-resolution
+  assessmentKind: RESOLUTION
+  assessmentSubkind: D8.cited-identifier-resolution
+  about: rr-ndi1259
+  inputs:
+  - n06
+  - n07
+  - n08
+  evidence:
+  - loc-ct-05038488-title
+  - loc-ct-05040321-title
+  - loc-ct-04817111-title
+  result: all three NCT ids in footnote 1 resolve to records whose official titles equal the titles FDA quotes (NCT05038488 COVID-19/AKI; NCT05040321 Alzheimer's;
+    NCT04817111 Friedreich's ataxia); all three list MIB-626 as an intervention
+  asserter: agent-a7
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-nmn-us-exclusion-reversal
+- id: as-cp-date-conflict
+  assessmentKind: CONFLICT_RELEVANCE
+  assessmentSubkind: D8.record-date-conflict
+  about: rr-cp0872
+  inputs:
+  - n19
+  - n20
+  result: date of record 2025-09-29 (signature timestamp + docket postedDate/receiveDate); the printed 'September 29, 2029' is a typo in the letter
+  asserter: agent-a7
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-nmn-us-exclusion-reversal
+bitemporal_replay:
+  R1: commit time of intent.json (step 1)
+  R2: commit time of intent-step2.json (step 2); R1 < R2
+  asOf:
+  - valid: '2026-01-01'
+    recordedAsOf: between R1 and R2
+    answer: EXCLUDED_FROM_DEFINITION (episode n04, open-ended), from NDI 1259 response
+  - valid: '2026-01-01'
+    recordedAsOf: now (after R2)
+    answer: NOT_EXCLUDED_FROM_DEFINITION (episode n15), from the FDA-2023-P-0872 response
+  - valid: '2024-01-01'
+    recordedAsOf: now (after R2)
+    answer: EXCLUDED_FROM_DEFINITION (episode n14, closed 2025-09-29)

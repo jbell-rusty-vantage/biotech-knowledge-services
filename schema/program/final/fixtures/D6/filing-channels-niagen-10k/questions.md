@@ -1,0 +1,17 @@
+# filing-channels-niagen-10k — questions answered (unstructured-to-entity path, 00-DIRECTIVE 3.8)
+
+## The walk
+
+1. Question: "Through which channels does Niagen Bioscience sell Tru Niagen in the US, and who makes it?"
+2. Chunks: derived `MENTIONS` (D9 `Chunk.mentions`, DerivedEdgeProperties derivationRule d6-fixture-surface-match/v1; offsets in `assertions.yaml` chunks). Only ch1 is reached directly from the question's entities (Product hu:product:tru-niagen, Organization hu:org:niagen-bioscience-inc): ch1 (Item 1 "Distribution: Domestic…", offsets 44411–45372) mentions "Tru Niagen" ×3 and "TruNiagen.com" (plus "Amazon", "iHerb"). ch2 (manufacturing, 67691–68401) and ch3 (product risk factors) mention neither question entity; they are reached by one extra hop through the product's declared material — Product → HAS_VARIANT → HAS_PACKAGE → HAS_LABEL_VERSION → LabelVersion → DECLARES_COMPONENT → D1 material NRC (label-versions-truniagen-dsld adc01) ← MENTIONS ← ch2 / ch3 ("NRC"); "W.R. Grace" in ch3 is a D7 Organization, not a question entity. In production all three are also found by the D9 chunk vector index (not run in this stage). The hop each chunk needs is recorded as `reachedBy` in `assertions.yaml` trace. MENTIONS is never evidence.
+3. Assertions: ch1 `COVERS_LOCATOR` T01, T02, T03, T08 → assertions f01–f06, f09; ch2 → T04, T07 → f07; ch3 → T05 → f08 (`trace` in `assertions.yaml`).
+4. Locators: TEXT_QUOTE with exact, prefix/suffix and code-point offsets into the text version sha256:454b17b6… (e.g. T01 44462–44669).
+5. Snapshot bytes: text version = edgar-text/v5 projection of the raw 10-K HTML sha256:0f823d49…; a fresh re-fetch returned identical HTML, the normalization reproduced the same text digest, and every quote was re-selected at the same offsets — the verifier's re-selection path.
+
+## Expected answers
+
+| question | expected answer | path |
+| --- | --- | --- |
+| Q-D6-20 | Stated (10-K FY2025, filed 2026-03-04, asserter Niagen Bioscience): in the US, Tru Niagen is sold directly through the proprietary e-commerce platform TruNiagen.com, through third-party online marketplaces including Amazon, through specialty retailers and authorized healthcare-practitioner resellers; iHerb is named as a global e-commerce partner for international reach. Observed: TruNiagen.com offers for the same 30-count package at $49.00 (offer-roles-price-kinds-truniagen c07, c12); Amazon offers sold by TRU NIAGEN and fulfilled by Amazon (c05, c08) — consistent with the filing; iHerb lists the product on its US-facing site (retailer-reformulation-claim-iherb b02) although the filing frames iHerb as an international partner; specialty retailers and practitioner resellers are unnamed and not observed. | f01–f05 (SOLD_THROUGH_CHANNEL) next to LISTING_FOR / HAS_OFFER / SELLER_OF_RECORD in sibling fixtures |
+| Q-D6-16 | Roles of Niagen Bioscience for Tru Niagen from this filing: seller (own e-commerce), brand user ("Tru Niagen®", f09); maker: not Niagen — "third-party, FDA-registered contract manufacturers located in the United States" (unnamed, f07); NRC supplier: W.R. Grace, single supplier (f08, predicate SUPPLIES_MATERIAL registered by D1/D7, qualifier exclusivity=SOLE). | f01, f07, f08, f09 |
+| Q-D6-06 | The brand states one authorized reseller class: "authorized healthcare practitioners resellers" (f06); no statement about unauthorized marketplace sellers in the captured spans, so out-of-channel sellers cannot be classified from this filing alone. | f06 |

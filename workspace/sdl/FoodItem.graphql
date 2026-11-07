@@ -1,0 +1,62 @@
+"""
+Purpose: a reference food concept as one composition or food-ontology source defines it, at the preparation it names
+("Potatoes, russet, flesh and skin, raw", FDC 170027; "…, baked", FDC 170030; "McDONALD'S, french fries", FDC 170721,
+a frozen SR Legacy record). It is what composition, preparation and category questions join through, and the subject of
+food claims and target-effect assertions. Anything an organization sells today (a menu item, a packaged food, a branded
+longevity oil) is a D6 Product that points here through HAS_REFERENCE_FOOD; the two are never merged.
+Identity rule: (definingSystem, sourceRecordId) whenever the system issues a record id (FDC_ID, NDB number, FNDDS food
+code, PHENOL_EXPLORER_FOOD id, FoodOn IRI; the id also attaches as a kernel Identifier); only CURATED / OTHER records
+without an id use (definingSystem, normalized descriptionVerbatim: NFC, case-folded, whitespace-collapsed), so a
+re-cased or re-suffixed description in a later release never mints a second node. Two records of one system that
+differ in preparation, part or processing are two FoodItems related by the predicate-only VARIANT_OF Assertion; records
+of different systems are merged only by an EQUIVALENCE Assessment, never by name.
+uid token: `food` (hu:food:<opaque>).
+Questions: Q-D12-01, Q-D12-02, Q-D12-03, Q-D12-04, Q-D12-05, Q-D12-09, Q-D12-11, Q-D12-16, Q-D12-20, Q-D12-21,
+Q-D12-24, Q-D12-30, Q-D12-34.
+"""
+type FoodItem implements Entity & Subjectable
+  @node(labels: ["FoodItem", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "The defining source's description, verbatim (identity key only for CURATED / OTHER records without a record id)."
+  descriptionVerbatim: String!
+  "The system that defines the record (identity key; filter: Q-D12-24 data type)."
+  definingSystem: FoodDataSystem!
+  "Record id issued by the defining system ('170721' for FDC; FoodOn IRI); identity key with definingSystem; null only for CURATED / OTHER."
+  sourceRecordId: String
+  "Preparation the record names; NOT_STATED when the description names none (filter: Q-D12-02, Q-D12-03)."
+  preparationMethod: PreparationMethod
+  "How this record differs from the base its VARIANT_OF Assertion names; BASE when it has none (filter: Q-D12-02)."
+  variantKind: FoodVariantKind
+  "Verbatim processing/preparation descriptors of the source (FDC 'flesh and skin', 'baked', FoodOn process terms)."
+  processingVerbatim: [String!]
+  "Brand named inside a reference-database record (FDC 170721 'McDONALD'S'); never makes the record a Product."
+  brandNameVerbatim: String
+  "Scientific name as the source prints it; the taxon link is the predicate FOOD_FROM_TAXON (predicate-only; renamed from DERIVED_FROM_TAXON, which is a D1 edge type)."
+  scientificNameVerbatim: String
+  "Source flags the record as historical / no longer maintained (FDC isHistoricalReference) (filter: Q-D12-24, Q-D12-30)."
+  isHistoricalReference: Boolean
+  "Publication date of the record in its source release (FDC publicationDate) (sort: Q-D12-24)."
+  sourcePublishedAt: DateTime
+  "Synonyms and common names for entity linking ('EVOO'); feeds fulltext index food_item_search (Q-D12-34)."
+  synonyms: [String!]
+  """class: asserted; cardinality: many (recorded time only: D12 FoodContentProperties = AssertedRecordedProperties + statementKind, quantity, unitCode, amountBasis; comparator/range, n, min/max, derivation code on the Assertion); questions: Q-D12-01, Q-D12-02, Q-D12-20, Q-D12-21, Q-D12-24."""
+  components: [FoodComponentTarget!]!
+    @relationship(type: "FOOD_CONTAINS", direction: OUT, properties: "FoodContentProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (source-stated membership, or a CALCULATED Assertion with derivationRule such as nova-markers/v1); questions: Q-D12-14, Q-D12-15, Q-D12-08, Q-D12-26."""
+  categories: [FoodCategory!]!
+    @relationship(type: "IN_FOOD_CATEGORY", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (stored Product -> FoodItem; declared here so the D6 hub does not grow; the only Product-FoodItem link, never a merge, licensed by a RESOLUTION Assessment when a resolver chose it, R-62); questions: Q-D12-04, Q-D12-05, Q-D12-30, Q-D12-34, Q-D12-03."""
+  referencedByProducts: [Product!]!
+    @relationship(type: "HAS_REFERENCE_FOOD", direction: IN, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

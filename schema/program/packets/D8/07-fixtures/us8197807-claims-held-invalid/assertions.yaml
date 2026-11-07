@@ -1,0 +1,580 @@
+# D8 fixture us8197807-claims-held-invalid — assertions (fixtures stage, A7, 2026-10-08). Licence exclusivity and terms ride on the
+# authorizing Assertion's qualifiers (OQ-D8-09); intent v1 has no qualifiers field, so intent.json carries them in `rationale`.
+# producedBy ids are fixture-scoped.
+fixture: us8197807-claims-held-invalid
+producedBy:
+  missionId: mission:ft-D8-fixtures
+  runId: run:ft-D8-us8197807-claims-held-invalid
+  note: fixture-scoped ids, not Mission Control ids
+entities:
+- ref: dartmouth
+  type: D7.Organization
+  name: Trustees of Dartmouth College
+  onMatch: use_existing
+- ref: chromadex-inc
+  type: D7.Organization
+  name: ChromaDex, Inc.
+  onMatch: use_existing
+  note: litigant and licensee per the court; a wholly owned subsidiary of Niagen Bioscience, Inc. per the 10-K (D7 control edge, not D8)
+- ref: niagen
+  type: D7.Organization
+  name: Niagen Bioscience, Inc. (formerly ChromaDex Corporation)
+  identifiers:
+  - scheme: SEC_CIK
+    issuer: SEC EDGAR
+    value: '1386570'
+  onMatch: use_existing
+- ref: elysium
+  type: D7.Organization
+  name: Elysium Health, Inc.
+  onMatch: use_existing
+- ref: cafc
+  type: D7.Organization
+  name: United States Court of Appeals for the Federal Circuit
+  onMatch: use_existing
+- ref: google
+  type: D7.Organization
+  name: Google LLC (Google Patents)
+  onMatch: use_existing
+- ref: nr
+  type: D1.ChemicalSubstance
+  name: Nicotinamide riboside
+  onMatch: use_existing
+- ref: pat-807
+  type: Patent
+  name: US 8,197,807 B2 — Nicotinamide riboside kinase compositions and methods for using the same
+  uidSegment: US-8197807-B2
+  properties:
+    office: US
+    publicationNumber: '8197807'
+    kindCode: B2
+    publicationType: GRANT
+    filingDate: '2006-04-20T00:00:00Z'
+    grantDate: '2012-06-12T00:00:00Z'
+    expiresAt: '2026-11-19T00:00:00Z'
+    expiryBasis: AGGREGATOR_ESTIMATE
+    aggregatorStatusVerbatim: Active , expires 2026-11-19
+    aggregatorStatusObservedAt: '2026-10-08T21:38:09Z'
+  identifiers:
+  - scheme: PATENT_PUB
+    issuer: USPTO
+    value: US8197807B2
+  propertyEvidence:
+  - loc-gp-title
+  - loc-gp-filed
+  - loc-gp-granted
+  - loc-gp-status
+  - loc-gp-disclaimer
+  - loc-gp-adjusted
+  onMatch: review
+- ref: rr-cafc
+  type: RegulatoryRecord
+  name: ChromaDex, Inc. v. Elysium Health, Inc., No. 2022-1116 (Fed. Cir. 2023-02-13)
+  uidSegment: cafc-court_decision-2022-1116
+  properties:
+    recordKind: COURT_DECISION
+    recordFamily: ADJUDICATION
+    pathway: PATENT
+    jurisdiction: US
+    recordNumber: 2022-1116
+    issuedAt: '2023-02-13T00:00:00Z'
+    issuingOffice: United States Court of Appeals for the Federal Circuit
+    outcome: AFFIRMED
+    outcomeVerbatim: above, we affirm the district court’s judgment that the as- serted claims of the ’807 patent are invalid under 35 U.S.C. § 101.
+    legalBasisCitation: 35 U.S.C. § 101
+  identifiers:
+  - scheme: COURT_DOCKET
+    issuer: U.S. Court of Appeals for the Federal Circuit
+    value: 2022-1116
+    requested: true
+  propertyEvidence:
+  - loc-cafc-court
+  - loc-cafc-decided
+  - loc-cafc-holding
+  onMatch: review
+- ref: ls-807-invalid
+  type: LegalStatus
+  name: US 8,197,807 — claims 1–3 held invalid (35 U.S.C. § 101)
+  uidSegment: US-8197807-B2-claims-1-3-held_invalid
+  properties:
+    statusKind: CLAIMS_HELD_INVALID
+    statusFamily: IP_RIGHT
+    jurisdiction: US
+    pathway: PATENT
+    claimNumbers:
+    - 1
+    - 2
+    - 3
+    statusVerbatim: the as- serted claims of the ’807 patent are invalid under 35 U.S.C. § 101
+  propertyEvidence:
+  - loc-cafc-claims
+  - loc-cafc-holding
+  onMatch: review
+assertions:
+- id: p01
+  predicate: ASSIGNED_TO
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: pat-807
+    type: Patent
+  object:
+    ref: dartmouth
+    type: D7.Organization
+  asserter:
+    ref: google
+    type: D7.Organization
+  locators:
+  - loc-gp-assigned
+  - loc-gp-original
+  edge:
+    type: ASSIGNED_TO
+    class: asserted
+    properties: AssertedEdgeProperties
+  validTime:
+    validFrom: '2007-11-20'
+    validFromPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+    validTo: null
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - 'aggregator relays the USPTO assignment record; Google: ''The listed assignees may be inaccurate'''
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-us8197807-claims-held-invalid
+- id: p02
+  predicate: ASSIGNED_TO
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: pat-807
+    type: Patent
+  object:
+    ref: dartmouth
+    type: D7.Organization
+  asserter:
+    ref: niagen
+    type: D7.Organization
+  locators:
+  - loc-10k-held
+  edge:
+    type: ASSIGNED_TO
+    class: asserted
+    properties: AssertedEdgeProperties
+  validTime:
+    validFrom: null
+    validFromBasis: UNKNOWN
+    statedAsOf: '2025-12-31'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  note: 'same ownership, second asserter (10-K: ''held by Dartmouth''); corroborates p01'
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-us8197807-claims-held-invalid
+- id: p03
+  predicate: LICENSED_TO
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: pat-807
+    type: Patent
+  object:
+    ref: chromadex-inc
+    type: D7.Organization
+  asserter:
+    ref: cafc
+    type: D7.Organization
+  locators:
+  - loc-cafc-licence
+  edge:
+    type: LICENSED_TO
+    class: asserted
+    properties: AssertedEdgeProperties
+  validTime:
+    validFrom: null
+    validFromBasis: UNKNOWN
+    statedAsOf: '2023-02-13'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - exclusivity not stated by the court
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-us8197807-claims-held-invalid
+- id: p04
+  predicate: LICENSED_TO
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: pat-807
+    type: Patent
+  object:
+    ref: niagen
+    type: D7.Organization
+  asserter:
+    ref: niagen
+    type: D7.Organization
+  locators:
+  - loc-10k-held
+  - loc-10k-exclusive
+  edge:
+    type: LICENSED_TO
+    class: asserted
+    properties: AssertedEdgeProperties
+  validTime:
+    validFrom: null
+    validFromBasis: UNKNOWN
+    statedAsOf: '2025-12-31'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - exclusivity=EXCLUSIVE ('licensed exclusively to Niagen Bioscience')
+  - 'licensee as the 10-K names it: ''Niagen Bioscience'' = the Company and consolidated subsidiaries'
+  - licence start date not tied to this patent in the filing (agreements dated 2012-07-13, amended 2017-03-13 and 2020-12-29, and 2014-05-16 cover 'Dartmouth Patents')
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-us8197807-claims-held-invalid
+- id: p05
+  predicate: D8.LICENCE_TERMS_AMENDED
+  assertionKind: FIELD
+  subject:
+    ref: pat-807
+    type: Patent
+  value: 'Supplemental Agreement of 2024-11-27 to the Exclusive License Agreements (dated 2012-07-13, as amended and restated 2017-03-13 and 2020-12-29, and 2014-05-16): no additional royalties, licence fees or other payments payable to Dartmouth for the Dartmouth Patents after its effective date'
+  asserter:
+    ref: niagen
+    type: D7.Organization
+  locators:
+  - loc-10k-supp
+  - loc-10k-noroyalty
+  - loc-10k-exclusive
+  edge: false
+  validTime:
+    validFrom: '2024-11-27'
+    validFromPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+    validTo: null
+    note: valid from the date the Supplemental Agreement was entered into (the amendment's date, stated); the licence itself began under the 2012 and 2014 agreements (p04)
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - 'amends, does not start or end, the licence episode p04 (the 10-K: the Supplemental Agreement "supplements the exclusive license agreements entered into between the Parties dated July 13, 2012 ... and May 16, 2014")'
+  - 'waiver contingent on conditions (appeal bond for the fee judgment), per the passage that follows loc-10k-noroyalty'
+  - 'scope inference: the passage names ''Dartmouth Patents'', not patent numbers; applying it to US 8,197,807 relies on loc-10k-held (held by Dartmouth, licensed exclusively)'
+  expectedStatus: PROPOSED
+  note: 'adversarial-review revision: was a LICENSED_TO episode with validFrom 2024-11-27 (STATED_BY_SOURCE), which read as the licence start; now a dated literal on the patent (Q-D8-21). Held for review (PROPOSED) because the patent-level scope is inferred'
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-us8197807-claims-held-invalid
+- id: p06
+  predicate: CONCERNS
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: pat-807
+    type: Patent
+  object:
+    ref: nr
+    type: D1.ChemicalSubstance
+  asserter:
+    ref: cafc
+    type: D7.Organization
+  locators:
+  - loc-cafc-topic
+  edge:
+    type: CONCERNS
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  note: topical link only; claim coverage is an APPLICABILITY assessment
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-us8197807-claims-held-invalid
+- id: p07
+  predicate: ISSUED_BY
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: rr-cafc
+    type: RegulatoryRecord
+  object:
+    ref: cafc
+    type: D7.Organization
+  asserter:
+    ref: cafc
+    type: D7.Organization
+  locators:
+  - loc-cafc-court
+  - loc-cafc-decided
+  edge:
+    type: ISSUED_BY
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-us8197807-claims-held-invalid
+- id: p08
+  predicate: ADDRESSED_TO
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: rr-cafc
+    type: RegulatoryRecord
+  object:
+    ref: chromadex-inc
+    type: D7.Organization
+  asserter:
+    ref: cafc
+    type: D7.Organization
+  locators:
+  - loc-cafc-caption
+  edge:
+    type: ADDRESSED_TO
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - 'party role: plaintiff-appellant'
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-us8197807-claims-held-invalid
+- id: p09
+  predicate: ADDRESSED_TO
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: rr-cafc
+    type: RegulatoryRecord
+  object:
+    ref: dartmouth
+    type: D7.Organization
+  asserter:
+    ref: cafc
+    type: D7.Organization
+  locators:
+  - loc-cafc-caption
+  edge:
+    type: ADDRESSED_TO
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - 'party role: plaintiff-appellant'
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-us8197807-claims-held-invalid
+- id: p10
+  predicate: ADDRESSED_TO
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: rr-cafc
+    type: RegulatoryRecord
+  object:
+    ref: elysium
+    type: D7.Organization
+  asserter:
+    ref: cafc
+    type: D7.Organization
+  locators:
+  - loc-cafc-caption
+  edge:
+    type: ADDRESSED_TO
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - 'party role: defendant-appellee'
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-us8197807-claims-held-invalid
+- id: p11
+  predicate: ADJUDICATES_PATENT
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: rr-cafc
+    type: RegulatoryRecord
+  object:
+    ref: pat-807
+    type: Patent
+  value: claims 1, 2 and 3 (the asserted claims) at issue; held invalid
+  asserter:
+    ref: cafc
+    type: D7.Organization
+  locators:
+  - loc-cafc-claims
+  - loc-cafc-holding
+  edge: false
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'no typed edge (predicate-only): the decision is dated by the record (issuedAt 2023-02-13)'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  note: 'adversarial-review revision: was a typed CONCERNS edge; Patent left RegulatoryRecordTopic (D4.Device took the union slot). The standing the decision establishes is p12 (STATUS_OF) + p13 (STATUS_FROM), which is the path Q-D8-12 reads; this predicate keeps the decision -> patent link explicit'
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-us8197807-claims-held-invalid
+- id: p12
+  predicate: STATUS_OF
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: ls-807-invalid
+    type: LegalStatus
+  object:
+    ref: pat-807
+    type: Patent
+  asserter:
+    ref: cafc
+    type: D7.Organization
+  locators:
+  - loc-cafc-claims
+  - loc-cafc-holding
+  - loc-cafc-decided
+  edge:
+    type: STATUS_OF
+    class: asserted
+    properties: AssertedEdgeProperties
+  validTime:
+    validFrom: '2023-02-13'
+    validFromPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+    validTo: null
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  qualifiers:
+  - affirms the district court summary judgment of 2021-09-21 (10-K, loc-10k-sj)
+  - claims 1–3 are the asserted claims; other claims of the patent were not adjudicated in this record
+  expectedStatus: PROPOSED
+  note: the claim-level standing that the aggregator's 'Active' does not show (Q-D8-12)
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-us8197807-claims-held-invalid
+- id: p13
+  predicate: STATUS_FROM
+  assertionKind: RELATIONSHIP
+  subject:
+    ref: ls-807-invalid
+    type: LegalStatus
+  object:
+    ref: rr-cafc
+    type: RegulatoryRecord
+  asserter:
+    ref: cafc
+    type: D7.Organization
+  locators:
+  - loc-cafc-holding
+  edge:
+    type: STATUS_FROM
+    class: asserted
+    properties: AssertedRecordedProperties
+  validTime:
+    validFrom: null
+    validTo: null
+    validFromBasis: UNKNOWN
+    note: 'recorded-only edge (AssertedRecordedProperties): the edge has no valid-time fields; any valid time the source states stays on the Assertion'
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-us8197807-claims-held-invalid
+- id: p14
+  predicate: D8.DISTRICT_COURT_INVALIDITY
+  assertionKind: FIELD
+  subject:
+    ref: pat-807
+    type: Patent
+  value: '2021-09-21: summary judgment that the claims of the ''807 and ''086 patents are invalid (patent-ineligible subject matter)'
+  asserter:
+    ref: niagen
+    type: D7.Organization
+  locators:
+  - loc-10k-sj
+  edge: false
+  validTime:
+    validFrom: '2021-09-21'
+    validFromPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  note: company disclosure of the trial-court ruling; the 10-K says 'the claims', the court record limits it to the asserted claims 1–3 (p12) — the narrower record
+    governs
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-us8197807-claims-held-invalid
+- id: p15
+  predicate: D8.ORGANIZATION_RENAMED
+  assertionKind: FIELD
+  subject:
+    ref: niagen
+    type: D7.Organization
+  value: ChromaDex Corporation → Niagen Bioscience, Inc. effective 2025-03-19; ChromaDex, Inc. is a wholly owned subsidiary
+  asserter:
+    ref: niagen
+    type: D7.Organization
+  locators:
+  - loc-10k-rename
+  - loc-10k-subsidiary
+  edge: false
+  validTime:
+    validFrom: '2025-03-19'
+    validFromPrecision: DAY
+    validFromBasis: STATED_BY_SOURCE
+  polarity: POSITIVE
+  speechAct: STATES
+  basisKind: UNSTATED
+  expectedStatus: PROPOSED
+  note: identity context for D7 (name episode / control edge); D8 keeps ChromaDex, Inc. and Niagen Bioscience, Inc. as two organizations
+  producedBy:
+    missionId: mission:ft-D8-fixtures
+    runId: run:ft-D8-us8197807-claims-held-invalid

@@ -1,0 +1,26 @@
+"Role of an organization or person in an event (INVOLVES). Merges the pinned HOSTS_EVENT, SPEAKS_AT, EXHIBITS_AT and EventRoleEdgeProperties.participantRole strings. What the source printed ('lead investor', 'sole book-running manager') is the authorizing Assertion's qualifier roleText:<label>, never an edge field (kernel rule M11(3))."
+enum EventRole {
+  "Runs the trial or program the event is about."
+  SPONSOR
+  "Files or holds the application (NDA/BLA/MAA holder). Written only while no D8 RegulatoryRecord documents the event (a submission, a hold); once DOCUMENTED_BY_RECORD exists the applicant is the record's ADDRESSED_TO (executor-enforced, R-66)."
+  APPLICANT
+  "Regulator or agency that acts (holds, rejects, designates, enforces). Written only while no D8 RegulatoryRecord documents the event (a clinical hold or a designation known only from the sponsor); once DOCUMENTED_BY_RECORD exists the regulator is the record's ISSUED_BY (executor-enforced, R-66)."
+  REGULATOR
+  "Issuer of the securities sold in a FINANCING (registered direct, ATM sales, IPO, follow-on). Written only while no DOCUMENTED_BY_RECORD exists; with one, the issuer is the record's ISSUED_BY (executor-enforced, R-66)."
+  ISSUER
+  "Borrower under a loan or credit facility in a FINANCING (adversarial review: the financed party of a loan tranche issues no securities)."
+  BORROWER
+  INVESTOR
+  LEAD_INVESTOR
+  LENDER
+  "Underwriter, placement agent or at-the-market sales agent; the printed title is the authorizing Assertion's qualifier roleText."
+  UNDERWRITER
+  ACQUIRER
+  ACQUIREE
+  "Counterparty in a license, collaboration or option deal."
+  PARTNER
+  "Presents data or a paper (conference speaker, presenting author)."
+  PRESENTER
+  "Other party; the authorizing Assertion's qualifier roleText says what the source printed. Funder and recipient of an AWARD are not event roles: they are D7 Award AWARDED_BY / AWARDED_TO."
+  OTHER
+}

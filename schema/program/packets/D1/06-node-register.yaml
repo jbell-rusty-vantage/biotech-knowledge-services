@@ -1,0 +1,85 @@
+version: 1
+module: D1
+# MODEL stage (Wave 2), A2, 2026-10-08; whyNode seam names re-verified in the CHECK stage. 4 node types (budget 8). All implement Entity & Subjectable (kernel pattern):
+# they are assertion subjects/objects, identifier holders, mention targets and assessment targets.
+# identifierSchemes use codes from packets/K/identifier-schemes.yaml; schemes not in the seed are marked "(requested)"
+# and asked for in 11-open-questions.md OQ-D1-07.
+nodes:
+  - name: ChemicalSubstance
+    uidToken: substance
+    identityKeys: [UNII, INCHIKEY (when no UNII), "(normalized preferred name, substanceClass) provisional"]
+    identifierSchemes: [UNII, INCHIKEY, PUBCHEM_CID, CAS_RN, CHEBI, DRUGBANK, RXCUI, MESH, WIKIDATA]
+    whyNode: >-
+      Join point that labels and trials (D6 DECLARES_COMPONENT / D3 ADMINISTERS reach it through the material REALIZES_SUBSTANCE),
+      foods (D12 FOOD_CONTAINS), analytes (D4 HAS_ANALYTE), quality results (D8 MEASURES_ANALYTE), regulatory status and
+      patents (D8 STATUS_OF, CONCERNS) and mechanisms (D2) share; Q-D1-01/02/03/04/05/24 traverse salt → moiety and form → nutrient through it; CQ-ID-04 and
+      Q-D1-06 filter identifiers and conflicts on it; Q-D1-26 resolves label strings to it.
+    filterProperties: [substanceClass, molecularFormula, molecularWeight, searchText (fulltext)]
+    otherProperties: 1
+    archetype: Entity
+    mutations: { create: false, update: false, delete: false }
+    mutationNote: "GraphQL is read-only (@mutation(operations: [])); the intent executor creates and updates; nothing is deleted."
+  - name: IngredientMaterial
+    uidToken: material
+    identityKeys: [materialKind, "defining substance or source taxon", brandName, "specification owner (D7 assertion)", physicalForm, formDescriptor, grade, plantPart, preparationType, "extractRatioLow/High", extractionSolvent, viabilityState]
+    identifierSchemes: ["SUPPLIER_CODE (requested)", "DSLD_INGREDIENT (requested)", "LNHPD_INGREDIENT (requested)"]
+    whyNode: >-
+      What labels and trial methods actually name (Niagen, KSM-66, LGG) and the target of D6 DECLARES_COMPONENT and D3
+      ADMINISTERS; CQ-ID-06, CQ-ST-02 and Q-D1-07 join study material to product material through it; Q-D1-12 filters
+      on plantPart/preparationType; Q-D1-14/15 traverse it to strains; Q-D1-16/17 reach supplier, mark and patent
+      exposure through it.
+    filterProperties: [materialKind, brandName, physicalForm, grade, plantPart, preparationType, extractRatioLow, extractRatioHigh, viabilityState, searchText (fulltext)]
+    otherProperties: 2
+    archetype: Entity
+    mutations: { create: false, update: false, delete: false }
+    mutationNote: executor-only writes; an UNRESOLVED material is a valid record; "same material?" is a kernel EQUIVALENCE Assessment, never a merge.
+  - name: Constituent
+    uidToken: constituent
+    identityKeys: [constituentKind, "normalized name (nutrients: authority nutrient list name, e.g. 21 CFR 101.9)", "CHEBI class id when one exists"]
+    identifierSchemes: [CHEBI, MESH, "FDC_NUTRIENT (requested; shared with D12)"]
+    whyNode: >-
+      Nutrient-basis harm thresholds and "every form of M" expansion (Q-D1-03, Q-D1-04) join on the nutrient, not on any
+      one substance (P5P's active moiety is itself); food composition (Q-D1-22, D12) and marker standardization
+      (Q-D1-13) target classes and measurands that have no single structure.
+    filterProperties: [constituentKind, nutrientKind, referenceUnitCode, searchText (fulltext)]
+    otherProperties: 0
+    archetype: Entity
+    mutations: { create: false, update: false, delete: false }
+  - name: Taxon
+    uidToken: taxon
+    identityKeys: ["NCBI taxid (requested scheme NCBI_TAXON)", "culture-collection deposits for strains without a taxid (requested ATCC/DSMZ/LMG/CCUG)", "(accepted scientific name, rank) provisional"]
+    identifierSchemes: ["NCBI_TAXON (requested)", "CULTURE_COLLECTION (requested: ATCC, DSMZ, LMG, CCUG, NRRL as issuers)", WIKIDATA]
+    whyNode: >-
+      Q-D1-14/15 traverse material → strain → species to tell strain-matched from species-only evidence; Q-D1-11/12
+      traverse taxon → preparations (all ashwagandha preparations; leaf vs root) and genus → species.
+    filterProperties: [rank, organismGroup, scientificName, searchText (fulltext)]
+    otherProperties: 0
+    archetype: Entity
+    mutations: { create: false, update: false, delete: false }
+
+deferred:
+  - name: ChemicalForm
+    reason: >-
+      No D1 question traverses a physical form shared by several materials; crystal form, polymorph and grade are
+      IngredientMaterial properties. Kept as an open question with D8 (A7): if patent → crystal-form coverage must be
+      shared across suppliers' materials (Q-D1-17), D8 can request it back (OQ-D1-04).
+  - name: FoodItem
+    reason: W05 type; owned by D12 (A2's other packet) as a standalone food node that references D1 identity through its own composition edge (seam).
+  - name: Exposure
+    reason: W05 type; out of D1 scope — D5 (interventions, protocols, safety) decides whether an exposure characterization is a node.
+  - name: Lifestyle
+    reason: W05 type; out of D1 scope — D5 (practices are interventions/protocols).
+
+mergedInto:
+  - { from: BrandedIngredientMaterial, into: IngredientMaterial, how: "brandName non-null; mark owner is a predicate-only Assertion (D8 trademark / D7 owner)" }
+  - { from: BotanicalPreparation, into: IngredientMaterial, how: "materialKind BOTANICAL_PREPARATION + plantPart, preparationType, extractRatioLow/High, extractionSolvent; source species through DERIVED_FROM_TAXON" }
+  - { from: MicrobialPreparation, into: IngredientMaterial, how: "materialKind MICROBIAL_PREPARATION + viabilityState; strains through DERIVED_FROM_TAXON to Taxon(rank STRAIN)" }
+  - { from: MaterialMixture, into: IngredientMaterial, how: "materialKind MATERIAL_MIXTURE; components predicate-only (HAS_MIXTURE_COMPONENT); label blends are D6" }
+  - { from: ChemicalForm, into: IngredientMaterial, how: "physicalForm (PhysicalFormKind), formDescriptor, grade; see deferred" }
+  - { from: Nutrient, into: Constituent, how: "constituentKind NUTRIENT + nutrientKind + referenceUnitCode; reference form through the predicate-only NUTRIENT_EXPRESSED_AS Assertion (adversarial review); vitamers through COUNTS_TOWARD_NUTRIENT" }
+  - { from: BotanicalTaxon, into: Taxon, how: "organismGroup PLANT/FUNGUS/ALGA" }
+  - { from: MicrobialTaxon, into: Taxon, how: "organismGroup BACTERIUM (yeasts: FUNGUS)" }
+  - { from: MicrobialStrain, into: Taxon, how: "rank STRAIN; deposits as kernel Identifiers; STRAIN_OF → PARENT_TAXON" }
+  - { from: ChemicalSubstance, into: ChemicalSubstance, how: "kept; unii/inchikey fields move to kernel Identifiers; substanceClass mirrors GSRS classes" }
+  - { from: IngredientMaterial, into: IngredientMaterial, how: "kept as the single material type" }
+  - { from: Constituent, into: Constituent, how: "kept; absorbs Nutrient" }

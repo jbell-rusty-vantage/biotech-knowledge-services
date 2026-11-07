@@ -1,0 +1,35 @@
+# AGENTS.md — biotech-knowledge-services
+
+Knowledge services for the BellLabs biotech knowledge graph: schema workspace, deterministic read/ingest executor, GraphQL API, agent skills. Read [README.md](README.md) and [service navigation](docs/NAVIGATION.md) for current ownership, APIs and retrieval; this file is the working contract for agents editing the repo.
+
+## Ground rules
+
+Sprint V's [minimal repository/database map](../../platform/mission-control/docs/specs/archive/provider-consolidation-2026-10/sprint-v/START-HERE.md) (archived) distinguishes Aura domain data, Fly services, app Supabase and runtime persistence; read it before selecting a migration or test target.
+
+- `pnpm`, never npm/yarn. Node ≥ 22. Build with `pnpm build` (tsc project references); test with `pnpm test` (unit) and `BKS_INTEGRATION=1 … pnpm test` (needs `scripts/neo4j-test.sh up`).
+- `schema/pinned/*` is the pinned release bundle (`PIN.json` format `bks-pin.v2` plus `release/**`), byte-verified on every load by `loadRelease()`. Never edit it by hand. Owner decision 2026-10-24 (Sprint V SV-D10) makes this repository the schema author. Source trees `schema/source/biotech-schema-v2.1.0/` (initialized from the verified v2.0.2 inputs) and `schema/source/biotech-schema-v2.2.0/` exist; **v2.2.0 is pinned** (2026-10-25, Sprint V SV-11). Its graph DDL and `KsReleaseMarker` were installed on disposable Biotech Aura `8032ec07` by the Sprint OC W0 reinstall on 2026-10-28 (installer `graph-release` `applied`, per `../../platform/mission-control/docs/specs/provider-consolidation-2026-10/sprint-oc/release/RELEASE-BUNDLE.md`); not re-verified live since and not qualified. The Fly services still run v2.0.2. To change the schema, copy it to a new `schema/source/<release>/` and follow `schema/source/README.md`. Use a new major version if incompatible. Generate/verify through `scripts/release/*.mjs`, then `pnpm schema:pin -- --release schema/source/<release>`. Update provenance to this authoring source; the absent historical `biotech-meta` is not a blocker or a current edit destination.
+- `workspace/` is generated. Sidecars ("workspace inputs") are authored in the selected source release's `workspace-inputs/` (see `schema/sidecars/README.md`); change them there or change the renderer, re-pin, then `pnpm workspace:build`; `pnpm workspace:verify` must pass before committing. Sidecar references are validated against the release IR at build time.
+- Contracts live in `packages/contracts` and are versioned by `schemaVersion` strings; a breaking change is a new version string plus a JSON Schema export (`pnpm contracts:json-schema`) and a Python model update.
+- Trusted planning/compilation owns proposals-to-Cypher: v2 is `packages/kg-ops/src/write/`, while `plan.ts` is the retained v1 path. Select contracts by the endpoint version. Keep it pure with respect to time (`now` injected) and deterministic: same intent + same graph state → same plan digest.
+- The apply executor writes in one transaction under the `KsIntentMarker`; never add a second write transaction to the apply path except the failed-marker record.
+- Never commit secrets or PHI. `.env` is ignored; `.env.example` lists every variable; credential names and their readers are in `config/env.registry.yaml` and `docs/ENVIRONMENT.md` (only `BKS_BIOTECH_DB_*` / `BKS_BIOTECH_GRAPH_*`, no older aliases).
+- This repository is public: [`jbell-rusty-vantage/biotech-knowledge-services`](https://github.com/jbell-rusty-vantage/biotech-knowledge-services), `main` only; history starts at a clean-slate root commit, so commit IDs cited in older documents do not resolve ([repository history](docs/REPOSITORY-HISTORY.md)). Keep `.scratch/`, `runs/` and custody evidence out of Git.
+- **Fly deploy is on hold (owner, 2026-11-07)** pending the schema change discussion and seed research: no deploy, redeploy or Fly secret change until the owner lifts it. Resume steps and the per-app secret set/unset list are at the top of `docs/ENVIRONMENT.md`.
+- Do not commit or push unless the user asks.
+
+## Where things are
+
+- Parser/IR: `packages/schema-workspace/src/parse.ts`, `ir.ts`. Renderer: `render.ts`. Schema map (one deterministic Markdown file: node-edge-node, properties, growth tables): `map.ts`, `pnpm schema:map`. Executable size report: `scripts/schema-size.mjs` over a `print-schema` output. Search: `search.ts`. Slices: `slice.ts`. Sidecar loader/validator: `sidecars.ts`. CLI: `cli.ts` (`bks-schema`).
+- Read executor: `packages/kg-ops/src/read.ts`; resolver: `resolve.ts`; planner: `plan.ts`; apply/receipts: `apply.ts`; Cypher guard: `cypher.ts`; operations runner: `operations.ts`; CLI: `cli.ts` (`bks`).
+- Consumer GraphQL: `apps/graphql-api/src/main.ts`, projection and persisted-operation registry; reference product/user-session BFF: `apps/product-bff/src/main.ts`; typed client: `packages/graphql-client`. Current v2 consumer GraphQL mutations are unsupported. Executor HTTP: `apps/executor/src/index.ts`; MCP: `apps/executor/src/mcp.ts`.
+- Skills: `.agents/skills/*/SKILL.md`. Vendored upstream Neo4j skills (`neo4j-*-skill`, 29, MIT, unmodified; see `.agents/skills/_vendor-neo4j/README.md`): use `neo4j-modeling-skill` / `neo4j-cypher-skill` / `neo4j-vector-index-skill` / `neo4j-import-skill` for schema and tooling work. Examples: `examples/`. Eval harness: `evals/baseline-comparison/`.
+- Current schema state: `schema/pinned/PIN.json`, then README "Current pin and historical observations" (deployment evidence and its limits), `docs/plans/schema-v2-service-release/STATUS.md` (SV-11 section) and `INTERFACES.md`. Current program work (Sprint OC W1, Biotech provenance mirror) is routed from `../../platform/mission-control/docs/specs/provider-consolidation-2026-10/sprint-oc/NEXT-SESSION.md`. The rest of `docs/plans/schema-v2-service-release/` is the dated 2026-10-11/12 v2.0.2 release record, not current state; dated deployment/Git statements require fresh verification. Historical schema program (plan, kickoff briefs, packets, decisions): `schema/program/`; `PLAN.md` first. Generated files there (`schema-map.md`, `size-report.md`) are regenerated, never edited. The agent-team run: `schema/program/fast-track/` (directive, packet contract, team, synthesis, kickoff prompts); packet scripts `scripts/packet-skeleton.mjs`, `scripts/packet-check.mjs`, `scripts/assemble-schema.mjs`; `bks-schema map --sdl <file>` maps any SDL.
+- Decisions: `docs/architecture/000*.md`. Deployment: `docs/deployment/executor.md`, `docs/deployment/graphql-api.md` (deploy on hold, see above); Fly.io operations: `.agents/skills/fly-ops/SKILL.md` (its secret names predate the env rename; `docs/ENVIRONMENT.md` wins), always via `bash scripts/fly.sh` (token `FLY_API_TOKEN` from `.env`, never printed).
+
+## Validation before handing off
+
+```bash
+pnpm build && pnpm test
+pnpm workspace:verify
+bash scripts/neo4j-test.sh up && BKS_INTEGRATION=1 NEO4J_TEST_URI=neo4j://localhost:7690 NEO4J_TEST_PASSWORD=bks-test-password pnpm exec vitest run --project kg-ops
+```

@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "biotech-knowledge-read-intent.v1",
+  "intentId": "example-pre-research-basis",
+  "context": {
+    "actor": { "kind": "agent", "id": "research-planner" },
+    "run": { "system": "mission-control", "runId": "example-run-001" }
+  },
+  "operations": [
+    {
+      "opId": "resolve",
+      "kind": "node.resolve",
+      "purpose": "What do we already hold for the mission's entities?",
+      "mentions": [
+        { "mentionId": "elysium", "nodeType": "Organization", "name": "Elysium Health", "identifiers": [ { "scheme": "DOMAIN", "value": "elysiumhealth.com" } ] },
+        { "mentionId": "basis", "nodeType": "Product", "name": "Basis" },
+        { "mentionId": "nr", "nodeType": "ChemicalSubstance", "name": "Nicotinamide riboside chloride", "aliases": ["NR"], "identifiers": [ { "scheme": "UNII", "value": "8XM2XT8VWI" } ] }
+      ],
+      "limitPerMention": 5
+    },
+    { "opId": "counts", "kind": "count.byType", "nodeTypes": ["Organization", "Product", "ProductVariant", "ChemicalSubstance", "Study", "Assertion"] },
+    { "opId": "rels", "kind": "count.relationships" }
+  ],
+  "limits": { "rowCap": 200, "timeoutMs": 15000 }
+}

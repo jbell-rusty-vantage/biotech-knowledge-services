@@ -1,0 +1,82 @@
+version: 1
+module: D7
+# Model stage (A6, 2026-10-08). 4 node types (budget 8). Every type implements Entity & Subjectable (kernel pattern), lists the
+# seven Entity fields verbatim, and carries @query(aggregate: false) @mutation(operations: []). Identifier scheme codes are from
+# packets/K/identifier-schemes.yaml; codes marked (requested) are asked of the kernel in 11-open-questions.md.
+nodes:
+  - name: Organization
+    uidToken: org
+    identityKeys: [registry identifier (LEI | SEC_CIK | COMPANY_NUMBER (requested) | NPI for NPI-2 | ROR), "(normalized legal name, jurisdiction)", "(group name as printed, entityKind CORPORATE_GROUP)"]
+    identifierSchemes: [LEI, SEC_CIK, ROR, NPI, WIKIDATA, OPENALEX, COMPANY_NUMBER (requested), UEI (requested), CROSSREF_FUNDER (requested), WEB_DOMAIN (requested)]
+    whyNode: >-
+      Every D7 question joins or traverses through it: the counterparty of roles, stakes and payments (CQ-CL-05, CQ-EC-03,
+      Q-D7-06), the node of ownership and control chains (Q-D7-01, Q-D7-14, Q-D7-19), the funder of awards (Q-D7-05, Q-D7-15),
+      and the anchor that D3, D6, D8, D9, D13 point their role edges at. Assertions name it as subject, object and asserter
+      (regulators, companies, institutions).
+    filterProperties: [entityKind, organizationKind, status, jurisdiction, legalName, name]
+    otherProperties: 2
+    archetype: Entity
+    mutations: { create: false, update: false, delete: false }
+  - name: Person
+    uidToken: person
+    identityKeys: [ORCID, SEC_CIK (Form 4 reporting owner), NPI (NPI-1), "(normalized full name, the public role and organization that make the person public)"]
+    identifierSchemes: [ORCID, SEC_CIK, NPI, OPENALEX, WIKIDATA, NIH_PROFILE_ID (requested)]
+    whyNode: >-
+      The holder of roles, stakes and payments and the asserter of recommendations: CQ-CL-05 and Q-D7-06 start at a person
+      (via the kernel ASSERTED_BY of a claim occurrence) and traverse their interest edges; Q-D7-02, Q-D7-03, Q-D7-17 filter
+      and join persons across organizations; resolution between a Form D name, an ORCID record and a speaker label needs a
+      node to resolve to.
+    filterProperties: [name, publicActorBasis, credentialsVerbatim]
+    otherProperties: 1
+    archetype: Entity
+    mutations: { create: false, update: false, delete: false }
+  - name: Brand
+    uidToken: brand
+    identityKeys: ["(normalized brand name, brandKind, holder organization at first capture)"]
+    identifierSchemes: [WIKIDATA, WEB_DOMAIN (requested)]
+    whyNode: >-
+      Brand ≠ legal entity is the central identity confusion of the domain: Q-D7-19 and CQ-EC-02 traverse brand → holder
+      organization → parent; Q-D7-06 and CQ-CL-05 reach a recommended product through its brand to the organization a speaker
+      has an interest in; D6 points Product → Brand. A brand name as a property of Product would lose the holder episodes
+      (Tru Niagen's holder changed on dissolution).
+    filterProperties: [name, brandKind]
+    otherProperties: 1
+    archetype: Entity
+    mutations: { create: false, update: false, delete: false }
+  - name: Award
+    uidToken: award
+    identityKeys: ["(award number, issuer as printed) as a kernel Identifier (AWARD_NUMBER / NIH_PROJECT)", "(normalized title, start year, issuer as printed) when no number exists"]   # adversarial review: never the funder Organization uid; the funder is the asserted AWARDED_BY edge
+    identifierSchemes: [AWARD_NUMBER (requested; issuer = the funder name as printed), NIH_PROJECT (requested), DOI (award DOIs, Crossref grant ids)]
+    whyNode: >-
+      The join point between a funder, the recipient institution and investigator, and the studies and papers that cite the
+      award number (FundRef award ids in JATS, NIH project numbers in RePORTER and in acknowledgements, ORCID fundings): Q-D7-05
+      "what else does that funder fund" and Q-D7-15 traverse funder → award → recipient → study; CQ-EC-04 separates
+      award funding from employment and in-kind supply. As an edge property the award id could not be shared by a paper, a
+      registry record and the funder's list.
+    filterProperties: [instrument, programName, startDate, endDate, amount]
+    otherProperties: 4
+    archetype: Entity
+    mutations: { create: false, update: false, delete: false }
+deferred:
+  - { name: Facility, reason: "No D7 question filters or traverses a site; facility questions are inspections, registrations, manufacturing sites and clinic locations (D8, D5). Proposed owner D8; check stage: D8 also deferred it (certified facilities covered as Organizations through CertificationListing.covers), so no module owns Facility — owner decision (11-open-questions.md OQ-D7-05)." }
+  - { name: PseudonymousActor, reason: "A handle is an account on a platform (D9 owns platforms, channels and accounts); D9 research lists actor types as D7 (contested, OQ-D7-06). Check stage: D9 models the handle as a Channel (platform handle, platformAccountId); resolution to Person is a kernel RESOLUTION Assessment over the Channel and the Person." }
+  - { name: AnonymousActor, reason: "An unnamed class of asserter ('anonymous commenter', 'unnamed employee') is the kernel asserter pattern's concern (ASSERTED_BY → the publishing Organization or the D9 account with an asserterClass qualifier). Owner: kernel (OQ-D7-06)." }
+  - { name: CohortParticipant, reason: "A participant token issued by a study is study data; no D7 question. Owner D3 if any D3 question needs it." }
+  - { name: FinancialInterest (intermediate node), reason: "The interest edges plus their authorizing Assertions carry kind, interval, stake and value; the conflict assessment cites the Assertion (DERIVED_FROM). Revisit only if one disclosure must bind several kinds, one value bucket and one project into a single unit (NIH FCOI record)." }
+  - { name: FinancingRound, reason: "A financing is a D13 Event (eventKind FINANCING) INVOLVES the issuer and named investors; amounts are Assertions on the Event; related persons are HOLDS_ROLE (Q-D7-04)." }
+  - { name: ConflictRelevanceAssessment, reason: "Kernel Assessment with assessmentKind CONFLICT_RELEVANCE (already in the kernel enum); D7 owns the subkind vocabulary (relevance level and basis, temporal overlap, disclosure finding) and the questions; D9 owns the occurrence. Typed facets requested of the kernel (OQ-D7-03)." }
+  - { name: FundingProgram, reason: "An ARPA-H or Hevolution programme is Award.programName until a question traverses programme → awards → recipients across funders." }
+  - { name: InvestorGroup, reason: "Organization with entityKind CORPORATE_GROUP and PARENT_OF to its vehicles (Q-D7-14)." }
+mergedInto:
+  - { from: LegalEntity, into: Organization, how: "entityKind LEGAL_ENTITY + legalName, legalFormVerbatim, jurisdiction; same uid token hu:org:" }
+  - { from: ConsumerBrand, into: Brand, how: "renamed; brandKind adds clinic, media, food and ingredient trade-name brands" }
+  - { from: OrganizationSnapshot, into: Organization, how: "display projections legalName / status on Organization; name, status, ticker history as valid-time Assertions (LEGAL_NAME, FORMER_NAME, ORGANIZATION_STATUS; TICKER is a kernel Identifier scheme request); stage, size and sector dropped (no D7 question)" }
+  - { from: RoleEdgeProperties (pinned), into: RoleEdgeProperties, how: "roleType + corporateRoleType + seniorityLevel collapsed into roleKind (OrgRoleKind); compensationKind moved to ValueEdgeProperties.valueKind; mongoResearchRunId → lastWriterRunId; the observation date is the authorizing Assertion's kernel validObservedAt (an edge copy observedAt was added in the model stage and removed in the adversarial review)" }
+  - { from: OwnershipEdgeProperties (pinned), into: "StakeEdgeProperties + ControlEdgeProperties", how: "split by meaning: stake qualifiers on HOLDS_STAKE, controlKind on PARENT_OF" }
+  - { from: FacilityEdgeProperties (pinned), into: "D8 (with Facility)", how: "not D7" }
+  - { from: RoleHolderTarget (union), into: "two declared fields (Person.holdsStakes, Organization.holdsStakes)", how: "no union; HOLDS_STAKE is declared on both holder types" }
+  - { from: OrganizationType (37 values), into: "OrganizationKind (15) + OrganizationEntityKind (5)", how: "role-like values (MANUFACTURER, DISTRIBUTOR, RETAILER, EMPLOYER, INVESTOR, SUBSIDIARY, HOLDING_COMPANY …) removed or folded: roles are edges, holding/subsidiary is PARENT_OF, legal vs group is entityKind" }
+  - { from: RoleType / CorporateRoleType / SeniorityLevel, into: OrgRoleKind, how: "one normalized role vocabulary + roleTitleVerbatim" }
+  - { from: CompensationKind, into: ValueTransferKind, how: "extended with FTC material-connection kinds and Sinclair IP/L codes" }
+  - { from: FundingStage / EmployeeCountBand, into: dropped, how: "no D7 question filters on them; funding stage is a D13 event lens" }
+  - { from: LocationType, into: "D8 (Facility)", how: "not D7" }

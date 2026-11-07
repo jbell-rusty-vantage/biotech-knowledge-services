@@ -1,0 +1,208 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v2",
+  "intentId": "skill-label-1",
+  "pins": {
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+    "policyVersion": "bks-admission-policy/v1"
+  },
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "biotech-kg-ingest-examples",
+      "model": "example"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run-skill-label-1",
+      "missionId": "mission-skill-label",
+      "operationId": "op-skill-label-1"
+    },
+    "activityKind": "INGESTION"
+  },
+  "basis": {
+    "creationOnly": {
+      "reason": "biotech-kg-ingest example label: first capture of synthetic example entities"
+    }
+  },
+  "sources": [
+    {
+      "ref": "label",
+      "source": {
+        "canonicalUri": "https://examples.bks.test/label/supplement-facts",
+        "sourceKind": "WEB_PAGE"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-01T10:00:00Z",
+        "observedAt": "2026-10-01T10:00:00Z",
+        "contentHash": "sha256:9d2a1f5876b291cc3996b488b382eb8c95f938fa96ce11cde3a70cdd8a77d606",
+        "contentHashBasis": "SYNTHETIC_FIXTURE",
+        "captureMethod": "bks-example/1",
+        "captureCompleteness": "COMPLETE"
+      },
+      "locators": [
+        {
+          "ref": "l-line",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "raw-capture/v1",
+            "type": "TextQuoteSelector",
+            "exact": "Example NR chloride 300 mg (as nicotinamide riboside chloride)",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 120,
+              "end": 182
+            }
+          },
+          "exact": "Example NR chloride 300 mg (as nicotinamide riboside chloride)",
+          "startOffset": 120,
+          "endOffset": 182,
+          "reportsFields": []
+        },
+        {
+          "ref": "l-servings",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "raw-capture/v1",
+            "type": "TextQuoteSelector",
+            "exact": "Take up to 2 capsules daily",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 300,
+              "end": 327
+            }
+          },
+          "exact": "Take up to 2 capsules daily",
+          "startOffset": 300,
+          "endOffset": 327,
+          "reportsFields": [
+            "LabelVersion.maxDailyServings"
+          ]
+        },
+        {
+          "ref": "l-maker",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "basis": "raw-capture/v1",
+            "type": "TextQuoteSelector",
+            "exact": "Example Label Co markets Example NR",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 20,
+              "end": 55
+            }
+          },
+          "exact": "Example Label Co markets Example NR",
+          "startOffset": 20,
+          "endOffset": 55
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "org",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "Example Label Co",
+      "uidSegment": "skill-label-org",
+      "properties": {
+        "entityKind": "LEGAL_ENTITY"
+      },
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "lv",
+      "mode": "new",
+      "nodeType": "LabelVersion",
+      "name": "Example NR supplement facts v1",
+      "uidSegment": "skill-label-lv1",
+      "properties": {
+        "panelKind": "SUPPLEMENT_FACTS",
+        "contentDigest": "sha256:64046c5e583b53d5d75a3a4db16e1a630fb887c20d68041a0cefa8471fcdaef6",
+        "compositionDigest": "sha256:f182e97d2c1b7ddb643e127b16ad017676e07d3e6fefbbe9c28c16cb50b76a1d"
+      },
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "mat",
+      "mode": "new",
+      "nodeType": "IngredientMaterial",
+      "name": "Example NR chloride material",
+      "uidSegment": "skill-label-material",
+      "properties": {
+        "materialKind": "CHEMICALLY_DEFINED"
+      },
+      "onMatch": "use_existing"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "line",
+      "kind": "edge.assert",
+      "relationshipType": "DECLARES_COMPONENT",
+      "fromRef": "lv",
+      "toRef": "mat",
+      "asserterRef": "org",
+      "evidence": [
+        "l-line"
+      ],
+      "assertion": {
+        "speechAct": "STATES",
+        "basisKind": "MANUFACTURER_CLAIM",
+        "validity": {}
+      },
+      "edgeProperties": {
+        "orderIndex": 1,
+        "lineRole": "DIETARY_INGREDIENT",
+        "amount": 300,
+        "unitCode": "mg",
+        "massBasis": "SALT_FORM",
+        "amountBasis": "PER_SERVING",
+        "amountReferent": "AS_NAMED"
+      }
+    },
+    {
+      "proposalId": "servings",
+      "kind": "node.upsert",
+      "subjectRef": "lv",
+      "properties": {
+        "maxDailyServings": 2
+      },
+      "fieldEvidence": {
+        "maxDailyServings": [
+          "l-servings"
+        ]
+      },
+      "asserterRef": "org"
+    },
+    {
+      "proposalId": "daily-total",
+      "kind": "assertion.literal",
+      "subjectRef": "lv",
+      "dependsOn": [
+        "servings"
+      ],
+      "assertion": {
+        "predicate": "CALCULATED_SERVING_MASS_TOTAL",
+        "basisKind": "CALCULATED",
+        "derivation": {
+          "rule": "example-serving-total/v1",
+          "from": [
+            {
+              "proposal": "servings"
+            }
+          ]
+        },
+        "validity": {}
+      },
+      "value": {
+        "valueNumber": 600,
+        "unitCode": "mg/d"
+      },
+      "evidence": [
+        "l-servings",
+        "l-line"
+      ]
+    }
+  ]
+}

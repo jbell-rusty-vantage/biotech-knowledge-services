@@ -1,0 +1,275 @@
+{
+  "format": "bks-operation-catalog.v1",
+  "description": "Reviewed consumer operation inventory (authoring input). `pnpm api:registry` validates every document against the executable projection, computes its persisted-document id and static cost, and writes operations/operations.json, the server-enforced safelist.",
+  "documentsDir": "documents",
+  "fragmentsFile": "fragments.graphql",
+  "costClasses": {
+    "entity": {
+      "description": "single entity card or identifier resolution",
+      "maxEstimatedCost": 800,
+      "latencyTargetP95Ms": 300
+    },
+    "relationship-page": {
+      "description": "one page of a relationship or of assertions about a subject",
+      "maxEstimatedCost": 1500,
+      "latencyTargetP95Ms": 750
+    },
+    "evidence-trace": {
+      "description": "assertion with one page of evidence locators, snapshots and sources",
+      "maxEstimatedCost": 1500,
+      "latencyTargetP95Ms": 750
+    },
+    "history": {
+      "description": "label/version history episodes",
+      "maxEstimatedCost": 2500,
+      "latencyTargetP95Ms": 750
+    },
+    "claim-report": {
+      "description": "claim or report view with bounded occurrence/citation pages",
+      "maxEstimatedCost": 1500,
+      "latencyTargetP95Ms": 750
+    }
+  },
+  "variableTypes": {
+    "uid": {
+      "type": "String",
+      "maxLength": 256,
+      "pattern": "^hu:[A-Za-z0-9-]{1,64}:[A-Za-z0-9._~:%-]{1,180}$"
+    },
+    "cursor": {
+      "type": "String",
+      "maxLength": 64,
+      "cursor": true
+    },
+    "scheme": {
+      "type": "String",
+      "maxLength": 64,
+      "pattern": "^[A-Za-z0-9._:-]{1,64}$"
+    },
+    "identifierValue": {
+      "type": "String",
+      "maxLength": 512,
+      "pattern": "^[^\\u0000-\\u001f]{1,512}$"
+    }
+  },
+  "operations": [
+    {
+      "name": "EntityCard",
+      "file": "EntityCard.graphql",
+      "costClass": "entity",
+      "questions": [
+        "entity card"
+      ],
+      "variables": {
+        "uid": {
+          "ref": "uid",
+          "required": true
+        }
+      }
+    },
+    {
+      "name": "ProductCard",
+      "file": "ProductCard.graphql",
+      "costClass": "entity",
+      "questions": [
+        "entity card (product)"
+      ],
+      "variables": {
+        "uid": {
+          "ref": "uid",
+          "required": true
+        }
+      }
+    },
+    {
+      "name": "ProductVariantsPage",
+      "file": "ProductVariantsPage.graphql",
+      "costClass": "relationship-page",
+      "questions": [
+        "paginated relationships"
+      ],
+      "variables": {
+        "uid": {
+          "ref": "uid",
+          "required": true
+        },
+        "first": {
+          "type": "Int",
+          "min": 1,
+          "max": 25,
+          "default": 25
+        },
+        "after": {
+          "ref": "cursor"
+        }
+      }
+    },
+    {
+      "name": "AssertionEvidenceTrace",
+      "file": "AssertionEvidenceTrace.graphql",
+      "costClass": "evidence-trace",
+      "questions": [
+        "paginated evidence trace"
+      ],
+      "variables": {
+        "uid": {
+          "ref": "uid",
+          "required": true
+        },
+        "first": {
+          "type": "Int",
+          "min": 1,
+          "max": 25,
+          "default": 10
+        },
+        "after": {
+          "ref": "cursor"
+        }
+      }
+    },
+    {
+      "name": "ProductLabelHistory",
+      "file": "ProductLabelHistory.graphql",
+      "costClass": "history",
+      "questions": [
+        "label/version history"
+      ],
+      "variables": {
+        "uid": {
+          "ref": "uid",
+          "required": true
+        },
+        "first": {
+          "type": "Int",
+          "min": 1,
+          "max": 10,
+          "default": 5
+        }
+      }
+    },
+    {
+      "name": "PackageLabelHistoryPage",
+      "file": "PackageLabelHistoryPage.graphql",
+      "costClass": "history",
+      "questions": [
+        "label/version history (paged)"
+      ],
+      "variables": {
+        "packageUid": {
+          "ref": "uid",
+          "required": true
+        },
+        "first": {
+          "type": "Int",
+          "min": 1,
+          "max": 25,
+          "default": 10
+        },
+        "after": {
+          "ref": "cursor"
+        }
+      }
+    },
+    {
+      "name": "ClaimView",
+      "file": "ClaimView.graphql",
+      "costClass": "claim-report",
+      "questions": [
+        "claim view"
+      ],
+      "variables": {
+        "uid": {
+          "ref": "uid",
+          "required": true
+        },
+        "first": {
+          "type": "Int",
+          "min": 1,
+          "max": 25,
+          "default": 10
+        }
+      }
+    },
+    {
+      "name": "ReportView",
+      "file": "ReportView.graphql",
+      "costClass": "claim-report",
+      "questions": [
+        "report view"
+      ],
+      "variables": {
+        "uid": {
+          "ref": "uid",
+          "required": true
+        },
+        "first": {
+          "type": "Int",
+          "min": 1,
+          "max": 25,
+          "default": 10
+        },
+        "after": {
+          "ref": "cursor"
+        }
+      }
+    },
+    {
+      "name": "ResolveIdentifier",
+      "file": "ResolveIdentifier.graphql",
+      "costClass": "entity",
+      "questions": [
+        "identifier resolution"
+      ],
+      "variables": {
+        "scheme": {
+          "ref": "scheme",
+          "required": true
+        },
+        "value": {
+          "ref": "identifierValue",
+          "required": true
+        }
+      }
+    }
+  ],
+  "excluded": [
+    {
+      "name": "SubjectAssertionsPage",
+      "file": "../excluded/SubjectAssertionsPage.graphql",
+      "reason": "Measured on the v2 release with 60,000 synthetic assertions: @neo4j/graphql 7.6.3 anchors `assertionsConnection(where: { subject: { some: ... } })` on a full :Assertion label scan with one OR-ed EXISTS subquery per Subjectable implementer (56), 18 s warm, above the 5 s database limit; no index can change the anchor and the library rejects a `typename` narrowing inside relationship filters (\"Attribute typename not found\"). Excluded until a reverse traversal exists (request to S1/S4: a reverse HAS_SUBJECT field on the product-facing Subjectable types, or the native typed read `assertion` by subject).",
+      "variables": {
+        "subjectUid": {
+          "ref": "uid",
+          "required": true
+        },
+        "first": {
+          "type": "Int",
+          "min": 1,
+          "max": 25,
+          "default": 25
+        },
+        "after": {
+          "ref": "cursor"
+        },
+        "actorVisibility": {
+          "bind": "actor.visibility"
+        }
+      }
+    },
+    {
+      "name": "IdentifierAssignmentsPage",
+      "file": "../excluded/IdentifierAssignmentsPage.graphql",
+      "reason": "Measured 2026-10-12 on the idle host, full-scale synthetic graph, 20 clients: identifiesConnection (with HAS_IDENTIFIER edge properties and totalCount) over the 56-member Subjectable interface costs ~100 ms of synchronous @neo4j/graphql 7.6.3 work per request (database alone sustains 288 queries/s for the same Cypher); p95 2,755 ms against the 300 ms target, event-loop p99 1.8 s. Shipped ResolveIdentifier uses the list field (12 ms). Assignment episodes (isPrimary, validity) need the native typed read or a narrower schema shape.",
+      "variables": {
+        "scheme": {
+          "ref": "scheme",
+          "required": true
+        },
+        "value": {
+          "ref": "identifierValue",
+          "required": true
+        }
+      }
+    }
+  ]
+}

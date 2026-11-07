@@ -1,0 +1,884 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v2",
+  "intentId": "ft-d11-nr-chloride-gsrs-identifier-bridge",
+  "pins": {
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+    "policyVersion": "bks-admission-policy/v1"
+  },
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "a8-d11-fixtures",
+      "model": "claude-opus-5-5"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run:ft-D11-nr-chloride-gsrs-identifier-bridge",
+      "missionId": "mission:ft-D11-fixtures"
+    },
+    "activityKind": "INGESTION"
+  },
+  "basis": {
+    "creationOnly": {
+      "reason": "FU-03 v2 fixture round: replay of a packet fixture into a graph without a prior custody snapshot",
+      "expectAbsent": [],
+      "expectPresent": []
+    }
+  },
+  "defaults": {
+    "privacyClass": "PUBLIC"
+  },
+  "sources": [
+    {
+      "ref": "gsrs-salt",
+      "source": {
+        "canonicalUri": "https://precision.fda.gov/ginas/app/api/v1/substances(8XM2XT8VWI)?view=full",
+        "title": "FDA GSRS substance NICOTINAMIDE RIBOSIDE CHLORIDE (UNII 8XM2XT8VWI), record version 18",
+        "sourceKind": "API",
+        "genre": "SUBSTANCE_REGISTRY_RECORD"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:54:54Z",
+        "observedAt": "2026-10-08T21:54:54Z",
+        "contentHash": "sha256:ec5e5d2dc8e5a156deb38de9fca4a7f5a212ac42f54f4d769205fbff4f1b3ddd",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "fda-gsrs/curl-8",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "l-gsrs8-version",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"version\":\"18\"",
+            "prefix": ":\"chemical\",\"status\":\"approved\",",
+            "suffix": ",\"approvedBy\":\"FDA_SRS\",\"names\":",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 264,
+              "end": 278
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/version",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"version\":\"18\"",
+          "prefix": ":\"chemical\",\"status\":\"approved\",",
+          "suffix": ",\"approvedBy\":\"FDA_SRS\",\"names\":",
+          "quoteHash": "sha256:5fad6a525ae1f5a461d49bb55a08eb748da65cd754f6114f9e659987b5c01408",
+          "startOffset": 264,
+          "endOffset": 278
+        },
+        {
+          "ref": "l-gsrs8-unii",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"codeSystem\":\"FDA UNII\",\"code\":\"8XM2XT8VWI\"",
+            "prefix": "69-d9eb-4793-8bf1-b558a93adc66\",",
+            "suffix": ",\"type\":\"PRIMARY\",\"_isClassifica",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 3940,
+              "end": 3983
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/codes/3/code",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"codeSystem\":\"FDA UNII\",\"code\":\"8XM2XT8VWI\"",
+          "prefix": "69-d9eb-4793-8bf1-b558a93adc66\",",
+          "suffix": ",\"type\":\"PRIMARY\",\"_isClassifica",
+          "quoteHash": "sha256:bc89a61737b4b73afe09109ccf913adfd88b058d71581ec5231398afa3068732",
+          "startOffset": 3940,
+          "endOffset": 3983
+        },
+        {
+          "ref": "l-gsrs8-cas",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"codeSystem\":\"CAS\",\"code\":\"23111-00-4\"",
+            "prefix": "6f-5b7e-4418-91c0-4730ff4bf7fe\",",
+            "suffix": ",\"type\":\"PRIMARY\",\"url\":\"https:/",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 3566,
+              "end": 3604
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/codes/2/code",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"codeSystem\":\"CAS\",\"code\":\"23111-00-4\"",
+          "prefix": "6f-5b7e-4418-91c0-4730ff4bf7fe\",",
+          "suffix": ",\"type\":\"PRIMARY\",\"url\":\"https:/",
+          "quoteHash": "sha256:44d8b45f58f92eefc31aaedbc7979f99ff25d1e1929b505f6e9270e042f0f6a3",
+          "startOffset": 3566,
+          "endOffset": 3604
+        },
+        {
+          "ref": "l-gsrs8-cid",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"codeSystem\":\"PUBCHEM\",\"code\":\"90480033\"",
+            "prefix": "55-1861-64d3-c892-4602c561ca1f\",",
+            "suffix": ",\"type\":\"PRIMARY\",\"url\":\"https:/",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 3196,
+              "end": 3236
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/codes/1/code",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"codeSystem\":\"PUBCHEM\",\"code\":\"90480033\"",
+          "prefix": "55-1861-64d3-c892-4602c561ca1f\",",
+          "suffix": ",\"type\":\"PRIMARY\",\"url\":\"https:/",
+          "quoteHash": "sha256:253be8184d4eff824df5490d9bee95d791af19a0bcf863e3212caaa7f7a145e5",
+          "startOffset": 3196,
+          "endOffset": 3236
+        },
+        {
+          "ref": "l-gsrs8-grn",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"codeSystem\":\"GRAS Notification (GRN No.)\",\"code\":\"635\"",
+            "prefix": "cc-1d70-741f-b79a-20a3cc8cf9bf\",",
+            "suffix": ",\"type\":\"PRIMARY\",\"url\":\"https:/",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 4530,
+              "end": 4585
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/codes/5/code",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"codeSystem\":\"GRAS Notification (GRN No.)\",\"code\":\"635\"",
+          "prefix": "cc-1d70-741f-b79a-20a3cc8cf9bf\",",
+          "suffix": ",\"type\":\"PRIMARY\",\"url\":\"https:/",
+          "quoteHash": "sha256:2792d16dae5f08e08602736913ab0eb2703bb76603c63c4f029e2150b22166f7",
+          "startOffset": 4530,
+          "endOffset": 4585
+        },
+        {
+          "ref": "l-gsrs8-inchikey",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"_inchiKey\":\"YABIFCKURFRPPO-IVOJBTPCSA-N\"",
+            "prefix": "c-6e47-44d4-812f-dcc2b547485c\"],",
+            "suffix": ",\"_inchi\":\"InChI=1S/C11H14N2O5.C",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 12062,
+              "end": 12103
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/structure/_inchiKey",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"_inchiKey\":\"YABIFCKURFRPPO-IVOJBTPCSA-N\"",
+          "prefix": "c-6e47-44d4-812f-dcc2b547485c\"],",
+          "suffix": ",\"_inchi\":\"InChI=1S/C11H14N2O5.C",
+          "quoteHash": "sha256:d559fe4e47622d0a26d966908525215495f43f9ebcab4d448905b6ebad827d6c",
+          "startOffset": 12062,
+          "endOffset": 12103
+        },
+        {
+          "ref": "l-gsrs8-moiety-type",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"type\":\"ACTIVE MOIETY\"",
+            "prefix": "a3-7ad6-49b2-9d99-008a5622d393\",",
+            "suffix": ",\"references\":[],\"access\":[]},{\"",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 6147,
+              "end": 6169
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/relationships/0/type",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"type\":\"ACTIVE MOIETY\"",
+          "prefix": "a3-7ad6-49b2-9d99-008a5622d393\",",
+          "suffix": ",\"references\":[],\"access\":[]},{\"",
+          "quoteHash": "sha256:4355fb49d0fc716fcb9a5fc1f316b6f6f6df38a2503bfdaff6f9a5f959040630",
+          "startOffset": 6147,
+          "endOffset": 6169
+        },
+        {
+          "ref": "l-gsrs8-moiety-target",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"approvalID\":\"0I8H2M0L7N\",\"name\":\"NICOTINAMIDE RIBOSIDE\"",
+            "prefix": "5\",\"substanceClass\":\"reference\",",
+            "suffix": ",\"linkingID\":\"0I8H2M0L7N\",\"refer",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 5980,
+              "end": 6036
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/relationships/0/relatedSubstance/approvalID",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"approvalID\":\"0I8H2M0L7N\",\"name\":\"NICOTINAMIDE RIBOSIDE\"",
+          "prefix": "5\",\"substanceClass\":\"reference\",",
+          "suffix": ",\"linkingID\":\"0I8H2M0L7N\",\"refer",
+          "quoteHash": "sha256:aa3d94431c2e105ddd6d4eccd3dd26edd5c0f31d07b5a86933f88ee55db0d17d",
+          "startOffset": 5980,
+          "endOffset": 6036
+        }
+      ]
+    },
+    {
+      "ref": "gsrs-moiety",
+      "source": {
+        "canonicalUri": "https://precision.fda.gov/ginas/app/api/v1/substances(0I8H2M0L7N)?view=full",
+        "title": "FDA GSRS substance NICOTINAMIDE RIBOSIDE (UNII 0I8H2M0L7N), record version 24",
+        "sourceKind": "API",
+        "genre": "SUBSTANCE_REGISTRY_RECORD"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:54:54Z",
+        "observedAt": "2026-10-08T21:54:54Z",
+        "contentHash": "sha256:a673c453fcbb047df59dc5ad543e2e08c418061939fc56874f9a735182c7ed24",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "fda-gsrs/curl-8",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "l-gsrs0-version",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"version\":\"24\"",
+            "prefix": ":\"chemical\",\"status\":\"approved\",",
+            "suffix": ",\"approvedBy\":\"FDA_SRS\",\"names\":",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 264,
+              "end": 278
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/version",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"version\":\"24\"",
+          "prefix": ":\"chemical\",\"status\":\"approved\",",
+          "suffix": ",\"approvedBy\":\"FDA_SRS\",\"names\":",
+          "quoteHash": "sha256:7ddc0169495d2076eea7169022a0b63f4e961da22c4538cde86f3a7e5f41bfd5",
+          "startOffset": 264,
+          "endOffset": 278
+        },
+        {
+          "ref": "l-gsrs0-unii",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"codeSystem\":\"FDA UNII\",\"code\":\"0I8H2M0L7N\"",
+            "prefix": "c5-57bb-47fc-a257-8b344c6b6782\",",
+            "suffix": ",\"type\":\"PRIMARY\",\"_isClassifica",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 5136,
+              "end": 5179
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/codes/5/code",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"codeSystem\":\"FDA UNII\",\"code\":\"0I8H2M0L7N\"",
+          "prefix": "c5-57bb-47fc-a257-8b344c6b6782\",",
+          "suffix": ",\"type\":\"PRIMARY\",\"_isClassifica",
+          "quoteHash": "sha256:a99a08edf9fd276fd8f42101705134d12b18bbf46d1d6bbcc52dfa70819cb2ca",
+          "startOffset": 5136,
+          "endOffset": 5179
+        },
+        {
+          "ref": "l-gsrs0-cas",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"codeSystem\":\"CAS\",\"code\":\"1341-23-7\"",
+            "prefix": "f5-af45-42ca-927d-6cddb7c83308\",",
+            "suffix": ",\"type\":\"PRIMARY\",\"url\":\"https:/",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 3032,
+              "end": 3069
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/codes/0/code",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"codeSystem\":\"CAS\",\"code\":\"1341-23-7\"",
+          "prefix": "f5-af45-42ca-927d-6cddb7c83308\",",
+          "suffix": ",\"type\":\"PRIMARY\",\"url\":\"https:/",
+          "quoteHash": "sha256:3e475abbc003a726d5bfc7ff72b0cc2bdfc288b0e7905046e4a056ae36387b53",
+          "startOffset": 3032,
+          "endOffset": 3069
+        },
+        {
+          "ref": "l-gsrs0-cid",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"codeSystem\":\"PUBCHEM\",\"code\":\"439924\"",
+            "prefix": "0b-ea48-f065-b410-d24e89c565d8\",",
+            "suffix": ",\"type\":\"PRIMARY\",\"url\":\"https:/",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 4412,
+              "end": 4450
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/codes/3/code",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"codeSystem\":\"PUBCHEM\",\"code\":\"439924\"",
+          "prefix": "0b-ea48-f065-b410-d24e89c565d8\",",
+          "suffix": ",\"type\":\"PRIMARY\",\"url\":\"https:/",
+          "quoteHash": "sha256:5b79cb684db22ce65a1ee0cbacf3a8b88b726bbea27d8d56a1e7baddb2827ebc",
+          "startOffset": 4412,
+          "endOffset": 4450
+        },
+        {
+          "ref": "l-gsrs0-chebi",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"codeSystem\":\"CHEBI\",\"code\":\"15927\"",
+            "prefix": "35-5001-4e6a-7e35-a4e064363c31\",",
+            "suffix": ",\"type\":\"PRIMARY\",\"url\":\"https:/",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 5412,
+              "end": 5447
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/codes/6/code",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"codeSystem\":\"CHEBI\",\"code\":\"15927\"",
+          "prefix": "35-5001-4e6a-7e35-a4e064363c31\",",
+          "suffix": ",\"type\":\"PRIMARY\",\"url\":\"https:/",
+          "quoteHash": "sha256:51b565396c489c5fbd51f1ab08b950de702f318b63c4e451722581530c58b49b",
+          "startOffset": 5412,
+          "endOffset": 5447
+        }
+      ]
+    },
+    {
+      "ref": "pubchem",
+      "source": {
+        "canonicalUri": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/439924,90480033/property/MolecularFormula,InChIKey/JSON",
+        "title": "PubChem PUG REST properties for CID 439924 and CID 90480033",
+        "sourceKind": "API",
+        "genre": "SUBSTANCE_REGISTRY_RECORD"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:54:55Z",
+        "observedAt": "2026-10-08T21:54:55Z",
+        "contentHash": "sha256:300c81c8bad479f26d6a2bb7f0f35ed3e794f5aa09573b1736f44a71e5337f1b",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "pubchem-pug-rest/curl-8",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "l-pubchem-90480033",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"CID\": 90480033,\n        \"MolecularFormula\": \"C11H15ClN2O5\",\n        \"InChIKey\": \"YABIFCKURFRPPO-IVOJBTPCSA-N\"",
+            "prefix": "ASA-O\"\n      },\n      {\n        ",
+            "suffix": "\n      }\n    ]\n  }\n}\n",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 192,
+              "end": 302
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/PropertyTable/Properties/1/InChIKey",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"CID\": 90480033,\n        \"MolecularFormula\": \"C11H15ClN2O5\",\n        \"InChIKey\": \"YABIFCKURFRPPO-IVOJBTPCSA-N\"",
+          "prefix": "ASA-O\"\n      },\n      {\n        ",
+          "suffix": "\n      }\n    ]\n  }\n}\n",
+          "quoteHash": "sha256:cb2420d2d295283c1d2dd799a2bc32553425ba52f55756e0d44efdb8037a70d0",
+          "startOffset": 192,
+          "endOffset": 302
+        },
+        {
+          "ref": "l-pubchem-439924",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"CID\": 439924,\n        \"MolecularFormula\": \"C11H15N2O5+\",\n        \"InChIKey\": \"JLEBZPBDRKPWTD-TURQNECASA-O\"",
+            "prefix": "\"Properties\": [\n      {\n        ",
+            "suffix": "\n      },\n      {\n        \"CID\":",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 59,
+              "end": 166
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/PropertyTable/Properties/0/InChIKey",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"CID\": 439924,\n        \"MolecularFormula\": \"C11H15N2O5+\",\n        \"InChIKey\": \"JLEBZPBDRKPWTD-TURQNECASA-O\"",
+          "prefix": "\"Properties\": [\n      {\n        ",
+          "suffix": "\n      },\n      {\n        \"CID\":",
+          "quoteHash": "sha256:38281c3f58cb3309b019de669e8ecf49c30cf3ba13634a7d0e0ae946046fdb82",
+          "startOffset": 59,
+          "endOffset": 166
+        }
+      ]
+    },
+    {
+      "ref": "epmc-annotations",
+      "source": {
+        "canonicalUri": "https://www.ebi.ac.uk/europepmc/annotations_api/annotationsByArticleIds?articleIds=PMC:5876407&format=JSON",
+        "title": "Europe PMC Annotations API - 341 text-mined annotations for PMC5876407",
+        "sourceKind": "API",
+        "genre": "TEXT_MINING_OUTPUT"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:54:55Z",
+        "observedAt": "2026-10-08T21:54:55Z",
+        "contentHash": "sha256:1703421335dd6b5763dc72e3859732af08dd481bcaa680def9703c8a6572e633",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "europepmc-annotations/curl-8",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "l-epmc-mislink",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "{\"prefix\":\"Chronic\",\"exact\":\"nicotinamide riboside\",\"postfix\":\"riboside supplementation is\",\"tags\":[{\"name\":\"dihydrozeatin riboside\",\"uri\":\"http://purl.obolibrary.org/obo/CHEBI_80498\"}]",
+            "prefix": "vider\":\"Open Targets Platform\"},",
+            "suffix": ",\"id\":\"http://europepmc.org/arti",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 4339,
+              "end": 4524
+            },
+            "offsetBasis": "CODE_POINT",
+            "jsonPointer": "/0/annotations/10/tags/0/uri",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "{\"prefix\":\"Chronic\",\"exact\":\"nicotinamide riboside\",\"postfix\":\"riboside supplementation is\",\"tags\":[{\"name\":\"dihydrozeatin riboside\",\"uri\":\"http://purl.obolibrary.org/obo/CHEBI_80498\"}]",
+          "prefix": "vider\":\"Open Targets Platform\"},",
+          "suffix": ",\"id\":\"http://europepmc.org/arti",
+          "quoteHash": "sha256:f90f00b931b84df86700236aafaeacc086f41f22cde05405e4b3f77d9e89e30f",
+          "startOffset": 4339,
+          "endOffset": 4524
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "nrcl",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "NICOTINAMIDE RIBOSIDE CHLORIDE",
+      "uidSegment": "unii-8xm2xt8vwi",
+      "properties": {},
+      "identifiers": [
+        {
+          "scheme": "UNII",
+          "issuer": "FDA GSRS",
+          "value": "8XM2XT8VWI"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "nr",
+      "mode": "new",
+      "nodeType": "ChemicalSubstance",
+      "name": "NICOTINAMIDE RIBOSIDE",
+      "uidSegment": "unii-0i8h2m0l7n",
+      "properties": {},
+      "identifiers": [
+        {
+          "scheme": "UNII",
+          "issuer": "FDA GSRS",
+          "value": "0I8H2M0L7N"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "fda-srs",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "FDA Substance Registration System (GSRS)",
+      "properties": {
+        "entityKind": "UNSPECIFIED"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "p01-unii",
+      "dependsOn": [],
+      "kind": "identifier.attach",
+      "subjectRef": "nrcl",
+      "identifier": {
+        "scheme": "UNII",
+        "issuer": "FDA GSRS",
+        "value": "8XM2XT8VWI"
+      },
+      "evidence": [
+        "l-gsrs8-unii",
+        "l-gsrs8-version"
+      ],
+      "qualifiers": []
+    },
+    {
+      "proposalId": "p02-cas",
+      "dependsOn": [],
+      "kind": "identifier.attach",
+      "subjectRef": "nrcl",
+      "identifier": {
+        "scheme": "CAS_RN",
+        "issuer": "Chemical Abstracts Service",
+        "value": "23111-00-4"
+      },
+      "evidence": [
+        "l-gsrs8-cas"
+      ],
+      "qualifiers": []
+    },
+    {
+      "proposalId": "p03-cid",
+      "dependsOn": [],
+      "kind": "identifier.attach",
+      "subjectRef": "nrcl",
+      "identifier": {
+        "scheme": "PUBCHEM_CID",
+        "issuer": "NCBI PubChem",
+        "value": "90480033"
+      },
+      "evidence": [
+        "l-gsrs8-cid",
+        "l-pubchem-90480033"
+      ],
+      "qualifiers": []
+    },
+    {
+      "proposalId": "p04-inchikey",
+      "dependsOn": [],
+      "kind": "identifier.attach",
+      "subjectRef": "nrcl",
+      "identifier": {
+        "scheme": "INCHIKEY",
+        "issuer": "InChI Trust algorithm",
+        "value": "YABIFCKURFRPPO-IVOJBTPCSA-N"
+      },
+      "evidence": [
+        "l-gsrs8-inchikey",
+        "l-pubchem-90480033"
+      ],
+      "qualifiers": []
+    },
+    {
+      "proposalId": "p05-grn",
+      "dependsOn": [],
+      "kind": "identifier.attach",
+      "subjectRef": "nrcl",
+      "identifier": {
+        "scheme": "FDA_GRN",
+        "issuer": "FDA GRAS Notification Program",
+        "value": "635"
+      },
+      "evidence": [
+        "l-gsrs8-grn"
+      ],
+      "qualifiers": []
+    },
+    {
+      "proposalId": "p06-active-moiety",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "HAS_ACTIVE_MOIETY",
+      "fromRef": "nrcl",
+      "toRef": "nr",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "qualifiers": [],
+        "validity": {}
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "l-gsrs8-moiety-type",
+        "l-gsrs8-moiety-target"
+      ],
+      "asserterRef": "fda-srs"
+    },
+    {
+      "proposalId": "p07-nr-cas",
+      "dependsOn": [],
+      "kind": "identifier.attach",
+      "subjectRef": "nr",
+      "identifier": {
+        "scheme": "CAS_RN",
+        "issuer": "Chemical Abstracts Service",
+        "value": "1341-23-7"
+      },
+      "evidence": [
+        "l-gsrs0-cas"
+      ],
+      "qualifiers": []
+    },
+    {
+      "proposalId": "p08-nr-cid",
+      "dependsOn": [],
+      "kind": "identifier.attach",
+      "subjectRef": "nr",
+      "identifier": {
+        "scheme": "PUBCHEM_CID",
+        "issuer": "NCBI PubChem",
+        "value": "439924"
+      },
+      "evidence": [
+        "l-gsrs0-cid",
+        "l-pubchem-439924"
+      ],
+      "qualifiers": []
+    },
+    {
+      "proposalId": "p09-nr-chebi",
+      "dependsOn": [],
+      "kind": "identifier.attach",
+      "subjectRef": "nr",
+      "identifier": {
+        "scheme": "CHEBI",
+        "issuer": "EMBL-EBI",
+        "value": "CHEBI:15927"
+      },
+      "evidence": [
+        "l-gsrs0-chebi"
+      ],
+      "qualifiers": []
+    },
+    {
+      "proposalId": "p10-mention",
+      "dependsOn": [],
+      "kind": "mention.stage",
+      "locator": "l-epmc-mislink",
+      "surfaceForm": "nicotinamide riboside",
+      "typeHint": "ChemicalSubstance",
+      "candidates": [],
+      "reason": "Europe PMC tagged this title surface form with CHEBI_80498 (dihydrozeatin riboside); CHEBI:80498 is not co-attached to any NR substance by an authority (GSRS 0I8H2M0L7N carries CHEBI 15927). R-09/R-27: no surface-form node; the span is this SourceLocator, resolved by a RESOLUTION Assessment citing it as CONTEXT; no identifier is attached from the annotation."
+    }
+  ],
+  "notes": "D11 fixture intent (fixture ids). FDA_GRN is in the kernel register v2 with status requested (requested by D8; D11 asked for it as GRAS_NOTICE); the planner accepts p05 once K promotes the row. The RESOLUTION Assessments r01/r02 (proposal superseded, CONTRADICTED) are written by a verification activity, not by an ingestion intent. No identifier->identifier edge is proposed: the bridge is co-attachment on one substance. FU-03 close-out (R-09/R-27): p10 stays a v1 mention.stage proposal only because v1 has no proposal kind for a RESOLUTION hypothesis on a span; the v1 docstring says mention.stage stages a surface-form node, which the candidate has cut, so the planner must map it to the locator + RESOLUTION Assessment form (gap recorded in the D11 close-out log). p06 HAS_ACTIVE_MOIETY: AssertedRecordedProperties edge (R-10/R-26), validity on the Assertion.",
+  "provenance": {
+    "derivedFrom": {
+      "schemaVersion": "biotech-knowledge-intent.v1",
+      "path": "schema/program/final/fixtures/D11/nr-chloride-gsrs-identifier-bridge/intent.json",
+      "rawBytesDigest": "sha256:e85372df473994e8d023a1da1c78c50efd24aba454352b92c722bb43f9e4340e"
+    },
+    "migrator": "bks-migrate-intent-v1/1",
+    "edits": [
+      {
+        "at": "sources[0].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "fda-gsrs/curl-8",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[0].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[2].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[3].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[4].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[5].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[6].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[0].locators[7].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[1].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "fda-gsrs/curl-8",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[1].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[1].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[1].locators[2].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[1].locators[3].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[1].locators[4].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[2].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "pubchem-pug-rest/curl-8",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[2].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[2].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "sources[3].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "europepmc-annotations/curl-8",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[3].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture (offsetBasis CODE_POINT)"
+      },
+      {
+        "at": "proposals[0].identifier.normalizationRule",
+        "rule": "scheme-register-normalization",
+        "from": "upper case",
+        "to": null
+      },
+      {
+        "at": "proposals[1].identifier.normalizationRule",
+        "rule": "scheme-register-normalization",
+        "from": "hyphenated; check digit validated",
+        "to": null
+      },
+      {
+        "at": "proposals[8].identifier.normalizationRule",
+        "rule": "scheme-register-normalization",
+        "from": "add CHEBI: prefix (GSRS prints 15927)",
+        "to": null
+      },
+      {
+        "at": "proposals[9].kind",
+        "rule": "P8-OD-04",
+        "from": "Mention node",
+        "to": "RESOLUTION Assessment + CONTEXT locator"
+      },
+      {
+        "at": "subjects[fda-srs].properties.entityKind",
+        "rule": "schema-unknown-marker",
+        "from": null,
+        "to": "UNSPECIFIED",
+        "note": "not stated by the fixture source; OrganizationEntityKind.UNSPECIFIED is the release's explicit unknown member (OD-24 / OD-25), not a sourced fact"
+      }
+    ]
+  }
+}

@@ -1,0 +1,165 @@
+# Assertions for fixture resveratrol-retraction-integrity (FIXTURES stage, A8, 2026-10-08) — DISCONFIRMATION (integrity).
+# Kernel Assertion shape (A1); D3 Publication / REVISES with RevisionEdgeProperties (A4); D7 Person / Organization (A6).
+# producedBy ids are FIXTURE ids (mission:ft-D11-fixtures / run:ft-D11-<fixture>), not live Mission Control ids.
+# Same pattern and node names as packets/D3/07-fixtures/resveratrol-retraction (A4: PMID 19071213, same senior author); this
+# fixture uses a different retracted paper of the same group (PMID 12003802) so the two fixtures add up instead of colliding.
+# The publisher notice is a TOOL RENDITION (Firecrawl markdown; the issuer HTML is behind a Cloudflare challenge).
+fixture: resveratrol-retraction-integrity
+producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-resveratrol-retraction-integrity" }
+activities:
+  - { ref: act-ingest, activityKind: INGESTION, agent: agent-a8-fixtures, missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-resveratrol-retraction-integrity", note: "5 captures (Crossref x2, PubMed x2, publisher rendition) + 1 failed attempt (ca-aps-notice-curl)" }
+  - { ref: act-project, activityKind: PROJECTION, agent: agent-d3-revision-status, methodVersion: "publication-revision-status/v1 (D3)", missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-resveratrol-retraction-integrity" }
+
+nodes:
+  - { ref: pub-hattori2002, module: D3, type: Publication, uid: "hu:publication:pmid-12003802", name: "Pharmacological preconditioning with resveratrol: role of nitric oxide", properties: { publicationKind: ARTICLE, revisionStatus: RETRACTED, revisionStatusDerivedAt: "(service-assigned by act-project)" } }
+  - { ref: pub-notice2012, module: D3, type: Publication, uid: "hu:publication:pmid-22833916", name: "Retraction (Am J Physiol Heart Circ Physiol 302: H2446, 2012)", properties: { publicationKind: RETRACTION_NOTICE } }
+  - { ref: src-crossref-work, module: K, type: Source, name: "Crossref REST work 10.1152/ajpheart.01012.2001", properties: { canonicalUri: "https://api.crossref.org/works/10.1152/ajpheart.01012.2001", sourceKind: API, genre: BIBLIOGRAPHIC_RECORD }, snapshots: [snap-crossref-work] }
+  - { ref: src-crossref-notice, module: K, type: Source, name: "Crossref REST work 10.1152/ajpheart.zh4-0450-retr.2012", properties: { canonicalUri: "https://api.crossref.org/works/10.1152/ajpheart.zh4-0450-retr.2012", sourceKind: API, genre: BIBLIOGRAPHIC_RECORD }, snapshots: [snap-crossref-notice] }
+  - { ref: src-pubmed-12003802, module: K, type: Source, name: "PubMed 12003802 (MEDLINE XML)", properties: { canonicalUri: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=12003802&retmode=xml", sourceKind: API, genre: BIBLIOGRAPHIC_RECORD }, snapshots: [snap-pubmed-12003802] }
+  - { ref: src-pubmed-22833916, module: K, type: Source, name: "PubMed 22833916 (MEDLINE XML)", properties: { canonicalUri: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=22833916&retmode=xml", sourceKind: API, genre: BIBLIOGRAPHIC_RECORD }, snapshots: [snap-pubmed-22833916] }
+  - { ref: src-aps-notice, module: K, type: Source, name: "APS journal page of the retraction notice", properties: { canonicalUri: "https://journals.physiology.org/doi/10.1152/ajpheart.zh4-0450-retr.2012", sourceKind: WEB_PAGE, genre: RETRACTION_NOTICE_PAGE }, snapshots: [snap-aps-notice-rendition], note: "snapshot is a tool rendition (contentHashBasis NORMALIZED_TEXT, captureMethod firecrawl-cli/1.23.1); revisionKind RETRACTION, revisesSnapshotRef snap-pubmed-12003802" }
+  - { ref: person-hattori, module: D7, type: Person, name: "Reiji Hattori", note: "first author of PMID 12003802 (AuthorList > Author[1]); stands for the author group as asserter of the article's claims" }
+  - { ref: org-retraction-watch, module: D7, type: Organization, name: "Retraction Watch (Center for Scientific Integrity) - database delivered through Crossref ('source':'retraction-watch')" }
+  - { ref: org-nlm, module: D7, type: Organization, name: "U.S. National Library of Medicine (PubMed / MEDLINE)" }
+  - { ref: org-aps, module: D7, type: Organization, name: "American Physiological Society (publisher)" }
+  - { ref: agent-a8-fixtures, module: K, type: Agent, name: "agent:a8-d11-fixtures", properties: { agentKind: AUTOMATED_AGENT } }
+  - { ref: claim-resv-precondition, module: K, type: Claim, name: "Resveratrol pharmacologically preconditions the (isolated rat) heart in a nitric-oxide-dependent manner" }
+  - { ref: ca-aps-notice-curl, module: D11, type: CaptureAttempt, uid: "hu:capture-attempt:ft-d11-aps-notice-curl", name: "curl GET of the APS notice page: Cloudflare challenge",
+      properties: { toolId: publisher-pages, toolVersion: "curl 8 (Git Bash)", outcome: FAILED, failureKind: BOT_CHALLENGE, httpStatus: 403,
+                    requestUri: "https://journals.physiology.org/doi/10.1152/ajpheart.zh4-0450-retr.2012", requestDigest: "sha256:b4420b4d09bd228789c24236495626893c455c8ab07d28058d374e248488292e", queryText: "10.1152/ajpheart.zh4-0450-retr.2012",
+                    subjectUid: "hu:publication:pmid-22833916", responseHash: "sha256:4e1c452ee099707e1c32980e74e68918be37dbb8f13ec7c07a9a59862f6620d6",
+                    attemptedAt: "2026-10-08T21:55:10Z", errorText: "<title>Just a moment...</title> (HTTP 403)" },
+      evidence: "locators.yaml#responseEvidence e-aps-challenge", generatedBy: act-ingest,
+      note: "why the notice is a rendition: the issuer bytes are not capturable by plain HTTP; Firecrawl gets through. toolId publisher-pages (action-space entry added in the fixtures stage)" }
+
+assertions:
+  # ---------- REVISES: one episode per asserter, the disagreement (if any) stays visible (Q-D11-04) ----------
+  - id: v01-revises-retraction-watch
+    predicate: REVISES
+    assertionKind: RELATIONSHIP
+    subject: { ref: pub-notice2012, type: Publication, module: D3 }
+    object: { ref: pub-hattori2002, type: Publication, module: D3 }
+    asserter: { ref: org-retraction-watch, type: Organization, module: D7 }
+    locators: [l-cr-updated-by, l-cr-notice-update-to]
+    speechAct: STATES
+    polarity: POSITIVE
+    basisKind: UNSTATED
+    validTime: { validFrom: "2012-06-01T00:00:00Z", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: UNKNOWN }
+    edge: { type: REVISES, module: D3, properties: RevisionEdgeProperties, revisionKind: RETRACTION, reasonsVerbatim: [], recordedFrom: "(service-assigned; fixture commit 2026-10-08)", note: "Crossref carries Retraction Watch record-id 54; reasons are not in the Crossref REST record (the Crossref Labs endpoint carries them, A4 found a dropped first character there)" }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-resveratrol-retraction-integrity" }
+  - id: v02-revises-nlm
+    predicate: REVISES
+    assertionKind: RELATIONSHIP
+    subject: { ref: pub-notice2012, type: Publication, module: D3 }
+    object: { ref: pub-hattori2002, type: Publication, module: D3 }
+    asserter: { ref: org-nlm, type: Organization, module: D7 }
+    locators: [l-pm-retractionin, l-pm-pubtype, l-pmn-retractionof, l-pmn-pubtype]
+    speechAct: STATES
+    polarity: POSITIVE
+    basisKind: UNSTATED
+    validTime: { validFrom: "2012-06-01T00:00:00Z", validFromPrecision: DAY, validFromBasis: PUBLICATION_PROXY, validTo: null, validToBasis: UNKNOWN, inferredFrom: "notice PubDate 2012 Jun 01 (l-pmn-pubdate)" }
+    edge: { type: REVISES, module: D3, properties: RevisionEdgeProperties, revisionKind: RETRACTION, reasonsVerbatim: [] }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-resveratrol-retraction-integrity" }
+  - id: v03-revises-publisher
+    predicate: REVISES
+    assertionKind: RELATIONSHIP
+    subject: { ref: pub-notice2012, type: Publication, module: D3 }
+    object: { ref: pub-hattori2002, type: Publication, module: D3 }
+    asserter: { ref: org-aps, type: Organization, module: D7 }
+    locators: [l-aps-reason, l-aps-cites-article, l-aps-published]
+    speechAct: STATES
+    polarity: POSITIVE
+    basisKind: UNSTATED
+    validTime: { validFrom: "2012-06-01T00:00:00Z", validFromPrecision: DAY, validFromBasis: STATED_BY_SOURCE, validTo: null, validToBasis: UNKNOWN }
+    edge: { type: REVISES, module: D3, properties: RevisionEdgeProperties, revisionKind: RETRACTION, reasonsVerbatim: ["A research misconduct investigation at the University of Connecticut Health Center has determined that images appearing in Fig. 7 A of the paper contain instances of data fabrication."] }
+    note: "locators select in a TOOL RENDITION; the CAPTURE_FIDELITY verdict can at best be SUPPORTED_WITH_QUALIFICATION until the issuer bytes are captured (ca-aps-notice-curl failed). The reason in reasonsVerbatim is normalizedExact of l-aps-reason (markdown italics removed)"
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-resveratrol-retraction-integrity" }
+
+  # ---------- identifiers on works AND on their sources (renditions join by shared identifiers) ----------
+  - id: i01-article-ids-nlm
+    predicate: HAS_IDENTIFIER
+    assertionKind: FIELD
+    subject: { ref: pub-hattori2002, type: Publication, module: D3 }
+    identifiers: [ { scheme: PMID, issuer: NLM, value: "12003802" }, { scheme: DOI, issuer: Crossref, value: "10.1152/ajpheart.01012.2001" } ]
+    asserter: { ref: org-nlm, type: Organization, module: D7 }
+    locators: [l-pm-ids]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, note: "identifier and composition statements carry no valid time of their own; the episode is recorded-time only" }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-resveratrol-retraction-integrity" }
+  - id: i02-article-doi-crossref
+    predicate: HAS_IDENTIFIER
+    assertionKind: FIELD
+    subject: { ref: pub-hattori2002, type: Publication, module: D3 }
+    identifiers: [ { scheme: DOI, issuer: Crossref, value: "10.1152/ajpheart.01012.2001" } ]
+    asserter: { ref: org-aps, type: Organization, module: D7, note: "the DOI is the publisher's Crossref deposit (member 24, prefix 10.1152)" }
+    locators: [l-cr-doi]
+    note: "corroborates i01's DOI episode (same Identifier node: scheme DOI, normalized lower case)"
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, note: "identifier and composition statements carry no valid time of their own; the episode is recorded-time only" }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-resveratrol-retraction-integrity" }
+  - id: i03-notice-ids-nlm
+    predicate: HAS_IDENTIFIER
+    assertionKind: FIELD
+    subject: { ref: pub-notice2012, type: Publication, module: D3 }
+    identifiers: [ { scheme: PMID, issuer: NLM, value: "22833916" }, { scheme: DOI, issuer: Crossref, value: "10.1152/ajpheart.zh4-0450-retr.2012" } ]
+    asserter: { ref: org-nlm, type: Organization, module: D7 }
+    locators: [l-pmn-ids]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, note: "identifier and composition statements carry no valid time of their own; the episode is recorded-time only" }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-resveratrol-retraction-integrity" }
+  - id: i04-notice-doi-crossref
+    predicate: HAS_IDENTIFIER
+    assertionKind: FIELD
+    subject: { ref: pub-notice2012, type: Publication, module: D3 }
+    identifiers: [ { scheme: DOI, issuer: Crossref, value: "10.1152/ajpheart.zh4-0450-retr.2012" } ]
+    asserter: { ref: org-aps, type: Organization, module: D7 }
+    locators: [l-cr-notice-doi]
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, note: "identifier and composition statements carry no valid time of their own; the episode is recorded-time only" }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-resveratrol-retraction-integrity" }
+  - id: i05-source-ids
+    predicate: HAS_IDENTIFIER
+    assertionKind: FIELD
+    subject: { ref: src-pubmed-12003802, type: Source, module: K }
+    identifiers: [ { scheme: PMID, issuer: NLM, value: "12003802" } ]
+    asserter: { ref: org-nlm, type: Organization, module: D7 }
+    locators: [l-pm-ids]
+    note: "the same pattern attaches DOI 10.1152/ajpheart.01012.2001 to src-crossref-work (l-cr-doi), PMID 22833916 to src-pubmed-22833916 (l-pmn-ids) and DOI 10.1152/ajpheart.zh4-0450-retr.2012 to src-crossref-notice (l-cr-notice-doi) and src-aps-notice (canonicalUri contains the DOI; asserted with l-aps-cites-article as context). Four more HAS_IDENTIFIER episodes, same shape, omitted for length"
+    validTime: { validFrom: null, validFromBasis: UNKNOWN, note: "identifier and composition statements carry no valid time of their own; the episode is recorded-time only" }
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-resveratrol-retraction-integrity" }
+
+  # ---------- the claim that loses its source (Q-D11-05 taint path) ----------
+  - id: c01-precondition-claim
+    predicate: PRECONDITIONS_HEART
+    assertionKind: CLAIM
+    claimType: CAUSAL
+    occurrenceOf: { ref: claim-resv-precondition, type: Claim }
+    subject: { ref: claim-resv-precondition, type: Claim }
+    proposition: "The results of our study demonstrate that resveratrol can pharmacologically precondition the heart in a NO-dependent manner."
+    qualifiers: ["isolated perfused rat hearts", "10 microM resveratrol", "abolished by L-NAME and aminoguanidine (as the abstract states)"]
+    asserter: { ref: person-hattori, type: Person, module: D7 }
+    locators: [l-pm-claim]
+    speechAct: STATES
+    polarity: POSITIVE
+    basisKind: DIRECT_MEASUREMENT
+    validTime: { validFrom: null, validFromBasis: UNKNOWN }
+    note: "the occurrence's locator sits on snap-pubmed-12003802, whose Source carries PMID 12003802, which identifies pub-hattori2002, which a REVISES {revisionKind RETRACTION} episode targets: Q-D11-05 lists c01 with knownSince = min(recordedFrom) of v01..v03. Status stays ACCEPTED (capture fidelity is not truth); the taint is a query result"
+    generatedBy: act-ingest
+    producedBy: { missionId: "mission:ft-D11-fixtures", runId: "run:ft-D11-resveratrol-retraction-integrity" }
+
+taintPath:
+  question: "Q-D11-05 — Which assertions rest on a source that has since been retracted, and since when do we know?"
+  cypher: |
+    MATCH (a:Assertion)-[ev:HAS_EVIDENCE]->(:SourceLocator)<-[:HAS_LOCATOR]-(:SourceSnapshot)<-[:HAS_SNAPSHOT]-(src:Source)
+    WHERE a.recordedTo IS NULL AND ev.role = 'SUPPORTS'
+    MATCH (src)-[:HAS_IDENTIFIER]->(id:Identifier)<-[:HAS_IDENTIFIER]-(w:Publication)
+    MATCH (w)<-[rv:REVISES]-(notice:Publication)
+    WHERE rv.revisionKind IN ['RETRACTION', 'WITHDRAWAL'] AND rv.recordedTo IS NULL
+    RETURN a.uid, a.predicate, w.uid, notice.uid, collect(DISTINCT rv.assertionUid) AS revisionAssertions,
+           min(rv.recordedFrom) AS knownSince, min(rv.validFrom) AS retractedOn
+  note: "HAS_IDENTIFIER is stored holder -> Identifier (the kernel field Identifier.identifies reads it inversely); the Source and the Publication join through the shared Identifier node, never through an identifier->identifier edge. Also SourceSnapshot.revisionKind = RETRACTION on snap-aps-notice-rendition (revisesSnapshotRef snap-pubmed-12003802) answers the snapshot-level variant without D3"
+  expected: { assertion: c01-precondition-claim, work: "hu:publication:pmid-12003802", notice: "hu:publication:pmid-22833916", revisionAssertions: [v01-revises-retraction-watch, v02-revises-nlm, v03-revises-publisher], retractedOn: "2012-06-01", knownSince: "the fixture commit time (2026-10-08)" }

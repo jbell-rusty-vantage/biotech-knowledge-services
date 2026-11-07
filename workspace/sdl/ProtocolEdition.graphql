@@ -1,0 +1,42 @@
+"""
+Purpose: the immutable content of one observed or published state of a Protocol: its ordered steps (with their doses,
+timing, stated constraints, stated targets and review rules). Pages are versioned in place and their displayed date
+can stay unchanged while content changes (Huberman 2021 vs 2026), so an edition is minted only when the canonical
+step payload changes (`payloadHash`: hash over the steps' own fields, including the caution fields statedLevel and
+conditionText, never over UseConstraint uids, which a projection-rule bump may re-mint); disclosure or sponsor changes do NOT mint an edition (D7 interest assertions
+with valid time carry them; 11-open-questions OQ-D5-08). Which edition was current when lives on the HAS_EDITION
+episode, not on this node. Implements Subjectable because applicability assessments (CQ-EV-04) and stated-purpose
+assertions (INTENDED_FOR_TARGET) are about an edition.
+Identity rule: (protocol, payloadHash). uid token: `protocol-edition` (hu:protocol-edition:<opaque>).
+Questions: Q-D5-10, CQ-PR-01, CQ-PR-02, Q-D5-11, Q-D5-13, CQ-EV-04.
+"""
+type ProtocolEdition implements Entity & Subjectable
+  @node(labels: ["ProtocolEdition", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "sha256:<hex> over the canonical step payload (sorted by stepKey; payloadCanonicalizationVersion)."
+  payloadHash: String!
+  payloadCanonicalizationVersion: String
+  "Version of the stepKey alignment rule used to carry stepKeys across in-place editions (OPEN-QUESTIONS P2-4)."
+  stepKeyAlignmentVersion: String
+  changeProvenance: ProtocolChangeProvenance!
+  "Publisher's edition label when one exists."
+  editionLabel: String
+  "The date the page displays, verbatim ('September 20, 2021'); never used as valid time without corroboration."
+  displayedDateText: String
+  "First and last capture in which this payload was observed (snapshot retrievedAt); unobserved gaps stay unknown."
+  firstObservedAt: DateTime
+  lastObservedAt: DateTime
+  stepCount: Int
+  """class: structural; cardinality: one_or_more (orderIndex = source order); questions: Q-D5-10, CQ-PR-01, CQ-PR-02, Q-D5-11, Q-D5-12."""
+  steps: [ProtocolStep!]!
+    @relationship(type: "HAS_STEP", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

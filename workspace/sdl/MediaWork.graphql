@@ -1,0 +1,71 @@
+"""
+Purpose: one editorial work — a podcast episode, video, talk recording, newsletter issue, article, protocol page, social
+post, forum thread, book or image — independent of the renditions it is distributed in. It is the container every Assertion
+whose evidence is in the work OCCURS_IN, claim occurrences included (who said it where, CQ-CL-01; R-19), the thing
+sponsors are read in (CONTENT_SPONSORED_BY, per observation window), the unit of re-cuts and clips (republicationKind; the link to the original is a predicate-only REPUBLISHES
+Assertion, Q-D9-07), and the
+join between renditions (kernel Sources: publisher page, YouTube video, RSS enclosure, Spotify page, archive copy) whose
+wording, duration and sponsor reads diverge. Absorbs pinned Episode, EpisodeSegment (→ locators + segment qualifier),
+MediaAsset (→ workKind IMAGE), MediaVariant (→ kernel Source/SourceSnapshot) and MediaRightsRecord (→ rights
+properties). Scholarly publications are D3's.
+Identity rule: (channel, publisher item key): the RSS guid of the item in the channel's own feed when one exists, else
+the platform item id (YouTube video id, X post id, Substack post id, forum topic id), else the normalized canonical page
+URL; a re-cut, clip or repost is a new work (republicationKind set, REPUBLISHES Assertion to the original), never a merge. Identifiers (PODCAST_GUID,
+YOUTUBE_VIDEO, DOI of a book chapter, ISBN) attach through the kernel.
+Asserter (R-15): a work with several bylines is the ASSERTED_BY target of what it states in its own voice; a bylined
+web article is asserted by its single named author, else by the site owner, never by "the first of several".
+uid token: `media-work` (hu:media-work:<opaque>).
+Questions: CQ-CL-01, CQ-CL-05, CQ-CL-06, CQ-CL-08, CQ-PV-02, Q-D9-01, Q-D9-02, Q-D9-04, Q-D9-06, Q-D9-07, Q-D9-08, Q-D9-10,
+Q-D9-11, Q-D9-12, Q-D9-16, Q-D9-17, Q-D9-18, Q-D9-21, Q-D9-23.
+"""
+type MediaWork implements Entity & Subjectable
+  @node(labels: ["MediaWork", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  "Title as published by the channel."
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  workKind: WorkKind!
+  "Issuer's first publication time of this work (RSS pubDate, upload date, post date, byline date)."
+  publishedAt: DateTime
+  publishedAtPrecision: TimePrecision
+  "Set when this work re-publishes another (Essentials re-cut, clip, repost); null on an original."
+  republicationKind: RepublicationKind
+  "Publisher's own page for the work (show-notes page), when it has one."
+  canonicalUrl: String
+  "Duration in seconds as declared by the publisher for its primary rendition (renditions differ; see 11-open-questions.md)."
+  durationSeconds: Int
+  episodeNumber: Int
+  seasonNumber: Int
+  "BCP 47 language tag."
+  language: String
+  "IMAGE and AI-touched works: how the source says it was produced ('made with ChatGPT')."
+  generationMode: GenerationMode
+  "Rights or licence statement as captured beside the work ('Figure from the Nature paper', CC BY 4.0); verbatim, not a legal finding."
+  rightsStatementVerbatim: String
+  """class: structural; cardinality: one_or_more (the channel(s) whose feed or listing carries the work); questions: CQ-CL-05, Q-D9-12."""
+  channels: [Channel!]!
+    @relationship(type: "PUBLISHES", direction: IN, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; kernel meaning (R-43: Source → MediaWork | D3 Publication, declared by D9 and D3, registered by D3); recorded time only, so regrouping is a supersession that keeps its history (R-26); source family = OCCURS_IN work, else RENDITION_OF work, else Source; cardinality: many (kernel Source → this work; one Source per rendition endpoint: publisher page, video, audio enclosure, platform page, archive copy); questions: CQ-CL-01 (TRACE), CQ-CL-05, CQ-PV-02, Q-D9-02, Q-D9-06, Q-D9-07, Q-D9-16, Q-D9-17, Q-D9-18."""
+  renditions: [Source!]!
+    @relationship(type: "RENDITION_OF", direction: IN, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: many (every kernel Assertion whose evidence is in this work, not only claim occurrences (assertionKind CLAIM) (R-19), written from the capture the occurrence was extracted from, the work in which the act of asserting was first published; corrected only by supersession; exactly_one container per Assertion; seam K.Assertion → D9.MediaWork, read by K Q-K-09); questions: CQ-CL-01, CQ-CL-02, CQ-CL-05, CQ-CL-06, CQ-CL-08, CQ-CM-04, Q-D9-01, Q-D9-02, Q-D9-04, Q-D9-07, Q-D9-08, Q-D9-09, Q-D9-10, Q-D9-11, Q-D9-13, Q-D9-18, Q-D9-19, Q-D9-21, Q-D9-23."""
+  occurrences: [Assertion!]!
+    @relationship(type: "OCCURS_IN", direction: IN, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (D7 Person → this work, role on the edge; one episode per authorizing Assertion, recorded time only); questions: CQ-CL-08, Q-D9-16, Q-D9-18."""
+  appearances: [Person!]!
+    @relationship(type: "APPEARS_IN", direction: IN, properties: "AppearanceEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (bitemporal episode on the work: valid time separates the sponsors of the original publication from those of later re-cut renditions; which rendition carried the read is the authorizing Assertion's locator or its `rendition:<source uid>` qualifier, a kernel-registered prefix); questions: CQ-CL-05, CQ-CL-08, Q-D9-06."""
+  sponsors: [ContentSponsor!]!
+    @relationship(type: "CONTENT_SPONSORED_BY", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

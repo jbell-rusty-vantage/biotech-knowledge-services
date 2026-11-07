@@ -1,0 +1,1047 @@
+# prepared-food-bigmac-mcdonalds — assertions (fixtures stage, A6, 2026-10-08). Subjects/objects are typed to D6 SDL types or to other modules' types
+# (module.Type) through the kernel Subjectable pattern. Typed literals keep currency in unitCode as iso4217:<code> (OQ-D6-06).
+# validTime.observedAtPerOBSERVED_AT is the instant 03-retrieval-patterns.md OBSERVED_AT derives (validFrom, else validObservedAt,
+# else the snapshot's observedAt). validObservedAt = kernel Assertion field (A1 change 5); validObservedAtPrecision is
+# fixture-only (the kernel field has no precision; OQ-D6-19).
+fixture: prepared-food-bigmac-mcdonalds
+kind: other
+producedBy:
+  missionId: mission:ft-D6-fixtures
+  runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+  note: "fixture-scoped ids (not Mission Control runs); assessments use the -assess run, verifier adjudications the -verify run, chunks the -chunk run"
+nodes:
+  - uid: hu:product:mcdonalds-big-mac
+    type: D6.Product
+    name: "Big Mac"
+    properties:
+      productKind: PREPARED_FOOD
+      marketedName: "Big Mac"
+    propertyEvidence: [P01, P02]
+  - uid: hu:product-variant:mcdonalds-big-mac-us
+    type: D6.ProductVariant
+    name: "Big Mac (McDonald’s USA menu)"
+    properties:
+      dosageForm: MEAL_ITEM
+      jurisdiction: US
+    propertyEvidence: [P01, P18]
+  - uid: hu:package:mcdonalds-big-mac-us-served-item
+    type: D6.Package
+    name: "Big Mac, one served item (US)"
+    properties:
+      packageKind: SERVED_PORTION
+      unitCount: 1
+    propertyEvidence: [P01, P13]
+  - uid: hu:label-version:mcdonalds-big-mac-us-2022-01
+    type: D6.LabelVersion
+    name: "Big Mac US menu declaration, correct as of January 2022"
+    properties:
+      panelKind: MENU_DECLARATION
+      jurisdiction: US
+      contentDigest: sha256:28bccfeceead868a3522395025e6b5f1d40328e158826b8f9af165a5c43acc85
+      compositionDigest: sha256:81f6cdfd113c0a3be0056c107fc539dd358ea27dd0c65c4e46d856bd956296ce
+      containsAllergens: [WHEAT, SESAME, EGG, SOYBEANS, MILK]
+      allergenStatementVerbatim: "Contains: Wheat, Sesame. | Contains: Egg, Soy, Wheat. | Contains: Milk, Soy."
+      asOfStatementVerbatim: "This information is correct as of January 2022, unless stated otherwise."
+    propertyEvidence: [P04, P08, P09, P15]
+  - uid: hu:listing:mcdonalds-com-big-mac
+    type: D6.MerchantListing
+    name: "mcdonalds.com Big Mac menu-item page"
+    properties:
+      listingKind: MENU_ITEM_PAGE
+      hostDomain: mcdonalds.com
+      hostItemId: us/en-us/product/big-mac
+      titleAsDisplayed: "Big Mac®"
+      canonicalUrl: https://www.mcdonalds.com/us/en-us/product/big-mac.html
+    propertyEvidence: [P02]
+externalNodes:
+  - uid: hu:brand:mcdonalds
+    type: D7.Brand
+    name: "McDonald's"
+    note: "owner D7 (OWNS_BRAND -> McDonald’s Corporation is D7 data, not asserted here)"
+  - uid: hu:org:mcdonalds-usa
+    type: D7.Organization
+    name: "McDonald’s USA (named on the page)"
+    note: "owner D7; asserter of the menu declaration"
+  - uid: hu:org:the-economist
+    type: D7.Organization
+    name: "The Economist"
+    note: "owner D7; asserter of the index price"
+  - uid: hu:food:mcdonalds-big-mac-bun
+    type: D12.FoodItem
+    name: "Big Mac Bun"
+    note: "owner D12"
+  - uid: hu:food:mcdonalds-beef-patty
+    type: D12.FoodItem
+    name: "100% Beef Patty"
+    note: "owner D12"
+  - uid: hu:food:mcdonalds-shredded-lettuce
+    type: D12.FoodItem
+    name: "Shredded Lettuce"
+    note: "owner D12"
+  - uid: hu:food:mcdonalds-big-mac-sauce
+    type: D12.FoodItem
+    name: "Big Mac Sauce"
+    note: "owner D12"
+  - uid: hu:food:mcdonalds-american-cheese
+    type: D12.FoodItem
+    name: "Pasteurized Process American Cheese"
+    note: "owner D12"
+  - uid: hu:food:mcdonalds-pickle-slices
+    type: D12.FoodItem
+    name: "Pickle Slices"
+    note: "owner D12"
+  - uid: hu:food:mcdonalds-onions
+    type: D12.FoodItem
+    name: Onions
+    note: "owner D12"
+  - uid: hu:food:egg-yolk
+    type: D12.FoodItem
+    name: "Egg Yolks"
+    note: "owner D12"
+  - uid: hu:food:soybean-oil
+    type: D12.FoodItem
+    name: "Soybean Oil"
+    note: "owner D12"
+  - uid: hu:food:sesame-seeds
+    type: D12.FoodItem
+    name: "Sesame Seeds"
+    note: "owner D12"
+  - uid: hu:constituent:energy
+    type: D1.Constituent
+    name: Energy
+    note: "owner D1"
+  - uid: hu:constituent:sodium
+    type: D1.Constituent
+    name: Sodium
+    note: "owner D1"
+  - uid: hu:constituent:saturated-fat
+    type: D1.Constituent
+    name: "Saturated fat"
+    note: "owner D1"
+  - uid: hu:constituent:added-sugars
+    type: D1.Constituent
+    name: "Added sugars"
+    note: "owner D1"
+  - uid: hu:agent:d6-commerce-matcher
+    type: K.Agent
+    name: d6-commerce-matcher
+    note: "fixture agent identity"
+structuralEdges:
+  - type: HAS_VARIANT
+    from:
+      uid: hu:product:mcdonalds-big-mac
+      type: D6.Product
+    to:
+      uid: hu:product-variant:mcdonalds-big-mac-us
+      type: D6.ProductVariant
+    traceVia: [P01]
+    lastWriterRunId: run:ft-D6-prepared-food-bigmac-mcdonalds
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+  - type: HAS_PACKAGE
+    from:
+      uid: hu:product-variant:mcdonalds-big-mac-us
+      type: D6.ProductVariant
+    to:
+      uid: hu:package:mcdonalds-big-mac-us-served-item
+      type: D6.Package
+    traceVia: [P13]
+    lastWriterRunId: run:ft-D6-prepared-food-bigmac-mcdonalds
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+assertions:
+  - id: d01
+    predicate: BRANDED_AS
+    assertionKind: RELATIONSHIP
+    relationship: BRANDED_AS
+    subject:
+      uid: hu:product:mcdonalds-big-mac
+      type: D6.Product
+    object:
+      uid: hu:brand:mcdonalds
+      type: D7.Brand
+    asserter:
+      uid: hu:org:mcdonalds-usa
+      type: D7.Organization
+    locators:
+      - ref: P02
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+      - ref: P01
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:52:52Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["'Big Mac®' on McDonald's USA's own menu page"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+  - id: d02
+    predicate: HAS_LABEL_VERSION
+    assertionKind: RELATIONSHIP
+    relationship: HAS_LABEL_VERSION
+    subject:
+      uid: hu:package:mcdonalds-big-mac-us-served-item
+      type: D6.Package
+    object:
+      uid: hu:label-version:mcdonalds-big-mac-us-2022-01
+      type: D6.LabelVersion
+    asserter:
+      uid: hu:org:mcdonalds-usa
+      type: D7.Organization
+    locators:
+      - ref: P15
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+      - ref: P14
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+      - ref: P13
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+      - ref: P10
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      validObservedAt: "2022-01-01T00:00:00Z"
+      validObservedAtPrecision: MONTH
+      observedAtPerOBSERVED_AT: "2022-01-01T00:00:00Z"
+    status: EXTRACTED
+    basisKind: MANUFACTURER_CLAIM
+    speechAct: STATES
+    polarity: POSITIVE
+    extractionConfidence: 0.5
+    qualifiers: ["declared 'correct as of January 2022, unless stated otherwise' (statedAsOf, MONTH): valid at that month; start and end not stated", "scope: the sentence closes the page-wide nutrition paragraph that begins 'The nutrition information on this website is derived from testing…' — site-wide boilerplate, not a statement about this item; applied to the Big Mac declaration as the only dated statement on the page, hence extractionConfidence 0.5", "the page warns 'product formulations change periodically' (P14)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+  - id: d03
+    predicate: HAS_RECIPE_INGREDIENT
+    assertionKind: FIELD
+    subject:
+      uid: hu:label-version:mcdonalds-big-mac-us-2022-01
+      type: D6.LabelVersion
+    value:
+      valueString: "Grill Seasoning (salt, Black Pepper)"
+    asserter:
+      uid: hu:org:mcdonalds-usa
+      type: D7.Organization
+    locators:
+      - ref: P06
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:52:52Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["component line 1 (100% Beef Patty); D12 owns preparation semantics"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+  - id: d04
+    predicate: LISTING_FOR
+    assertionKind: RELATIONSHIP
+    relationship: LISTING_FOR
+    subject:
+      uid: hu:listing:mcdonalds-com-big-mac
+      type: D6.MerchantListing
+    object:
+      uid: hu:package:mcdonalds-big-mac-us-served-item
+      type: D6.Package
+    asserter:
+      uid: hu:agent:d6-commerce-matcher
+      type: K.Agent
+    locators:
+      - ref: P01
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+      - ref: P02
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:52:52Z"
+    status: EXTRACTED
+    basisKind: CALCULATED
+    speechAct: STATES
+    polarity: POSITIVE
+    derivationRule: "d6-listing-match/v1 (menu item: brand + item name + jurisdiction; no GTIN exists)"
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+  - id: d05
+    predicate: MARKET_REFERENCE_PRICE
+    assertionKind: METRIC
+    subject:
+      uid: hu:package:mcdonalds-big-mac-us-served-item
+      type: D6.Package
+    value:
+      valueNumber: 5.04
+      unitCode: iso4217:USD
+    asserter:
+      uid: hu:org:the-economist
+      type: D7.Organization
+    locators:
+      - ref: P30
+        selectorKind: TABLE
+        source: econ-csv
+        snapshotDigest: sha256:8d7f1b6019ffdc9c705ab4530d416ae5106863aa2b5dc15c1f0820680a82c322
+      - ref: P34
+        selectorKind: TABLE
+        source: econ-csv
+        snapshotDigest: sha256:8d7f1b6019ffdc9c705ab4530d416ae5106863aa2b5dc15c1f0820680a82c322
+      - ref: P35
+        selectorKind: TEXT_QUOTE
+        source: econ-readme
+        snapshotDigest: sha256:f7ff5ddb2e4878c00089586df4668c7120b38d0630424ce8482234873162f1c0
+    validTime:
+      validFrom: "2022-01-01T00:00:00Z"
+      validFromPrecision: DAY
+      validFromBasis: STATED_BY_SOURCE
+      validTo: null
+      validToBasis: UNKNOWN
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["published reference price (index, no seller): subject the US served-portion Package, not an Offer (adversarial-review stage)", "method before July 2022: average of four major US cities (P35)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+  - id: d06
+    predicate: MARKET_REFERENCE_PRICE
+    assertionKind: METRIC
+    subject:
+      uid: hu:package:mcdonalds-big-mac-us-served-item
+      type: D6.Package
+    value:
+      valueNumber: 5.15
+      unitCode: iso4217:USD
+    asserter:
+      uid: hu:org:the-economist
+      type: D7.Organization
+    locators:
+      - ref: P31
+        selectorKind: TABLE
+        source: econ-csv
+        snapshotDigest: sha256:8d7f1b6019ffdc9c705ab4530d416ae5106863aa2b5dc15c1f0820680a82c322
+      - ref: P34
+        selectorKind: TABLE
+        source: econ-csv
+        snapshotDigest: sha256:8d7f1b6019ffdc9c705ab4530d416ae5106863aa2b5dc15c1f0820680a82c322
+      - ref: P35
+        selectorKind: TEXT_QUOTE
+        source: econ-readme
+        snapshotDigest: sha256:f7ff5ddb2e4878c00089586df4668c7120b38d0630424ce8482234873162f1c0
+    validTime:
+      validFrom: "2022-07-01T00:00:00Z"
+      validFromPrecision: DAY
+      validFromBasis: STATED_BY_SOURCE
+      validTo: null
+      validToBasis: UNKNOWN
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["published reference price (index, no seller): subject the US served-portion Package, not an Offer (adversarial-review stage)", "method from July 2022: McDonald's-provided US price (P35)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+  - id: d07
+    predicate: MARKET_REFERENCE_PRICE
+    assertionKind: METRIC
+    subject:
+      uid: hu:package:mcdonalds-big-mac-us-served-item
+      type: D6.Package
+    value:
+      valueNumber: 5.36
+      unitCode: iso4217:USD
+    asserter:
+      uid: hu:org:the-economist
+      type: D7.Organization
+    locators:
+      - ref: P32
+        selectorKind: TABLE
+        source: econ-csv
+        snapshotDigest: sha256:8d7f1b6019ffdc9c705ab4530d416ae5106863aa2b5dc15c1f0820680a82c322
+      - ref: P34
+        selectorKind: TABLE
+        source: econ-csv
+        snapshotDigest: sha256:8d7f1b6019ffdc9c705ab4530d416ae5106863aa2b5dc15c1f0820680a82c322
+    validTime:
+      validFrom: "2023-01-01T00:00:00Z"
+      validFromPrecision: DAY
+      validFromBasis: STATED_BY_SOURCE
+      validTo: null
+      validToBasis: UNKNOWN
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["published reference price (index, no seller): subject the US served-portion Package, not an Offer (adversarial-review stage)", "method: McDonald's-provided US price"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+  - id: d08
+    predicate: MARKET_REFERENCE_PRICE
+    assertionKind: METRIC
+    subject:
+      uid: hu:package:mcdonalds-big-mac-us-served-item
+      type: D6.Package
+    value:
+      valueNumber: 6.22
+      unitCode: iso4217:USD
+    asserter:
+      uid: hu:org:the-economist
+      type: D7.Organization
+    locators:
+      - ref: P33
+        selectorKind: TABLE
+        source: econ-csv
+        snapshotDigest: sha256:8d7f1b6019ffdc9c705ab4530d416ae5106863aa2b5dc15c1f0820680a82c322
+      - ref: P34
+        selectorKind: TABLE
+        source: econ-csv
+        snapshotDigest: sha256:8d7f1b6019ffdc9c705ab4530d416ae5106863aa2b5dc15c1f0820680a82c322
+    validTime:
+      validFrom: "2026-07-01T00:00:00Z"
+      validFromPrecision: DAY
+      validFromBasis: STATED_BY_SOURCE
+      validTo: null
+      validToBasis: UNKNOWN
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["published reference price (index, no seller): subject the US served-portion Package, not an Offer (adversarial-review stage)", "method: McDonald's-provided US price"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+  - id: d09
+    predicate: PRICE_SERIES_METHOD_CHANGE
+    assertionKind: FIELD
+    subject:
+      uid: hu:package:mcdonalds-big-mac-us-served-item
+      type: D6.Package
+    value:
+      valueString: "In July 2022 we updated the Big Mac index to use a McDonalds-provided price for the United States (previously, we averaged the price from four major US cities)."
+    asserter:
+      uid: hu:org:the-economist
+      type: D7.Organization
+    locators:
+      - ref: P35
+        selectorKind: TEXT_QUOTE
+        source: econ-readme
+        snapshotDigest: sha256:f7ff5ddb2e4878c00089586df4668c7120b38d0630424ce8482234873162f1c0
+      - ref: P36
+        selectorKind: TEXT_QUOTE
+        source: econ-readme
+        snapshotDigest: sha256:f7ff5ddb2e4878c00089586df4668c7120b38d0630424ce8482234873162f1c0
+    validTime:
+      validFrom: "2022-07-01T00:00:00Z"
+      validFromPrecision: MONTH
+      validFromBasis: STATED_BY_SOURCE
+      validTo: null
+      validToBasis: UNKNOWN
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["series = The Economist big-mac-data US price (asserter The Economist); marks the method change for the MARKET_REFERENCE_PRICE assertions d05-d08 on the same subject"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+  - id: d10
+    predicate: PRICE_SCOPE_STATEMENT
+    assertionKind: FIELD
+    subject:
+      uid: hu:listing:mcdonalds-com-big-mac
+      type: D6.MerchantListing
+    value:
+      valueString: "McDelivery prices may be higher than at restaurants."
+    asserter:
+      uid: hu:org:mcdonalds-usa
+      type: D7.Organization
+    locators:
+      - ref: P16
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:52:52Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["the menu page states no price; restaurant prices vary by location"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+  - id: ddc01
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:mcdonalds-big-mac-us-2022-01
+      type: D6.LabelVersion
+    object:
+      uid: hu:food:mcdonalds-big-mac-bun
+      type: D12.FoodItem
+    asserter:
+      uid: hu:org:mcdonalds-usa
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 0
+      lineRole: SUB_COMPONENT
+    locators:
+      - ref: P03
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+      - ref: P19
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+      - ref: P04
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:52:52Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'Big Mac Bun'", "statement:'Contains: Wheat, Sesame.'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the d02 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+    basisKind: MANUFACTURER_CLAIM
+  - id: ddc02
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:mcdonalds-big-mac-us-2022-01
+      type: D6.LabelVersion
+    object:
+      uid: hu:food:mcdonalds-beef-patty
+      type: D12.FoodItem
+    asserter:
+      uid: hu:org:mcdonalds-usa
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 1
+      lineRole: SUB_COMPONENT
+    locators:
+      - ref: P05
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+      - ref: P06
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:52:52Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'100% Beef Patty'", "statement:'Prepared With Grill Seasoning (salt, Black Pepper).'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the d02 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+    basisKind: MANUFACTURER_CLAIM
+  - id: ddc03
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:mcdonalds-big-mac-us-2022-01
+      type: D6.LabelVersion
+    object:
+      uid: hu:food:mcdonalds-shredded-lettuce
+      type: D12.FoodItem
+    asserter:
+      uid: hu:org:mcdonalds-usa
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 2
+      lineRole: SUB_COMPONENT
+    locators:
+      - ref: P02
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:52:52Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'Shredded Lettuce'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the d02 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+    basisKind: MANUFACTURER_CLAIM
+  - id: ddc04
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:mcdonalds-big-mac-us-2022-01
+      type: D6.LabelVersion
+    object:
+      uid: hu:food:mcdonalds-big-mac-sauce
+      type: D12.FoodItem
+    asserter:
+      uid: hu:org:mcdonalds-usa
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 3
+      lineRole: SUB_COMPONENT
+    locators:
+      - ref: P07
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+      - ref: P17
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+      - ref: P08
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:52:52Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'Big Mac Sauce'", "statement:'Contains: Egg, Soy, Wheat.'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the d02 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+    basisKind: MANUFACTURER_CLAIM
+  - id: ddc05
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:mcdonalds-big-mac-us-2022-01
+      type: D6.LabelVersion
+    object:
+      uid: hu:food:mcdonalds-american-cheese
+      type: D12.FoodItem
+    asserter:
+      uid: hu:org:mcdonalds-usa
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 4
+      lineRole: SUB_COMPONENT
+    locators:
+      - ref: P21
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+      - ref: P20
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+      - ref: P09
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:52:52Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'Pasteurized Process American Cheese'", "statement:'Contains: Milk, Soy.'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the d02 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+    basisKind: MANUFACTURER_CLAIM
+  - id: ddc06
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:mcdonalds-big-mac-us-2022-01
+      type: D6.LabelVersion
+    object:
+      uid: hu:food:mcdonalds-pickle-slices
+      type: D12.FoodItem
+    asserter:
+      uid: hu:org:mcdonalds-usa
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 5
+      lineRole: SUB_COMPONENT
+    locators:
+      - ref: P02
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:52:52Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'Pickle Slices'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the d02 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+    basisKind: MANUFACTURER_CLAIM
+  - id: ddc07
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:mcdonalds-big-mac-us-2022-01
+      type: D6.LabelVersion
+    object:
+      uid: hu:food:mcdonalds-onions
+      type: D12.FoodItem
+    asserter:
+      uid: hu:org:mcdonalds-usa
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 6
+      lineRole: SUB_COMPONENT
+    locators:
+      - ref: P02
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:52:52Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'Onions'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the d02 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+    basisKind: MANUFACTURER_CLAIM
+  - id: ddc08
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:mcdonalds-big-mac-us-2022-01
+      type: D6.LabelVersion
+    object:
+      uid: hu:food:soybean-oil
+      type: D12.FoodItem
+    asserter:
+      uid: hu:org:mcdonalds-usa
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 7
+      parentOrderIndex: 3
+      lineRole: SOURCE_INGREDIENT
+    locators:
+      - ref: P17
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:52:52Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'Soybean Oil'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the d02 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+    basisKind: MANUFACTURER_CLAIM
+  - id: ddc09
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:mcdonalds-big-mac-us-2022-01
+      type: D6.LabelVersion
+    object:
+      uid: hu:food:egg-yolk
+      type: D12.FoodItem
+    asserter:
+      uid: hu:org:mcdonalds-usa
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 8
+      parentOrderIndex: 3
+      lineRole: SOURCE_INGREDIENT
+    locators:
+      - ref: P22
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:52:52Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'Egg Yolks'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the d02 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+    basisKind: MANUFACTURER_CLAIM
+  - id: ddc10
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:mcdonalds-big-mac-us-2022-01
+      type: D6.LabelVersion
+    object:
+      uid: hu:food:sesame-seeds
+      type: D12.FoodItem
+    asserter:
+      uid: hu:org:mcdonalds-usa
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 9
+      parentOrderIndex: 0
+      lineRole: SOURCE_INGREDIENT
+    locators:
+      - ref: P23
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:52:52Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'Sesame Seeds'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the d02 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+    basisKind: MANUFACTURER_CLAIM
+  - id: ddc11
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:mcdonalds-big-mac-us-2022-01
+      type: D6.LabelVersion
+    object:
+      uid: hu:constituent:energy
+      type: D1.Constituent
+    asserter:
+      uid: hu:org:mcdonalds-usa
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 10
+      lineRole: ENERGY
+      amount: 580
+      unitCode: kcal
+      amountReferent: AS_NUTRIENT
+      amountBasis: PER_ITEM
+    locators:
+      - ref: P13
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:52:52Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'Calories'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the d02 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+    basisKind: MANUFACTURER_CLAIM
+  - id: ddc12
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:mcdonalds-big-mac-us-2022-01
+      type: D6.LabelVersion
+    object:
+      uid: hu:constituent:sodium
+      type: D1.Constituent
+    asserter:
+      uid: hu:org:mcdonalds-usa
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 11
+      lineRole: NUTRIENT
+      amount: 1060
+      unitCode: mg
+      amountReferent: AS_NUTRIENT
+      amountBasis: PER_ITEM
+      dailyValuePercent: 46
+    locators:
+      - ref: P10
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:52:52Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'Sodium'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the d02 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+    basisKind: MANUFACTURER_CLAIM
+  - id: ddc13
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:mcdonalds-big-mac-us-2022-01
+      type: D6.LabelVersion
+    object:
+      uid: hu:constituent:saturated-fat
+      type: D1.Constituent
+    asserter:
+      uid: hu:org:mcdonalds-usa
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 12
+      lineRole: NUTRIENT
+      amount: 11
+      unitCode: g
+      amountReferent: AS_NUTRIENT
+      amountBasis: PER_ITEM
+      dailyValuePercent: 56
+    locators:
+      - ref: P11
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:52:52Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'Saturated Fat'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the d02 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+    basisKind: MANUFACTURER_CLAIM
+  - id: ddc14
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:mcdonalds-big-mac-us-2022-01
+      type: D6.LabelVersion
+    object:
+      uid: hu:constituent:added-sugars
+      type: D1.Constituent
+    asserter:
+      uid: hu:org:mcdonalds-usa
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 13
+      lineRole: NUTRIENT
+      amount: 5
+      unitCode: g
+      amountReferent: AS_NUTRIENT
+      amountBasis: PER_ITEM
+      dailyValuePercent: 10
+    locators:
+      - ref: P12
+        selectorKind: TEXT_QUOTE
+        source: mcd-bigmac
+        snapshotDigest: sha256:3abf681e36d3e81ce490c69d85a230eb7cf7d8509d6a9919b6ee68e00a7103c9
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:52:52Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'Added Sugars'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the d02 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-prepared-food-bigmac-mcdonalds
+    basisKind: MANUFACTURER_CLAIM

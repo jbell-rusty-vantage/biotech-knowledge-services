@@ -1,0 +1,245 @@
+version: 1
+module: D7
+# Source: packets/D7/05-relationship-register.yaml (sha256 8f8b0ee4…), edited by the S module editor for D7 2026-10-08 per
+# final/decision-report.md and final/_work/rulings.yaml (global, modules.D7). Every entry keeps the 01-PACKET-CONTRACT
+# fields and adds `module: D7`; `fixture` points at final/fixtures/D7/<folder>. Synthesis edits:
+#   R-30  HOLDS_ROLE / HOLDS_STAKE / RECEIVES_VALUE_FROM rationales: the printed role and class are the Assertion
+#         qualifiers roleText: / stakeClass:; ValueEdgeProperties.unitCode (iso4217:<CODE>) replaces currency.
+#   R-52  every predicate entry names its registrar; registry final/vocabularies/predicates.yaml.
+#   R-53  the authorizing predicates of D7's seven typed edges are listed under `authorizingPredicates` (the fixtures write
+#         them as Assertion.predicate), not under predicateOnly; no predicateOnly value equals a relationship type name.
+#   R-68  D7 is sole registrar of MANUFACTURES, CONTRACT_MANUFACTURES_FOR, SUPPLIES_MATERIAL{exclusivity, buyer},
+#         MANUFACTURER_UNNAMED{manufacturingKind} (with aliases) and of DISTRIBUTES (moved from D8; non-label sources).
+#   R-82  DISCLOSES_INTERESTS_OF third-party lists only; D7 accepts the DISCLOSES_INTEREST denial convention (D9 registrar).
+#   R-79, R-80, R-81, R-83, R-92, R-52  removed: OPERATES_CHANNEL, AUTHORED, SPEAKS_AT, ENDORSES_PRODUCT, RECOMMENDS_USE (D9),
+#         FINANCING_AMOUNT, DATE_OF_FIRST_SALE, INVESTOR_COUNT (D13; FINANCING_AMOUNT_SOLD retired), SUCCEEDED_BY (D6
+#         registrar with D7's Organization → Organization pair). Each now appears in D7.seams.yaml predicateSeams when a D7
+#         question or fixture reads it.
+#   R-69  AWARDED_BY rationale and the HOLDS_STAKE write rule: OQ-D7-32 and OQ-D7-33 closed; Q-D7-13 labels rows
+#         STATED_HOLDING | ROUND_PARTICIPANT.
+#   R-67, R-79, R-80, R-81, R-83, R-78  deferred-row reasons updated to the ruled owners.
+# Not edits to this file (recorded in final/_runlog/module-D7.md): R-19 (CQ-CL-05 / Q-D7-06 statement time T) and R-50
+# (Q-D7-22 materialized → retrieved) change the 03 patterns and the answer-kind table, not register fields.
+# Model stage (A6, 2026-10-08). 7 relationship types, 9 from→to pairs (budget 14 / 35), unchanged in synthesis. Kernel
+# edges (HAS_SUBJECT, HAS_OBJECT, ASSERTED_BY, HAS_IDENTIFIER, MENTIONS, ASSESSES, WAS_GENERATED_BY, DERIVED_FROM) are
+# declared once by the kernel against Subjectable/Entity and are not registered here.
+# Adversarial review (A6, 2026-10-08): AWARDED_BY asserted (was structural); observedAt removed from the D7 edge-property
+# types (read Assertion.validObservedAt through assertionUid); RECEIVES_VALUE_FROM no longer lists Open Payments as a
+# populating source (query-time only); REPORTED_MARKET_MOVE left to D13 (subject Event).
+relationships:
+  - type: HOLDS_ROLE
+    module: D7
+    class: asserted
+    from: Person
+    to: Organization
+    edgeProperties: RoleEdgeProperties
+    cardinality: many (one episode per authorizing Assertion; several roles at one organization are separate episodes)
+    temporal: episode
+    questions: [Q-D7-02, Q-D7-03, Q-D7-08, Q-D7-12, Q-D7-14, Q-D7-17, Q-D7-25, CQ-CL-05, CQ-EC-03, CQ-AX-18, CQ-EC-04, CQ-EC-01]
+    pattern: 03#Q-D7-02
+    populatedBy: [self-disclosure-pages, sec-edgar, europepmc-fulltext-jats, orcid, companies-house, firecrawl-cli, europepmc-rest]
+    fixture: final/fixtures/D7/sinclair-self-disclosure-unstructured
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Governance and work roles (founder, director, officer, employee, advisor, consultant, managing member, promoter) are
+      one family with one property set (roleKind; the title or code as printed is the authorizing Assertion's qualifier
+      roleText:, R-30). Replaces pinned BOARD_MEMBER_OF, EMPLOYED_BY, ADVISES_ORGANIZATION, FOUNDED_ORGANIZATION and the role
+      half of AFFILIATED_WITH. Episode: CQ-AX-18 and Q-D7-17 compare the role interval with a statement date. Organization →
+      Organization roles are not declared (control is PARENT_OF; no question needs an organization as advisor or officer).
+      Also read by K Q-K-15 (R-15) and D5 Q-D5-13 (R-78).
+  - type: HOLDS_STAKE
+    module: D7
+    class: asserted
+    from: [Person, Organization]
+    to: Organization
+    edgeProperties: StakeEdgeProperties
+    cardinality: many (one episode per authorizing Assertion)
+    temporal: episode
+    questions: [Q-D7-01, Q-D7-03, Q-D7-06, Q-D7-11, Q-D7-12, Q-D7-13, Q-D7-14, Q-D7-16, CQ-CL-05, CQ-EC-03, CQ-AX-18, CQ-EC-01]
+    pattern: 03#Q-D7-01
+    populatedBy: [sec-edgar, companies-house, self-disclosure-pages, propublica-dollars-for-profs, firecrawl-cli]
+    fixture: final/fixtures/D7/niagen-ownership-brand-history
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Ownership (equity, investor-unspecified, options, convertibles, LP interests) with the properties the investor
+      questions filter on (stakePercent as stated, stakeBand, ownershipBasis, voting/dispositive power; the class as printed
+      is the Assertion qualifier stakeClass:, R-30). Replaces pinned INVESTED_IN and HOLDS_EQUITY_IN (kept apart by stakeKind
+      EQUITY vs INVESTOR_UNSPECIFIED). Holders are persons and organizations (fund vehicles, holding companies). Episode:
+      proxy table as-of dates, 13D amendments and threshold exits. Write rule against D13 (R-69; OQ-D7-33 closed):
+      participation in a financing round is D13 INVOLVES {role INVESTOR / LEAD_INVESTOR} on the FINANCING Event; HOLDS_STAKE
+      is written only when a source states a holding (a table row, a filing, "I am an investor in X"), never inferred from
+      round participation. Investor questions read both and label each row STATED_HOLDING or ROUND_PARTICIPANT (Q-D7-04,
+      Q-D7-13).
+  - type: RECEIVES_VALUE_FROM
+    module: D7
+    class: asserted
+    from: Person
+    to: Organization
+    edgeProperties: ValueEdgeProperties
+    cardinality: many (one episode per authorizing Assertion; the payer is the target)
+    temporal: episode
+    questions: [Q-D7-06, Q-D7-07, Q-D7-16, Q-D7-18, CQ-CL-05, CQ-EC-03, CQ-AX-18, CQ-EC-04]
+    pattern: 03#Q-D7-07
+    populatedBy: [self-disclosure-pages, in-container-disclosures, ftc-pages, europepmc-fulltext-jats, propublica-dollars-for-profs, firecrawl-cli, europepmc-rest, internet-archive-wayback]
+    fixture: final/fixtures/D7/ftc-ameribev-paid-dieticians-harm
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Money or things of value received (fees, honoraria, royalties, licensed-IP inventorship, lab funding, sponsorship,
+      paid endorsement, affiliate commission, free product); a stated amount carries unitCode iso4217:<CODE> (R-30).
+      Replaces pinned RECEIVES_COMPENSATION_FROM and HAS_IP_INTEREST_IN. Separate from HOLDS_ROLE because one span ("I am a
+      paid advisor to Dexcom") yields a role and a payment that different questions filter (Q-D7-02 vs Q-D7-06), and the FTC
+      case asserts payment with no role. Organization recipients are not declared: study funding is D3 HAS_STUDY_ROLE or an
+      Award; content sponsorship is D9. CMS Open Payments rows are read at query time only (Q-D7-18, privacy rule in 09) and
+      never populate this edge.
+  - type: PARENT_OF
+    module: D7
+    class: asserted
+    from: Organization
+    to: Organization
+    edgeProperties: ControlEdgeProperties
+    cardinality: many (parent → child; GLEIF direct and ultimate parents are separate episodes)
+    temporal: episode
+    questions: [Q-D7-01, Q-D7-09, Q-D7-13, Q-D7-14, Q-D7-19, CQ-EC-02, CQ-EC-03, CQ-CL-05]
+    pattern: 03#Q-D7-19
+    populatedBy: [gleif-lei, sec-edgar, companies-house, self-disclosure-pages]
+    fixture: final/fixtures/D7/niagen-ownership-brand-history
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Control and group membership, kept apart from stake (investment is not control; R-78). controlKind distinguishes
+      consolidation, wholly owned, majority owned, general partner, division and "an X company" group membership
+      (GROUP_MEMBER_UNSPECIFIED, excluded from ownership chains unless asked). Declared in one direction only
+      (Organization.subsidiaries); the pinned inverse field parentOrganizations is dropped. Absorbs pinned AFFILIATED_WITH
+      between organizations. Episode: GLEIF RELATIONSHIP_PERIOD, acquisition and dissolution dates.
+  - type: OWNS_BRAND
+    module: D7
+    class: asserted
+    from: Organization
+    to: Brand
+    edgeProperties: AssertedEdgeProperties
+    cardinality: many over time (one open holder episode expected per brand)
+    temporal: episode
+    questions: [Q-D7-19, Q-D7-10, CQ-EC-02, Q-D7-06, Q-D7-11, CQ-CL-05]
+    pattern: 03#Q-D7-19
+    populatedBy: [sec-edgar, product-label-contact, nppes-npi, brand-pages, firecrawl-cli]
+    fixture: final/fixtures/D7/niagen-ownership-brand-history
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Brand ≠ legal entity: the accountable holder of a brand, with valid time (Tru Niagen moved from Healthspan Research
+      LLC to its parent on dissolution). Declared on Brand with direction IN (Brand.owners), so Organization carries no field
+      for it. A licensed operator doing business under a clinic brand is an episode whose Assertion carries the qualifier
+      tieKind=OPERATOR_DBA (promote to an edge property if Q-D7-10 becomes value 1).
+  - type: AWARDED_BY
+    module: D7
+    class: asserted
+    from: Award
+    to: Organization
+    edgeProperties: AssertedRecordedProperties
+    cardinality: one or more (co-funded awards; one episode per authorizing Assertion)
+    temporal: recorded-only
+    questions: [Q-D7-05, Q-D7-15, Q-D7-22, CQ-EC-04]
+    pattern: 03#Q-D7-15
+    populatedBy: [nih-reporter, europepmc-fulltext-jats, orcid, funder-award-pages, europepmc-rest, firecrawl-cli]
+    fixture: final/fixtures/D7/elysium-paper-funding-award
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Who funded an award is read from a span (a paper's funding sentence, a funder's record) and can be contested (the
+      Elysium paper names two candidate issuers for the OTR numbers), so it is asserted: each episode has its authorizing
+      Assertion and its locator, and a contested funder is two episodes plus a RESOLUTION Assessment. Recorded-only on
+      kernel AssertedRecordedProperties (no question reads the valid time of a funder link; the award period is the
+      Award's own clock). The Award's identity is its number plus the issuer as printed (kernel Identifier AWARD_NUMBER /
+      NIH_PROJECT), not the funder uid. It makes "what else does funder F fund" (Q-D7-05, Q-D7-15) a one-hop read. A
+      grant, contract or prize record is a D7 Award; a D13 AWARD Event exists only as the news or frontier milestone,
+      points at the Award by predicate EVENT_ABOUT and carries no amount (R-69; OQ-D7-32 closed). Adversarial review: was
+      structural (StructuralEdgeProperties, CREATE+CONNECT), which left the funder fact without a trace.
+  - type: AWARDED_TO
+    module: D7
+    class: asserted
+    from: Award
+    to: [Organization, Person]
+    edgeProperties: AssertedRecordedProperties
+    cardinality: many (recipient institutions; principal / contact investigator or individual recipient)
+    temporal: recorded-only
+    questions: [Q-D7-05, Q-D7-15, Q-D7-16, Q-D7-25, CQ-EC-04]
+    pattern: 03#Q-D7-15
+    populatedBy: [nih-reporter, europepmc-fulltext-jats, orcid, funder-award-pages, europepmc-rest]
+    fixture: final/fixtures/D7/elysium-paper-funding-award
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Recipients are stated differently by different sources (a paper names the university; RePORTER names the institution
+      and the PI; ORCID names the person), so each link is asserted. Recorded-only on kernel AssertedRecordedProperties
+      (K M10, check stage): no valid-time fields on the edge, any stated validity stays on the authorizing Assertion; the
+      award period is the Award's own clock (startDate/endDate). Two declared fields (recipientOrganizations,
+      recipientPersons) instead of a union.
+predicateOnly:
+  # Registrar D7 for every entry below (R-52). Registry: final/vocabularies/predicates.yaml.
+  # ---- organization identity and history
+  - { predicate: NOMINATES_DIRECTOR, registrar: D7, subject: Organization, object: Person, promoteWhen: "Q-D7-02 becomes value 1 or a question traverses investor → nominee → board at volume" }
+  - { predicate: LEGAL_NAME, registrar: D7, subject: Organization, object: "literal (valueString) with valid time", promoteWhen: "never as an edge; a name state node only if Q-D7-09 needs a full profile snapshot" }
+  - { predicate: FORMER_NAME, registrar: D7, subject: Organization, object: "literal with valid time (EDGAR formerNames from/to)", promoteWhen: "as LEGAL_NAME" }
+  - { predicate: DOING_BUSINESS_AS, registrar: D7, subject: Organization, object: "literal (NPPES other name, d/b/a)", promoteWhen: "CQ-EC-02 needs DBA names that are not Brands" }
+  - { predicate: ORGANIZATION_STATUS, registrar: D7, subject: Organization, object: "literal OrganizationStatus with valid time", promoteWhen: "never; Organization.status is its projection" }
+  # ---- disclosure and conflict
+  - { predicate: DISCLOSES_INTERESTS_OF, registrar: D7, subject: Source, object: Person, note: "third-party lists only (R-82); a discloser's own statement is DISCLOSES_INTEREST (registrar D9), and 'no competing interest' is DISCLOSES_INTEREST with polarity NEGATIVE and speechAct DENIES, which D7 accepts (R-82, OQ-D5-44)", promoteWhen: "Q-D7-20 must enumerate disclosure sources for many persons at query time" }
+  - { predicate: MATERIAL_CONNECTION_NOT_ADEQUATELY_DISCLOSED, registrar: D7, subject: "Person or Organization", object: "the promoted subject (D1/D6/D12)", promoteWhen: "Q-D7-07 becomes value 1 with a volume of regulator findings (then a D8 enforcement record carries it)" }
+  - { predicate: INVENTOR_ON_PATENT_ASSIGNED_TO, registrar: D7, subject: Person, object: Organization, promoteWhen: "D8 patent questions need person → patent → assignee traversal (D8 owns Patent)" }
+  - { predicate: WARNING_LETTERS_SENT, registrar: D7, subject: "Organization (the regulator)", object: "literal (scope as printed: recipients and counts)", promoteWhen: "never; the letters themselves are D8 RegulatoryRecords (ISSUED_BY / ADDRESSED_TO seams)" }
+  - { predicate: DOCUMENT_DATE_INCONSISTENT, registrar: D7, subject: "Source (kernel)", object: "literal (the two printed dates)", note: "asserted by a BellLabs Agent (a reading of the document), never attributed to the publisher", promoteWhen: "never; a kernel QUALITY Assessment if D9/D11 register a source-dating subkind" }
+  # ---- funding (Award literals and the paper-side acknowledgement)
+  - { predicate: AWARD_AMOUNT_FISCAL_YEAR, registrar: D7, subject: Award, object: "literal number + unitCode, the budget period as valid time", promoteWhen: "never as an edge; Award.amount holds a stated total only" }
+  - { predicate: AWARD_ACKNOWLEDGED_BY, registrar: D7, subject: Award, object: "Source (the paper whose funding statement cites it)", promoteWhen: "never: when the paper's Study exists, D3 HAS_STUDY_ROLE {FUNDING_AWARD} is the typed path; a paper without a D3 Study keeps this Assertion (owner D3/D9 for any Publication → Award edge)" }
+  # ---- manufacturer, supplier and distributor roles: the one name set D7 registers for every module (R-68; OQ-D7-28)
+  - { predicate: MANUFACTURES, registrar: D7, aliases: [MANUFACTURES_MATERIAL], subject: "Organization (the maker)", object: "D6 Product | D1 IngredientMaterial", note: "R-68: D1 MANUFACTURES_MATERIAL renamed to it; D1, D6 and D8 delete their registrations. The marketer of record is D6 NAMES_RESPONSIBLE_PARTY / D7 OWNS_BRAND, not a manufacturing predicate. CQ-MF-01 is answered in Cypher over Assertions; the missing GraphQL filter is a recorded gap", promoteWhen: "CQ-MF-01 needs a GraphQL filter at volume; then the asking domain declares Product.manufacturers / IngredientMaterial.manufacturers -> Organization (D6/D1), never a field on Organization" }
+  - { predicate: CONTRACT_MANUFACTURES_FOR, registrar: D7, subject: "Organization (the CMO)", object: "Organization (the brand owner)", qualifiers: ["product=<D6 Product uid> when stated"], note: "R-68: D8 deletes its registration", promoteWhen: "as MANUFACTURES" }
+  - { predicate: SUPPLIES_MATERIAL, registrar: D7, aliases: [SUPPLIES_INGREDIENT, EXCLUSIVE_SUPPLIER_OF, SOLE_SUPPLIER_OF], subject: "Organization (the supplier)", object: "D1 IngredientMaterial", qualifiers: ["exclusivity=SOLE|NON_EXCLUSIVE|UNSTATED", "buyer=<Organization uid>"], note: "R-68: replaces D7 SOLE_SOURCE_SUPPLIER_DEPENDENCE, D6 SOLE_SUPPLIER_OF, D8 SUPPLIES_INGREDIENT and EXCLUSIVE_SUPPLIER_OF (= exclusivity=SOLE); D1 deletes its registration (Niagen 10-K: Grace, exclusivity=SOLE, written identically by the D6 and the D7 fixture)", promoteWhen: "Q-D7-21 or D1's supply-concentration question becomes value 1; then IngredientMaterial.suppliers -> Organization with exclusivity, declared by D1" }
+  - { predicate: MANUFACTURER_UNNAMED, registrar: D7, aliases: [MANUFACTURER_STATEMENT], subject: "Organization (the brand owner or registrant)", object: "literal (the unnamed party as described)", qualifiers: ["manufacturingKind=CONTRACT|INGREDIENT|PACKAGING"], note: "R-68: replaces D7 CONTRACT_MANUFACTURING_UNNAMED and D6 MANUFACTURER_STATEMENT (D6 re-keys its filing fixtures)", promoteWhen: "never; an unnamed party is not a node" }
+  - { predicate: DISTRIBUTES, registrar: D7, subject: Organization, object: "D6 Product", note: "R-68: moved from D8; distributor statements that do not come from a label. A label's distributor is D6 NAMES_RESPONSIBLE_PARTY (LabelVersion.responsiblePartyRole DISTRIBUTED_BY)", promoteWhen: "CQ-MF-01 distributor questions (D8's trigger, carried over); then the asking domain declares the edge, never a field on Organization" }
+  # ---- never stored
+  - { predicate: FAMILY_OR_PERSONAL_RELATIONSHIP, registrar: D7, subject: Person, object: Person, promoteWhen: "never stored (privacy rule); a regulator's statement that a material connection exists is MATERIAL_CONNECTION_* instead" }
+  # Removed in synthesis (registered elsewhere; read through D7.seams.yaml predicateSeams where a D7 question uses them):
+  #   OPERATES_CHANNEL (R-79; inverse of D9 OPERATED_BY), AUTHORED (R-80; D3 AUTHORED_BY), SPEAKS_AT (R-81; D13 INVOLVES
+  #   {PRESENTER}), ENDORSES_PRODUCT and RECOMMENDS_USE (R-83; D9 RECOMMENDS_USE), FINANCING_AMOUNT, DATE_OF_FIRST_SALE,
+  #   INVESTOR_COUNT (R-92; D13; FINANCING_AMOUNT_SOLD retired), SUCCEEDED_BY (R-52; D6 registrar, D7 contributes the
+  #   Organization → Organization pair). REPORTED_MARKET_MOVE is D13's registration (R-92).
+authorizingPredicates:
+  # R-53: the Assertion.predicate value that authorizes each episode of D7's own typed edges (fixtures write them); not
+  # predicateOnly entries. Registrar D7 (owner of the typed family, R-52).
+  - { predicate: HOLDS_ROLE, registrar: D7, authorizes: HOLDS_ROLE, note: "R-53: D5 removes its predicateOnly HOLDS_ROLE and cites this typed edge" }
+  - { predicate: HOLDS_STAKE, registrar: D7, authorizes: HOLDS_STAKE, note: "R-53: D5 removes its predicateOnly HOLDS_STAKE" }
+  - { predicate: RECEIVES_VALUE_FROM, registrar: D7, authorizes: RECEIVES_VALUE_FROM, note: "R-53: D5 removes its predicateOnly RECEIVES_VALUE_FROM" }
+  - { predicate: PARENT_OF, registrar: D7, authorizes: PARENT_OF }
+  - { predicate: OWNS_BRAND, registrar: D7, authorizes: OWNS_BRAND }
+  - { predicate: AWARDED_BY, registrar: D7, authorizes: AWARDED_BY }
+  - { predicate: AWARDED_TO, registrar: D7, authorizes: AWARDED_TO }
+deferred:
+  - { type: BOARD_MEMBER_OF, reason: "merged into HOLDS_ROLE (roleKind DIRECTOR / CHAIR / BOARD_OBSERVER)" }
+  - { type: EMPLOYED_BY, reason: "merged into HOLDS_ROLE (roleKind EMPLOYEE / EXECUTIVE_OFFICER)" }
+  - { type: ADVISES_ORGANIZATION, reason: "merged into HOLDS_ROLE (roleKind ADVISOR / CONSULTANT)" }
+  - { type: FOUNDED_ORGANIZATION, reason: "merged into HOLDS_ROLE (roleKind FOUNDER)" }
+  - { type: INVESTED_IN, reason: "merged into HOLDS_STAKE (stakeKind INVESTOR_UNSPECIFIED; no implication to EQUITY)" }
+  - { type: HOLDS_EQUITY_IN, reason: "merged into HOLDS_STAKE (stakeKind EQUITY)" }
+  - { type: HAS_IP_INTEREST_IN, reason: "merged into RECEIVES_VALUE_FROM (valueKind INVENTOR_ON_LICENSED_IP / ROYALTY_OR_LICENSE_INCOME)" }
+  - { type: RECEIVES_COMPENSATION_FROM, reason: "renamed RECEIVES_VALUE_FROM (covers non-cash value: free product, travel, commission)" }
+  - { type: AFFILIATED_WITH, reason: "person side → HOLDS_ROLE; organization side → PARENT_OF controlKind GROUP_MEMBER_UNSPECIFIED; an unspecified 'affiliation' with no kind is an Assertion only" }
+  - { type: HAS_STATE, reason: "OrganizationSnapshot dropped; name and status history are valid-time Assertions" }
+  - { type: OPERATES_FACILITY, reason: "no Facility node (R-67, OQ-D7-05 closed): a certified site is the operating Organization plus verbatim scope; the facility branch is the D8 predicate LISTING_COVERS_FACILITY_OF; D8 is the designated future owner" }
+  - { type: MARKETS_PRODUCT / DISTRIBUTES_PRODUCT / SELLS_PRODUCT / HOSTS_LISTING / LISTS_OFFER / SELLER_OF_RECORD_FOR / FULFILLS_OFFER / AFFILIATE_FOR_OFFER, reason: "commerce roles; D6 declares Offer.sellerOfRecord (SELLER_OF_RECORD) and LabelVersion.responsibleParty (NAMES_RESPONSIBLE_PARTY, stays typed, R-67) pointing at Organization (seam); a non-label distributor statement is the D7 predicate DISTRIBUTES (R-68); the rest are predicate-only in D6" }
+  - { type: MANUFACTURES_PRODUCT / CONTRACT_MANUFACTURES_FOR / SUPPLIES_INGREDIENT_MATERIAL / PERFORMS_PROCESS / HOSTS_PROCESS / HAS_CAPABILITY_STATE / USES_EQUIPMENT, reason: "manufacturing and supply roles; predicate-only in every module, under the one name set D7 registers in predicateOnly (MANUFACTURES, CONTRACT_MANUFACTURES_FOR, SUPPLIES_MATERIAL, MANUFACTURER_UNNAMED, DISTRIBUTES) - R-68, OQ-D7-28" }
+  - { type: OWNS_TRADEMARK / ASSIGNED_PATENT / LICENSES_PATENT / GRANTS_PATENT_LICENSE / SUBMITTED_BY, reason: "IP and regulatory roles; D8 declares Patent.assignees (ASSIGNED_TO), Patent.licensees (LICENSED_TO), RegulatoryRecord.issuedBy / addressedTo (seam)" }
+  - { type: SPONSORED_BY / INVESTIGATED_BY / POSTS_RESULT (organization side), reason: "study roles; D3 HAS_STUDY_ROLE (Study → Organization | Person | Award, role enum) (seam); study funding is HAS_STUDY_ROLE {FUNDER} (R-82)" }
+  - { type: DEVELOPS_TREATMENT / OFFERS_TREATMENT / OFFERS_PROCEDURE, reason: "clinic and intervention roles; the predicate OFFERS_INTERVENTION, registered by D6 with D7.Organization admitted as subject (R-52; seam)" }
+  - { type: DEVELOPS_PLATFORM / USES_PLATFORM, reason: "device/platform roles; D4 (predicate-only unless D4 promotes)" }
+  - { type: SPONSORS_CONTENT / OPERATES_CHANNEL / SERVES_ON_CHANNEL / APPEARS_IN / AUTHORED_BY / ON_PLATFORM / OPERATED_BY (channel), reason: "media roles; D9 declares MediaWork.sponsors (CONTENT_SPONSORED_BY) and MediaWork.appearances (APPEARS_IN) on its containers (seam); OPERATED_BY is a D9 predicate with subject Channel (R-79); AUTHORED_BY is a D3 predicate (R-80)" }
+  - { type: HOSTS_EVENT / EXHIBITS_AT / SPEAKS_AT / ATTENDS / INVOLVES, reason: "event participation, including round participation as INVESTOR / LEAD_INVESTOR and a presentation as PRESENTER (R-81); D13 INVOLVES (Event → Organization | Person, role enum) (seam). A persisting holding is D7 HOLDS_STAKE, written only when a source states it (R-69)" }
+  - { type: AWARD event roles (AWARDING_BODY / AWARDEE), reason: "a grant, contract or prize record is a D7 Award (AWARDED_BY / AWARDED_TO); a D13 AWARD Event is the announcement or milestone, EVENT_ABOUT the Award, no amount; D13 EventRole has no AWARDING_BODY / AWARDEE (R-69; OQ-D7-32 closed)" }
+  - { type: ENDORSES_PRODUCT / RECOMMENDS, reason: "never a stored record (00-DIRECTIVE 3.9); a recommendation is a claim occurrence with predicate RECOMMENDS_USE or RECOMMENDS_AGAINST, registered by D9 (R-83)" }
+  - { type: RECORDS / COVERS / STATUS_OF / AVAILABLE_IN, reason: "not D7 questions (D9, D8, D6 own them); D8 COVERS has no Organization member (R-67, R-94)" }
+  - { type: ACTED_ON_BEHALF_OF, reason: "kernel deferred it to D7 (K 11-open-questions item 9); no D7 question asks which organization a software Agent acted for" }
+  - { type: HAS_INTEREST_IN, reason: "Shape A (one wide interest edge) measured and not chosen; see 09-reasoning.md 'Shape A vs Shape B'; Shape B kept (R-78)" }
+  - { type: CANDIDATE_TIE (derived Person → Organization), reason: "Q-D7-23 leads stay GDS output handed to Mission Control (INSIGHT Assessments), never edges between domain entities with a score (R-47)" }

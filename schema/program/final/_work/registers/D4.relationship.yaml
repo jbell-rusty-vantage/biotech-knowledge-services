@@ -1,0 +1,349 @@
+version: 1
+module: D4
+# Source: packets/D4/05-relationship-register.yaml (sha256 05ead789…), edited by the S module editor for D4, 2026-10-08,
+# per final/decision-report.md and final/_work/rulings.yaml (modules.D4 + global). Every entry keeps the 01-PACKET-CONTRACT
+# fields and adds `module: D4`; fixtures point at final/fixtures/D4/<folder>. Synthesis edits:
+#   R-26  PERFORMED_BY_LAB: class structural -> asserted, StructuralEdgeProperties -> AssertedRecordedProperties, [CONNECT];
+#         a curator inference uses basisKind CURATOR_CLASSIFICATION (answers 11 #42). Structural entries (QUANTIFIES,
+#         HAS_ANALYTE, OUTPUTS_METRIC, REQUIRES_INPUT_METRIC, INTERVAL_FOR) stay structural only if the record's attach
+#         Assertion cites the defining span.
+#   R-52  FIELD_NOT_REPORTED removed from predicateOnly (kernel convention, registrar K; read through the D4.seams.yaml
+#         predicateSeams). Every remaining predicateOnly entry carries `registrar: D4` (owner of the subject types).
+#   R-53  checked: no predicateOnly value equals a relationship type name in any packet SDL or the final kernel (106 names).
+#   R-72  DELIVERS rationale: the single Device path (D8 removed Device from RegulatoryRecordTopic and LegalStatusSubject).
+#   R-03  nestedOperations unchanged: intra-module structural [CREATE, CONNECT], structural to foreign records [CONNECT],
+#         asserted [CONNECT].
+# Model stage (Wave 2) by A3, 2026-10-08. 13 relationship types, 17 from→to pairs, no unions.
+# populatedBy ids are stable tool/source ids; the fixtures stage lists each in 08-sources-and-tools.md.
+# temporal: episode = the valid-time bounds of AssertedEdgeProperties are queried (as-of); recorded-only = no question reads
+# valid time: structural edges use StructuralEdgeProperties, asserted ones the kernel AssertedRecordedProperties (check stage,
+# kernel model-stage change M10; the authorizing Assertion still carries any valid time the source states).
+relationships:
+  - type: QUANTIFIES
+    module: D4
+    class: structural
+    from: Metric
+    to: Biomarker
+    edgeProperties: StructuralEdgeProperties
+    cardinality: one (each Metric quantifies one Biomarker; a Biomarker has many Metrics)
+    temporal: recorded-only
+    questions: [CQ-DX-01, Q-D4-01, Q-D4-16, Q-D4-17, Q-D4-03]
+    pattern: 03#Q-D4-16
+    populatedBy: [bks-curation-agent, loinc, firecrawl-cli]
+    fixture: final/fixtures/D4/nr-nad-compound-to-test
+    nestedOperations: [CREATE, CONNECT]
+    aggregate: false
+    rationale: >-
+      The hinge between "what is measured" (Metric) and "what it is about" (Biomarker). Keeps HbA1c %, HbA1c mmol/mol
+      and DNAm logA1C as three Metrics of one Biomarker without merging their series; every cross-domain hop (D2, D3, D5)
+      lands on Biomarker and reaches tests through this edge. Curated, definitional. R-26: stays structural only if the
+      record's attach Assertion cites the defining span.
+  - type: HAS_ANALYTE
+    module: D4
+    class: structural
+    from: Biomarker
+    to: [D1.ChemicalSubstance, D2.MolecularEntity]
+    edgeProperties: StructuralEdgeProperties
+    cardinality: zero_or_one per field (two fields, analytes and analyteEntities; 2 pairs)
+    temporal: recorded-only
+    questions: [Q-D4-01, Q-D4-16]
+    pattern: 03#Q-D4-01
+    populatedBy: [bks-curation-agent, loinc, repo-mcp-servers]
+    fixture: final/fixtures/D4/nr-nad-compound-to-test
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      The direct compound→biomarker branch of Q-D4-01 ("is there a test for the level of the thing I take or its product":
+      NR → NAD+, vitamin D → 25-OH-D) and the D1 seam D1 already planned (D1 research notes: Biomarker -HAS_ANALYTE->
+      ChemicalSubstance). Second field to D2 MolecularEntity for protein referents (IL-6, p16INK4A): the D2 model stage's
+      Q-D2-03 "analyte-participant" branch and Q-D2-04/Q-D2-22 traverse Biomarker -HAS_ANALYTE-> x -PARTICIPATES_IN-> Mechanism
+      for both target kinds, so one type with two fields (no union) costs one extra pair. Fixtures: analytes in
+      nr-nad-compound-to-test (e01, e02); analyteEntities in hba1c-two-labs-interference (d21, check stage). R-26: stays structural only if the
+      record's attach Assertion cites the defining span.
+  - type: REFLECTS_MECHANISM
+    module: D4
+    class: asserted
+    from: Biomarker
+    to: D2.Mechanism
+    edgeProperties: AssertedRecordedProperties
+    cardinality: many
+    temporal: recorded-only
+    questions: [Q-D4-01]
+    pattern: 03#Q-D4-01
+    populatedBy: [europepmc-fulltext-jats, mcp-pubmed, bks-curation-agent]
+    fixture: final/fixtures/D4/nr-nad-compound-to-test
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Hop 2 of the compound → mechanism → biomarker → test pattern shared with D2 (D2 consumes it; owned and declared
+      here on Biomarker, as both packets' research notes agreed). Asserted, not structural: "NAAD is a sensitive marker of
+      NR utilization" or "p16INK4A+ cells reflect senescence" is a citable scientific claim with a locator and an asserter,
+      and can be wrong.
+  - type: MEASURES_METRIC
+    module: D4
+    class: asserted
+    from: LabTest
+    to: Metric
+    edgeProperties: AssertedEdgeProperties
+    cardinality: one_or_more
+    temporal: episode
+    questions: [CQ-DX-01, Q-D4-01, Q-D4-03, Q-D4-17, Q-D4-25]
+    pattern: 03#CQ-DX-01
+    populatedBy: [firecrawl-cli, loinc]
+    fixture: final/fixtures/D4/hba1c-two-labs-interference
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Labs publish LOINC maps per test and remap them (Labcorp 001453 → 4548-4); consumer vendors name what they measure
+      in prose. Episode because a remap changes what a historic result meant. Device-produced metrics do not use this
+      edge: they go AlgorithmVersion -OUTPUTS_METRIC-> Metric (one path for every computed value).
+  - type: PERFORMED_WITH_VERSION
+    module: D4
+    class: asserted
+    from: LabTest
+    to: [AssayVersion, AlgorithmVersion]
+    edgeProperties: AssertedEdgeProperties
+    cardinality: many per target (two fields, assayVersions and algorithmVersions; 2 pairs)
+    temporal: episode
+    questions: [CQ-DX-01, CQ-DX-02, CQ-DX-03, CQ-DX-04, Q-D4-01, Q-D4-02, Q-D4-04, Q-D4-06, Q-D4-11, Q-D4-20, Q-D4-23, Q-D4-26]
+    pattern: 03#Q-D4-23
+    populatedBy: [firecrawl-cli, poppler-pdftotext, bks-curation-agent]
+    fixture: final/fixtures/D4/hba1c-two-labs-interference
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Replaces pinned PERFORMED_WITH_ASSAY_VERSION and the LabTest side of the algorithm link with one type and two fields.
+      The episode is the point of the edge: a method, kit or algorithm change closes one episode and opens the next, so a
+      trend is split at the change (Q-D4-23) and the version as of a report date is a filter on validFrom/validTo
+      (CQ-DX-01). Several episodes may be open at once (regional performing labs).
+  - type: INCLUDES_TEST
+    module: D4
+    class: asserted
+    from: LabTest
+    to: LabTest
+    edgeProperties: AssertedEdgeProperties
+    cardinality: many (testKind PANEL only)
+    temporal: episode
+    questions: [Q-D4-03, Q-D4-25]
+    pattern: 03#Q-D4-03
+    populatedBy: [firecrawl-cli]
+    fixture: final/fixtures/D4/consumer-panel-and-blood-clock
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Absorbs PanelDefinition and its IMPLEMENTS_PANEL / INCLUDES_LABTEST / INCLUDES_BIOMARKER edges: the panel is a
+      LabTest, its composition version is the set of INCLUDES_TEST episodes valid at D. Needed for panel coverage
+      (Q-D4-03) and the panel-similarity projection input (Q-D4-25).
+  - type: DELIVERS
+    module: D4
+    class: asserted
+    from: D6.Product
+    to: [LabTest, Device]
+    edgeProperties: AssertedRecordedProperties
+    cardinality: many (declared on LabTest.products and Device.products, direction IN; 2 pairs)
+    temporal: recorded-only
+    questions: [Q-D4-01, Q-D4-08, Q-D4-09, Q-D4-10, Q-D4-13, Q-D4-18, Q-D4-24]
+    pattern: 03#Q-D4-13
+    populatedBy: [firecrawl-cli, openfda-device]
+    fixture: final/fixtures/D4/nr-nad-compound-to-test
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Merges pinned DELIVERS_LABTEST and EMBODIES_MODEL. The D6 packet cut both ("D4/D5 device and service semantics; D6
+      keeps productKind only"), so nothing else links what is sold to what it measures with. Declared on the D4 side
+      (kernel rule 10 style, direction IN) so D6's Product hub gains no field; D6 lists both seams as consumed (D6
+      10-seams, check stage; 11-open-questions #8 resolved). Adversarial-review pass: it is also the route by which D8
+      regulatory records reach a device or test (RegulatoryRecord -CONCERNS-> Product <-DELIVERS-, LegalStatus -STATUS_OF->
+      Product), so D8 needs no Device member in its unions (Q-D4-08/09/10/18). Synthesis R-72: this is the single Device
+      path; D8 removed Device from RegulatoryRecordTopic and LegalStatusSubject, D3 from AdministeredMaterial.
+  - type: PERFORMED_BY_LAB
+    module: D4
+    class: asserted
+    from: AssayVersion
+    to: D7.Organization
+    edgeProperties: AssertedRecordedProperties
+    cardinality: exactly_one
+    temporal: recorded-only
+    questions: [CQ-DX-01, CQ-DX-03, Q-D4-04]
+    pattern: 03#CQ-DX-03
+    populatedBy: [firecrawl-cli, poppler-pdftotext]
+    fixture: final/fixtures/D4/hba1c-two-labs-interference
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Pinned ASSAY_OPERATED_BY renamed. The performing lab is part of an assay version's identity (two labs never share
+      an AssayVersion). Synthesis R-26: asserted, recorded time only (AssertedRecordedProperties, [CONNECT]), because it
+      links two independently identified records (AssayVersion and a D7 Organization); a curator inference of the
+      performing organization uses basisKind CURATOR_CLASSIFICATION (answers 11 #42). It also answers "which lab runs this consumer test" (Q-D4-04) and is
+      the D7 join for lab ownership. Absent lab = PERFORMING_LAB in notReported and no edge, unless a curator infers the
+      performing organization (not the site) from the issuer of the test menu: then the edge exists, PERFORMING_LAB stays
+      listed (no site reported) and the authorizing Assertion carries the asserter and rule (fixture hba1c d05, adversarial-review
+      pass: the Labcorp sample report's lab block is a 2018 placeholder and is not evidence).
+  - type: OUTPUTS_METRIC
+    module: D4
+    class: structural
+    from: AlgorithmVersion
+    to: Metric
+    edgeProperties: StructuralEdgeProperties
+    cardinality: one_or_more
+    temporal: recorded-only
+    questions: [CQ-DX-02, CQ-DX-04, Q-D4-07, Q-D4-16, Q-D4-17, Q-D4-26]
+    pattern: 03#Q-D4-07
+    populatedBy: [europepmc-fulltext-jats, wearable-api-docs, firecrawl-cli]
+    fixture: final/fixtures/D4/wearable-hrv-algorithm-changes
+    nestedOperations: [CREATE, CONNECT]
+    aggregate: false
+    rationale: >-
+      Definitional: a version is defined by what it outputs. The single path from any computed value (clock, wearable
+      score, CGM estimate) to its Metric, which makes "measured vs inferred" (CQ-DX-02) and "same name, different metric"
+      (Q-D4-07) one traversal. R-26: stays structural only if the
+      record's attach Assertion cites the defining span.
+  - type: REQUIRES_INPUT_METRIC
+    module: D4
+    class: structural
+    from: AlgorithmVersion
+    to: Metric
+    edgeProperties: StructuralEdgeProperties
+    cardinality: many (orderIndex = source order)
+    temporal: recorded-only
+    questions: [Q-D4-26, CQ-DX-04, CQ-DX-07]
+    pattern: 03#Q-D4-26
+    populatedBy: [europepmc-fulltext-jats, firecrawl-cli]
+    fixture: final/fixtures/D4/consumer-panel-and-blood-clock
+    nestedOperations: [CREATE, CONNECT]
+    aggregate: false
+    rationale: >-
+      The algorithm input graph the brief asks for: GrimAge2's DNAm surrogate components, InnerAge's 17/13 blood
+      biomarkers. Structural because a version's inputs are part of its definition; an input set that "may change"
+      (InsideTracker) is a new version. CpG-level inputs stay a count (inputFeatureCount), never 173 Metric nodes.
+      Adversarial-review pass: the type is earned by Q-D4-26 (value 2, harm), which traverses it in reverse and filters
+      on it: which scores inherit a HARM safety signal on one of their input metrics (fixture: InnerAge 2.0 requires
+      HbA1c -> RESOLUTION CANDIDATE LOINC 4548-4 -> HbF interference signal). CQ-DX-04/07 only display inputs. R-26: stays structural only if the
+      record's attach Assertion cites the defining span.
+  - type: DERIVED_FROM_ALGORITHM_VERSION
+    module: D4
+    class: asserted
+    from: AlgorithmVersion
+    to: AlgorithmVersion
+    edgeProperties: AssertedRecordedProperties
+    cardinality: zero_or_one
+    temporal: recorded-only
+    questions: [Q-D4-06, Q-D4-20, CQ-DX-04]
+    pattern: 03#Q-D4-06
+    populatedBy: [firecrawl-cli, europepmc-fulltext-jats, poppler-pdftotext]
+    fixture: final/fixtures/D4/clock-noise-vs-retest-advice
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Vendor implementation → publication version ("DunedinPACE™" in TruAge → Belsky 2022) and successor → predecessor
+      (GrimAge2 → GrimAge). Asserted from the vendor's or authors' own text; whether the two are numerically the same is
+      not this edge but a kernel Assessment (subkind D4.algorithm-equivalence). Absorbs pinned VERSION_OF_ALGORITHM
+      (family is a property now).
+  - type: RUNS_ON_DEVICE
+    module: D4
+    class: asserted
+    from: AlgorithmVersion
+    to: Device
+    edgeProperties: AssertedEdgeProperties
+    cardinality: many
+    temporal: episode
+    questions: [CQ-DX-09, Q-D4-07, Q-D4-09, Q-D4-17, Q-D4-23]
+    pattern: 03#CQ-DX-09
+    populatedBy: [firecrawl-cli, wearable-api-docs, tavily-cli, openfda-device]
+    fixture: final/fixtures/D4/wearable-hrv-algorithm-changes
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Replaces RUNS_FIRMWARE_VERSION, FIRMWARE_VERSION_OF and the device side of pinned RUNS_ON_DEVICE. Episode: which
+      algorithm or firmware state produced a wearable/CGM value on date D (WHOOP changes of 2026-02-25 and 2026-07-06 are
+      CHANGE_EVENT_UNLABELED versions whose episodes start at the announced date). Community-reported firmware numbers
+      enter as Assertions with a forum asserter (open question for K/D9).
+  - type: INTERVAL_FOR
+    module: D4
+    class: structural
+    from: ReferenceIntervalVersion
+    to: [AssayVersion, Metric]
+    edgeProperties: StructuralEdgeProperties
+    cardinality: assayVersions zero_or_one, metrics exactly_one (two fields; 2 pairs)
+    temporal: recorded-only
+    questions: [CQ-DX-06, Q-D4-12]
+    pattern: 03#CQ-DX-06
+    populatedBy: [firecrawl-cli, poppler-pdftotext]
+    fixture: final/fixtures/D4/hba1c-two-labs-interference
+    nestedOperations: [CREATE, CONNECT]
+    aggregate: false
+    rationale: >-
+      Merges pinned FOR_ASSAY_VERSION, FOR_METRIC and HAS_REFERENCE_RANGE into one type with two fields: an interval
+      applies to a (assay version, metric) pair, and an assay version may report two metrics (HbA1c NGSP % and IFCC
+      mmol/mol). Structural: the interval record is one captured table row; its own source assertion carries the locator.
+      The interval is itself versioned (insert-only), so the edge needs no episode; as-of comes from the LabTest's
+      PERFORMED_WITH_VERSION episode plus effectiveFrom/To payload. R-26: stays structural only if the
+      record's attach Assertion cites the defining span.
+
+predicateOnly:
+  # Assertion.predicate values (kernel Assertion, subject/object through HAS_SUBJECT/HAS_OBJECT). Each names the question that would promote it.
+  - { predicate: INTERFERES_WITH, module: D4, registrar: D4, subject: "AssayVersion | Device (analyzer model, when the source lists methods by instrument)", object: "D2.Condition (or literal)", qualifiers: [direction, threshold], questions: [Q-D4-11], promoteWhen: "Q-D4-11 must traverse condition → affected methods across all labs at scale (e.g. 'which of my tests are unreliable with HbS trait')" }
+  - { predicate: REPORTS_RELIABILITY, module: D4, registrar: D4, subject: "AlgorithmVersion | AssayVersion", object: "literal (ICC, replicate deviation, unit)", questions: [CQ-DX-05, Q-D4-05], promoteWhen: "a ranking of clocks by reliability needs a typed filter (then a kernel typed assessment property, not an edge)" }
+  - { predicate: CLAIMS_TO_MEASURE, module: D4, registrar: D4, subject: "D6.Product | Device | LabTest", object: "Metric", questions: [Q-D4-08, Q-D4-18], promoteWhen: "never as a stored edge: claims are kernel claim occurrences; a derived CLAIMS_TO_MEASURE projection only if Q-D4-08 runs at catalog scale" }
+  - { predicate: RECOMMENDS_RETEST_INTERVAL, module: D4, registrar: D4, subject: "LabTest (asserter = the recommending D7.Organization; fixtures stage)", object: "literal (valueString ISO-8601 duration)", questions: [Q-D4-05], promoteWhen: "no promotion; recommendation discipline (00-DIRECTIVE 3.9)" }
+  - { predicate: IMPLEMENTS_PUBLICATION, module: D4, registrar: D4, subject: "AlgorithmVersion", object: "Source", questions: [Q-D4-06, Q-D4-20], promoteWhen: "weaker than DERIVED_FROM_ALGORITHM_VERSION; promote never" }
+  - { predicate: DEVELOPED_WITH, module: D4, registrar: D4, subject: "AlgorithmVersion | LabTest", object: "D7.Organization", questions: [Q-D4-20], promoteWhen: "an investor question traverses academic co-developer → vendor tests" }
+  - { predicate: SETS_REFERENCE_RANGE, module: D4, registrar: D4, subject: "ReferenceIntervalVersion (asserter = the issuing D7.Organization; fixtures stage)", object: "literal (issuer statement)", questions: [Q-D4-12], promoteWhen: "Q-D4-12 needs the issuer for intervals that have no AssayVersion (issuer then a structural edge)" }
+  - { predicate: DISCLAIMS_DIAGNOSTIC_USE, module: D4, registrar: D4, subject: "LabTest | Device", object: "literal", questions: [Q-D4-18], promoteWhen: "never; filter on the assertion" }
+  - { predicate: CERTIFIED_TRACEABLE_TO, module: D4, registrar: D4, subject: "AssayVersion", object: "literal (NGSP certificate, expiry)", questions: [CQ-DX-03, Q-D4-11], promoteWhen: "comparability needs certificate expiry as an as-of filter across many labs" }
+  - { predicate: MEASURED_ON_INSTRUMENT, module: D4, registrar: D4, subject: "AssayVersion", object: "Device", questions: [CQ-DX-01, Q-D4-09], promoteWhen: "labs report instrument models often enough that analyzer recalls must reach lab results (pinned RUNS_ON_INSTRUMENT)" }
+  - { predicate: INDICATES_CONDITION, module: D4, registrar: D4, subject: "Biomarker", object: "D2.Condition", questions: [Q-D4-11], promoteWhen: "a question traverses biomarker → condition for interpretation (out of D4 scope: clinical interpretation)" }
+  - { predicate: OUTCOME_MEASURED_WITH, module: D4, registrar: D4, subject: "D3.OutcomeDefinition", object: "AssayVersion | AlgorithmVersion | Metric", questions: [Q-D4-02, Q-D4-14], promoteWhen: "never for Metric (D3 now declares OutcomeDefinition -MEASURES-> Metric); kept for the AlgorithmVersion / AssayVersion case and the UNRESOLVED clock-name case (competing hypotheses)" }
+  - { predicate: DEFINITION_CHANGED, module: D4, registrar: D4, subject: "Metric | AlgorithmVersion", object: "literal (date, text)", questions: [CQ-DX-09, Q-D4-23], promoteWhen: "covered by RUNS_ON_DEVICE / PERFORMED_WITH_VERSION episodes; never" }
+
+  # Added in the fixtures stage (A3, 2026-10-08): predicates the fixtures needed and the model stage had not registered.
+  # REGULATORY_STATEMENT (fixtures stage) withdrawn in the adversarial-review pass: a regulator's verdict on a Claim is the kernel
+  # predicate RATES_CLAIM (asserter = the regulator, subject = the Claim, rating in valueString; K 09 item 9), used by fixture
+  # noninvasive-glucose-cgm-recall c01-c03; regulator records about a device or test are D8 records (CONCERNS / STATUS_OF -> D6 Product).
+  - { predicate: REPORTED_MEASUREMENT_ERROR, module: D4, registrar: D4, subject: "Device | AssayVersion", object: "literal (direction, cause, recall/event number)", questions: [Q-D4-09], promoteWhen: "never as a D4 edge: the D8 recall record reaches the device through its D6 Product (CONCERNS -> Product <- DELIVERS); this assertion keeps the device-level error statement with UDI-DI/REF (fixture noninvasive-glucose-cgm-recall c07)" }
+  # FIELD_NOT_REPORTED removed in synthesis (R-52): kernel convention, registrar K. D4 still writes it (fixtures
+  # clock-noise-vs-retest-advice b07, hba1c-two-labs-interference d15/d16, nr-nad-compound-to-test e14,
+  # wearable-hrv-algorithm-changes f11); see D4.seams.yaml predicateSeams.
+  - { predicate: REPORTS_INPUT_SET, module: D4, registrar: D4, subject: "AlgorithmVersion", object: "literal (input counts per partition, stability statement)", questions: [CQ-DX-07, CQ-DX-04], promoteWhen: "never; enumerated inputs are REQUIRES_INPUT_METRIC (fixture consumer-panel-and-blood-clock g27)" }
+deferred:
+  # Pinned W07/W08 relationship types (49) and model-stage candidates considered and cut, one line each.
+  - { type: ASSAY_FOR_METRIC, reason: "derivable LabTest → Metric + LabTest → AssayVersion; the dual-unit case is carried by INTERVAL_FOR.metrics and AssayVersion.reportedUnitCode" }
+  - { type: ASSAY_OPERATED_BY, reason: "renamed PERFORMED_BY_LAB" }
+  - { type: ACCEPTS_SPECIMEN_TYPE, reason: "Specimen is an enum + ontology ids (AssayVersion.specimenKinds/specimenOntologyIds, LabTest.collectionModes)" }
+  - { type: CALIBRATION_TRACEABLE_TO, reason: "ReferenceSystem is the CalibrationTraceability enum; certificate details are CERTIFIED_TRACEABLE_TO assertions" }
+  - { type: COMPARES, reason: "ComparabilityAssessment is a kernel Assessment; its targets are kernel ASSESSES → Subjectable" }
+  - { type: COMPATIBLE_WITH_ASSAY_VERSION, reason: "ReferenceIntervalVersion → AssayVersion is INTERVAL_FOR; compatibility judgments are Assessments" }
+  - { type: ENCODES, reason: "gene → protein biomarker is D2 territory; UNIPROT/HGNC identifiers on Biomarker through the kernel" }
+  - { type: EXPRESSED_IN, reason: "D2 context property (compartmentOntologyId); no D4 question traverses expression" }
+  - { type: EXPRESSED_IN_CONTEXT, reason: "as EXPRESSED_IN" }
+  - { type: FOR_ASSAY_VERSION, reason: "merged into INTERVAL_FOR" }
+  - { type: FOR_METRIC, reason: "merged into INTERVAL_FOR" }
+  - { type: HAS_IDENTIFIER, reason: "kernel Identifier.identifies (declared once by K)" }
+  - { type: HAS_REFERENCE_RANGE, reason: "ReferenceRange merged into ReferenceIntervalVersion; INTERVAL_FOR covers it" }
+  - { type: IMPLEMENTS_PANEL, reason: "PanelDefinition merged into LabTest(PANEL); composition is INCLUDES_TEST episodes" }
+  - { type: INCLUDES_BIOMARKER, reason: "panel → biomarker is the two-hop INCLUDES_TEST → MEASURES_METRIC → QUANTIFIES" }
+  - { type: INCLUDES_LABTEST, reason: "renamed INCLUDES_TEST (LabTest → LabTest)" }
+  - { type: INDICATES, reason: "predicate-only INDICATES_CONDITION; clinical interpretation is out of scope" }
+  - { type: IN_PATHWAY, reason: "replaced by REFLECTS_MECHANISM to D2 Mechanism (pathways are Mechanism kind PATHWAY in D2)" }
+  - { type: MEASURED_IN_MATRIX, reason: "Metric.systemOntologyId + AssayVersion.specimenOntologyIds (equality join, no node)" }
+  - { type: MEASURES, reason: "Biomarker-level 'measures' is LabTest -MEASURES_METRIC-> Metric -QUANTIFIES-> Biomarker; D3 OutcomeDefinition → Biomarker MEASURES is D3's own edge" }
+  - { type: RUNS_FIRMWARE_VERSION, reason: "FirmwareVersion merged into AlgorithmVersion(FIRMWARE); RUNS_ON_DEVICE episodes" }
+  - { type: RUNS_ON_INSTRUMENT, reason: "instrument model is NOT_REPORTED on 9/9 coded artifacts; text property + predicate MEASURED_ON_INSTRUMENT" }
+  - { type: RUNS_ON_PLATFORM, reason: "TechnologyPlatform is the MeasurementPlatform enum" }
+  - { type: SAME_TEST_AS, reason: "sameness of two tests is a kernel Assessment (COMPARABILITY, D4.comparability), never a plain edge (00-DIRECTIVE 3.6)" }
+  - { type: SUPPORTED_BY_CHUNK, reason: "forbidden (00-DIRECTIVE 3.8): support is HAS_EVIDENCE record → SourceLocator" }
+  - { type: USES_METHOD, reason: "MeasurementMethod is the MethodPrinciple enum + methodText" }
+  - { type: VERSION_OF_ALGORITHM, reason: "Algorithm family merged into AlgorithmVersion.algorithmFamily/familyKey" }
+  - { type: DEVELOPS_PLATFORM, reason: "platform is an enum; developer of a technology is D7/D13 (predicate)" }
+  - { type: EMBODIES_MODEL, reason: "merged into DELIVERS (Product → Device)" }
+  - { type: FIRMWARE_VERSION_OF, reason: "merged into RUNS_ON_DEVICE" }
+  - { type: HAS_SENSOR, reason: "Sensor is the SensingModality enum list on Device" }
+  - { type: IMPLEMENTS_PLATFORM, reason: "platform enum" }
+  - { type: USES_EQUIPMENT, reason: "D8 manufacturing / D3 study equipment; no D4 question" }
+  - { type: USES_MODALITY, reason: "Device.sensingModalities" }
+  - { type: USES_PLATFORM, reason: "platform enum (AssayVersion.platform, AlgorithmVersion.inputPlatforms)" }
+  - { type: DELIVERS_LABTEST, reason: "merged into DELIVERS (Product → LabTest)" }
+  - { type: OFFERED_BY (model-stage candidate LabTest → D7.Organization), reason: "issuer of a purchasable test is reached through D6 Product (DELIVERS) → seller/brand; clinical test catalog issuer is the kernel Identifier issuer of the LAB_TEST_CODE; performing lab is PERFORMED_BY_LAB. Promote if Q-D4-13 must find test issuers that sell no Product" }
+  - { type: PANEL_SIMILAR_TO (derived LabTest → LabTest, GDS Jaccard), reason: "Q-D4-25 is value 3; computed at query time in GDS stream mode (directive 3.5); store only if a published comparison needs it" }
+  - { type: SUCCEEDS_ASSAY_VERSION (AssayVersion → AssayVersion), reason: "succession is the ordering of PERFORMED_WITH_VERSION episodes on one LabTest" }
+  - { type: MEASURES_METRIC from Device, reason: "every device value is an algorithm output: Device ← RUNS_ON_DEVICE ← AlgorithmVersion → OUTPUTS_METRIC (versionBasis UNKNOWN when unlabeled)" }

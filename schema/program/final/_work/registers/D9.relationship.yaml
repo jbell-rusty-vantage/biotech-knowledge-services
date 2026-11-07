@@ -1,0 +1,326 @@
+version: 1
+module: D9
+# Source: packets/D9/05-relationship-register.yaml (sha256 350623ea…), edited by the S module editor for D9 2026-10-08 per
+# final/decision-report.md and final/_work/rulings.yaml (global + modules.D9). Every entry keeps the 01-PACKET-CONTRACT
+# fields and adds `module: D9`; fixtures are rewritten to final/fixtures/D9/<folder>. Synthesis edits:
+#   R-43  RENDITION_OF: class asserted, AssertedRecordedProperties, kernel meaning (Source → MediaWork | D3 Publication),
+#         declared by D9 and D3, registered by D3. The entry stays here because D9 declares MediaWork.renditions;
+#         `registrar: D3` marks that D3's register holds the registration (R-52); pairs counted once in K (R-01).
+#   R-26  regrouping renditions is a supersession of the asserted episode (no structural rewrite).
+#   R-19  OCCURS_IN: every Assertion whose evidence is in a MediaWork has exactly one container, not only CLAIM.
+#   R-27  MENTIONS licensed by its entity-link/vN derivationRule; COVERS_LOCATOR is never support.
+#   R-52  D9 is sole registrar of RECORDING_OF, RECOMMENDS_USE, RECOMMENDS_AGAINST (new here), DISCLOSES_INTEREST,
+#         OPERATED_BY and REPUBLISHES; CORRECTS leaves this list (registrar K, R-20); every predicateOnly entry
+#         names its registrar. Authorizing predicates of D9's typed asserted edges are listed under
+#         `authorizingPredicates`, not `predicateOnly` (R-53, as K does for HAS_IDENTIFIER).
+#   R-79  OPERATED_BY / REPUBLISHES stay predicate-only (closes C-9); alias OPERATES_CHANNEL (inverse) retired.
+#   R-82  DISCLOSES_INTEREST is the one disclosure predicate (aliases COMPETING_INTEREST_STATED, DISCLOSES_SUPPORT_FROM,
+#         DECLARES_NO_COMPETING_INTEREST = polarity NEGATIVE, speechAct DENIES).
+#   R-83  RECOMMENDS_USE (aliases RECOMMENDS_FOR, ENDORSES_PRODUCT) / RECOMMENDS_AGAINST: subject the recommended means,
+#         never a Target; a goal is the qualifier `target:<key>`; no stored RECOMMENDS edge.
+#   R-20, R-21  kernel conventions for corrections, qualifications, retellings and occurrence assessments (K-2, K-3 closed).
+# Pairs (collapsed, R-01): 9 declared from→to pairs (ContentSponsor counts per member); 7 owned by D9 once the two
+# kernel-meaning types (RENDITION_OF, MENTIONS) are counted in K. Measured in final/_runlog/module-D9.md.
+# populatedBy ids are listed and scored in packets/D9/08-sources-and-tools.md.
+relationships:
+  - type: PUBLISHES
+    module: D9
+    class: structural
+    from: Channel
+    to: MediaWork
+    declaredOn: MediaWork.channels (direction IN)
+    edgeProperties: StructuralEdgeProperties
+    cardinality: one_or_more per work (a cross-posted work is carried by several channels); many per channel
+    temporal: recorded-only
+    questions: [CQ-CL-05, Q-D9-12]
+    pattern: 03#CQ-CL-05
+    populatedBy: [podcast-rss, itunes-search-api, substack-api, firecrawl-cli]
+    fixture: final/fixtures/D9/hl52-transcript-nmn-practice
+    nestedOperations: [CREATE, CONNECT]
+    aggregate: false
+    rationale: >-
+      Joins a work to the channel whose operators matter for "the speaker or the channel" (CQ-CL-05) and a post to the account
+      that published it (Q-D9-12); gives forum threads their community. Structural because the feed or listing that carries the item is the capture
+      itself. Replaces pinned HAS_EPISODE, HAS_SERIES, DISTRIBUTES_RENDITION, ON_PLATFORM (platform is a Channel property).
+  - type: RENDITION_OF
+    module: D9
+    class: asserted
+    kernelMeaning: true
+    registrar: D3
+    declaredBy: [D9, D3]
+    from: Source (K)
+    to: MediaWork
+    declaredOn: MediaWork.renditions (direction IN; kernel node → D9 node, declared on the D9 type per the kernel pattern; D3 declares Publication.renditions)
+    edgeProperties: AssertedRecordedProperties
+    cardinality: many renditions per work; zero_or_one work per Source
+    temporal: recorded-only
+    questions: [CQ-CL-01, CQ-CL-05, CQ-PV-02, Q-D9-02, Q-D9-06, Q-D9-07, Q-D9-16, Q-D9-17, Q-D9-18]
+    pattern: 03#Q-D9-06
+    populatedBy: [podcast-rss, firecrawl-cli, youtube-oembed, internet-archive-wayback]
+    fixture: final/fixtures/D9/hl52-transcript-nmn-practice
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      The research finding that drove the module: renditions diverge (HL ep 52 web page, YouTube captions and RSS re-cut differ
+      in wording, duration and sponsors). Each rendition endpoint is a kernel Source with its own snapshots; this edge is the
+      only join between them, which re-anchoring (CQ-PV-02), per-rendition sponsors (Q-D9-06), in-container disclosure (CQ-CL-05,
+      Q-D9-02: the disclosing span lies in a rendition of the same work) and coverage (Q-D9-16) traverse; CQ-CL-01 reads it in TRACE.
+      Synthesis (R-43, R-26): kernel meaning, Source → MediaWork | D3 Publication; asserted with recorded time only, one
+      authorizing Assertion per episode, so a wrong join is corrected by a kernel RESOLUTION assessment and a superseding
+      episode that keeps the history. The kernel source family is the OCCURS_IN work, else the RENDITION_OF work, else the
+      Source (K Q-K-21, Report.distinctSourceFamilyCount). Replaces pinned RENDITION_OF, IN_RENDITION, HAS_MEDIA_VARIANT.
+  - type: OCCURS_IN
+    module: D9
+    class: structural
+    from: Assertion (K; every Assertion whose evidence is in a MediaWork, claim occurrences included, R-19)
+    to: MediaWork
+    declaredOn: MediaWork.occurrences (direction IN)
+    edgeProperties: StructuralEdgeProperties
+    cardinality: exactly_one container per Assertion whose evidence is in a MediaWork (the work in which the act of asserting was first published); many per work
+    temporal: recorded-only
+    seam: K.Assertion → D9.MediaWork, listed in both seams files (K.seams.yaml row "OCCURS_IN", owner other; D9.seams.yaml, owner this)
+    questions: [CQ-CL-01, CQ-CL-02, CQ-CL-05, CQ-CL-06, CQ-CL-08, CQ-CM-04, Q-D9-01, Q-D9-02, Q-D9-04, Q-D9-07, Q-D9-08, Q-D9-09, Q-D9-10, Q-D9-11, Q-D9-13, Q-D9-18, Q-D9-19, Q-D9-21, Q-D9-23]
+    pattern: 03#CQ-CL-01
+    populatedBy: [bks-claim-extraction]
+    fixture: final/fixtures/D9/hl52-transcript-nmn-practice
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      The container half of A1's ClaimOccurrence ("container and speaker from D9"). The locator path (HAS_EVIDENCE → snapshot →
+      Source → RENDITION_OF) reaches every work whose rendition evidences the occurrence, including re-cuts; OCCURS_IN names the
+      one work where the act happened, which independence counting (CQ-CL-06), "in which container" (CQ-CL-01) and the
+      container publication time T of the financial-interest test (Q-D9-02) need. One hop instead of four on the most frequent
+      D9 query. Shared definition: T = OCCURS_IN → MediaWork.publishedAt, falling back to the snapshot only when there is no
+      container, read the same way by K Q-K-09 and D7 CQ-CL-05 / Q-D7-06 (R-19). Synthesis (R-19): every Assertion whose
+      evidence is in a MediaWork has exactly one OCCURS_IN, not only CLAIM Assertions; an Assertion that authorizes a typed
+      edge is kind RELATIONSHIP. Written from the capture the occurrence was extracted from and corrected only by supersession
+      when a later REPUBLISHES match moves it (09-reasoning.md Risks). Replaces pinned OCCURS_IN (OccurrenceContainerTarget
+      union of 3) and OCCURS_IN_SEGMENT.
+  - type: APPEARS_IN
+    module: D9
+    class: asserted
+    from: Person (D7)
+    to: MediaWork
+    declaredOn: MediaWork.appearances (direction IN)
+    edgeProperties: AppearanceEdgeProperties
+    cardinality: many per work; role on the edge (two roles = two episodes)
+    temporal: recorded-only
+    questions: [CQ-CL-08, Q-D9-16, Q-D9-18]
+    pattern: 03#Q-D9-16
+    populatedBy: [podcast-rss, firecrawl-cli, bks-claim-extraction]
+    fixture: final/fixtures/D9/hl52-transcript-nmn-practice
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      The denominator of every absence statement about a person ("no recommendation of X by P found", Q-D9-16) is the set of
+      works P appeared in, including works with no extracted occurrence yet; host vs guest decides whose interests a sponsor
+      read touches (CQ-CL-08). Role via the D9 AppearanceEdgeProperties (kernel AssertedRecordedProperties fields verbatim +
+      appearanceRole, the only field a question filters on; the credited name is an Assertion qualifier, kernel M11.3).
+      An appearance in media is APPEARS_IN; a presentation at a meeting is D13 INVOLVES {PRESENTER} (R-81); authorship of a
+      MediaWork stays APPEARS_IN {AUTHOR} (R-80). Replaces pinned APPEARS_IN, SPEAKS_AT (talks are works), ATTRIBUTES_TO.
+  - type: CONTENT_SPONSORED_BY
+    module: D9
+    class: asserted
+    from: MediaWork
+    to: ContentSponsor (D7 Organization | D7 Brand)
+    declaredOn: MediaWork.sponsors (direction OUT)
+    edgeProperties: AssertedEdgeProperties
+    cardinality: many per work; one episode per (sponsor, observed rendition window)
+    temporal: episode
+    questions: [CQ-CL-05, CQ-CL-08, Q-D9-06]
+    pattern: 03#Q-D9-06
+    populatedBy: [podcast-rss, firecrawl-cli, bks-claim-extraction]
+    fixture: final/fixtures/D9/hl52-transcript-nmn-practice
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Sponsorship is the commonest financial tie in health media and it changes per rendition and over time (RSS enclosure
+      re-cut 2025-05-21 replaced ROKA / InsideTracker / Magic Spoon with AG1 / LMNT / Waking Up). The episode is on the work, so
+      its valid window separates the sponsors of the original publication from those of later re-cut renditions (what CQ-CL-05
+      needs at T = publishedAt); which rendition carried a read is the authorizing assertion's locator or its kernel-registered
+      `rendition:<source uid>` qualifier (rendition-level facts remain kernel request K-9). D7 asked content
+      sponsorship to be declared by the asking domain on its own type (Organization docstring). Brand is a target because
+      reads name brands ("AG1"), not legal entities. Replaces pinned SPONSORS_CONTENT (SponsorableTarget union).
+  - type: CHUNK_OF
+    module: D9
+    class: structural
+    from: Chunk
+    to: SourceSnapshot (K)
+    declaredOn: Chunk.snapshot (direction OUT)
+    edgeProperties: StructuralEdgeProperties
+    cardinality: exactly_one snapshot per chunk
+    temporal: recorded-only
+    questions: [Q-D9-20, Q-D9-16]
+    pattern: 03#Q-D9-20
+    populatedBy: [bks-chunker]
+    fixture: final/fixtures/D9/hl52-transcript-nmn-practice
+    nestedOperations: [CONNECT]
+    aggregate: false
+    rationale: >-
+      Anchors a retrieval unit to the exact captured bytes its offsets refer to, so the 3.8 path ends at a snapshot digest and
+      coverage (Q-D9-16) can tell whether a rendition's text was extracted. Replaces pinned HAS_CHUNK, FROM_TEXT_VERSION,
+      HAS_TEXT_VERSION, TEXT_OF_SNAPSHOT, HAS_SEGMENTATION (text version and segmentation are chunk properties).
+  - type: COVERS_LOCATOR
+    module: D9
+    class: derived
+    from: Chunk
+    to: SourceLocator (K)
+    declaredOn: Chunk.locators (direction OUT)
+    edgeProperties: DerivedEdgeProperties
+    cardinality: many (every locator in the same snapshot whose offsets overlap the chunk span in the same text basis)
+    temporal: recorded-only
+    questions: [Q-D9-20, CQ-PV-04]
+    pattern: 03#Q-D9-20
+    populatedBy: [bks-projection-job]
+    fixture: final/fixtures/D9/hl52-transcript-nmn-practice
+    nestedOperations: []
+    aggregate: false
+    rationale: >-
+      Makes the directive 3.8 effectiveness path one hop (chunk → located span → the accepted assertions that cite it) instead of
+      an offset-overlap join that needs the locator's offset basis, which the kernel keeps inside selectorJson. Derived by
+      projection span-overlap/v1, read-only, regenerable, never evidence: answers cite the locator through HAS_EVIDENCE, never
+      the chunk (R-27). Replaces pinned LOCATOR_IN_TEXT_VERSION, RESOLVES_TO_CHUNK and SUPPORTED_BY_CHUNK (the last was a
+      document→record support edge, forbidden by 3.8).
+  - type: MENTIONS
+    module: D9
+    class: derived
+    kernelMeaning: true
+    registrar: D9
+    from: Chunk
+    to: Subjectable (K interface)
+    declaredOn: Chunk.mentions (direction OUT)
+    edgeProperties: DerivedEdgeProperties
+    cardinality: many
+    temporal: recorded-only
+    questions: [Q-D9-20]
+    pattern: 03#Q-D9-20
+    populatedBy: [bks-entity-resolution, bks-projection-job]
+    fixture: final/fixtures/D9/hl52-transcript-nmn-practice
+    nestedOperations: []
+    aggregate: false
+    rationale: >-
+      Kernel relationship type used with kernel meaning (A1 assigns Chunk.mentions to D9; the only MENTIONS field): the entity
+      entry into the 3.8 path ("chunks that mention NMN"), produced by entity linking with a method version, never evidence and
+      never a mutation input. Licensed by its derivationRule entity-link/vN (optional derivedFromAssessmentUids); a RESOLUTION
+      Assessment is needed only when an Assertion's binding rests on the surface form (R-27). Replaces pinned MENTIONS_ENTITY
+      (chunk/episode → EpisodeMentionableTarget union) and the MediaSubjectTarget union (75 members).
+
+authorizingPredicates:
+  # Assertion.predicate values that authorize D9's own typed asserted edges (predicate = edge type, R-53); registered by D9
+  # in final/vocabularies/predicates.yaml (R-52) but not predicateOnly entries. RENDITION_OF's authorizing predicate is
+  # registered by D3 (R-43).
+  - { predicate: APPEARS_IN, registrar: D9, edge: APPEARS_IN }
+  - { predicate: CONTENT_SPONSORED_BY, registrar: D9, edge: CONTENT_SPONSORED_BY }
+
+predicateOnly:
+  # Assertion.predicate values D9 registers; they stay predicates (read through the kernel subject/object pattern) until the named question promotes them.
+  - predicate: RECOMMENDS_USE
+    registrar: D9
+    aliases: [RECOMMENDS_FOR, ENDORSES_PRODUCT]
+    note: >-
+      recommendation (claim occurrence, speechAct RECOMMENDS); subject the recommended means (D1 compound, D6 product, D5
+      protocol, D4 device, D12 food), never a Target; a stated goal is the qualifier `target:<key>`; only D5's five goal
+      predicates take a Target object (R-83)
+    promoteWhen: never as a stored edge; directive 3.9 allows only a derived projection (see deferred RECOMMENDS)
+  - predicate: RECOMMENDS_AGAINST
+    registrar: D9
+    note: >-
+      recommendation against use (claim occurrence, speechAct RECOMMENDS); subject the means, never a Target object; a goal is
+      the qualifier `target:<key>` (R-83; D5 and D10 dropped their registrations)
+    promoteWhen: never as a stored edge (directive 3.9)
+  - predicate: TAKES
+    registrar: D9
+    note: practice report (speechAct REPORTS_PRACTICE), subject = the speaker
+    promoteWhen: Q-D9-23 rises to value 1 with a "current stack of P" view that needs an episode per item
+  - predicate: LINKS_TO_OFFER
+    registrar: D9
+    note: affiliate, discount-code or store link in a work's notes or description; subject MediaWork, object D6 Offer or MerchantListing; qualifier linkKind
+    promoteWhen: CQ-CM-04 rises to value 1 or Q-D9-21 needs per-rendition link windows
+  - predicate: RECORDING_OF
+    registrar: D9
+    note: talk recording (subject MediaWork) → D13 Event (DATA_PRESENTATION) (R-52, R-65)
+    promoteWhen: Q-D9-18 rises above value 3 or D13 asks for "events with recordings" as a filter
+  - predicate: CITES_CONTENT
+    registrar: D9
+    note: D8 regulatory record (warning letter) → the MediaWork (post) it cites; deficiency kinds as qualifiers (R-74 keeps it the record-to-media predicate)
+    promoteWhen: Q-D9-12 rises to value 1, or a value-1 question traverses MediaWork from a D8 record (R-74)
+  - predicate: DEPICTS
+    registrar: D9
+    note: IMAGE MediaWork → depicted entity (figure of a pathway, a product photo)
+    promoteWhen: Q-D9-17 rises above value 3
+  - predicate: OPERATED_BY
+    registrar: D9
+    aliases: [OPERATES_CHANNEL (inverse)]
+    note: >-
+      channel or account → operator (subject D9 Channel, object D7 Person or Organization); valid time on the Assertion, read
+      with OVERLAP (03 Conventions). Demoted from a typed episode edge in the adversarial review and confirmed in synthesis
+      (R-79): its only fixture (lifespan op-ls) has an unknown start and answers no question at a dated T, and its questions
+      are value 2 (Q-D9-12) or read it as one optional hop (CQ-CL-05). Saves 1 relationship type, 2 pairs and the
+      ChannelOperator union.
+    promoteWhen: a fixture answers CQ-CL-05 through a channel operator at a dated T and a measured CQ-CL-05 latency shows the two-hop Assertion read is too slow (R-79)
+  - predicate: REPUBLISHES
+    registrar: D9
+    note: >-
+      re-cut / clip / repost / translation MediaWork → the original MediaWork; kind stays MediaWork.republicationKind; recorded
+      time only. Demoted from a typed edge in the adversarial review and confirmed in synthesis (R-79): only Q-D9-07 (value 2)
+      traverses it; CQ-CL-06 uses the republicationKind property; the fixture link is PROPOSED (BellLabs match).
+    promoteWhen: a value-1 pattern (for example a rewritten CQ-CL-06 that must walk re-cut chains) traverses it
+  - predicate: DISCLOSES_INTEREST
+    registrar: D9
+    aliases: [COMPETING_INTEREST_STATED, DISCLOSES_SUPPORT_FROM, "DECLARES_NO_COMPETING_INTEREST (polarity NEGATIVE, speechAct DENIES)"]
+    note: >-
+      the one interest-disclosure predicate (R-82): subject the discloser (D7 Person or Organization) or the work (D9
+      MediaWork, D3 Publication), object a D7 Organization; "no competing interest" is the same predicate with polarity
+      NEGATIVE and speechAct DENIES. Paper-level funding is D3 FUNDED_BY; third-party interest lists are D7
+      DISCLOSES_INTERESTS_OF. The in-container disclosure test of CQ-CL-05 still reads the D7 role/stake/value assertion
+      located in a rendition of the work (03#CQ-CL-05).
+    promoteWhen: never
+
+deferred:
+  - type: OPERATED_BY (typed, Channel → ChannelOperator union, episode)
+    reason: predicate-only since the adversarial review, confirmed by R-79 (see predicateOnly OPERATED_BY)
+  - type: REPUBLISHES (typed, MediaWork → MediaWork, AssertedRecordedProperties)
+    reason: predicate-only since the adversarial review, confirmed by R-79 (see predicateOnly REPUBLISHES)
+  - type: REPORTS_ADVERSE_EXPERIENCE (predicate)
+    reason: >-
+      community adverse-experience reports use D5's CAUSES_ADVERSE_EFFECT (object D2 Condition, basisKind PERSONAL_EXPERIENCE,
+      qualifier sourceKind:COMMUNITY) so D5's harm queries see them; one concept, one predicate (adversarial review; R-84)
+  - type: RECOMMENDS (derived Person → Subjectable)
+    reason: >-
+      Directive 3.9 permits a derived projection; there is no stored RECOMMENDS edge (R-83). The source endpoint (Person) is
+      D7's type, so D9 cannot declare it either. The indexed path (Assertion {assertionKind: CLAIM, speechAct, predicate} → HAS_SUBJECT) answers
+      Q-D9-01 in two hops; add only if a measured query shows otherwise.
+  - type: CORRECTS (predicate)
+    reason: registered by K as a kernel convention (R-20, R-52); a correction is an occurrence with predicate CORRECTS plus DERIVED_FROM to the corrected occurrence (closes K-2)
+  - type: RETELLS (Assertion → Assertion)
+    reason: both ends are kernel types; kernel convention DERIVED_FROM with basisKind CITED_FROM_PRIOR_WORK (K-1 closed; R-21)
+  - type: QUALIFIED_BY (Assertion → Assertion)
+    reason: both ends kernel; kernel convention HAS_EVIDENCE {role QUALIFIES} + qualifier prefixes (R-20; K-2 closed)
+  - type: OCCURS_IN_SEGMENT / HAS_SEGMENT / DELIMITED_BY
+    reason: EpisodeSegment cut; the segment is a qualifier on the occurrence (kernel request K-5 segmentKind) and a media-time locator
+  - type: ASSESSES_RETELLING / AGAINST_ORIGINAL / IDENTIFIES_LOST_QUALIFICATION / ASSESSES_INTEREST / FOR_OCCURRENCE / ASSESSED_BY
+    reason: >-
+      kernel Assessment (RETELLING_FIDELITY, CONFLICT_RELEVANCE): the Assessment ASSESSES the Claim (and the speaker) and is
+      DERIVED_FROM the judged occurrence, facets occurrence= / retelling= / original= (R-20; K-3 closed, no ASSESSES → Assertion)
+  - type: INSTANCE_OF, ASSERTED_BY, HAS_SUBJECT, HAS_OBJECT, SUPPORTED_BY, SUPERSEDES, WAS_GENERATED_BY
+    reason: kernel relationships (OCCURRENCE_OF, ASSERTED_BY, HAS_SUBJECT, HAS_OBJECT, HAS_EVIDENCE, supersedesUid, WAS_GENERATED_BY)
+  - type: SUPPORTED_BY_CHUNK
+    reason: forbidden by directive 3.8 (a chunk never supports); replaced by derived COVERS_LOCATOR
+  - type: NEXT_CHUNK
+    reason: Chunk.chunkIndex; no question walks chunk order
+  - type: LINKS_OFFER (typed)
+    reason: predicate-only LINKS_TO_OFFER (value-2 questions; target type between D6 Offer and MerchantListing not settled)
+  - type: RECORDING_OF / PRESENTED_AT / SPEAKS_AT / ATTENDS / EXHIBITS_AT / HOSTS_EVENT / ACCOMPANIES_TALK
+    reason: >-
+      events are D13; talk recordings are MediaWorks; RECORDING_OF is predicate-only (value-3 question); a recurring meeting
+      is a Channel EVENT_SERIES, the object of D13's PRESENTED_AT_CONFERENCE predicate (R-65); SPEAKS_AT retired (R-81)
+  - type: DEPICTS / VISUALIZES / ANNOTATES_SUBJECT / INCLUDES_SUBJECT / EXPLAINS / EVIDENCES / LOCATES_REGION / PART_OF_MEDIA / FROM_ANNOTATION / HAS_ANNOTATION / REGION_HAS_DECLARATION / ABOUT_PRODUCT / VISUALIZES_TRAVERSAL
+    reason: W22 media graph cut; regions are kernel BOUNDING_BOX locators, depiction is predicate-only, label regions are D6 + kernel locators
+  - type: HAS_RIGHTS_RECORD / DERIVED_FROM_SOURCE / ASSESSED_ON_VARIANT / ASSESSES_MEDIA / ASSESSES_SUITABILITY_FOR
+    reason: rights are a verbatim property on MediaWork; media suitability has no D9 question
+  - type: ARC_ABOUT / ARC_INCLUDES_EVENT / CAUSED_BY / FOLLOWED_BY / HAS_EVENT / IMPACT_ON / INVOLVES / EVENT_ABOUT / ASSESSES_EVENT / DOCUMENTED_BY_RECORD / REPORTED_IN
+    reason: W18 event layer belongs to D13 (Event, LEADS_TO, RESPONDS_TO, INVOLVES)
+  - type: AUTHORED_BY (W20 Document → author)
+    reason: >-
+      D9 records authorship of MediaWorks only as APPEARS_IN {AUTHOR} (R-80); AUTHORED_BY is D3's predicate (registrar D3,
+      subjects D3 Publication | D5 Protocol | D5 ProtocolEdition), which Q-D9-13 reads; documents are kernel Sources

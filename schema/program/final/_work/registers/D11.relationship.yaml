@@ -1,0 +1,81 @@
+version: 1
+module: D11
+# Source: packets/D11/05-relationship-register.yaml (sha256 4f4f9734…), edited by the S module editor 2026-10-08 per
+# final/decision-report.md and final/_work/rulings.yaml (modules.D11 and global). Every entry adds `module: D11`.
+# Synthesis edits:
+#   R-82  FUNDED_BY, DISCLOSES_SUPPORT_FROM and DECLARES_NO_COMPETING_INTEREST removed from predicateOnly. Q-D11-08 reads
+#         D3 FUNDED_BY (registrar D3; a Study's funder stays the typed D3 HAS_STUDY_ROLE {FUNDER}) and D9 DISCLOSES_INTEREST
+#         (registrar D9; "no competing interest" = polarity NEGATIVE, speechAct DENIES). Both are predicateSeams rows in
+#         D11.seams.yaml.
+#   R-52  names are SCREAMING_SNAKE with no module prefix (already so since the adversarial review); each entry names its
+#         registrar for final/vocabularies/predicates.yaml.
+#   R-53  no predicateOnly value equals a relationship type name (checked: D11 declares none; PROSPECTIVE_REGISTRATION_FLAG
+#         and RECORD_LAST_UPDATED are not relationship types in any packet).
+#   R-09 / R-27 / R-42 / R-43 deferred reasons that named the cut kernel Mention, D9-only RENDITION_OF or a shared
+#         Identifier join are updated.
+# Model stage, A8, 2026-10-08; adversarial review 2026-10-08. D11 declares NO relationship type (0 / 14, 0 pairs / 35).
+# Why: every D11 question traverses kernel relationships (HAS_IDENTIFIER, HAS_EVIDENCE, HAS_SNAPSHOT, HAS_LOCATOR,
+# WAS_GENERATED_BY, WAS_ASSOCIATED_WITH, ASSESSES, MENTIONS, RENDITION_OF) or other modules' relationships (D3 REPORTS_ON,
+# REVISES, HAS_REGISTRATION_VERSION, ADMINISTERS; D1 HAS_ACTIVE_MOIETY, REALIZES_SUBSTANCE; D6 HAS_LABEL_VERSION,
+# DECLARES_COMPONENT; D8 STATUS_OF, STATUS_FROM, CONCERNS, LOT_OF; D9 CHUNK_OF, COVERS_LOCATOR). The one D11 node type,
+# CaptureAttempt, is reached by property filters and by the kernel's Activity.generated (WAS_GENERATED_BY). See
+# packets/D11/09-reasoning.md.
+relationships: []
+
+# Predicates D11 relies on that stay Assertion.predicate values (cost 0 in the executable). Each names the question
+# that would promote it to a typed relationship and the module that would own it.
+# Adversarial review (2026-10-08) DROPPED four D11 predicates that duplicated sibling concepts and re-pointed the patterns
+# to the owners' shapes (D11.seams.yaml predicateSeams):
+#   has_boxed_warning                  -> D5 USE_CONSTRAINED_IN (predicate) with qualifier section:BOXED_WARNING (Q-D11-11;
+#                                         value added by D5, R-85 / R-88)
+#   recall_names_product               -> D8 RegulatoryRecord {recordKind: RECALL} -[:CONCERNS]-> Product | Lot (Q-D11-18)
+#   adverse_event_report_names_product -> D5 CAUSES_ADVERSE_EFFECT (predicate, object D2.Condition, qualifier
+#                                         sourceKind:SPONTANEOUS_REPORT confirmed by R-85; R-84) (Q-D11-18)
+#   label_version_of                   -> D6 HAS_LABEL_VERSION (Q-D11-12); DSLD labelRelationships stay D6 assertions
+# Synthesis (R-82) removed FUNDED_BY, DISCLOSES_SUPPORT_FROM, DECLARES_NO_COMPETING_INTEREST (see header).
+predicateOnly:
+  - predicate: PROSPECTIVE_REGISTRATION_FLAG
+    module: D11
+    subject: D3.Study
+    object: literal (valueBoolean; ICTRP "Prospective Registration")
+    questions: [Q-D11-06]
+    promoteWhen: "never as an edge; D3 may add a property on RegistrationVersion"
+    owner: D3
+    registrar: D11   # existing (only) registrar; R-52 rule 3 would give it to D3 (subject owner) — predicates.yaml stage confirms
+  - predicate: RECORD_LAST_UPDATED
+    module: D11
+    subject: kernel Source (registry or aggregator record)
+    object: literal (valueString = the date the record prints)
+    questions: [CQ-PV-05]
+    promoteWhen: "never; staleness is computed from two literals"
+    owner: D11 (convention) / K
+    registrar: D11   # existing (only) registrar; not in K's closed convention list (R-52 rule 1) — predicates.yaml stage confirms
+
+deferred:
+  - type: USED_TOOL / CAPTURED_WITH (Activity|SourceSnapshot → ToolCapability)
+    module: D11
+    reason: "the tool is CONFIG; SourceSnapshot.captureMethod (kernel, <action-space id>/<tool version>) and CaptureAttempt.toolId carry the canonical action-space id (R-39); a ~60-node tool vocabulary would be a fan-in hub with no question traversing past it"
+  - type: ATTEMPTED_FOR (CaptureAttempt → Subjectable)
+    module: D11
+    reason: "subjectUid property (indexed; an operational pointer outside the evidence chain, allowed by R-46) answers CQ-AX-04; an attempt may concern a subject that is not a node yet; a domain edge to Subjectable would also need a kernel amendment (R-28); promote if a GraphQL client must filter attempts from the entity side with nested filters"
+  - type: YIELDED_SNAPSHOT (CaptureAttempt → SourceSnapshot)
+    module: D11
+    reason: "snapshotUid property (operational pointer, R-46), kernel precedent (revisesSnapshotUid); one-hop join by uid; no question goes further from the attempt"
+  - type: SAME_AS / BRIDGES_TO (Identifier → Identifier)
+    module: D11
+    reason: "forbidden by the kernel rule: identity is (scheme, issuer, value) and one (scheme, issuer, normalized value) identifies at most one Subjectable (R-42); bridges are co-attachment through HAS_IDENTIFIER assertions from an authority snapshot, or RESOLUTION / EQUIVALENCE Assessments when inferred (identifier-bridges.yaml)"
+  - type: FOR_COVERAGE_REQUIREMENT (pinned SourceDiscoveryRecord → SourceCoverageRequirement)
+    module: D11
+    reason: "coverage requirements are CONFIG (registry `domains` + packets' question source lists); no question traverses a requirement node"
+  - type: DISCOVERED_SOURCE (pinned SourceDiscoveryRecord → Source)
+    module: D11
+    reason: "a successful discovery is a SourceSnapshot generated by the same Activity (WAS_GENERATED_BY); the attempt record is written only for non-captures (R-41)"
+  - type: ANNOTATED_BY / TEXT_MINED (Chunk|Source → entity, Europe PMC annotations)
+    module: D11
+    reason: "text-mined links are the kernel-meaning derived MENTIONS (D9 Chunk, derivationRule entity-link/vN; external annotators are part of the linking method, never asserted links, R-27); the kernel Mention type was cut (R-09); never stored as a separate edge type (00-DIRECTIVE 3.8)"
+  - type: RENDITION_OF_RECORD (aggregator Source → primary Source)
+    module: D11
+    reason: "RENDITION_OF has kernel meaning only for Source → work (D9 MediaWork | D3 Publication; R-43); a typed source-to-source edge is not needed for CQ-PV-05 (staleness from two RECORD_LAST_UPDATED literals). Synthesis note: the CQ-PV-05 pattern joins the two Sources through one shared Identifier node, which R-42 forbids (one (scheme, issuer, normalized value) identifies at most one Subjectable); the join must go through the record both sources describe (e.g. the D3 Study carrying the NCT) — flagged for the query-patterns stage"
+  - type: REGISTERED_AS (Publication → registration)
+    module: D11
+    reason: "D3 REPORTS_ON (asserted) plus the Study's NCT identifier answers Q-D11-02"

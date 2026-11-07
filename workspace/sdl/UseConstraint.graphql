@@ -1,0 +1,57 @@
+"""
+Purpose: the shared, stable identity of one scoped use concern, "use of S [above a dose band] [by a route] [in a
+jurisdiction] together with these scope members (population codes, D2 conditions, co-exposures)". Many sources state
+the same concern with different levels (a label: "must not be taken"; a clinic: "interaction"; a forum: deliberate
+use); each statement is a kernel Assertion (predicate USE_CONSTRAINED_IN | INTERACTS_WITH | HAS_UPPER_LIMIT, level in
+valueString, population in qualifiers) and resolves here by RESOLVES_TO_CONSTRAINT (derived, identity rule
+use-constraint-key/v2). Recommendations and answers cite its uid as the blocking constraint (CQ-RC-06; D10
+ReportItem -BLOCKED_BY-> UseConstraint, declared by D10, R-75); an empty
+result means "no constraint recorded", never "safe". The subject means and the scope members are the subject and
+object of the resolving Assertions (kernel HAS_SUBJECT / HAS_OBJECT); they are not duplicated as typed edges here.
+It carries scope descriptors only (R-76): no level, verdict, direction-of-effect or "safe/unsafe" property; the level and
+the exposure change belong to each asserter (Assertion.valueString; qualifier exposureChange:<code>). It is a
+projection-minted grouping of safety Assertions: not a kernel Claim and never vetted (R-76; 09 D-17). A Claim's identity
+binds the predicate and the stated value, while one UseConstraint groups statements across three predicates and every
+level, and its typed dose band, scope and timing window are what Q-D5-06 / Q-D5-23 filter.
+Identity rule (use-constraint-key/v2): identityKeyHash = sha256(identityKey) where identityKey = canonical string of
+(kind, subject uid, sorted scope member uids and population codes, dose band, route, jurisdiction, timing window; empty
+components kept empty) under identityKeyVersion. v1 had no timing component (OQ-D5-29). uid token: `use-constraint`.
+Questions: Q-D5-03, Q-D5-04, Q-D5-05, Q-D5-06, Q-D5-09, Q-D5-11, Q-D5-21, Q-D5-23, CQ-RC-06, Q-D5-24, Q-D5-26.
+"""
+type UseConstraint implements Entity & Subjectable
+  @node(labels: ["UseConstraint", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  constraintKind: UseConstraintKind!
+  "Canonical identity string (readable; contains the member uids and codes)."
+  identityKey: String!
+  identityKeyHash: String!
+  identityKeyVersion: String!
+  "Population codes in scope (empty when the scope is a condition or a co-exposure only)."
+  scopePopulations: [PopulationGroup!]
+  "DOSE_LIMIT only: the dose band the concern starts at (350 mg/day supplemental magnesium -> GT 350 mg PER_DAY SUPPLEMENTAL_ONLY). D1 QuantityComparator (R-57)."
+  doseComparator: QuantityComparator
+  doseValue: Float
+  doseUnit: String
+  "Time basis of the dose band (D6 AmountBasis, R-58)."
+  dosePeriod: AmountBasis
+  intakeScope: IntakeScope
+  route: String
+  "TIMING only: the window relative to an anchor in ISO 8601 durations ('BEDTIME-PT10H/BEDTIME-PT8H' = from 10 h to 8 h before bedtime; 'PT2H' = 2 h separation). Part of identity (v2)."
+  timingWindow: String
+  "ISO 3166 code when the concern is jurisdiction-specific."
+  jurisdiction: String
+  summary: String
+  """class: derived; cardinality: one_or_more (projection use-constraint-key/v2 over D5 safety Assertions; regenerable); questions: Q-D5-03, Q-D5-04, Q-D5-05, Q-D5-21, Q-D5-23, CQ-RC-06, Q-D5-24, Q-D5-26."""
+  resolvedFrom: [Assertion!]!
+    @relationship(type: "RESOLVES_TO_CONSTRAINT", direction: IN, properties: "DerivedEdgeProperties", nestedOperations: [], aggregate: false)
+    @settable(onCreate: false, onUpdate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

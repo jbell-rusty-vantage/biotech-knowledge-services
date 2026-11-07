@@ -1,0 +1,69 @@
+"""
+Purpose: one investigation (trial, cohort, preclinical experiment, systematic review) independent of how many
+registrations, versions and papers describe it; the join point of every D3 question (arms, outcomes, results, sponsor,
+registry history, papers) and the D13 frontier attachment; HAS_STUDY_ROLE and INVESTIGATES make it the entry point from a company,
+funder, award or condition. Also absorbs pinned TrialRegistration (registration ids are
+kernel Identifiers; the registry history is RegistrationVersion) and Dataset (a reused cohort or IPD set is a Study of
+kind OBSERVATIONAL_COHORT that secondary analyses REPORT_ON).
+Identity rule: any registry identifier (NCT, ISRCTN, EUCT, EUDRACT) attached through the kernel; two registrations of one
+trial (NCT01038583 = ISRCTN83772183) are two Identifiers on one Study. Unregistered studies: (first reporting
+publication DOI or PMID, studyKind, normalized design label, e.g. ITP cohort + compound).
+uid token: `study` (hu:study:<opaque>).
+Status fields are a read-only projection cache of the latest open HAS_REGISTRATION_VERSION episode (method in
+projectionMethodVersion, e.g. study-registry-projection/v1; source uid in projectionOfRegistrationVersionUid; written by a
+PROJECTION Activity at projectionDerivedAt); authority is the RegistrationVersion.
+Questions: CQ-ST-01, CQ-ST-04, CQ-ST-07, CQ-ST-08, Q-D3-02, Q-D3-04, Q-D3-06, Q-D3-08, Q-D3-09, Q-D3-10, Q-D3-11, Q-D3-18.
+"""
+type Study implements Entity & Subjectable
+  @node(labels: ["Study", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Design (filter: Q-D3-04 ranking, Q-D3-06 preclinical, CQ-ST-07)."
+  studyKind: StudyKind!
+  acronym: String @filterable(byValue: false) @sortable(byValue: false)
+  "Projection cache: phase of the latest registry version (Q-D3-10)."
+  phase: [TrialPhase!]
+  "Projection cache: status of the latest registry version (Q-D3-02, Q-D3-10, Q-D3-18)."
+  overallStatus: RegistryStatus
+  "Projection cache: expected or actual primary completion of the latest version (Q-D3-02, Q-D3-10)."
+  primaryCompletionDate: DateTime
+  primaryCompletionDateType: RegistryDateType @filterable(byValue: false) @sortable(byValue: false)
+  "Projection cache: true when the latest registry version has posted results (Q-D3-02)."
+  resultsPosted: Boolean
+  "uid of the RegistrationVersion the cache was projected from."
+  projectionOfRegistrationVersionUid: String @filterable(byValue: false) @sortable(byValue: false)
+  "Method version of the projection cache (directive rule 8)."
+  projectionMethodVersion: String @filterable(byValue: false) @sortable(byValue: false)
+  projectionDerivedAt: DateTime @filterable(byValue: false) @sortable(byValue: false)
+  """class: asserted (state attachment); cardinality: many (EXCLUSIVE per registry: one open valid-time episode per registry, register field exclusive: true, executor-enforced (R-10); reconstructed versions carry the registry's stated date as valid time); questions: CQ-ST-04, CQ-ST-08, Q-D3-02, Q-D3-16, Q-D3-18."""
+  registrationVersions: [RegistrationVersion!]!
+    @relationship(type: "HAS_REGISTRATION_VERSION", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: many (one per arm per stating source); questions: CQ-ST-01, Q-D3-01, Q-D3-05, Q-D3-06."""
+  arms: [StudyArm!]!
+    @relationship(type: "HAS_ARM", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: many (eligible / enrolled / randomized / analyzed per stating source); questions: Q-D3-17, Q-D3-06, Q-D3-04, Q-D3-07."""
+  populations: [StudyPopulation!]!
+    @relationship(type: "HAS_POPULATION", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: many (one per distinct measure, timepoint and declared priority); questions: CQ-ST-05, CQ-ST-03, Q-D3-04, Q-D3-16."""
+  outcomes: [OutcomeDefinition!]!
+    @relationship(type: "HAS_OUTCOME", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (one episode per party, role and asserting registry or paper; registries disagree: ASPREE lead sponsor Hennepin on CTG vs Monash on ISRCTN; D7 declares no inverse); questions: Q-D3-08, Q-D3-09, Q-D3-02, Q-D3-10."""
+  roles: [StudyParty!]!
+    @relationship(type: "HAS_STUDY_ROLE", direction: OUT, properties: "StudyRoleEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (conditions the registry or paper says the study investigates, resolved to D2 Condition; verbatim names stay on RegistrationVersion.conditionsVerbatim); questions: Q-D3-10."""
+  conditions: [Condition!]!
+    @relationship(type: "INVESTIGATES", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

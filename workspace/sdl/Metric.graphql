@@ -1,0 +1,48 @@
+"""
+Purpose: the measurand or feature definition — what exactly a number is: LOINC 4548-4 (HbA1c mass fraction in
+blood), 'NAD+ in red blood cells (µM)', WHOOP 'hrv_rmssd_milli', Apple 'heartRateVariabilitySDNN', 'DunedinPACE
+pace of aging'. Compartment (`systemOntologyId`) and method (`methodText`: RMSSD vs SDNN) live here, so two
+measurements are comparable only if they share a Metric (or a COMPARABLE_WITH_CONVERSION assessment links them).
+Identity rule: LOINC code when one exists (kernel Identifier, scheme LOINC); else (definitionSource,
+definitionIssuerName, verbatim name, canonicalUnitCode). uid token: `metric`.
+Questions: CQ-DX-01, CQ-DX-02, Q-D4-01, Q-D4-02, Q-D4-07, Q-D4-16, Q-D4-17, Q-D4-21, Q-D4-22, Q-D4-26.
+"""
+type Metric implements Entity & Subjectable
+  @node(labels: ["Metric", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  metricKind: MetricKind!
+  defaultResultKind: DiagnosticResultKind!
+  definitionSource: MetricDefinitionSource!
+  "Issuer named by the definition (LOINC, WHOOP, Apple, Belsky et al. 2022, BellLabs); presentation and identity only."
+  definitionIssuerName: String
+  "Verbatim definition text from the defining source."
+  definitionText: String
+  "LOINC property (e.g. MFr, SCnc) or the source's equivalent."
+  propertyText: String
+  "LOINC system / compartment as written (Bld, RBC, PBMC, Ser/Plas, wrist skin)."
+  systemText: String
+  "UBERON / CL id of the compartment (e.g. CL:0000232 erythrocyte, CL:0000842 PBMC); equality join with D2 contexts."
+  systemOntologyId: String
+  scale: MetricScale
+  "LOINC time aspect or window (Pt, night, 24H)."
+  timeAspect: String
+  "Method inside the definition when it changes the number (RMSSD, SDNN, NGSP %, IFCC mmol/mol)."
+  methodText: String
+  "UCUM code of the canonical unit."
+  canonicalUnitCode: String
+  notReported: [MeasurementField!]
+  "Names, LOINC long/short/consumer names, vendor field names and definition text for fulltext and vector linking (Q-D4-22)."
+  searchText: String
+  """class: structural; cardinality: one (curated; several Metrics may quantify one Biomarker); questions: CQ-DX-01, Q-D4-01, Q-D4-16, Q-D4-17."""
+  quantifies: [Biomarker!]!
+    @relationship(type: "QUANTIFIES", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

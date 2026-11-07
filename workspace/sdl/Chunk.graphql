@@ -1,0 +1,70 @@
+"""
+Purpose: a derived retrieval unit — a span of the text extracted from one captured SourceSnapshot (publisher transcript,
+caption track, ASR, OCR, HTML or PDF text) with its embedding — used only to find text for a question (vector or
+fulltext index) and to hop to the located assertions it covers (COVERS_LOCATOR) and the entities it mentions
+(MENTIONS). Never evidence, never a locator, never a mutation input (00-DIRECTIVE 3.8). Absorbs the pinned
+DocumentTextVersion (→ textBasis, textVersionHash, extractorVersion, textReviewNote) and Segmentation
+(→ chunkerVersion) as properties, and the pinned NEXT_CHUNK (→ chunkIndex), HAS_CHUNK / FROM_TEXT_VERSION /
+TEXT_OF_SNAPSHOT (→ CHUNK_OF). The embedding vector is a store property read by the vector index, not a GraphQL field.
+Identity rule: (snapshot, textVersionHash, chunkerVersion, chunkIndex). Chunks are projection output (kernel rule for
+derived structure): a new chunkerVersion or text version makes the projection Activity write new chunks and delete the
+old ones; nothing is closed or edited, so there is no recordedTo. uid token: `chunk` (hu:chunk:<opaque>).
+Questions: Q-D9-20, Q-D9-16, CQ-PV-04.
+"""
+type Chunk implements Entity
+  @node(labels: ["Chunk"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "The chunk text (normalized per normalizationVersion)."
+  text: String!
+  "0-based order within its text version (replaces NEXT_CHUNK)."
+  chunkIndex: Int!
+  "[startOffset, endOffset) in the text version, in the offset basis of normalizationVersion."
+  startOffset: Int!
+  endOffset: Int!
+  "Media time on the rendition's own timeline when the text carries cue times."
+  mediaStartSeconds: Float
+  mediaEndSeconds: Float
+  "Speaker labels printed inside the span, in order (what the source printed, not attribution)."
+  speakerLabelsInSource: [String!]
+  textBasis: TextBasis!
+  "sha256:<hex> of the full extracted text the offsets refer to (the pinned DocumentTextVersion identity)."
+  textVersionHash: String!
+  "Extractor and version that produced the text (e.g. firecrawl-markdown/1.23, whisper-large-v3, tesseract/5)."
+  extractorVersion: String!
+  "Text normalization applied before offsets were counted (NFC, NBSP and thin-space handling)."
+  normalizationVersion: String!
+  "Chunking configuration digest or name@version (the pinned Segmentation)."
+  chunkerVersion: String!
+  "Embedding model of the stored vector (e.g. text-embedding-3-small@1536)."
+  embeddingModel: String
+  tokenCount: Int
+  "Publisher caveat on the text as captured ('This transcript is currently under human review and may contain errors.')."
+  textReviewNote: String
+  "Denormalized filter keys for in-index vector filtering (written by the chunker from the CHUNK_OF → Source → RENDITION_OF → PUBLISHES path, and re-stamped whenever a RENDITION_OF or PUBLISHES supersession touches the snapshot's Source)."
+  workUid: String
+  channelUid: String
+  publishedAt: DateTime
+  language: String
+  """class: structural; cardinality: exactly_one (the captured snapshot whose text this chunk spans); questions: Q-D9-20, Q-D9-16."""
+  snapshot: [SourceSnapshot!]!
+    @relationship(type: "CHUNK_OF", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: derived; cardinality: many (projection span-overlap/v1 over chunk and locator offsets in the same snapshot and text version; read-only, regenerable, never evidence); questions: Q-D9-20, CQ-PV-04."""
+  locators: [SourceLocator!]!
+    @relationship(type: "COVERS_LOCATOR", direction: OUT, properties: "DerivedEdgeProperties", nestedOperations: [], aggregate: false)
+    @settable(onCreate: false, onUpdate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: derived; cardinality: many (projection entity-link/vN; kernel MENTIONS type with kernel meaning; read-only, regenerable, never evidence); questions: Q-D9-20."""
+  mentions: [Subjectable!]!
+    @relationship(type: "MENTIONS", direction: OUT, properties: "DerivedEdgeProperties", nestedOperations: [], aggregate: false)
+    @settable(onCreate: false, onUpdate: false)
+    @filterable(byValue: true, byAggregate: false)
+}

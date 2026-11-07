@@ -1,0 +1,157 @@
+# Goal polarity — final vocabulary (synthesis, VOCABULARIES stage, 2026-10-09).
+# Direction-of-effect values and how "helps" and "hurts" are expressed (00-DIRECTIVE 3.1 targets, 3.2 "the bad is as
+# important as the good"). Nothing in the model encodes good or bad as a property of an entity: help and hurt are always an
+# Assertion (one asserter, one located span, an adjudication) whose predicate carries the direction toward a Target, or an
+# Assessment that weighs located evidence and carries effectDirection. Every enum value below is checked against
+# final/schema/final_biotech_schema_v2.graphql (final/_runlog/vocabularies.md).
+# Research is not medical advice.
+
+version: 1
+status: synthesis-final-candidate
+published: 2026-10-09
+owner: K (EffectDirection, Polarity, SpeechAct); D5 (goal predicates, PopulationGroup, targets); D3 (EstimateDirection); D10 (CriterionDirection); D13 (event harm channel)
+sources:
+  - fast-track/00-DIRECTIVE.md 3.1, 3.2, 3.6
+  - fast-track/01-PACKET-CONTRACT.md (question polarity benefit / harm / neutral; at least a third of rows ask about harm)
+  - final/vocabularies/targets.yaml (from packets/D5/vocab-targets.yaml@0.2.2 polarityRule, seamRule, queryPattern)
+  - final/_work/registers/D5.relationship.yaml predicateOnly (final subjects and qualifiers of the goal predicates)
+  - final/decision-report.md R-52 (registrar D5), R-59 (direction vocabularies), R-83 (recommendations), R-84 (adverse effects), R-85 (subjects)
+  - packets/K/09-reasoning.md (Assessment effectDirection; Assertion polarity rule)
+  - final/vocabularies/frontiers.yaml (from packets/D13/vocab-frontiers.yaml@0.2.1: harm-channel event kinds and milestones)
+  - packets/D10/answer-kind-table.md (question polarity counts)
+
+# ---------------------------------------------------------------------------------------------
+# 1. The judgment vocabulary: EffectDirection (K) — the ONLY benefit / harm vocabulary (R-59)
+# ---------------------------------------------------------------------------------------------
+effectDirection:
+  enum: EffectDirection
+  carriedBy: Assessment.effectDirection
+  shape: "(:Assessment {effectDirection, methodVersion})-[:ASSESSES]->(means) and -[:ASSESSES]->(:Target); inputs -[:DERIVED_FROM]->(:Assertion)"
+  assessmentKinds: [EVIDENCE_SYNTHESIS, SAFETY_SIGNAL]
+  subkinds: ["D5.target-effect", "D5.safety-signal", "D3.result-interpretation"]
+  values:
+    - {value: BENEFIT, reads: helps}
+    - {value: HARM, reads: hurts}
+    - {value: MIXED, reads: "helps and hurts (by dose, subgroup or measure)"}
+    - {value: NO_EFFECT, reads: "no effect found"}
+    - {value: UNKNOWN, reads: "direction not determinable from the inputs"}
+  rule: "harm is effectDirection HARM on an assessment about a target, never a property of an entity (K Assessment docstring; directive 3.2)"
+
+# ---------------------------------------------------------------------------------------------
+# 2. The statement channel: five goal predicates (values of Assertion.predicate, registrar D5; R-52)
+#    subject = the means (HAS_SUBJECT), object = the Target (HAS_OBJECT); harm uses the same channel as benefit, so
+#    "what helps T" and "what hurts T" are one query with a different direction filter (targets.yaml QP-TARGET-01).
+# ---------------------------------------------------------------------------------------------
+goalPredicates:
+  - {predicate: INTENDED_FOR_TARGET,    direction: none,       effectDirection: null,      meaning: "the source states the means is for T (marketing category, protocol goal, label purpose) without asserting an effect; never evidence of effect"}
+  - {predicate: IMPROVES_TARGET,        direction: helps,      effectDirection: BENEFIT,   meaning: "the source states or reports that the means improves T"}
+  - {predicate: WORSENS_TARGET,         direction: hurts,      effectDirection: HARM,      meaning: "the source states or reports that the means worsens T (harm, impairment, counter-effect)"}
+  - {predicate: NO_EFFECT_ON_TARGET,    direction: none-found, effectDirection: NO_EFFECT, meaning: "the source reports no effect on T (null result, disconfirmation); never inferred from absence"}
+  - {predicate: MIXED_EFFECT_ON_TARGET, direction: mixed,      effectDirection: MIXED,     meaning: "the source reports opposite effects on T by dose, subgroup or measure"}
+subjects: "any means: D1 ChemicalSubstance | IngredientMaterial, D6 records, D12 FoodItem | FoodCategory | DietaryPattern, D5 Intervention | Protocol | ProtocolEdition, D4 device-as-product (final D5 register; FoodCategory added by R-85)"
+otherTargetObjectPredicates:
+  - {predicate: MEDIATES_TARGET, registrar: D2, subject: D2.Mechanism, note: "a mechanism is not a means; admitted by R-83 (OQ-D5-37)"}
+notGoalPredicates:
+  - {predicate: RECOMMENDS_AGAINST, registrar: D9, note: "subject = the means; never a Target object; a goal goes in the qualifier target:<key> (R-83)"}
+  - {predicate: RECOMMENDS_USE, registrar: D9, note: "as RECOMMENDS_AGAINST (R-83); a guideline 'recommends against X for goal T' is WORSENS_TARGET | NO_EFFECT_ON_TARGET (or USE_CONSTRAINED_IN) with speechAct CAUTIONS | RECOMMENDS"}
+  - {predicate: CAUSES_ADVERSE_EFFECT, registrar: D5, note: "object = D2 Condition (PHENOTYPE or DISEASE); replaces REPORTS_ADVERSE_EXPERIENCE (R-84)"}
+
+# ---------------------------------------------------------------------------------------------
+# 3. Assertion.polarity (K Polarity) — affirms or denies; NOT good or bad
+# ---------------------------------------------------------------------------------------------
+polarity:
+  enum: Polarity
+  values:
+    - {value: POSITIVE, reads: "the asserter affirms the proposition (the normal value on a goal predicate)"}
+    - {value: NEGATIVE, reads: "the asserter denies it; 'not reported' is never NEGATIVE"}
+    - {value: MIXED, reads: "affirms and denies parts"}
+    - {value: UNKNOWN, reads: "not determinable"}
+  rules:
+    - "a measured null is a positive statement of no change: polarity POSITIVE with a NO_CHANGE / NO_EFFECT predicate (NO_EFFECT_ON_TARGET) and basisKind DIRECT_MEASUREMENT (K Assertion docstring)"
+    - "a denial of a goal effect is NO_EFFECT_ON_TARGET, or a SUPPORT Adjudication with verdict CONTRADICTED (HAS_EVIDENCE role CONTRADICTS) against the original claim, never a NEGATIVE copy of IMPROVES_TARGET (targets.yaml polarityRule)"
+    - "edges project only from current POSITIVE Assertions (R-22)"
+speechActsThatCarryDirection:
+  CAUTIONS: "the asserter warns (a guideline against a means for a goal, with WORSENS_TARGET | NO_EFFECT_ON_TARGET | USE_CONSTRAINED_IN)"
+  RECOMMENDS: "a recommendation (claim occurrence with speechAct RECOMMENDS, R-83)"
+  DENIES: "a denial (polarity NEGATIVE), e.g. DISCLOSES_INTEREST with no competing interest (R-82)"
+
+# ---------------------------------------------------------------------------------------------
+# 4. For whom: the mandatory population qualifier (D5)
+# ---------------------------------------------------------------------------------------------
+population:
+  qualifier: "population:<PopulationGroup code | D3 StudyPopulation uid> in Assertion.qualifiers, on every goal predicate and every D5 safety predicate"
+  enum: PopulationGroup
+  rule: "population:UNSPECIFIED is explicit, never a null that reads as 'everyone'; diseases present are D2 Conditions (USE_CONSTRAINED_IN object), not population codes"
+  otherQualifiers: "dose, duration, coExposure, outcome uid (final D5 register lists the key as outcomeUid; the vocabulary text writes outcome:<uid>, see open item 2)"
+
+# ---------------------------------------------------------------------------------------------
+# 5. Neutral directions — NOT judgments (R-59)
+# ---------------------------------------------------------------------------------------------
+neutralDirections:
+  - enum: EstimateDirection
+    owner: D3
+    usedOn: [StudyResult.direction, "MechanismProjectionProperties.direction (D2 AFFECTS_MECHANISM; R-59 replaced MechanismDirection)"]
+    reads: "direction of the reported estimate or change (INCREASED means more events on an event-risk outcome, longer survival on a survival time); benefit or harm is a D3.result-interpretation Assessment (effectDirection) or a D5 target assertion"
+  - enum: CriterionDirection
+    owner: D10
+    usedOn: [DecisionCriterion]
+    reads: "how a ranking criterion orders options (HIGHER_IS_BETTER, LOWER_IS_BETTER, WITHIN_RANGE, NOT_ORDERED); 'better' is relative to a versioned criterion, not a property of the entity"
+  - enum: EndpointStatement
+    owner: D13
+    usedOn: [Event.primaryEndpointStatement]
+    reads: "what the source STATES about a readout's primary endpoint; a capture of the sponsor's statement, never BellLabs' judgment"
+
+# ---------------------------------------------------------------------------------------------
+# 6. Harm channels by domain (the negative questions beside the positive ones; directive 3.2)
+# ---------------------------------------------------------------------------------------------
+harmChannels:
+  targets: "WORSENS_TARGET, MIXED_EFFECT_ON_TARGET, NO_EFFECT_ON_TARGET (disconfirmation) — QP-TARGET-01 with $directions = hurts"
+  safety: "D5 USE_CONSTRAINED_IN, INTERACTS_WITH, HAS_UPPER_LIMIT (valueString = ConstraintLevel, per the D5 SDL docstring), HAS_AUTHORIZED_DOSE_RANGE, CAUSES_ADVERSE_EFFECT (object D2 Condition); weighed by Assessment SAFETY_SIGNAL"
+  events: "D13 harm-channel event kinds REJECTION, CLINICAL_HOLD, ENFORCEMENT_ACTION, RECALL, MARKET_WITHDRAWAL, SAFETY_SIGNAL, PROGRAM_DISCONTINUATION; milestone lenses ms:safety-signal, ms:clinical-hold, ms:setback, ms:guidance-slip (frontiers.yaml)"
+  reports: "ReportSectionKind EVIDENCE_AGAINST, HARMS_AND_AVOIDANCE, INTERACTIONS; an avoid-list is retrieved with a published variant (answer-kinds.yaml)"
+  evidence: "HAS_EVIDENCE role CONTRADICTS; SUPPORT Adjudication verdict CONTRADICTED / NOT_SUPPORTED (verdict-lattice.yaml)"
+  claims: "an evidence mission tries to disqualify a claim; Q-K-11 lists contradicted claims and who repeated them (claim-lifecycle.yaml)"
+forbidden:
+  - "a goodFor / benefits / risks / safe / helpsSleep field, tag or enum on a Product, Compound, Food, Intervention, Protocol or Device"
+  - "a typed edge from a means to a Target; targetKeys on any means type"
+  - "a confidence or effect-size number on an edge between a means and a Target (directive 3.6)"
+  - "deriving WORSENS from a contraindication or interaction (those are their own D5 safety assertions)"
+  - "a breakthrough, hype, success or progress flag on an Event or Frontier (frontiers.yaml)"
+
+# ---------------------------------------------------------------------------------------------
+# 7. Question polarity (01-PACKET-CONTRACT: benefit / harm / neutral), counted from packets/D10/answer-kind-table.md
+# ---------------------------------------------------------------------------------------------
+questionPolarity:
+  values: [benefit, harm, neutral]
+  rows: 475
+  totals: {benefit: 21, harm: 230, neutral: 224}
+  byPacket:   # contract: at least a third of each packet's rows ask about harm, risk, avoidance or disconfirmation
+    K:   {rows: 35, harm: 18, benefit: 0, neutral: 17}
+    D1:  {rows: 33, harm: 15, benefit: 3, neutral: 15}
+    D2:  {rows: 34, harm: 16, benefit: 3, neutral: 15}
+    D3:  {rows: 32, harm: 14, benefit: 1, neutral: 17}
+    D4:  {rows: 35, harm: 13, benefit: 2, neutral: 20}
+    D5:  {rows: 34, harm: 22, benefit: 1, neutral: 11}
+    D6:  {rows: 37, harm: 14, benefit: 2, neutral: 21}
+    D7:  {rows: 33, harm: 18, benefit: 2, neutral: 13}
+    D8:  {rows: 33, harm: 22, benefit: 0, neutral: 11}
+    D9:  {rows: 36, harm: 21, benefit: 1, neutral: 14}
+    D10: {rows: 36, harm: 13, benefit: 2, neutral: 21}
+    D11: {rows: 30, harm: 15, benefit: 1, neutral: 14}
+    D12: {rows: 34, harm: 15, benefit: 3, neutral: 16}
+    D13: {rows: 33, harm: 14, benefit: 0, neutral: 19}
+  note: "every packet's harm share is >= 1/3 (lowest: D10 13/36, D4 13/35, D6 14/37)"
+
+sdlEnums:
+  EffectDirection: [BENEFIT, HARM, MIXED, NO_EFFECT, UNKNOWN]
+  Polarity: [POSITIVE, NEGATIVE, MIXED, UNKNOWN]
+  SpeechAct: [STATES, REPORTS_PRACTICE, RECOMMENDS, CAUTIONS, SPECULATES, QUESTIONS, DENIES]
+  PopulationGroup: [UNSPECIFIED, GENERAL_ADULTS, OLDER_ADULTS, ADOLESCENTS, CHILDREN, INFANTS, PREGNANT, LACTATING, TRYING_TO_CONCEIVE, ATHLETES, PRE_SURGERY, IMMUNOSUPPRESSED, ON_PRESCRIPTION_MEDICATION, OTHER]
+  EstimateDirection: [INCREASED, DECREASED, NO_CHANGE, MIXED, UNKNOWN]
+  CriterionDirection: [HIGHER_IS_BETTER, LOWER_IS_BETTER, WITHIN_RANGE, NOT_ORDERED]
+  EndpointStatement: [MET, NOT_MET, MIXED, NOT_STATED]
+  ConstraintLevel: [CONTRAINDICATED, DO_NOT_EXCEED_DOSE, AVOID, NOT_RECOMMENDED, USE_WITH_CAUTION, MONITOR, MAINTAIN_CONSISTENT_INTAKE, CONSULT_CLINICIAN, ADJUST_DOSE, SEPARATE_ADMINISTRATION, DISCONTINUE_BEFORE]
+
+openItems:
+  - "1. D8 QualityResult.statedVerdict (CONFORMS / DOES_NOT_CONFORM) is a source-printed verdict on a record row; whether directive 3.2 allows it is an owner decision (packets/D8/11-open-questions.md OQ-D8-14)."
+  - "2. Qualifier key for the measure a direction refers to: vocab-targets polarityRule writes `outcome:<uid>`, the final D5 register lists `outcomeUid`; the predicate registry (final/vocabularies/predicates.yaml, R-52) should fix one spelling."

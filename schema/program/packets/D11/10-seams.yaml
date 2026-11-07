@@ -1,0 +1,74 @@
+version: 1
+module: D11
+# Model stage, A8, 2026-10-08. D11 declares no relationship field, so it has no declared seam (no D11 field targets a type
+# outside the module). Section 1 lists the implicit seams: other modules' relationships and types that D11's retrieval
+# patterns (03-retrieval-patterns.md) read, so the synthesizer sees the dependency and can tell when a rename breaks a
+# D11 pattern. Type names follow the sibling SDLs as they stood on 2026-10-08 (A1 K/D10, A2 D1, A4 D3, A6 D6/D7, A7 D8,
+# A8 D9). owner: other = the named module declares it.
+seams:
+  # ---- 1. Implicit seams (read by D11 patterns; declared by other modules)
+  - { type: REPORTS_ON, from: D3.Publication, to: D3.Study, questions: [Q-D11-02, Q-D11-08], direction: OUT, owner: other, note: "asserted, one record per asserter (paper text, registry references module, NLM DataBank); AssertedRecordedProperties: recorded time only (adversarial review); one-sided link flag" }
+  - { type: REVISES, from: D3.Publication, to: D3.Publication, questions: [Q-D11-04, Q-D11-05, Q-D11-19], direction: OUT, owner: other, note: "retraction / correction / EoC notices and preprint→journal versions; RevisionEdgeProperties = AssertedRecordedProperties + revisionKind (no valid time): recordedFrom = since when BellLabs knows, notice.publishedAt = revision date, r.revisionKind per asserter (Q-D11-04 corrected in the adversarial review)" }
+  - { type: HAS_REGISTRATION_VERSION, from: D3.Study, to: D3.RegistrationVersion, questions: [Q-D11-06, Q-D11-07], direction: OUT, owner: other, note: "state episodes; firstSubmittedDate vs startDate; the history floor is a D11 CaptureAttempt" }
+  - { type: HAS_ARM, from: D3.Study, to: D3.StudyArm, questions: [Q-D11-03], direction: OUT, owner: other }
+  - { type: HAS_COMPONENT, from: D3.StudyArm, to: D3.InterventionComponent, questions: [Q-D11-03], direction: OUT, owner: other }
+  - { type: ADMINISTERS, from: D3.InterventionComponent, to: D1.IngredientMaterial, questions: [Q-D11-03, CQ-PV-04, Q-D11-21], direction: OUT, owner: other, note: "AssertedRecordedProperties (recorded time only); quantity, unitCode, quantityBasis, scheduleText on the component" }
+  - { type: HAS_STUDY_ROLE, from: D3.Study, to: "D3.StudyParty (D7.Organization | D7.Person | D7.Award)", questions: [Q-D11-08], direction: OUT, owner: other, note: "roleKind COLLABORATOR / MATERIAL_PROVIDER / FUNDER on StudyRoleEdgeProperties; was SPONSORED_BY before the check stage (A4 SDL)" }
+  - { type: REALIZES_SUBSTANCE, from: D1.IngredientMaterial, to: D1.ChemicalSubstance, questions: [Q-D11-03, CQ-PV-04, Q-D11-11], direction: OUT, owner: other }
+  - { type: HAS_ACTIVE_MOIETY, from: D1.ChemicalSubstance, to: D1.ChemicalSubstance, questions: [Q-D11-09, CQ-PV-04], direction: OUT, owner: other, note: "AssertedRecordedProperties (recorded time only); GSRS ACTIVE MOIETY relationship (FC-4); salt vs moiety quantity basis" }
+  - { type: HAS_LABEL_VERSION, from: D6.Package, to: D6.LabelVersion, questions: [Q-D11-11, Q-D11-12, CQ-PV-04], direction: OUT, owner: other, note: "state episodes (SPL effectiveTime; DSLD entry dates)" }
+  - { type: DECLARES_COMPONENT, from: D6.LabelVersion, to: D1.IngredientMaterial, questions: [Q-D11-11, CQ-PV-04], direction: OUT, owner: other, note: "ComponentLineProperties amount/unit/basis" }
+  - { type: STATUS_OF, from: D8.LegalStatus, to: D1.ChemicalSubstance, questions: [Q-D11-14], direction: OUT, owner: other }
+  - { type: STATUS_FROM, from: D8.LegalStatus, to: D8.RegulatoryRecord, questions: [Q-D11-14], direction: OUT, owner: other, note: "NDI letters; the 2025 reinstatement sets aside the 2022 letters (FC-7 candidate)" }
+  - { type: CONCERNS, from: D8.RegulatoryRecord, to: "D8.RegulatoryRecordTopic (D6.Product | D8.Lot | …)", questions: [Q-D11-18], direction: OUT, owner: other, note: "recordKind RECALL; AssertedRecordedProperties; replaces D11's dropped predicate recall_names_product (adversarial review)" }
+  - { type: LOT_OF, from: D8.Lot, to: "D8.LotOfTarget (D6.Product | D6.ProductVariant)", questions: [Q-D11-18], direction: OUT, owner: other, note: "recall of a lot of the product" }
+  - { type: CHUNK_OF, from: D9.Chunk, to: K.SourceSnapshot, questions: [Q-D11-03], direction: OUT, owner: other }
+  - { type: COVERS_LOCATOR, from: D9.Chunk, to: K.SourceLocator, questions: [Q-D11-03], direction: OUT, owner: other, note: "derived; the chunk→span hop of the 3.8 path" }
+  - { type: MENTIONS, from: D9.Chunk, to: Subjectable, questions: [Q-D11-03], direction: OUT, owner: other, note: "derived entity-link projection; never evidence" }
+  - { type: ASSESSES, from: K.Assessment, to: Subjectable, questions: [CQ-AX-14, Q-D11-10, Q-D11-13, Q-D11-15, Q-D11-16, Q-D11-18, Q-D11-21, CQ-PV-04], direction: OUT, owner: other, note: "kinds RESOLUTION, EQUIVALENCE, APPLICABILITY; D11 requests subkind D11.quantity-basis (11-open-questions)" }
+  - { type: ASSESSES, from: K.Report, to: K.Claim, questions: [Q-D11-21], direction: OUT, owner: other, note: "EVIDENCE_REPORT about the brand's claim (evidence mission)" }
+  - { type: WAS_GENERATED_BY, from: K.Report, to: K.Activity, questions: [Q-D11-21, Q-D11-22], direction: OUT, owner: other, note: "the evidence mission; the PROJECTION run that publishes the identifier-coverage PROFILE report (no ASSESSES target: a coverage profile is about the graph)" }
+  - { type: OCCURRENCE_OF, from: K.Assertion, to: K.Claim, questions: [Q-D11-19, Q-D11-21], direction: OUT, owner: other }
+  - { type: WAS_GENERATED_BY, from: D11.CaptureAttempt, to: K.Activity, questions: [Q-D11-17, CQ-AX-04], direction: OUT, owner: other, note: "kernel lineage edge declared once on Activity.generated: [Entity!]! (direction IN); allowlisted kernel types, listed for completeness" }
+# ---- 2. Predicate seams (Assertion.predicate values other modules own; D11 patterns read them, D11 declares no copy)
+predicateSeams:
+  - { predicate: USE_CONSTRAINED_IN, owner: D5, file: packets/D5/05-relationship-register.yaml, questions: [Q-D11-11], note: "boxed warning = use constraint with qualifier section:BOXED_WARNING (D11 asks D5 to add BOXED_WARNING to its section list, 11-open-questions item 39); replaces D11's dropped has_boxed_warning" }
+  - { predicate: CAUSES_ADVERSE_EFFECT, owner: D5, file: packets/D5/05-relationship-register.yaml, questions: [Q-D11-18], note: "CAERS/FAERS reports with qualifier sourceKind:SPONTANEOUS_REPORT; the causality disclaimer is a CAUTIONS Assertion on the dataset snapshot (D5 Q-D5-20); replaces D11's dropped adverse_event_report_names_product" }
+  - { predicate: FIELD_NOT_REPORTED, owner: K, file: packets/K/09-reasoning.md item 12, questions: [CQ-AX-04, Q-D11-19], note: "not reported by the source; replaces D11's dropped CaptureOutcome EMPTY_RESULT" }
+kernelTypesReferenced:
+  - { type: Entity, kind: interface, usedOn: [CaptureAttempt], owner: K, note: "allowlisted" }
+  - { type: PrivacyClass, kind: enum, usedOn: [CaptureAttempt.privacyClass], owner: K, note: "Entity field listed verbatim" }
+  - { type: Claim, kind: node, usedOn: "patterns only (Q-D11-19, Q-D11-21); no D11 field", owner: K }
+  - { type: Assessment, kind: node, usedOn: "patterns only (RESOLUTION, EQUIVALENCE, APPLICABILITY); no D11 field", owner: K }
+  - { type: Report, kind: node, usedOn: "patterns only (EVIDENCE_REPORT, PROFILE); no D11 field", owner: K }
+  - { type: IdentifierLinkProperties, kind: relationshipProperties, usedOn: "patterns read HAS_IDENTIFIER episodes (CQ-ID-04, Q-D11-13, Q-D11-15); no D11 field", owner: K }
+  - { type: EvidenceEdgeProperties, kind: relationshipProperties, usedOn: "patterns read HAS_EVIDENCE role (Q-D11-03); no D11 field", owner: K }
+dependsOn:
+  - { what: "D9 vector index on Chunk (name assumed `chunk_embedding`) and a fulltext index `chunk_text`", owner: D9, why: "Q-D11-03 3.8 path entry point" }
+  - { what: "fulltext index over Subjectable names (`subjectable_names`) for candidate generation", owner: K, why: "CQ-AX-14" }
+  - { what: "Identifier (scheme, issuer, value) uniqueness constraint; SourceSnapshot.captureMethod range index", owner: K, why: "every identifier join; tool joins in Q-D11-01, CQ-AX-04, Q-D11-20" }
+sharedVocabularies:
+  - name: identifier-schemes
+    file: C:\Users\Pinda\Proyectos\Biotech\biotech-knowledge-services-A1\schema\program\packets\K\identifier-schemes.yaml
+    owner: K
+    consumedAs: "Identifier.scheme codes in every pattern; D11 supplies the bridge table identifier-bridges.yaml (codes aligned to the K register 2026-10-08) and requests 5 new codes plus 4 optional ones (11-open-questions)"
+  - name: action-space tool ids
+    file: schema/program/packets/D11/tooling/action-space.yaml
+    owner: D11
+    providedAs: "the `<id>` prefix of kernel SourceSnapshot.captureMethod (`<id>/<version>`) and CaptureAttempt.toolId, for every module's captures"
+  - name: identifier normalization rule ids
+    file: schema/program/packets/D11/identifier-bridges.yaml
+    owner: D11 (proposed) / K (adoption)
+    providedAs: "Identifier.normalizationRule values (doi-lowercase-v1, gtin14-v1, npi-v1, lei-upper-v1, casrn-v1, …)"
+  - name: capture outcome and failure kinds
+    file: schema/program/packets/D11/04-schema-proposal.graphql (enums CaptureOutcome, CaptureFailureKind; ToolActionKind dropped in the adversarial review)
+    owner: D11
+    providedAs: "CaptureAttempt properties; Mission Control receipts may reuse the same codes"
+  - name: targets
+    file: C:\Users\Pinda\Proyectos\Biotech\biotech-knowledge-services-A5\schema\program\packets\D5\vocab-targets.yaml
+    owner: D5
+    consumedAs: "not consumed: no D11 question asks about a target; D11 serves target questions only through tooling readiness (Q-D11-01). D5 10-seams lists D11 among the consumers; D11 asks D5 to remove it (11-open-questions item 41)"
+  - name: frontiers
+    file: C:\Users\Pinda\Proyectos\Biotech\biotech-knowledge-services-A7\schema\program\packets\D13\vocab-frontiers.yaml
+    owner: D13
+    consumedAs: "not consumed"

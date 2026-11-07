@@ -1,0 +1,22 @@
+"""
+Directive level a source states (pinned ConstraintLevel + ADJUST_DOSE, SEPARATE_ADMINISTRATION, DISCONTINUE_BEFORE).
+Used typed on ProtocolStep.statedLevel; it is also the value domain of `Assertion.valueString` on the D5 safety
+predicates (USE_CONSTRAINED_IN, INTERACTS_WITH, HAS_UPPER_LIMIT). The level is per asserter and is never part of a
+UseConstraint's identity.
+"""
+enum ConstraintLevel {
+  CONTRAINDICATED
+  DO_NOT_EXCEED_DOSE
+  AVOID
+  NOT_RECOMMENDED
+  USE_WITH_CAUTION
+  MONITOR
+  MAINTAIN_CONSISTENT_INTAKE
+  CONSULT_CLINICIAN
+  "e.g. sirolimus label: cannabidiol 'dose reduction ... should be considered'."
+  ADJUST_DOSE
+  "e.g. bisphosphonates 'at least 2 hours before or after' magnesium; window in the assertion qualifier `window:PT2H`."
+  SEPARATE_ADMINISTRATION
+  "e.g. 'Stop taking ... at least one month before surgery'."
+  DISCONTINUE_BEFORE
+}

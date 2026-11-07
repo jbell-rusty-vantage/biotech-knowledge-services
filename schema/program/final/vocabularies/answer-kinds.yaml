@@ -1,0 +1,168 @@
+# Answer kinds — final vocabulary (synthesis, VOCABULARIES stage, 2026-10-09).
+# What the main payload of an answer IS: the record a user would cite back (directive 3.5, 3.6; PLAN 6.1).
+# Method and rulings: packets/D10/answer-kind-table.md (owner D10, A1), adopted by final/decision-report.md R-50
+# (with R-08 for the CQ-PF-03 split and R-49 for the discourse metrics). Every count below was recomputed from that
+# table by scratch synth/vocab/answer-kind-counts.mjs (final/_runlog/vocabularies.md) and matches the table's own summary.
+# Research is not medical advice; an answer kind says how an answer is produced and cited, not whether it is right.
+
+version: 1
+status: synthesis-final-candidate
+published: 2026-10-09
+owner: D10 (method and per-question rulings); K (the records each kind lands in)
+sources:
+  - packets/D10/answer-kind-table.md (sections Summary, Disagreements, Shared ids, Method, Table)
+  - packets/D10/report-skeletons.md (skeleton names carried in Report.skeletonKey)
+  - packets/K/09-reasoning.md (Report skeleton minimum citation set; projection caches)
+  - fast-track/00-DIRECTIVE.md 3.5 (computed vs published comparisons), 3.6 (association / derived insight / evidence report)
+  - final/decision-report.md R-08, R-45, R-49, R-50
+  - final/schema/final_biotech_schema_v2.graphql (enums ReportKind, AssessmentKind, AssociationKind, ActivityKind)
+
+# ---------------------------------------------------------------------------------------------
+# 1. The four kinds. Apply per (packet, question id), first match wins: published → assessment → materialized → retrieved.
+#    Default: the packet's declared kind stands; D10 overrides only where a rule clearly applies (table "Method").
+# ---------------------------------------------------------------------------------------------
+kinds:
+  - value: published
+    rule: R1
+    definition: >-
+      BellLabs signs the payload for an audience at a time under a policy version: evidence reports, comparison
+      reports, profiles, protocol reviews, published answers. A question whose payload is the content or verdict of a
+      published Report is published; a question about the live status of many Reports (stale-report queue, reverse
+      citations) is retrieved.
+    record: "kernel Report (reportKind: EVIDENCE_REPORT | ANSWER | COMPARISON | PROFILE | RECOMMENDATION; skeletonKey names the D10 skeleton) with D10 ReportItem rows"
+    trace: "Report → ReportItem → DERIVED_FROM cited Assertions/Assessments → HAS_EVIDENCE locators → snapshots; bodyDigest + policyVersion + composing Activity (EVIDENCE_MISSION, ANSWER, or PROJECTION for a PROFILE)"
+    freshness: "frozen at publishedAt; listed by the stale-report queue (Q-D10-13) and the re-review queue (Q-D10-24) when an input changes"
+    insertOnly: "a revision is a new Report naming supersedesUid (K)"
+  - value: assessment
+    rule: R2
+    definition: >-
+      The payload is a judgment that could be wrong, has a producer who answers for it, weighs named inputs and must be
+      supersedable: synthesis, strength, harm causality, vetting, identity and applicability matches, retelling
+      fidelity, signal interpretation, comparability.
+    record: "kernel Assessment (assessmentKind; domain detail in assessmentSubkind; status PROPOSED | ACCEPTED | SUPERSEDED | WITHDRAWN)"
+    trace: "STRACE = Assessment → DERIVED_FROM inputs → TRACE, plus its own HAS_EVIDENCE spans and producing Agent / Activity"
+    freshness: "until superseded (show recordedAt); re-assess when a DERIVED_FROM input is superseded"
+  - value: materialized
+    rule: R3
+    definition: >-
+      The computation is expensive or graph-global (GDS over a projection, a score over thousands of assertions, a
+      derived number reused by many questions) and reused across queries. Cheap bounded aggregates and threshold
+      filters are retrieved; GDS results streamed per request and never written are retrieved.
+    record: >-
+      D10 Association (pair score under a method version, associationKind), kernel CALCULATED Assertion or computed
+      state, a derived edge (MENTIONS), a stored GDS output, or projection-cache properties on the measured node
+      (R-45; the form R-49 rules for the discourse metrics CQ-CL-06, Q-D9-08, Q-D9-19)
+    trace: "record → DERIVED_FROM inputs (inputSetDigest) → TRACE, with methodVersion and the PROJECTION Activity"
+    freshness: "method bound (staleAfter / refresh cadence) and stale as soon as an input is superseded (CQ-AX-08 audit)"
+    gate: "materialize only when a fixture-graph p95 exceeds 200 ms, or the read is graph-global and reused by >= 2 questions; run the latency test before a projection is made permanent (R-50)"
+  - value: retrieved
+    rule: R4
+    definition: >-
+      Otherwise: asserted facts, or a cheap deterministic computation over them under declared criteria. Every ad hoc
+      ranking, comparison or avoid-list is retrieved (computed under DecisionCriterion@version, Q-D10-01), with a
+      published variant only when BellLabs signs it. Integrity audits over derived or published records are retrieved
+      (an audit must read current inputs; a stored audit goes stale).
+    record: "kernel Assertion (and the domain records and edges it authorizes), or computed rows × DecisionCriterion@version (D10)"
+    trace: "TRACE = Assertion → HAS_EVIDENCE → SourceLocator → SourceSnapshot (+ Adjudication, producing Activity)"
+    freshness: "live; as fresh as the latest capture of each input (current-state answers carry lastObservedAt, CQ-AX-06)"
+
+publishedVariant: >-
+  A retrieved ranking, comparison or avoid-list may also be published as a signed Report (COMPARISON, or an avoidance
+  Report) for an audience; the default answer stays retrieved. Six rows carry a published variant (counts.publishedVariants).
+neverAKind:
+  - "a plain edge between two domain entities with a confidence number (directive 3.6): an association is materialized, a derived insight is an assessment, an evidence report is published"
+  - "a stored comparison or ranking that is not a published Report (directive 3.5)"
+
+# ---------------------------------------------------------------------------------------------
+# 2. Counts. Final kinds = D10's ruling column (R-50 adopts all 17 D10 rulings). Rows are (packet, question id);
+#    shared CQ ids appear once per packet that asks them.
+# ---------------------------------------------------------------------------------------------
+counts:
+  table: packets/D10/answer-kind-table.md
+  rows: 475
+  packets: 14
+  distinctIds: 453
+  sharedIds: 22
+  afterR08Split: "CQ-PF-03 becomes CQ-PF-03a (D8, value 1, retrieved: what a certification covers) and CQ-PF-03b (D6, value 2, assessment: whether a label's certification claim falls inside that scope): 454 distinct ids, 21 shared, row and kind counts unchanged"
+  final: {retrieved: 345, materialized: 20, assessment: 90, published: 20}
+  declaredByPackets: {retrieved: 336, materialized: 26, assessment: 89, published: 24}
+  publishedVariants: [Q-D1-19, Q-D5-18, Q-D6-03, Q-D6-22, Q-D8-19, Q-D12-08]
+  byPacket:   # final kinds
+    K:   {rows: 35, retrieved: 22, materialized: 1, assessment: 6, published: 6, disagreements: 2}
+    D1:  {rows: 33, retrieved: 24, materialized: 3, assessment: 6, published: 0, disagreements: 3}
+    D2:  {rows: 34, retrieved: 26, materialized: 5, assessment: 2, published: 1, disagreements: 1}
+    D3:  {rows: 32, retrieved: 24, materialized: 0, assessment: 8, published: 0, disagreements: 0}
+    D4:  {rows: 35, retrieved: 27, materialized: 0, assessment: 8, published: 0, disagreements: 1}
+    D5:  {rows: 34, retrieved: 26, materialized: 1, assessment: 6, published: 1, disagreements: 2}
+    D6:  {rows: 37, retrieved: 28, materialized: 0, assessment: 9, published: 0, disagreements: 4}
+    D7:  {rows: 33, retrieved: 26, materialized: 1, assessment: 6, published: 0, disagreements: 1}
+    D8:  {rows: 33, retrieved: 27, materialized: 0, assessment: 6, published: 0, disagreements: 1}
+    D9:  {rows: 36, retrieved: 22, materialized: 3, assessment: 10, published: 1, disagreements: 1}
+    D10: {rows: 36, retrieved: 17, materialized: 4, assessment: 5, published: 10, disagreements: 0}
+    D11: {rows: 30, retrieved: 25, materialized: 1, assessment: 4, published: 0, disagreements: 0}
+    D12: {rows: 34, retrieved: 25, materialized: 1, assessment: 8, published: 0, disagreements: 1}
+    D13: {rows: 33, retrieved: 26, materialized: 0, assessment: 6, published: 1, disagreements: 0}
+  byAudience:   # a row tagged with several audiences counts once for each; listedFirst = the audience the packet listed first
+    biohacker:  {rowsTagged: 228, listedFirst: 181, retrieved: 162, materialized: 6, assessment: 48, published: 12}
+    investor:   {rowsTagged: 162, listedFirst: 93, retrieved: 125, materialized: 3, assessment: 26, published: 8}
+    researcher: {rowsTagged: 228, listedFirst: 133, retrieved: 147, materialized: 14, assessment: 57, published: 10}
+    agent:      {rowsTagged: 123, listedFirst: 68, retrieved: 90, materialized: 8, assessment: 21, published: 4}
+  byPolarity:   # question polarity (01-PACKET-CONTRACT: benefit / harm / neutral); see goal-polarity.yaml
+    benefit: {rows: 21, retrieved: 16, materialized: 1, assessment: 3, published: 1}
+    harm:    {rows: 230, retrieved: 158, materialized: 8, assessment: 53, published: 11}
+    neutral: {rows: 224, retrieved: 171, materialized: 11, assessment: 34, published: 8}
+  byValue:      # 1 essential, 2 foundational, 3 expansion
+    "1": {rows: 162, retrieved: 119, materialized: 2, assessment: 31, published: 10}
+    "2": {rows: 261, retrieved: 194, materialized: 10, assessment: 47, published: 10}
+    "3": {rows: 52, retrieved: 32, materialized: 8, assessment: 12, published: 0}
+
+# ---------------------------------------------------------------------------------------------
+# 3. Rulings adopted (R-50) — the 17 rows where the final kind differs from the packet's declared kind,
+#    and the 5 shared ids declared with different kinds. Reasons: packets/D10/answer-kind-table.md "Disagreements".
+# ---------------------------------------------------------------------------------------------
+disagreementsAdopted:
+  - {packet: K,   id: Q-K-24,   declared: materialized, final: retrieved}
+  - {packet: K,   id: CQ-AX-08, declared: materialized, final: retrieved}
+  - {packet: D1,  id: Q-D1-03,  declared: materialized, final: retrieved}
+  - {packet: D1,  id: CQ-ST-02, declared: retrieved,    final: assessment}
+  - {packet: D1,  id: Q-D1-19,  declared: materialized, final: retrieved, publishedVariant: true}
+  - {packet: D2,  id: Q-D2-14,  declared: materialized, final: retrieved}
+  - {packet: D4,  id: Q-D4-08,  declared: retrieved,    final: assessment}
+  - {packet: D5,  id: Q-D5-18,  declared: published,    final: retrieved, publishedVariant: true}
+  - {packet: D5,  id: Q-D5-25,  declared: retrieved,    final: assessment}
+  - {packet: D6,  id: Q-D6-03,  declared: published,    final: retrieved, publishedVariant: true}
+  - {packet: D6,  id: Q-D6-09,  declared: assessment,   final: retrieved}
+  - {packet: D6,  id: CQ-AX-19, declared: assessment,   final: retrieved}
+  - {packet: D6,  id: Q-D6-22,  declared: published,    final: retrieved, publishedVariant: true}
+  - {packet: D7,  id: Q-D7-22,  declared: materialized, final: retrieved}
+  - {packet: D8,  id: Q-D8-19,  declared: published,    final: retrieved, publishedVariant: true}
+  - {packet: D9,  id: CQ-CL-07, declared: retrieved,    final: assessment}
+  - {packet: D12, id: Q-D12-08, declared: assessment,   final: retrieved, publishedVariant: true}
+sharedIds:
+  - {id: CQ-AX-08, declarations: "K materialized; D10 retrieved", final: retrieved}
+  - {id: CQ-AX-19, declarations: "D6 assessment; D8 retrieved", final: retrieved}
+  - {id: CQ-CL-07, declarations: "D7 assessment; D9 retrieved", final: assessment}
+  - {id: CQ-ST-02, declarations: "D1 retrieved; D3 assessment", final: assessment}
+  - {id: CQ-PF-03, declarations: "D6 assessment; D8 retrieved", final: "split (R-08): CQ-PF-03a retrieved (D8), CQ-PF-03b assessment (D6)"}
+otherRulings:
+  - {id: Q-D11-22, final: materialized, ruling: R-50, note: "materialized by a PROJECTION Activity; a Report{PROFILE} only when BellLabs publishes coverage"}
+  - {ids: [CQ-CL-06, Q-D9-08, Q-D9-19], final: materialized, ruling: R-49, note: "form = projection-cache properties (methodVersion, derivedAt) on the measured node, written by a PROJECTION Activity; never an Assessment, never an Association"}
+  - {id: Q-D12-20, final: retrieved, note: "GDS streamed per request and never written (table rule R3); OQ-D12-29 asked for retrieved and the table already says retrieved"}
+
+# ---------------------------------------------------------------------------------------------
+# 4. SDL binding (every value below is checked against final/schema/final_biotech_schema_v2.graphql)
+# ---------------------------------------------------------------------------------------------
+sdlEnums:
+  ReportKind: [EVIDENCE_REPORT, ANSWER, COMPARISON, PROFILE, RECOMMENDATION]
+  AssociationKind: [EVIDENCE_AGGREGATE, SIGNAL_DISPROPORTIONALITY, CO_OCCURRENCE, SIMILARITY, LINK_PREDICTION]
+  ActivityKind: [RESEARCH, INGESTION, VETTING, EVIDENCE_MISSION, VERIFICATION, PROJECTION, ANSWER]
+recordsByKind:   # node types of the final SDL that carry each kind's payload (K Report / Assessment / Assertion, D10 ReportItem / Association)
+  published: [Report, ReportItem]
+  assessment: [Assessment]
+  materialized: [Association, Assertion]
+  retrieved: [Assertion]
+replay: "an ANSWER Report carries queryDigest (digest of the read intent) for replay (K Report)"
+
+openItems:
+  - "Table freshness (D10 review open issue: 'answer-kind-table.md has not been fully re-run'): checked in this stage instead — every (packet, id) row's declared kind equals the packet's current 02-questions.md in the S worktree, no row is missing or extra (drift 0, final/_runlog/vocabularies.md). The CQ-PF-03a / CQ-PF-03b ids are not yet in any 02-questions.md (catalog stage)."
+  - "R-50 asks K to edit its 02 rows (CQ-AX-08, Q-K-24 → retrieved); packets are not edited in synthesis, so the packet text still declares materialized; the catalog uses the final kind."

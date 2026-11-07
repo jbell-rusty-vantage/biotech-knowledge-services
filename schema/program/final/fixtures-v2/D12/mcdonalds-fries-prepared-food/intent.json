@@ -1,0 +1,1482 @@
+{
+  "schemaVersion": "biotech-knowledge-intent.v2",
+  "intentId": "ft-d12-mcd-fries-2026-10-08",
+  "pins": {
+    "schemaReleaseDigest": "sha256:2df9d3bc0548b92d317fc27ee1e3283fb6326a15709f199457423b6d9b025a74",
+    "policyVersion": "bks-admission-policy/v1"
+  },
+  "context": {
+    "actor": {
+      "kind": "agent",
+      "id": "a2-d12-fixtures-stage",
+      "model": "claude-opus-5-5"
+    },
+    "run": {
+      "system": "mission-control",
+      "runId": "run:ft-D12-mcdonalds-fries-prepared-food",
+      "missionId": "mission:ft-D12-fixtures"
+    },
+    "activityKind": "INGESTION"
+  },
+  "basis": {
+    "creationOnly": {
+      "reason": "FU-03 v2 fixture round: replay of a packet fixture into a graph without a prior custody snapshot",
+      "expectAbsent": [],
+      "expectPresent": []
+    }
+  },
+  "defaults": {
+    "privacyClass": "PUBLIC"
+  },
+  "sources": [
+    {
+      "ref": "snap-mcd",
+      "source": {
+        "canonicalUri": "https://www.mcdonalds.com/us/en-us/product/medium-french-fries.html",
+        "title": "McDonald's USA — Medium French Fries (product page)",
+        "sourceKind": "WEB_PAGE",
+        "genre": "MANUFACTURER_PRODUCT_PAGE"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T20:52:46Z",
+        "observedAt": "2026-10-08T20:52:46Z",
+        "contentHash": "sha256:7a385ec59564b754f37c3abad5bae62f57765a7f67fa30acf946a9bd4a4a66e6",
+        "contentHashBasis": "CANONICAL_PROJECTION",
+        "captureMethodDescription": "firecrawl-cli-scrape/1.23.1 (--only-main-content --wait-for 4000; markdown rendering)",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "text/markdown",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "loc-mcd-calories",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "There are 320 calories in a medium McDonald's Fries.",
+            "prefix": "/full-menu/burgers.html) today! ",
+            "suffix": " Order your fries today from the",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 1295,
+              "end": 1347
+            },
+            "section": "product description",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "There are 320 calories in a medium McDonald's Fries.",
+          "prefix": "/full-menu/burgers.html) today! ",
+          "suffix": " Order your fries today from the",
+          "quoteHash": "sha256:a13db75550268c4548fab48ddef094f3531fa74cc6d560c70513aa61de1bfee7",
+          "startOffset": 1295,
+          "endOffset": 1347
+        },
+        {
+          "ref": "loc-mcd-potatoes",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "made with premium potatoes such as the Russet Burbank and the Shepody",
+            "prefix": "onald's World Famous Fries® are ",
+            "suffix": ". With 0g of trans fat per label",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 948,
+              "end": 1017
+            },
+            "section": "product description",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "made with premium potatoes such as the Russet Burbank and the Shepody",
+          "prefix": "onald's World Famous Fries® are ",
+          "suffix": ". With 0g of trans fat per label",
+          "quoteHash": "sha256:79ca58c2c51f32cb9edac64e985c47c9fd0d302485d7fe1d4c834abf7bf249dd",
+          "startOffset": 948,
+          "endOffset": 1017
+        },
+        {
+          "ref": "loc-mcd-ingredients",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "Vegetable Oil (canola Oil, Corn Oil, Soybean Oil, Hydrogenated Soybean Oil",
+            "prefix": " Fries\n\n\nIngredients: Potatoes, ",
+            "suffix": ", Natural Beef Flavor \\[wheat An",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 4150,
+              "end": 4224
+            },
+            "section": "Allergen Information > French Fries > Ingredients",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Vegetable Oil (canola Oil, Corn Oil, Soybean Oil, Hydrogenated Soybean Oil",
+          "prefix": " Fries\n\n\nIngredients: Potatoes, ",
+          "suffix": ", Natural Beef Flavor \\[wheat An",
+          "quoteHash": "sha256:6cea536e6afbd9bca546efcb1eed3e86347d665d80363ef167329cc4c8dbb5b9",
+          "startOffset": 4150,
+          "endOffset": 4224
+        },
+        {
+          "ref": "loc-mcd-beef-flavor",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "natural Beef Flavor Contains Hydrolyzed Wheat And Hydrolyzed Milk As Starting Ingredients.",
+            "prefix": "phate (maintain Color), Salt. \\*",
+            "suffix": "\n\n\nContains: Wheat, Milk.\n\nNutri",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 4343,
+              "end": 4433
+            },
+            "section": "Allergen Information > French Fries > ingredient footnote",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "natural Beef Flavor Contains Hydrolyzed Wheat And Hydrolyzed Milk As Starting Ingredients.",
+          "prefix": "phate (maintain Color), Salt. \\*",
+          "suffix": "\n\n\nContains: Wheat, Milk.\n\nNutri",
+          "quoteHash": "sha256:4d2bb637329ec81b39d0d84d874b068ba72247cd2da39fa55a4b277c215d8534",
+          "startOffset": 4343,
+          "endOffset": 4433
+        },
+        {
+          "ref": "loc-mcd-allergens",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "Contains: Wheat, Milk.",
+            "prefix": "Milk As Starting Ingredients.\n\n\n",
+            "suffix": "\n\nNutrition Calculator\n\n## Relat",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 4436,
+              "end": 4458
+            },
+            "section": "Allergen Information",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "Contains: Wheat, Milk.",
+          "prefix": "Milk As Starting Ingredients.\n\n\n",
+          "suffix": "\n\nNutrition Calculator\n\n## Relat",
+          "quoteHash": "sha256:083ed6b3d12b075785eab40eeeb16afbe6682804d2605d252e363e58277e704e",
+          "startOffset": 4436,
+          "endOffset": 4458
+        },
+        {
+          "ref": "loc-mcd-formulation",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "The nutrition information is based on standard product formulations and serving sizes.",
+            "prefix": "ided from McDonald's suppliers. ",
+            "suffix": "  Calories for fountain beverage",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 7494,
+              "end": 7580
+            },
+            "section": "nutrition disclaimer",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "The nutrition information is based on standard product formulations and serving sizes.",
+          "prefix": "ided from McDonald's suppliers. ",
+          "suffix": "  Calories for fountain beverage",
+          "quoteHash": "sha256:e674745cad6ae621dbb6818795d8fddc78bffd3f74470d7678ded447a8a7aaa1",
+          "startOffset": 7494,
+          "endOffset": 7580
+        },
+        {
+          "ref": "loc-mcd-asof",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "This information is correct as of January 2022, unless stated otherwise.",
+            "prefix": "getarian, vegan or gluten-free. ",
+            "suffix": "\n\n## However you want to order, ",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 8549,
+              "end": 8621
+            },
+            "section": "nutrition disclaimer",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "This information is correct as of January 2022, unless stated otherwise.",
+          "prefix": "getarian, vegan or gluten-free. ",
+          "suffix": "\n\n## However you want to order, ",
+          "quoteHash": "sha256:724c03633c6784c62bccbeaf0fd4f8f7ef826738b86239db9f7008d970810f99",
+          "startOffset": 8549,
+          "endOffset": 8621
+        }
+      ]
+    },
+    {
+      "ref": "snap-fdc-170721",
+      "source": {
+        "canonicalUri": "https://api.nal.usda.gov/fdc/v1/food/170721",
+        "title": "FoodData Central SR Legacy 170721 — McDONALD'S, french fries",
+        "sourceKind": "API",
+        "genre": "REFERENCE_DATABASE_RECORD"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T20:52:08Z",
+        "observedAt": "2026-10-08T20:52:08Z",
+        "contentHash": "sha256:0d417572c814a9887b2b9eb18bb34fa0c583b70d2f54d5b4dd6553d5ec49eb8c",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "curl FDC API v1 (api_key=DEMO_KEY, key omitted from canonicalUri)",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "loc-fdc721-description",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"description\":\"McDONALD'S, french fries\"",
+            "prefix": "{\"fdcId\":170721,",
+            "suffix": ",\"publicationDate\":\"4/1/2019\",\"f",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 16,
+              "end": 56
+            },
+            "jsonPointer": "/description",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"description\":\"McDONALD'S, french fries\"",
+          "prefix": "{\"fdcId\":170721,",
+          "suffix": ",\"publicationDate\":\"4/1/2019\",\"f",
+          "quoteHash": "sha256:e6e69527f90646f3c5d705d4f22d48e90c2a5b97b223591385dc5640372518b7",
+          "startOffset": 16,
+          "endOffset": 56
+        },
+        {
+          "ref": "loc-fdc721-category",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"foodCategory\":{\"id\":21,\"code\":\"2100\",\"description\":\"Fast Foods\"}",
+            "prefix": "38,\"isHistoricalReference\":true,",
+            "suffix": "}",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 35905,
+              "end": 35970
+            },
+            "jsonPointer": "/foodCategory",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"foodCategory\":{\"id\":21,\"code\":\"2100\",\"description\":\"Fast Foods\"}",
+          "prefix": "38,\"isHistoricalReference\":true,",
+          "suffix": "}",
+          "quoteHash": "sha256:cce273d68c9d52acc1f7fd45cab81dcc544953b9f4cccf8550410aebcec635a4",
+          "startOffset": 35905,
+          "endOffset": 35970
+        },
+        {
+          "ref": "loc-fdc721-energy",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"id\":1546510,\"amount\":323.00000000,\"dataPoints\":0",
+            "prefix": "tion\":\"Calculated or imputed\"}},",
+            "suffix": "},{\"type\":\"FoodNutrient\",\"nutrie",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 824,
+              "end": 873
+            },
+            "jsonPointer": "/foodNutrients/2",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"id\":1546510,\"amount\":323.00000000,\"dataPoints\":0",
+          "prefix": "tion\":\"Calculated or imputed\"}},",
+          "suffix": "},{\"type\":\"FoodNutrient\",\"nutrie",
+          "quoteHash": "sha256:b9e03851591bf25ab81fcee32b8109bc8d82f34dca7438c4f72035f57e7cb5ca",
+          "startOffset": 824,
+          "endOffset": 873
+        },
+        {
+          "ref": "loc-fdc721-portion",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"gramWeight\":117.00000000,\"sequenceNumber\":2,\"amount\":1.00000000,\"modifier\":\"medium serving\"",
+            "prefix": "n\":\"undetermined\"}},{\"id\":87148,",
+            "suffix": ",\"measureUnit\":{\"id\":9999,\"name\"",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 35274,
+              "end": 35366
+            },
+            "jsonPointer": "/foodPortions/2",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"gramWeight\":117.00000000,\"sequenceNumber\":2,\"amount\":1.00000000,\"modifier\":\"medium serving\"",
+          "prefix": "n\":\"undetermined\"}},{\"id\":87148,",
+          "suffix": ",\"measureUnit\":{\"id\":9999,\"name\"",
+          "quoteHash": "sha256:3dcaf2d3a12e998269d425f4f389fda832dbe4ef7e7ddd84f659dc73ca471a5c",
+          "startOffset": 35274,
+          "endOffset": 35366
+        },
+        {
+          "ref": "loc-fdc721-historical",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"isHistoricalReference\":true",
+            "prefix": "nputFoods\":[],\"ndbNumber\":21238,",
+            "suffix": ",\"foodCategory\":{\"id\":21,\"code\":",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 35876,
+              "end": 35904
+            },
+            "jsonPointer": "/isHistoricalReference",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"isHistoricalReference\":true",
+          "prefix": "nputFoods\":[],\"ndbNumber\":21238,",
+          "suffix": ",\"foodCategory\":{\"id\":21,\"code\":",
+          "quoteHash": "sha256:b106cf78582799080e51ae0f4cea68fa75e461786e5536e927e511bcb35630fb",
+          "startOffset": 35876,
+          "endOffset": 35904
+        }
+      ]
+    },
+    {
+      "ref": "snap-fdc-170027",
+      "source": {
+        "canonicalUri": "https://api.nal.usda.gov/fdc/v1/food/170027",
+        "title": "FoodData Central SR Legacy 170027 — Potatoes, russet, flesh and skin, raw",
+        "sourceKind": "API",
+        "genre": "REFERENCE_DATABASE_RECORD"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T20:52:22Z",
+        "observedAt": "2026-10-08T20:52:22Z",
+        "contentHash": "sha256:51e6625a1a3c27a19d558e88d9fa3f0e53483c9f519f17ef470db36bac23e738",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "curl FDC API v1 (api_key=DEMO_KEY)",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "loc-fdc027-description",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"description\":\"Potatoes, russet, flesh and skin, raw (Includes foods for USDA's Food Distribution Program)\"",
+            "prefix": "{\"fdcId\":170027,",
+            "suffix": ",\"publicationDate\":\"4/1/2019\",\"f",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 16,
+              "end": 123
+            },
+            "jsonPointer": "/description",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"description\":\"Potatoes, russet, flesh and skin, raw (Includes foods for USDA's Food Distribution Program)\"",
+          "prefix": "{\"fdcId\":170027,",
+          "suffix": ",\"publicationDate\":\"4/1/2019\",\"f",
+          "quoteHash": "sha256:8b9f9c7eb043d80e8ff15c841b6b0bfecb2bad3fe0ab5c36c6abd3f25160d874",
+          "startOffset": 16,
+          "endOffset": 123
+        },
+        {
+          "ref": "loc-fdc027-potassium",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"id\":1488912,\"amount\":417.00000000",
+            "prefix": "l or derived from analytical\"}},",
+            "suffix": ",\"dataPoints\":4,\"max\":458.000000",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 7758,
+              "end": 7792
+            },
+            "jsonPointer": "/foodNutrients/23",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"id\":1488912,\"amount\":417.00000000",
+          "prefix": "l or derived from analytical\"}},",
+          "suffix": ",\"dataPoints\":4,\"max\":458.000000",
+          "quoteHash": "sha256:1094141e15deb263f79f66a03496912a3f2f502aee1ff4deafc73e42beb622d4",
+          "startOffset": 7758,
+          "endOffset": 7792
+        }
+      ]
+    },
+    {
+      "ref": "snap-fdc-170030",
+      "source": {
+        "canonicalUri": "https://api.nal.usda.gov/fdc/v1/food/170030",
+        "title": "FoodData Central SR Legacy 170030 — Potatoes, Russet, flesh and skin, baked",
+        "sourceKind": "API",
+        "genre": "REFERENCE_DATABASE_RECORD"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T20:52:23Z",
+        "observedAt": "2026-10-08T20:52:23Z",
+        "contentHash": "sha256:7dfd51b4217de64e97acf5290951b26745fa4e5a720f94cddc736bba05bfc69d",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "curl FDC API v1 (api_key=DEMO_KEY)",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/json",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "loc-fdc030-description",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"description\":\"Potatoes, Russet, flesh and skin, baked\"",
+            "prefix": "{\"fdcId\":170030,",
+            "suffix": ",\"publicationDate\":\"4/1/2019\",\"f",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 16,
+              "end": 71
+            },
+            "jsonPointer": "/description",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"description\":\"Potatoes, Russet, flesh and skin, baked\"",
+          "prefix": "{\"fdcId\":170030,",
+          "suffix": ",\"publicationDate\":\"4/1/2019\",\"f",
+          "quoteHash": "sha256:b32d3a1123873daf065aa4bce928598bee918479488f18270778142afb8ccf32",
+          "startOffset": 16,
+          "endOffset": 71
+        },
+        {
+          "ref": "loc-fdc030-potassium",
+          "selectorKind": "JSON_POINTER",
+          "selector": {
+            "type": "JsonPointerSelector",
+            "exact": "\"id\":1489164,\"amount\":550.00000000",
+            "prefix": "l or derived from analytical\"}},",
+            "suffix": ",\"dataPoints\":8,\"max\":616.000000",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 7505,
+              "end": 7539
+            },
+            "jsonPointer": "/foodNutrients/23",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "\"id\":1489164,\"amount\":550.00000000",
+          "prefix": "l or derived from analytical\"}},",
+          "suffix": ",\"dataPoints\":8,\"max\":616.000000",
+          "quoteHash": "sha256:68e48b5239ac25976601f3a7881eb1f069a1461f28378905d01da690c9a5b750",
+          "startOffset": 7505,
+          "endOffset": 7539
+        }
+      ]
+    },
+    {
+      "ref": "snap-nova-rule",
+      "source": {
+        "canonicalUri": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=10260459&retmode=xml",
+        "title": "Monteiro et al. 2019, Ultra-processed foods: what they are and how to identify them (PMC10260459)",
+        "sourceKind": "API",
+        "genre": "PEER_REVIEWED_PUBLICATION"
+      },
+      "snapshot": {
+        "retrievedAt": "2026-10-08T21:00:07Z",
+        "observedAt": "2026-10-08T21:00:07Z",
+        "contentHash": "sha256:df59db54aa7f464963ae54cc73b6693e113fd9f78f063e9094be2539728622d2",
+        "contentHashBasis": "RAW_BYTES",
+        "captureMethodDescription": "curl NCBI E-utilities efetch db=pmc",
+        "captureCompleteness": "COMPLETE",
+        "mimeType": "application/xml",
+        "metadata": {}
+      },
+      "locators": [
+        {
+          "ref": "loc-nova-rule-practical",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "check to see if its list of ingredients contains at least one item characteristic of the NOVA ultra-processed food group",
+            "prefix": "n ultra-processed product is to ",
+            "suffix": ", which is to say, either food s",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 8950,
+              "end": 9070
+            },
+            "section": "Monteiro et al. 2019 abstract (PMC10260459, PMID 30744710, DOI 10.1017/S1368980018003762)",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "check to see if its list of ingredients contains at least one item characteristic of the NOVA ultra-processed food group",
+          "prefix": "n ultra-processed product is to ",
+          "suffix": ", which is to say, either food s",
+          "quoteHash": "sha256:317702c21638b3a109d07ef06c444c942d78d5fc7d719a8f3b243c2e467eec7c",
+          "startOffset": 8950,
+          "endOffset": 9070
+        },
+        {
+          "ref": "loc-nova-rule-markers",
+          "selectorKind": "TEXT_QUOTE",
+          "selector": {
+            "type": "TextQuoteSelector",
+            "exact": "hydrogenated or interesterified oils, and hydrolysed proteins",
+            "prefix": "ch as high-fructose corn syrup, ",
+            "suffix": "), or classes of additives desig",
+            "refinedBy": {
+              "type": "TextPositionSelector",
+              "start": 9180,
+              "end": 9241
+            },
+            "section": "Monteiro et al. 2019 abstract (PMC10260459, PMID 30744710, DOI 10.1017/S1368980018003762)",
+            "basis": "raw-capture/v1"
+          },
+          "exact": "hydrogenated or interesterified oils, and hydrolysed proteins",
+          "prefix": "ch as high-fructose corn syrup, ",
+          "suffix": "), or classes of additives desig",
+          "quoteHash": "sha256:8110a434988d047e3088a8c83503b4363f03611f182d2d3628e6a9d0d97dc32f",
+          "startOffset": 9180,
+          "endOffset": 9241
+        }
+      ]
+    }
+  ],
+  "subjects": [
+    {
+      "ref": "org-usda-ars",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "USDA Agricultural Research Service",
+      "uidSegment": "usda-ars",
+      "properties": {
+        "entityKind": "UNSPECIFIED"
+      },
+      "identifiers": [
+        {
+          "scheme": "WEB_DOMAIN",
+          "issuer": "DNS",
+          "value": "ars.usda.gov"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "org-mcd-web",
+      "mode": "new",
+      "nodeType": "Organization",
+      "name": "McDonald's (publisher of mcdonalds.com/us)",
+      "uidSegment": "mcdonalds-us-web",
+      "properties": {
+        "entityKind": "UNSPECIFIED"
+      },
+      "identifiers": [
+        {
+          "scheme": "WEB_DOMAIN",
+          "issuer": "DNS",
+          "value": "mcdonalds.com"
+        }
+      ],
+      "onMatch": "review"
+    },
+    {
+      "ref": "brand-mcd",
+      "mode": "new",
+      "nodeType": "Brand",
+      "name": "McDonald's",
+      "uidSegment": "mcdonalds",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "product",
+      "mode": "new",
+      "nodeType": "Product",
+      "name": "World Famous Fries (McDonald's, US)",
+      "uidSegment": "mcdonalds-world-famous-fries-us",
+      "properties": {
+        "productKind": "PREPARED_FOOD"
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "variant",
+      "mode": "new",
+      "nodeType": "ProductVariant",
+      "name": "World Famous Fries — Medium (US)",
+      "uidSegment": "mcdonalds-world-famous-fries-us-medium",
+      "properties": {
+        "jurisdiction": "US"
+      },
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "package",
+      "mode": "new",
+      "nodeType": "Package",
+      "name": "Medium served portion",
+      "uidSegment": "mcdonalds-world-famous-fries-us-medium-served",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "review"
+    },
+    {
+      "ref": "label",
+      "mode": "new",
+      "nodeType": "LabelVersion",
+      "name": "Medium French Fries menu declaration, as of January 2022",
+      "uidSegment": "mcdonalds-fries-us-medium-2022-01",
+      "properties": {
+        "panelKind": "MENU_DECLARATION",
+        "jurisdiction": "US",
+        "asOfStatementVerbatim": "This information is correct as of January 2022, unless stated otherwise.",
+        "containsAllergens": [
+          "WHEAT",
+          "MILK"
+        ],
+        "allergenStatementVerbatim": "Contains: Wheat, Milk."
+      },
+      "identifiers": [],
+      "onMatch": "create_anyway"
+    },
+    {
+      "ref": "food-170721",
+      "mode": "new",
+      "nodeType": "FoodItem",
+      "name": "McDONALD'S, french fries",
+      "uidSegment": "fdc-170721",
+      "properties": {
+        "descriptionVerbatim": "McDONALD'S, french fries",
+        "definingSystem": "FDC_SR_LEGACY",
+        "sourceRecordId": "170721",
+        "preparationMethod": "NOT_STATED",
+        "variantKind": "BASE",
+        "brandNameVerbatim": "McDONALD'S",
+        "isHistoricalReference": true,
+        "sourcePublishedAt": "2019-04-01T00:00:00Z"
+      },
+      "identifiers": [
+        {
+          "scheme": "FDC_ID",
+          "issuer": "USDA ARS",
+          "value": "170721"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "food-170027",
+      "mode": "new",
+      "nodeType": "FoodItem",
+      "name": "Potatoes, russet, flesh and skin, raw",
+      "uidSegment": "fdc-170027",
+      "properties": {
+        "descriptionVerbatim": "Potatoes, russet, flesh and skin, raw (Includes foods for USDA's Food Distribution Program)",
+        "definingSystem": "FDC_SR_LEGACY",
+        "sourceRecordId": "170027",
+        "preparationMethod": "RAW",
+        "variantKind": "BASE",
+        "processingVerbatim": [
+          "flesh and skin",
+          "raw"
+        ],
+        "isHistoricalReference": true
+      },
+      "identifiers": [
+        {
+          "scheme": "FDC_ID",
+          "issuer": "USDA ARS",
+          "value": "170027"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "food-170030",
+      "mode": "new",
+      "nodeType": "FoodItem",
+      "name": "Potatoes, Russet, flesh and skin, baked",
+      "uidSegment": "fdc-170030",
+      "properties": {
+        "descriptionVerbatim": "Potatoes, Russet, flesh and skin, baked",
+        "definingSystem": "FDC_SR_LEGACY",
+        "sourceRecordId": "170030",
+        "preparationMethod": "BAKED",
+        "variantKind": "PREPARATION",
+        "processingVerbatim": [
+          "flesh and skin",
+          "baked"
+        ],
+        "isHistoricalReference": true
+      },
+      "identifiers": [
+        {
+          "scheme": "FDC_ID",
+          "issuer": "USDA ARS",
+          "value": "170030"
+        }
+      ],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "energy",
+      "mode": "new",
+      "nodeType": "Constituent",
+      "name": "Energy",
+      "uidSegment": "energy",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "potassium",
+      "mode": "new",
+      "nodeType": "Constituent",
+      "name": "Potassium, K",
+      "uidSegment": "potassium",
+      "properties": {},
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "cat-fdc-2100",
+      "mode": "new",
+      "nodeType": "FoodCategory",
+      "name": "Fast Foods",
+      "uidSegment": "fdc-food-category-2100",
+      "properties": {
+        "system": "FDC_FOOD_CATEGORY",
+        "code": "2100",
+        "label": "Fast Foods"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "cat-nova-4",
+      "mode": "new",
+      "nodeType": "FoodCategory",
+      "name": "NOVA group 4 — ultra-processed foods",
+      "uidSegment": "nova-4",
+      "properties": {
+        "system": "NOVA",
+        "code": "4",
+        "label": "ultra-processed foods"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "agent-curation",
+      "mode": "new",
+      "nodeType": "Agent",
+      "name": "D12 curation agent (fixture)",
+      "uidSegment": "d12-curation-agent",
+      "properties": {
+        "agentKind": "AUTOMATED_AGENT"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    },
+    {
+      "ref": "agent-nova",
+      "mode": "new",
+      "nodeType": "Agent",
+      "name": "NOVA marker classifier nova-markers/v1 (fixture)",
+      "uidSegment": "nova-classifier",
+      "properties": {
+        "agentKind": "COMPUTATIONAL_MODEL"
+      },
+      "identifiers": [],
+      "onMatch": "use_existing"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "p01-branded",
+      "rationale": "D6 seam edge (Product → D7 Brand).",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "BRANDED_AS",
+      "fromRef": "product",
+      "toRef": "brand-mcd",
+      "assertion": {
+        "speechAct": "STATES",
+        "basisKind": "MANUFACTURER_CLAIM",
+        "qualifiers": [],
+        "validity": {}
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "loc-mcd-calories"
+      ],
+      "asserterRef": "org-mcd-web",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: SUBJECT_CONFLICT: product (REQUIRED_PROPERTY_MISSING: Product.marketedName)"
+      }
+    },
+    {
+      "proposalId": "p02-variant",
+      "rationale": "D6 seam edge.",
+      "dependsOn": [],
+      "kind": "edge.structural",
+      "relationshipType": "HAS_VARIANT",
+      "fromRef": "product",
+      "toRef": "variant",
+      "properties": {},
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: SUBJECT_CONFLICT: product (REQUIRED_PROPERTY_MISSING: Product.marketedName)"
+      }
+    },
+    {
+      "proposalId": "p03-package",
+      "rationale": "D6 seam edge (served portion). HAS_PACKAGE is structural in the candidate (no authorizing Assertion, no asserter): edge.assert -> edge.structural; the served-portion facts stay on the Package and LabelVersion.",
+      "dependsOn": [],
+      "kind": "edge.structural",
+      "relationshipType": "HAS_PACKAGE",
+      "fromRef": "variant",
+      "toRef": "package",
+      "properties": {},
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: SUBJECT_CONFLICT: package (REQUIRED_PROPERTY_MISSING: Package.packageKind)"
+      }
+    },
+    {
+      "proposalId": "p04-label",
+      "rationale": "D6-owned menu declaration (assertions.yaml mcd-07); the DERIVED_FROM input of p09.",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "HAS_LABEL_VERSION",
+      "fromRef": "package",
+      "toRef": "label",
+      "assertion": {
+        "speechAct": "STATES",
+        "basisKind": "MANUFACTURER_CLAIM",
+        "qualifiers": [],
+        "validity": {
+          "validFrom": "2022-01-01T00:00:00Z",
+          "validFromPrecision": "MONTH",
+          "validFromBasis": "STATED_BY_SOURCE"
+        },
+        "uidSegment": "ft-d12-mcd-07"
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "loc-mcd-ingredients",
+        "loc-mcd-beef-flavor",
+        "loc-mcd-allergens",
+        "loc-mcd-calories",
+        "loc-mcd-formulation",
+        "loc-mcd-asof"
+      ],
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: SUBJECT_CONFLICT: package (REQUIRED_PROPERTY_MISSING: Package.packageKind)"
+      }
+    },
+    {
+      "proposalId": "p05-reference-food",
+      "rationale": "match basis SAME_ITEM_IN_REFERENCE_DB (valueString on the Assertion). intent v1 gap: edge.assert carries neither edge-property values (D12 FoodContentProperties statementKind/quantity/unitCode/amountBasis) nor valueNumber/unitCode/valueString/qualifiers on the authorizing Assertion (AssertionCore), so the amount and its qualifiers ride only in this rationale and in assertions.yaml (OQ-D12-23).",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "HAS_REFERENCE_FOOD",
+      "fromRef": "product",
+      "toRef": "food-170721",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "EXPERT_OPINION",
+        "qualifiers": [
+          "matchBasisSAMEITEMINREFERENCEDBValueStringOnTheAssertionIntentV1GapVerbatim:edge.assert carries neither edge-property values (D12 FoodContentProperties statementKind/quantity/unitCode/amountBasis) nor valueNumber/unitCode/valueString/qualifiers on the authorizing Assertion (AssertionCore), so the amount and its qualifiers ride only in this rationale and in assertions.yaml (OQ-D12-23)."
+        ],
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        },
+        "uidSegment": "ft-d12-mcd-01"
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "loc-fdc721-description",
+        "loc-mcd-potatoes",
+        "loc-fdc721-historical"
+      ],
+      "asserterRef": "agent-curation",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: SUBJECT_CONFLICT: product (REQUIRED_PROPERTY_MISSING: Product.marketedName)"
+      }
+    },
+    {
+      "proposalId": "p06-energy",
+      "rationale": "edge: statementKind CALCULATED, quantity 323, unitCode kcal, amountBasis PER_100G; qualifiers derivation:FDC:NC, dataPoints:0, dataType:SR_LEGACY. intent v1 gap: edge.assert carries neither edge-property values (D12 FoodContentProperties statementKind/quantity/unitCode/amountBasis) nor valueNumber/unitCode/valueString/qualifiers on the authorizing Assertion (AssertionCore), so the amount and its qualifiers ride only in this rationale and in assertions.yaml (OQ-D12-23).",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "FOOD_CONTAINS",
+      "fromRef": "food-170721",
+      "toRef": "energy",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "INFERRED_FROM_MEASUREMENT",
+        "qualifiers": [
+          "fDCVerbatim:NC, dataPoints:0, dataType:SR_LEGACY. intent v1 gap: edge.assert carries neither edge-property values (D12 FoodContentProperties statementKind/quantity/unitCode/amountBasis) nor valueNumber/unitCode/valueString/qualifiers on the authorizing Assertion (AssertionCore), so the amount and its qualifiers ride only in this rationale and in assertions.yaml (OQ-D12-23)."
+        ],
+        "validity": {
+          "validFromBasis": "UNKNOWN"
+        },
+        "uidSegment": "ft-d12-mcd-02"
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "loc-fdc721-energy"
+      ],
+      "asserterRef": "org-usda-ars",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: SUBJECT_CONFLICT: energy (REQUIRED_PROPERTY_MISSING: Constituent.constituentKind)"
+      }
+    },
+    {
+      "proposalId": "p07-k-raw",
+      "rationale": "edge: statementKind MEASURED_IN_SAMPLE, quantity 417, unitCode mg, amountBasis PER_100G; qualifiers derivation:FDC:A, dataPoints:4, min:368, max:458. intent v1 gap: edge.assert carries neither edge-property values (D12 FoodContentProperties statementKind/quantity/unitCode/amountBasis) nor valueNumber/unitCode/valueString/qualifiers on the authorizing Assertion (AssertionCore), so the amount and its qualifiers ride only in this rationale and in assertions.yaml (OQ-D12-23).",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "FOOD_CONTAINS",
+      "fromRef": "food-170027",
+      "toRef": "potassium",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "DIRECT_MEASUREMENT",
+        "qualifiers": [
+          "fDCVerbatim:A, dataPoints:4, min:368, max:458. intent v1 gap: edge.assert carries neither edge-property values (D12 FoodContentProperties statementKind/quantity/unitCode/amountBasis) nor valueNumber/unitCode/valueString/qualifiers on the authorizing Assertion (AssertionCore), so the amount and its qualifiers ride only in this rationale and in assertions.yaml (OQ-D12-23)."
+        ],
+        "validity": {},
+        "uidSegment": "ft-d12-mcd-03"
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "loc-fdc027-potassium"
+      ],
+      "asserterRef": "org-usda-ars",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: SUBJECT_CONFLICT: potassium (REQUIRED_PROPERTY_MISSING: Constituent.constituentKind)"
+      }
+    },
+    {
+      "proposalId": "p08-k-baked",
+      "rationale": "edge: statementKind MEASURED_IN_SAMPLE, quantity 550, unitCode mg, amountBasis PER_100G; qualifiers derivation:FDC:A, dataPoints:8, min:422, max:616. intent v1 gap: edge.assert carries neither edge-property values (D12 FoodContentProperties statementKind/quantity/unitCode/amountBasis) nor valueNumber/unitCode/valueString/qualifiers on the authorizing Assertion (AssertionCore), so the amount and its qualifiers ride only in this rationale and in assertions.yaml (OQ-D12-23).",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "FOOD_CONTAINS",
+      "fromRef": "food-170030",
+      "toRef": "potassium",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "DIRECT_MEASUREMENT",
+        "qualifiers": [
+          "fDCVerbatim:A, dataPoints:8, min:422, max:616. intent v1 gap: edge.assert carries neither edge-property values (D12 FoodContentProperties statementKind/quantity/unitCode/amountBasis) nor valueNumber/unitCode/valueString/qualifiers on the authorizing Assertion (AssertionCore), so the amount and its qualifiers ride only in this rationale and in assertions.yaml (OQ-D12-23)."
+        ],
+        "validity": {},
+        "uidSegment": "ft-d12-mcd-04"
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "loc-fdc030-potassium"
+      ],
+      "asserterRef": "org-usda-ars",
+      "hold": {
+        "reason": "FU-03 round v2 EVIDENCE_GAP: SUBJECT_CONFLICT: potassium (REQUIRED_PROPERTY_MISSING: Constituent.constituentKind)"
+      }
+    },
+    {
+      "proposalId": "p09-variant-of",
+      "rationale": "predicate-only since the adversarial review (no typed edge): curated pairing raw → baked (variantKind PREPARATION on the variant). intent v1 gap: no proposal kind binds an object node to a predicate-only Assertion (assertion.literal has no objectRef); the object uid is carried in valueString (OQ-D12-23).",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "food-170030",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "EXPERT_OPINION",
+        "qualifiers": [],
+        "validity": {},
+        "uidSegment": "ft-d12-mcd-05",
+        "predicate": "VARIANT_OF"
+      },
+      "value": {
+        "valueString": "hu:food:fdc-170027"
+      },
+      "evidence": [
+        "loc-fdc030-description",
+        "loc-fdc027-description"
+      ],
+      "asserterRef": "agent-curation",
+      "hold": {
+        "reason": "FU-03 v1 semantics not mechanically mappable: predicate-only since the adversarial review (no typed edge): curated pairing raw → baked (variantKind PREPARATION on the variant). intent v1 gap: no proposal kind binds an object node to a predicate-only Assertion (assertion.literal has no objectRef); the object uid is carried in valueString (OQ-D12-23)."
+      }
+    },
+    {
+      "proposalId": "p10-fdc-category",
+      "dependsOn": [],
+      "kind": "edge.assert",
+      "relationshipType": "IN_FOOD_CATEGORY",
+      "fromRef": "food-170721",
+      "toRef": "cat-fdc-2100",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "UNSTATED",
+        "qualifiers": [],
+        "validity": {},
+        "uidSegment": "ft-d12-mcd-06"
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "loc-fdc721-category"
+      ],
+      "asserterRef": "org-usda-ars"
+    },
+    {
+      "proposalId": "p11-nova-calculated",
+      "rationale": "CALCULATED: derivationRule nova-markers/v1, DERIVED_FROM the p04 Assertion. intent v1 gap: AssertionCore has no derivationRule or derivedFrom field; extractionMethod carries the rule name and dependsOn orders it (OQ-D12-23).",
+      "dependsOn": [
+        "p04-label"
+      ],
+      "kind": "edge.assert",
+      "relationshipType": "IN_FOOD_CATEGORY",
+      "fromRef": "product",
+      "toRef": "cat-nova-4",
+      "assertion": {
+        "polarity": "POSITIVE",
+        "speechAct": "STATES",
+        "basisKind": "CALCULATED",
+        "qualifiers": [],
+        "validity": {
+          "validFrom": "2022-01-01T00:00:00Z",
+          "validFromPrecision": "MONTH",
+          "validFromBasis": "INFERRED"
+        },
+        "uidSegment": "ft-d12-mcd-08"
+      },
+      "edgeProperties": {},
+      "evidence": [
+        "loc-mcd-ingredients",
+        "loc-mcd-beef-flavor",
+        "loc-nova-rule-practical",
+        "loc-nova-rule-markers"
+      ],
+      "asserterRef": "agent-nova",
+      "hold": {
+        "reason": "FU-03 v1 semantics not mechanically mappable: CALCULATED: derivationRule nova-markers/v1, DERIVED_FROM the p04 Assertion. intent v1 gap: AssertionCore has no derivationRule or derivedFrom field; extractionMethod carries the rule name and dependsOn orders it (OQ-D12-23)."
+      }
+    },
+    {
+      "proposalId": "p12-portion",
+      "rationale": "valueString 'medium serving' cannot ride beside valueNumber (exactly one literal value); the label goes in quantityBasis (qualifier portion:medium_serving in assertions.yaml).",
+      "dependsOn": [],
+      "kind": "assertion.literal",
+      "subjectRef": "food-170721",
+      "assertion": {
+        "basisKind": "UNSTATED",
+        "qualifiers": [
+          "amountBasis=portion:medium_serving"
+        ],
+        "validity": {},
+        "uidSegment": "ft-d12-mcd-09",
+        "predicate": "HAS_PORTION_WEIGHT"
+      },
+      "value": {
+        "valueNumber": 117,
+        "unitCode": "g"
+      },
+      "evidence": [
+        "loc-fdc721-portion"
+      ],
+      "asserterRef": "org-usda-ars"
+    }
+  ],
+  "notes": "Fixture intent for packet D12 (mcdonalds-fries-prepared-food), fixture stage A2 2026-10-08, regenerated in the adversarial-review pass (scripts4/gen_intents.mjs). runId/missionId are FIXTURE ids, not real Mission Control runs. Validated against IngestionIntent (packages/contracts); not planned or applied against a database. Node types from other modules (Product, Brand, LabelVersion, QualityResult, Study, Person, Organization, ChemicalSubstance, Constituent, Target) are seam types; uidSegments match assertions.yaml. Gaps of intent v1 found while writing it are stated in proposal rationales (OQ-D12-23).",
+  "provenance": {
+    "derivedFrom": {
+      "schemaVersion": "biotech-knowledge-intent.v1",
+      "path": "schema/program/final/fixtures/D12/mcdonalds-fries-prepared-food/intent.json",
+      "rawBytesDigest": "sha256:263862cfb064de274aea2f5bd57c112a85ffb301a2732c01759eac718589eef8"
+    },
+    "migrator": "bks-migrate-intent-v1/1",
+    "edits": [
+      {
+        "at": "onStale",
+        "rule": "strict-stale",
+        "from": "fail",
+        "to": null,
+        "note": "production onStale removed; stale state is a new plan"
+      },
+      {
+        "at": "sources[0].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "firecrawl-cli-scrape/1.23.1 (--only-main-content --wait-for 4000; markdown rendering)",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[0].locators[0].selector",
+        "rule": "FU-03-selector-built-no-basis",
+        "from": null,
+        "to": null,
+        "note": "snapshot basis CANONICAL_PROJECTION: no projection basis can be stated mechanically (R-38); the planner refuses this locator"
+      },
+      {
+        "at": "sources[0].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:0d5ddf0288b6e61d2302548f6b6f2939c37dd2ed07470a08fcacf0d9550ffc37",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[1].selector",
+        "rule": "FU-03-selector-built-no-basis",
+        "from": null,
+        "to": null,
+        "note": "snapshot basis CANONICAL_PROJECTION: no projection basis can be stated mechanically (R-38); the planner refuses this locator"
+      },
+      {
+        "at": "sources[0].locators[1].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:d919d95dd9d9bf3519946f0d91f312088ab5a7a30da33a1e681e9b6067ce22dc",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[2].selector",
+        "rule": "FU-03-selector-built-no-basis",
+        "from": null,
+        "to": null,
+        "note": "snapshot basis CANONICAL_PROJECTION: no projection basis can be stated mechanically (R-38); the planner refuses this locator"
+      },
+      {
+        "at": "sources[0].locators[2].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:f3ba6ff7961c32f627986e591b9f4d6a0e66660cdd14ca57a7cd1448181a86c7",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[3].selector",
+        "rule": "FU-03-selector-built-no-basis",
+        "from": null,
+        "to": null,
+        "note": "snapshot basis CANONICAL_PROJECTION: no projection basis can be stated mechanically (R-38); the planner refuses this locator"
+      },
+      {
+        "at": "sources[0].locators[3].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:28a517f4b8de8e1436e6ecf472f7fd836bbf81887e0f1b08b10a8a2ff844ed49",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[4].selector",
+        "rule": "FU-03-selector-built-no-basis",
+        "from": null,
+        "to": null,
+        "note": "snapshot basis CANONICAL_PROJECTION: no projection basis can be stated mechanically (R-38); the planner refuses this locator"
+      },
+      {
+        "at": "sources[0].locators[4].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:21b521ffb549c114766ef71f7fc9b1fc33b782065248306d35375cdf224a374f",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[5].selector",
+        "rule": "FU-03-selector-built-no-basis",
+        "from": null,
+        "to": null,
+        "note": "snapshot basis CANONICAL_PROJECTION: no projection basis can be stated mechanically (R-38); the planner refuses this locator"
+      },
+      {
+        "at": "sources[0].locators[5].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:8450dd6c80be7b3596467c7b06d83f0e190ec47b48dce1c35fed75bddca08de5",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[0].locators[6].selector",
+        "rule": "FU-03-selector-built-no-basis",
+        "from": null,
+        "to": null,
+        "note": "snapshot basis CANONICAL_PROJECTION: no projection basis can be stated mechanically (R-38); the planner refuses this locator"
+      },
+      {
+        "at": "sources[0].locators[6].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:32c1913db9797689ec986e4a5d4baace8c8a829a781f92c281feb7771d4c2096",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[1].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl FDC API v1 (api_key=DEMO_KEY, key omitted from canonicalUri)",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[1].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[1].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:8407ab527a2fe7fa9eb1c2bbccf467fffff93580e3fe1bd2669fdf0ef7edffd3",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[1].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[1].locators[1].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:75c1093d18ffd21b34d646b64d110ab6a40b54c6ef272a5dac69fe3b74737080",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[1].locators[2].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[1].locators[2].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:4b8d8d66c4fcfd05e5ba73d366288d48ebe21e4024cf19266697285da8b20dd1",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[1].locators[3].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[1].locators[3].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:9c020a31c3beaaa884e5289c11dcf710e1d917e149a3c5344aaa0db53c75cba9",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[1].locators[4].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[1].locators[4].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:bbbb6c698e26ed0e87ec3e6a3caa2df6eaeeef778ec427823e380da616f88838",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[2].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl FDC API v1 (api_key=DEMO_KEY)",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[2].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[2].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:974bb788e7f14c7baf8bd6cfb12480c846dd2f4b4c97f7b33122ffbe0e024b57",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[2].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[2].locators[1].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:af182257a651da58a96ce105bc117c26e3ef6dea88de2dc1fc253d261ff37f4c",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[3].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl FDC API v1 (api_key=DEMO_KEY)",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[3].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[3].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:a809131181d380497581e46ddf30f5eba4e7f18ee0aab68b84d000696baf320b",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[3].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[3].locators[1].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:e3fe0893b62624fd6b2b30b12be90df7529dee5309def43f483b7fa0693e0616",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[4].snapshot.captureMethod",
+        "rule": "FU-06",
+        "from": "curl NCBI E-utilities efetch db=pmc",
+        "to": null,
+        "note": "free text kept as captureMethodDescription; no registry id guessed"
+      },
+      {
+        "at": "sources[4].locators[0].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[4].locators[0].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:29897699ce1bb757dc327cc6eff4e03facc595ccc79defdcd0d69fef810e92be",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "sources[4].locators[1].selector",
+        "rule": "FU-03-selector-basis",
+        "from": null,
+        "to": "raw-capture/v1",
+        "note": "built from v1 fields over the RAW_BYTES capture"
+      },
+      {
+        "at": "sources[4].locators[1].selectorDigest",
+        "rule": "P11-selector-digest",
+        "from": "sha256:eb545cf492a00abb439ea46d564eabf4c48ea5b47ddb965d63f092d9b1804be3",
+        "to": "recomputed",
+        "note": "v2 digests the canonical (bks-canonical-json.v2) selector"
+      },
+      {
+        "at": "proposals[1].kind",
+        "rule": "structural-in-v2",
+        "from": "edge.assert",
+        "to": "edge.structural",
+        "note": "HAS_VARIANT is structural in the release; its evidence [\"loc-mcd-calories\"] stays on the captured locators"
+      },
+      {
+        "at": "proposals[2].evidence",
+        "rule": "structural-needs-no-assertion",
+        "from": [
+          "loc-mcd-calories"
+        ],
+        "to": null,
+        "note": "StructuralEdgeProperties: the locators stay captured; v2 writes no Assertion beside a structural edge"
+      },
+      {
+        "at": "proposals[3].kind",
+        "rule": "state.attach->edge.assert",
+        "from": "state.attach",
+        "to": "edge.assert",
+        "note": "exclusive slots come from the relationship register (R-10)"
+      },
+      {
+        "at": "proposals[4].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "match basis SAME_ITEM_IN_REFERENCE_DB (valueString on the Assertion). intent v1 gap: edge.assert carries neither edge-property values (D12 FoodContentProperties"
+      },
+      {
+        "at": "proposals[5].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "edge: statementKind CALCULATED, quantity 323, unitCode kcal, amountBasis PER_100G; qualifiers derivation:FDC:NC, dataPoints:0, dataType:SR_LEGACY. intent v1 gap"
+      },
+      {
+        "at": "proposals[6].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "edge: statementKind MEASURED_IN_SAMPLE, quantity 417, unitCode mg, amountBasis PER_100G; qualifiers derivation:FDC:A, dataPoints:4, min:368, max:458. intent v1 "
+      },
+      {
+        "at": "proposals[7].rationale",
+        "rule": "FU-03-hint-mapped",
+        "from": "edge: statementKind MEASURED_IN_SAMPLE, quantity 550, unitCode mg, amountBasis PER_100G; qualifiers derivation:FDC:A, dataPoints:8, min:422, max:616. intent v1 "
+      },
+      {
+        "at": "proposals[10].assertion.extractionMethod",
+        "rule": "no-v2-field",
+        "from": "nova-markers/v1",
+        "to": null,
+        "note": "method lives on the generating Activity (methodVersion)"
+      },
+      {
+        "at": "proposals[11].quantityBasis",
+        "rule": "qualifier",
+        "from": "portion:medium_serving",
+        "to": "amountBasis=portion:medium_serving"
+      },
+      {
+        "at": "subjects[org-usda-ars].properties.entityKind",
+        "rule": "schema-unknown-marker",
+        "from": null,
+        "to": "UNSPECIFIED",
+        "note": "not stated by the fixture source; OrganizationEntityKind.UNSPECIFIED is the release's explicit unknown member (OD-24 / OD-25), not a sourced fact"
+      },
+      {
+        "at": "subjects[org-mcd-web].properties.entityKind",
+        "rule": "schema-unknown-marker",
+        "from": null,
+        "to": "UNSPECIFIED",
+        "note": "not stated by the fixture source; OrganizationEntityKind.UNSPECIFIED is the release's explicit unknown member (OD-24 / OD-25), not a sourced fact"
+      }
+    ]
+  }
+}

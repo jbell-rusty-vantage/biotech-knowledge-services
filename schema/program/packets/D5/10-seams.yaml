@@ -1,0 +1,86 @@
+version: 1
+module: D5
+# Model stage (Wave 2) by A5, 2026-10-08. Every reference from the D5 SDL to a type outside the module, keyed by
+# relationship type (packet-check allowlisted kernel types Entity, Subjectable, Assertion, Source, SourceSnapshot,
+# SourceLocator, Adjudication, Activity, Agent, Identifier, Mention and the four edge-property types need no row; they
+# are listed under kernelReferences for the synthesizer anyway). Type names of other modules are taken from their
+# research-stage notes (no sibling SDL existed on 2026-10-08 17:30); rename here if their SDL renames them.
+# Check stage (A5, 2026-10-08 ~18:15): type names re-verified against the sibling SDLs in worktrees A1 (K, D10), A2 (D1,
+# D12), A3 (D2, D4), A4 (D3), A6 (D6, D7), A7 (D8, D13), A8 (D9). Changes then: OPERATIONALIZED_BY -> D2.Outcome added (D2
+# request); ADMINISTERS is declared on D3.InterventionComponent (not StudyArm); D2's AFFECTS_MECHANISM / EXPOSED_TO into
+# D5.Intervention and predicate MEDIATES_TARGET added.
+# Correction (adversarial review, A5, 2026-10-08 late): the check-stage claim that every EDGE name was re-verified was
+# false — HAS_INTEREST_IN (D7 never declared it; D7's edges are HOLDS_ROLE | HOLDS_STAKE | RECEIVES_VALUE_FROM), the
+# D10 association type (ASSOCIATES, not ASSOCIATION) and the contested CONSTRAINS_USE_OF row (D6 has since removed it)
+# were stale. This pass re-read the relationship types of every row below in the sibling SDLs (D3, D6, D7, D10, D2, D4,
+# D9 10-seams) and fixed them. STEP_USES now targets the kernel interface Subjectable (no union): its rows below name
+# the admissible types the executor accepts, so their owners keep them Subjectable. Kernel enums and edge-property types
+# moved to sharedVocabularies: kernel-types (kernel pattern change 9).
+seams:
+  # ---- declared by D5 (owner: this) ----
+  - {type: STEP_USES, from: D5.ProtocolStep, to: D1.ChemicalSubstance, questions: [Q-D5-06, Q-D5-10, Q-D5-11, Q-D5-12, Q-D5-19], direction: OUT, owner: this, via: "Subjectable (admissible type, executor-validated)"}
+  - {type: STEP_USES, from: D5.ProtocolStep, to: D1.IngredientMaterial, questions: [Q-D5-10, Q-D5-12, Q-D5-19], direction: OUT, owner: this, via: "Subjectable (admissible type)"}
+  - {type: STEP_USES, from: D5.ProtocolStep, to: D6.Product, questions: [Q-D5-10, Q-D5-12, Q-D5-13], direction: OUT, owner: this, via: "Subjectable (admissible type)"}
+  - {type: STEP_USES, from: D5.ProtocolStep, to: D12.FoodItem, questions: [Q-D5-10, Q-D5-12, Q-D5-04], direction: OUT, owner: this, via: "Subjectable (admissible type)"}
+  - {type: STEP_USES, from: D5.ProtocolStep, to: D12.FoodCategory, questions: [Q-D5-10, Q-D5-11], direction: OUT, owner: this, via: "Subjectable (admissible type; adversarial review: Blueprint pregnancy 'avoid raw meat, processed meat ...')"}
+  - {type: STEP_USES, from: D5.ProtocolStep, to: D12.DietaryPattern, questions: [Q-D5-10, Q-D5-12], direction: OUT, owner: this, via: "Subjectable (admissible type; adversarial review: replaces Intervention kind DIETARY_PATTERN, OQ-D5-06 closed)"}
+  - {type: STEP_USES, from: D5.ProtocolStep, to: D4.Metric, questions: [Q-D5-10, CQ-PR-04], direction: OUT, owner: this, via: "Subjectable (admissible type; MEASURE steps)"}
+  - {type: STEP_USES, from: D5.ProtocolStep, to: D4.Device, questions: [Q-D5-10], direction: OUT, owner: this, via: "Subjectable (admissible type; device-based steps such as red-light panels)"}
+  - {type: OPERATIONALIZED_BY, from: D5.Target, to: D4.Biomarker, questions: [Q-D5-01, Q-D5-14, Q-D5-20], direction: OUT, owner: this, via: "union TargetMeasure"}
+  - {type: OPERATIONALIZED_BY, from: D5.Target, to: D4.Metric, questions: [Q-D5-01, Q-D5-14], direction: OUT, owner: this, via: "union TargetMeasure"}
+  - {type: OPERATIONALIZED_BY, from: D5.Target, to: D2.Outcome, questions: [Q-D5-01, Q-D5-14], direction: OUT, owner: this, via: "union TargetMeasure (check stage, D2 11-open-questions item 27); fixture antioxidant-exercise-disconfirmation target:endurance -> hu:outcome:endurance-running-performance (adversarial review). D2's and D3's 10-seams do not list this member yet (OQ-D5-43)"}
+  # ---- kernel node types outside the packet-check allowlist (kernel enums are under sharedVocabularies: kernel-types) ----
+  - {type: ASSESSES, from: K.Assessment, to: "D5.Target | D5.Intervention | D5.ProtocolEdition | D5.ProtocolStep | D5.UseConstraint (via Subjectable)", questions: [Q-D5-08, Q-D5-14, CQ-EV-04, CQ-PR-06, Q-D5-22], direction: IN, owner: other, note: "D5 assessment subkinds and their conclusionCode / gradeScheme vocabularies are registered in 09-reasoning.md 'Registered assessment vocabulary' (kernel pattern item 8); effectDirection = kernel EffectDirection"}
+  - {type: ASSESSES, from: K.Report, to: "D5.Target | D5.Intervention | D5.UseConstraint (via Subjectable)", questions: [CQ-RC-06, Q-D5-18], direction: IN, owner: other, note: "comparison reports and published recommendations (D10 composes); a blocked option's item points at the blocking UseConstraint with BLOCKED_BY and cites the resolving Assertions with DERIVED_FROM"}
+  - {type: ASSESSES, from: K.Activity, to: K.Claim, questions: [Q-D5-14], direction: n/a, owner: other, note: "kernel claim lifecycle: the EVIDENCE_MISSION Activity ASSESSES the Claim it tries to disqualify; the EVIDENCE_REPORT Report ASSESSES it with the lattice verdict (fixture antioxidant-exercise-disconfirmation)"}
+  - {type: OCCURRENCE_OF, from: K.Assertion, to: K.Claim, questions: [Q-D5-14, Q-D5-27], direction: OUT, owner: other, note: "popular 'helps T' claims and community practices are claim occurrences (speechAct RECOMMENDS / REPORTS_PRACTICE)"}
+  # ---- declared by other modules, pointing at D5 types (owner: other) ----
+  - {type: ADMINISTERS, from: D3.InterventionComponent, to: D5.Intervention, questions: [Q-D5-25, CQ-EV-04], direction: IN, owner: other, note: "declared by D3 (union AdministeredMaterial, verified in A4 SDL); path StudyArm -HAS_COMPONENT-> InterventionComponent -ADMINISTERS-> Intervention"}
+  - {type: AFFECTS_MECHANISM, from: D5.Intervention, to: D2.Mechanism, questions: [], direction: OUT, owner: other, note: "no D5 question traverses it (listed so D2 keeps the member); declared by D2 on Mechanism.affectedBy (union MechanismModulator, derived); non-substance means such as exercise or fasting"}
+  - {type: EXPOSED_TO, from: D2.MechanismEvidenceContext, to: D5.Intervention, questions: [Q-D5-02], direction: IN, owner: other, note: "declared by D2; BACKGROUND co-exposure (exercise training) of a mechanism observation, the same co-exposure D5 writes as coExposure:<uid>"}
+  - {type: OFFERS_INTERVENTION, from: "D6.Offer | D7.Organization", to: D5.Intervention, questions: [Q-D5-17], direction: IN, owner: other, note: "predicate-only until D6/D7 decide; listed so D6 does not re-mint an intervention concept"}
+  - {type: MENTIONS, from: D9.Chunk, to: "D5.* (via Subjectable)", questions: [Q-D5-01, Q-D5-10], direction: IN, owner: other, note: "kernel MENTIONS, derived; entity linking of goal phrases uses fulltext TargetSearch"}
+  - {type: HOLDS_ROLE, from: "D7.Person", to: "D7.Organization", questions: [Q-D5-13], direction: n/a, owner: other, note: "D7 SDL (RoleEdgeProperties.roleKind); traversed from the protocol author (PROTOCOL_AUTHORED_BY object) with valid-time overlap against HAS_EDITION episodes"}
+  - {type: HOLDS_STAKE, from: "D7.Person | D7.Organization", to: "D7.Organization", questions: [Q-D5-13], direction: n/a, owner: other, note: "D7 SDL (StakeEdgeProperties.stakeKind)"}
+  - {type: RECEIVES_VALUE_FROM, from: "D7.Person", to: "D7.Organization", questions: [Q-D5-13], direction: n/a, owner: other, note: "D7 SDL (ValueEdgeProperties.valueKind); fixture sleep-toolkit-unstructured a08/a09 (POSITIVE) and a10 (NEGATIVE: stated non-affiliation, no episode, OQ-D5-44). Replaces HAS_INTEREST_IN (D7 Shape A, never declared; D7 OQ-D7-29)"}
+  - {type: BRANDED_AS, from: D6.Product, to: D7.Brand, questions: [Q-D5-13], direction: n/a, owner: other, note: "D6 SDL; with D7 OWNS_BRAND (Brand <- Organization) the 'counterparty owns the brand of a step's product' path of Q-D5-13"}
+  - {type: OWNS_BRAND, from: D7.Organization, to: D7.Brand, questions: [Q-D5-13], direction: n/a, owner: other, note: "D7 SDL (declared on Brand, direction IN)"}
+  - {type: SELLER_OF_RECORD, from: D6.Offer, to: D7.Organization, questions: [Q-D5-13], direction: n/a, owner: other, note: "D6 SDL; seller path Product -HAS_VARIANT-> ProductVariant -HAS_PACKAGE-> Package <-LISTING_FOR- MerchantListing -HAS_OFFER-> Offer -SELLER_OF_RECORD-> Organization"}
+  - {type: BLOCKED_BY, from: D10.ReportItem, to: "D5.UseConstraint | D10.Assessment", questions: [CQ-RC-06], direction: IN, owner: other, note: "D10 SDL (ReportItem.blockedBy / blockedByAssessments); D10's adversarial review retargeted BLOCKED_BY from Assertion to the D5 UseConstraint, the shared blocking identity (supersedes OQ-D5-39); the item cites the resolving Assertions with DERIVED_FROM, each RESOLVES_TO_CONSTRAINT that UseConstraint"}
+  - {type: ASSOCIATES, from: D10.Association, to: "D5 means (Subjectable)", questions: [Q-D5-19], direction: n/a, owner: other, note: "D10 SDL (derived, DerivedEdgeProperties); the GDS co-occurrence output d5-stack-cooccurrence/v1, if materialized, is a D10 Association with method version (OQ-D5-21)"}
+
+# Assertion-level seams: D5 predicates whose subject or object is another module's type (kernel HAS_SUBJECT /
+# HAS_OBJECT against Subjectable, so no typed edge and no union is spent). Listed so owners keep the types Subjectable.
+predicateSeams:
+  - {predicate: "INTENDED_FOR_TARGET | IMPROVES_TARGET | WORSENS_TARGET | NO_EFFECT_ON_TARGET | MIXED_EFFECT_ON_TARGET", subjects: [D1.ChemicalSubstance, D1.IngredientMaterial, D6.Product, D12.FoodItem, D12.FoodCategory, D12.DietaryPattern, D5.Intervention, D5.Protocol, D5.ProtocolEdition, D4.Device], object: D5.Target}
+  - {predicate: "USE_CONSTRAINED_IN", subjects: [D1.ChemicalSubstance, D1.IngredientMaterial, D6.Product, D12.FoodItem, D12.FoodCategory, D5.Intervention], object: D2.Condition}
+  - {predicate: "INTERACTS_WITH", subjects: [D1.ChemicalSubstance, D1.IngredientMaterial, D6.Product, D5.Intervention], objects: [D1.ChemicalSubstance, D1.IngredientMaterial, D6.Product, D12.FoodItem, D5.Intervention]}
+  - {predicate: "CAUSES_ADVERSE_EFFECT", subjects: [D1.ChemicalSubstance, D1.IngredientMaterial, D6.Product, D5.Intervention], object: D2.Condition, note: "the only adverse-effect predicate; community experience reports use it with basisKind PERSONAL_EXPERIENCE and sourceKind:COMMUNITY (D9's proposed REPORTS_ADVERSE_EXPERIENCE rejected, OQ-D5-41)"}
+  - {predicate: "HAS_UPPER_LIMIT | HAS_AUTHORIZED_DOSE_RANGE", subjects: [D1.ChemicalSubstance, D1.IngredientMaterial], object: none}
+  - {predicate: "PROTOCOL_AUTHORED_BY", subjects: [D5.Protocol], objects: [D7.Person, D7.Organization]}
+  - {predicate: "INTERVENTION_INCLUDES (renamed from HAS_COMPONENT)", subjects: [D5.Intervention], objects: [D1.ChemicalSubstance, D6.Product, D5.Intervention]}
+  - {predicate: "RECOMMENDS_AGAINST (D10)", note: "rejected with a D5.Target object (use the five goal predicates or USE_CONSTRAINED_IN); D10 03 uses (a)-[:HAS_OBJECT]->(t:Target) with it (OQ-D5-40)"}
+  - {predicate: "population qualifier (Assertion.qualifiers population:<uid>)", references: [D3.StudyPopulation]}
+  - {predicate: "MEDIATES_TARGET (registered by D2)", subjects: [D2.Mechanism], object: D5.Target, note: "inbound; accepted as a D2-owned predicate with a Target object (not a typed edge, not a means statement); OQ-D5-37"}
+
+kernelReferences:   # allowlisted, no seam required; listed for the synthesizer's cross-check
+  - {type: RESOLVES_TO_CONSTRAINT, from: K.Assertion, to: D5.UseConstraint, edgeProperties: DerivedEdgeProperties, declaredOn: D5.UseConstraint (direction IN)}
+  - {type: STATES_CONSTRAINT, from: D5.ProtocolStep, to: D5.UseConstraint, edgeProperties: DerivedEdgeProperties, note: "derived since the adversarial review (projection use-constraint-key/v2)"}
+  - {edgeProperties: [StateEpisodeProperties, StructuralEdgeProperties, DerivedEdgeProperties]}
+  - {interfaces: [Entity, Subjectable]}
+
+sharedVocabularies:
+  - name: kernel-types
+    ref: packets/K/04-schema-proposal.graphql (A1, sha256 790e7244…8c71)
+    role: consumer (kernel pattern change 9)
+    uses: "enums SpeechAct (ProtocolStep.speechAct; Q-D5-27, CQ-PR-02) and PrivacyClass (Entity field on every D5 type); interface Subjectable as the STEP_USES target; edge-property types StateEpisodeProperties, StructuralEdgeProperties, DerivedEdgeProperties (allowlisted)"
+  - name: targets
+    ref: packets/D5/vocab-targets.yaml@0.2.2
+    role: owner (D5 publishes; consumed by K, D1, D2, D3, D4, D6, D7, D8, D9, D10, D11, D12, D13)
+    seamRule: "Assertion.predicate (5 closed predicates) for every means; Target-[OPERATIONALIZED_BY]->(D4 Biomarker | D4 Metric | D2 Outcome) for measures; ProtocolStep.targetKeys for captured protocol purpose (D5-internal, 0.2.0 amendment); targetKeys string properties are also used by D13 Frontier.targetKeys and D10 DecisionCriterion.targetKeys (adversarial review: both listed in vocab-targets.yaml's exception, OQ-D5-47)"
+  - name: identifier-schemes
+    ref: packets/K/identifier-schemes.yaml (seed, version 1)
+    role: consumer (MESH, WIKIDATA, SNOMEDCT, ISBN, DOI; MESH and SNOMEDCT need domain D5 added, OQ-D5-11)
+  - name: frontiers
+    ref: packets/D13/vocab-frontiers.yaml (A7)
+    role: not consumed by D5 types; D13 Frontier.targetKeys references D5 target keys (D13 is the consumer)

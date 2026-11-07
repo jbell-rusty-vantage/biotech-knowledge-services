@@ -1,0 +1,213 @@
+# Vocabularies
+
+## Release vocabularies (11)
+
+- [answer-kinds](release/answer-kinds.md)
+- [assessments](release/assessments.md)
+- [capture-methods](release/capture-methods.md)
+- [claim-lifecycle](release/claim-lifecycle.md)
+- [frontiers](release/frontiers.md)
+- [goal-polarity](release/goal-polarity.md)
+- [identifier-schemes](release/identifier-schemes.md)
+- [predicates](release/predicates.md)
+- [qualifiers](release/qualifiers.md)
+- [targets](release/targets.md)
+- [verdict-lattice](release/verdict-lattice.md)
+
+## Enums (195)
+
+- [ActivityKind](ActivityKind.md) (7) — Kind of process (00-DIRECTIVE section 4); finer steps go in Activity.operationKind.
+- [AdjudicationDecision](AdjudicationDecision.md) (3) — verification.v1 adjudication decision (human review of a held result).
+- [AdjudicationKind](AdjudicationKind.md) (2) — CAPTURE_FIDELITY judges the record against its declared span (feeds Assertion.status); SUPPORT judges whether located evidence supports the…
+- [AdministrationRoute](AdministrationRoute.md) (14) — Route of administration as stated.
+- [AeCollectionMethod](AeCollectionMethod.md) (3) — SYSTEMATIC, SPONTANEOUS, NOT_DESCRIBED
+- [AeSeriousness](AeSeriousness.md) (3) — ANY, SERIOUS, NON_SERIOUS
+- [AgentKind](AgentKind.md) (6) — Kind of agent (Biolink AgentTypeEnum).
+- [AlgorithmKind](AlgorithmKind.md) (8) — Kind of algorithm (absorbs pinned Algorithm family kind and FirmwareVersion).
+- [AlgorithmOutputKind](AlgorithmOutputKind.md) (6) — Pinned AlgorithmOutputKind.
+- [AlgorithmRealization](AlgorithmRealization.md) (4) — Which realization of an algorithm family a version is.
+- [AlgorithmVersionBasis](AlgorithmVersionBasis.md) (5) — Pinned AlgorithmVersionBasis plus CHANGE_EVENT_UNLABELED (a vendor-announced change with no version label, pinned by its change date).
+- [AllergenCode](AllergenCode.md) (16) — Declared allergens (FDA major food allergens plus the EU Annex II list).
+- [AllocationKind](AllocationKind.md) (4) — RANDOMIZED, NON_RANDOMIZED, NOT_APPLICABLE, NOT_REPORTED
+- [AmountBasis](AmountBasis.md) (16) — Basis of a stated amount.
+- [AmountReferent](AmountReferent.md) (6) — What entity the declared amount refers to (CQ-PF-01).
+- [AnalysisKind](AnalysisKind.md) (6) — Confirmatory status of an analysis as the stating source declares it.
+- [AnalysisSetKind](AnalysisSetKind.md) (7) — INTENTION_TO_TREAT, MODIFIED_INTENTION_TO_TREAT, PER_PROTOCOL, SAFETY_SET, COMPLETERS, OTHER
+- [AppearanceRole](AppearanceRole.md) (9) — Role of a person in a media work (APPEARS_IN).
+- [ArmType](ArmType.md) (6) — Arm type as the stating source labels it.
+- [AssertionKind](AssertionKind.md) (5) — verification.v1 AssertionKindSchema minus report_assertion (report assertions live in the sealed report ledger, not the graph).
+- [AssertionStatus](AssertionStatus.md) (7) — Capture-fidelity status of an Assertion (is it an accurate record of what the asserter said at the span); never truth.
+- [AssessmentKind](AssessmentKind.md) (15) — Kind of Assessment.
+- [AssessmentStatus](AssessmentStatus.md) (4) — Workflow state of an Assessment or Report record; not a verdict.
+- [AssociationKind](AssociationKind.md) (5) — Kind of materialized association (PLAN 6.1, directive 3.6).
+- [AwardInstrument](AwardInstrument.md) (10) — Funding instrument of an Award (ARPA-H programmes are contracts, NIH projects are grants, a company 'grant' to a lab may be a sponsored res…
+- [BasisKind](BasisKind.md) (12) — Epistemic basis of a proposition; CALCULATED needs derivationRule and DERIVED_FROM inputs.
+- [BiomarkerKind](BiomarkerKind.md) (9) — What kind of biological referent a Biomarker is.
+- [BotanicalPreparationType](BotanicalPreparationType.md) (9) — Preparation type of a botanical material (Ph.
+- [BrandKind](BrandKind.md) (5) — What a brand is presented on.
+- [CadenceUnit](CadenceUnit.md) (5) — Period unit for occurrence ranges ('3-4 nights per week' = 3..4 per WEEK).
+- [CalibrationTraceability](CalibrationTraceability.md) (6) — Metrological traceability the calibration claims (absorbs pinned ReferenceSystem).
+- [CaptureFailureKind](CaptureFailureKind.md) (13) — Why an attempt did not yield a complete capture (observed 2026-10-08 across the first-tier tools; tooling/action-space.yaml evidence).
+- [CaptureOutcome](CaptureOutcome.md) (2) — How one attempt ended.
+- [CertaintyLevel](CertaintyLevel.md) (5) — Certainty of a graded assessment (GRADE-style levels; scheme in Assessment.gradeScheme).
+- [CertificationListingStatus](CertificationListingStatus.md) (5) — Certifier listing status, latest observed (history is COVERS episodes plus snapshots).
+- [CertifiedObjectKind](CertifiedObjectKind.md) (6) — What a listing says it certifies (pinned CertifiedObjectKind plus PRODUCT_ALL_SIZES).
+- [ChannelKind](ChannelKind.md) (8) — Kind of editorial container.
+- [ClaimDisposition](ClaimDisposition.md) (3) — Vetting disposition of a claim (00-DIRECTIVE 3.4).
+- [ClaimLifecycleState](ClaimLifecycleState.md) (6) — Projection cache of where a Claim is in the scientific loop; authority is its Assessments and Reports.
+- [ClaimType](ClaimType.md) (14) — verification.v1 ClaimTypeSchema.
+- [CollectionMode](CollectionMode.md) (9) — How the specimen is collected.
+- [ComparisonKind](ComparisonKind.md) (3) — BETWEEN_ARM, WITHIN_ARM_CHANGE, ARM_DESCRIPTIVE
+- [CompartmentKind](CompartmentKind.md) (9) — Kind of compartment measured (replaces the pinned AnatomicalContext and Organ nodes; exact term in compartmentOntologyId).
+- [ComponentLineRole](ComponentLineRole.md) (9) — Role of one declared composition line (absorbs the pinned DeclarationKind values that are composition rows).
+- [ComponentRole](ComponentRole.md) (6) — Role of one administered component inside an arm.
+- [ConditionKind](ConditionKind.md) (4) — Kind of Condition (absorbs the pinned RiskFactor as RISK_STATE).
+- [ConstituentKind](ConstituentKind.md) (4) — Kind of Constituent (absorbs the pinned Nutrient node as NUTRIENT).
+- [ConstraintLevel](ConstraintLevel.md) (11) — Directive level a source states (pinned ConstraintLevel + ADJUST_DOSE, SEPARATE_ADMINISTRATION, DISCONTINUE_BEFORE).
+- [ContentStatementKind](ContentStatementKind.md) (6) — What kind of content statement a MATERIAL_CONTAINS episode records (declared vs measured vs calculated stay distinct).
+- [ControlKind](ControlKind.md) (8) — Kind of control on PARENT_OF.
+- [CriterionBasis](CriterionBasis.md) (5) — Who set the criterion (pinned CriterionBasis kept).
+- [CriterionDirection](CriterionDirection.md) (4) — How a criterion's value orders options.
+- [CriterionKind](CriterionKind.md) (4) — Role of a DecisionCriterion in a ranking method (directive 3.5).
+- [DeviceKind](DeviceKind.md) (10) — Kind of device or instrument MODEL (absorbs pinned ToolOrInstrument).
+- [DiagnosticResultKind](DiagnosticResultKind.md) (3) — Pinned DiagnosticResultKind: is a value measured, calculated from other values, or inferred by a model (DNAm surrogates, PPG-derived estima…
+- [DietaryPatternKind](DietaryPatternKind.md) (4) — What a dietary pattern constrains.
+- [DietaryPatternScope](DietaryPatternScope.md) (5) — Who defines the pattern and for what purpose; a filter, not a judgement.
+- [DiscontinuationScope](DiscontinuationScope.md) (3) — How much a PROGRAM_DISCONTINUATION stops: one trial, the whole program, or the company (wind-down, dissolution).
+- [DispersionKind](DispersionKind.md) (6) — Kind of spread or interval the source reports around the estimate.
+- [DosageForm](DosageForm.md) (12) — Consumer-distinguishing dosage or serving form of a variant.
+- [EffectDirection](EffectDirection.md) (5) — Direction of an effect on a target or goal (00-DIRECTIVE 3.2: harm is a direction on an assessment, never a property of an entity).
+- [EndpointStatement](EndpointStatement.md) (4) — What the source STATES about the primary endpoint(s) of a READOUT.
+- [EnrollmentCountType](EnrollmentCountType.md) (2) — ACTUAL, ESTIMATED
+- [EstimateDirection](EstimateDirection.md) (5) — Direction of the reported point estimate relative to the comparator arm (BETWEEN_ARM) or to baseline (WITHIN_ARM_CHANGE): ratios against 1,…
+- [EstimateQualifier](EstimateQualifier.md) (4) — AS_REPORTED, APPROXIMATE, READ_FROM_FIGURE, CALCULATED_BY_BELLLABS
+- [EventKind](EventKind.md) (26) — Kind of event (vocab-frontiers.yaml section 5).
+- [EventRole](EventRole.md) (14) — Role of an organization or person in an event (INVOLVES).
+- [EventStatus](EventStatus.md) (4) — Materialized lifecycle of an Event from its time Assertions (never truth, never a judgment).
+- [EvidenceAuthority](EvidenceAuthority.md) (6) — verification.v1 SourceAuthorityVector.authority, per evidence edge (is this source fit for this kind of claim).
+- [EvidenceFacet](EvidenceFacet.md) (5) — verification.v1 VerificationMetricObservation evidence binding facet (which part of a metric the span evidences).
+- [EvidenceIndependence](EvidenceIndependence.md) (5) — verification.v1 SourceAuthorityVector.independence, per evidence edge (is the source independent of the asserter and the subject).
+- [EvidenceOrigin](EvidenceOrigin.md) (2) — verification.v1 EvidenceEdge.origin.
+- [EvidenceRole](EvidenceRole.md) (4) — verification.v1 EvidenceRoleSchema.
+- [ExposureRole](ExposureRole.md) (3) — Role of an exposure attached to a context: the tested agent, a background co-exposure (e.g. exercise training), or the comparator.
+- [FoodCategorySystem](FoodCategorySystem.md) (8) — The classification system that defines a FoodCategory.
+- [FoodDataSystem](FoodDataSystem.md) (9) — The reference system that defines a FoodItem record.
+- [FoodVariantKind](FoodVariantKind.md) (7) — Axis on which a FoodItem differs from the base food named by its VARIANT_OF Assertion (predicate-only; pinned FoodVariantKind plus BASE for…
+- [FrontierCurationStatus](FrontierCurationStatus.md) (4) — Curation status of a frontier, set only by a vocabulary version bump with a rationale; never a judgment of success.
+- [FrontierGranularity](FrontierGranularity.md) (6) — Granularity of a frontier (vocab-frontiers.yaml section 1).
+- [FulfillmentKind](FulfillmentKind.md) (5) — Who ships the offer, as displayed (replaces the pinned FULFILLS_OFFER edge).
+- [GenerationMode](GenerationMode.md) (4) — How an image or text was produced, as stated by the source (Q-D9-17); never a quality judgment.
+- [GeneticManipulation](GeneticManipulation.md) (5) — Genetic manipulation that defines the context when a gene, not a compound, is the exposure (Q-D2-20).
+- [HoldingPower](HoldingPower.md) (4) — Voting or dispositive power over a holding, as stated.
+- [IntakeScope](IntakeScope.md) (3) — Intake scope of a dose or limit: an upper limit for supplemental magnesium is not comparable with total intake (Q-D5-06).
+- [InterventionKind](InterventionKind.md) (8) — Kind of intervention concept.
+- [JudgeKind](JudgeKind.md) (6) — verification.v1 JudgmentSchema.judgeKind.
+- [LabTestKind](LabTestKind.md) (3) — An orderable/purchasable test as offered: one analyte, a panel of tests, or a report computed by algorithms.
+- [LegalStatusFamily](LegalStatusFamily.md) (3) — Family of a LegalStatusKind: market access (may it be sold, as what), exclusivity (who else may rely on the data or sell), IP right (patent…
+- [LegalStatusKind](LegalStatusKind.md) (25) — Kind of legal standing.
+- [ListingKind](ListingKind.md) (5) — What kind of commerce page the listing is.
+- [MarketStatus](MarketStatus.md) (3) — Licence-level market status, separate from licence status (LNHPD: 'Licence Status: Active' with 'Market status: Not Marketed').
+- [MaskingKind](MaskingKind.md) (6) — NONE, SINGLE, DOUBLE, TRIPLE, QUADRUPLE, NOT_REPORTED
+- [MassBasis](MassBasis.md) (5) — Mass basis of a stated mass — the one shared vocabulary (owner D1; consumed by D3 InterventionComponent.massBasis and D6 ComponentLinePrope…
+- [MaterialGrade](MaterialGrade.md) (5) — Grade under which a material is sold (10-K: food-grade vs pharmaceutical-grade Niagen).
+- [MaterialKind](MaterialKind.md) (7) — What kind of actual material an IngredientMaterial is (absorbs the pinned Branded/Botanical/Microbial/Mixture subtypes; branded = brandName…
+- [MeasureKind](MeasureKind.md) (8) — What kind of measure an outcome is (FDA COA taxonomy plus clinical events, survival and adverse events).
+- [MeasurementField](MeasurementField.md) (19) — Which descriptive fields a source was checked for and did NOT report (00-DIRECTIVE finding: 'not reported' is the normal value on public ar…
+- [MeasurementPlatform](MeasurementPlatform.md) (11) — Technology platform of a measurement or of an algorithm's required input (absorbs pinned TechnologyPlatform).
+- [MechanismKind](MechanismKind.md) (4) — What kind of mechanism concept a Mechanism node is.
+- [MechanismReferenceScheme](MechanismReferenceScheme.md) (5) — Authority whose record a Mechanism mirrors; BELLLABS_CURATED for concepts with no single authority record.
+- [MechanismSetting](MechanismSetting.md) (8) — Experimental setting of a mechanism evidence context (round 0003 rule: measured where, in what).
+- [MediaPlatform](MediaPlatform.md) (15) — Distribution platform of a channel (replaces the pinned Platform node).
+- [MethodPrinciple](MethodPrinciple.md) (13) — Method principle (absorbs pinned MeasurementMethod).
+- [MetricDefinitionSource](MetricDefinitionSource.md) (4) — Who defines the Metric: a terminology (LOINC), a vendor, a publication, or BellLabs (when no standard code exists).
+- [MetricKind](MetricKind.md) (5) — What a Metric defines: a terminology measurand, an algorithm output, a device estimate, a calculated quantity or a model feature.
+- [MetricScale](MetricScale.md) (4) — LOINC scale.
+- [ModelOrganism](ModelOrganism.md) (12) — Organism class of an evidence context or molecular entity (replaces the pinned Species node; exact taxon in ncbiTaxonId).
+- [MolecularEntityKind](MolecularEntityKind.md) (5) — Kind of molecular entity.
+- [NutrientKind](NutrientKind.md) (6) — Nutrient family (NUTRIENT constituents only).
+- [OptionDisposition](OptionDisposition.md) (5) — Outcome of one option row in a published comparison (CQ-RC-01, CQ-RC-06).
+- [OrderChannel](OrderChannel.md) (4) — How a test is ordered.
+- [OrganismGroup](OrganismGroup.md) (6) — Coarse organism group of a Taxon (filters botanical vs microbial vs animal-source materials).
+- [OrganizationEntityKind](OrganizationEntityKind.md) (5) — What kind of organizational record this is.
+- [OrganizationKind](OrganizationKind.md) (15) — Coarse, filterable kind of organization (trimmed from the pinned 37-value OrganizationType).
+- [OrganizationStatus](OrganizationStatus.md) (5) — Registry or self-declared status of an organization record; the dated history is in Assertions (predicate ORGANIZATION_STATUS).
+- [OrgRoleKind](OrgRoleKind.md) (12) — Normalized role kind on HOLDS_ROLE (source codes such as Sinclair's F/A/B, SEC 'Director' / 'Executive Officer' / 'Promoter', ICMJE items m…
+- [OutcomeKind](OutcomeKind.md) (6) — Kind of Outcome concept (study-independent endpoint concept; study-specific measures are D3 OutcomeDefinitions).
+- [OutcomePriority](OutcomePriority.md) (6) — Priority one source declares for an outcome (registry version or publication).
+- [OwnershipBasis](OwnershipBasis.md) (4) — Ownership basis as the source states it.
+- [PackageKind](PackageKind.md) (6) — How a sellable package is composed.
+- [PanelKind](PanelKind.md) (7) — Which regulated or declared panel the label version is.
+- [ParticipantRole](ParticipantRole.md) (6) — Role of a participant in a mechanism, as the reference authority states it (absorbs the pinned RegulatorySign).
+- [PassFailVerdict](PassFailVerdict.md) (4) — Verdict as printed by the source next to a result (pinned PassFailVerdict plus NOT_STATED).
+- [PatentDateBasis](PatentDateBasis.md) (5) — Where a patent date (expiry) comes from: the office, an aggregator's estimate (Google Patents says its status 'is an assumption'), a compan…
+- [PatentPublicationType](PatentPublicationType.md) (5) — Publication type of a patent document (merges pinned PatentApplication and GrantedPatent).
+- [PhysicalFormKind](PhysicalFormKind.md) (4) — Physical (solid-state or particle) form the structure authority does not register as a separate substance (absorbs the pinned ChemicalForm…
+- [PlantPart](PlantPart.md) (14) — Plant or fungal part a botanical preparation is made from (21 CFR 101.36 requires it; TGA ashwagandha leaf vs root).
+- [Polarity](Polarity.md) (4) — Affirms, denies, mixed or unknown; 'not reported' is never NEGATIVE.
+- [PolicyOutcome](PolicyOutcome.md) (5) — verification.v1 PolicyOutcomeSchema.
+- [PopulationGroup](PopulationGroup.md) (14) — Non-personal population codes used by step applicability, UseConstraint scope and the mandatory population qualifier of D5 assertions (`pop…
+- [PreparationMethod](PreparationMethod.md) (21) — The preparation a reference-food record names (FDC 170027 raw vs 170030 baked).
+- [PrivacyClass](PrivacyClass.md) (2) — Access class.
+- [ProductKind](ProductKind.md) (12) — What kind of thing is sold.
+- [PropertyStatus](PropertyStatus.md) (4) — verification.v1 PropertyObservation.status, for the five orthogonal properties.
+- [ProtocolChangeProvenance](ProtocolChangeProvenance.md) (3) — How a protocol edition was established (pinned ProtocolChangeProvenance, kept).
+- [PublicActorBasis](PublicActorBasis.md) (7) — Why a natural person is a public actor (the privacy gate: a Person exists only in the role that makes them public).
+- [PublicationKind](PublicationKind.md) (12) — Kind of scholarly work.
+- [PurchaseMode](PurchaseMode.md) (6) — How the offer is bought (absorbs the pinned SubscriptionPlan node and OfferKind PURCHASE/SUBSCRIPTION_ONLY).
+- [QuantityComparator](QuantityComparator.md) (12) — Comparator of a stated quantity — the one comparator enum of the schema (owner D1, R-57).
+- [ReadoutStage](ReadoutStage.md) (5) — Stage of a readout as the source names it (qualifier on READOUT).
+- [RecallClass](RecallClass.md) (4) — FDA recall classification as stated by the recall record.
+- [RecallStatus](RecallStatus.md) (4) — Recall status as last stated by the recall record (openFDA `status`).
+- [ReferenceIntervalDerivation](ReferenceIntervalDerivation.md) (7) — Pinned ReferenceIntervalDerivation plus VENDOR_DEFINED.
+- [ReferenceIntervalKind](ReferenceIntervalKind.md) (4) — Pinned ReferenceIntervalKind plus VENDOR_TARGET (a seller-defined 'optimal' band).
+- [RegistryDateType](RegistryDateType.md) (2) — ACTUAL, ANTICIPATED
+- [RegistryKind](RegistryKind.md) (11) — Registry that issued the registration a version belongs to.
+- [RegistryStatus](RegistryStatus.md) (10) — Recruitment status as a registry version states it (non-CTG vocabularies map here; the verbatim value is kept).
+- [RegulatoryPathway](RegulatoryPathway.md) (33) — Regulatory programme, approval route or designation programme a record or status sits under (replaces pinned RegulatoryPathway, RegulatoryP…
+- [RegulatoryRecordFamily](RegulatoryRecordFamily.md) (5) — Coarse family of a RegulatoryRecordKind, stored for one-hop filtering (all enforcement records of a firm; all market-access records of an i…
+- [RegulatoryRecordKind](RegulatoryRecordKind.md) (25) — Kind of authority-issued record.
+- [RegulatoryRecordOutcome](RegulatoryRecordOutcome.md) (31) — What the issuer decided or did in this record, as the record states it (verbatim wording stays in outcomeVerbatim).
+- [ReportItemKind](ReportItemKind.md) (2) — Granularity of a ReportItem.
+- [ReportKind](ReportKind.md) (6) — Kind of published artifact.
+- [ReportSectionKind](ReportSectionKind.md) (17) — Section of a report skeleton (packets/D10/report-skeletons.md).
+- [RepublicationKind](RepublicationKind.md) (6) — How a work re-publishes an earlier one (the link to the original is a predicate-only REPUBLISHES Assertion); null on an original.
+- [RequirementBasis](RequirementBasis.md) (3) — Pinned RequirementBasis (kept): who decided the requirement level.
+- [RequirementLevel](RequirementLevel.md) (5) — Pinned RequirementLevel (kept): how strongly the source requires the step (CQ-PR-02).
+- [ResponsiblePartyRole](ResponsiblePartyRole.md) (7) — Role the label prints for the responsible party ('Distributed by', 'Manufactured for', ...).
+- [ResultBasis](ResultBasis.md) (5) — How a reported result row was obtained (the decisive enum from fixture FC-3).
+- [ResultValueQualifier](ResultValueQualifier.md) (7) — Qualifier of a reported value.
+- [ReviewAction](ReviewAction.md) (5) — Action a REVIEW step prescribes when its trigger fires (pinned ReviewTriggerAction).
+- [RunSealKind](RunSealKind.md) (3) — Which sealed snapshot of one Knowledge Services run an Activity references (R-SV10).
+- [SampleKind](SampleKind.md) (5) — What was tested (replaces pinned TestSample node type).
+- [SelectorKind](SelectorKind.md) (13) — verification.v1 selector kinds (VerificationSelectorKindSchema), one SourceLocator each.
+- [SemanticVerdict](SemanticVerdict.md) (15) — verification.v1 SemanticVerdictSchema (the verdict lattice), stored in SCREAMING_SNAKE spelling.
+- [SensingModality](SensingModality.md) (10) — Sensing modality (absorbs pinned Modality and Sensor).
+- [SexScope](SexScope.md) (4) — ALL, FEMALE, MALE, NOT_REPORTED
+- [SourceKind](SourceKind.md) (13) — verification.v1 SourceKindSchema (capture-level kind; the editorial kind is Source.genre).
+- [SourceRevisionKind](SourceRevisionKind.md) (8) — Publisher revision kind: the one revision vocabulary (R-44).
+- [SpecimenKind](SpecimenKind.md) (14) — Specimen type (absorbs pinned Specimen; ontology ids ride beside it in specimenOntologyIds).
+- [SpecPeriod](SpecPeriod.md) (4) — Period a criterion applies to: release limit, shelf-life limit, both.
+- [SpeechAct](SpeechAct.md) (7) — What the asserter does with the proposition.
+- [StakeBand](StakeBand.md) (7) — Statutory band or disclosure threshold when the source gives no number (UK PSC bands; SEC 5 % table and 10 % owner thresholds).
+- [StakeKind](StakeKind.md) (6) — Kind of holding on HOLDS_STAKE.
+- [StatisticalConclusion](StatisticalConclusion.md) (4) — Statistical conclusion as stated by the source (never recomputed into this field); carries no favorable / unfavorable judgment (directive 3…
+- [StepKind](StepKind.md) (7) — What a protocol step asks for (pinned ProtocolStepType's 23 values collapsed to what questions filter on; the source word stays in stepKind…
+- [StudyKind](StudyKind.md) (13) — Design of a study (identity-level; per-version registry design fields live on RegistrationVersion).
+- [StudyPopulationKind](StudyPopulationKind.md) (4) — ELIGIBLE, ENROLLED, RANDOMIZED, ANALYZED
+- [StudyResultKind](StudyResultKind.md) (14) — Effect measure or summary a result reports.
+- [StudyRoleKind](StudyRoleKind.md) (11) — Role a party holds toward a study as one source states it (CTG sponsor/collaborators/responsible party, ISRCTN sponsor/funders, paper fundi…
+- [SubstanceClass](SubstanceClass.md) (8) — FDA GSRS substance class of the defining record (structurally diverse covers plant parts and extracts GSRS registers, e.g.
+- [TargetStatus](TargetStatus.md) (2) — Lifecycle of a vocabulary target (vocab-targets.yaml); a deprecated target keeps its node and names `replacedBy`.
+- [TaxonRank](TaxonRank.md) (9) — Taxonomic rank (NCBI Taxonomy treats a strain as rank 'strain', e.g. taxid 568703 under species 47715).
+- [TextBasis](TextBasis.md) (10) — Where the text of a chunk came from; decides how far a quote from it can be trusted before verification.
+- [TimeAnchor](TimeAnchor.md) (13) — Anchor a step's timing is relative to (pinned TimeOfDay, renamed; offsets in offsetMinutesMin/Max, negative = before).
+- [TimePrecision](TimePrecision.md) (6) — Precision of a valid-time bound.
+- [TrialPhase](TrialPhase.md) (8) — Trial phase as registered (ClinicalTrials.gov vocabulary).
+- [UseConstraintKind](UseConstraintKind.md) (6) — What kind of scoped use concern a UseConstraint identity is.
+- [UseDisposition](UseDisposition.md) (3) — Disposition of a use decision for one exact effect, use and audience (R-SV10).
+- [ValidTimeBasis](ValidTimeBasis.md) (5) — Why a valid-time bound has its value; OBSERVATION_ONLY and UNKNOWN force a null bound.
+- [ValueTransferKind](ValueTransferKind.md) (12) — What was received on RECEIVES_VALUE_FROM (ICMJE items, FTC material-connection kinds, Sinclair's IP/L codes, NIH FCOI kinds).
+- [VersionPopulatingMode](VersionPopulatingMode.md) (2) — How a RegistrationVersion entered the graph: captured by BellLabs (its own snapshot) or reconstructed from a dated history statement inside…
+- [ViabilityState](ViabilityState.md) (4) — Viability of a microbial preparation as stated.
+- [ViolationCategory](ViolationCategory.md) (13) — Violation category cited by an enforcement record (warning letter, recall, import alert).
+- [WorkKind](WorkKind.md) (13) — Kind of media work.

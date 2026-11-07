@@ -1,0 +1,817 @@
+# proprietary-blend-ag1 — assertions (fixtures stage, A6, 2026-10-08). Subjects/objects are typed to D6 SDL types or to other modules' types
+# (module.Type) through the kernel Subjectable pattern. Typed literals keep currency in unitCode as iso4217:<code> (OQ-D6-06).
+# validTime.observedAtPerOBSERVED_AT is the instant 03-retrieval-patterns.md OBSERVED_AT derives (validFrom, else validObservedAt,
+# else the snapshot's observedAt). validObservedAt = kernel Assertion field (A1 change 5); validObservedAtPrecision is
+# fixture-only (the kernel field has no precision; OQ-D6-19).
+fixture: proprietary-blend-ag1
+kind: harm
+producedBy:
+  missionId: mission:ft-D6-fixtures
+  runId: run:ft-D6-proprietary-blend-ag1
+  note: "fixture-scoped ids (not Mission Control runs); assessments use the -assess run, verifier adjudications the -verify run, chunks the -chunk run"
+nodes:
+  - uid: hu:product:ag1
+    type: D6.Product
+    name: AG1
+    properties:
+      productKind: DIETARY_SUPPLEMENT
+      marketedName: AG1
+    propertyEvidence: [G05]
+  - uid: hu:product-variant:ag1-powder-us
+    type: D6.ProductVariant
+    name: "AG1 powder, 12 g scoop (US)"
+    properties:
+      dosageForm: POWDER
+      strengthVerbatim: "12 g scoop"
+      jurisdiction: US
+    propertyEvidence: [G02]
+  - uid: hu:package:ag1-360g
+    type: D6.Package
+    name: "AG1 360 g pouch"
+    properties:
+      packageKind: CONTAINER
+      netQuantityValue: 360
+      netQuantityUnit: g
+    propertyEvidence: [G01]
+  - uid: hu:package:ag1-350g
+    type: D6.Package
+    name: "AG1 350 g pouch"
+    properties:
+      packageKind: CONTAINER
+      netQuantityValue: 350
+      netQuantityUnit: g
+    propertyEvidence: [G20]
+  - uid: hu:label-version:ag1-us-dsld-262237
+    type: D6.LabelVersion
+    name: "AG1 label, DSLD 262237 (entered 2021-11-19)"
+    properties:
+      panelKind: SUPPLEMENT_FACTS
+      jurisdiction: US
+      contentDigest: sha256:6e4804135e648b11066ab7d277c37120203dd870ffbde4730ebb802753e04097
+      compositionDigest: sha256:817f88675da6f86516f96c1294475cd33ef2bdaf4e1d03e9a8822cec90d77b6e
+      servingSizeValue: 12
+      servingSizeUnit: g
+      servingSizeVerbatim: "1 Scoop"
+      servingsPerContainer: 30
+      minDailyServings: 1
+      maxDailyServings: 1
+      responsiblePartyRole: UNSTATED
+      responsiblePartyVerbatim: "Athletic Greens (USA), Inc."
+    propertyEvidence: [G02, G03, G10]
+  - uid: hu:label-version:ag1-us-dsld-323512
+    type: D6.LabelVersion
+    name: "AG1 label, DSLD 323512 (entered 2025-03-25)"
+    properties:
+      panelKind: SUPPLEMENT_FACTS
+      jurisdiction: US
+      contentDigest: sha256:eaa6c70cdc31150a3faa4cc86487e7f5d258e5868079f4b788564a49326cf099
+      compositionDigest: sha256:338d4d34d88014c70ae44d73b9d4c94612b9e5336207b766fffda52ffba2aa8e
+      servingSizeValue: 12
+      servingSizeUnit: g
+      servingSizeVerbatim: "1 Scoop"
+      servingsPerContainer: 30
+      minDailyServings: 1
+      maxDailyServings: null
+      responsiblePartyRole: UNSTATED
+      responsiblePartyVerbatim: "Athletic Greens (USA), Inc."
+    propertyEvidence: [G21, G22, G29]
+externalNodes:
+  - uid: hu:org:athletic-greens-usa
+    type: D7.Organization
+    name: "Athletic Greens (USA), Inc."
+    note: "owner D7 (DSLD contact type Manufacturer)"
+  - uid: hu:org:nih-ods
+    type: D7.Organization
+    name: "NIH ODS"
+    note: asserter
+  - uid: hu:material:ag1-blend-nutrient-dense-extracts
+    type: D1.IngredientMaterial
+    name: "Nutrient Dense Extracts, Herbs & Antioxidants (proprietary blend)"
+    note: "owner D1 (blend as a material, or D1's unresolved-material sentinel)"
+  - uid: hu:material:ag1-blend-superfood-complex
+    type: D1.IngredientMaterial
+    name: "Alkaline, Nutrient-Dense Raw Superfood Complex (proprietary blend)"
+    note: "owner D1"
+  - uid: hu:material:ag1-blend-dairy-free-probiotics
+    type: D1.IngredientMaterial
+    name: "Dairy Free Probiotics (proprietary blend)"
+    note: "owner D1"
+  - uid: hu:material:ashwagandha-root-extract
+    type: D1.IngredientMaterial
+    name: "Ashwagandha Root Extract"
+    note: "owner D1 (seam: D1 harm fixture ashwagandha-plant-part-harm)"
+  - uid: hu:material:rhodiola-rosea-root-dry-extract
+    type: D1.IngredientMaterial
+    name: "Rhodiola (Rhodiola rosea) root dry extract"
+    note: "owner D1"
+  - uid: hu:material:calcium-carbonate
+    type: D1.IngredientMaterial
+    name: "Calcium Carbonate"
+    note: "owner D1"
+  - uid: hu:agent:d6-calculator
+    type: K.Agent
+    name: d6-calculator
+    note: "fixture agent identity"
+structuralEdges:
+  - type: HAS_VARIANT
+    from:
+      uid: hu:product:ag1
+      type: D6.Product
+    to:
+      uid: hu:product-variant:ag1-powder-us
+      type: D6.ProductVariant
+    traceVia: [G05]
+    lastWriterRunId: run:ft-D6-proprietary-blend-ag1
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-proprietary-blend-ag1
+  - type: HAS_PACKAGE
+    from:
+      uid: hu:product-variant:ag1-powder-us
+      type: D6.ProductVariant
+    to:
+      uid: hu:package:ag1-360g
+      type: D6.Package
+    traceVia: [G01]
+    lastWriterRunId: run:ft-D6-proprietary-blend-ag1
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-proprietary-blend-ag1
+  - type: HAS_PACKAGE
+    from:
+      uid: hu:product-variant:ag1-powder-us
+      type: D6.ProductVariant
+    to:
+      uid: hu:package:ag1-350g
+      type: D6.Package
+    traceVia: [G20]
+    lastWriterRunId: run:ft-D6-proprietary-blend-ag1
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-proprietary-blend-ag1
+assertions:
+  - id: g01
+    predicate: HAS_LABEL_VERSION
+    assertionKind: RELATIONSHIP
+    relationship: HAS_LABEL_VERSION
+    subject:
+      uid: hu:package:ag1-360g
+      type: D6.Package
+    object:
+      uid: hu:label-version:ag1-us-dsld-262237
+      type: D6.LabelVersion
+    asserter:
+      uid: hu:org:nih-ods
+      type: D7.Organization
+    locators:
+      - ref: G01
+        selectorKind: JSON_POINTER
+        source: dsld-262237
+        snapshotDigest: sha256:6ed5982c512783e2dacc0437f87787167d52118c8e52a63790a94118e0ceb08a
+      - ref: G09
+        selectorKind: JSON_POINTER
+        source: dsld-262237
+        snapshotDigest: sha256:6ed5982c512783e2dacc0437f87787167d52118c8e52a63790a94118e0ceb08a
+      - ref: G12
+        selectorKind: JSON_POINTER
+        source: dsld-262237
+        snapshotDigest: sha256:6ed5982c512783e2dacc0437f87787167d52118c8e52a63790a94118e0ceb08a
+    validTime:
+      validFrom: "2021-11-19T00:00:00Z"
+      validFromPrecision: DAY
+      validFromBasis: PUBLICATION_PROXY
+      validTo: null
+      validToBasis: UNKNOWN
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-proprietary-blend-ag1
+  - id: g02
+    predicate: HAS_LABEL_VERSION
+    assertionKind: RELATIONSHIP
+    relationship: HAS_LABEL_VERSION
+    subject:
+      uid: hu:package:ag1-350g
+      type: D6.Package
+    object:
+      uid: hu:label-version:ag1-us-dsld-323512
+      type: D6.LabelVersion
+    asserter:
+      uid: hu:org:nih-ods
+      type: D7.Organization
+    locators:
+      - ref: G20
+        selectorKind: JSON_POINTER
+        source: dsld-323512
+        snapshotDigest: sha256:ba2abab0b86cf546ebb3d87b0c341009affeb75cca7e34d6c4f386deca5fe16b
+      - ref: G26
+        selectorKind: JSON_POINTER
+        source: dsld-323512
+        snapshotDigest: sha256:ba2abab0b86cf546ebb3d87b0c341009affeb75cca7e34d6c4f386deca5fe16b
+      - ref: G30
+        selectorKind: JSON_POINTER
+        source: dsld-323512
+        snapshotDigest: sha256:ba2abab0b86cf546ebb3d87b0c341009affeb75cca7e34d6c4f386deca5fe16b
+    validTime:
+      validFrom: "2025-03-25T00:00:00Z"
+      validFromPrecision: DAY
+      validFromBasis: PUBLICATION_PROXY
+      validTo: null
+      validToBasis: UNKNOWN
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-proprietary-blend-ag1
+  - id: g03
+    predicate: NAMES_RESPONSIBLE_PARTY
+    assertionKind: RELATIONSHIP
+    relationship: NAMES_RESPONSIBLE_PARTY
+    subject:
+      uid: hu:label-version:ag1-us-dsld-262237
+      type: D6.LabelVersion
+    object:
+      uid: hu:org:athletic-greens-usa
+      type: D7.Organization
+    asserter:
+      uid: hu:org:nih-ods
+      type: D7.Organization
+    locators:
+      - ref: G10
+        selectorKind: JSON_POINTER
+        source: dsld-262237
+        snapshotDigest: sha256:6ed5982c512783e2dacc0437f87787167d52118c8e52a63790a94118e0ceb08a
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:58:50Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["DSLD contact type 'Manufacturer'; printed role text not transcribed (responsiblePartyRole UNSTATED)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-proprietary-blend-ag1
+  - id: g04
+    predicate: NAMES_RESPONSIBLE_PARTY
+    assertionKind: RELATIONSHIP
+    relationship: NAMES_RESPONSIBLE_PARTY
+    subject:
+      uid: hu:label-version:ag1-us-dsld-323512
+      type: D6.LabelVersion
+    object:
+      uid: hu:org:athletic-greens-usa
+      type: D7.Organization
+    asserter:
+      uid: hu:org:nih-ods
+      type: D7.Organization
+    locators:
+      - ref: G29
+        selectorKind: JSON_POINTER
+        source: dsld-323512
+        snapshotDigest: sha256:ba2abab0b86cf546ebb3d87b0c341009affeb75cca7e34d6c4f386deca5fe16b
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:58:50Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-proprietary-blend-ag1
+  - id: g05
+    predicate: CALCULATED_SERVING_MASS_TOTAL
+    assertionKind: COMPUTATION
+    subject:
+      uid: hu:label-version:ag1-us-dsld-323512
+      type: D6.LabelVersion
+    value:
+      valueNumber: 360
+      unitCode: g
+    asserter:
+      uid: hu:agent:d6-calculator
+      type: K.Agent
+    locators:
+      - ref: G21
+        selectorKind: JSON_POINTER
+        source: dsld-323512
+        snapshotDigest: sha256:ba2abab0b86cf546ebb3d87b0c341009affeb75cca7e34d6c4f386deca5fe16b
+      - ref: G22
+        selectorKind: JSON_POINTER
+        source: dsld-323512
+        snapshotDigest: sha256:ba2abab0b86cf546ebb3d87b0c341009affeb75cca7e34d6c4f386deca5fe16b
+      - ref: G20
+        selectorKind: JSON_POINTER
+        source: dsld-323512
+        snapshotDigest: sha256:ba2abab0b86cf546ebb3d87b0c341009affeb75cca7e34d6c4f386deca5fe16b
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:58:50Z"
+    status: EXTRACTED
+    basisKind: CALCULATED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declared net contents of the same label: 350 g (G20) -> 10 g short of 30 declared servings; rounding or a servings statement not updated, undecided"]
+    derivationRule: "d6-serving-mass-total/v1: servingSizeValue (12 g) x servingsPerContainer (30)"
+    derivedFrom: [g02]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-proprietary-blend-ag1
+  - id: gdc01
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:ag1-us-dsld-262237
+      type: D6.LabelVersion
+    object:
+      uid: hu:material:ag1-blend-superfood-complex
+      type: D1.IngredientMaterial
+    asserter:
+      uid: hu:org:nih-ods
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 0
+      lineRole: BLEND_TOTAL
+      amount: 7388
+      unitCode: mg
+      amountReferent: BLEND_TOTAL
+      amountBasis: PER_SERVING
+    locators:
+      - ref: G07
+        selectorKind: JSON_POINTER
+        source: dsld-262237
+        snapshotDigest: sha256:6ed5982c512783e2dacc0437f87787167d52118c8e52a63790a94118e0ceb08a
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:58:50Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'Alkaline, Nutrient-Dense Raw Superfood Complex'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the g01 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-proprietary-blend-ag1
+  - id: gdc02
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:ag1-us-dsld-262237
+      type: D6.LabelVersion
+    object:
+      uid: hu:material:ag1-blend-nutrient-dense-extracts
+      type: D1.IngredientMaterial
+    asserter:
+      uid: hu:org:nih-ods
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 1
+      lineRole: BLEND_TOTAL
+      amount: 2732
+      unitCode: mg
+      amountReferent: BLEND_TOTAL
+      amountBasis: PER_SERVING
+    locators:
+      - ref: G04
+        selectorKind: JSON_POINTER
+        source: dsld-262237
+        snapshotDigest: sha256:6ed5982c512783e2dacc0437f87787167d52118c8e52a63790a94118e0ceb08a
+      - ref: G05
+        selectorKind: JSON_POINTER
+        source: dsld-262237
+        snapshotDigest: sha256:6ed5982c512783e2dacc0437f87787167d52118c8e52a63790a94118e0ceb08a
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:58:50Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'Nutrient Dense Extracts, Herbs & Antioxidants'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the g01 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-proprietary-blend-ag1
+  - id: gdc03
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:ag1-us-dsld-262237
+      type: D6.LabelVersion
+    object:
+      uid: hu:material:ashwagandha-root-extract
+      type: D1.IngredientMaterial
+    asserter:
+      uid: hu:org:nih-ods
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 2
+      parentOrderIndex: 1
+      lineRole: BLEND_MEMBER
+      amountReferent: NOT_DECLARED
+    locators:
+      - ref: G06
+        selectorKind: JSON_POINTER
+        source: dsld-262237
+        snapshotDigest: sha256:6ed5982c512783e2dacc0437f87787167d52118c8e52a63790a94118e0ceb08a
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:58:50Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'Ashwagandha Root Extract'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the g01 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-proprietary-blend-ag1
+  - id: gdc04
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:ag1-us-dsld-262237
+      type: D6.LabelVersion
+    object:
+      uid: hu:material:rhodiola-rosea-root-dry-extract
+      type: D1.IngredientMaterial
+    asserter:
+      uid: hu:org:nih-ods
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 3
+      parentOrderIndex: 1
+      lineRole: BLEND_MEMBER
+      amountReferent: NOT_DECLARED
+    locators:
+      - ref: G11
+        selectorKind: JSON_POINTER
+        source: dsld-262237
+        snapshotDigest: sha256:6ed5982c512783e2dacc0437f87787167d52118c8e52a63790a94118e0ceb08a
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:58:50Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'Rhodiola (Rhodiola rosea) root dry extract'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the g01 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-proprietary-blend-ag1
+  - id: gdc05
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:ag1-us-dsld-262237
+      type: D6.LabelVersion
+    object:
+      uid: hu:material:ag1-blend-dairy-free-probiotics
+      type: D1.IngredientMaterial
+    asserter:
+      uid: hu:org:nih-ods
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 4
+      lineRole: BLEND_TOTAL
+      amount: 38
+      unitCode: mg
+      amountReferent: BLEND_TOTAL
+      amountBasis: PER_SERVING
+    locators:
+      - ref: G08
+        selectorKind: JSON_POINTER
+        source: dsld-262237
+        snapshotDigest: sha256:6ed5982c512783e2dacc0437f87787167d52118c8e52a63790a94118e0ceb08a
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:58:50Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'Dairy Free Probiotics'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the g01 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-proprietary-blend-ag1
+  - id: gdc06
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:ag1-us-dsld-323512
+      type: D6.LabelVersion
+    object:
+      uid: hu:material:ag1-blend-superfood-complex
+      type: D1.IngredientMaterial
+    asserter:
+      uid: hu:org:nih-ods
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 0
+      lineRole: BLEND_TOTAL
+      amount: 7388
+      unitCode: mg
+      amountReferent: BLEND_TOTAL
+      amountBasis: PER_SERVING
+    locators:
+      - ref: G28
+        selectorKind: JSON_POINTER
+        source: dsld-323512
+        snapshotDigest: sha256:ba2abab0b86cf546ebb3d87b0c341009affeb75cca7e34d6c4f386deca5fe16b
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:58:50Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'Alkaline, Nutrient-Dense Raw Superfood Complex'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the g02 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-proprietary-blend-ag1
+  - id: gdc07
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:ag1-us-dsld-323512
+      type: D6.LabelVersion
+    object:
+      uid: hu:material:ag1-blend-nutrient-dense-extracts
+      type: D1.IngredientMaterial
+    asserter:
+      uid: hu:org:nih-ods
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 1
+      lineRole: BLEND_TOTAL
+      amount: 2732
+      unitCode: mg
+      amountReferent: BLEND_TOTAL
+      amountBasis: PER_SERVING
+    locators:
+      - ref: G23
+        selectorKind: JSON_POINTER
+        source: dsld-323512
+        snapshotDigest: sha256:ba2abab0b86cf546ebb3d87b0c341009affeb75cca7e34d6c4f386deca5fe16b
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:58:50Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'Nutrient Dense Extracts, Herbs & Antioxidants'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the g02 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-proprietary-blend-ag1
+  - id: gdc08
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:ag1-us-dsld-323512
+      type: D6.LabelVersion
+    object:
+      uid: hu:material:ashwagandha-root-extract
+      type: D1.IngredientMaterial
+    asserter:
+      uid: hu:org:nih-ods
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 2
+      parentOrderIndex: 1
+      lineRole: BLEND_MEMBER
+      amountReferent: NOT_DECLARED
+    locators:
+      - ref: G24
+        selectorKind: JSON_POINTER
+        source: dsld-323512
+        snapshotDigest: sha256:ba2abab0b86cf546ebb3d87b0c341009affeb75cca7e34d6c4f386deca5fe16b
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:58:50Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'Ashwagandha Root Extract'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the g02 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-proprietary-blend-ag1
+  - id: gdc09
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:ag1-us-dsld-323512
+      type: D6.LabelVersion
+    object:
+      uid: hu:material:ag1-blend-dairy-free-probiotics
+      type: D1.IngredientMaterial
+    asserter:
+      uid: hu:org:nih-ods
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 3
+      lineRole: BLEND_TOTAL
+      amount: 54
+      unitCode: mg
+      amountReferent: BLEND_TOTAL
+      amountBasis: PER_SERVING
+    locators:
+      - ref: G25
+        selectorKind: JSON_POINTER
+        source: dsld-323512
+        snapshotDigest: sha256:ba2abab0b86cf546ebb3d87b0c341009affeb75cca7e34d6c4f386deca5fe16b
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:58:50Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'Dairy Free Probiotics'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the g02 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-proprietary-blend-ag1
+  - id: gdc10
+    predicate: DECLARES_COMPONENT
+    assertionKind: RELATIONSHIP
+    relationship: DECLARES_COMPONENT
+    subject:
+      uid: hu:label-version:ag1-us-dsld-323512
+      type: D6.LabelVersion
+    object:
+      uid: hu:material:calcium-carbonate
+      type: D1.IngredientMaterial
+    asserter:
+      uid: hu:org:nih-ods
+      type: D7.Organization
+    edgeProperties:
+      orderIndex: 4
+      lineRole: SOURCE_INGREDIENT
+      amountReferent: NOT_DECLARED
+    locators:
+      - ref: G27
+        selectorKind: JSON_POINTER
+        source: dsld-323512
+        snapshotDigest: sha256:ba2abab0b86cf546ebb3d87b0c341009affeb75cca7e34d6c4f386deca5fe16b
+    validTime:
+      validFrom: null
+      validFromBasis: UNKNOWN
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:58:50Z"
+    status: EXTRACTED
+    speechAct: STATES
+    polarity: POSITIVE
+    qualifiers: ["declaredName:'Calcium Carbonate'", "per-line declaration Assertion (adversarial-review stage; was a structural line): valid time rides on the g02 HAS_LABEL_VERSION episode; edge carries recorded time only (ComponentLineProperties)"]
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-proprietary-blend-ag1
+identifierAssertions:
+  - id: i70
+    predicate: HAS_IDENTIFIER
+    subject:
+      uid: hu:label-version:ag1-us-dsld-262237
+      type: D6.LabelVersion
+    scheme: DSLD
+    issuer: "NIH ODS"
+    value: "262237"
+    printedForm: "262237"
+    asserter:
+      uid: hu:org:nih-ods
+      type: D7.Organization
+    locators:
+      - ref: G12
+        selectorKind: JSON_POINTER
+        source: dsld-262237
+        snapshotDigest: sha256:6ed5982c512783e2dacc0437f87787167d52118c8e52a63790a94118e0ceb08a
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:58:50Z"
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-proprietary-blend-ag1
+  - id: i71
+    predicate: HAS_IDENTIFIER
+    subject:
+      uid: hu:label-version:ag1-us-dsld-323512
+      type: D6.LabelVersion
+    scheme: DSLD
+    issuer: "NIH ODS"
+    value: "323512"
+    printedForm: "323512"
+    asserter:
+      uid: hu:org:nih-ods
+      type: D7.Organization
+    locators:
+      - ref: G30
+        selectorKind: JSON_POINTER
+        source: dsld-323512
+        snapshotDigest: sha256:ba2abab0b86cf546ebb3d87b0c341009affeb75cca7e34d6c4f386deca5fe16b
+    validTime:
+      validFrom: null
+      validFromBasis: OBSERVATION_ONLY
+      validTo: null
+      validToBasis: UNKNOWN
+      observedAtPerOBSERVED_AT: "2026-10-08T20:58:50Z"
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-proprietary-blend-ag1
+assessments:
+  - id: as70
+    assessmentKind: OTHER
+    assessmentSubkind: D6.change-kind
+    conclusionCode: FORMULATION
+    status: PROPOSED
+    methodVersion: d6-change-kind/v1
+    about:
+      - uid: hu:label-version:ag1-us-dsld-262237
+        type: D6.LabelVersion
+      - uid: hu:label-version:ag1-us-dsld-323512
+        type: D6.LabelVersion
+      - uid: hu:package:ag1-360g
+        type: D6.Package
+      - uid: hu:package:ag1-350g
+        type: D6.Package
+    inputAssertions: [g01, g02]
+    evidence:
+      - locator: G08
+        role: SUPPORTS
+      - locator: G25
+        role: SUPPORTS
+      - locator: G27
+        role: SUPPORTS
+      - locator: G01
+        role: SUPPORTS
+      - locator: G20
+        role: SUPPORTS
+      - locator: G02
+        role: CONTEXT
+      - locator: G21
+        role: CONTEXT
+    summary: "compositionDigest 262237 sha256:817f88675da6... != 323512 sha256:338d4d34d880... (rule d6-composition-digest/v1, provisional target keys = normalized DSLD names). Declared amount changed: Dairy Free Probiotics 38 mg -> 54 mg. Line keys (normalized name + form names) only in 262237 (16): Acerola fruit juice powder extract, Astragalus (Astragalus membranaceus) root powder extract, Beet root powder, Broccoli flower powder, Burdock root powder, Calcium, Calcium Citrate, Citrus Bioflavonoids extract, Cocoa bean polyphenol extract, Dandelion whole plant dry concentrate, Folate, Phosphorus, Potassium Phosphate, Rhodiola (Rhodiola rosea) root dry extract, Rose Hips Fruit Powder, organic Barley (Hordeum vulgare) leaf powder. Line keys only in 323512 (19): Acerola Fruit Juice Extract, Powder, Astragalus Root Extract, Powder, Barley, Powder, Beet, Powder, Broccoli, Powder, Burdock, Powder, Calcium, Calcium Carbonate, Calcium Citrate, Calcium Phosphate, Calcium Phosphate, Citrus Bioflavonoids, Cocoa Bean Extract, Dandelion Whole Plant Concentrate, Dry, Folate, Phosphorus, Potassium Phosphate, Rhodiola Root Extract, Dry, Rose Hips, Powder. Several of these are DSLD spelling variants of the same member (e.g. 'Citrus Bioflavonoids extract' vs 'Citrus Bioflavonoids'); the decisive differences are the probiotic blend total and the added calcium sources. Package: net contents 360 g -> 350 g at the same 12 g serving and 30 servings; maxDailyServings 1 -> not stated."
+    rationale: "d6-change-kind/v1: compositionDigest differs and at least one declared amount differs -> FORMULATION (here together with a net-contents change, which by the 06 identity rule is also a new Package). Corrects the research-stage reading of FC-8 as packaging-only."
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-proprietary-blend-ag1-assess
+  - id: as71
+    assessmentKind: APPLICABILITY
+    assessmentSubkind: D6.blend-disclosure-rule
+    conclusionCode: BLEND_TOTAL_ONLY_PERMITTED
+    status: PROPOSED
+    methodVersion: d6-blend-rule/v1
+    about:
+      - uid: hu:label-version:ag1-us-dsld-262237
+        type: D6.LabelVersion
+      - uid: hu:label-version:ag1-us-dsld-323512
+        type: D6.LabelVersion
+    evidence:
+      - locator: G40
+        role: SUPPORTS
+      - locator: G06
+        role: SUPPORTS
+      - locator: G24
+        role: SUPPORTS
+    summary: "21 CFR 101.36(c) lets a proprietary blend declare only its total weight; AG1 declares Ashwagandha Root Extract and Rhodiola root extract only as members of the 2,732 mg \"Nutrient Dense Extracts, Herbs & Antioxidants\" blend per 12 g serving, so their per-serving amounts cannot be known from the label (Q-D6-08; harm input for Q-D6-22 via the D1 ashwagandha harm fixture)."
+    producedBy:
+      missionId: mission:ft-D6-fixtures
+      runId: run:ft-D6-proprietary-blend-ag1-assess

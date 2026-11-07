@@ -1,0 +1,16 @@
+"""
+Derived edge (recorded time only): a regenerable, read-only projection rebuilt by a projection Activity. Exactly
+one citation form: `projectionOfAssertionUid` (1:1), or `derivationRule` + `derivedFromAssertionUids`, or
+`derivationRule` + `derivedFromAssessmentUids`. `derivationRule` names method and version (e.g.
+`entity-link/v2`). A base type of the domain-local superset rule (M11, R-47).
+"""
+type DerivedEdgeProperties @relationshipProperties {
+  projectionOfAssertionUid: String
+  derivationRule: String
+  derivedFromAssertionUids: [String!]
+  derivedFromAssessmentUids: [String!]
+  "Retrieval score of the method only (entity-link confidence, span overlap); never evidence, never a truth value, and never set on an edge between two domain entities (00-DIRECTIVE 3.6; executor-validated null there)."
+  score: Float
+  derivedAt: DateTime
+  lastWriterRunId: String
+}

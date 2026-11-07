@@ -1,0 +1,868 @@
+# ---- fragment D3 ----
+# Module D3 — clinical and preclinical evidence. Wave 2 (model stage) by A4, 2026-10-08.
+# Kernel pattern: packets/K/09-reasoning.md (A1, published 2026-10-08); template packets/K/domain-template.graphql.
+# 8 node types · 14 relationship types · 31 from→to pairs (= packet-check field-pairs; the two inverse navigation fields
+# Study.publications and OutcomeDefinition.results were removed in the adversarial-review stage, 2026-10-08).
+# Edge-property types (kernel rule M10/M11, packets/K/09-reasoning.md "Edge-property types"): asserted edges no question
+# reads in valid time use kernel AssertedRecordedProperties (STATED_IN, ADMINISTERS, MEASURES, REPORTS_ON, INVESTIGATES);
+# two module types are supersets of a kernel base with one filterable qualifier each: StudyRoleEdgeProperties
+# (AssertedEdgeProperties + roleKind, bitemporal) and RevisionEdgeProperties (AssertedRecordedProperties + revisionKind,
+# typed with the kernel enum SourceRevisionKind since the adversarial-review stage).
+# Source wording (role label, Retraction Watch reasons) stays in Assertion.qualifiers (kernel rule: verbatim text is not
+# an edge field). Check stage 2026-10-08.
+# Every node: implements Entity & Subjectable, 7 Entity fields verbatim, @query(aggregate: false), @mutation(operations: []).
+# Every @relationship: aggregate: false, nestedOperations declared, @filterable(byValue: true, byAggregate: false).
+# Not declared here (kernel pattern): subject/object/assertedBy, identifiers, mentions, generatedBy, evidence. Assessments
+# (applicability, synthesis, strength, endpoint classification, interpretation) are kernel Assessment nodes that ASSESS
+# these types (10-seams.yaml). Edges into this module owned by other modules: D13 Frontier.studies (ON_FRONTIER, IN) and
+# D2 MechanismEvidenceContext (IN_STUDY_ARM) are declared by their owners.
+# Seam target names checked against sibling SDL in worktrees A2/A3/A5/A6/A7/A8 on 2026-10-08.
+# Per-source rule: registry and paper are separate asserters. StudyArm, StudyPopulation and StudyResult are one node per
+# source family (registry + registrationId, or one publication) and payload: versions of the same registry that state an
+# identical payload share the node through several STATED_IN episodes; values from two source families are never merged.
+# OutcomeDefinition is the exception: one node per (study, outcomeKey, priority), shared by every source that declares
+# it, each declaration a STATED_IN episode (adversarial-review stage, 2026-10-08).
+# Neutral result fields (directive 3.2, adversarial-review stage): StudyResult.direction is the EstimateDirection of the
+# point estimate (INCREASED / DECREASED ...), never IMPROVED / WORSENED; statisticalConclusion has no favorable /
+# unfavorable values. Benefit or harm is a D3.result-interpretation Assessment (effectDirection) or a D5 target assertion.
+# Synthesis (S module editor, 2026-10-08; final/decision-report.md, final/_work/rulings.yaml modules.D3):
+#   R-10  HAS_REGISTRATION_VERSION uses AssertedEdgeProperties (StateEpisodeProperties removed); exclusivity is the
+#         register field `exclusive: true`.
+#   R-43  Publication.renditions: kernel-meaning RENDITION_OF (Source -> Publication, direction IN,
+#         AssertedRecordedProperties, [CONNECT]); registered by D3.
+#   R-44  enum PublicationRevisionStatus removed; Publication.revisionStatus typed by kernel SourceRevisionKind (null =
+#         none known), the single work-level cache over REVISES and HAS_REVISION_STATUS.
+#   R-58  enum QuantityBasis removed; InterventionComponent.quantityBasis typed by D6 AmountBasis; AdministrationRoute
+#         adds IN_MEDIUM and INTRAPERITONEAL.
+#   R-70  OutcomeDefinition docstring: D5 TargetMeasure = Biomarker | Metric | Outcome | Condition.
+#   R-71  Publication.venueName: venue name only, no container node.
+#   R-72  AdministeredMaterial drops D4 Device (6 -> 5 members).
+#   After synthesis: 8 node types; 15 relationship types declared here (14 D3-owned + kernel-meaning RENDITION_OF,
+#   counted once in K under R-01); 31 field-pairs (−1 ADMINISTERS -> Device, +1 RENDITION_OF).
+
+# =====================================================================================================
+# Enums (controlled vocabularies of this module)
+# =====================================================================================================
+
+"Design of a study (identity-level; per-version registry design fields live on RegistrationVersion). A systematic review or meta-analysis is a Study when it reports pooled results; its versions are Publications."
+enum StudyKind {
+  INTERVENTIONAL_RANDOMIZED
+  INTERVENTIONAL_NONRANDOMIZED
+  INTERVENTIONAL_SINGLE_GROUP
+  OBSERVATIONAL_COHORT
+  OBSERVATIONAL_CASE_CONTROL
+  CROSS_SECTIONAL
+  CASE_REPORT
+  CASE_SERIES
+  PRECLINICAL_IN_VIVO
+  PRECLINICAL_IN_VITRO
+  SYSTEMATIC_REVIEW
+  META_ANALYSIS
+  OTHER
+}
+
+"Trial phase as registered (ClinicalTrials.gov vocabulary)."
+enum TrialPhase {
+  NOT_APPLICABLE
+  EARLY_PHASE_1
+  PHASE_1
+  PHASE_1_2
+  PHASE_2
+  PHASE_2_3
+  PHASE_3
+  PHASE_4
+}
+
+"Registry that issued the registration a version belongs to."
+enum RegistryKind {
+  CTGOV
+  ISRCTN
+  EU_CTR
+  EUDRACT
+  ANZCTR
+  CHICTR
+  DRKS
+  JRCT
+  CTRI
+  WHO_ICTRP
+  OTHER
+}
+
+"Recruitment status as a registry version states it (non-CTG vocabularies map here; the verbatim value is kept)."
+enum RegistryStatus {
+  NOT_YET_RECRUITING
+  RECRUITING
+  ENROLLING_BY_INVITATION
+  ACTIVE_NOT_RECRUITING
+  SUSPENDED
+  TERMINATED
+  COMPLETED
+  WITHDRAWN
+  UNKNOWN
+  OTHER
+}
+
+"How a RegistrationVersion entered the graph: captured by BellLabs (its own snapshot) or reconstructed from a dated history statement inside a later snapshot (ISRCTN 'Amended dd/mm/yyyy', editorial notes)."
+enum VersionPopulatingMode {
+  OBSERVED
+  RECONSTRUCTED
+}
+
+enum EnrollmentCountType {
+  ACTUAL
+  ESTIMATED
+}
+
+enum RegistryDateType {
+  ACTUAL
+  ANTICIPATED
+}
+
+enum AllocationKind {
+  RANDOMIZED
+  NON_RANDOMIZED
+  NOT_APPLICABLE
+  NOT_REPORTED
+}
+
+enum MaskingKind {
+  NONE
+  SINGLE
+  DOUBLE
+  TRIPLE
+  QUADRUPLE
+  NOT_REPORTED
+}
+
+"Arm type as the stating source labels it."
+enum ArmType {
+  EXPERIMENTAL
+  ACTIVE_COMPARATOR
+  PLACEBO_COMPARATOR
+  SHAM_COMPARATOR
+  NO_INTERVENTION
+  OTHER
+}
+
+"Role of one administered component inside an arm."
+enum ComponentRole {
+  ACTIVE
+  PLACEBO
+  ACTIVE_COMPARATOR
+  SHAM
+  BACKGROUND
+  CO_INTERVENTION
+}
+
+"Route of administration as stated. IN_MEDIUM: added to the culture medium (cell-free and in-vitro work; amount basis MEDIUM_CONCENTRATION, R-58)."
+enum AdministrationRoute {
+  ORAL
+  SUBLINGUAL
+  DIETARY_ADMIXTURE
+  INTRAVENOUS
+  SUBCUTANEOUS
+  INTRAMUSCULAR
+  INTRAVITREAL
+  TOPICAL
+  INHALED
+  INTRANASAL
+  INTRAPERITONEAL
+  IN_MEDIUM
+  OTHER
+  NOT_REPORTED
+}
+
+enum StudyPopulationKind {
+  ELIGIBLE
+  ENROLLED
+  RANDOMIZED
+  ANALYZED
+}
+
+enum AnalysisSetKind {
+  INTENTION_TO_TREAT
+  MODIFIED_INTENTION_TO_TREAT
+  PER_PROTOCOL
+  SAFETY_SET
+  COMPLETERS
+  OTHER
+  NOT_REPORTED
+}
+
+enum SexScope {
+  ALL
+  FEMALE
+  MALE
+  NOT_REPORTED
+}
+
+"Priority one source declares for an outcome (registry version or publication)."
+enum OutcomePriority {
+  PRIMARY
+  SECONDARY
+  OTHER_PRESPECIFIED
+  EXPLORATORY
+  POST_HOC
+  SAFETY
+}
+
+"What kind of measure an outcome is (FDA COA taxonomy plus clinical events, survival and adverse events)."
+enum MeasureKind {
+  BIOMARKER
+  PERFORMANCE_OUTCOME
+  PATIENT_REPORTED_OUTCOME
+  CLINICIAN_REPORTED_OUTCOME
+  OBSERVER_REPORTED_OUTCOME
+  CLINICAL_EVENT
+  SURVIVAL
+  ADVERSE_EVENT
+}
+
+"Effect measure or summary a result reports."
+enum StudyResultKind {
+  MEAN
+  MEDIAN
+  MEAN_DIFFERENCE
+  PERCENT_CHANGE
+  RATIO
+  RISK_RATIO
+  ODDS_RATIO
+  HAZARD_RATIO
+  RISK_DIFFERENCE
+  RATE
+  AREA_UNDER_CURVE
+  PROPORTION
+  ADVERSE_EVENT_COUNT
+  OTHER
+}
+
+"Confirmatory status of an analysis as the stating source declares it."
+enum AnalysisKind {
+  PRIMARY_PRESPECIFIED
+  SECONDARY_PRESPECIFIED
+  SUBGROUP_PRESPECIFIED
+  SUBGROUP_POST_HOC
+  EXPLORATORY
+  SAFETY
+}
+
+enum ComparisonKind {
+  BETWEEN_ARM
+  WITHIN_ARM_CHANGE
+  ARM_DESCRIPTIVE
+}
+
+"Statistical conclusion as stated by the source (never recomputed into this field); carries no favorable / unfavorable judgment (directive 3.2)."
+enum StatisticalConclusion {
+  SIGNIFICANT
+  NOT_SIGNIFICANT
+  NOT_TESTED
+  NOT_REPORTED
+}
+
+"""
+Direction of the reported point estimate relative to the comparator arm (BETWEEN_ARM) or to baseline (WITHIN_ARM_CHANGE):
+ratios against 1, differences and changes against 0. Read off the stated estimate (no recomputation of significance);
+NO_CHANGE only when the estimate equals the null value; UNKNOWN when no estimate is stated. For an event-risk result
+kind (HAZARD_RATIO, RISK_RATIO, ODDS_RATIO, RISK_DIFFERENCE, RATE, PROPORTION, ADVERSE_EVENT_COUNT) on an outcome of
+measureKind CLINICAL_EVENT, SURVIVAL or ADVERSE_EVENT, INCREASED means more events on the intervention (the Q-D3-05
+event-risk reading, d3-event-risk-reading/v1, applied at query time); for a survival time (MEAN / MEDIAN / PERCENT_CHANGE
+of lifespan) INCREASED means longer survival. Never a benefit / harm verdict (directive 3.2): that is a
+D3.result-interpretation Assessment (effectDirection) or a D5 target assertion. Replaces the pinned OutcomeDirection
+(IMPROVED / WORSENED).
+"""
+enum EstimateDirection {
+  INCREASED
+  DECREASED
+  NO_CHANGE
+  MIXED
+  UNKNOWN
+}
+
+"Kind of spread or interval the source reports around the estimate."
+enum DispersionKind {
+  CONFIDENCE_INTERVAL
+  STANDARD_DEVIATION
+  STANDARD_ERROR
+  INTERQUARTILE_RANGE
+  FULL_RANGE
+  NOT_REPORTED
+}
+
+enum EstimateQualifier {
+  AS_REPORTED
+  APPROXIMATE
+  READ_FROM_FIGURE
+  CALCULATED_BY_BELLLABS
+}
+
+enum AeSeriousness {
+  ANY
+  SERIOUS
+  NON_SERIOUS
+}
+
+enum AeCollectionMethod {
+  SYSTEMATIC
+  SPONTANEOUS
+  NOT_DESCRIBED
+}
+
+"Kind of scholarly work. Notices are their own Publications; the revision they make is REVISES."
+enum PublicationKind {
+  ARTICLE
+  PREPRINT
+  SYSTEMATIC_REVIEW
+  PROTOCOL
+  ANALYSIS_PLAN
+  CONFERENCE_ABSTRACT
+  CORRECTION_NOTICE
+  RETRACTION_NOTICE
+  EXPRESSION_OF_CONCERN
+  WITHDRAWAL_NOTICE
+  COMMENT
+  OTHER
+}
+
+"Role a party holds toward a study as one source states it (CTG sponsor/collaborators/responsible party, ISRCTN sponsor/funders, paper funding and acknowledgement sections). FUNDING_AWARD points at a D7 Award."
+enum StudyRoleKind {
+  LEAD_SPONSOR
+  SPONSOR
+  COLLABORATOR
+  FUNDER
+  FUNDING_AWARD
+  MATERIAL_PROVIDER
+  CRO
+  SITE
+  PRINCIPAL_INVESTIGATOR
+  RESPONSIBLE_PARTY
+  OTHER
+}
+
+
+# =====================================================================================================
+# Edge-property types of this module (superset of one kernel base type, base fields verbatim first + one qualifier)
+# =====================================================================================================
+
+"""
+HAS_STUDY_ROLE episode: AssertedEdgeProperties fields verbatim (bitemporal, one authorizing Assertion) plus the role a
+question filters on (Q-D3-08, Q-D3-09, D7 Q-D7-05). Valid time is read (sponsors and funders change; a registry's own record
+correction, e.g. ISRCTN removing Bayer as funder on 22/08/2018, is record time: it supersedes the listing Assertion and
+never closes a valid-time episode). The role label as printed ('Lead Sponsor', 'provided the study drug') is
+`Assertion.qualifiers` `roleText:<label>`, not an edge field. Every field executor-set.
+"""
+type StudyRoleEdgeProperties @relationshipProperties {
+  relationshipUid: String!
+  assertionUid: String!
+  validFrom: DateTime
+  validTo: DateTime
+  validFromPrecision: TimePrecision
+  validToPrecision: TimePrecision
+  validFromBasis: ValidTimeBasis!
+  validToBasis: ValidTimeBasis!
+  recordedFrom: DateTime!
+  recordedTo: DateTime
+  lastWriterRunId: String
+  roleKind: StudyRoleKind!
+}
+
+"""
+REVISES episode: AssertedRecordedProperties fields verbatim (no question reads its valid time; the notice date is the
+revising Publication's publishedAt and the Assertion's valid time) plus the revision kind as this asserter states it, so
+that one notice labelled 'retraction' by Retraction Watch and 'erratum' by the publisher stays two typed, filterable
+episodes (CQ-EV-05). The asserter's stated reasons are `Assertion.qualifiers` `reason:<text>`, not an edge field.
+revisionKind uses the kernel enum SourceRevisionKind (one vocabulary with the kernel's HAS_REVISION_STATUS convention):
+publisher 'erratum' / correction -> ERRATUM; preprint -> journal version and review pub1 -> pub2 -> NEW_VERSION (the two
+ends' publicationKind tell them apart). REVISES is recorded when the revising work is identified (a notice or newer
+version with a DOI or PMID), one episode per asserter; a status flag without an identified notice (OpenAlex
+is_retracted) is a kernel HAS_REVISION_STATUS Assertion, not a REVISES episode, and one (asserter, notice) is never
+recorded both ways (R-44).
+"""
+type RevisionEdgeProperties @relationshipProperties {
+  relationshipUid: String!
+  assertionUid: String!
+  recordedFrom: DateTime!
+  recordedTo: DateTime
+  lastWriterRunId: String
+  revisionKind: SourceRevisionKind!
+}
+
+# =====================================================================================================
+# Unions (≤ 6 members each)
+# =====================================================================================================
+
+"What an intervention component administered: D1 material, D6 product variant, D5 intervention (lifestyle or named regimen), D12 food or dietary pattern (an eating pattern is administered as a DietaryPattern, R-63). A device used as a trial intervention is a ProductVariant (the D6 Product DELIVERS the D4 Device) or a D5 Intervention (R-72)."
+union AdministeredMaterial = IngredientMaterial | ProductVariant | Intervention | FoodItem | DietaryPattern
+
+"The two kinds of record that state a per-source study element."
+union StatingRecord = RegistrationVersion | Publication
+
+"What an outcome definition measures: D4 metric or biomarker, D2 outcome (study-independent endpoint concept: all-cause mortality, lifespan, VO2max), D2 condition (incident disease and adverse-event terms)."
+union OutcomeMeasureTarget = Metric | Biomarker | Outcome | Condition
+
+"Who or what holds a role toward a study: a D7 Organization, a D7 Person (sponsor-investigator: NCT04313634 lead sponsor 'Sundeep Khosla, M.D.'; investigators) or a D7 Award (FUNDING_AWARD)."
+union StudyParty = Organization | Person | Award
+
+# =====================================================================================================
+# Study and its registry history
+# =====================================================================================================
+
+"""
+Purpose: one investigation (trial, cohort, preclinical experiment, systematic review) independent of how many
+registrations, versions and papers describe it; the join point of every D3 question (arms, outcomes, results, sponsor,
+registry history, papers) and the D13 frontier attachment; HAS_STUDY_ROLE and INVESTIGATES make it the entry point from a company,
+funder, award or condition. Also absorbs pinned TrialRegistration (registration ids are
+kernel Identifiers; the registry history is RegistrationVersion) and Dataset (a reused cohort or IPD set is a Study of
+kind OBSERVATIONAL_COHORT that secondary analyses REPORT_ON).
+Identity rule: any registry identifier (NCT, ISRCTN, EUCT, EUDRACT) attached through the kernel; two registrations of one
+trial (NCT01038583 = ISRCTN83772183) are two Identifiers on one Study. Unregistered studies: (first reporting
+publication DOI or PMID, studyKind, normalized design label, e.g. ITP cohort + compound).
+uid token: `study` (hu:study:<opaque>).
+Status fields are a read-only projection cache of the latest open HAS_REGISTRATION_VERSION episode (method in
+projectionMethodVersion, e.g. study-registry-projection/v1; source uid in projectionOfRegistrationVersionUid; written by a
+PROJECTION Activity at projectionDerivedAt); authority is the RegistrationVersion.
+Questions: CQ-ST-01, CQ-ST-04, CQ-ST-07, CQ-ST-08, Q-D3-02, Q-D3-04, Q-D3-06, Q-D3-08, Q-D3-09, Q-D3-10, Q-D3-11, Q-D3-18.
+"""
+type Study implements Entity & Subjectable
+  @node(labels: ["Study", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Design (filter: Q-D3-04 ranking, Q-D3-06 preclinical, CQ-ST-07)."
+  studyKind: StudyKind!
+  acronym: String @filterable(byValue: false) @sortable(byValue: false)
+  "Projection cache: phase of the latest registry version (Q-D3-10)."
+  phase: [TrialPhase!]
+  "Projection cache: status of the latest registry version (Q-D3-02, Q-D3-10, Q-D3-18)."
+  overallStatus: RegistryStatus
+  "Projection cache: expected or actual primary completion of the latest version (Q-D3-02, Q-D3-10)."
+  primaryCompletionDate: DateTime
+  primaryCompletionDateType: RegistryDateType @filterable(byValue: false) @sortable(byValue: false)
+  "Projection cache: true when the latest registry version has posted results (Q-D3-02)."
+  resultsPosted: Boolean
+  "uid of the RegistrationVersion the cache was projected from."
+  projectionOfRegistrationVersionUid: String @filterable(byValue: false) @sortable(byValue: false)
+  "Method version of the projection cache (directive rule 8)."
+  projectionMethodVersion: String @filterable(byValue: false) @sortable(byValue: false)
+  projectionDerivedAt: DateTime @filterable(byValue: false) @sortable(byValue: false)
+  """class: asserted (state attachment); cardinality: many (EXCLUSIVE per registry: one open valid-time episode per registry, register field exclusive: true, executor-enforced (R-10); reconstructed versions carry the registry's stated date as valid time); questions: CQ-ST-04, CQ-ST-08, Q-D3-02, Q-D3-16, Q-D3-18."""
+  registrationVersions: [RegistrationVersion!]!
+    @relationship(type: "HAS_REGISTRATION_VERSION", direction: OUT, properties: "AssertedEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: many (one per arm per stating source); questions: CQ-ST-01, Q-D3-01, Q-D3-05, Q-D3-06."""
+  arms: [StudyArm!]!
+    @relationship(type: "HAS_ARM", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: many (eligible / enrolled / randomized / analyzed per stating source); questions: Q-D3-17, Q-D3-06, Q-D3-04, Q-D3-07."""
+  populations: [StudyPopulation!]!
+    @relationship(type: "HAS_POPULATION", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: many (one per distinct measure, timepoint and declared priority); questions: CQ-ST-05, CQ-ST-03, Q-D3-04, Q-D3-16."""
+  outcomes: [OutcomeDefinition!]!
+    @relationship(type: "HAS_OUTCOME", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (one episode per party, role and asserting registry or paper; registries disagree: ASPREE lead sponsor Hennepin on CTG vs Monash on ISRCTN; D7 declares no inverse); questions: Q-D3-08, Q-D3-09, Q-D3-02, Q-D3-10."""
+  roles: [StudyParty!]!
+    @relationship(type: "HAS_STUDY_ROLE", direction: OUT, properties: "StudyRoleEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (conditions the registry or paper says the study investigates, resolved to D2 Condition; verbatim names stay on RegistrationVersion.conditionsVerbatim); questions: Q-D3-10."""
+  conditions: [Condition!]!
+    @relationship(type: "INVESTIGATES", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+"""
+Purpose: one version of one registration as a registry stated it at a point in valid time — status, enrollment
+(actual vs estimated), dates, results posting and submission events, design fields, verbatim sponsor/condition/
+intervention names. Two populating modes: OBSERVED (BellLabs captured the registry record; its own snapshot) and
+RECONSTRUCTED (a past version stated inside a later snapshot, e.g. ISRCTN 'Provided at time of registration' and
+'Amended 02/03/2009'), each attached to the Study by a HAS_REGISTRATION_VERSION episode whose Assertion cites the
+locator. Absorbs pinned TrialRegistration (registry, registrationId) and the registry side of ProtocolVersion.
+Implements Subjectable (unlike most state payloads) because it is the object of HAS_REGISTRATION_VERSION and STATED_IN
+Assertions (Assertion.object targets Subjectable).
+Identity rule: (registry, registrationId, versionNumber) when the registry numbers versions (CTG history index, ISRCTN
+XML version attribute); else (registry, registrationId, versionDate, populatingMode, payloadHash). Immutable.
+Field facts are cited by the HAS_REGISTRATION_VERSION attach Assertion, one locator per field (reportsField naming the
+field: overallStatus, enrollmentCount, masking, studyTypeVerbatim, resultsSubmissionEvents ...), the same rule as
+STATED_IN; no per-field predicates. Labels `Entity` like every other version type (D4 AssayVersion, D6 LabelVersion);
+the pinned VersionedState archetype label is dropped (adversarial-review stage).
+uid token: `registration-version`.
+Questions: CQ-ST-04, CQ-ST-08, Q-D3-02, Q-D3-16, Q-D3-18, Q-D3-10.
+"""
+type RegistrationVersion implements Entity & Subjectable
+  @node(labels: ["RegistrationVersion", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  registry: RegistryKind!
+  "Registration number as issued (NCT01038583, ISRCTN83772183)."
+  registrationId: String!
+  "Registry's own version counter when it has one."
+  versionNumber: Int
+  "Date the registry says this version took effect (CTG update posted, ISRCTN amendment date)."
+  versionDate: DateTime
+  versionDatePrecision: TimePrecision @filterable(byValue: false) @sortable(byValue: false)
+  populatingMode: VersionPopulatingMode!
+  "sha256:<hex> over the normalized version payload."
+  payloadHash: String! @filterable(byValue: false) @sortable(byValue: false)
+  officialTitle: String @filterable(byValue: false) @sortable(byValue: false)
+  acronym: String @filterable(byValue: false) @sortable(byValue: false)
+  overallStatus: RegistryStatus
+  overallStatusVerbatim: String @filterable(byValue: false) @sortable(byValue: false)
+  "Study type as the registry states it (CTG 'OBSERVATIONAL' for ASPREE vs ISRCTN 'Randomized controlled trial'; Q-D3-15)."
+  studyTypeVerbatim: String @filterable(byValue: false) @sortable(byValue: false)
+  whyStopped: String @filterable(byValue: false) @sortable(byValue: false)
+  enrollmentCount: Int
+  enrollmentCountType: EnrollmentCountType
+  firstSubmittedDate: DateTime @filterable(byValue: false) @sortable(byValue: false)
+  startDate: DateTime @filterable(byValue: false) @sortable(byValue: false)
+  startDateType: RegistryDateType @filterable(byValue: false) @sortable(byValue: false)
+  primaryCompletionDate: DateTime
+  primaryCompletionDatePrecision: TimePrecision @filterable(byValue: false) @sortable(byValue: false)
+  primaryCompletionDateType: RegistryDateType
+  completionDate: DateTime @filterable(byValue: false) @sortable(byValue: false)
+  completionDateType: RegistryDateType @filterable(byValue: false) @sortable(byValue: false)
+  resultsPosted: Boolean
+  resultsFirstPostedDate: DateTime @filterable(byValue: false) @sortable(byValue: false)
+  "Results submission events as stated (CTG annotation), e.g. RELEASE:2018-03-14, RESET:2018-10-12."
+  resultsSubmissionEvents: [String!] @filterable(byValue: false)
+  phase: [TrialPhase!] @filterable(byValue: false)
+  allocation: AllocationKind @filterable(byValue: false) @sortable(byValue: false)
+  masking: MaskingKind @filterable(byValue: false) @sortable(byValue: false)
+  primaryPurpose: String @filterable(byValue: false) @sortable(byValue: false)
+  interventionModel: String @filterable(byValue: false) @sortable(byValue: false)
+  conditionsVerbatim: [String!] @filterable(byValue: false)
+  interventionNamesVerbatim: [String!] @filterable(byValue: false)
+  sponsorNameVerbatim: String @filterable(byValue: false) @sortable(byValue: false)
+  collaboratorNamesVerbatim: [String!] @filterable(byValue: false)
+  funderNamesVerbatim: [String!] @filterable(byValue: false)
+  siteCountries: [String!] @filterable(byValue: false)
+}
+
+# =====================================================================================================
+# What was done to whom
+# =====================================================================================================
+
+"""
+Purpose: one arm or group of a study as one source states it (registry arms/groups, paper randomization groups) — the
+unit results, adverse events and administered components hang on. Absorbs pinned StudyIntervention (arm-level
+intervention facts are on its InterventionComponents). Registry and paper arms are separate nodes (NCT04313634 has a
+fisetin arm with a serious adverse event that the paper reports only as dropped), so Q-D3-01 is a set difference.
+Identity rule: (study, sourceFamily, armKey, payloadHash of arm + components); sourceFamily = registry + registrationId
+for registry versions, the work's DOI (else PMID) for a publication. Stable: a later version of the same registry that
+states an identical arm adds a STATED_IN episode to the same node; a changed arm is a new node.
+uid token: `study-arm`.
+Questions: CQ-ST-01, CQ-ST-06, Q-D3-01, Q-D3-15, CQ-ST-02.
+"""
+type StudyArm implements Entity & Subjectable
+  @node(labels: ["StudyArm", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  "Arm label as stated (e.g. 'Fisetin Treatment Group')."
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  armType: ArmType
+  "Normalized label used to match arms across sources (never identity across sources)."
+  armKey: String!
+  plannedSize: Int @filterable(byValue: false) @sortable(byValue: false)
+  description: String @filterable(byValue: false) @sortable(byValue: false)
+  payloadHash: String! @filterable(byValue: false) @sortable(byValue: false)
+  """class: structural; cardinality: one_or_more (none for NO_INTERVENTION); questions: CQ-ST-01, Q-D3-04, Q-D3-05, Q-D3-06."""
+  components: [InterventionComponent!]!
+    @relationship(type: "HAS_COMPONENT", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CREATE, CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: one_or_more (each registry version or publication that states this arm; the Assertion cites the locator); questions: Q-D3-01, Q-D3-15, CQ-ST-06."""
+  statedIn: [StatingRecord!]!
+    @relationship(type: "STATED_IN", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+"""
+Purpose: one administered thing inside one arm with its dose as stated — amount, unit, basis (per dose / day / kg diet),
+mass basis (salt vs moiety), form, route, schedule, duration, verbatim dose text, lot and supplier as stated — and the
+resolved material it administered (ADMINISTERS). A node rather than edge properties because the kernel edge-property
+types carry no dose fields and because assertions hang on it: measured delivery (ITP NR diet assayed at 67–89% of
+nominal), dose equivalence (PEARL compounded 5 mg ≈ 1.43 mg generic), material provider. Absorbs pinned
+InterventionComponent and the dose half of StudyIntervention.
+Identity rule: (arm, materialTextVerbatim normalized, componentRole, payloadHash).
+uid token: `intervention-component`.
+Questions: CQ-ST-01, CQ-ST-02, CQ-EV-04, Q-D3-04, Q-D3-06, Q-D3-07.
+"""
+type InterventionComponent implements Entity & Subjectable
+  @node(labels: ["InterventionComponent", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  componentRole: ComponentRole!
+  "What the source named (e.g. 'Nicotinamide riboside chloride, ChromaDex')."
+  materialTextVerbatim: String! @filterable(byValue: false) @sortable(byValue: false)
+  "Registry intervention type as stated (DRUG, DIETARY_SUPPLEMENT, DEVICE, BEHAVIORAL, ...)."
+  interventionTypeVerbatim: String @filterable(byValue: false) @sortable(byValue: false)
+  quantity: Float
+  "UCUM unit of quantity (mg, mg/kg, [ppm])."
+  unitCode: String
+  "D6 enum AmountBasis (owner D6, R-58; e.g. PER_DOSE, PER_DAY, PER_KG_DIET, MEDIUM_CONCENTRATION)."
+  quantityBasis: AmountBasis
+  "D1 enum MassBasis (owner D1; 10-seams.yaml sharedVocabularies)."
+  massBasis: MassBasis @filterable(byValue: false) @sortable(byValue: false)
+  route: AdministrationRoute
+  dosageForm: String @filterable(byValue: false) @sortable(byValue: false)
+  scheduleText: String @filterable(byValue: false) @sortable(byValue: false)
+  "ISO 8601 duration of administration (P20W)."
+  durationIso: String @filterable(byValue: false) @sortable(byValue: false)
+  verbatimDoseText: String @filterable(byValue: false) @sortable(byValue: false)
+  lotCodeVerbatim: String @filterable(byValue: false) @sortable(byValue: false)
+  supplierNameVerbatim: String @filterable(byValue: false) @sortable(byValue: false)
+  payloadHash: String! @filterable(byValue: false) @sortable(byValue: false)
+  """class: asserted; cardinality: zero_or_one (exactly one once resolved; unresolved components keep only materialTextVerbatim); questions: CQ-ST-01, CQ-ST-02, Q-D3-04, Q-D3-05, Q-D3-06."""
+  administers: [AdministeredMaterial!]!
+    @relationship(type: "ADMINISTERS", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+"""
+Purpose: who was eligible, enrolled, randomized or analyzed, as one source states it: size, sex and age bounds, healthy
+volunteers, species and strain for preclinical work (NCBI Taxonomy id as a string, so no taxon seam), eligibility and
+enrichment criteria text. Named by D5 target-effect Assertions through the kernel qualifier string `population:<uid>`
+(D5 vocab-targets.yaml 0.2.0; a string join, no edge), and assessed by the population dimension of applicability
+assessments. Replaces three pinned edges (eligible, enrolled, analyzed cohort).
+Identity rule: (study, sourceFamily, populationKind, analysisSet, payloadHash); sourceFamily as for StudyArm.
+uid token: `study-population`.
+Questions: Q-D3-17, Q-D3-06, CQ-EV-04, Q-D3-04.
+"""
+type StudyPopulation implements Entity & Subjectable
+  @node(labels: ["StudyPopulation", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  populationKind: StudyPopulationKind!
+  analysisSet: AnalysisSetKind
+  size: Int
+  sizeText: String @filterable(byValue: false) @sortable(byValue: false)
+  sexScope: SexScope
+  minAgeYears: Float
+  maxAgeYears: Float
+  ageText: String @filterable(byValue: false) @sortable(byValue: false)
+  healthyVolunteers: Boolean
+  "NCBI Taxonomy id (9606 human, 10090 mouse)."
+  ncbiTaxonId: String
+  "Strain or line (UM-HET3, C57BL/6J)."
+  strainOrLine: String
+  eligibilityCriteriaText: String @filterable(byValue: false) @sortable(byValue: false)
+  "Enrichment as stated (e.g. 'highest tertile of p16 expression')."
+  enrichmentText: String @filterable(byValue: false) @sortable(byValue: false)
+  payloadHash: String! @filterable(byValue: false) @sortable(byValue: false)
+  """class: asserted; cardinality: one_or_more; questions: Q-D3-17, Q-D3-11."""
+  statedIn: [StatingRecord!]!
+    @relationship(type: "STATED_IN", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+# =====================================================================================================
+# What was measured and what came out
+# =====================================================================================================
+
+"""
+Purpose: one outcome measure at one timepoint with one declared priority (the same measure at 2, 4 and 20 weeks is
+three definitions; a measure demoted from primary to secondary in a later version is a second definition with the same
+outcomeKey). Shared across sources (the exception to the per-source rule): every source that declares it gets a
+STATED_IN episode, so "which versions and which paper declared CTx at
+20 weeks as primary" is a traversal, and outcome switching (CQ-ST-04, Q-D3-16) is a group-by on outcomeKey. Adverse
+event terms are definitions of measureKind ADVERSE_EVENT so every StudyResult has exactly one definition. MEASURES links
+it to the D4 / D2 concept it measures, which is how study evidence reaches a D5 Target (D5 union TargetMeasure: Target
+-OPERATIONALIZED_BY-> Metric | Biomarker | D2 Outcome | D2 Condition; R-70).
+Identity rule: (study, outcomeKey = normalized measure title + normalized timepoint, priority).
+uid token: `outcome-definition`.
+Questions: CQ-ST-04, CQ-ST-05, CQ-ST-06, Q-D3-04, Q-D3-05, Q-D3-16, CQ-ST-03, Q-D3-14.
+"""
+type OutcomeDefinition implements Entity & Subjectable
+  @node(labels: ["OutcomeDefinition", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  "Measure title as first stated."
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  "Normalized measure + timepoint; equal across sources and versions for the same measure."
+  outcomeKey: String!
+  priority: OutcomePriority!
+  measureKind: MeasureKind!
+  "Timepoint or time frame as stated ('20 weeks', 'median 4.7 years')."
+  timepoint: String
+  description: String @filterable(byValue: false) @sortable(byValue: false)
+  """class: asserted; cardinality: one_or_more (each registration version and publication declaring this measure at this priority); questions: CQ-ST-04, CQ-ST-05, Q-D3-16."""
+  statedIn: [StatingRecord!]!
+    @relationship(type: "STATED_IN", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: zero_or_one (curated resolution of the measure; unresolved stays empty); questions: Q-D3-04, Q-D3-05, CQ-ST-03, CQ-ST-06."""
+  measures: [OutcomeMeasureTarget!]!
+    @relationship(type: "MEASURES", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+"""
+Purpose: one reported number set for one outcome definition, one arm set, one analysis set, as one source states it
+(registry results module row, paper table cell, abstract sentence, pooled review estimate). Two sources reporting the
+same estimate are two nodes (registry 'Full Range' vs paper interquartile range for one median; n analyzed 28 vs 30), so
+disagreement is visible and nothing is overwritten. Absorbs pinned AdverseEventResult (resultKind ADVERSE_EVENT_COUNT,
+seriousness, participants affected / at risk, collection method). The STATED_IN Assertion's locators trace every number
+(Q-D3-13). Filter properties per 02-questions.md: analysisKind, comparisonKind, statisticalConclusion, direction,
+resultKind, sampleSize, analysisPopulation, dispersionKind (new), subgroupLabel (new), seriousness, collectionMethod,
+participantsAffected;
+range comparisons on estimate / intervalLower / intervalUpper only for pooled results (Q-D3-11) and thresholds (CQ-ST-10).
+Identity rule: (outcome definition, arm set, analysisPopulation, subgroupLabel, timepoint, resultKind, sourceFamily,
+payloadHash); sourceFamily as for StudyArm, so a later registry version restating identical numbers adds a STATED_IN
+episode instead of a node.
+uid token: `study-result`.
+Questions: CQ-ST-05, CQ-ST-06, CQ-EV-03, Q-D3-01, Q-D3-04, Q-D3-05, Q-D3-06, Q-D3-11, Q-D3-13, Q-D3-15, CQ-ST-10.
+"""
+type StudyResult implements Entity & Subjectable
+  @node(labels: ["StudyResult", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  resultKind: StudyResultKind!
+  analysisKind: AnalysisKind!
+  comparisonKind: ComparisonKind!
+  statisticalConclusion: StatisticalConclusion!
+  "Direction of the point estimate (EstimateDirection: neutral, never benefit / harm)."
+  direction: EstimateDirection
+  analysisPopulation: AnalysisSetKind
+  sampleSize: Int
+  estimate: Float
+  estimateQualifier: EstimateQualifier @filterable(byValue: false) @sortable(byValue: false)
+  "UCUM unit of estimate and interval."
+  unitCode: String
+  dispersionKind: DispersionKind
+  "SD or SE value when dispersionKind is STANDARD_DEVIATION or STANDARD_ERROR."
+  dispersionValue: Float @filterable(byValue: false) @sortable(byValue: false)
+  "Bounds of a CI, IQR or full range (pinned ciLower / ciUpper)."
+  intervalLower: Float
+  intervalUpper: Float
+  "Confidence level of a CI (0.95)."
+  ciLevel: Float @filterable(byValue: false) @sortable(byValue: false)
+  pValue: Float @filterable(byValue: false) @sortable(byValue: false)
+  "p as printed ('<0.001', '0.611')."
+  pValueText: String @filterable(byValue: false) @sortable(byValue: false)
+  multiplicityAdjusted: Boolean @filterable(byValue: false) @sortable(byValue: false)
+  "Subgroup the result is restricted to, as stated ('female', 'site: UM', 'highest p16 tertile'); null = the whole analysis population (replaces pinned HAS_ANALYZED_COHORT for sex-, site- and enrichment-limited results)."
+  subgroupLabel: String
+  "armKey of the reference arm of a BETWEEN_ARM comparison."
+  comparatorArmKey: String @filterable(byValue: false) @sortable(byValue: false)
+  timepointText: String @filterable(byValue: false) @sortable(byValue: false)
+  "Verbatim result sentence or cell text."
+  resultText: String @filterable(byValue: false) @sortable(byValue: false)
+  seriousness: AeSeriousness
+  participantsAffected: Int
+  participantsAtRisk: Int @filterable(byValue: false) @sortable(byValue: false)
+  eventCount: Int @filterable(byValue: false) @sortable(byValue: false)
+  collectionMethod: AeCollectionMethod
+  """class: structural; cardinality: exactly_one; nestedOperations [CONNECT] by design: binds an OutcomeDefinition that HAS_OUTCOME already created (deviation from rule 3 recorded in 09-reasoning.md); questions: CQ-ST-05, Q-D3-04, Q-D3-05, CQ-ST-06."""
+  outcome: [OutcomeDefinition!]!
+    @relationship(type: "RESULT_FOR", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: structural; cardinality: one_or_more (one arm for descriptive and within-arm results, two or more for comparisons; the reference arm is comparatorArmKey); nestedOperations [CONNECT] by design: binds arms HAS_ARM already created; questions: CQ-ST-06, Q-D3-01, Q-D3-04."""
+  arms: [StudyArm!]!
+    @relationship(type: "RESULT_FOR_ARM", direction: OUT, properties: "StructuralEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: one_or_more (each record of the result's source family that states these numbers, usually one; its Assertion cites one locator per number); questions: Q-D3-13, Q-D3-15, CQ-ST-06."""
+  statedIn: [StatingRecord!]!
+    @relationship(type: "STATED_IN", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
+
+# =====================================================================================================
+# Scholarly works, their corrections and versions
+# =====================================================================================================
+
+"""
+Purpose: one scholarly work or one version of it — journal article, preprint version, systematic review version,
+protocol or analysis plan, conference abstract, correction / retraction / expression-of-concern / withdrawal notice —
+the unit that reports on studies, states arms, outcomes and results, and is corrected, retracted or superseded per
+asserter (REVISES). Its renditions (PubMed record, PMC JATS, DOI landing page, PDF) are kernel Sources grouped by the
+kernel-meaning RENDITION_OF (Source -> Publication, asserted, recorded-only; R-43), never by a cross-type join through a
+shared Identifier (R-42); locators live on their snapshots. Absorbs pinned ProtocolVersion
+(publicationKind PROTOCOL / ANALYSIS_PLAN). Owner D3 (R-71; D9 MediaWork excludes scholarly works). Authors are
+predicate-only AUTHORED_BY Assertions → D7 Person | Organization (registered by D3, R-80).
+Identity rule: DOI (+ versionLabel for preprint versions and review updates such as CD007176.pub2), else PMID, else PMCID,
+else (venue, title, publishedAt).
+uid token: `publication`.
+Questions: CQ-EV-05, Q-D3-03, Q-D3-11, Q-D3-12, CQ-ST-07, Q-D3-13, Q-D3-14, Q-D3-16.
+"""
+type Publication implements Entity & Subjectable
+  @node(labels: ["Publication", "Entity"])
+  @query(aggregate: false)
+  @mutation(operations: []) {
+  id: ID!
+  uid: String!
+  "Title."
+  name: String
+  privacyClass: PrivacyClass
+  lastWriterRunId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  publicationKind: PublicationKind!
+  "Version label (v1…v4 for medRxiv, pub2 for Cochrane)."
+  versionLabel: String @filterable(byValue: false) @sortable(byValue: false)
+  publishedAt: DateTime
+  publishedAtPrecision: TimePrecision @filterable(byValue: false) @sortable(byValue: false)
+  "Journal or server name as printed: venue name only, no container node (R-71)."
+  venueName: String @filterable(byValue: false) @sortable(byValue: false)
+  citationText: String @filterable(byValue: false) @sortable(byValue: false)
+  "Read-only projection cache over incoming REVISES and kernel HAS_REVISION_STATUS Assertions (method publication-revision-status/v2), typed by the kernel SourceRevisionKind; null = none known (R-44). The single work-level cache; authority stays with those per-asserter Assertions. Filter to exclude retracted work."
+  revisionStatus: SourceRevisionKind
+  revisionStatusDerivedAt: DateTime @filterable(byValue: false) @sortable(byValue: false)
+  "Method version of the revisionStatus cache (directive rule 8), e.g. publication-revision-status/v2."
+  revisionStatusMethodVersion: String @filterable(byValue: false) @sortable(byValue: false)
+  """class: asserted; cardinality: many (none for most notices; several for pooled or secondary analyses; asserted by the paper, by the registry references module or by NLM DataBank links); questions: CQ-ST-07, CQ-ST-04, Q-D3-02, Q-D3-03, Q-D3-18."""
+  reportsOn: [Study!]!
+    @relationship(type: "REPORTS_ON", direction: OUT, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted; cardinality: many (this identified notice or newer version revises that work; one episode per asserter — NLM, publisher via Crossref, Retraction Watch via Crossref, preprint server, BellLabs curation — with that asserter's revisionKind; reasons in Assertion.qualifiers; status-only flags are kernel HAS_REVISION_STATUS Assertions); questions: CQ-EV-05, Q-D3-03, Q-D3-11, Q-D3-12."""
+  revises: [Publication!]!
+    @relationship(type: "REVISES", direction: OUT, properties: "RevisionEdgeProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+  """class: asserted (kernel meaning, R-43; recorded time only, so regrouping is a supersession, R-26); cardinality: many (kernel Source → this work; one Source per rendition endpoint: PubMed record, PMC JATS, DOI landing page, PDF); source family of evidence with no OCCURS_IN container (K Q-K-21, Report.distinctSourceFamilyCount) and the scholarly branch of the revision patterns (Source -RENDITION_OF-> Publication <-REVISES- notice, R-44); questions: Q-K-21, CQ-EV-05."""
+  renditions: [Source!]!
+    @relationship(type: "RENDITION_OF", direction: IN, properties: "AssertedRecordedProperties", nestedOperations: [CONNECT], aggregate: false)
+    @filterable(byValue: true, byAggregate: false)
+}
