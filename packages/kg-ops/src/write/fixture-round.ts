@@ -127,7 +127,10 @@ function walkFiles(root: string): string[] {
       else if (/^intent.*\.json$/.test(f)) files.push(p);
     }
   })(root);
-  return files.sort();
+  // Platform-independent order: compare with Windows separators, the convention ROUND.json's pinned order was
+  // generated with (a plain sort orders `/` and `\` differently against `-` and digits, so Linux CI disagreed).
+  const key = (p: string) => p.replace(/\//g, "\\");
+  return files.sort((a, b) => (key(a) < key(b) ? -1 : key(a) > key(b) ? 1 : 0));
 }
 
 function readYaml(path: string): J | null {
